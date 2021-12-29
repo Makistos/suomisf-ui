@@ -1,0 +1,1 @@
+export const SITE_URL = 'http://www.sf-bibliografia.fi';

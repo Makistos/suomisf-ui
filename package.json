@@ -10,11 +10,22 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "axios": "^0.24.0",
+    "babel": "^6.23.0",
+    "classname": "0.0.0",
+    "formik": "^2.2.9",
+    "history": "^5.1.0",
+    "npm-lifecycle": "^3.1.5",
+    "primeicons": "^5.0.0",
+    "primereact": "^7.1.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-router-dom": "^6.0.2",
     "react-scripts": "4.0.3",
+    "react-transition-group": "^4.4.2",
     "typescript": "^4.1.2",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "react-scripts start",

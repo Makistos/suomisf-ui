@@ -1,11 +1,52 @@
-.App {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Roboto Slab", serif !important;
+  font-weight: bolder;
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h1.title {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+  text-align: center;
+}
+
+div.container {
+  max-width: 1140px;
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+a {
+  text-decoration: none;
+}
+
+.p-menubar {
+  background-color: #18447e;
+  color: rgba(255, 255, 255)
+}
+
+.p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link .p-menuitem-text {
+  color: rgba(255, 255, 255, .5)
+}
+/* .App {
   text-align: center;
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
-}
+} */
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -28,11 +69,45 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
+div.three-column {
+  column-count: 3;
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* PrimeReact */
+
+
+
+
+.p-accordion-content {
+  border: none !important;
+}
+
+.p-accordion-header {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.p-accordion-header-link {
+  background-color: rgba(255, 255, 255) !important;
+  border: none !important;
+  padding-bottom: 0.5rem !important;
+  padding-top: 0rem !important;
+}
+
+/* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
   }
-}
+} */
+
+/* .p-menubar {
+  background-color: #007bff;
+} */

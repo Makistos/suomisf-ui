@@ -7,10 +7,6 @@ import { access } from 'fs';
 import { Accordion } from 'primereact/accordion';
 import { AccordionTab } from 'primereact/accordion';
 
-// import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
-// import 'primereact/resources/primereact.min.css'
-// import './App.css';
-// import './index.css';
 
 export interface IMagazine {
     id: number,

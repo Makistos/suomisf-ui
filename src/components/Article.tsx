@@ -1,58 +1,57 @@
 import React from 'react';
 import { LinkList, LinkItem } from './LinkList';
-import { IPerson } from '../Person';
+import { IPerson, IPersonBrief } from '../Person';
 import { getApiContent } from '../services/user-service';
 import { getCurrenUser } from '../services/auth-service';
-import { setLocale } from 'yup';
-
 const baseURL = 'articles/';
 
 export interface IArticle {
     id: number,
     title: string,
-    author_rel: IPerson[]
+    person: string,
+    excerpt: string,
+    author_rel: IPersonBrief[]
 }
 
 interface ArticleProps {
-    id: number,
+    article: IArticle,
     skipAuthors?: boolean
 }
 
-export const Article = ({ id }: ArticleProps) => {
+export const Article = ({ article }: ArticleProps) => {
     const user = getCurrenUser();
-    let [article, setArticle]: [IArticle | null, (article: IArticle) => void] = React.useState<IArticle | null>(null);
-    const PickLinks = (items: IPerson[]) => {
-        let retval: LinkItem[] = [];
-        items.map((item) => (
-            retval.push({ id: item['id'], name: item['alt_name'] })
-        ))
-        return retval;
+    //let [article, setArticle]: [IArticle | null, (article: IArticle) => void] = React.useState<IArticle | null>(null);
+    const PickLinks = (items: IPersonBrief[]) => {
+        return items.map((item) => ({ id: item['id'], name: item['alt_name'] ? item['alt_name'] : item['name'] }))
     }
 
-    React.useEffect(() => {
-        async function getArticle() {
-            let url = baseURL + id?.toString();
-            try {
-                const response = await getApiContent(url, user);
-                setArticle(response.data);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        getArticle();
-    }, [id])
+    // React.useEffect(() => {
+    //     async function getArticle() {
+    //         let url = baseURL + id?.toString();
+    //         try {
+    //             const response = await getApiContent(url, user);
+    //             setArticle(response.data);
+    //         } catch (e) {
+    //             console.error(e);
+    //         }
+    //     }
+    //     getArticle();
+    // }, [id])
 
-    if (!article) return null;
+    //if (!article) return null;
 
     return (
         <div>
             {article !== null && article !== undefined ? (
 
                 <div>
-                    <LinkList
-                        path="people"
-                        items={PickLinks(article.author_rel)}
-                    />: {article.title}
+                    {article.author_rel.length > 0 &&
+                        <LinkList
+                            path="people"
+                            items={PickLinks(article.author_rel)}
+                        />}
+                    : {article.title}
+
                 </div>
             ) : (
                 <p>Haetaan tietoja...</p>

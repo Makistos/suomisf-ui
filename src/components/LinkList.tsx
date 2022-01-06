@@ -12,7 +12,7 @@ interface LinkListProps {
 }
 
 export const LinkList = ({ path, items, separator = SEPARATOR }: LinkListProps) => {
-    const p = SITE_URL + '/' + path;
+    const p = SITE_URL + path;
 
     const linkList = items
         .map<React.ReactNode>(({ id, name }) => (

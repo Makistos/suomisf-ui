@@ -11,7 +11,7 @@ export interface IPerson {
     bio: string
 }
 
-export interface IPersonSimple {
+export interface IPersonBrief {
     id: number,
     name: string,
     alt_name: string,

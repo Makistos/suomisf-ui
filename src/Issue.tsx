@@ -8,7 +8,6 @@ import { LinkList, LinkItem } from './components/LinkList';
 import { Short, IShort } from './components/Short';
 import { Article, IArticle } from './components/Article';
 import { Image } from 'primereact/image';
-
 const baseURL = 'issues/';
 
 export interface IIssue {
@@ -28,8 +27,8 @@ export interface IIssue {
     title: string,
     editors: IPerson[],
     //articles: IArticle[],
-    articles: number[],
-    stories: number[]
+    articles: IArticle[],
+    stories: IShort[]
 }
 
 export type IssueProps = {
@@ -45,12 +44,7 @@ export const Issue = ({ id, index }: IssueProps) => {
     const [error, setError]: [string, (error: string) => void] = React.useState("");
 
     const PickLinks = (items: IPerson[]) => {
-        return items.map((item) => ({ id: item['id'], name: item['alt_name'] }))
-        // let retval: LinkItem[] = [];
-        // items.map((item) => (
-        //     retval.push({ id: item['id'], name: item['alt_name'] })
-        // ))
-        // return retval;
+        return items.map((item) => ({ id: item['id'], name: item['alt_name'] ? item['alt_name'] : item['name'] }))
     }
 
     React.useEffect(() => {
@@ -76,45 +70,47 @@ export const Issue = ({ id, index }: IssueProps) => {
                     <div className="p-col-12 p-md-8">
                         <h2>{issue.cover_number}</h2>
                         <div>
-                            <LinkList
-                                path="people"
-                                separator=" &amp; "
-                                items={PickLinks(issue.editors)}
-                            />
+                            {issue.editors.length && (
+                                <LinkList
+                                    path="people"
+                                    separator=" &amp; "
+                                    items={PickLinks(issue.editors)}
+                                />)}
                             {issue.editors.length && " (päätoimittaja)"}
+
                         </div>
                         {issue.pages && issue.pages > 0 ? issue.pages + " sivua." : ""}
 
                         {issue.size ? " " + issue.size.name + "." : ""}
-                        {issue.articles.length > 0 ? (
+                        {issue.articles.length > 0 && (
                             <div className="p-pt-2"><b>Artikkelit</b>
                                 <div className="p-ml-3">
                                     {
                                         issue.articles
                                             .map((article) => (
-                                                <Article key={article}
-                                                    id={article}
+                                                <Article key={article.id}
+                                                    article={article}
                                                 />
                                             ))
                                     }
                                 </div>
                             </div>
-                        ) : ("")
+                        )
                         }
-                        {issue.stories.length > 0 ? (
+                        {issue.stories.length > 0 && (
                             <div className="p-pt-2"><b>Novellit</b>
                                 <div className="p-ml-3">
                                     {
                                         issue.stories
                                             .map((story) => (
-                                                <Short key={story}
-                                                    id={story}
+                                                <Short key={story.id}
+                                                    short={story}
                                                 />
                                             ))
                                     }
                                 </div>
                             </div>
-                        ) : ("")
+                        )
                         }
                     </div>
                     <div className="p-col-12 p-md-4">

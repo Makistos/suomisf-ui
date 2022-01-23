@@ -6,8 +6,10 @@ import { IPerson } from './Person';
 import { IPublicationSize } from './PublicationSize';
 import { LinkList, LinkItem } from './components/LinkList';
 import { Short, IShort } from './components/Short';
-import { Article, IArticle } from './components/Article';
+import { IArticle } from './components/Article';
+import { ArticleBrief } from './components/ArticleBrief';
 import { Image } from 'primereact/image';
+import { IMagazine } from './magazine';
 const baseURL = 'issues/';
 
 export interface IIssue {
@@ -26,9 +28,9 @@ export interface IIssue {
     notes: string,
     title: string,
     editors: IPerson[],
-    //articles: IArticle[],
     articles: IArticle[],
-    stories: IShort[]
+    stories: IShort[],
+    magazine: IMagazine
 }
 
 export type IssueProps = {
@@ -37,7 +39,7 @@ export type IssueProps = {
 };
 
 export const Issue = ({ id, index }: IssueProps) => {
-    let params = useParams();
+    //let params = useParams();
     const user = getCurrenUser();
     const [issue, setIssue]: [IIssue | null, (issue: IIssue) => void] = React.useState<IIssue | null>(null);
     const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
@@ -88,7 +90,7 @@ export const Issue = ({ id, index }: IssueProps) => {
                                     {
                                         issue.articles
                                             .map((article) => (
-                                                <Article key={article.id}
+                                                <ArticleBrief key={article.id}
                                                     article={article}
                                                 />
                                             ))

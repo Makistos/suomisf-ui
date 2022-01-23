@@ -8,7 +8,9 @@ export interface IPerson {
     image_src: string,
     dob: number,
     dod: number,
-    bio: string
+    bio: string,
+    roles: string[],
+    nationality: string
 }
 
 export interface IPersonBrief {

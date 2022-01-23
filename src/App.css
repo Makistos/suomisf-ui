@@ -12,7 +12,11 @@ h1 {
   font-size: 2.5rem;
 }
 
-h1.title {
+.name {
+  text-align: center;
+}
+
+.title {
   margin-top: 4rem;
   margin-bottom: 4rem;
   text-align: center;
@@ -102,6 +106,10 @@ div.three-column {
   padding-top: 0rem !important;
 }
 
+.p-datable-tbody {
+  border: none !important;
+  border-color:rgba(255, 255, 255) !important;
+}
 /* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

@@ -9,7 +9,7 @@ export interface IShort {
     id: number,
     title: string,
     orig_title: string,
-    //language: string,
+    language: string,
     pubyear: number,
     authors: IPerson[]
 }

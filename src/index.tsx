@@ -9,19 +9,23 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Magazines from './magazines';
 import Magazine from './magazine';
+import { ArticleView } from './components/Article';
 import { Issue } from './Issue';
+import { People } from './People';
 import Login from './components/Login';
 import { logout } from './services/auth-service';
 
 const rootElement = document.getElementById("root");
+
 ReactDOM.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />}>
+        <Route path="people" element={<People />} />
         <Route path="magazines" element={<Magazines />} />
-        <Route path="magazines/:magazineId" element={<Magazine />} >
-          <Route path="issues/:issueId" element={<Issue id={null} />} />
-        </Route>
+        <Route path="magazines/:magazineId" element={<Magazine />} />
+        <Route path="issues/:issueId" element={<Issue id={null} />} />
+        <Route path="articles/:articleId" element={<ArticleView id={null} />} />
         <Route path="/login" element={<Login />} />
         <Route path="*"
           element={

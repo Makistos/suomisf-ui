@@ -3,8 +3,54 @@ import React from 'react';
 import './App.css';
 import MainMenu from './Mainmenu';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { locale, addLocale, updateLocaleOption, updateLocaleOptions, localeOption, localeOptions } from 'primereact/api';
 
 function App() {
+  addLocale('fi', {
+    startsWith: 'Teksti alkaa',
+    contains: 'Sisältää',
+    notContains: 'Ei sisällä',
+    endsWith: 'Teksti loppuu',
+    equals: 'Yhtä kuin',
+    notEquals: 'Eri kuin',
+    noFilter: 'Ei suodatinta',
+    lt: 'Pienempi kuin',
+    lte: 'Pienempi tai yhtä kuin',
+    gt: 'Suurempi kuin',
+    gte: 'Suurempi tai yhtä kuin',
+    dateIs: 'Päiväys on',
+    dateBefore: 'Päiväys ennen',
+    dateAfter: 'Päiväys jälkeen',
+    custom: 'Mukautettu',
+    clear: 'Tyhjennä',
+    apply: 'Aseta',
+    matchAll: 'Täsmää kaikki',
+    matchAny: 'Täsmää jokin',
+    addRule: 'Lisää sääntö',
+    removeRule: 'Poista sääntö',
+    accept: 'Kyllä',
+    reject: 'Ei',
+    choose: 'Valitse',
+    upload: 'Lataa',
+    cancel: 'Peruuta',
+    dayNames: ['Sunnuntai', 'Maanantai', 'Tiistai', 'Keskiviikko', 'Torstai', 'Perjantai', 'Lauantai'],
+    dayNamesShort: ['Su', 'Ma', 'Ti', 'Ke', 'To', 'Pe', 'La'],
+    dayNamesMin: ['Su', 'Ma', 'Ti', 'Ke', 'To', 'Pe', 'La'],
+    monthNames: ['Tammikuu', 'Helmikuu', 'Maaliskuu', 'Huhtikuu', 'Toukokuu', 'Kesäkuu', 'Heinäkuu', 'Elokuu', 'Syyskuu', 'Lokakuu', 'Marraskuu', 'Joulukuu'],
+    monthNamesShort: ['Tam', 'Hel', 'Maa', 'Huh', 'Tou', 'Kes', 'Hei', 'Elo', 'Syy', 'Lok', 'Mar', 'Jou'],
+    today: 'Tänään',
+    weekHeader: 'Vko',
+    firstDayofWeek: 1,
+    dateFormat: 'dd/mm/yy',
+    weak: 'Heikko',
+    medium: 'Keskiverto',
+    strong: 'Vahva',
+    passwordPrompt: 'Syötä salasana',
+    emptyFilterMessage: 'Ei tuloksia',
+    emptyMessage: 'Ei tuloksia'
+  });
+
+  locale('fi');
 
   return (
     <div className="App container">

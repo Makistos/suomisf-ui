@@ -242,24 +242,19 @@ export const People = () => {
                         filter
                         filterPlaceholder="Kansallisuus"
                         filterElement={nationalityFilterTemplate}
-                        sortable>
+                    >
                         showFilterMatchModes={false}
                     </Column>
                     <Column field="workcount" header="Teoksia"
                         dataType="numeric"
-                        sortable>
+                    >
                     </Column>
                     <Column field="storycount" header="Novelleja"
                         dataType="numeric"
-                        sortable
                     >
                     </Column>
                     <Column field="roles" header="Roolit" body={roleTemplate}
-                        filter
-                        filterPlaceholder="Rooli"
-                        filterElement={roleFilterTemplate}
-                        showFilterMatchModes={false}
-                        sortable>
+                    >
                     </Column>
                 </DataTable>
             ) : (

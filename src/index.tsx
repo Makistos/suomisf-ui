@@ -13,7 +13,6 @@ import { ArticleView } from './components/Article';
 import { Issue } from './Issue';
 import { People } from './People';
 import Login from './components/Login';
-import { logout } from './services/auth-service';
 
 const rootElement = document.getElementById("root");
 

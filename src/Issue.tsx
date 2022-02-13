@@ -1,10 +1,9 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
 import { getCurrenUser } from './services/auth-service';
 import { getApiContent } from './services/user-service';
 import { IPerson } from './Person';
 import { IPublicationSize } from './PublicationSize';
-import { LinkList, LinkItem } from './components/LinkList';
+import { LinkList } from './components/LinkList';
 import { Short, IShort } from './components/Short';
 import { IArticle } from './components/Article';
 import { ArticleBrief } from './components/ArticleBrief';
@@ -42,8 +41,8 @@ export const Issue = ({ id, index }: IssueProps) => {
     //let params = useParams();
     const user = getCurrenUser();
     const [issue, setIssue]: [IIssue | null, (issue: IIssue) => void] = React.useState<IIssue | null>(null);
-    const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
-    const [error, setError]: [string, (error: string) => void] = React.useState("");
+    //const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
+    //const [error, setError]: [string, (error: string) => void] = React.useState("");
 
     const PickLinks = (items: IPerson[]) => {
         return items.map((item) => ({ id: item['id'], name: item['alt_name'] ? item['alt_name'] : item['name'] }))
@@ -55,7 +54,7 @@ export const Issue = ({ id, index }: IssueProps) => {
             try {
                 const response = await getApiContent(url, user);
                 setIssue(response.data);
-                setLoading(false);
+                //setLoading(false);
             } catch (e) {
                 console.error(e);
             }

@@ -17,15 +17,15 @@ const client = axios.create({
 function Magazines() {
     const defaultMagazines: IMagazine[] = [];
     const [magazines, setMagazines]: [IMagazine[], (magazines: IMagazine[]) => void] = React.useState(defaultMagazines);
-    const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
-    const [error, setError]: [string, (error: string) => void] = React.useState("");
+    //const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
+    //const [error, setError]: [string, (error: string) => void] = React.useState("");
 
     React.useEffect(() => {
         async function getMagazines() {
             try {
                 const response = await client.get("");
                 setMagazines(response.data);
-                setLoading(false);
+                //setLoading(false);
             }
             catch (e) {
                 console.error(e);

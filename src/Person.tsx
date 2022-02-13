@@ -10,7 +10,8 @@ export interface IPerson {
     dod: number,
     bio: string,
     roles: string[],
-    nationality: string
+    //nationality: string,
+    nationalityname: string
 }
 
 export interface IPersonBrief {

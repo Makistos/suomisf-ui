@@ -1,11 +1,8 @@
-import React, { useRef } from 'react';
-import { LinkList, LinkItem } from './LinkList';
-import { IPerson, IPersonBrief } from '../Person';
-import { getApiContent } from '../services/user-service';
-import { getCurrenUser } from '../services/auth-service';
+import React from 'react';
+import { LinkList } from './LinkList';
+import { IPerson } from '../Person';
 import { Link } from 'react-router-dom';
-import { ArticleView, IArticle } from './Article';
-import { OverlayPanel } from 'primereact/overlaypanel';
+import { IArticle } from './Article';
 
 interface ArticleProps {
     article: IArticle,
@@ -13,8 +10,8 @@ interface ArticleProps {
 }
 
 export const ArticleBrief = ({ article }: ArticleProps) => {
-    const user = getCurrenUser();
-    const op = useRef<OverlayPanel>(null);
+    //const user = getCurrenUser();
+    //const op = useRef<OverlayPanel>(null);
     //let [article, setArticle]: [IArticle | null, (article: IArticle) => void] = React.useState<IArticle | null>(null);
     const PickLinks = (items: IPerson[]) => {
         return items.map((item) => ({ id: item['id'], name: item['alt_name'] ? item['alt_name'] : item['name'] }))

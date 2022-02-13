@@ -105,10 +105,8 @@ div.three-column {
   padding-bottom: 0.5rem !important;
   padding-top: 0rem !important;
 }
-
-.p-datable-tbody {
-  border: none !important;
-  border-color:rgba(255, 255, 255) !important;
+body .p-datatable .p-datatable-tbody > tr > td {
+  border: 0;
 }
 /* @keyframes App-logo-spin {
   from {

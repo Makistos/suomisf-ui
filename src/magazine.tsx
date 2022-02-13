@@ -1,11 +1,8 @@
 import React from 'react';
 import { getCurrenUser } from "./services/auth-service";
 import { getApiContent } from "./services/user-service";
-import { useParams, Link } from "react-router-dom";
-import { Issue, IIssue } from './Issue';
-import { access } from 'fs';
-import { Accordion } from 'primereact/accordion';
-import { AccordionTab } from 'primereact/accordion';
+import { useParams } from "react-router-dom";
+import { Issue } from './Issue';
 
 
 export interface IMagazine {
@@ -24,7 +21,7 @@ const baseURL = "magazines/";
 
 const Magazine = () => {
 
-    var issueSort = function (a: IIssue, b: IIssue): number {
+    /*var issueSort = function (a: IIssue, b: IIssue): number {
         // Prioritize count, this is a running number
         // that doesn't care about years etc.
         if (a.count != null && b.count != null) {
@@ -45,15 +42,15 @@ const Magazine = () => {
             }
         }
         return 0;
-    }
+    }*/
 
     let params = useParams();
     const user = getCurrenUser();
 
     const [magazine, setMagazine]: [IMagazine | null, (magazine: IMagazine) => void] = React.useState<IMagazine | null>(null);
-    const [issues, setIssue]: [string[], (issue: string[]) => void] = React.useState<string[]>([]);
-    const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
-    const [error, setError]: [string, (error: string) => void] = React.useState("");
+    //const [issues, setIssue]: [string[], (issue: string[]) => void] = React.useState<string[]>([]);
+    //const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
+    //const [error, setError]: [string, (error: string) => void] = React.useState("");
 
     React.useEffect(() => {
         async function getMagazine() {
@@ -61,7 +58,7 @@ const Magazine = () => {
             try {
                 const response = await getApiContent(url, user);
                 setMagazine(response.data);
-                setLoading(false);
+                //setLoading(false);
             }
             catch (e) {
                 console.error(e);
@@ -70,7 +67,7 @@ const Magazine = () => {
         getMagazine();
     }, [])
 
-    const getIssueHeader = (index: number) =>
+    /*const getIssueHeader = (index: number) =>
         (issues.length >= index) ? issues[index] : '';
 
     const issueNumber = (coverNumber: string, index: number) => {
@@ -78,7 +75,7 @@ const Magazine = () => {
         newArray[index] = coverNumber;
         setIssue(newArray);
     }
-
+    */
     if (!magazine) return null;
 
     return (

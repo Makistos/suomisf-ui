@@ -6,36 +6,63 @@ import { IPerson } from './Person';
 import { ICountry } from './components/Country';
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { DataTable } from 'primereact/datatable';
-import { Column, ColumnDataType, ColumnFilterElementType } from 'primereact/column';
+import { Column, ColumnFilterElementType } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
-import { DataTableSortOrderType, DataTablePFSEvent } from 'primereact/datatable';
-import { InputText } from "primereact/inputtext";
+import { DataTablePFSEvent } from 'primereact/datatable';
 import { InputNumber } from 'primereact/inputnumber';
+import reportWebVitals from './reportWebVitals';
 
 const baseURL = 'people';
 
 export const People = () => {
     const user = getCurrenUser();
     const [people, setPeople]: [IPerson[], (people: IPerson[]) => void] = React.useState<IPerson[]>([]);
-    const [countries, setCountries]: [string[], (countries: string[]) => void] = React.useState<string[]>([]);
+    const [countries, setCountries]: [ICountry[], (countries: ICountry[]) => void] = React.useState<ICountry[]>([]);
     const [roles, setRoles]: [string[], (roles: string[]) => void] = React.useState<string[]>([]);
-    const [filters, setFilters] = React.useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-        dob: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
-        dod: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
-        nationality: { value: null, matchMode: FilterMatchMode.EQUALS },
-        work_count: { value: null, matchMode: FilterMatchMode.EQUALS },
-        story_count: { value: null, matchMode: FilterMatchMode.EQUALS },
-        roles: { value: null, matchMode: FilterMatchMode.EQUALS }
+    const [totalRecords, setTotalRecords] = React.useState(0);
+    const [lazyParams, setLazyParams]: [DataTablePFSEvent, (lazyParams: DataTablePFSEvent) => void] = React.useState<DataTablePFSEvent>({
+        first: 0,
+        rows: 50,
+        page: 0,
+        sortField: "name",
+        sortOrder: 1,
+        multiSortMeta: null,
+        filters: {
+            global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+            name: { value: null, matchMode: FilterMatchMode.CONTAINS },
+            dob: { value: null, matchMode: FilterMatchMode.EQUALS },
+            dod: { value: null, matchMode: FilterMatchMode.EQUALS },
+            nationality: { value: null, matchMode: FilterMatchMode.EQUALS },
+            workcount: { value: null, matchMode: FilterMatchMode.EQUALS },
+            storycount: { value: null, matchMode: FilterMatchMode.EQUALS },
+            roles: { value: null, matchMode: FilterMatchMode.IN }
+        }
     });
     const [loading, setLoading] = React.useState(true);
-    const [globalFilterValue, setGlobalFilterValue] = React.useState("");
+    //const [globalFilterValue, setGlobalFilterValue] = React.useState("");
 
-    const [sortField, setSortField] = React.useState("name")
-    const [sortOrder, setSortOrder] = React.useState(0);
+    //const [sortField, setSortField] = React.useState("name")
+    //const [sortOrder, setSortOrder] = React.useState(0);
 
     React.useEffect(() => {
+        const queryParams = (params: any, prefix = "") => {
+            let retval: string[] = [];
+            if (params) {
+                if (prefix !== "") {
+                    prefix = prefix + '_';
+                }
+                Object.keys(params).map(k => {
+                    if (typeof params[k] === "object" && params[k] !== null) {
+                        let l = queryParams(params[k], prefix + k);
+                        l.map(value => retval.push(value));
+                        ///console.log(retval);
+                    } else {
+                        retval.push(prefix + encodeURIComponent(k) + "=" + encodeURIComponent(params[k]));
+                    }
+                })
+            }
+            return retval;
+        }
         const getRoles = (people: IPerson[]) => {
             let _roles: string[] = [];
             for (let i = 0; i < people.length; i++) {
@@ -47,44 +74,54 @@ export const People = () => {
             setRoles(Array.from(_unique));
         }
         async function getPeople() {
-            let url = baseURL;
+            const url = baseURL + "?" +
+                queryParams(lazyParams).join('&');
+
             try {
+                //console.log(url);
+                setLoading(true);
                 const response = await getApiContent(url, user);
-                setPeople(response.data);
-                getRoles(response.data);
-                getCountries(response.data);
+                setTotalRecords(response.data.totalRecords);
+                setPeople(response.data.people);
+                console.log(people);
+                getRoles(response.data.people);
                 setLoading(false);
             }
             catch (e) {
                 console.error(e);
             }
         }
-        const getCountries = (people: IPerson[]) => {
-            /*let url = "countries";
+        async function getCountries() {
+            const url = 'countries'
             try {
                 const response = await getApiContent(url, user);
-                let _countries: ICountry[] = []
-                for (let i = 0; i < response.data.length; i++) {
-                    _countries.push(response.data[i].name);
-                }
-
-                setCountries(_countries);
+                setCountries(response.data);
             }
             catch (e) {
                 console.error(e);
-            }*/
-            let _countries: string[] = [];
-            for (let i = 0; i < people.length; i++) {
-                let country = people[i].nationality;
-                if (country !== null && country !== undefined) {
-                    _countries.push(country);
-                }
             }
-            setCountries(Array.from(new Set(_countries)).sort());
+            // for (let i = 0; i < people.length; i++) {
+            //     let country = people[i].nationalityname;
+            //     if (country !== null && country !== undefined) {
+            //         _countries.push(country);
+            //     }
+            // }
         }
-        //getCountries();
+        getCountries();
         getPeople();
-    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [lazyParams]) // eslint-disable-line react-hooks/exhaustive-deps
+
+    const onPage = (event: DataTablePFSEvent) => {
+        setLazyParams(event);
+    }
+
+    const onSort = (event: DataTablePFSEvent) => {
+        setLazyParams(event);
+    }
+    const onFilter = (event: DataTablePFSEvent) => {
+        event['first'] = 0;
+        setLazyParams(event);
+    }
 
     /*const onGlobalFilterChange = (e: React.ChangeEventHandler) => {
         const value = e.target.value;
@@ -93,6 +130,14 @@ export const People = () => {
         setFilters(_filters);
         setGlobalFilterValue(value);
     };*/
+    /*
+    const renderHeader1 = () => {
+        return (
+            <div className="flex justify-content-between">
+                <Button type="button" icon="pi pi-filter-slash" label="Tyhjennä" className="p-button-outlined" onClick={clearFilter1} />
+            </div>
+        )
+    }*/
 
     const roleTemplate = (rowData: IPerson) => {
         return rowData.roles.join(", ");
@@ -110,8 +155,10 @@ export const People = () => {
         if (options === null || options === undefined) {
             return <div></div>
         }
+        const names = countries.map((country) => country.name)
+        console.log(names);
         return (
-            <Dropdown value={options.value} options={countries}
+            <Dropdown value={options.value} options={names}
                 onChange={(e) => options.filterApplyCallback(e.value)}
                 className="p-column-filter" showClear
             />
@@ -151,17 +198,26 @@ export const People = () => {
     return (
         <div>
             <h1 className='title'>Henkilöluettelo</h1>
+            <p>Henkilöitä yhteensä {totalRecords}.</p>
             {people !== null && people !== undefined ? (
                 <DataTable value={people}
-                    sortField="name"
+                    first={lazyParams.first}
+                    rows={lazyParams.rows}
+                    totalRecords={totalRecords}
+                    paginator
+                    pageLinkSize={10}
+                    lazy
+                    onPage={onPage}
+                    onSort={onSort}
                     sortOrder={1}
+                    sortField={lazyParams.sortField}
+                    onFilter={onFilter}
+                    filters={lazyParams.filters}
                     size="small"
-                    globalFilterFields={["name", "dob", "dod", "nationality", "work_count", "story_count", "roles"]}
+                    globalFilterFields={["name", "dob", "dod", "nationalityname", "workcount", "storycount", "roles"]}
                     responsiveLayout="scroll"
                     dataKey="id"
-                    filters={filters}
-                    filterDisplay="menu"
-                    rows={50}
+                    filterDisplay="row"
                     emptyMessage="Henkilöitä ei löytynyt"
                     loading={loading}
                 >
@@ -173,33 +229,29 @@ export const People = () => {
                     <Column field="dob" header="Synt"
                         filter
                         filterPlaceholder="Vuosi"
+                        dataType="numeric"
                         sortable>
                     </Column>
                     <Column field="dod" header="Kuoli"
                         filter
                         filterPlaceholder="Vuosi"
+                        dataType="numeric"
                         sortable>
                     </Column>
                     <Column field="nationality" header="Kansallisuus"
                         filter
                         filterPlaceholder="Kansallisuus"
                         filterElement={nationalityFilterTemplate}
+                        sortable>
                         showFilterMatchModes={false}
-                        sortable>
                     </Column>
-                    <Column field="work_count" header="Teoksia"
-                        filter
-                        filterPlaceholder="Teoksia"
+                    <Column field="workcount" header="Teoksia"
                         dataType="numeric"
-                        filterElement={shortStoryFilterTemplate}
                         sortable>
                     </Column>
-                    <Column field="story_count" header="Novelleja"
-                        filter
-                        filterPlaceholder="Novelleja"
+                    <Column field="storycount" header="Novelleja"
                         dataType="numeric"
                         sortable
-                        filterElement={shortStoryFilterTemplate}
                     >
                     </Column>
                     <Column field="roles" header="Roolit" body={roleTemplate}

@@ -2,8 +2,8 @@ import React from 'react';
 //import 'primereact/resources/primereact.min.css'
 import './App.css';
 import MainMenu from './Mainmenu';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { locale, addLocale, updateLocaleOption, updateLocaleOptions, localeOption, localeOptions } from 'primereact/api';
+import { Outlet } from 'react-router-dom';
+import { locale, addLocale } from 'primereact/api';
 
 function App() {
   addLocale('fi', {

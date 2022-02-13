@@ -1,11 +1,9 @@
 import React from 'react';
-import { useParams, Link } from "react-router-dom";
-import { LinkList, LinkItem } from './LinkList';
-import { IPerson, IPersonBrief } from '../Person';
+import { useParams } from "react-router-dom";
+import { LinkList } from './LinkList';
+import { IPerson } from '../Person';
 import { getApiContent } from '../services/user-service';
 import { getCurrenUser } from '../services/auth-service';
-import { IMagazine } from '../magazine';
-import { setLocale } from 'yup';
 import { ITag, PickTagLinks } from './Tag';
 import { IIssue } from '../Issue';
 const baseURL = 'articles/';
@@ -40,7 +38,7 @@ export const ArticleView = ({ id }: ArticleProps) => {
     const user = getCurrenUser();
     let params = useParams();
     const [article, setArticle]: [IArticle | null, (article: IArticle) => void] = React.useState<IArticle | null>(null);
-    const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
+    //const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
     const PickLinks = (items: IPerson[]) => {
         return items.map((item) => ({ id: item['id'], name: item['alt_name'] ? item['alt_name'] : item['name'] }))
     }
@@ -51,7 +49,7 @@ export const ArticleView = ({ id }: ArticleProps) => {
             try {
                 const response = await getApiContent(url, user);
                 setArticle(response.data);
-                setLoading(false);
+                //setLoading(false);
             }
             catch (e) {
                 console.error(e);

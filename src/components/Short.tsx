@@ -1,9 +1,7 @@
 import React from "react";
-import { LinkList, LinkItem } from "./LinkList";
+import { LinkList } from "./LinkList";
 import { IPerson } from "../Person";
-import { getApiContent } from "../services/user-service";
-import { getCurrenUser } from "../services/auth-service";
-const baseURL = 'shorts/';
+//const baseURL = 'shorts/';
 
 export interface IShort {
     id: number,
@@ -20,7 +18,7 @@ interface ShortProps {
 }
 
 export const Short = ({ short }: ShortProps) => {
-    const user = getCurrenUser();
+    //const user = getCurrenUser();
     //let [short, setShort]: [IShort | null, (story: IShort) => void] = React.useState<IShort | null>(null);
 
     const PickLinks = (items: IPerson[]) => {

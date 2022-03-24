@@ -1,5 +1,6 @@
 import axios from "axios";
 
+//const baseURL = "http://www.sf-bibliografia.fi/api/";
 const baseURL = "http://localhost:5000/api/";
 
 export const register = (username: string, email: string, password: string) => {

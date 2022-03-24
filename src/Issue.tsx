@@ -1,7 +1,7 @@
 import React from 'react';
 import { getCurrenUser } from './services/auth-service';
 import { getApiContent } from './services/user-service';
-import { IPerson } from './Person';
+import { IPerson } from './components/Person';
 import { IPublicationSize } from './PublicationSize';
 import { LinkList } from './components/LinkList';
 import { Short, IShort } from './components/Short';

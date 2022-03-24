@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { SITE_URL } from '../systemProps';
 
 const SEPARATOR = ", ";
@@ -8,12 +8,15 @@ export type LinkItem = { id: number; name: string };
 interface LinkListProps {
     path: string,
     items: LinkItem[],
-    separator?: string
+    separator?: string,
 }
 
 export const LinkList = ({ path, items, separator = SEPARATOR }: LinkListProps) => {
     const p = SITE_URL + path;
 
+    if (items.length === 0) {
+        return <Fragment></Fragment>
+    }
     const linkList = items
         .map<React.ReactNode>(({ id, name }) => (
             <a key={id} href={`${p}/${id}`}>
@@ -22,5 +25,5 @@ export const LinkList = ({ path, items, separator = SEPARATOR }: LinkListProps) 
         ))
         .reduce((prev, curr) => [prev, separator, curr]);
 
-    return <span>{linkList}</span>;
+    return <Fragment>{linkList}</Fragment>;
 }

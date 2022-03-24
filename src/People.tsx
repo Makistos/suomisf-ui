@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { getApiContent } from './services/user-service';
 import { getCurrenUser } from './services/auth-service';
-import { IPerson } from './Person';
+import { IPerson } from './components/Person';
 import { ICountry } from './components/Country';
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { DataTable } from 'primereact/datatable';
@@ -242,11 +242,12 @@ export const People = () => {
                         filter
                         filterPlaceholder="Kansallisuus"
                         filterElement={nationalityFilterTemplate}
-                    >
+                        sortable>
                         showFilterMatchModes={false}
                     </Column>
                     <Column field="workcount" header="Teoksia"
                         dataType="numeric"
+                        sortable
                     >
                     </Column>
                     <Column field="storycount" header="Novelleja"

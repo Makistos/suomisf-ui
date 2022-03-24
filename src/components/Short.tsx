@@ -1,6 +1,6 @@
 import React from "react";
 import { LinkList } from "./LinkList";
-import { IPerson } from "../Person";
+import { IPerson } from "./Person";
 //const baseURL = 'shorts/';
 
 export interface IShort {

@@ -1,6 +1,7 @@
 import React from 'react';
 //import 'primereact/resources/primereact.min.css'
 import './App.css';
+import "primeflex/primeflex.css";
 import MainMenu from './Mainmenu';
 import { Outlet } from 'react-router-dom';
 import { locale, addLocale } from 'primereact/api';

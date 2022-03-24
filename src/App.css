@@ -108,6 +108,12 @@ div.three-column {
 body .p-datatable .p-datatable-tbody > tr > td {
   border: 0;
 }
+
+.p-fieldset {
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+}
 /* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from "react-router-dom";
 import { LinkList } from './LinkList';
-import { IPerson } from '../Person';
+import { IPerson } from './Person';
 import { getApiContent } from '../services/user-service';
 import { getCurrenUser } from '../services/auth-service';
 import { ITag, PickTagLinks } from './Tag';

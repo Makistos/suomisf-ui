@@ -12,6 +12,7 @@ import Magazine from './magazine';
 import { ArticleView } from './components/Article';
 import { Issue } from './Issue';
 import { People } from './People';
+import { Person } from './components/Person';
 import Login from './components/Login';
 
 const rootElement = document.getElementById("root");
@@ -21,6 +22,7 @@ ReactDOM.render(
     <Routes>
       <Route path="/" element={<App />}>
         <Route path="people" element={<People />} />
+        <Route path="people/:personId" element={<Person />} />
         <Route path="magazines" element={<Magazines />} />
         <Route path="magazines/:magazineId" element={<Magazine />} />
         <Route path="issues/:issueId" element={<Issue id={null} />} />

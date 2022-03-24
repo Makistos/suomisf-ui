@@ -18,6 +18,23 @@ h1.title {
   text-align: center;
 }
 
+h1.personname {
+  margin-top: 4rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+h2.personname {
+  margin-top: 0rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+h2.persondetails {
+  margin-top: 0rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
 p {
   font-family: "Roboto", sans-serif !important;
 }

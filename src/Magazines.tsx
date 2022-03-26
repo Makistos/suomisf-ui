@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 // import 'primereact/resources/primereact.min.css'
 // import './App.css';
 // import './index.css';
-import { IMagazine } from "./magazine";
+import { IMagazine } from "./Magazine";
 import { SITE_URL } from "./systemProps";
 
 const client = axios.create({

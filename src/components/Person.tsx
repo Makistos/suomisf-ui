@@ -1,10 +1,8 @@
 import React from 'react';
 import { useParams } from "react-router-dom";
-import { string } from 'yup/lib/locale';
 import { getCurrenUser } from "../services/auth-service";
 import { getApiContent } from "../services/user-service";
-import { Work, IWork, groupWorks } from "./Work";
-import { WorkList } from "./WorkList";
+import { IWork } from "./Work";
 import { ICountry } from "./Country";
 import { ContributorBookControl } from "./BookControl";
 import { IEdition } from './Edition';
@@ -39,17 +37,15 @@ export interface IPersonBrief {
     image_src: string
 }
 
-type Props = { id: number | null };
-
 const baseURL = "people/";
 
 export const Person = () => {
     const params = useParams();
     const user = getCurrenUser();
-    const defaultWorks: IWork[] = [];
+    //const defaultWorks: IWork[] = [];
     const [person, setPerson]: [IPerson | null, (person: IPerson) => void] = React.useState<IPerson | null>(null);
-    const [dbworks, setDbWorks]: [IWork[], (works: IWork[]) => void] = React.useState(defaultWorks);
-    const [workGrouping, setWorkGrouping]: [string, (workGrouping: string) => void] = React.useState("author_str");
+    //const [dbworks, setDbWorks]: [IWork[], (works: IWork[]) => void] = React.useState(defaultWorks);
+    //const [workGrouping, setWorkGrouping]: [string, (workGrouping: string) => void] = React.useState("author_str");
     //const [works, setWorks]: [Record<string, IWork[]>, (works: Record<string, IWork[]>) => void] = React.useState({});
     React.useEffect(() => {
         async function getPerson() {
@@ -57,7 +53,7 @@ export const Person = () => {
             try {
                 const response = await getApiContent(url, user);
                 setPerson(response.data);
-                setDbWorks(response.data.works);
+                //setDbWorks(response.data.works);
                 //setWorks(orderWorks(response.data.works));
                 //console.log(works);
             } catch (e) {
@@ -65,7 +61,7 @@ export const Person = () => {
             }
         }
         getPerson();
-    }, [])
+    }, [params.personId, user])
 
     if (!person) return null;
 

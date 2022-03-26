@@ -2,8 +2,6 @@ import { Fragment } from "react";
 import { IPublisher } from "./Publisher";
 import { IPersonBrief } from "./Person";
 import { IWork } from "./Work";
-import { LinkList } from "./LinkList";
-import { SITE_URL } from "../systemProps";
 import { GenreList } from "./Genre";
 
 export interface IEdition {
@@ -58,12 +56,12 @@ export const editionCmp = (a: IEdition, b: IEdition) => {
     if (b.version) {
         bVersion = b.version;
     }
-    if (aVersion != bVersion) {
+    if (aVersion !== bVersion) {
         /* Version (laitos) is most important sort order */
         if (aVersion < bVersion) return -1;
         return 1;
     }
-    if (a.editionnum != b.editionnum) {
+    if (a.editionnum !== b.editionnum) {
         if (a.editionnum < b.editionnum) return -1;
         return 1;
     }
@@ -76,7 +74,7 @@ export const editionCmp = (a: IEdition, b: IEdition) => {
 
 export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
     return (
-        (details != "brief" && (showFirst || edition.editionnum != 1)) ? (
+        (details !== "brief" && (showFirst || edition.editionnum !== 1)) ? (
             <div className="edition-oneliner">
                 <Fragment>{edition.editionnum}. painos.</Fragment>
                 <Fragment> {edition.publisher && edition.publisher.name} </Fragment>
@@ -92,7 +90,7 @@ export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
 export const Edition = ({ edition, person }: EditionProps) => {
     return (
         <div>
-            {person && person == edition.work[0].author_str && <b>{edition.work[0].author_str}: </b>}
+            {person && person === edition.work[0].author_str && <b>{edition.work[0].author_str}: </b>}
             <Fragment>{edition.title}</Fragment>
             {!"!?.".includes(edition.title.slice(-1)) &&
                 <Fragment>.</Fragment>

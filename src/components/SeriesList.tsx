@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { IWork, Work } from "./Work";
-import { Bookseries, groupByBookSeries, IBookseries } from "./Bookseries";
+import { IWork, WorkSummary } from "./Work";
+import { groupByBookSeries } from "./Bookseries";
 
 interface SeriesListProps {
     works: IWork[]
@@ -12,7 +12,8 @@ export const SeriesList = ({ works }: SeriesListProps) => {
 
     useEffect(() => {
         setGroupedSeries(groupByBookSeries(works.filter(work => work.bookseries !== null)));
-    })
+    }, [works])
+
     return (
         <div>
             {
@@ -23,7 +24,7 @@ export const SeriesList = ({ works }: SeriesListProps) => {
                                 <h3>{seriesName}</h3>
                                 {
                                     ser.sort((a, b) => a.pubyear < b.pubyear ? -1 : 1).map((work: IWork) => (
-                                        <Work work={work} key={work.id}
+                                        <WorkSummary work={work} key={work.id}
                                             detailLevel="brief"
                                             orderField="title"
                                         />

@@ -4,7 +4,7 @@ import { IBookseries } from "./Bookseries";
 import { GenreList } from "./Genre";
 import { LinkList } from "./LinkList";
 import { SITE_URL } from "../systemProps";
-
+import { Link } from "react-router-dom";
 
 export interface IWork {
     [index: string]: any,
@@ -44,10 +44,24 @@ export const groupWorks = (works: IWork[]) => {
     return grouped;
 }
 
-export const Work = ({ work, detailLevel }: WorkProps) => {
+export const WorkDetails = ({ work }: WorkProps) => {
+    return (
+        <div></div>
+    )
+}
+
+export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
     return (
         <div className="work-oneliner">
-            <b>{work.title}</b>
+            <b>
+                <Link
+                    to={`/works/${work.id}`}
+                    key={work.id}
+                >
+                    {work.title}
+                </Link>
+            </b>
+
             {(work.orig_title !== work.title) && (
                 <Fragment> ({work.orig_title !== work.title && work.orig_title}
                     {/* Add comma only if both original title and pubyear are

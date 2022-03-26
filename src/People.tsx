@@ -4,13 +4,11 @@ import { getApiContent } from './services/user-service';
 import { getCurrenUser } from './services/auth-service';
 import { IPerson } from './components/Person';
 import { ICountry } from './components/Country';
-import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { FilterMatchMode } from "primereact/api";
 import { DataTable } from 'primereact/datatable';
 import { Column, ColumnFilterElementType } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
 import { DataTablePFSEvent } from 'primereact/datatable';
-import { InputNumber } from 'primereact/inputnumber';
-import reportWebVitals from './reportWebVitals';
 
 const baseURL = 'people';
 
@@ -39,10 +37,6 @@ export const People = () => {
         }
     });
     const [loading, setLoading] = React.useState(true);
-    //const [globalFilterValue, setGlobalFilterValue] = React.useState("");
-
-    //const [sortField, setSortField] = React.useState("name")
-    //const [sortOrder, setSortOrder] = React.useState(0);
 
     React.useEffect(() => {
         const queryParams = (params: any, prefix = "") => {
@@ -165,33 +159,33 @@ export const People = () => {
         );
     }
 
-    const shortStoryFilterTemplate: ColumnFilterElementType = (options) => {
-        if (options === null || options === undefined) {
-            return <div></div>
-        }
-        return (
-            <InputNumber value={options.value} mode='decimal'
-                onChange={(e) => options.filterApplyCallback(e.value, options.index)}
-                className="p-column-filter"
-                placeholder="Lukumäärä"
-            />
-        );
+    // const shortStoryFilterTemplate: ColumnFilterElementType = (options) => {
+    //     if (options === null || options === undefined) {
+    //         return <div></div>
+    //     }
+    //     return (
+    //         <InputNumber value={options.value} mode='decimal'
+    //             onChange={(e) => options.filterApplyCallback(e.value, options.index)}
+    //             className="p-column-filter"
+    //             placeholder="Lukumäärä"
+    //         />
+    //     );
 
-    }
-    const roleFilterTemplate: ColumnFilterElementType = (options) => {
-        if (options === null || options === undefined) {
-            return <div></div>
-        }
-        return (
-            <Dropdown value={options.value} options={roles}
-                onChange={(e) => options.filterApplyCallback(e.value)}
-                className="p-column-filter" showClear
-            />
-        );
-    }
-    const nationalityBodyTemplate = (rowData: IPerson) => {
+    // }
+    // const roleFilterTemplate: ColumnFilterElementType = (options) => {
+    //     if (options === null || options === undefined) {
+    //         return <div></div>
+    //     }
+    //     return (
+    //         <Dropdown value={options.value} options={roles}
+    //             onChange={(e) => options.filterApplyCallback(e.value)}
+    //             className="p-column-filter" showClear
+    //         />
+    //     );
+    // }
+    // const nationalityBodyTemplate = (rowData: IPerson) => {
 
-    }
+    // }
 
     if (!people) return null;
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Work, IWork, groupWorks } from './Work';
+import { WorkSummary, IWork, groupWorks } from './Work';
 import { SelectButton } from 'primereact/selectbutton';
 import { Dropdown } from "primereact/dropdown";
 
@@ -86,12 +86,12 @@ export const WorkList = ({ works, personName = "" }: WorksProp) => {
                         .sort((a, b) => a[0].localeCompare(b[0]))
                         .map(([group, ws]) => {
                             return (
-                                <div>
+                                <div key={group}>
                                     {group !== personName &&
                                         <h3>{group}</h3>}
                                     {
                                         ws.sort(compareWorks).map((work: IWork) => (
-                                            <Work work={work} key={work.id}
+                                            <WorkSummary work={work} key={work.id}
                                                 detailLevel={detailLevel}
                                                 orderField={orderField} />
                                         ))

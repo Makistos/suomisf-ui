@@ -8,7 +8,7 @@ import { Short, IShort } from './components/Short';
 import { IArticle } from './components/Article';
 import { ArticleBrief } from './components/ArticleBrief';
 import { Image } from 'primereact/image';
-import { IMagazine } from './magazine';
+import { IMagazine } from './Magazine';
 const baseURL = 'issues/';
 
 export interface IIssue {
@@ -60,7 +60,7 @@ export const Issue = ({ id, index }: IssueProps) => {
             }
         }
         getIssue();
-    }, [id])
+    }, [id, user])
 
     if (!issue) return null;
 

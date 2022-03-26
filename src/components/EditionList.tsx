@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IEdition, Edition, groupEditions, editionCmp } from "./Edition";
+import { IEdition, Edition, groupEditions } from "./Edition";
 import { IPerson } from "./Person";
 
 interface EditionListProps {
@@ -26,8 +26,8 @@ export const EditionList = ({ editions, person }: EditionListProps) => {
         //const aEditorName = a[0];
         //const bEditorName = bFirst.work[0].author_str.replace(" (toim.)", "");
         //const bEditorName = b[0];
-        if (aEditorName == person.name) return -1;
-        if (bEditorName == person.name) return 1;
+        if (aEditorName === person.name) return -1;
+        if (bEditorName === person.name) return 1;
         if (aEditorName < bEditorName) return -1;
         if (aEditorName > bEditorName) return 1;
         if (aFirst.title > bFirst.title) return 1;
@@ -43,7 +43,7 @@ export const EditionList = ({ editions, person }: EditionListProps) => {
                     .map(([group, ed]) => {
                         return (
                             <div>
-                                {person && group != person.name + " (toim.)" ?
+                                {person && group !== person.name + " (toim.)" ?
                                     <h3>{group}</h3>
                                     :
                                     <h3>Antologiat</h3>

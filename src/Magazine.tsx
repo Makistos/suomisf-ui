@@ -65,7 +65,7 @@ const Magazine = () => {
             }
         }
         getMagazine();
-    }, [])
+    }, [params.magazineId, user]) // eslint disable
 
     /*const getIssueHeader = (index: number) =>
         (issues.length >= index) ? issues[index] : '';

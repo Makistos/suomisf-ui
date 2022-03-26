@@ -25,10 +25,10 @@ interface ArticleProps {
 export const Article = () => {
     const params = useParams();
     let id: number | null = null;
-    if (params.id !== undefined) {
-        let id = params.articleId;
+    if (params.id !== undefined && params.articleId !== undefined) {
+        id = parseInt(params.articleId);
     } else {
-        let id = null;
+        id = null;
     }
     return (
         <ArticleView key={id} id={id} />
@@ -56,7 +56,7 @@ export const ArticleView = ({ id }: ArticleProps) => {
             }
         }
         getArticle();
-    }, [])
+    }, [params.articleId, user])
 
     if (!article) return null;
 

@@ -77,7 +77,6 @@ export const People = () => {
                 const response = await getApiContent(url, user);
                 setTotalRecords(response.data.totalRecords);
                 setPeople(response.data.people);
-                console.log(people);
                 getRoles(response.data.people);
                 setLoading(false);
             }
@@ -150,7 +149,6 @@ export const People = () => {
             return <div></div>
         }
         const names = countries.map((country) => country.name)
-        console.log(names);
         return (
             <Dropdown value={options.value} options={names}
                 onChange={(e) => options.filterApplyCallback(e.value)}

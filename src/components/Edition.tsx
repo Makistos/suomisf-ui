@@ -3,6 +3,7 @@ import { IPublisher } from "./Publisher";
 import { IPersonBrief } from "./Person";
 import { IWork } from "./Work";
 import { GenreList } from "./Genre";
+import { Link } from "react-router-dom";
 
 export interface IEdition {
     coll_info: string,
@@ -91,12 +92,16 @@ export const Edition = ({ edition, person }: EditionProps) => {
     return (
         <div>
             {person && person === edition.work[0].author_str && <b>{edition.work[0].author_str}: </b>}
-            <Fragment>{edition.title}</Fragment>
-            {!"!?.".includes(edition.title.slice(-1)) &&
-                <Fragment>.</Fragment>
-            }
-            <Fragment> {edition.publisher && edition.publisher.name} </Fragment>
-            <Fragment>{edition.pubyear}. </Fragment>
+            <Link to={`/works/${edition.work[0].id}`}>
+                {edition.title}</Link>
+            {edition.work[0].title !== edition.work[0].orig_title && (
+                <> ({edition.work[0].orig_title}, {edition.work[0].pubyear})</>
+            )}
+            {/*{!"!?.".includes(edition.title.slice(-1)) &&
+                <>.</>
+            } */}
+            <>. {edition.publisher && edition.publisher.name} </>
+            <>{edition.pubyear}. </>
             <GenreList genres={edition.work[0].genres} />
         </div>
     )

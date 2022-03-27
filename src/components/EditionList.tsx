@@ -16,13 +16,11 @@ export const EditionList = ({ editions, person }: EditionListProps) => {
     }, [editions])
 
     const editionListCmp = (a: [string, IEdition[]], b: [string, IEdition[]]) => {
-        console.log(a[0]);
         const aFirst = a[1][0];
         const bFirst = a[1][0];
         //const aEditorName = aFirst.work[0].author_str.replace(" (toim.)", "");
         const aEditorName = a[0].replace(" (toim.)", "");
         const bEditorName = b[0].replace(" (toim.)", "");
-        console.log(aEditorName + " : " + person.name);
         //const aEditorName = a[0];
         //const bEditorName = bFirst.work[0].author_str.replace(" (toim.)", "");
         //const bEditorName = b[0];
@@ -42,7 +40,7 @@ export const EditionList = ({ editions, person }: EditionListProps) => {
                     .sort(editionListCmp)
                     .map(([group, ed]) => {
                         return (
-                            <div>
+                            <div key={group}>
                                 {person && group !== person.name + " (toim.)" ?
                                     <h3>{group}</h3>
                                     :
@@ -51,6 +49,7 @@ export const EditionList = ({ editions, person }: EditionListProps) => {
                                 {
                                     ed.map((edition: IEdition) => (
                                         <Edition edition={edition}
+                                            key={edition.id}
                                         />
                                     ))
                                 }

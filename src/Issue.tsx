@@ -4,7 +4,7 @@ import { getApiContent } from './services/user-service';
 import { IPerson } from './components/Person';
 import { IPublicationSize } from './PublicationSize';
 import { LinkList } from './components/LinkList';
-import { Short, IShort } from './components/Short';
+import { ShortSummary, IShort } from './components/Short';
 import { IArticle } from './components/Article';
 import { ArticleBrief } from './components/ArticleBrief';
 import { Image } from 'primereact/image';
@@ -104,7 +104,7 @@ export const Issue = ({ id, index }: IssueProps) => {
                                     {
                                         issue.stories
                                             .map((story) => (
-                                                <Short key={story.id}
+                                                <ShortSummary key={story.id}
                                                     short={story}
                                                 />
                                             ))

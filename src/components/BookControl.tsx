@@ -3,7 +3,7 @@ import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
 import { WorkList } from "./WorkList";
 import { EditionList } from "./EditionList";
-import { SeriesList } from "./SeriesList";
+import { SeriesList } from "./BookseriesList";
 
 interface CBCProps {
     person: IPerson

@@ -7,6 +7,8 @@ import { ICountry } from "./Country";
 import { ContributorBookControl } from "./BookControl";
 import { IEdition } from './Edition';
 import { IArticle } from './Article';
+import { IShort } from './Short';
+import { ShortsControl } from './ShortsControl';
 
 interface INationality {
     id: number,
@@ -26,8 +28,9 @@ export interface IPerson {
     works: IWork[],
     translations: IEdition[],
     edits: IEdition[],
-    articles: IArticle[]
-
+    articles: IArticle[],
+    stories: IShort[],
+    magazine_stories: IShort[]
 }
 
 export interface IPersonBrief {
@@ -55,7 +58,7 @@ export const Person = () => {
                 setPerson(response.data);
                 //setDbWorks(response.data.works);
                 //setWorks(orderWorks(response.data.works));
-                //console.log(works);
+                console.log(person);
             } catch (e) {
                 console.error(e);
             }
@@ -101,6 +104,7 @@ export const Person = () => {
                         {personDetails(person.nationality, person.dob, person.dod)}
                     </h2>
                     <ContributorBookControl person={person}></ContributorBookControl>
+                    <ShortsControl person={person}></ShortsControl>
                 </div>
             ) : (
                 <p>Haetaan tietoja...</p>

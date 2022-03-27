@@ -23,7 +23,7 @@ export const groupByBookSeries = (works: IWork[]) => {
     return grouped;
 }
 
-export const Bookseries = () => {
+export const BookseriesSummary = () => {
     return (
         <div></div>
     )

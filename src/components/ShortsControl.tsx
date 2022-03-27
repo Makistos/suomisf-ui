@@ -1,0 +1,44 @@
+import { IPerson } from "./Person";
+import { Fieldset } from "primereact/fieldset";
+import { TabView, TabPanel } from "primereact/tabview";
+import { ShortsList } from "./ShortsList";
+import { IShort } from "./Short";
+import { useEffect, useState } from "react";
+
+interface ShortsProps {
+    person: IPerson
+}
+
+export const ShortsControl = ({ person }: ShortsProps) => {
+    const [shorts, setShorts]: [IShort[], (shorts: IShort[]) => void] = useState<IShort[]>([]);
+    useEffect(() => {
+        setShorts([...person.stories, ...person.magazine_stories])
+    }, [person])
+
+    const headerText = (staticText: string, count: number) => {
+        return staticText + " (" + count + ")";
+    }
+
+    const shortTypes = (shorts: IShort[]) => {
+        const typeList = shorts.map(short => short.type);
+        let types = typeList.filter((v, i, types) => types.find(v => v.id === i));
+        types = types.sort((a, b) => a.id < b.id ? -1 : 1);
+        return types;
+    }
+
+    return (
+        <Fieldset legend="Lyhyet" toggleable>
+            <TabView>
+                {shortTypes(shorts).map((shortType) => {
+                    return (
+                        <TabPanel header={headerText(shortType.name,
+                            shorts.filter((s) => s.type.id === shortType.id).length)}>
+                            <ShortsList shorts={shorts.filter((s) => s.type.id === shortType.id)} person={person} />
+                        </TabPanel>
+                    )
+                })}
+
+            </TabView>
+        </Fieldset>
+    )
+}

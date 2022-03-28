@@ -12,7 +12,16 @@ interface ShortsProps {
 export const ShortsControl = ({ person }: ShortsProps) => {
     const [shorts, setShorts]: [IShort[], (shorts: IShort[]) => void] = useState<IShort[]>([]);
     useEffect(() => {
-        setShorts([...person.stories, ...person.magazine_stories])
+        const joinShortsLists = (aList: IShort[], bList: IShort[]) => {
+            const keys = Object.assign({}, ...aList.map(item => ({ [item.id]: item.title })));
+            bList.map(item => {
+                if (!(item.id in keys)) {
+                    aList.push(item);
+                }
+            });
+            return aList;
+        }
+        setShorts(joinShortsLists(person.stories, person.magazine_stories));
     }, [person])
 
     const headerText = (staticText: string, count: number) => {
@@ -37,7 +46,6 @@ export const ShortsControl = ({ person }: ShortsProps) => {
                         </TabPanel>
                     )
                 })}
-
             </TabView>
         </Fieldset>
     )

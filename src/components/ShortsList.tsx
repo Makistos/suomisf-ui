@@ -61,7 +61,7 @@ export const ShortsList = ({ shorts, person }: ShortsListProps) => {
                                 }
                                 {
                                     shortList.sort(shortsCmp).map((short: IShort) => (
-                                        <ShortSummary short={short}
+                                        <ShortSummary short={short} key={short.id}
                                             skipAuthors
                                         />
                                     ))

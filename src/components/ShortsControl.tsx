@@ -42,7 +42,8 @@ export const ShortsControl = ({ person }: ShortsProps) => {
                     return (
                         <TabPanel header={headerText(shortType.name,
                             shorts.filter((s) => s.type.id === shortType.id).length)}>
-                            <ShortsList shorts={shorts.filter((s) => s.type.id === shortType.id)} person={person} />
+                            <ShortsList shorts={shorts.filter((s) => s.type.id === shortType.id)}
+                                person={person} key={person.id} />
                         </TabPanel>
                     )
                 })}

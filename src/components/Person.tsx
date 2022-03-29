@@ -9,6 +9,7 @@ import { IEdition } from './Edition';
 import { IArticle } from './Article';
 import { IShort } from './Short';
 import { ShortsControl } from './ShortsControl';
+import { GenreCount, IGenre } from './Genre';
 
 interface INationality {
     id: number,
@@ -58,7 +59,7 @@ export const Person = () => {
                 setPerson(response.data);
                 //setDbWorks(response.data.works);
                 //setWorks(orderWorks(response.data.works));
-                console.log(person);
+                //console.log(person);
             } catch (e) {
                 console.error(e);
             }
@@ -88,27 +89,59 @@ export const Person = () => {
         return retval;
     }
 
+    const genreCounts = () => {
+        let retval = person.works.reduce((acc: Record<string, number>, work: IWork) => {
+            work.genres.map((genre: IGenre) => {
+                const genreName: string = genre.name;
+                if (!acc[genreName]) {
+                    acc[genreName] = 1;
+                } else {
+                    acc[genreName]++;
+                }
+            })
+            return acc;
+        }, {} as Record<string, number>)
+        console.log(retval);
+        return retval;
+    }
+
     return (
         <main>
             {person !== undefined ? (
-                <div>
-                    {person.alt_name ? (
-                        <h1 className="personname">{person.alt_name}</h1>
-                    ) : (
-                        <h1 className="personname">{person.fullname}</h1>
-                    )}
-                    {person.fullname &&
-                        <h2 className="personname">({person.fullname})</h2>
-                    }
-                    <h2 className="persondetails">
-                        {personDetails(person.nationality, person.dob, person.dod)}
-                    </h2>
-                    <ContributorBookControl person={person}></ContributorBookControl>
-                    <ShortsControl person={person}></ShortsControl>
+                <div className="grid align-items-center justify-content-center">
+                    <div className="col-12 p-0">
+                        {person.alt_name ? (
+                            <h1 className="personname">{person.alt_name}</h1>
+                        ) : (
+                            <h1 className="personname">{person.fullname}</h1>
+                        )}
+                    </div>
+                    <div className="col-12 p-0">
+                        {person.fullname &&
+                            <h2 className="personname">({person.fullname})</h2>
+                        }
+                    </div>
+                    <div className="col-12">
+                        <h2 className="persondetails">
+                            {personDetails(person.nationality, person.dob, person.dod)}
+                        </h2>
+                    </div>
+                    <div className="col-12 justify-content-center">
+                        {Object.entries(genreCounts()).sort((a, b) => a[1] > b[1] ? -1 : 1).map(genre =>
+                            <span className="col" key={genre[0]}>
+                                <GenreCount genre={genre[0]} count={genre[1]} />
+                            </span>
+                        )}
+                    </div>
+                    <div className="col-12">
+                        <ContributorBookControl person={person}></ContributorBookControl>
+                        <ShortsControl person={person}></ShortsControl>
+                    </div>
                 </div>
             ) : (
                 <p>Haetaan tietoja...</p>
-            )}
-        </main>
+            )
+            }
+        </main >
     );
 }

@@ -10,6 +10,7 @@ import { IArticle } from './Article';
 import { IShort } from './Short';
 import { ShortsControl } from './ShortsControl';
 import { GenreCount, IGenre } from './Genre';
+import { TagCount, ITag } from './SFTag';
 
 interface INationality {
     id: number,
@@ -101,10 +102,25 @@ export const Person = () => {
             })
             return acc;
         }, {} as Record<string, number>)
-        console.log(retval);
         return retval;
     }
 
+    const tagCounts = () => {
+        let retval = person.works.reduce((acc: Record<string, number>, work: IWork) => {
+            work.tags.map((tag: ITag) => {
+                const tagName: string = tag.name;
+                if (!acc[tagName]) {
+                    acc[tagName] = 1;
+                } else {
+                    acc[tagName]++;
+                }
+            })
+            return acc;
+        }, {} as Record<string, number>)
+        console.log(retval);
+        return retval;
+
+    }
     return (
         <main>
             {person !== undefined ? (
@@ -126,12 +142,25 @@ export const Person = () => {
                             {personDetails(person.nationality, person.dob, person.dod)}
                         </h2>
                     </div>
-                    <div className="col-12 justify-content-center">
-                        {Object.entries(genreCounts()).sort((a, b) => a[1] > b[1] ? -1 : 1).map(genre =>
-                            <span className="col" key={genre[0]}>
-                                <GenreCount genre={genre[0]} count={genre[1]} />
-                            </span>
-                        )}
+                    <div className="col-12">
+                        <div className="flex justify-content-center">
+                            {Object.entries(genreCounts()).sort((a, b) => a[1] > b[1] ? -1 : 1)
+                                .map(genre =>
+                                    <span key={genre[0]} className="mr-1">
+                                        <GenreCount genre={genre[0]} count={genre[1]} />
+                                    </span>
+                                )}
+                        </div>
+                    </div>
+                    <div className="col-12">
+                        <div className="flex justify-content-center flex-wrap">
+                            {Object.entries(tagCounts()).sort((a, b) => a[1] > b[1] ? -1 : 1)
+                                .map(tag =>
+                                    <span key={tag[0]} className="mr-1 mb-1">
+                                        <TagCount tag={tag[0]} count={tag[1]} />
+                                    </span>
+                                )}
+                        </div>
                     </div>
                     <div className="col-12">
                         <ContributorBookControl person={person}></ContributorBookControl>

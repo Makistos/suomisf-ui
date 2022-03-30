@@ -4,7 +4,7 @@ import { LinkList } from './LinkList';
 import { IPerson } from './Person';
 import { getApiContent } from '../services/user-service';
 import { getCurrenUser } from '../services/auth-service';
-import { ITag, PickTagLinks } from './Tag';
+import { ITag, PickTagLinks } from './SFTag';
 import { IIssue } from '../Issue';
 const baseURL = 'articles/';
 

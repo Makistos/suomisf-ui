@@ -1,6 +1,7 @@
 import { Fragment } from "react"
 import { Chip } from 'primereact/chip';
 import { Badge } from 'primereact/badge';
+import { number } from "yup/lib/locale";
 export interface IGenre {
     id: number,
     name: string,
@@ -16,12 +17,14 @@ interface GenreProps {
     count: number
 }
 
+
 export const GenreCount = ({ genre, count }: GenreProps) => {
-    const labelText = () => {
-        return genre + " x " + count;
+    const headerText = (name: string, count: number) => {
+        return name + " x " + count;
     }
+
     return (
-        <Chip label={labelText()} className="p-overlay-badge">
+        <Chip label={headerText(genre, count)} className="p-overlay-badge">
             <Badge value="{count}">
             </Badge>
         </Chip>

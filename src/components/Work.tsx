@@ -121,8 +121,6 @@ export const WorkDetails = ({ work }: WorkProps) => {
 export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
     const op = useRef<OverlayPanel>(null);
 
-
-
     return (
 
         <div className="work-oneliner">
@@ -193,7 +191,7 @@ export const Work = () => {
     }, [params.workId, user])
 
     const editionHeader = (images: IImage[]) => {
-        if (images) {
+        if (images.length > 0) {
             return (
                 <Image preview width="50" src={"http://www.sf-bibliografia.fi/" + images[0].image_src} />
             )

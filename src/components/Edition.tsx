@@ -23,7 +23,7 @@ export interface IEdition {
     size?: string,
     subtitle: string,
     title: string,
-    version?: number,
+    version: number,
     translators: IPersonBrief[],
     work: IWork[],
     images: IImage[],
@@ -78,16 +78,24 @@ export const editionCmp = (a: IEdition, b: IEdition) => {
 }
 
 export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
+    const isFirstVersion = (version: number | undefined) => {
+        if (version === undefined || version === null) {
+            return true;
+        } else {
+            return version === 1;
+        }
+    }
     return (
-        (details !== "brief" && (showFirst || edition.editionnum !== 1)) ? (
+        (details !== "brief" &&
+            (showFirst || edition.editionnum !== 1 || (!isFirstVersion(edition.version)))) ? (
             <div className="edition-oneliner">
-                <Fragment>{edition.editionnum}. painos.</Fragment>
-                <Fragment> {edition.publisher && edition.publisher.name} </Fragment>
-                <Fragment>{edition.pubyear}.</Fragment>
+                <>{EditionString(edition) + ":"}</>
+                <> {edition.publisher && edition.publisher.name} </>
+                <>{edition.pubyear}.</>
 
             </div>
         ) : (
-            <Fragment></Fragment>
+            <></>
         )
     )
 }

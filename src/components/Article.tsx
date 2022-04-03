@@ -40,7 +40,7 @@ export const ArticleView = ({ id }: ArticleProps) => {
     const [article, setArticle]: [IArticle | null, (article: IArticle) => void] = React.useState<IArticle | null>(null);
     //const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
     const PickLinks = (items: IPerson[]) => {
-        return items.map((item) => ({ id: item['id'], name: item['alt_name'] ? item['alt_name'] : item['name'] }))
+        return items.map((item) => ({ id: item['id'], name: item['name'] }))
     }
 
     React.useEffect(() => {

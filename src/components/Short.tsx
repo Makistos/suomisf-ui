@@ -72,7 +72,7 @@ export const ShortSummary = ({ short, skipAuthors }: ShortProps) => {
                     }
                     <b>{short.title}</b>
                     {short.orig_title !== short.title && (
-                        <>({short.orig_title})</>
+                        <> ({short.orig_title})</>
                     )}
                     {short.pubyear && (
                         <>, {short.pubyear}</>

@@ -9,7 +9,7 @@ interface ShortsListProps {
 }
 
 export const ShortsList = ({ shorts, person }: ShortsListProps) => {
-    const [orderField, setOrderField] = useState("Title");
+    const [orderField, setOrderField] = useState("Year");
     const [groupedShorts, setGroupedShorts]: [Record<string, IShort[]>,
         (groupedShorts: Record<string, IShort[]>) => void] = useState({});
 

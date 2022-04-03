@@ -9,9 +9,8 @@ import { IEdition } from './Edition';
 import { IArticle } from './Article';
 import { IShort } from './Short';
 import { ShortsControl } from './ShortsControl';
-import { GenreCount, IGenre } from './Genre';
-import { TagCount, ITag } from './SFTag';
-
+import { GenreGroup } from './Genre';
+import { TagGroup } from './SFTag';
 interface INationality {
     id: number,
     name: string
@@ -90,41 +89,18 @@ export const Person = () => {
         return retval;
     }
 
-    const genreCounts = () => {
-        let retval = person.works.reduce((acc: Record<string, number>, work: IWork) => {
-            work.genres.map((genre: IGenre) => {
-                const genreName: string = genre.name;
-                if (!acc[genreName]) {
-                    acc[genreName] = 1;
-                } else {
-                    acc[genreName]++;
-                }
-            })
-            return acc;
-        }, {} as Record<string, number>)
-        return retval;
+
+    const getGenres = () => {
+        return person.works.map(work => work.genres).flat();
+    }
+    const getTags = () => {
+        return person.works.map(work => work.tags).flat();
     }
 
-    const tagCounts = () => {
-        let retval = person.works.reduce((acc: Record<string, number>, work: IWork) => {
-            work.tags.map((tag: ITag) => {
-                const tagName: string = tag.name;
-                if (!acc[tagName]) {
-                    acc[tagName] = 1;
-                } else {
-                    acc[tagName]++;
-                }
-            })
-            return acc;
-        }, {} as Record<string, number>)
-        console.log(retval);
-        return retval;
-
-    }
     return (
         <main>
             {person !== undefined ? (
-                <div className="grid align-items-center justify-content-center">
+                <div className="grid align-items-center justify-content-center mt-5">
                     <div className="col-12 p-0">
                         {person.alt_name ? (
                             <h1 className="personname">{person.alt_name}</h1>
@@ -137,30 +113,16 @@ export const Person = () => {
                             <h2 className="personname">({person.fullname})</h2>
                         }
                     </div>
-                    <div className="col-12">
+                    <div className="col-12 mb-2">
                         <h2 className="persondetails">
                             {personDetails(person.nationality, person.dob, person.dod)}
                         </h2>
                     </div>
                     <div className="col-12">
-                        <div className="flex justify-content-center">
-                            {Object.entries(genreCounts()).sort((a, b) => a[1] > b[1] ? -1 : 1)
-                                .map(genre =>
-                                    <span key={genre[0]} className="mr-1">
-                                        <GenreCount genre={genre[0]} count={genre[1]} />
-                                    </span>
-                                )}
-                        </div>
+                        <GenreGroup genres={getGenres()} showOneCount></GenreGroup>
                     </div>
-                    <div className="col-12">
-                        <div className="flex justify-content-center flex-wrap">
-                            {Object.entries(tagCounts()).sort((a, b) => a[1] > b[1] ? -1 : 1)
-                                .map(tag =>
-                                    <span key={tag[0]} className="mr-1 mb-1">
-                                        <TagCount tag={tag[0]} count={tag[1]} />
-                                    </span>
-                                )}
-                        </div>
+                    <div className="col-12 mb-5">
+                        <TagGroup tags={getTags()} overflow={5} />
                     </div>
                     <div className="col-12">
                         <ContributorBookControl person={person}></ContributorBookControl>

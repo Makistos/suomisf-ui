@@ -114,6 +114,11 @@ body .p-datatable .p-datatable-tbody > tr > td {
   border-right: none !important;
   border-bottom: none !important;
 }
+
+.tooltip {
+  transform: scale(0.7);
+}
+
 /* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

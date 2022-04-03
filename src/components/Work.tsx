@@ -1,10 +1,14 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useRef } from "react";
 import { IEdition, OtherEdition } from "./Edition";
 import { IBookseries } from "./Bookseries";
-import { GenreList } from "./Genre";
+import { ICountry } from "./Country";
+import { GenreGroup, GenreList } from "./Genre";
+import { TagGroup } from "./SFTag";
 import { LinkList } from "./LinkList";
 import { SITE_URL } from "../systemProps";
 import { Link } from "react-router-dom";
+import { OverlayPanel } from "primereact/overlaypanel";
+import { Tooltip } from "primereact/tooltip";
 
 export interface IWork {
     [index: string]: any,
@@ -21,13 +25,14 @@ export interface IWork {
     pubyear: number,
     subtitle: string,
     title: string,
-    bookseries: IBookseries
+    bookseries: IBookseries,
+    language: ICountry
 }
 
 interface WorkProps {
     work: IWork,
-    detailLevel: string,
-    orderField: string
+    detailLevel?: string,
+    orderField?: string
 }
 
 export const groupWorks = (works: IWork[]) => {
@@ -46,15 +51,44 @@ export const groupWorks = (works: IWork[]) => {
 
 export const WorkDetails = ({ work }: WorkProps) => {
     return (
-        <div></div>
+        <div>
+            <div className="grid align-items-center justify-content-center">
+                <div className="grid col-12 justify-content-center"><h3 className="mb-0">{work.author_str}</h3></div>
+                <div className="grid col-12 justify-content-center"><h1 className="mt-1 mb-0">{work.title}</h1></div>
+                <div className="grid col-12 justify-content-center">
+                    <p className="mt-1">
+                        {work.orig_title !== work.title && work.orig_title + ", "}
+                        {work.pubyear}
+                        {work.language_name && " (" + work.language_name.name + ")"}
+                    </p>
+                    <div className="col-12">
+                        <GenreGroup genres={work.genres} />
+                    </div>
+                    <div className="col-12 mb-5">
+                        <TagGroup tags={work.tags} overflow={5} />
+                    </div>
+
+                </div>
+            </div>
+        </div>
     )
 }
 
 export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
+    const op = useRef<OverlayPanel>(null);
+
+
+
     return (
+
         <div className="work-oneliner">
+            <Tooltip className="tooltip"
+                target={".work-link-" + work.id}
+            >
+                <WorkDetails work={work} />
+            </Tooltip>
             <b>
-                <Link
+                <Link className={"work-link-" + work.id}
                     to={`/works/${work.id}`}
                     key={work.id}
                 >
@@ -88,6 +122,14 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
             {work.editions.map((edition) => (
                 <OtherEdition key={edition.id} edition={edition} details={detailLevel} />
             ))}
+        </div>
+    )
+}
+
+export const Work = () => {
+    return (
+        <div>
+
         </div>
     )
 }

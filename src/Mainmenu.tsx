@@ -87,7 +87,6 @@ export default function MainMenu({ }) {
 
     if (user === null) {
         items.push(not_logged_items[0]);
-        console.log("not_logged_items");
         return (
             <Menubar className="navbar-dark" model={items} start={start} end={end} />
         );
@@ -101,7 +100,6 @@ export default function MainMenu({ }) {
                 break;
             }
     }
-    console.log("logged_items");
     return (
         <Menubar className="navbar-dark" model={items} start={start} end={end} />
     );

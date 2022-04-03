@@ -4,7 +4,8 @@ import { IPersonBrief } from "./Person";
 import { IWork } from "./Work";
 import { GenreList } from "./Genre";
 import { Link } from "react-router-dom";
-
+import { IImage } from "./Image";
+import { LinkList } from "./LinkList";
 export interface IEdition {
     coll_info: string,
     coverimage: number,
@@ -25,6 +26,7 @@ export interface IEdition {
     version?: number,
     translators: IPersonBrief[],
     work: IWork[],
+    images: IImage[],
 }
 
 
@@ -33,6 +35,8 @@ interface EditionProps {
     showFirst?: boolean,
     details?: string,
     person?: string,
+    work?: IWork,
+    card?: boolean
 }
 
 export const groupEditions = (editions: IEdition[]) => {
@@ -88,7 +92,7 @@ export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
     )
 }
 
-export const Edition = ({ edition, person }: EditionProps) => {
+export const EditionSummary = ({ edition, person }: EditionProps) => {
     return (
         <div>
             {person && person === edition.work[0].author_str && <b>{edition.work[0].author_str}: </b>}
@@ -105,4 +109,58 @@ export const Edition = ({ edition, person }: EditionProps) => {
             <GenreList genres={edition.work[0].genres} />
         </div>
     )
+}
+
+export const EditionString = (edition: IEdition) => {
+    let retval = "";
+    if (edition.version && edition.version !== 1) {
+        retval = edition.version + ".laitos ";
+    }
+    if (edition.editionnum !== null) {
+        retval = retval + edition.editionnum + ".painos"
+    } else {
+        retval = retval + " ?. painos";
+    }
+    return retval;
+}
+export const EditionVersion = ({ edition }: EditionProps) => {
+    return (
+        <span>{EditionString(edition)}</span>
+    )
+}
+
+export const EditionDetails = ({ edition, work, card }: EditionProps) => {
+    return (
+        <div>
+            {card && <EditionVersion edition={edition} />}
+            {card !== undefined && work !== undefined && edition.title !== work.title &&
+                <h2>{edition.title}</h2>
+            }
+            <br />{edition.publisher && edition.publisher.name + " "}
+            {edition.pubyear + "."}
+            {edition.translators.length > 0 && (
+                <><br /><>Suom. </>
+                    <LinkList path="people"
+                        separator=" &amp; "
+                        items={
+                            edition.translators.map((item) => ({
+                                id: item['id'],
+                                name: item['alt_name'] ? item['alt_name'] : item['name']
+                            }))}
+                    />.
+                </>
+            )}
+            <br />{edition.pages && edition.pages + " sivua. "}
+            {edition.size && edition.size + " cm."}
+            <br />{edition.misc}
+            <br />{edition.isbn && "ISBN " + edition.isbn + ". "}
+            <br />{edition.dustcover === 2 && (
+                <span>Kansipaperi.</span>
+            )}
+            {edition.coverimage === 2 &&
+                <span>Ylivetokannet.</span>
+            }
+        </div>
+    )
+
 }

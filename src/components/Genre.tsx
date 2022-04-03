@@ -78,7 +78,7 @@ export const GenreGroup = ({ genres, showOneCount }: GenresProps) => {
                 {groupedGenres.map(genre => {
                     return (
                         <span key={genre[0]} className="mr-1">
-                            <GenreCount genre={genre[0]} count={showOneCount && genre[1] != 1 ? genre[1] : null} />
+                            <GenreCount genre={genre[0]} count={showOneCount && genre[1] !== 1 ? genre[1] : null} />
                         </span>
                     )
                 })}

@@ -46,25 +46,20 @@ const baseURL = "people/";
 export const Person = () => {
     const params = useParams();
     const user = getCurrenUser();
-    //const defaultWorks: IWork[] = [];
     const [person, setPerson]: [IPerson | null, (person: IPerson) => void] = React.useState<IPerson | null>(null);
-    //const [dbworks, setDbWorks]: [IWork[], (works: IWork[]) => void] = React.useState(defaultWorks);
-    //const [workGrouping, setWorkGrouping]: [string, (workGrouping: string) => void] = React.useState("author_str");
-    //const [works, setWorks]: [Record<string, IWork[]>, (works: Record<string, IWork[]>) => void] = React.useState({});
     React.useEffect(() => {
         async function getPerson() {
             let url = baseURL + params.personId?.toString();
             try {
                 const response = await getApiContent(url, user);
                 setPerson(response.data);
-                //setDbWorks(response.data.works);
-                //setWorks(orderWorks(response.data.works));
                 //console.log(person);
             } catch (e) {
                 console.error(e);
             }
         }
         getPerson();
+        //console.log(person);
     }, [params.personId, user])
 
     if (!person) return null;
@@ -98,7 +93,7 @@ export const Person = () => {
     }
 
     return (
-        <main>
+        <main className="mt-5">
             {person !== undefined ? (
                 <div className="grid align-items-center justify-content-center mt-5">
                     <div className="col-12 p-0">
@@ -122,7 +117,7 @@ export const Person = () => {
                         <GenreGroup genres={getGenres()} showOneCount></GenreGroup>
                     </div>
                     <div className="col-12 mb-5">
-                        <TagGroup tags={getTags()} overflow={5} />
+                        <TagGroup tags={getTags()} overflow={5} showOneCount />
                     </div>
                     <div className="col-12">
                         <ContributorBookControl person={person}></ContributorBookControl>

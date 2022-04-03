@@ -12,7 +12,7 @@ export const getUserContent = (url: string) => {
 }
 
 export const getApiContent = (url: string, user: IUser) => {
-    if (user === undefined) {
+    if (user === undefined || user === null) {
         return getPublicContent(url);
     } else {
         return getUserContent(url);

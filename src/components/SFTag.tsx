@@ -8,19 +8,20 @@ export interface ITag {
 
 interface TagProps {
     tag: string,
-    count: number
+    count: number | null
 }
 
 interface TagsProps {
     tags: ITag[],
-    overflow: number
+    overflow: number,
+    showOneCount: boolean
 }
 
 export const PickTagLinks = (tags: ITag[]) => {
     return tags.map((tag) => ({ id: tag['id'], name: tag['name'] }))
 }
 
-export const TagGroup = ({ tags, overflow }: TagsProps) => {
+export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
     const [groupedTags, setGroupedTags] = useState<[string, number][]>([]);
     const [showAll, setShowAll] = useState(false);
 
@@ -48,7 +49,8 @@ export const TagGroup = ({ tags, overflow }: TagsProps) => {
             {groupedTags.map((tag, idx) => {
                 return (overflow === undefined || idx < overflow || showAll) &&
                     <span key={tag[0]} className="mr-1 mb-1">
-                        <TagCount tag={tag[0]} count={tag[1]} />
+                        <TagCount tag={tag[0]}
+                            count={showOneCount && tag[1] !== 1 ? tag[1] : null} />
                     </span>
             })}
             {(overflow !== undefined
@@ -71,8 +73,12 @@ export const TagGroup = ({ tags, overflow }: TagsProps) => {
 }
 
 export const TagCount = ({ tag, count }: TagProps) => {
-    const headerText = (name: string, count: number) => {
-        return name + " x " + count;
+    const headerText = (name: string, count: number | null) => {
+        if (count !== null) {
+            return name + " x " + count;
+        } else {
+            return name;
+        }
     }
 
     return (

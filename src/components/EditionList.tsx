@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IEdition, Edition, groupEditions } from "./Edition";
+import { IEdition, EditionSummary, groupEditions } from "./Edition";
 import { IPerson } from "./Person";
 
 interface EditionListProps {
@@ -48,7 +48,7 @@ export const EditionList = ({ editions, person }: EditionListProps) => {
                                 }
                                 {
                                     ed.map((edition: IEdition) => (
-                                        <Edition edition={edition}
+                                        <EditionSummary edition={edition}
                                             key={edition.id}
                                         />
                                     ))

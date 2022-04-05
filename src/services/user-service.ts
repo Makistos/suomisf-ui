@@ -3,12 +3,13 @@ import { IUser } from "../user";
 import authHeader from "./auth-header";
 import { SITE_URL } from "../systemProps";
 
+const baseURL = SITE_URL + 'api/'
 export const getPublicContent = (url: string) => {
-    return axios.get(SITE_URL + url);
+    return axios.get(baseURL + url);
 };
 
 export const getUserContent = (url: string) => {
-    return axios.get(SITE_URL + url, { headers: authHeader() });
+    return axios.get(baseURL + url, { headers: authHeader() });
 }
 
 export const getApiContent = (url: string, user: IUser) => {

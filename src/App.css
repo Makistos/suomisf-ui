@@ -119,6 +119,51 @@ body .p-datatable .p-datatable-tbody > tr > td {
   transform: scale(0.7);
 }
 
+/* Edition card stuff */
+
+.editioncard {
+  display: grid;
+  min-width: 200px;
+  grid-template-rows: 1ft 530px 4fr 1fr;
+  grid-template-areas:
+  "editionheader"
+  "editionimage"
+  "editioncontent"
+  "editionfooter";
+  /*border: 6px;
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  border-radius: 2px 2px 15px;*/
+}
+
+.editionimage {
+  padding: 1em;
+}
+
+.editioncontent {
+  text-align: initial;
+  padding-left: 2em;
+  padding-right: 2em;
+}
+
+.editionfooter {
+  align-self: end;
+  justify-self: end;
+}
+
+.editionnum {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.editiontitle {
+  font-size: 8;
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 400;
+}
+
 /* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

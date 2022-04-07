@@ -18,7 +18,7 @@ import { getApiContent } from "../services/user-service";
 import { Card } from "primereact/card";
 import { Image } from "primereact/image";
 import { Button } from "primereact/button";
-
+import { DataView, DataViewLayoutOptions, DataViewLayoutType, DataViewLayoutOptionsChangeParams } from "primereact/dataview";
 export interface IWork {
     [index: string]: any,
     author_str: string,
@@ -174,6 +174,7 @@ export const Work = () => {
     const params = useParams();
     const user = getCurrenUser();
     const [work, setWork]: [IWork | null, (work: IWork) => void] = useState<IWork | null>(null);
+    const [layout, setLayout]: [DataViewLayoutType, (layout: DataViewLayoutType) => void] = useState<DataViewLayoutType>('grid');
 
     useEffect(() => {
         async function getWork() {
@@ -216,6 +217,72 @@ export const Work = () => {
             </span>
         )
     }
+
+    const renderListItem = (edition: IEdition) => {
+        return (
+            <div className="col-12">
+                <div className="grid">
+                    <div className="col-8" >
+                        <EditionDetails edition={edition} card />
+                    </div>
+                    <div className="flex col-4 justify-content-end align-content-center">
+                        {edition.images.length > 0 &&
+                            <Image className="pt-2" preview width="100px" src={SITE_URL + edition.images[0].image_src} />
+                        }
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    const renderGridItem = (edition: IEdition) => {
+        return (
+            <div className="col-12 md:col-4 editioncard">
+                <div className="editionheader">
+                    <div className="editionnum">
+                        {EditionString(edition)}
+                    </div>
+                    <div className="editionimage">
+                        {edition.images.length > 0 &&
+                            <Image src={SITE_URL + edition.images[0].image_src} />
+                        }
+                    </div>
+                    <div className="editioncontent">
+                        <p className="editiontitle">{edition.title}</p>
+                        <EditionDetails edition={edition} />
+                    </div>
+                    <div className="editionfooter">
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+
+    const itemTemplate = (edition: IEdition, layout: DataViewLayoutType) => {
+        if (!edition) {
+            return;
+        }
+        if (layout === 'list') {
+            return renderListItem(edition);
+        } else if (layout === 'grid') {
+            return renderGridItem(edition);
+        }
+    }
+
+    const renderHeader = () => {
+        return (
+            <div className="grid grid-nogutter">
+                <div className="col" style={{ textAlign: 'left' }}>
+                    <DataViewLayoutOptions layout={layout}
+                        onChange={(e: DataViewLayoutOptionsChangeParams) => setLayout(e.value)} />
+                </div>
+            </div>
+        )
+    }
+
+    const header = renderHeader();
+
     if (!work) return null;
 
     return (
@@ -223,11 +290,13 @@ export const Work = () => {
             <WorkDetails work={work} />
             <div>
                 <h2>Painokset</h2>
-                <div className="flex flex-wrap">
-                    {work.editions.map((edition) => {
+                <div className="card">
+                    <DataView value={work.editions} layout={layout}
+                        header={header} itemTemplate={itemTemplate} />
+                    {/*{work.editions.map((edition) => {
                         return (
-                            <div className="flex flex-wrap col min-h-full">
-                                <Card title={EditionString(edition)} className="m-2"
+                            <div className="grid col-fixed m-1">
+                                <Card title={EditionString(edition)}
                                     subTitle={editionSubtitle(edition.title, edition.work[0].orig_title)}
                                     header={editionHeader(edition.images)}
                                     footer={editionFooter(edition)}
@@ -236,7 +305,7 @@ export const Work = () => {
                                 </Card>
                             </div>
                         )
-                    })}
+                    })} */}
                 </div>
             </div>
         </div>

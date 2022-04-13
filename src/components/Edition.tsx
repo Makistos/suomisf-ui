@@ -142,9 +142,9 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
         <div>
             {card && <EditionVersion edition={edition} />}
             {card !== undefined && work !== undefined && edition.title !== work.title &&
-                <h2>{edition.title}</h2>
+                <p>{edition.title}</p>
             }
-            <br />{edition.publisher && edition.publisher.name + " "}
+            {edition.publisher && edition.publisher.name + " "}
             {edition.pubyear + "."}
             {edition.translators.length > 0 && (
                 <><br /><>Suom. </>

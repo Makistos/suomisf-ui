@@ -121,10 +121,16 @@ body .p-datatable .p-datatable-tbody > tr > td {
 
 /* Edition card stuff */
 
+.sfcard {
+  display: grid;
+  gap: 1rem;
+  /*grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));*/
+}
+
 .editioncard {
   display: grid;
   min-width: 200px;
-  grid-template-rows: 1ft 530px 4fr 1fr;
+  grid-template-rows: 1fr 530px 4fr 1fr;
   grid-template-areas:
   "editionheader"
   "editionimage"
@@ -142,8 +148,6 @@ body .p-datatable .p-datatable-tbody > tr > td {
 
 .editioncontent {
   text-align: initial;
-  padding-left: 2em;
-  padding-right: 2em;
 }
 
 .editionfooter {
@@ -152,7 +156,6 @@ body .p-datatable .p-datatable-tbody > tr > td {
 }
 
 .editionnum {
-  text-align: center;
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
@@ -164,6 +167,31 @@ body .p-datatable .p-datatable-tbody > tr > td {
   font-weight: 400;
 }
 
+.p-autocomplete-panel {
+  padding: 0rem;
+}
+
+.searchItem {
+  margin-bottom: 0rem;
+  margin-top: 0rem;
+  padding-bottom: 0rem;
+  padding-top: 0rem;
+  border-bottom: #18447e;
+}
+
+.searchItemHeader {
+  font-size: 1rem;
+  margin-bottom: 0rem;
+  padding-bottom: 0rem;
+}
+
+.searchItemContents {
+  opacity: 0.7;
+  font-size: smaller;
+  inline-size: 90ch;
+  overflow-wrap: break-word;
+  margin-bottom: 0rem;
+}
 /* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

@@ -244,7 +244,10 @@ export const Work = () => {
                     </div>
                     <div className="editionimage">
                         {edition.images.length > 0 &&
-                            <Image src={SITE_URL + edition.images[0].image_src} />
+                            <Image preview height="250px"
+                                src={SITE_URL + edition.images[0].image_src}
+                                alt={EditionString(edition) + " kansikuva"}
+                            />
                         }
                     </div>
                     <div className="editioncontent">
@@ -290,7 +293,7 @@ export const Work = () => {
             <WorkDetails work={work} />
             <div>
                 <h2>Painokset</h2>
-                <div className="card">
+                <div>
                     <DataView value={work.editions} layout={layout}
                         header={header} itemTemplate={itemTemplate} />
                     {/*{work.editions.map((edition) => {

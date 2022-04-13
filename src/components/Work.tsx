@@ -108,6 +108,9 @@ export const WorkDetails = ({ work }: WorkProps) => {
                         </span>
                     ))}
                 </div>
+                <div className="col-12">
+                    {work.misc}
+                </div>
                 {work.description && (
                     <div className="col-12">
                         <div dangerouslySetInnerHTML={{ __html: work.description }} />

@@ -130,7 +130,9 @@ export default function MainMenu({ }) {
         }
 
         const selectItem = (item: any) => {
-            window.open("http://www.sf-bibliografia.fi:3000/works/" + item.id, "_self");
+            //window.open("http://www.sf-bibliografia.fi:3000/works/" + item.id, "_self");
+            window.open("http://localhost:3000/works/" + item.id, "_self");
+            setSelectedItem(null);
         }
 
         return (

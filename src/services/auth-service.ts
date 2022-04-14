@@ -1,10 +1,10 @@
 import axios from "axios";
-import { SITE_URL } from "../systemProps";
+import { API_URL } from "../systemProps";
 
 //const baseURL = "http://www.sf-bibliografia.fi/api/";
 //const baseURL = "http://localhost:5000/api/";
 
-const baseURL = SITE_URL + 'api/';
+const baseURL = API_URL;
 
 export const register = (username: string, email: string, password: string) => {
 

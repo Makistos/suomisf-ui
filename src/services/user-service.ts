@@ -1,9 +1,9 @@
 import axios from "axios";
 import { IUser } from "../user";
 import authHeader from "./auth-header";
-import { SITE_URL } from "../systemProps";
+import { API_URL } from "../systemProps";
 
-const baseURL = SITE_URL + 'api/'
+const baseURL = API_URL;
 export const getPublicContent = (url: string) => {
     return axios.get(baseURL + url);
 };

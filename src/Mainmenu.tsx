@@ -131,11 +131,11 @@ export default function MainMenu({ }) {
 
         const selectItem = (item: any) => {
             let target = SITE_URL;
-            if (!SITE_URL.includes('localhost')) {
-                target = target.substring(0, target.length - 1); // Remove slash
-                target = target + ':3000/';
-                console.log(target);
-            }
+            // if (!SITE_URL.includes('localhost')) {
+            //     target = target.substring(0, target.length - 1); // Remove slash
+            //     target = target + ':3000/';
+            //     console.log(target);
+            // }
             //window.open("http://www.sf-bibliografia.fi:3000/works/" + item.id, "_self");
             switch (item.type) {
                 case 'work':
@@ -161,6 +161,8 @@ export default function MainMenu({ }) {
                 suggestions={filteredItems}
                 field="header"
                 itemTemplate={itemTemplate}
+                delay={1000}
+                scrollHeight="400px"
             />
         );
     }

@@ -96,11 +96,11 @@ export const Person = () => {
         <main className="mt-5">
             {person !== undefined ? (
                 <div className="grid align-items-center justify-content-center mt-5">
-                    <div className="col-12 p-0">
+                    <div className="col-12 p-0 justify-content-center">
                         {person.alt_name ? (
-                            <h1 className="personname">{person.alt_name}</h1>
+                            <h1 className="personname justify-content-center">{person.alt_name}</h1>
                         ) : (
-                            <h1 className="personname">{person.fullname}</h1>
+                            <h1 className="personname justify-content-center">{person.fullname}</h1>
                         )}
                     </div>
                     <div className="col-12 p-0">

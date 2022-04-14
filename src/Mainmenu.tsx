@@ -101,7 +101,7 @@ export default function MainMenu({ }) {
         async function getResults(query: string) {
             const response = await getApiContent("search/" + query, user);
             console.log("Results: " + response.data);
-            setFilteredItems(response.data["works"]);
+            setFilteredItems(response.data);
         }
         const searchItems = (event: any) => {
             getResults(event.query);
@@ -130,8 +130,18 @@ export default function MainMenu({ }) {
         }
 
         const selectItem = (item: any) => {
+            let target = '';
             //window.open("http://www.sf-bibliografia.fi:3000/works/" + item.id, "_self");
-            window.open("http://localhost:3000/works/" + item.id, "_self");
+            switch (item.type) {
+                case 'work':
+                    target = 'works/';
+                    break;
+                case 'person':
+                    target = 'people/';
+                    break;
+
+            }
+            window.open("http://localhost:3000/" + target + item.id, "_self");
             setSelectedItem(null);
         }
 

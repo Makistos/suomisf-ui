@@ -95,20 +95,20 @@ export const Person = () => {
     return (
         <main className="mt-5">
             {person !== undefined ? (
-                <div className="grid align-items-center justify-content-center mt-5">
-                    <div className="col-12 p-0 justify-content-center">
+                <div className="grid mt-5">
+                    <div className="grid col-12 p-0 justify-content-center">
                         {person.alt_name ? (
-                            <h1 className="personname justify-content-center">{person.alt_name}</h1>
+                            <h1 className="personname">{person.alt_name}</h1>
                         ) : (
-                            <h1 className="personname justify-content-center">{person.fullname}</h1>
+                            <h1 className="personname">{person.fullname}</h1>
                         )}
                     </div>
-                    <div className="col-12 p-0">
+                    <div className="grid col-12 p-0 justify-content-center">
                         {person.fullname &&
                             <h2 className="personname">({person.fullname})</h2>
                         }
                     </div>
-                    <div className="col-12 mb-2">
+                    <div className="grid col-12 mb-2 justify-content-center">
                         <h2 className="persondetails">
                             {personDetails(person.nationality, person.dob, person.dod)}
                         </h2>

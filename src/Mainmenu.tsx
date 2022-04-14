@@ -132,16 +132,20 @@ export default function MainMenu({ }) {
         const selectItem = (item: any) => {
             let target = '';
             //window.open("http://www.sf-bibliografia.fi:3000/works/" + item.id, "_self");
+            if (!SITE_URL.includes('localhost')) {
+                target = 'api/'
+            }
+
             switch (item.type) {
                 case 'work':
-                    target = 'works/';
+                    target = target + 'works/';
                     break;
                 case 'person':
-                    target = 'people/';
+                    target = target + 'people/';
                     break;
 
             }
-            window.open("http://localhost:3000/" + target + item.id, "_self");
+            window.open(SITE_URL + target + item.id, "_self");
             setSelectedItem(null);
         }
 

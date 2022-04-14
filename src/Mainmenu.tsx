@@ -130,12 +130,13 @@ export default function MainMenu({ }) {
         }
 
         const selectItem = (item: any) => {
-            let target = '';
-            //window.open("http://www.sf-bibliografia.fi:3000/works/" + item.id, "_self");
+            let target = SITE_URL;
             if (!SITE_URL.includes('localhost')) {
-                target = 'api/'
+                target = target.substring(0, target.length - 1); // Remove slash
+                target = target + ':3000/';
+                console.log(target);
             }
-
+            //window.open("http://www.sf-bibliografia.fi:3000/works/" + item.id, "_self");
             switch (item.type) {
                 case 'work':
                     target = target + 'works/';
@@ -145,7 +146,7 @@ export default function MainMenu({ }) {
                     break;
 
             }
-            window.open(SITE_URL + target + item.id, "_self");
+            window.open(target + item.id, "_self");
             setSelectedItem(null);
         }
 

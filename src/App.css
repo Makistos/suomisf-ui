@@ -189,6 +189,7 @@ body .p-datatable .p-datatable-tbody > tr > td {
 
 .searchItemHeader {
   font-size: 1rem;
+  margin-top: 0rem;
   margin-bottom: 0rem;
   padding-bottom: 0rem;
 }
@@ -198,17 +199,19 @@ body .p-datatable .p-datatable-tbody > tr > td {
   font-size: smaller;
   inline-size: 90ch;
   overflow-wrap: break-word;
+  margin-top: 0rem;
   margin-bottom: 0rem;
 }
 
-.p-autocomplete-panel {
-  padding-top: 0rem important!;
-  margin: 0rem;
+.p-autocomplete-panel .p-autocomplete-items .p-autocomplete-item {
+  padding-top: 0.1rem;
+  padding-bottom: 0.5rem;
 }
 
 .p-autocomplete-item {
-  padding: 0;
-  margin: 0;
+  overflow-wrap: break-word;
+  white-space:normal;
+
 }
 /* @keyframes App-logo-spin {
   from {

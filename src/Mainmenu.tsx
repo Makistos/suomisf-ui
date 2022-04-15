@@ -108,8 +108,8 @@ export default function MainMenu({ }) {
         };
 
         const searchText = (str: string) => {
-            if (str.length > 100) {
-                str = str.slice(0, 98);
+            if (str.length > 300) {
+                str = str.slice(0, 298);
                 str = str + "...";
             }
             let tmp = document.createElement("DIV");

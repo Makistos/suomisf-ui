@@ -161,7 +161,7 @@ export default function MainMenu({ }) {
                 suggestions={filteredItems}
                 field="header"
                 itemTemplate={itemTemplate}
-                delay={1000}
+                delay={800}
                 scrollHeight="400px"
             />
         );

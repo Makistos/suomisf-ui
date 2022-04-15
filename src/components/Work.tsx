@@ -248,7 +248,7 @@ export const Work = () => {
                     <div className="editionimage">
                         {edition.images.length > 0 &&
                             <Image preview height="250px"
-                                src={SITE_URL + edition.images[0].image_src}
+                                src={'http://www.sf-bibliografia.fi/' + edition.images[0].image_src}
                                 alt={EditionString(edition) + " kansikuva"}
                             />
                         }

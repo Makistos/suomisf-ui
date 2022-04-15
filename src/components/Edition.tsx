@@ -6,11 +6,15 @@ import { GenreList } from "./Genre";
 import { Link } from "react-router-dom";
 import { IImage } from "./Image";
 import { LinkList } from "./LinkList";
+import { IFormat } from "./Format";
+import { IBinding } from "./Binding";
 export interface IEdition {
+    binding: IBinding,
     coll_info: string,
     coverimage: number,
     dustcover: number,
     editionnum: number,
+    format: IFormat,
     id: number,
     imported_string: string,
     isbn: string,
@@ -26,7 +30,8 @@ export interface IEdition {
     version: number,
     translators: IPersonBrief[],
     work: IWork[],
-    images: IImage[],
+    images: IImage[]
+
 }
 
 
@@ -153,7 +158,7 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
             {card !== undefined && work !== undefined && edition.title !== work.title &&
                 <p>{edition.title}</p>
             }
-            <br />{edition.publisher && edition.publisher.name + " "}
+            {edition.publisher && (<><br />{edition.publisher.name} </>)}
             {edition.pubyear + "."}
             {edition.translators.length > 0 && (
                 <><br /><>Suom. </>
@@ -167,15 +172,16 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                     />.
                 </>
             )}
-            <br />{edition.pages && edition.pages + " sivua. "}
+            {edition.pages && (<><br />{edition.pages} sivua. </>)}
             {edition.size && edition.size + " cm."}
-            <br />{edition.misc}
-            <br />{edition.isbn && "ISBN " + edition.isbn + ". "}
-            <br />{edition.dustcover === 2 && (
-                <span>Kansipaperi.</span>
+            {edition.misc && (<><br />{edition.misc}</>)}
+            {edition.isbn && (<><br />ISBN {edition.isbn}</>)}
+            {edition.binding && " " + edition.binding.name}.
+            {edition.dustcover === 3 && (
+                <span><br />Kansipaperi.</span>
             )}
-            {edition.coverimage === 2 &&
-                <span>Ylivetokannet.</span>
+            {edition.coverimage === 3 &&
+                <span><br />Ylivetokannet.</span>
             }
         </div>
     )

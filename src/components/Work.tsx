@@ -8,7 +8,7 @@ import { TagGroup } from "./SFTag";
 import { LinkList } from "./LinkList";
 import { ILink } from "./Link";
 import { IImage } from "./Image";
-import { SITE_URL } from "../systemProps";
+import { SITE_URL, IMAGE_URL } from "../systemProps";
 import { Link } from "react-router-dom";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { Tooltip } from "primereact/tooltip";
@@ -177,7 +177,7 @@ export const Work = () => {
     const params = useParams();
     const user = getCurrenUser();
     const [work, setWork]: [IWork | null, (work: IWork) => void] = useState<IWork | null>(null);
-    const [layout, setLayout]: [DataViewLayoutType, (layout: DataViewLayoutType) => void] = useState<DataViewLayoutType>('grid');
+    const [layout, setLayout]: [DataViewLayoutType, (layout: DataViewLayoutType) => void] = useState<DataViewLayoutType>('list');
 
     useEffect(() => {
         async function getWork() {
@@ -230,7 +230,7 @@ export const Work = () => {
                     </div>
                     <div className="flex col-4 justify-content-end align-content-center">
                         {edition.images.length > 0 &&
-                            <Image className="pt-2" preview width="100px" src={SITE_URL + edition.images[0].image_src} />
+                            <Image className="pt-2" preview width="100px" src={IMAGE_URL + edition.images[0].image_src} />
                         }
                     </div>
                 </div>
@@ -245,20 +245,20 @@ export const Work = () => {
                     <div className="editionnum">
                         {EditionString(edition)}
                     </div>
-                    <div className="editionimage">
-                        {edition.images.length > 0 &&
-                            <Image preview height="250px"
-                                src={'http://www.sf-bibliografia.fi/' + edition.images[0].image_src}
-                                alt={EditionString(edition) + " kansikuva"}
-                            />
-                        }
-                    </div>
-                    <div className="editioncontent">
-                        <p className="editiontitle">{edition.title}</p>
-                        <EditionDetails edition={edition} />
-                    </div>
-                    <div className="editionfooter">
-                    </div>
+                </div>
+                <div className="editionimage">
+                    {edition.images.length > 0 &&
+                        <Image preview height="250px"
+                            src={IMAGE_URL + edition.images[0].image_src}
+                            alt={EditionString(edition) + " kansikuva"}
+                        />
+                    }
+                </div>
+                <div className="editioncontent">
+                    <p className="editiontitle">{edition.title}</p>
+                    <EditionDetails edition={edition} />
+                </div>
+                <div className="editionfooter">
                 </div>
             </div>
         )

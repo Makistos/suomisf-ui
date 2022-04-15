@@ -95,18 +95,20 @@ export const Person = () => {
     return (
         <main className="mt-5">
             {person !== undefined ? (
-                <div className="grid mt-5">
-                    <div className="grid col-12 p-0 justify-content-center">
+                <div>
+                    <div className="grid mt-5">
                         {person.alt_name ? (
-                            <h1 className="personname">{person.alt_name}</h1>
+                            <div className="grid col-12 p-0 justify-content-center">
+                                <h1 className="personname">{person.alt_name}</h1>
+                                {person.fullname && (
+                                    <h2 className="personname">({person.fullname})</h2>
+                                )}
+                            </div>
                         ) : (
-                            <h1 className="personname">{person.fullname}</h1>
+                            <div className="grid col-12 p-0 justify-content-center">
+                                <h1 className="personname">{person.fullname}</h1>
+                            </div>
                         )}
-                    </div>
-                    <div className="grid col-12 p-0 justify-content-center">
-                        {person.fullname &&
-                            <h2 className="personname">({person.fullname})</h2>
-                        }
                     </div>
                     <div className="grid col-12 mb-2 justify-content-center">
                         <h2 className="persondetails">
@@ -126,8 +128,7 @@ export const Person = () => {
                 </div>
             ) : (
                 <p>Haetaan tietoja...</p>
-            )
-            }
-        </main >
+            )}
+        </main>
     );
 }

@@ -3,7 +3,7 @@ import { IUser } from "../user";
 import authHeader from "./auth-header";
 import { API_URL } from "../systemProps";
 
-const baseURL = API_URL;
+const baseURL = API_URL + "api/";
 export const getPublicContent = (url: string) => {
     return axios.get(baseURL + url);
 };

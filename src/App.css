@@ -213,6 +213,48 @@ body .p-datatable .p-datatable-tbody > tr > td {
   white-space:normal;
 
 }
+
+.p-panel .p-panel-header {
+  background-color: transparent;
+}
+
+.speeddial .p-speeddial-circle {
+  top: calc(50% - 2rem);
+  left: calc(50% - 2rem);
+}
+.speeddial .p-speeddial-semi-circle.p-speeddial-direction-up {
+  left: calc(50% - 2rem);
+  bottom: 0;
+}
+.speeddial .p-speeddial-semi-circle.p-speeddial-direction-down {
+  left: calc(50% - 2rem);
+  top: 0;
+}
+.speeddial .p-speeddial-semi-circle.p-speeddial-direction-left {
+  right: 2rem;
+  top: calc(50% - 2rem);
+}
+.speeddial .p-speeddial-semi-circle.p-speeddial-direction-right {
+  left: 2rem;
+  top: calc(50% - 2rem);
+}
+.speeddial .p-speeddial-quarter-circle.p-speeddial-direction-up-left {
+  right: 0;
+  bottom: 0;
+}
+.speeddial .p-speeddial-quarter-circle.p-speeddial-direction-up-right {
+  left: 0;
+  bottom: 0;
+}
+.speeddial .p-speeddial-quarter-circle.p-speeddial-direction-down-left {
+  right: 0;
+  top: 0;
+}
+.speeddial .p-speeddial-quarter-circle.p-speeddial-direction-down-right {
+  left: 0;
+  top: 0;
+}
+
 /* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

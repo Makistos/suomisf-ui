@@ -137,7 +137,7 @@ export const EditionString = (edition: IEdition) => {
         retval = edition.version + ".laitos ";
     }
     if (edition.editionnum !== null) {
-        if ((edition.version === null || edition.version == 1) || (edition.version > 1 && edition.editionnum > 1)) {
+        if ((edition.version === null || edition.version === 1) || (edition.version > 1 && edition.editionnum > 1)) {
             retval = retval + edition.editionnum + ".painos";
         }
     } else {

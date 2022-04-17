@@ -4,7 +4,7 @@ import { API_URL } from "../systemProps";
 //const baseURL = "http://www.sf-bibliografia.fi/api/";
 //const baseURL = "http://localhost:5000/api/";
 
-const baseURL = API_URL;
+const baseURL = API_URL + 'api/';
 
 export const register = (username: string, email: string, password: string) => {
 

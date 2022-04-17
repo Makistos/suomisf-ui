@@ -19,6 +19,12 @@ import { Card } from "primereact/card";
 import { Image } from "primereact/image";
 import { Button } from "primereact/button";
 import { DataView, DataViewLayoutOptions, DataViewLayoutType, DataViewLayoutOptionsChangeParams } from "primereact/dataview";
+import { Panel } from "primereact/panel";
+import { Ripple } from "primereact/ripple";
+import { ShortsList } from "./ShortsList";
+import { IShort } from "./Short";
+import { SpeedDial } from "primereact/speeddial";
+import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 export interface IWork {
     [index: string]: any,
     author_str: string,
@@ -33,6 +39,7 @@ export interface IWork {
     misc: string,
     orig_title: string,
     pubyear: number,
+    stories: IShort[],
     subtitle: string,
     title: string,
     bookseries: IBookseries,
@@ -178,7 +185,53 @@ export const Work = () => {
     const user = getCurrenUser();
     const [work, setWork]: [IWork | null, (work: IWork) => void] = useState<IWork | null>(null);
     const [layout, setLayout]: [DataViewLayoutType, (layout: DataViewLayoutType) => void] = useState<DataViewLayoutType>('list');
+    const toast = useRef(null);
+    const ConfirmNewWork = () => {
+        confirmDialog({
+            message: 'Tähän tulee uuden teoksen lisäys-näkymä',
+            header: 'Uuden teoksen lisääminen',
+            icon: 'fa-solid fa-circle-plus'
+        });
+    };
 
+    const ConfirmEdit = () => {
+        confirmDialog({
+            message: 'Tähän tulee teoksen muokkaus-näkymä',
+            header: 'Teoksen muokkaaminen',
+            icon: 'fa-solid fa-pen-to-square'
+        });
+    };
+    const ConfirmNewEdition = () => {
+        confirmDialog({
+            message: 'Tähän tulee uuden painoksen lisäys-näkymä',
+            header: 'Uuden painoksen lisääminen',
+            icon: 'fa-solid fa-circle-plus'
+        });
+    };
+
+    const dialItems = [
+        {
+            label: 'Uusi teos',
+            icon: 'fa-solid fa-circle-plus',
+            command: () => {
+                ConfirmNewWork();
+            }
+        },
+        {
+            label: 'Muokkaa',
+            icon: 'fa-solid fa-pen-to-square',
+            command: () => {
+                ConfirmEdit();
+            }
+        },
+        {
+            label: 'Uusi painos',
+            icon: 'fa-solid fa-file-circle-plus',
+            command: () => {
+                ConfirmNewEdition();
+            }
+        }
+    ]
     useEffect(() => {
         async function getWork() {
             let url = baseURL + params.workId?.toString();
@@ -289,17 +342,58 @@ export const Work = () => {
 
     const header = renderHeader();
 
+    const panelTemplate = (options: any) => {
+        const toggleIcon = options.collapsed ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
+        const className = `${options.className} justify-content-start`;
+        const titleClassName = `${options.titleClassName} pl-1`;
+
+        return (
+            <div className={className}>
+                <span className={titleClassName}>
+                    Novellit
+                </span>
+                <button className={options.togglerClassName} onClick={options.onTogglerClick}>
+                    <span className={toggleIcon}></span>
+                    <Ripple />
+                </button>
+            </div>
+        )
+    }
+
     if (!work) return null;
 
     return (
-        <div className="mt-5">
-            <WorkDetails work={work} />
-            <div>
-                <h2>Painokset</h2>
+        <div>
+            <div className="mt-5 speeddial style={{ position: 'relative', height: '500px'}}">
+                {/* user !== null && user.is_admin && ( */}
                 <div>
-                    <DataView value={work.editions} layout={layout}
-                        header={header} itemTemplate={itemTemplate} />
-                    {/*{work.editions.map((edition) => {
+                    <Tooltip target=".speeddial .speeddial-right .p-speedial-action">
+
+                    </Tooltip>
+                    <SpeedDial className="speeddial-right"
+                        model={dialItems}
+                        direction="left"
+                        type="semi-circle"
+                        radius={80}
+                    />
+                </div>
+                {/* ) */}
+                <WorkDetails work={work} />
+                {
+                    work.stories.length > 0 && (
+                        <Panel header="Novellit"
+                            headerTemplate={panelTemplate}
+                            toggleable collapsed>
+                            <ShortsList shorts={work.stories} person={work.authors[0]} />
+                        </Panel>
+                    )
+                }
+                <div>
+                    <h2>Painokset</h2>
+                    <div>
+                        <DataView value={work.editions} layout={layout}
+                            header={header} itemTemplate={itemTemplate} />
+                        {/*{work.editions.map((edition) => {
                         return (
                             <div className="grid col-fixed m-1">
                                 <Card title={EditionString(edition)}
@@ -312,6 +406,7 @@ export const Work = () => {
                             </div>
                         )
                     })} */}
+                    </div>
                 </div>
             </div>
         </div>

@@ -230,6 +230,16 @@ export const Work = () => {
             command: () => {
                 ConfirmNewEdition();
             }
+        },
+        {
+            label: 'Muokkaa novelleja',
+            icon: 'fa-solid fa-list-ul',
+            disabled: !(work !== null &&
+                work.stories !== null &&
+                work.stories.length > 0),
+            command: () => {
+
+            }
         }
     ]
     useEffect(() => {
@@ -243,7 +253,6 @@ export const Work = () => {
             }
         }
         getWork();
-
         console.log(work);
     }, [params.workId, user])
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { IPerson } from "./Person";
 import { IShort, ShortSummary, groupShorts } from "./Short";
 import { Dropdown } from "primereact/dropdown";
-
+import { Button } from "primereact/button";
 interface ShortsListProps {
     shorts: IShort[],
     person: IPerson,
@@ -41,7 +41,7 @@ export const ShortsList = ({ shorts, person }: ShortsListProps) => {
     return (
         <div className="grid">
             <div className="grid col-12 justify-content-end">
-                <div className="p-1">
+                <div className="grid p-1">
                     <Dropdown value={orderField} options={sortOptions}
                         onChange={(e) => setOrderField(e.value)}
                         optionLabel="name" optionValue="code"

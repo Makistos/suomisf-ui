@@ -16,7 +16,9 @@ export const WorkList = ({ works, personName = "" }: WorksProp) => {
     const [detailLevel, setDetailLevel] = useState("condensed");
     const [orderField, setOrderField] = useState("Title");
     useEffect(() => {
-        setGroupedWorks(groupWorks(works));
+        if (works !== null && works.length > 0) {
+            setGroupedWorks(groupWorks(works));
+        }
     }, [detailLevel, orderField, works])
 
     type detailOptionType = {

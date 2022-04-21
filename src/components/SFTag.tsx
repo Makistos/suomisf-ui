@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { Button } from 'primereact/button';
 export interface ITag {
     id: number,
-    name: string
+    name: string,
+    type: string
 }
 
 interface TagProps {
@@ -24,6 +25,13 @@ export const PickTagLinks = (tags: ITag[]) => {
 export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
     const [groupedTags, setGroupedTags] = useState<[string, number][]>([]);
     const [showAll, setShowAll] = useState(false);
+    const [subgenres, setSubgenres] = useState<string[]>([]);
+    const [styles, setStyles] = useState<string[]>([]);
+
+    const filterTypes = (tags: ITag[], type: string) => {
+        return tags.filter(tag => tag.type === type)
+            .map(tag => tag.name)
+    }
 
     useEffect(() => {
         const countTags = () => {
@@ -41,9 +49,39 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
         setGroupedTags(Object.entries(countTags())
             .sort((a, b) => a[1] > b[1] ? -1 : 1)
             .map(tag => tag));
+        setSubgenres(filterTypes(tags, 'subgenre'))
+        setStyles(filterTypes(tags, 'style'))
     }, [tags])
 
 
+    const TagCount = ({ tag, count }: TagProps) => {
+        const TypeToSeverity = (type: string) => {
+            if (type !== null) {
+                if (subgenres.includes(tag)) {
+                    return "success";
+                }
+                if (styles.includes(tag)) {
+                    return "warning";
+                }
+            }
+            return "";
+        }
+
+        const headerText = (name: string, count: number | null) => {
+            if (count !== null) {
+                return name + " x " + count;
+            } else {
+                return name;
+            }
+        }
+
+        return (
+            <Tag value={headerText(tag, count)}
+                className="p-overlay-badge"
+                severity={TypeToSeverity(tag)}
+            />
+        )
+    }
     return (
         <div className="flex justify-content-center flex-wrap m-0 p-0">
             {groupedTags.map((tag, idx) => {
@@ -63,26 +101,8 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
             ) : (groupedTags.length > overflow &&
                 <Button label="Vähemmän" onClick={(e) => setShowAll(false)}
                     className="p-button-sm p-button-help" />
-            )
-            )
-            }
-
+            ))}
         </div>
     )
 
-}
-
-export const TagCount = ({ tag, count }: TagProps) => {
-    const headerText = (name: string, count: number | null) => {
-        if (count !== null) {
-            return name + " x " + count;
-        } else {
-            return name;
-        }
-    }
-
-    return (
-        <Tag value={headerText(tag, count)} className="p-overlay-badge">
-        </Tag>
-    )
 }

@@ -99,23 +99,27 @@ export const Person = () => {
                     <div className="grid mt-5">
                         {person.alt_name ? (
                             <div className="grid col-12 p-0 justify-content-center">
-                                <h1 className="personname">{person.alt_name}</h1>
+                                <div className="grid col-12 pb-0 pt-5 mb-0 justify-content-center">
+                                    <h1 className="personname">{person.alt_name}</h1>
+                                </div>
                                 {person.fullname && (
-                                    <h2 className="personname">({person.fullname})</h2>
+                                    <div className="grid col-12 p-0 mt-0 mb-0 justify-content-center">
+                                        <h2>({person.fullname})</h2>
+                                    </div>
                                 )}
                             </div>
                         ) : (
-                            <div className="grid col-12 p-0 justify-content-center">
+                            <div className="grid col-12 p-0 mt-0 mb-0 justify-content-center">
                                 <h1 className="personname">{person.fullname}</h1>
                             </div>
                         )}
                     </div>
-                    <div className="grid col-12 mb-2 justify-content-center">
+                    <div className="grid col-12 m-0 p-0 justify-content-center">
                         <h2 className="persondetails">
                             {personDetails(person.nationality, person.dob, person.dod)}
                         </h2>
                     </div>
-                    <div className="col-12">
+                    <div className="col-12 mt-2">
                         <GenreGroup genres={getGenres()} showOneCount></GenreGroup>
                     </div>
                     <div className="col-12 mb-5">

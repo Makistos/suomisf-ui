@@ -15,7 +15,6 @@ import { Tooltip } from "primereact/tooltip";
 import { useParams } from "react-router-dom";
 import { getCurrenUser } from "../services/auth-service";
 import { getApiContent } from "../services/user-service";
-import { Card } from "primereact/card";
 import { Image } from "primereact/image";
 import { Button } from "primereact/button";
 import { DataView, DataViewLayoutOptions, DataViewLayoutType, DataViewLayoutOptionsChangeParams } from "primereact/dataview";
@@ -134,7 +133,7 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
     return (
 
         <div className="work-oneliner">
-            <Tooltip className="tooltip"
+            <Tooltip position="right" autoHide={false} className="tooltip"
                 target={".work-link-" + work.id}
             >
                 <WorkDetails work={work} />
@@ -259,7 +258,7 @@ export const Work = () => {
     const editionHeader = (images: IImage[]) => {
         if (images.length > 0) {
             return (
-                <Image preview width="50" src={"http://www.sf-bibliografia.fi/" + images[0].image_src} />
+                <Image preview width="50" src={"https://www.sf-bibliografia.fi/" + images[0].image_src} />
             )
         } else {
             return (<></>)

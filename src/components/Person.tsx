@@ -127,7 +127,7 @@ export const Person = () => {
                     </div>
                     <div className="col-12">
                         <ContributorBookControl person={person}></ContributorBookControl>
-                        <ShortsControl person={person}></ShortsControl>
+                        <ShortsControl person={person} listPublications></ShortsControl>
                     </div>
                 </div>
             ) : (

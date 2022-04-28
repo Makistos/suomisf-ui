@@ -6,10 +6,11 @@ import { IShort } from "./Short";
 import { useEffect, useState } from "react";
 
 interface ShortsProps {
-    person: IPerson
+    person: IPerson,
+    listPublications?: boolean
 }
 
-export const ShortsControl = ({ person }: ShortsProps) => {
+export const ShortsControl = ({ person, listPublications }: ShortsProps) => {
     const [shorts, setShorts]: [IShort[], (shorts: IShort[]) => void] = useState<IShort[]>([]);
     useEffect(() => {
         const joinShortsLists = (aList: IShort[], bList: IShort[]) => {
@@ -43,7 +44,9 @@ export const ShortsControl = ({ person }: ShortsProps) => {
                         <TabPanel key={shortType.id} header={headerText(shortType.name,
                             shorts.filter((s) => s.type.id === shortType.id).length)}>
                             <ShortsList shorts={shorts.filter((s) => s.type.id === shortType.id)}
-                                person={person} key={person.id} />
+                                person={person} key={person.id}
+                                {...(listPublications ? { listPublications } : {})}
+                            />
                         </TabPanel>
                     )
                 })}

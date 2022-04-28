@@ -72,7 +72,7 @@ export const WorkDetails = ({ work }: WorkProps) => {
             {work.authors && (
                 <div className="grid col-12 justify-content-center">
                     <h3 className="mb-0">
-                        <LinkList path="people"
+                        <LinkList path={SITE_URL + "people/"}
                             separator=" &amp; "
                             items={
                                 work.authors.map((item) => ({
@@ -162,7 +162,9 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
             {work.editions[0].translators.length > 0 && (
                 <>
                     <Fragment> Suom. </Fragment>
-                    <LinkList path={SITE_URL} items={work.editions[0].translators} />.
+                    <LinkList path={SITE_URL}
+                        items={work.editions[0].translators}
+                    />.
                 </>
             )}
             {work.editions[0].publisher &&

@@ -6,9 +6,10 @@ import { Button } from "primereact/button";
 interface ShortsListProps {
     shorts: IShort[],
     person: IPerson,
+    listPublications?: boolean
 }
 
-export const ShortsList = ({ shorts, person }: ShortsListProps) => {
+export const ShortsList = ({ shorts, person, listPublications }: ShortsListProps) => {
     const [orderField, setOrderField] = useState("Year");
     const [groupedShorts, setGroupedShorts]: [Record<string, IShort[]>,
         (groupedShorts: Record<string, IShort[]>) => void] = useState({});
@@ -63,6 +64,7 @@ export const ShortsList = ({ shorts, person }: ShortsListProps) => {
                                     shortList.sort(shortsCmp).map((short: IShort) => (
                                         <ShortSummary short={short} key={short.id}
                                             skipAuthors
+                                            {...(listPublications ? { listPublications } : {})}
                                         />
                                     ))
                                 }

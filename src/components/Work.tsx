@@ -2,12 +2,11 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { EditionDetails, EditionString, IEdition, OtherEdition } from "./Edition";
 import { IBookseries } from "./Bookseries";
 import { ICountry } from "./Country";
-import { IPerson } from "./Person";
+import { IPerson, IPersonBrief } from "./Person";
 import { GenreGroup, GenreList } from "./Genre";
 import { TagGroup } from "./SFTag";
 import { LinkList } from "./LinkList";
 import { ILink } from "./Link";
-import { IImage } from "./Image";
 import { SITE_URL, IMAGE_URL } from "../systemProps";
 import { Link } from "react-router-dom";
 import { OverlayPanel } from "primereact/overlaypanel";
@@ -16,18 +15,19 @@ import { useParams } from "react-router-dom";
 import { getCurrenUser } from "../services/auth-service";
 import { getApiContent } from "../services/user-service";
 import { Image } from "primereact/image";
-import { Button } from "primereact/button";
 import { DataView, DataViewLayoutOptions, DataViewLayoutType, DataViewLayoutOptionsChangeParams } from "primereact/dataview";
 import { Panel } from "primereact/panel";
 import { Ripple } from "primereact/ripple";
 import { ShortsList } from "./ShortsList";
 import { IShort } from "./Short";
 import { SpeedDial } from "primereact/speeddial";
-import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
+import { confirmDialog } from "primereact/confirmdialog";
+import { SignatureHelpTriggerReason } from "typescript";
 export interface IWork {
     [index: string]: any,
     author_str: string,
     authors: IPerson[],
+    bookseries: IBookseries,
     bookseriesnum: string,
     bookseriesorder: number,
     desc_attr: string,
@@ -35,21 +35,46 @@ export interface IWork {
     editions: IEdition[],
     id: number,
     imported_string: string,
+    language: ICountry,
+    links: ILink[],
     misc: string,
     orig_title: string,
     pubyear: number,
     stories: IShort[],
     subtitle: string,
     title: string,
-    bookseries: IBookseries,
-    language: ICountry,
-    links: ILink[]
+    translators: IPersonBrief[]
 }
 
 interface WorkProps {
     work: IWork,
     detailLevel?: string,
     orderField?: string
+}
+
+export const isAnthology = (work: IWork) => {
+    // Check if work is a collection with multiple
+    // authors. This is the definition of anthology.
+    if (work.stories.length === 0) {
+        // Not even a collection
+        return false;
+    }
+    // Create a dictionary with the authors' names
+    // as key. If our dictionary has more than one
+    // value it's an anthology.
+    let authors: Record<string, any> = {};
+    work.stories.map(story => {
+        const author_name: string = story.authors
+            .sort((a, b) => a.name > b.name ? -1 : 1)
+            .map(author => author.name).toString();
+        if (!(author_name in authors)) {
+            authors[author_name] = author_name;
+        }
+    })
+    if (Object.keys(authors).length > 1) {
+        return true;
+    }
+    return false;
 }
 
 export const groupWorks = (works: IWork[]) => {
@@ -128,7 +153,6 @@ export const WorkDetails = ({ work }: WorkProps) => {
 }
 
 export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
-    const op = useRef<OverlayPanel>(null);
 
     return (
 
@@ -186,7 +210,6 @@ export const Work = () => {
     const user = getCurrenUser();
     const [work, setWork]: [IWork | null, (work: IWork) => void] = useState<IWork | null>(null);
     const [layout, setLayout]: [DataViewLayoutType, (layout: DataViewLayoutType) => void] = useState<DataViewLayoutType>('list');
-    const toast = useRef(null);
     const ConfirmNewWork = () => {
         confirmDialog({
             message: 'Tähän tulee uuden teoksen lisäys-näkymä',
@@ -257,32 +280,32 @@ export const Work = () => {
         console.log(work);
     }, [params.workId, user])
 
-    const editionHeader = (images: IImage[]) => {
-        if (images.length > 0) {
-            return (
-                <Image preview width="50" src={"https://www.sf-bibliografia.fi/" + images[0].image_src} />
-            )
-        } else {
-            return (<></>)
-        }
-    }
+    // const editionHeader = (images: IImage[]) => {
+    //     if (images.length > 0) {
+    //         return (
+    //             <Image preview width="50" src={"https://www.sf-bibliografia.fi/" + images[0].image_src} />
+    //         )
+    //     } else {
+    //         return (<></>)
+    //     }
+    // }
 
-    const editionSubtitle = (title: string, original_title: string) => {
-        if (title === original_title) {
-            return <></>
-        } else {
-            return <>{title}</>
-        }
-    }
+    // const editionSubtitle = (title: string, original_title: string) => {
+    //     if (title === original_title) {
+    //         return <></>
+    //     } else {
+    //         return <>{title}</>
+    //     }
+    // }
 
-    const editionFooter = (edition: IEdition) => {
-        return (
-            <span>
-                <Button label="Muokkaa" />
+    // const editionFooter = (edition: IEdition) => {
+    //     return (
+    //         <span>
+    //             <Button label="Muokkaa" />
 
-            </span>
-        )
-    }
+    //         </span>
+    //     )
+    // }
 
     const renderListItem = (edition: IEdition) => {
         return (
@@ -372,6 +395,8 @@ export const Work = () => {
 
     if (!work) return null;
 
+    const anthology = isAnthology(work);
+
     return (
         <div>
             <div className="mt-5 speeddial style={{ position: 'relative', height: '500px'}}">
@@ -394,7 +419,9 @@ export const Work = () => {
                         <Panel header="Novellit"
                             headerTemplate={panelTemplate}
                             toggleable collapsed>
-                            <ShortsList shorts={work.stories} person={work.authors[0]} />
+                            <ShortsList shorts={work.stories} person={work.authors[0]}
+                                anthology={anthology}
+                            />
                         </Panel>
                     )
                 }

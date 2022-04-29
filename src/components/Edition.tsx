@@ -14,8 +14,10 @@ export interface IEdition {
     coverimage: number,
     dustcover: number,
     editionnum: number,
+    editors: IPersonBrief[],
     format: IFormat,
     id: number,
+    images: IImage[],
     imported_string: string,
     isbn: string,
     misc: string,
@@ -27,10 +29,9 @@ export interface IEdition {
     size?: string,
     subtitle: string,
     title: string,
-    version: number,
     translators: IPersonBrief[],
-    work: IWork[],
-    images: IImage[]
+    version: number,
+    work: IWork[]
 
 }
 

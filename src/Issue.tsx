@@ -9,6 +9,8 @@ import { IArticle } from './components/Article';
 import { ArticleBrief } from './components/ArticleBrief';
 import { Image } from 'primereact/image';
 import { IMagazine } from './Magazine';
+import { useParams } from "react-router-dom";
+
 const baseURL = 'issues/';
 
 export interface IIssue {
@@ -38,7 +40,7 @@ export type IssueProps = {
 };
 
 export const Issue = ({ id, index }: IssueProps) => {
-    //let params = useParams();
+    let params = useParams();
     const user = getCurrenUser();
     const [issue, setIssue]: [IIssue | null, (issue: IIssue) => void] = React.useState<IIssue | null>(null);
     //const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
@@ -50,7 +52,11 @@ export const Issue = ({ id, index }: IssueProps) => {
 
     React.useEffect(() => {
         async function getIssue() {
-            let url = baseURL + id?.toString();
+            let issueId = id;
+            if (id === null && params.issueId) {
+                issueId = parseInt(params.issueId);
+            }
+            let url = baseURL + issueId?.toString();
             try {
                 const response = await getApiContent(url, user);
                 setIssue(response.data);
@@ -71,7 +77,7 @@ export const Issue = ({ id, index }: IssueProps) => {
                     <div className="p-col-12 p-md-8">
                         <h2>{issue.cover_number}</h2>
                         <div>
-                            {issue.editors.length && (
+                            {issue.editors && issue.editors.length && (
                                 <LinkList
                                     path="people"
                                     separator=" &amp; "

@@ -25,7 +25,7 @@ export interface IShort {
 interface ShortProps {
     short: IShort,
     skipAuthors?: boolean,
-    listPublications?: boolean
+    listPublications?: boolean,
 }
 
 export const groupShorts = (shorts: IShort[]) => {
@@ -53,7 +53,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
         // Only show one item even if there are several editions,
         // e.g. remove editions of the same work.
         if (editions.length === 0) {
-            return ""
+            return <></>
         }
         const uniqueIds: number[] = [];
         const uniqueEditions = editions
@@ -66,20 +66,34 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
                 }
                 return false;
             })
-        const retval = uniqueEditions
-            .map((edition) => (
-                <span className="ml-2">
-                    <Link to={`/works/${edition.work[0].id}`}
-                        key={edition.work[0].id}>
-                        {edition.work[0].title} ({edition.work[0].pubyear}).
-                        <br />
+        const retval = uniqueEditions.map((edition) => (
+            <span className="ml-2">
+                <Link to={`/works/${edition.work[0].id}`}
+                    key={edition.work[0].id}>
+                    {edition.work[0].title} ({edition.work[0].pubyear}).
+                    <br />
 
-                    </Link>
-                </span>
-            ))
+                </Link>
+            </span>
+        ))
         return retval;
     }
 
+    const shortIssues = (issues: IIssue[]) => {
+        if (issues.length === 0) {
+            return <></>
+        }
+        const retval = issues.map((issue) => (
+            <span className="ml-2">
+                <Link to={`/issues/${issue.id}`}
+                    key={issue.id}>
+                    {issue.magazine.name} {issue.cover_number}.
+                    <br />
+                </Link>
+            </span>
+        ))
+        return retval;
+    }
     // React.useEffect(() => {
     //     async function getShort() {
     //         let url = baseURL + id?.toString();
@@ -101,12 +115,12 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
                 <div>
                     <div>
                         {!skipAuthors &&
-                            <>
+                            <b>
                                 <LinkList
                                     path="people"
                                     items={PickLinks(short.authors)}
-                                />:
-                            </>
+                                />:<> </>
+                            </b>
                         }
                         <b>{short.title}</b>
                         {short.orig_title !== short.title && (
@@ -124,8 +138,9 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
                                 {shortEditions(short.editions)}
                             </div>
                         )}
-                    {short.issues.length > 0 && (
+                    {listPublications && short.issues.length > 0 && (
                         <div>
+                            {shortIssues(short.issues)}
                         </div>
                     )}
                 </div>

@@ -114,7 +114,7 @@ export const Person = () => {
                             </div>
                         )}
                     </div>
-                    <div className="grid col-12 m-0 p-0 justify-content-center">
+                    <div className="grid col-12 m-0 justify-content-center">
                         <h2 className="persondetails">
                             {personDetails(person.nationality, person.dob, person.dod)}
                         </h2>

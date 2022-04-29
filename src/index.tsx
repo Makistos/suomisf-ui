@@ -29,7 +29,6 @@ ReactDOM.render(
         <Route path="magazines/:magazineId" element={<Magazine />} />
         <Route path="issues/:issueId" element={<Issue id={null} />} />
         <Route path="articles/:articleId" element={<ArticleView id={null} />} />
-        {/*<Route path="works/:letter" element={<Works letter='a' />} /> */}
         <Route path="works/:workId" element={<Work />} />
         <Route path="/login" element={<Login />} />
         <Route path="*"

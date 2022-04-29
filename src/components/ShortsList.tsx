@@ -3,13 +3,16 @@ import { IPerson } from "./Person";
 import { IShort, ShortSummary, groupShorts } from "./Short";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
+import { AnySchema } from "yup";
 interface ShortsListProps {
     shorts: IShort[],
     person: IPerson,
-    listPublications?: boolean
+    groupAuthors?: boolean,
+    listPublications?: boolean,
+    anthology?: boolean
 }
 
-export const ShortsList = ({ shorts, person, listPublications }: ShortsListProps) => {
+export const ShortsList = ({ shorts, person, groupAuthors, listPublications, anthology }: ShortsListProps) => {
     const [orderField, setOrderField] = useState("Year");
     const [groupedShorts, setGroupedShorts]: [Record<string, IShort[]>,
         (groupedShorts: Record<string, IShort[]>) => void] = useState({});
@@ -36,9 +39,17 @@ export const ShortsList = ({ shorts, person, listPublications }: ShortsListProps
     }
 
     useEffect(() => {
-        setGroupedShorts(groupShorts(shorts));
+        if (groupAuthors) {
+            setGroupedShorts(groupShorts(shorts));
+        } else {
+            let grouped: Record<any, IShort[]> = {};
+            grouped["null"] = shorts;
+            setGroupedShorts(grouped);
+        }
+        console.log(groupedShorts);
     }, [shorts])
 
+    const skipAuthors = !anthology ? true : false;
     return (
         <div className="grid">
             <div className="grid col-12 justify-content-end">
@@ -56,14 +67,14 @@ export const ShortsList = ({ shorts, person, listPublications }: ShortsListProps
                     .map(([group, shortList]) => {
                         return (
                             <div key={group}>
-                                {person && group !== person.name ? (
+                                {person && group !== person.name && group != "null" ? (
                                     <h3>{person.name}</h3>
                                 ) : (<></>)
                                 }
                                 {
                                     shortList.sort(shortsCmp).map((short: IShort) => (
                                         <ShortSummary short={short} key={short.id}
-                                            skipAuthors
+                                            skipAuthors={skipAuthors}
                                             {...(listPublications ? { listPublications } : {})}
                                         />
                                     ))

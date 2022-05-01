@@ -75,7 +75,7 @@ export const Issue = ({ id, index }: IssueProps) => {
             {issue !== null && issue !== undefined ? (
                 <div className="p-grid">
                     <div className="p-col-12 p-md-8">
-                        <h2>{issue.cover_number}</h2>
+                        <h2>{issue.magazine.name} {issue.cover_number}</h2>
                         <div>
                             {issue.editors && issue.editors.length && (
                                 <LinkList

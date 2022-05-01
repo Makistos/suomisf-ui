@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 
 const SEPARATOR = ", ";
 
@@ -16,9 +17,9 @@ export const LinkList = ({ path, items, separator = SEPARATOR }: LinkListProps) 
     }
     const linkList = items
         .map<React.ReactNode>(({ id, name }) => (
-            <a key={id} href={`${path}${id}`}>
+            <Link key={id} to={`/${path}/${id}`}>
                 {name}
-            </a>
+            </Link>
         ))
         .reduce((prev, curr) => [prev, separator, curr]);
 

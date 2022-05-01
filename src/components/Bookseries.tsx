@@ -62,16 +62,18 @@ export const Bookseries = () => {
 
     return (
         <main className="mt-5">
-            <div className="grid col-12 mb-0 pb-0 justify-content-center">
-                <h1 className="maintitle">{bookseries.name}</h1>
-            </div>
-            {bookseries.orig_name && (
-                <div className="grid col-12 p-0 mt-0 mb-5 justify-content-center">
-                    <h2>({bookseries.orig_name})</h2>
+            <div className="mb-5">
+                <div className="grid col-12 mb-0 pb-0 justify-content-center">
+                    <h1 className="maintitle">{bookseries.name}</h1>
                 </div>
-            )}
-            <div>
-                <WorkList works={bookseries.works} />
+                {bookseries.orig_name && (
+                    <div className="grid col-12 p-0 mt-0 mb-5 justify-content-center">
+                        <h2>({bookseries.orig_name})</h2>
+                    </div>
+                )}
+                <div>
+                    <WorkList works={bookseries.works} />
+                </div>
             </div>
         </main>
     )

@@ -28,6 +28,8 @@ export const LinkPanel = ({ links }: LinksProps) => {
     // (person, work, etc).
     const op = useRef<OverlayPanel>(null);
 
+    if (!links) return null;
+
     return (
         <>
             <Button
@@ -38,7 +40,7 @@ export const LinkPanel = ({ links }: LinksProps) => {
                 onClick={(e) => op.current?.toggle(e)}
                 aria-haspopup
                 aria-controls="links_panel"
-                disabled={links.length === 0}
+                disabled={!links || links.length === 0}
             />
             <OverlayPanel
                 ref={op}

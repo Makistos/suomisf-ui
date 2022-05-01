@@ -22,6 +22,8 @@ import { IShort } from "./Short";
 import { SpeedDial } from "primereact/speeddial";
 import { confirmDialog } from "primereact/confirmdialog";
 import { IAwarded } from "./Awarded";
+import { AwardPanel } from "./Awarded";
+import { LinkPanel } from "./Links";
 export interface IWork {
     [index: string]: any,
     author_str: string,
@@ -98,7 +100,7 @@ export const WorkDetails = ({ work }: WorkProps) => {
             {work.authors && (
                 <div className="grid col-12 justify-content-center">
                     <h3 className="mb-0">
-                        <LinkList path={SITE_URL + "people/"}
+                        <LinkList path="people"
                             separator=" &amp; "
                             items={
                                 work.authors.map((item) => ({
@@ -123,23 +125,24 @@ export const WorkDetails = ({ work }: WorkProps) => {
                 <div className="col-12">
                     <TagGroup tags={work.tags} overflow={5} showOneCount />
                 </div>
+                <div className="grid col-12 justify-content-center">
+                    <div className="grid col-6 p-3 justify-content-end">
+                        <AwardPanel awards={work.awards}></AwardPanel>
+                    </div>
+                    <div className="grid col-6 p-3 justify-content-start">
+                        <LinkPanel links={work.links} />
+                    </div>
+                </div>
                 {work.bookseries && (
                     <div className="col-12">
-                        <b>{work.bookseries.name}</b>
+                        <Link to={`/bookseries/${work.bookseries.id}`}>
+                            <b>{work.bookseries.name}</b>
+                        </Link>
                         {work.bookseriesnum && (
                             ", numero " + work.bookseriesnum
                         )}
                     </div>
                 )}
-                <div className="col-12">
-                    {work.links && work.links.map((link) => (
-                        <span className="mr-1">
-                            <Link to={link.link} key={link.id}>
-                                {link.description}
-                            </Link>
-                        </span>
-                    ))}
-                </div>
                 <div className="col-12">
                     {work.misc}
                 </div>
@@ -187,7 +190,7 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
             {work.editions[0].translators.length > 0 && (
                 <>
                     <Fragment> Suom. </Fragment>
-                    <LinkList path={SITE_URL}
+                    <LinkList path="people"
                         items={work.editions[0].translators}
                     />.
                 </>

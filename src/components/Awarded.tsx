@@ -66,6 +66,8 @@ export const Awarded = ({ awards }: AwardedProps) => {
 export const AwardPanel = ({ awards }: AwardedProps) => {
     const op = useRef<OverlayPanel>(null);
 
+    if (!awards) return null;
+
     return (
         <div>
             <>

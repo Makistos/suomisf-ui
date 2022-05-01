@@ -16,6 +16,7 @@ import { Person } from './components/Person';
 import { Work } from './components/Work';
 import { Works } from './Works';
 import Login from './components/Login';
+import { Bookseries } from './components/Bookseries';
 
 const rootElement = document.getElementById("root");
 
@@ -30,6 +31,7 @@ ReactDOM.render(
         <Route path="issues/:issueId" element={<Issue id={null} />} />
         <Route path="articles/:articleId" element={<ArticleView id={null} />} />
         <Route path="works/:workId" element={<Work />} />
+        <Route path="bookseries/:bookseriesId" element={<Bookseries />} />
         <Route path="/login" element={<Login />} />
         <Route path="*"
           element={

@@ -46,11 +46,13 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
             }, {} as Record<string, number>)
             return retval;
         }
-        setGroupedTags(Object.entries(countTags())
-            .sort((a, b) => a[1] > b[1] ? -1 : 1)
-            .map(tag => tag));
-        setSubgenres(filterTypes(tags, 'subgenre'))
-        setStyles(filterTypes(tags, 'style'))
+        if (tags) {
+            setGroupedTags(Object.entries(countTags())
+                .sort((a, b) => a[1] > b[1] ? -1 : 1)
+                .map(tag => tag));
+            setSubgenres(filterTypes(tags, 'subgenre'))
+            setStyles(filterTypes(tags, 'style'))
+        }
     }, [tags])
 
 

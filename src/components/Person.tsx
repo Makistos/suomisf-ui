@@ -99,6 +99,8 @@ export const Person = () => {
     }
 
     const workAwards = () => {
+        // Return a list of all awards to works awarded to this person.
+        // List is automatically sorted by year in ascending order.
         const retval = person.works
             .filter(work => work.awards && work.awards.length > 0)
             .map(work => work.awards).flat()
@@ -114,7 +116,7 @@ export const Person = () => {
                         {person.alt_name ? (
                             <div className="grid col-12 p-0 justify-content-center">
                                 <div className="grid col-12 pb-0 pt-5 mb-0 justify-content-center">
-                                    <h1 className="personname">{person.alt_name}</h1>
+                                    <h1 className="maintitle">{person.alt_name}</h1>
                                 </div>
                                 {person.fullname && (
                                     <div className="grid col-12 p-0 mt-0 mb-0 justify-content-center">
@@ -124,7 +126,7 @@ export const Person = () => {
                             </div>
                         ) : (
                             <div className="grid col-12 p-0 mt-0 mb-0 justify-content-center">
-                                <h1 className="personname">{person.fullname}</h1>
+                                <h1 className="maintitle">{person.fullname}</h1>
                             </div>
                         )}
                     </div>

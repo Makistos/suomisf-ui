@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from 'react-router-dom';
 import { LinkList } from "./LinkList";
 import { IPerson } from "./Person";
-import { EditionVersion, IEdition } from "./Edition";
+import { IEdition } from "./Edition";
 import { IIssue } from "../Issue";
 //const baseURL = 'shorts/';
 
@@ -72,7 +72,6 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
                     key={edition.work[0].id}>
                     {edition.work[0].title} ({edition.work[0].pubyear}).
                     <br />
-
                 </Link>
             </span>
         ))

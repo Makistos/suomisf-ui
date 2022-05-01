@@ -258,6 +258,9 @@ body .p-datatable .p-datatable-tbody > tr > td {
   top: 0;
 }
 
+body .trophy-table .p-datatable-thead  {
+  display: none;
+}
 /* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

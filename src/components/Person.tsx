@@ -11,6 +11,10 @@ import { IShort } from './Short';
 import { ShortsControl } from './ShortsControl';
 import { GenreGroup } from './Genre';
 import { TagGroup } from './SFTag';
+import { ILink } from './Link';
+import { LinkPanel } from './Links';
+import { AwardPanel, IAwarded } from './Awarded';
+
 interface INationality {
     id: number,
     name: string
@@ -24,6 +28,7 @@ export interface IPerson {
     dob: number,
     dod: number,
     bio: string,
+    links: ILink[],
     roles: string[],
     nationality: INationality,
     works: IWork[],
@@ -31,7 +36,8 @@ export interface IPerson {
     edits: IEdition[],
     articles: IArticle[],
     stories: IShort[],
-    magazine_stories: IShort[]
+    magazine_stories: IShort[],
+    awarded: IAwarded[],
 }
 
 export interface IPersonBrief {
@@ -92,6 +98,14 @@ export const Person = () => {
         return person.works.map(work => work.tags).flat();
     }
 
+    const workAwards = () => {
+        const retval = person.works
+            .filter(work => work.awards && work.awards.length > 0)
+            .map(work => work.awards).flat()
+            .sort((a: IAwarded, b: IAwarded) => a.year < b.year ? -1 : 1);
+        return retval;
+    }
+
     return (
         <main className="mt-5">
             {person !== undefined ? (
@@ -124,6 +138,14 @@ export const Person = () => {
                     </div>
                     <div className="col-12 mb-5">
                         <TagGroup tags={getTags()} overflow={5} showOneCount />
+                    </div>
+                    <div className="grid col-12 mb-5 justify-content-center">
+                        <div className="grid col-6 p-3 justify-content-end">
+                            <AwardPanel awards={[...person.awarded, ...workAwards()]}></AwardPanel>
+                        </div>
+                        <div className="grid col-6 p-3 justify-content-start">
+                            <LinkPanel links={person.links} />
+                        </div>
                     </div>
                     <div className="col-12">
                         <ContributorBookControl person={person}></ContributorBookControl>

@@ -53,6 +53,7 @@ export const People = () => {
                     } else {
                         retval.push(prefix + encodeURIComponent(k) + "=" + encodeURIComponent(params[k]));
                     }
+                    return true;
                 })
             }
             return retval;

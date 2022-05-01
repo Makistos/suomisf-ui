@@ -19,6 +19,7 @@ export const ShortsControl = ({ person, listPublications }: ShortsProps) => {
                 if (!(item.id in keys)) {
                     aList.push(item);
                 }
+                return true;
             });
             return aList;
         }

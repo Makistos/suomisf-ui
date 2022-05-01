@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { EditionDetails, EditionString, IEdition, OtherEdition } from "./Edition";
 import { IBookseries } from "./Bookseries";
 import { ICountry } from "./Country";
@@ -9,7 +9,6 @@ import { LinkList } from "./LinkList";
 import { ILink } from "./Link";
 import { SITE_URL, IMAGE_URL } from "../systemProps";
 import { Link } from "react-router-dom";
-import { OverlayPanel } from "primereact/overlaypanel";
 import { Tooltip } from "primereact/tooltip";
 import { useParams } from "react-router-dom";
 import { getCurrenUser } from "../services/auth-service";
@@ -22,11 +21,12 @@ import { ShortsList } from "./ShortsList";
 import { IShort } from "./Short";
 import { SpeedDial } from "primereact/speeddial";
 import { confirmDialog } from "primereact/confirmdialog";
-import { SignatureHelpTriggerReason } from "typescript";
+import { IAwarded } from "./Awarded";
 export interface IWork {
     [index: string]: any,
     author_str: string,
     authors: IPerson[],
+    awards: IAwarded[],
     bookseries: IBookseries,
     bookseriesnum: string,
     bookseriesorder: number,
@@ -70,6 +70,7 @@ export const isAnthology = (work: IWork) => {
         if (!(author_name in authors)) {
             authors[author_name] = author_name;
         }
+        return true;
     })
     if (Object.keys(authors).length > 1) {
         return true;

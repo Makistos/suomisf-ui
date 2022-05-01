@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react';
-//import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
-//import 'primereact/resources/primereact.min.css'
 import { Menubar } from 'primereact/menubar';
 import { AutoComplete } from 'primereact/autocomplete';
 import { getCurrenUser } from './services/auth-service';
 import { logout } from './services/auth-service';
 import { getApiContent } from './services/user-service';
-import { Link } from 'react-router-dom';
 import { SITE_URL } from './systemProps';
 
 const common_items = [

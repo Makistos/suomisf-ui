@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { IPerson } from "./Person";
 import { IShort, ShortSummary, groupShorts } from "./Short";
 import { Dropdown } from "primereact/dropdown";
-import { Button } from "primereact/button";
-import { AnySchema } from "yup";
 interface ShortsListProps {
     shorts: IShort[],
     person: IPerson,
@@ -46,7 +44,6 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications, ant
             grouped["null"] = shorts;
             setGroupedShorts(grouped);
         }
-        console.log(groupedShorts);
     }, [shorts])
 
     const skipAuthors = !anthology ? true : false;
@@ -67,7 +64,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications, ant
                     .map(([group, shortList]) => {
                         return (
                             <div key={group}>
-                                {person && group !== person.name && group != "null" ? (
+                                {person && group !== person.name && group !== "null" ? (
                                     <h3>{person.name}</h3>
                                 ) : (<></>)
                                 }

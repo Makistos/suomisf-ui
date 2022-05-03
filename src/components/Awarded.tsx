@@ -51,12 +51,15 @@ export const Awarded = ({ awards }: AwardedProps) => {
     return (
         <div>
             {awards && awards.length > 0 && (
-                <DataTable value={awards} className="trophy-table">
-                    <Column field="icon" body={awardIcon} />
-                    <Column field="year" />
-                    <Column field="award.name" />
-                    <Column field="category.name" />
-                    <Column field="target" body={targetTemplate} />
+                <DataTable value={awards}
+                    header="Palkinnot"
+                    responsiveLayout="stack"
+                    className="trophy-table">
+                    <Column field="icon" header="Tyyppi" body={awardIcon} />
+                    <Column field="year" header="Vuosi" />
+                    <Column field="award.name" header="Palkinto" />
+                    <Column field="category.name" header="Kategoria" />
+                    <Column field="target" header="Palkittu" body={targetTemplate} />
                 </DataTable>
             )}
         </div>

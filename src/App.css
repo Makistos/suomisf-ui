@@ -105,9 +105,6 @@ div.three-column {
   padding-bottom: 0.5rem !important;
   padding-top: 0rem !important;
 }
-body .p-datatable .p-datatable-tbody > tr > td {
-  border: 0;
-}
 
 .p-fieldset {
   border-left: none !important;
@@ -258,9 +255,15 @@ body .p-datatable .p-datatable-tbody > tr > td {
   top: 0;
 }
 
-body .trophy-table .p-datatable-thead  {
-  display: none;
+@media only screen and (min-width: 960px) {
+  body .trophy-table .p-datatable-thead  {
+    display: none;
+  }
+  body .p-datatable .p-datatable-tbody > tr > td {
+    border: 0;
+  }
 }
+
 /* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

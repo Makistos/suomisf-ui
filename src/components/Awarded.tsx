@@ -54,7 +54,8 @@ export const Awarded = ({ awards }: AwardedProps) => {
                 <DataTable value={awards}
                     header="Palkinnot"
                     responsiveLayout="stack"
-                    className="trophy-table">
+                    className="trophy-table"
+                >
                     <Column field="icon" header="Tyyppi" body={awardIcon} />
                     <Column field="year" header="Vuosi" />
                     <Column field="award.name" header="Palkinto" />

@@ -281,7 +281,6 @@ export const Work = () => {
             }
         }
         getWork();
-        console.log(work);
     }, [params.workId, user])
 
     // const editionHeader = (images: IImage[]) => {

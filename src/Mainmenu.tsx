@@ -97,7 +97,6 @@ export default function MainMenu({ }) {
     const End = () => {
         async function getResults(query: string) {
             const response = await getApiContent("search/" + query, user);
-            console.log("Results: " + response.data);
             setFilteredItems(response.data);
         }
         const searchItems = (event: any) => {

@@ -259,9 +259,12 @@ div.three-column {
   body .trophy-table .p-datatable-thead  {
     display: none;
   }
-  body .p-datatable .p-datatable-tbody > tr > td {
-    border: 0;
-  }
+}
+
+body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
+  border: 0;
+  padding-bottom: 0rem;
+  padding-top: 0.1rem;
 }
 
 /* @keyframes App-logo-spin {

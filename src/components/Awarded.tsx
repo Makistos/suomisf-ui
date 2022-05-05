@@ -70,6 +70,9 @@ export const Awarded = ({ awards }: AwardedProps) => {
 export const AwardPanel = ({ awards }: AwardedProps) => {
     const op = useRef<OverlayPanel>(null);
 
+    const buttonHeader = () => {
+        return "Palkinnot (" + awards.length.toString() + ")";
+    }
     if (!awards) return null;
 
     return (
@@ -77,7 +80,7 @@ export const AwardPanel = ({ awards }: AwardedProps) => {
             <>
                 <Button
                     type="button"
-                    label="Palkinnot"
+                    label={buttonHeader()}
                     className="p-button-secondary"
                     icon="fa-solid fa-award"
                     onClick={(e) => op.current?.toggle(e)}

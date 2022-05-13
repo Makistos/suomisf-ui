@@ -14,13 +14,15 @@ export const CoverImageList = ({ works }: CoverImageListProps) => {
     const imageList = () => {
         let imageDict: Record<string, IImage> = {};
         works.map(work => {
-            work.editions.map(edition => {
-                edition.images.map(image => {
-                    if (!(image.image_src in imageDict)) {
-                        imageDict[image.image_src] = image;
-                    }
-                    return true;
-                })
+            work.editions.every(edition => {
+                if (edition.images !== undefined) {
+                    edition.images.map(image => {
+                        if (!(image.image_src in imageDict)) {
+                            imageDict[image.image_src] = image;
+                        }
+                        return true;
+                    })
+                }
                 return true;
             })
             return true;

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { WorkSummary, IWork, groupWorks } from './Work';
+import { CoverImageList } from "./CoverImageList";
 import { SelectButton } from 'primereact/selectbutton';
 import { Dropdown } from "primereact/dropdown";
-
 import "primeflex/primeflex.css";
 
 type WorksProp = {
@@ -15,27 +15,34 @@ export const WorkList = ({ works, personName = "" }: WorksProp) => {
         (works: Record<string, IWork[]>) => void] = useState({});
     const [detailLevel, setDetailLevel] = useState("condensed");
     const [orderField, setOrderField] = useState("Title");
+    const [workView, setWorkView] = useState("Lista");
+
     useEffect(() => {
         if (works !== null && works.length > 0) {
             setGroupedWorks(groupWorks(works));
         }
-    }, [detailLevel, orderField, works])
+    }, [workView, detailLevel, orderField, works])
 
     type detailOptionType = {
         icon: string,
         value: string
     }
+
+    const workViewOptions = [
+        'Lista', 'Kannet'
+    ];
+
     const detailOptions = [
         { icon: 'pi pi-minus', value: 'brief' },
         { icon: 'pi pi-bars', value: 'condensed' },
         { icon: 'pi pi-align-justify', value: 'all' }
-    ]
+    ];
 
     const sortOptions = [
         { name: 'Nimi', code: 'Title' },
         { name: 'Julkaisuvuosi', code: 'Year' },
         { name: "Suom. järjestys", code: 'Pubyear' }
-    ]
+    ];
 
     // const detailOptions = [
     //     { name: 'Teos', value: 1 },
@@ -65,7 +72,13 @@ export const WorkList = ({ works, personName = "" }: WorksProp) => {
 
     return (
         <div className="grid">
-            <div className="grid col-12 justify-content-end">
+            <div className="grid col-6 justify-content-start">
+                <SelectButton value={workView}
+                    options={workViewOptions}
+                    onChange={(e) => setWorkView(e.value)}
+                />
+            </div>
+            <div className="grid col-6 justify-content-end">
                 <div className="p-1">
                     <SelectButton value={detailLevel} options={detailOptions}
                         optionLabel="icon"
@@ -82,22 +95,28 @@ export const WorkList = ({ works, personName = "" }: WorksProp) => {
                     />
                 </div>
             </div>
-            <div className="col">
+            <div className="grid col">
                 {
                     Object.entries(groupedWorks)
                         .sort((a, b) => a[0].localeCompare(b[0]))
                         .map(([group, ws]) => {
                             return (
-                                <div key={group}>
-                                    {group !== personName &&
-                                        <h3>{group}</h3>}
-                                    {
-                                        ws.sort(compareWorks).map((work: IWork) => (
-                                            <WorkSummary work={work} key={work.id}
-                                                detailLevel={detailLevel}
-                                                orderField={orderField} />
-                                        ))
-                                    }
+                                <div className="grid col-12" key={group}>
+                                    <div className="grid col-12">
+                                        {group !== personName &&
+                                            <h3>{group}</h3>}
+                                    </div>
+                                    <div>
+                                        {workView === 'Lista' ? (
+                                            ws.sort(compareWorks).map((work: IWork) => (
+                                                <WorkSummary work={work} key={work.id}
+                                                    detailLevel={detailLevel}
+                                                    orderField={orderField} />
+                                            ))
+                                        ) : (
+                                            <CoverImageList works={ws} />
+                                        )}
+                                    </div>
                                 </div>
                             );
                         })

@@ -14,7 +14,6 @@ import { Issue } from './Issue';
 import { People } from './People';
 import { Person } from './components/Person';
 import { Work } from './components/Work';
-import { Works } from './Works';
 import Login from './components/Login';
 import { Bookseries } from './components/Bookseries';
 

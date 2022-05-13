@@ -7,7 +7,7 @@ import { GenreGroup, GenreList } from "./Genre";
 import { TagGroup } from "./SFTag";
 import { LinkList } from "./LinkList";
 import { ILink } from "./Link";
-import { SITE_URL, IMAGE_URL } from "../systemProps";
+import { IMAGE_URL } from "../systemProps";
 import { Link } from "react-router-dom";
 import { Tooltip } from "primereact/tooltip";
 import { useParams } from "react-router-dom";

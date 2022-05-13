@@ -16,10 +16,6 @@ export interface IBookseries {
     works: IWork[]
 }
 
-interface BookseriesProps {
-    works: IWork[]
-}
-
 export const groupByBookSeries = (works: IWork[]) => {
     const grouped: Record<string, IWork[]> =
         works.reduce((acc: { [index: string]: any }, currentValue) => {

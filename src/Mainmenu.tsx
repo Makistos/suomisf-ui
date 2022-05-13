@@ -81,7 +81,7 @@ const logged_items = [
 const start = <span><a href="/" > <b>SuomiSF </b></a > </span>
 //const end = <InputText placeholder="Etsi" type="text" />;
 
-export default function MainMenu({ }) {
+export default function MainMenu() {
     let user = getCurrenUser();
     let items = common_items;
     const [selectedItem, setSelectedItem] = useState<any>(null);
@@ -93,7 +93,7 @@ export default function MainMenu({ }) {
         } else {
             items.push(logged_items[0]);
         }
-    }, [])
+    }, [items, user])
     const End = () => {
         async function getResults(query: string) {
             const response = await getApiContent("search/" + query, user);

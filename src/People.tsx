@@ -16,7 +16,7 @@ export const People = () => {
     const user = getCurrenUser();
     const [people, setPeople]: [IPerson[], (people: IPerson[]) => void] = React.useState<IPerson[]>([]);
     const [countries, setCountries]: [ICountry[], (countries: ICountry[]) => void] = React.useState<ICountry[]>([]);
-    const [roles, setRoles]: [string[], (roles: string[]) => void] = React.useState<string[]>([]);
+    //const [roles, setRoles]: [string[], (roles: string[]) => void] = React.useState<string[]>([]);
     const [totalRecords, setTotalRecords] = React.useState(0);
     const [lazyParams, setLazyParams]: [DataTablePFSEvent, (lazyParams: DataTablePFSEvent) => void] = React.useState<DataTablePFSEvent>({
         first: 0,
@@ -58,16 +58,16 @@ export const People = () => {
             }
             return retval;
         }
-        const getRoles = (people: IPerson[]) => {
-            let _roles: string[] = [];
-            for (let i = 0; i < people.length; i++) {
-                for (let j = 0; j < people[i].roles.length; j++) {
-                    _roles.push(people[i].roles[j]);
-                }
-            }
-            let _unique = new Set(_roles);
-            setRoles(Array.from(_unique));
-        }
+        // const getRoles = (people: IPerson[]) => {
+        //     let _roles: string[] = [];
+        //     for (let i = 0; i < people.length; i++) {
+        //         for (let j = 0; j < people[i].roles.length; j++) {
+        //             _roles.push(people[i].roles[j]);
+        //         }
+        //     }
+        //     let _unique = new Set(_roles);
+        //     setRoles(Array.from(_unique));
+        // }
         async function getPeople() {
             const url = baseURL + "?" +
                 queryParams(lazyParams).join('&');
@@ -78,7 +78,7 @@ export const People = () => {
                 const response = await getApiContent(url, user);
                 setTotalRecords(response.data.totalRecords);
                 setPeople(response.data.people);
-                getRoles(response.data.people);
+                //getRoles(response.data.people);
                 setLoading(false);
             }
             catch (e) {

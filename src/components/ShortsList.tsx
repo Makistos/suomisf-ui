@@ -44,7 +44,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications, ant
             grouped["null"] = shorts;
             setGroupedShorts(grouped);
         }
-    }, [shorts])
+    }, [shorts, groupAuthors])
 
     const skipAuthors = !anthology ? true : false;
     return (

@@ -1,11 +1,8 @@
-import React from "react";
 import { Link } from 'react-router-dom';
 import { LinkList } from "./LinkList";
 import { IPerson } from "./Person";
 import { IEdition } from "./Edition";
 import { IIssue } from "../Issue";
-import { API_URL } from "../systemProps";
-//const baseURL = 'shorts/';
 
 export interface IShortType {
     id: number,

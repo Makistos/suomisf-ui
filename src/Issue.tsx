@@ -66,7 +66,7 @@ export const Issue = ({ id, index }: IssueProps) => {
             }
         }
         getIssue();
-    }, [id, user])
+    }, [id, user, params.issueId])
 
     if (!issue) return null;
 

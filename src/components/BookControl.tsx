@@ -26,7 +26,7 @@ export const ContributorBookControl = ({ person }: CBCProps) => {
                     <EditionList editions={person.translations} person={person} />
                 </TabPanel>
                 <TabPanel header="Sarjat">
-                    <SeriesList works={person.works} />
+                    <SeriesList works={person.works} seriesType='bookseries' />
                 </TabPanel>
             </TabView>
         </Fieldset>

@@ -4,10 +4,11 @@ import { IWork, WorkSummary } from "./Work";
 import { groupByBookSeries } from "./Bookseries";
 
 interface SeriesListProps {
-    works: IWork[]
+    works: IWork[],
+    seriesType: string
 }
 
-export const SeriesList = ({ works }: SeriesListProps) => {
+export const SeriesList = ({ works, seriesType }: SeriesListProps) => {
     const [groupedSeries, setGroupedSeries]: [Record<string, IWork[]>,
         (works: Record<string, IWork[]>) => void] = useState({});
     const [bookseries, setBookseries]: [Record<string, number>,
@@ -19,8 +20,8 @@ export const SeriesList = ({ works }: SeriesListProps) => {
          */
         let retval = {};
         retval = Object.assign({},
-            ...works.filter(work => work.bookseries)
-                .map(work => ({ [work.bookseries.name]: work.bookseries.id })));
+            ...works.filter(work => work[seriesType])
+                .map(work => ({ [work[seriesType].name]: work[seriesType].id })));
         return retval;
     }
 
@@ -36,7 +37,7 @@ export const SeriesList = ({ works }: SeriesListProps) => {
                     .map(([seriesName, ser]) => {
                         return (
                             <div key={bookseries[seriesName]}>
-                                <h3><Link to={`/bookseries/${bookseries[seriesName]}`} key={bookseries[seriesName]}>
+                                <h3><Link to={`/${seriesType}/${bookseries[seriesName]}`} key={bookseries[seriesName]}>
                                     {seriesName}
                                 </Link>
                                 </h3>

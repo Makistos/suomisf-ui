@@ -174,9 +174,20 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                     {work.title}
                 </Link>
             </b>
+            <>. </>
+
+            {work.bookseries && (
+                <><Link to={`/bookseries/${work.bookseries.id}`}>
+                    {work.bookseries.name}
+                </Link>
+                    {work.bookseriesnum && (
+                        <> {work.bookseriesnum}</>
+                    )}
+                    .</>
+            )}
 
             {(work.orig_title !== work.title) && (
-                <Fragment> ({work.orig_title !== work.title && work.orig_title}
+                <> ({work.orig_title !== work.title && work.orig_title}
                     {/* Add comma only if both original title and pubyear are
                          shown. */}
                     {work.orig_title !== work.title && work.pubyear && (
@@ -184,9 +195,8 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                     )}
                     {work.pubyear && <Fragment>{work.pubyear}</Fragment>}
                     )
-                </Fragment>
+                </>
             )}
-            <Fragment>. </Fragment>
             {work.editions[0].translators.length > 0 && (
                 <>
                     <Fragment> Suom. </Fragment>
@@ -196,9 +206,9 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                 </>
             )}
             {work.editions[0].publisher &&
-                <Fragment> {work.editions[0].publisher.name}</Fragment>
+                <> {work.editions[0].publisher.name}</>
             }
-            <Fragment> {work.editions[0].pubyear}. </Fragment>
+            <> {work.editions[0].pubyear}. </>
             <GenreList genres={work.genres} />
             {work.editions.map((edition) => (
                 <OtherEdition key={edition.id} edition={edition} details={detailLevel} />

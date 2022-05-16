@@ -16,11 +16,11 @@ export interface IBookseries {
     works: IWork[]
 }
 
-export const groupByBookSeries = (works: IWork[]) => {
+export const groupByBookSeries = (works: IWork[], seriesType: string) => {
     const grouped: Record<string, IWork[]> =
         works.reduce((acc: { [index: string]: any }, currentValue) => {
 
-            const groupKey = currentValue.bookseries.name;
+            const groupKey = currentValue[seriesType].name;
             if (!acc[groupKey]) {
                 acc[groupKey] = []
             }

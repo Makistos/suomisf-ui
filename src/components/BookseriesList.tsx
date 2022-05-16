@@ -26,9 +26,10 @@ export const SeriesList = ({ works, seriesType }: SeriesListProps) => {
     }
 
     useEffect(() => {
-        setGroupedSeries(groupByBookSeries(works.filter(work => work.bookseries !== null)));
-        setBookseries(findBookseries(works));
-    }, [works])
+        setGroupedSeries(groupByBookSeries(
+            works.filter(work => work.bookseries !== null), seriesType));
+        setBookseries(findBookseries(works)); // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [works, seriesType])
 
     return (
         <div>

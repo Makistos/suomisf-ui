@@ -6,61 +6,93 @@ import { Tooltip } from 'primereact/tooltip';
 import { EditionString, IEdition } from './Edition';
 
 interface CoverImageListProps {
-    works: IWork[]
+    works?: IWork[],
+    editions?: IEdition[]
 }
 
-export const CoverImageList = ({ works }: CoverImageListProps) => {
+export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
 
-    const imageList = () => {
-        let imageDict: Record<string, IImage> = {};
-        works.map(work => {
-            work.editions.every(edition => {
-                if (edition.images !== undefined) {
-                    edition.images.map(image => {
-                        if (!(image.image_src in imageDict)) {
-                            imageDict[image.image_src] = image;
-                        }
-                        return true;
-                    })
-                }
-                return true;
-            })
-            return true;
-        })
-        return Object.values(imageDict);
-    }
-
-    const workHasImage = (work: IWork, image_src: string) => {
-        let retval: IEdition[] = [];
-        work.editions.map(edition => {
-            edition.images.map(image => {
-                if (image.image_src === image_src) {
-                    retval.push(edition);
-                }
-                return true;
-            })
-            return true;
-        })
-        return retval;
-    }
-
-    const imageTooltip = (image: IImage) => {
-        let retval = (<div></div>)
-        works.every(work => {
-            let editions = workHasImage(work, image.image_src);
-            if (editions.length > 0) {
-                retval = (
-                    <div>
-                        <b><u>{work.title}</u></b><br></br>
-                        {editions.map(edition => (
-                            <div>{EditionString(edition)}</div>
-                        ))}
-                    </div>
-                )
-                return false;
+    const updateImageDict = (editions: IEdition[]) => {
+        let retval: Record<string, IImage> = {};
+        editions.every(edition => {
+            if (edition.images !== undefined) {
+                edition.images.map(image => {
+                    if (!(image.image_src in retval)) {
+                        retval[image.image_src] = image;
+                    }
+                    return true;
+                })
             }
             return true;
         })
+
+        return retval;
+    }
+
+    const imageList = () => {
+        // Create a list of images on the page where duplicate images
+        // are removed.
+        let imageDict: Record<string, IImage> = {};
+        if (editions) {
+            imageDict = updateImageDict(editions);
+        }
+        else if (works) {
+            works.map(work => {
+                imageDict = { ...imageDict, ...updateImageDict(work.editions) };
+                return true;
+            })
+        }
+        return Object.values(imageDict);
+    }
+
+    const imageTooltip = (image: IImage) => {
+        let retval = (<div></div>);
+
+        const hasImage = (editions: IEdition[], image_src: string) => {
+            let retval: IEdition[] = [];
+            if (editions) {
+                editions.map(edition => {
+                    edition.images.map(image => {
+                        if (image.image_src === image_src) {
+                            retval.push(edition);
+                        }
+                        return true;
+                    })
+                    return true;
+                })
+            }
+            return retval;
+        }
+
+        const toolTipText = (title: string, editions: IEdition[]) => {
+            if (editions.length > 0) {
+                retval = (
+                    <div>
+                        <b><u>{title}</u></b><br></br>
+                        {editions.map(edition => (
+                            <div>{EditionString(edition)} ({edition.pubyear})</div>
+                        ))}
+                    </div>
+                )
+            }
+            return retval;
+
+        }
+
+        if (editions) {
+            const image_editions = hasImage(editions, image.image_src);
+            retval = toolTipText(image_editions[0].title, image_editions);
+        }
+        if (works) {
+            works.every(work => {
+                const image_editions = hasImage(work.editions, image.image_src);
+                if (image_editions.length > 0) {
+                    retval = toolTipText(work.title, image_editions);
+                    return false;
+                }
+                return true;
+            })
+        }
         return retval;
     }
 

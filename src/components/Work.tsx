@@ -24,6 +24,7 @@ import { confirmDialog } from "primereact/confirmdialog";
 import { IAwarded } from "./Awarded";
 import { AwardPanel } from "./Awarded";
 import { LinkPanel } from "./Links";
+import { IPubseries } from "./Pubseries";
 export interface IWork {
     [index: string]: any,
     author_str: string,
@@ -41,6 +42,7 @@ export interface IWork {
     links: ILink[],
     misc: string,
     orig_title: string,
+    pubseries: IPubseries,
     pubyear: number,
     stories: IShort[],
     subtitle: string,
@@ -191,15 +193,15 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                     {/* Add comma only if both original title and pubyear are
                          shown. */}
                     {work.orig_title !== work.title && work.pubyear && (
-                        <Fragment>, </Fragment>
+                        <>, </>
                     )}
-                    {work.pubyear && <Fragment>{work.pubyear}</Fragment>}
+                    {work.pubyear && <>{work.pubyear}</>}
                     )
                 </>
             )}
             {work.editions[0].translators.length > 0 && (
                 <>
-                    <Fragment> Suom. </Fragment>
+                    <> Suom. </>
                     <LinkList path="people"
                         items={work.editions[0].translators}
                     />.
@@ -209,6 +211,11 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                 <> {work.editions[0].publisher.name}</>
             }
             <> {work.editions[0].pubyear}. </>
+            {work.editions[0].pubseries && (
+                <Link to={`/pubseries/${work.editions[0].pubseries.id}`}>
+                    {work.editions[0].pubseries.name}.<> </>
+                </Link>
+            )}
             <GenreList genres={work.genres} />
             {work.editions.map((edition) => (
                 <OtherEdition key={edition.id} edition={edition} details={detailLevel} />

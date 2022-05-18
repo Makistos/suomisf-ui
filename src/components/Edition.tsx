@@ -8,6 +8,7 @@ import { IImage } from "./Image";
 import { LinkList } from "./LinkList";
 import { IFormat } from "./Format";
 import { IBinding } from "./Binding";
+import { IPubseries } from "./Pubseries";
 export interface IEdition {
     binding: IBinding,
     coll_info: string,
@@ -24,6 +25,7 @@ export interface IEdition {
     pages?: number,
     printedin?: string,
     publisher: IPublisher,
+    pubseries: IPubseries,
     pubseriesnum?: number,
     pubyear: number,
     size?: string,
@@ -41,8 +43,10 @@ interface EditionProps {
     showFirst?: boolean,
     details?: string,
     person?: string,
+    showPerson?: boolean,
     work?: IWork,
-    card?: boolean
+    card?: boolean,
+    showVersion?: boolean
 }
 
 export const groupEditions = (editions: IEdition[]) => {
@@ -98,7 +102,11 @@ export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
                 <>{EditionString(edition) + ":"}</>
                 <> {edition.publisher && edition.publisher.name} </>
                 <>{edition.pubyear}.</>
-
+                {edition.pubseries && (
+                    <> <Link to={`/pubseries/${edition.pubseries.id}`}>
+                        {edition.pubseries.name}</Link>.
+                    </>
+                )}
             </div>
         ) : (
             <></>
@@ -106,14 +114,20 @@ export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
     )
 }
 
-export const EditionSummary = ({ edition, person }: EditionProps) => {
+export const EditionSummary = ({ edition, person, showPerson, showVersion }: EditionProps) => {
+    const notFirstEdition = (edition: IEdition) => {
+        return !(edition.editionnum === 1 && (edition.version || edition.version === null || edition.version === 1))
+    }
     return (
         <div>
-            {person && person === edition.work[0].author_str && <b>{edition.work[0].author_str}: </b>}
+            {(showPerson || (person && person === edition.work[0].author_str)) && <b>{edition.work[0].author_str}: </b>}
             <Link to={`/works/${edition.work[0].id}`}>
                 {edition.title}</Link>
             {edition.work[0].title !== edition.work[0].orig_title && (
                 <> ({edition.work[0].orig_title}, {edition.work[0].pubyear})</>
+            )}
+            {showVersion && notFirstEdition(edition) && (
+                <>. <b>{EditionString(edition)}</b></>
             )}
             {/*{!"!?.".includes(edition.title.slice(-1)) &&
                 <>.</>

@@ -267,6 +267,13 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
   padding-top: 0.1rem;
 }
 
+.progressbar {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  margin: 10em auto;
+}
+
 /* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -274,8 +281,4 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
   to {
     transform: rotate(360deg);
   }
-} */
-
-/* .p-menubar {
-  background-color: #007bff;
 } */

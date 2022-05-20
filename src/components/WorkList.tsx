@@ -50,6 +50,18 @@ export const WorkList = ({ works, personName = "" }: WorksProp) => {
     //     { name: 'Kaikki', value: 3 }
     // ];
 
+    const compareAuthors = (a: [string, IWork[]], b: [string, IWork[]]) => {
+        // Special compare needed because we want the works by the person (if given)
+        // to come first.
+        const aName = Object.keys(a)[0];
+        const bName = Object.keys(b)[0];
+        if (personName) {
+            if (aName.localeCompare(personName)) return 1;
+            if (bName.localeCompare(personName)) return -1;
+        }
+        return aName > bName ? -1 : 1;
+    }
+
     const compareWorks = (a: IWork, b: IWork) => {
         if (orderField === 'Title') {
             if (a.title < b.title) return -1;
@@ -98,7 +110,7 @@ export const WorkList = ({ works, personName = "" }: WorksProp) => {
             <div className="grid col">
                 {
                     Object.entries(groupedWorks)
-                        .sort((a, b) => a[0].localeCompare(b[0]))
+                        .sort(compareAuthors)
                         .map(([group, ws]) => {
                             return (
                                 <div className="grid col-12" key={group}>

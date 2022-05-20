@@ -56,8 +56,8 @@ export const WorkList = ({ works, personName = "" }: WorksProp) => {
         const aName = Object.keys(a)[0];
         const bName = Object.keys(b)[0];
         if (personName) {
-            if (aName.localeCompare(personName)) return 1;
-            if (bName.localeCompare(personName)) return -1;
+            if (aName.localeCompare(personName)) return -1;
+            if (bName.localeCompare(personName)) return 1;
         }
         return aName > bName ? -1 : 1;
     }

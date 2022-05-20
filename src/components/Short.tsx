@@ -65,7 +65,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
                 return false;
             })
         const retval = uniqueEditions.map((edition) => (
-            <span className="ml-2">
+            <span className="ml-2" key={edition.id}>
                 <Link to={`/works/${edition.work[0].id}`}
                     key={edition.work[0].id}>
                     {edition.work[0].title} ({edition.work[0].pubyear}).
@@ -81,7 +81,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
             return <></>
         }
         const retval = issues.map((issue) => (
-            <span className="ml-2">
+            <span className="ml-2" key={issue.id}>
                 <Link to={`/issues/${issue.id}`}
                     key={issue.id}>
                     {issue.magazine.name} {issue.cover_number}.
@@ -91,20 +91,6 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
         ))
         return retval;
     }
-    // React.useEffect(() => {
-    //     async function getShort() {
-    //         let url = baseURL + id?.toString();
-    //         try {
-    //             const response = await getApiContent(url, user);
-    //             setShort(response.data);
-    //         } catch (e) {
-    //             console.error(e);
-    //         }
-    //     }
-    //     getShort();
-    // }, [id])
-
-    //if (!short) return null;
 
     return (
         <div>

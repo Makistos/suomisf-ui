@@ -53,13 +53,15 @@ export const WorkList = ({ works, personName = "" }: WorksProp) => {
     const compareAuthors = (a: [string, IWork[]], b: [string, IWork[]]) => {
         // Special compare needed because we want the works by the person (if given)
         // to come first.
-        const aName = Object.keys(a)[0];
-        const bName = Object.keys(b)[0];
+        const aName = a[0];
+        const bName = b[0];
         if (personName) {
-            if (aName.localeCompare(personName)) return -1;
-            if (bName.localeCompare(personName)) return 1;
+            if (aName.localeCompare(personName) === 0) return -1;
+            else if (bName.localeCompare(personName) === 0) return 1;
         }
-        return aName > bName ? -1 : 1;
+        if (aName.includes('&')) return 1;
+        if (bName.includes('&')) return -1;
+        return aName > bName ? 1 : -1;
     }
 
     const compareWorks = (a: IWork, b: IWork) => {

@@ -20,9 +20,11 @@ interface INationality {
     id: number,
     name: string
 }
+
 export interface IPerson {
     id: number,
     name: string,
+    aliases: IPerson[],
     alt_name: string,
     fullname: string,
     image_src: string,
@@ -157,9 +159,17 @@ export const Person = () => {
                                     <LinkPanel links={person.links} />
                                 </div>
                             </div>
+                            {person.aliases.length > 0 &&
+                                <div className="ml-5">
+                                    <b>Pseudonyymit: </b>
+                                    {person.aliases.map(alias =>
+                                        alias.alt_name ? alias.alt_name : alias.name).join(", ")}.
+                                </div>
+                            }
                             <div className="col-12">
-                                <ContributorBookControl person={person}></ContributorBookControl>
+                                <ContributorBookControl viewNonSf={false} person={person}></ContributorBookControl>
                                 <ShortsControl person={person} listPublications></ShortsControl>
+                                {/* <ContributorBookControl viewNonSf={true} person={person}></ContributorBookControl> */}
                             </div>
                         </div>
                     )

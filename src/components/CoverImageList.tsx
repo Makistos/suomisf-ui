@@ -105,7 +105,7 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
                             <Tooltip target={".image-" + image.id}>
                                 {imageTooltip(image)}
                             </Tooltip>
-                            <Image className={"p-1 image-" + image.id} width="100px"
+                            <Image preview className={"p-1 image-" + image.id} width="150px"
                                 src={IMAGE_URL + image.image_src}
                                 key={".image-" + image.id}
                             />

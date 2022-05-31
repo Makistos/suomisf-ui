@@ -104,7 +104,7 @@ export const EditionList = ({ editions, person, sort }: EditionListProps) => {
                                             </div>
                                         ))
                                     ) : (
-                                        <CoverImageList editions={ed.sort(cmpEditions)} />
+                                        <CoverImageList key={group} editions={ed.sort(cmpEditions)} />
                                     )
                                     }
                                 </div>

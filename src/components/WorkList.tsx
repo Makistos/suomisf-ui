@@ -85,58 +85,59 @@ export const WorkList = ({ works, personName = "" }: WorksProp) => {
     }
 
     return (
-        <div className="grid">
-            <div className="grid col-6 justify-content-start">
-                <SelectButton value={workView}
-                    options={workViewOptions}
-                    onChange={(e) => setWorkView(e.value)}
-                />
-            </div>
-            <div className="grid col-6 justify-content-end">
-                <div className="p-1">
-                    <SelectButton value={detailLevel} options={detailOptions}
-                        optionLabel="icon"
-                        id="details"
-                        onChange={(e) => setDetailLevel(e.value)}
-                        itemTemplate={detailTemplate}
+        works.length > 0 ? (
+            <div className="grid">
+                <div className="grid col-6 justify-content-start">
+                    <SelectButton value={workView}
+                        options={workViewOptions}
+                        onChange={(e) => setWorkView(e.value)}
                     />
                 </div>
-                <div className="p-1">
-                    <Dropdown value={orderField} options={sortOptions}
-                        onChange={(e) => setOrderField(e.value)}
-                        optionLabel="name" optionValue="code"
-                        className="small"
-                    />
+                <div className="grid col-6 justify-content-end">
+                    <div className="p-1">
+                        <SelectButton value={detailLevel} options={detailOptions}
+                            optionLabel="icon"
+                            id="details"
+                            onChange={(e) => setDetailLevel(e.value)}
+                            itemTemplate={detailTemplate}
+                        />
+                    </div>
+                    <div className="p-1">
+                        <Dropdown value={orderField} options={sortOptions}
+                            onChange={(e) => setOrderField(e.value)}
+                            optionLabel="name" optionValue="code"
+                            className="small"
+                        />
+                    </div>
+                </div>
+                <div className="grid col">
+                    {
+                        Object.entries(groupedWorks)
+                            .sort(compareAuthors)
+                            .map(([group, ws]) => {
+                                return (
+                                    <div className="grid col-12" key={group}>
+                                        <div className="grid col-12">
+                                            {group !== personName &&
+                                                <h3>{group}</h3>}
+                                        </div>
+                                        <div>
+                                            {workView === 'Lista' ? (
+                                                ws.sort(compareWorks).map((work: IWork) => (
+                                                    <WorkSummary work={work} key={work.id}
+                                                        detailLevel={detailLevel}
+                                                        orderField={orderField} />
+                                                ))
+                                            ) : (
+                                                <CoverImageList works={ws} />
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })
+                    }
                 </div>
             </div>
-            <div className="grid col">
-                {
-                    Object.entries(groupedWorks)
-                        .sort(compareAuthors)
-                        .map(([group, ws]) => {
-                            return (
-                                <div className="grid col-12" key={group}>
-                                    <div className="grid col-12">
-                                        {group !== personName &&
-                                            <h3>{group}</h3>}
-                                    </div>
-                                    <div>
-                                        {workView === 'Lista' ? (
-                                            ws.sort(compareWorks).map((work: IWork) => (
-                                                <WorkSummary work={work} key={work.id}
-                                                    detailLevel={detailLevel}
-                                                    orderField={orderField} />
-                                            ))
-                                        ) : (
-                                            <CoverImageList works={ws} />
-                                        )}
-                                    </div>
-                                </div>
-                            );
-                        })
-                }
-            </div>
-        </div>
-
+        ) : (<></>)
     )
 }

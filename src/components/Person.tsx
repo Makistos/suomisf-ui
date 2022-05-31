@@ -168,8 +168,10 @@ export const Person = () => {
                             }
                             <div className="col-12">
                                 <ContributorBookControl viewNonSf={false} person={person}></ContributorBookControl>
-                                <ShortsControl person={person} listPublications></ShortsControl>
-                                {/* <ContributorBookControl viewNonSf={true} person={person}></ContributorBookControl> */}
+                                {person.stories.length > 0 &&
+                                    <ShortsControl person={person} listPublications></ShortsControl>
+                                }
+                                <ContributorBookControl viewNonSf={true} person={person}></ContributorBookControl>
                             </div>
                         </div>
                     )

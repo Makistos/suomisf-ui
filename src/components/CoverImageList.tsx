@@ -102,7 +102,7 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
                 imageList().map((image: IImage) => {
                     return (
                         <>
-                            <Tooltip target={".image-" + image.id}>
+                            <Tooltip>
                                 {imageTooltip(image)}
                             </Tooltip>
                             <Image preview className={"p-1 image-" + image.id} width="150px"

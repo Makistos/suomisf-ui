@@ -274,6 +274,10 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
   margin: 10em auto;
 }
 
+.p-tabview .p-tabview-nav li.p-disabled {
+  display: none;
+}
+
 /* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

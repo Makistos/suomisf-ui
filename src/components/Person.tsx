@@ -16,7 +16,7 @@ import { LinkPanel } from './Links';
 import { AwardPanel, IAwarded } from './Awarded';
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Fieldset } from 'primereact/fieldset';
-import { union, flatten, concat } from "lodash";
+import _ from "lodash";
 interface INationality {
     id: number,
     name: string
@@ -121,14 +121,14 @@ export const Person = () => {
         if (person === null) return false;
         let all_genres: IGenre[] = [];
         if (what === "all" || what === "works") {
-            all_genres = concat(all_genres, person.works.map(work => work.genres))
+            all_genres = _.concat(all_genres, person.works.map(work => work.genres))
         }
         if (what === "all" || what === "stories") {
-            all_genres = concat(all_genres,
+            all_genres = _.concat(all_genres,
                 ...person.stories.map(story => story.genres),
                 ...person.magazine_stories.map(story => story.genres));
         }
-        return flatten(all_genres).filter(genre => genre.abbr === 'eiSF').length > 0;
+        return _.flatten(all_genres).some(genre => genre.abbr === 'eiSF');
     }
 
     return (

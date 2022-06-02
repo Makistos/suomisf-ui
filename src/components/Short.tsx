@@ -3,6 +3,7 @@ import { LinkList } from "./LinkList";
 import { IPerson } from "./Person";
 import { IEdition } from "./Edition";
 import { IIssue } from "../Issue";
+import { GenreCount, IGenre, GenreList } from './Genre';
 
 export interface IShortType {
     id: number,
@@ -17,13 +18,36 @@ export interface IShort {
     authors: IPerson[],
     type: IShortType,
     editions: IEdition[],
-    issues: IIssue[]
+    issues: IIssue[],
+    genres: IGenre[]
 }
 
 interface ShortProps {
+    /**
+     * Short object.
+     */
     short: IShort,
+    /**
+     * Whether to show authors.
+     */
     skipAuthors?: boolean,
+    /**
+     * Whether to list publications where short was published (books and
+     * magazines).
+     */
     listPublications?: boolean,
+}
+
+export const shortIsSf = (short: IShort) => {
+    /**
+     * Checks whether short is the sf genre.
+     *
+     * A short is not SF is it has exactly one genre and that genre's
+     * abbreviation is "eiSF". Any other combination means it's SF.
+     */
+    if (short.genres.length === 1 && short.genres[0].abbr === 'eiSF')
+        return false;
+    return true;
 }
 
 export const groupShorts = (shorts: IShort[]) => {
@@ -113,7 +137,10 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
                             <>, {short.pubyear}</>
                         )
                         }
-                        <>.</>
+                        <>. </>
+                        {short.genres.length > 0 &&
+                            <GenreList genres={short.genres} />
+                        }
                     </div>
                     {listPublications &&
                         short.editions.length > 0 && (
@@ -126,6 +153,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
                             {shortIssues(short.issues)}
                         </div>
                     )}
+
                 </div>
             ) : (
                 <p>Haetaan tietoja..</p>

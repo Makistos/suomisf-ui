@@ -9,13 +9,14 @@ import { IEdition } from './Edition';
 import { IArticle } from './Article';
 import { IShort } from './Short';
 import { ShortsControl } from './ShortsControl';
-import { GenreGroup } from './Genre';
+import { GenreGroup, IGenre, listIsSf } from './Genre';
 import { TagGroup } from './SFTag';
 import { ILink } from './Link';
 import { LinkPanel } from './Links';
 import { AwardPanel, IAwarded } from './Awarded';
 import { ProgressSpinner } from "primereact/progressspinner";
-
+import { Fieldset } from 'primereact/fieldset';
+import { union, flatten, concat } from "lodash";
 interface INationality {
     id: number,
     name: string
@@ -113,6 +114,23 @@ export const Person = () => {
         return retval;
     }
 
+    const hasNonSf = (what: string) => {
+        /**
+         * Check if person has any non-SF content in database (works, shorts).
+         */
+        if (person === null) return false;
+        let all_genres: IGenre[] = [];
+        if (what === "all" || what === "works") {
+            all_genres = concat(all_genres, person.works.map(work => work.genres))
+        }
+        if (what === "all" || what === "stories") {
+            all_genres = concat(all_genres,
+                ...person.stories.map(story => story.genres),
+                ...person.magazine_stories.map(story => story.genres));
+        }
+        return flatten(all_genres).filter(genre => genre.abbr === 'eiSF').length > 0;
+    }
+
     return (
         <main className="mt-5">
             {
@@ -169,9 +187,17 @@ export const Person = () => {
                             <div className="col-12">
                                 <ContributorBookControl viewNonSf={false} person={person}></ContributorBookControl>
                                 {person.stories.length > 0 &&
-                                    <ShortsControl person={person} listPublications></ShortsControl>
+                                    <ShortsControl key={"sfshorts"} person={person} listPublications what={"sf"}></ShortsControl>
                                 }
-                                <ContributorBookControl viewNonSf={true} person={person}></ContributorBookControl>
+                                {hasNonSf("all") && <Fieldset legend="Ei-SF/Mainstream" toggleable collapsed>
+                                    {hasNonSf("works") &&
+                                        <ContributorBookControl viewNonSf={true} person={person}></ContributorBookControl>
+                                    }
+                                    {hasNonSf("stories") &&
+                                        <ShortsControl key={"nonsfshorts"} person={person} listPublications what={"nonsf"}></ShortsControl>
+                                    }
+                                </Fieldset>
+                                }
                             </div>
                         </div>
                     )

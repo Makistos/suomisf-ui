@@ -4,15 +4,33 @@ import { TabView, TabPanel } from "primereact/tabview";
 import { ShortsList } from "./ShortsList";
 import { IShort } from "./Short";
 import { useEffect, useState } from "react";
-
+import { listIsSf } from "./Genre";
 interface ShortsProps {
+    /**
+     * This can be used to skip showing the name of a certain author. Used to
+     * list shorts on a person's page where we don't want to repeat his name.
+     */
     person: IPerson,
-    listPublications?: boolean
+    /**
+     * Whether to show where shorts were published (books and magazines).
+     */
+    listPublications?: boolean,
+    /**
+     * What to show. Possible values = "all", "sf", "nonsf". Defaults to
+     * "all", which is also used if invalid value is given.
+     */
+    what?: string
 }
 
-export const ShortsControl = ({ person, listPublications }: ShortsProps) => {
+export const ShortsControl = ({ person, listPublications, what }: ShortsProps) => {
     const [shorts, setShorts]: [IShort[], (shorts: IShort[]) => void] = useState<IShort[]>([]);
     useEffect(() => {
+        const filterShorts = (short: IShort) => {
+            if (what === "all") return true;
+            else if (what === "nonsf") return !listIsSf(short.genres);
+            else return listIsSf(short.genres);
+        }
+
         const joinShortsLists = (aList: IShort[], bList: IShort[]) => {
             const keys = Object.assign({}, ...aList.map(item => ({ [item.id]: item.title })));
             bList.map(item => {
@@ -23,8 +41,11 @@ export const ShortsControl = ({ person, listPublications }: ShortsProps) => {
             });
             return aList;
         }
-        setShorts(joinShortsLists(person.stories, person.magazine_stories));
-    }, [person])
+        const newShorts = joinShortsLists(
+            person.stories.filter(filterShorts),
+            person.magazine_stories.filter(filterShorts));
+        setShorts(newShorts);
+    }, [person, listPublications, what])
 
     const headerText = (staticText: string, count: number) => {
         return staticText + " (" + count + ")";
@@ -38,20 +59,22 @@ export const ShortsControl = ({ person, listPublications }: ShortsProps) => {
     }
 
     return (
-        <Fieldset legend="Lyhyet" toggleable>
-            <TabView>
-                {shortTypes(shorts).map((shortType) => {
-                    return (
-                        <TabPanel key={shortType.id} header={headerText(shortType.name,
-                            shorts.filter((s) => s.type.id === shortType.id).length)}>
-                            <ShortsList shorts={shorts.filter((s) => s.type.id === shortType.id)}
-                                person={person} key={person.id}
-                                {...(listPublications ? { listPublications } : {})}
-                            />
-                        </TabPanel>
-                    )
-                })}
-            </TabView>
-        </Fieldset>
+        <>
+            <Fieldset legend="Lyhyet" toggleable>
+                <TabView>
+                    {shortTypes(shorts).map((shortType) => {
+                        return (
+                            <TabPanel key={shortType.id} header={headerText(shortType.name,
+                                shorts.filter((s) => s.type.id === shortType.id).length)}>
+                                <ShortsList shorts={shorts.filter((s) => s.type.id === shortType.id)}
+                                    person={person} key={person.id}
+                                    {...(listPublications ? { listPublications } : {})}
+                                />
+                            </TabPanel>
+                        )
+                    })}
+                </TabView>
+            </Fieldset>
+        </>
     )
 }

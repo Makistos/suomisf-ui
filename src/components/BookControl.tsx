@@ -22,13 +22,6 @@ export const ContributorBookControl = ({ person, viewNonSf }: CBCProps) => {
     const [translations, setTranslations]: [IEdition[], (sfTranslations: IEdition[]) => void]
         = useState<IEdition[]>([]);
 
-    // const sfWorks = () => {
-    //     return person.works.filter(work => !isNonSf(work.genres));
-    // }
-
-    // const nonSfWorks = () => {
-    //     return person.works.filter(work => isNonSf(work.genres));
-    // }
     const isNonSf = (genres: IGenre[]) => {
         let retval;
         retval = genres.filter(genre =>
@@ -89,7 +82,7 @@ export const ContributorBookControl = ({ person, viewNonSf }: CBCProps) => {
     }
 
     return (
-        <Fieldset legend={viewNonSf ? "Ei-SF/Mainstream" : "Kirjat"} toggleable>
+        <Fieldset legend={"Kirjat"} toggleable>
             <TabView key={viewNonSf ? "nonSF" : "SF"} activeIndex={activeIndex}
                 onTabChange={(e) => setActiveIndex(e.index)}
             >

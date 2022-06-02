@@ -1,16 +1,37 @@
 import { useEffect, useState } from "react";
 import { IPerson } from "./Person";
-import { IShort, ShortSummary, groupShorts } from "./Short";
+import { IShort, ShortSummary, groupShorts, shortIsSf } from "./Short";
 import { Dropdown } from "primereact/dropdown";
 interface ShortsListProps {
+    /**
+     * List of shorts.
+     */
     shorts: IShort[],
+    /**
+     * This can be used to skip showing the name of a certain author. Used to
+     * list shorts on a person's page where we don't want to repeat his name.
+     */
     person: IPerson,
+    /**
+     * Whether to group the shorts by author.
+     */
     groupAuthors?: boolean,
+    /**
+     * Whether to show where shorts were published (books and magazines).
+     */
     listPublications?: boolean,
-    anthology?: boolean
+    /**
+     * Whether  this is a list of shorts for an anthology. If it is then we
+     * show the authors in front of each row.
+     */
+    anthology?: boolean,
 }
 
 export const ShortsList = ({ shorts, person, groupAuthors, listPublications, anthology }: ShortsListProps) => {
+    /**
+     * A component for showing a list of shorts. Shorts include short stories,
+     * articles etc.
+     */
     const [orderField, setOrderField] = useState("Year");
     const [groupedShorts, setGroupedShorts]: [Record<string, IShort[]>,
         (groupedShorts: Record<string, IShort[]>) => void] = useState({});
@@ -47,6 +68,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications, ant
     }, [shorts, groupAuthors])
 
     const skipAuthors = !anthology ? true : false;
+
     return (
         <div className="grid">
             <div className="grid col-12 justify-content-end">

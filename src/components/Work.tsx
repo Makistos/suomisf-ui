@@ -25,6 +25,7 @@ import { IAwarded } from "./Awarded";
 import { AwardPanel } from "./Awarded";
 import { LinkPanel } from "./Links";
 import { IPubseries } from "./Pubseries";
+import { string } from "yup";
 export interface IWork {
     [index: string]: any,
     author_str: string,
@@ -208,7 +209,7 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                 </>
             )}
             {work.editions[0].publisher &&
-                <> {work.editions[0].publisher.name}</>
+                <Link to={`/publishers/${work.editions[0].publisher.id}`}> {work.editions[0].publisher.name}</Link>
             }
             <> {work.editions[0].pubyear}. </>
             {work.editions[0].pubseries && (

@@ -132,7 +132,9 @@ export const EditionSummary = ({ edition, person, showPerson, showVersion }: Edi
             {/*{!"!?.".includes(edition.title.slice(-1)) &&
                 <>.</>
             } */}
-            <>. {edition.publisher && edition.publisher.name} </>
+            <>. {edition.publisher && (
+                <Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link>
+            )}</>
             <>{edition.pubyear}. </>
             <GenreList genres={edition.work[0].genres} />
         </div>
@@ -173,7 +175,8 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
             {card !== undefined && work !== undefined && edition.title !== work.title &&
                 <p>{edition.title}</p>
             }
-            {edition.publisher && (<><br />{edition.publisher.name} </>)}
+            {edition.publisher && (
+                <><br /><Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link> </>)}
             {edition.pubyear + "."}
             {edition.translators.length > 0 && (
                 <><br /><>Suom. </>

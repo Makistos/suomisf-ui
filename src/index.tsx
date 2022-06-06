@@ -17,6 +17,7 @@ import { Work } from './components/Work';
 import Login from './components/Login';
 import { Bookseries } from './components/Bookseries';
 import { Pubseries } from './components/Pubseries';
+import { Publisher } from './components/Publisher';
 
 const rootElement = document.getElementById("root");
 
@@ -33,6 +34,7 @@ ReactDOM.render(
         <Route path="works/:workId" element={<Work />} />
         <Route path="bookseries/:bookseriesId" element={<Bookseries />} />
         <Route path="pubseries/:bookseriesId" element={<Pubseries />} />
+        <Route path="publishers/:publisherId" element={<Publisher />} />
         <Route path="/login" element={<Login />} />
         <Route path="*"
           element={

@@ -77,23 +77,21 @@ export const AwardPanel = ({ awards }: AwardedProps) => {
 
     return (
         <div>
-            <>
-                <Button
-                    type="button"
-                    label={buttonHeader()}
-                    className="p-button-secondary"
-                    icon="fa-solid fa-award"
-                    onClick={(e) => op.current?.toggle(e)}
-                    aria-haspopup
-                    aria-controls="awards_panel"
-                    disabled={awards.length === 0}
-                />
-                <OverlayPanel
-                    ref={op}
-                    id="awards_panel">
-                    <Awarded awards={awards} />
-                </OverlayPanel>
-            </>
+            <Button
+                type="button"
+                label={buttonHeader()}
+                className="p-button-secondary"
+                icon="fa-solid fa-award"
+                onClick={(e) => op.current?.toggle(e)}
+                aria-haspopup
+                aria-controls="awards_panel"
+                disabled={awards.length === 0}
+            />
+            <OverlayPanel
+                ref={op}
+                id="awards_panel">
+                <Awarded awards={awards} />
+            </OverlayPanel>
         </div>
     )
 }

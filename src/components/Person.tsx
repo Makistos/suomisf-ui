@@ -140,28 +140,42 @@ export const Person = () => {
                     </div>
                     : (person && (
                         <div>
-                            <div className="grid mt-5">
-                                {person.alt_name ? (
-                                    <div className="grid col-12 p-0 justify-content-center">
-                                        <div className="grid col-12 pb-0 pt-5 mb-0 justify-content-center">
-                                            <h1 className="maintitle">{person.alt_name}</h1>
-                                        </div>
-                                        {person.fullname && (
-                                            <div className="grid col-12 p-0 mt-0 mb-0 justify-content-center">
-                                                <h2>({person.fullname})</h2>
+                            <div className="grid justify-content-center">
+                                <div className="grid col-12 mt-5 mb-1">
+                                    {person.alt_name ? (
+                                        <div className="grid col-12 p-0 justify-content-center">
+                                            <div className="grid col-12 pb-0 pt-5 mb-0 justify-content-center">
+                                                <h1 className="maintitle">{person.alt_name}</h1>
                                             </div>
-                                        )}
+                                            {person.fullname && (
+                                                <div className="grid col-12 p-0 mt-0 mb-0 justify-content-center">
+                                                    <h2>({person.fullname})</h2>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className="grid col-12 p-0 mt-0 mb-0 justify-content-center">
+                                            <h1 className="maintitle">{person.fullname}</h1>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="grid col-12 mt-1 mb-0 p-0 justify-content-center">
+                                    <h2 className="grid mb-2 p-1">
+                                        {personDetails(person.nationality, person.dob, person.dod)}
+                                    </h2>
+                                </div>
+                                {person.aliases.length > 0 &&
+                                    <div className="grid col-12 mt-0 p-2 justify-content-center">
+                                        <h3 className="grid mb-5">
+                                            {person.aliases.length === 1 ? (
+                                                "Julkaissut myös nimellä ")
+                                                : ("Julkaisuut myös nimillä ")
+                                            }
+                                            {person.aliases.map(alias =>
+                                                alias.alt_name ? alias.alt_name : alias.name).join(", ")}.
+                                        </h3>
                                     </div>
-                                ) : (
-                                    <div className="grid col-12 p-0 mt-0 mb-0 justify-content-center">
-                                        <h1 className="maintitle">{person.fullname}</h1>
-                                    </div>
-                                )}
-                            </div>
-                            <div className="grid col-12 m-0 justify-content-center">
-                                <h2 className="persondetails">
-                                    {personDetails(person.nationality, person.dob, person.dod)}
-                                </h2>
+                                }
                             </div>
                             <div className="col-12 mt-2">
                                 <GenreGroup genres={getGenres()} showOneCount></GenreGroup>
@@ -177,13 +191,6 @@ export const Person = () => {
                                     <LinkPanel links={person.links} />
                                 </div>
                             </div>
-                            {person.aliases.length > 0 &&
-                                <div className="ml-5">
-                                    <b>Pseudonyymit: </b>
-                                    {person.aliases.map(alias =>
-                                        alias.alt_name ? alias.alt_name : alias.name).join(", ")}.
-                                </div>
-                            }
                             <div className="col-12">
                                 <ContributorBookControl viewNonSf={false} person={person}></ContributorBookControl>
                                 {person.stories.length > 0 &&
@@ -203,6 +210,6 @@ export const Person = () => {
                     )
                     )
             }
-        </main>
+        </main >
     );
 }

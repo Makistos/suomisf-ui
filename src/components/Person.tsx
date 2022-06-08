@@ -169,7 +169,7 @@ export const Person = () => {
                                         <h3 className="grid mb-5">
                                             {person.aliases.length === 1 ? (
                                                 "Julkaissut myös nimellä ")
-                                                : ("Julkaisuut myös nimillä ")
+                                                : ("Julkaissut myös nimillä ")
                                             }
                                             {person.aliases.map(alias =>
                                                 alias.alt_name ? alias.alt_name : alias.name).join(", ")}.

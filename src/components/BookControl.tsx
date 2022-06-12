@@ -22,13 +22,36 @@ export const ContributorBookControl = ({ person, viewNonSf }: CBCProps) => {
     const [translations, setTranslations]: [IEdition[], (sfTranslations: IEdition[]) => void]
         = useState<IEdition[]>([]);
 
+    /**
+     * Given list of genres, determines if they match a non-SF list.
+     *
+     * non-SF is defined as having no other genres than "nonSF" and "compilation".
+     * Empty genre list is defined as being SF as there are quite a few items
+     * that lack genre definitions - and this is an SF database so we assume
+     * items are SF.
+     *
+     * @param genres List of genres.
+     * @returns True - is non-SF, false - is SF.
+     */
     const isNonSf = (genres: IGenre[]) => {
         let retval;
-        retval = genres.filter(genre =>
-            (genre.abbr !== 'kok') && (genre.abbr !== 'eiSF')).length > 0 ? false : true;
+        retval = (genres.length === 0 || genres.filter(genre =>
+            (genre.abbr !== 'kok') && (genre.abbr !== 'eiSF')).length > 0) ? false : true;
         return retval;
     }
 
+    /**
+     * Determines which of the three book tabs should be set active.
+     *
+     * If there are items in works, then this tab is selected. Else if
+     * edits has items then that tab is selected. And finally if neither have items
+     * but translations does it is selected. Default is always first tab.
+     *
+     * @param works - Books written by person.
+     * @param edits - Books edited by person.
+     * @param translations - Books translated by person.
+     * @returns Tab number (0-2)
+     */
     const calcActiveIndex = (works: IWork[], edits: IEdition[], translations: IEdition[]) => {
         if (works.length > 0) return 0;
         if (edits.length > 0) return 1;
@@ -75,6 +98,11 @@ export const ContributorBookControl = ({ person, viewNonSf }: CBCProps) => {
         return retval;
     }
 
+    /**
+     *
+     * @param type If "edits" check edits variable, otherwise check translations.
+     * @returns
+     */
     const hasEditions = (type: string) => {
         if (type === "edits")
             return (edits.length > 0);

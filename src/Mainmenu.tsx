@@ -27,7 +27,8 @@ const common_items = [
                 url: '/people'
             },
             {
-                label: 'Kustantajat'
+                label: 'Kustantajat',
+                url: '/publishers'
             },
             {
                 label: 'Kirjasarjat'

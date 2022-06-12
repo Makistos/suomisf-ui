@@ -14,10 +14,14 @@ import { TabPanel, TabView } from "primereact/tabview";
 
 export interface IPublisher {
     description: string,
+    edition_count?: number,
+    edition_oldest?: number | null,
+    edition_newest?: number | null,
     editions: IEdition[],
     fullname: string,
     id: number,
     image_attr?: string,
+    image_count?: number,
     image_src?: string,
     name: string,
     series: IPubseries[]

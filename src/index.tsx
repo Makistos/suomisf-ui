@@ -18,6 +18,7 @@ import Login from './components/Login';
 import { Bookseries } from './components/Bookseries';
 import { Pubseries } from './components/Pubseries';
 import { Publisher } from './components/Publisher';
+import { PublisherList } from './PublisherList';
 
 const rootElement = document.getElementById("root");
 
@@ -35,6 +36,7 @@ ReactDOM.render(
         <Route path="bookseries/:bookseriesId" element={<Bookseries />} />
         <Route path="pubseries/:bookseriesId" element={<Pubseries />} />
         <Route path="publishers/:publisherId" element={<Publisher />} />
+        <Route path="publishers" element={<PublisherList />} />
         <Route path="/login" element={<Login />} />
         <Route path="*"
           element={

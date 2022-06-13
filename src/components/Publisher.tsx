@@ -11,6 +11,8 @@ import { Button } from "primereact/button";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { EditionsStatsPanel } from "./Stats";
 import { TabPanel, TabView } from "primereact/tabview";
+import { ILink } from "./Link";
+import { LinkPanel } from "./Links";
 
 export interface IPublisher {
     description: string,
@@ -23,6 +25,7 @@ export interface IPublisher {
     image_attr?: string,
     image_count?: number,
     image_src?: string,
+    links?: ILink[],
     name: string,
     series: IPubseries[]
 }
@@ -76,7 +79,14 @@ export const Publisher = () => {
                                 }
                             </div>
                             <div className="grid col-12 mb-5 justify-content-center">
-                                <EditionsStatsPanel editions={publisher.editions} />
+                                <div className="grid col-6 mb-5 p-3 justify-content-end">
+                                    <EditionsStatsPanel editions={publisher.editions} />
+                                </div>
+                                <div className="grid col-6 mb-5 p-3 justify-content-start">
+                                    {publisher.links &&
+                                        <LinkPanel links={publisher.links} />
+                                    }
+                                </div>
                             </div>
                             <div className="grid col-12 mt-0 justify-content-center">
                                 <TabView>

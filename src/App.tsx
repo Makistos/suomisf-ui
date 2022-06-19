@@ -55,11 +55,11 @@ function App() {
   locale('fi');
 
   return (
-    <div className="App container">
-      <div className="p-mb-3">
+    <div className="App container grid">
+      <div className="grid col-12 ">
         <MainMenu />
       </div>
-      <div>
+      <div className="grid col-12 justify-content-center">
         <Outlet />
       </div>
     </div >

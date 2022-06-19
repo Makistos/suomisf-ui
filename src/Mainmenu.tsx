@@ -31,7 +31,8 @@ const common_items = [
                 url: '/publishers'
             },
             {
-                label: 'Kirjasarjat'
+                label: 'Kirjasarjat',
+                url: '/bookseries'
             },
             {
                 label: 'Kustantajan sarjat'

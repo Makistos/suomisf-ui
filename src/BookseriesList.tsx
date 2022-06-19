@@ -1,0 +1,77 @@
+import { DataTable } from "primereact/datatable";
+import { ProgressSpinner } from "primereact/progressspinner";
+import { useState, useEffect } from "react";
+import { IBookseries } from "./components/Bookseries";
+import { getCurrenUser } from "./services/auth-service";
+import { getApiContent } from "./services/user-service";
+import { Column } from "primereact/column";
+import { Link } from 'react-router-dom';
+
+export const BookseriesListing = () => {
+    const user = getCurrenUser();
+
+    const [bookseriesList, setBookseriesList]: [IBookseries[] | null,
+        (bookseriesList: IBookseries[]) => void] = useState<IBookseries[] | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function getBookseriesList() {
+            const url = 'bookseries';
+            try {
+                const response = await getApiContent(url, user);
+                setBookseriesList(response.data);
+                setLoading(false);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        getBookseriesList();
+    }, [user])
+
+    const nameTemplate = (rowData: IBookseries) => {
+        return (
+            <Link to={`/bookseries/${rowData.id}`} key={rowData.id}>
+                {rowData.name}
+            </Link>
+        )
+    }
+    const workCountTemplate = (rowData: IBookseries) => {
+        if (rowData.works) {
+            return rowData.works.length;
+        }
+        return 0;
+    }
+
+    return (
+        <main>
+            {
+                loading ? (
+                    <div className="progressbar">
+                        <ProgressSpinner />
+                    </div>
+                )
+                    : (
+                        bookseriesList &&
+                        <div>
+                            <h1 className="title">Kirjasarjat</h1>
+                            <p>Kirjasarjoja yhteensä: {bookseriesList?.length}</p>
+                            <DataTable value={bookseriesList}
+                                size="small"
+                                dataKey="id"
+                                emptyMessage="Kirjasarjoja ei löytynyt"
+                                loading={loading}
+                            >
+                                <Column field="name" header="Nimi"
+                                    body={nameTemplate}
+                                    filter sortable />
+                                <Column field="orig_name" header="Alkup. nimi" filter sortable />
+                                <Column field="work_count" header="Teoksia"
+                                    body={workCountTemplate} dataType="numeric"
+                                />
+                            </DataTable>
+                        </div>
+                    )
+            }
+        </main>
+    )
+}

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
+import "primereact/resources/themes/fluent-light/theme.css";
 // import 'primereact/resources/primereact.min.css'
 // import 'primeicons/primeicons.css';
 //import './index.css';
@@ -19,6 +19,7 @@ import { Bookseries } from './components/Bookseries';
 import { Pubseries } from './components/Pubseries';
 import { Publisher } from './components/Publisher';
 import { PublisherList } from './PublisherList';
+import { BookseriesListing } from './BookseriesList';
 
 const rootElement = document.getElementById("root");
 
@@ -33,6 +34,7 @@ ReactDOM.render(
         <Route path="issues/:issueId" element={<Issue id={null} />} />
         <Route path="articles/:articleId" element={<ArticleView id={null} />} />
         <Route path="works/:workId" element={<Work />} />
+        <Route path="bookseries" element={<BookseriesListing />} />
         <Route path="bookseries/:bookseriesId" element={<Bookseries />} />
         <Route path="pubseries/:bookseriesId" element={<Pubseries />} />
         <Route path="publishers/:publisherId" element={<Publisher />} />

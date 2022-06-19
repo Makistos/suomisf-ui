@@ -13,7 +13,7 @@ export const Links = ({ links, target }: LinksProps) => {
     return (
         <div>
             {links.map(link => (
-                <span>
+                <span key={link.id}>
                     <a href={link.link} target={linkTarget}>
                         {link.description}
                     </a><br />

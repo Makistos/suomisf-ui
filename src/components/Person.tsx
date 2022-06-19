@@ -9,7 +9,7 @@ import { IEdition } from './Edition';
 import { IArticle } from './Article';
 import { IShort } from './Short';
 import { ShortsControl } from './ShortsControl';
-import { GenreGroup, IGenre, listIsSf } from './Genre';
+import { GenreGroup, IGenre } from './Genre';
 import { TagGroup } from './SFTag';
 import { ILink } from './Link';
 import { LinkPanel } from './Links';

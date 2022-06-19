@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { EditionDetails, EditionString, IEdition, OtherEdition } from "./Edition";
 import { IBookseries } from "./Bookseries";
 import { ICountry } from "./Country";
@@ -25,7 +25,6 @@ import { IAwarded } from "./Awarded";
 import { AwardPanel } from "./Awarded";
 import { LinkPanel } from "./Links";
 import { IPubseries } from "./Pubseries";
-import { string } from "yup";
 export interface IWork {
     [index: string]: any,
     author_str: string,

@@ -1,4 +1,3 @@
-import { useFormikContext } from "formik"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
 import { getCurrenUser } from "../services/auth-service";
@@ -7,12 +6,11 @@ import { IEdition } from "./Edition";
 import { EditionList } from "./EditionList";
 import { IPubseries } from "./Pubseries";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { Button } from "primereact/button";
-import { OverlayPanel } from "primereact/overlaypanel";
 import { EditionsStatsPanel } from "./Stats";
 import { TabPanel, TabView } from "primereact/tabview";
 import { ILink } from "./Link";
 import { LinkPanel } from "./Links";
+import { PubseriesList } from "./PubseriesList";
 
 export interface IPublisher {
     description: string,
@@ -28,10 +26,6 @@ export interface IPublisher {
     links?: ILink[],
     name: string,
     series: IPubseries[]
-}
-
-interface PublisherProps {
-    id: number
 }
 
 const baseURL = 'publishers/';
@@ -59,7 +53,7 @@ export const Publisher = () => {
     }, [params.publisherId, user])
 
     return (
-        <main className="mt-5">
+        <main className="grid col-12 mt-5">
             {
                 loading ? (
                     <div className="progressbar">
@@ -67,7 +61,7 @@ export const Publisher = () => {
                     </div>
                 )
                     : (publisher &&
-                        <div>
+                        <div className="grid col-12">
                             <div className="grid mb-5 col-12 justify-content-center">
                                 <div className="grid justify-content-center">
                                     <h1 className="maintitle">{publisher.fullname}</h1>
@@ -93,9 +87,11 @@ export const Publisher = () => {
                                     <TabPanel key="editions" header="Painokset">
                                         <EditionList editions={publisher.editions} />
                                     </TabPanel>
-                                    <TabPanel key="series" header="Sarjat">
-
-                                    </TabPanel>
+                                    {publisher.series &&
+                                        <TabPanel key="series" header="Sarjat">
+                                            <PubseriesList pubseriesList={publisher.series} />
+                                        </TabPanel>
+                                    }
                                 </TabView>
                             </div>
                         </div>

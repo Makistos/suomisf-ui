@@ -3,20 +3,15 @@ import { Button } from "primereact/button";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { IEdition } from "./Edition";
 import { Chart } from "primereact/chart";
-import { IGenre, getGenreColors } from "./Genre";
+import { getGenreColors } from "./Genre";
 import _ from "lodash";
 import { ChartData } from "chart.js/index";
-import { SignatureHelpTriggerCharacter } from "typescript";
 
 interface EditionsProps {
     editions: IEdition[];
 }
 
 export const EditionsStats = ({ editions }: EditionsProps) => {
-    interface GenreCount {
-        genre: string;
-        count: number;
-    }
     const [genres, setGenres]: [ChartData, (genres: ChartData) => void] = useState<ChartData>({ datasets: [], labels: [] });
     //const [counts, setCounts]: [number[], (counts: number[]) => void] = useState<number[]>([]);
 

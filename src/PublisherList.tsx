@@ -1,13 +1,11 @@
 import { DataTable } from "primereact/datatable";
-import { Column, ColumnSortParams } from "primereact/column";
+import { Column } from "primereact/column";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { IPublisher } from "./components/Publisher";
 import { getCurrenUser } from "./services/auth-service";
 import { getApiContent } from "./services/user-service";
 import { Link } from 'react-router-dom';
-import { EditionsStats } from "./components/Stats";
 
 const baseURL = "publishers";
 
@@ -48,6 +46,7 @@ export const PublisherList = () => {
                         publisher.edition_count = 0;
                         publisher.image_count = 0;
                     }
+                    return true;
                 })
                 setPublishers(publisherList);
                 setLoading(false);
@@ -55,7 +54,7 @@ export const PublisherList = () => {
                 console.error(e);
             }
         }
-        const data = getPublishers();
+        getPublishers();
     }, [user])
 
     const nameTemplate = (rowData: IPublisher) => {

@@ -3,7 +3,7 @@ import { LinkList } from "./LinkList";
 import { IPerson } from "./Person";
 import { IEdition } from "./Edition";
 import { IIssue } from "../Issue";
-import { GenreCount, IGenre, GenreList } from './Genre';
+import { IGenre, GenreList } from './Genre';
 
 export interface IShortType {
     id: number,

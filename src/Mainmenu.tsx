@@ -35,7 +35,8 @@ const common_items = [
                 url: '/bookseries'
             },
             {
-                label: 'Kustantajan sarjat'
+                label: 'Kustantajan sarjat',
+                url: '/pubseries'
             },
             {
                 label: 'Palkinnot'

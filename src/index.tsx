@@ -20,6 +20,7 @@ import { Pubseries } from './components/Pubseries';
 import { Publisher } from './components/Publisher';
 import { PublisherList } from './PublisherList';
 import { BookseriesListing } from './BookseriesListing';
+import { PubseriesListing } from './PubseriesListing';
 
 const rootElement = document.getElementById("root");
 
@@ -36,6 +37,7 @@ ReactDOM.render(
         <Route path="works/:workId" element={<Work />} />
         <Route path="bookseries" element={<BookseriesListing />} />
         <Route path="bookseries/:bookseriesId" element={<Bookseries />} />
+        <Route path="pubseries" element={<PubseriesListing />} />
         <Route path="pubseries/:bookseriesId" element={<Pubseries />} />
         <Route path="publishers/:publisherId" element={<Publisher />} />
         <Route path="publishers" element={<PublisherList />} />

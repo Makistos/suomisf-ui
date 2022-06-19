@@ -36,12 +36,6 @@ export const PubseriesListing = () => {
         )
     }
 
-    const editionCountTemplate = (rowData: IPubseries) => {
-        if (rowData.editions) {
-            return rowData.editions.length;
-        }
-        return 0;
-    }
     const publisherTemplate = (rowData: IPubseries) => {
         if (rowData.publisher) {
             return (
@@ -50,6 +44,7 @@ export const PubseriesListing = () => {
                 </Link>
             )
         }
+        return "";
     }
     return (
         <main>
@@ -73,8 +68,9 @@ export const PubseriesListing = () => {
                                 <Column field="name" header="Nimi"
                                     body={nameTemplate}
                                     filter sortable />
-                                <Column field="publisher" header="Kustantaja"
+                                <Column field="publisher.name" header="Kustantaja"
                                     body={publisherTemplate}
+                                    sortable filter
                                 />
                                 <Column field="editions.length" header="Kirjoja"
                                     filter sortable

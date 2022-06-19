@@ -65,8 +65,9 @@ export const BookseriesListing = () => {
                                     body={nameTemplate}
                                     filter sortable />
                                 <Column field="orig_name" header="Alkup. nimi" filter sortable />
-                                <Column field="work_count" header="Teoksia"
+                                <Column field="works.length" header="Teoksia"
                                     body={workCountTemplate} dataType="numeric"
+                                    sortable filter
                                 />
                             </DataTable>
                         </div>

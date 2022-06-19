@@ -19,7 +19,7 @@ import { Bookseries } from './components/Bookseries';
 import { Pubseries } from './components/Pubseries';
 import { Publisher } from './components/Publisher';
 import { PublisherList } from './PublisherList';
-import { BookseriesListing } from './BookseriesList';
+import { BookseriesListing } from './BookseriesListing';
 
 const rootElement = document.getElementById("root");
 

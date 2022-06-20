@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API_URL } from "../systemProps";
+import { IUser } from "../user";
 
 const baseURL = API_URL;
 

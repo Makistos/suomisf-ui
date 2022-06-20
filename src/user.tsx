@@ -2,5 +2,6 @@ import React from 'react';
 
 export interface IUser {
     id: number,
-    name: string
+    name: string,
+    role: string
 }

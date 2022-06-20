@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Menubar } from 'primereact/menubar';
 import { AutoComplete } from 'primereact/autocomplete';
 import { getCurrenUser } from './services/auth-service';
@@ -6,9 +6,10 @@ import { logout } from './services/auth-service';
 import { getApiContent } from './services/user-service';
 import { SITE_URL } from './systemProps';
 import { MenuItemCommandParams } from 'primereact/menuitem';
+import { IUser } from './user';
 
 export default function MainMenu() {
-    let user = getCurrenUser();
+    const [user, setUser]: [IUser | null, (user: IUser | null) => void] = useState<IUser | null>(null);
     const [selectedItem, setSelectedItem] = useState<any>(null);
     const [filteredItems, setFilteredItems] = useState<any>(null);
 
@@ -32,7 +33,7 @@ export default function MainMenu() {
         },
         {
             label: 'Kirjaudu ulos',
-            command: () => { logout(); }
+            command: () => { logout(); setUser(null); }
         }
     ]
 
@@ -91,6 +92,11 @@ export default function MainMenu() {
 
 
     let items = common_items;
+
+    useEffect(() => {
+        const newUser = getCurrenUser();
+        setUser(newUser);
+    }, [])
     const start = <span><a href="/" > <b>SuomiSF </b></a > </span>
     const End = () => {
         async function getResults(query: string) {

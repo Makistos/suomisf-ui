@@ -12,7 +12,7 @@ export const getUserContent = (url: string) => {
     return axios.get(baseURL + url, { headers: authHeader() });
 }
 
-export const getApiContent = (url: string, user: IUser) => {
+export const getApiContent = (url: string, user: IUser | null) => {
     if (user === undefined || user === null) {
         return getPublicContent(url);
     } else {

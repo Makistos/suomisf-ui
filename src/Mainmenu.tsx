@@ -1,102 +1,97 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Menubar } from 'primereact/menubar';
 import { AutoComplete } from 'primereact/autocomplete';
 import { getCurrenUser } from './services/auth-service';
 import { logout } from './services/auth-service';
 import { getApiContent } from './services/user-service';
 import { SITE_URL } from './systemProps';
-
-const common_items = [
-    {
-        label: 'Kirjat',
-        url: '/bookindex'
-    },
-    {
-        label: 'Lehdet',
-        url: '/magazines'
-    },
-    {
-        label: 'Novellit',
-        url: '/shortstoryindex'
-    },
-    {
-        label: 'Hakemistot',
-        items: [
-            {
-                label: 'Henkilöt',
-                url: '/people'
-            },
-            {
-                label: 'Kustantajat',
-                url: '/publishers'
-            },
-            {
-                label: 'Kirjasarjat',
-                url: '/bookseries'
-            },
-            {
-                label: 'Kustantajan sarjat',
-                url: '/pubseries'
-            },
-            {
-                label: 'Palkinnot'
-            }
-        ]
-    },
-    {
-        label: 'Tilastoja'
-    }
-]
-
-const not_logged_items = [
-    {
-        label: 'Käyttäjät',
-        items: [
-            {
-                label: 'Kirjaudu',
-                url: '/login'
-            },
-            {
-                label: 'Rekisteröidy',
-                url: ''
-            }
-        ]
-    }
-]
-
-const logged_items = [
-    {
-        label: 'Käyttäjät',
-        items: [
-            {
-                label: 'Lista'
-            },
-            {
-                label: 'Omat tiedot'
-            },
-            {
-                label: 'Kirjaudu ulos',
-                command: () => { logout(); }
-            }
-        ]
-    }
-]
-const start = <span><a href="/" > <b>SuomiSF </b></a > </span>
-//const end = <InputText placeholder="Etsi" type="text" />;
+import { MenuItemCommandParams } from 'primereact/menuitem';
 
 export default function MainMenu() {
     let user = getCurrenUser();
-    let items = common_items;
     const [selectedItem, setSelectedItem] = useState<any>(null);
     const [filteredItems, setFilteredItems] = useState<any>(null);
 
-    useEffect(() => {
-        if (user === null) {
-            items.push(not_logged_items[0]);
-        } else {
-            items.push(logged_items[0]);
+    const not_logged_items = [
+        {
+            label: 'Kirjaudu',
+            url: '/login'
+        },
+        {
+            label: 'Rekisteröidy',
+            url: ''
         }
-    }, [items, user])
+    ]
+
+    const logged_items = [
+        {
+            label: 'Lista'
+        },
+        {
+            label: 'Omat tiedot'
+        },
+        {
+            label: 'Kirjaudu ulos',
+            command: () => { logout(); }
+        }
+    ]
+
+    const common_items = [
+        {
+            label: 'Kirjat',
+            url: '/bookindex'
+        },
+        {
+            label: 'Lehdet',
+            url: '/magazines'
+        },
+        {
+            label: 'Novellit',
+            url: '/shortstoryindex'
+        },
+        {
+            label: 'Hakemistot',
+            items: [
+                {
+                    label: 'Henkilöt',
+                    url: '/people'
+                },
+                {
+                    label: 'Kustantajat',
+                    url: '/publishers'
+                },
+                {
+                    label: 'Kirjasarjat',
+                    url: '/bookseries'
+                },
+                {
+                    label: 'Kustantajan sarjat',
+                    url: '/pubseries'
+                },
+                {
+                    label: 'Palkinnot'
+                }
+            ]
+        },
+        {
+            label: 'Tilastoja'
+        },
+        {
+            icon: 'fa-solid fa-circle-user',
+            command: (event: MenuItemCommandParams) => {
+                if (user === null) {
+                    event.item.items = not_logged_items;
+                } else {
+                    event.item.items = logged_items;
+                }
+
+            }
+        }
+    ]
+
+
+    let items = common_items;
+    const start = <span><a href="/" > <b>SuomiSF </b></a > </span>
     const End = () => {
         async function getResults(query: string) {
             const response = await getApiContent("search/" + query, user);
@@ -130,12 +125,6 @@ export default function MainMenu() {
 
         const selectItem = (item: any) => {
             let target = SITE_URL;
-            // if (!SITE_URL.includes('localhost')) {
-            //     target = target.substring(0, target.length - 1); // Remove slash
-            //     target = target + ':3000/';
-            //     console.log(target);
-            // }
-            //window.open("http://www.sf-bibliografia.fi:3000/works/" + item.id, "_self");
             switch (item.type) {
                 case 'work':
                     target = target + 'works/';
@@ -150,19 +139,21 @@ export default function MainMenu() {
         }
 
         return (
-            <AutoComplete
-                placeholder="Etsi"
-                minLength={3}
-                onChange={(e) => setSelectedItem(e.value)}
-                onSelect={(e) => selectItem(e.value)}
-                completeMethod={searchItems}
-                value={selectedItem}
-                suggestions={filteredItems}
-                field="header"
-                itemTemplate={itemTemplate}
-                delay={800}
-                scrollHeight="400px"
-            />
+            <div>
+                <AutoComplete
+                    placeholder="Etsi"
+                    minLength={3}
+                    onChange={(e) => setSelectedItem(e.value)}
+                    onSelect={(e) => selectItem(e.value)}
+                    completeMethod={searchItems}
+                    value={selectedItem}
+                    suggestions={filteredItems}
+                    field="header"
+                    itemTemplate={itemTemplate}
+                    delay={800}
+                    scrollHeight="400px"
+                />
+            </div>
         );
     }
     return (

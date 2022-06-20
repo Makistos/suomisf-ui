@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import "primereact/resources/themes/fluent-light/theme.css";
+import "primereact/resources/themes/mdc-light-indigo/theme.css";
 // import 'primereact/resources/primereact.min.css'
 // import 'primeicons/primeicons.css';
 //import './index.css';

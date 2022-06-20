@@ -1,7 +1,7 @@
 import axios from "axios";
 import { API_URL } from "../systemProps";
 
-const baseURL = API_URL + 'api/';
+const baseURL = API_URL;
 
 export const register = (username: string, email: string, password: string) => {
 
@@ -13,7 +13,7 @@ export const register = (username: string, email: string, password: string) => {
 };
 
 export const login = (username: string, password: string) => {
-    return axios.post(baseURL + "login", {
+    return axios.post(API_URL + "login", {
         username,
         password,
     })

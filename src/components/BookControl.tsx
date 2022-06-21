@@ -8,6 +8,7 @@ import { SeriesList } from "./BookseriesList";
 import { IWork } from "./Work";
 import { IGenre } from "./Genre";
 import { IEdition } from "./Edition";
+import _ from "lodash";
 
 interface CBCProps {
     person: IPerson,
@@ -60,6 +61,20 @@ export const ContributorBookControl = ({ person, viewNonSf }: CBCProps) => {
 
     }
 
+    const removeDuplicateWorks = (editions: IEdition[]) => {
+        /**
+         * Remove duplicate work entries from list. This will prevent the same
+         * work being repeated in the edition list for each edition.
+         */
+
+        /* First make sure oldest edition is first in the array by sorting by
+           year */
+
+        let retval: IEdition[] = _.sortBy(editions, [function (e) { return e.pubyear }]);
+        retval = _.uniqBy(retval, (value => value.work[0].id));
+        return retval;
+    }
+
     useEffect(() => {
         let newWorks: IWork[] = [];
         let newEdits: IEdition[] = [];
@@ -78,6 +93,8 @@ export const ContributorBookControl = ({ person, viewNonSf }: CBCProps) => {
             newTranslations = person.translations.filter(edition =>
                 !isNonSf(edition.work.map(work => work.genres).flat()));
         }
+        newTranslations = removeDuplicateWorks(newTranslations);
+        newEdits = removeDuplicateWorks(newEdits);
         setWorks(newWorks);
         setEdits(newEdits);
         setTranslations(newTranslations);

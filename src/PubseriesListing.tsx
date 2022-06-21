@@ -8,6 +8,9 @@ import { Column } from "primereact/column";
 import { Link } from 'react-router-dom';
 
 export const PubseriesListing = () => {
+    /**
+     * Page that lists all the publisher series in the system in a table.
+     */
     const user = getCurrenUser();
 
     const [pubseriesList, setPubseriesList]: [IPubseries[] | null,

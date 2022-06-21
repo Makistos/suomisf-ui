@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom';
 const baseURL = "publishers";
 
 export const PublisherList = () => {
+    /** Page that shows all the publishers in the system in a table.
+     */
     const user = getCurrenUser();
     const [publishers, setPublishers]: [IPublisher[] | null, (publishers: IPublisher[] | null) => void] = useState<IPublisher[] | null>(null);
     const [loading, setLoading] = useState(true);

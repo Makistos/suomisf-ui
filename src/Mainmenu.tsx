@@ -7,16 +7,28 @@ import { getApiContent } from './services/user-service';
 import { SITE_URL } from './systemProps';
 import { MenuItemCommandParams } from 'primereact/menuitem';
 import { IUser } from './user';
+import { Login } from './components/Login';
+import { Dialog } from 'primereact/dialog';
 
 export default function MainMenu() {
     const [user, setUser]: [IUser | null, (user: IUser | null) => void] = useState<IUser | null>(null);
     const [selectedItem, setSelectedItem] = useState<any>(null);
     const [filteredItems, setFilteredItems] = useState<any>(null);
+    const [loginVisible, setLoginVisible] = useState(false);
+
+    const onHide = () => {
+        setLoginVisible(false);
+    }
+    const loginScreen = () => {
+        setLoginVisible(true);
+    }
 
     const not_logged_items = [
         {
             label: 'Kirjaudu',
-            url: '/login'
+            command: () => {
+                loginScreen();
+            }
         },
         {
             label: 'Rekisteröidy',
@@ -163,6 +175,14 @@ export default function MainMenu() {
         );
     }
     return (
-        <Menubar className="navbar-dark" model={items} start={start} end={End} />
+        <div>
+            <Dialog visible={loginVisible} onHide={() => onHide()}
+                breakpoints={{ '960px': '75vw', '640px': '100vw' }} style={{ width: '50vw' }}
+            >
+                <Login />
+            </Dialog>
+
+            <Menubar className="navbar-dark" model={items} start={start} end={End} />
+        </div>
     );
 }

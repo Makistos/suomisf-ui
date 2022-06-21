@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-
+import { Button } from "primereact/button";
 import { login } from "../services/auth-service";
+import { InputText } from "primereact/inputtext";
 
-const Login: React.FC = () => {
+export const Login = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
 
@@ -54,32 +55,37 @@ const Login: React.FC = () => {
                     onSubmit={handleLogin}
                 >
                     <Form>
-                        <div className="form-group">
-                            <label htmlFor="username">Käyttäjätunnus</label>
-                            <Field name="username" type="text" className="form-control" />
-                            <ErrorMessage
-                                name="username"
-                                component="div"
-                                className="alert alert-danger"
-                            />
-                        </div>
+                        <div className="flex align-items-center justify-content-center mb-5">
+                            <div className="surface-card">
+                                <div className="text-center mb-5">
+                                    <div className="text-900 text-3x1 font-medium mb-3">Tervetuloa</div>
+                                    <span className="text-600 font-medium line-height-3">Ei tunnusta?</span>
+                                    <a className="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Luo tunnus!</a>
+                                </div>
+                                <div>
+                                    <label htmlFor="username" className="block text-900 font-medium mb-3">Käyttäjätunnus</label>
+                                    <InputText id="username" name="username" type="text" className="w-full mb-3" />
+                                    <ErrorMessage
+                                        name="username"
+                                        component="div"
+                                        className="alert alert-danger"
+                                    />
 
-                        <div className="form-group">
-                            <label htmlFor="password">Salasana</label>
-                            <Field name="password" type="password" className="form-control" />
-                            <ErrorMessage
-                                name="password"
-                                component="div"
-                                className="alert alert-danger"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-                                {loading && (
-                                    <span className="spinner-border spinner-border-sm"></span>
-                                )}
-                                <span>Kirjaudu</span>
-                            </button>
+                                    <label htmlFor="password" className="block text-900 font-medium mb-2">Salasana</label>
+                                    <InputText id="password" name="password" type="password" className="w-full mb-3" />
+                                    <ErrorMessage
+                                        name="password"
+                                        component="div"
+                                        className="alert alert-danger"
+                                    />
+                                    <Button type="submit" icon="pi pi-user" className="w-full" disabled={loading}>
+                                        {loading && (
+                                            <span className="spinner-border spinner-border-sm"></span>
+                                        )}
+                                        <span>Kirjaudu</span>
+                                    </Button>
+                                </div>
+                            </div>
                         </div>
                         {message && (
                             <div className="form-group">

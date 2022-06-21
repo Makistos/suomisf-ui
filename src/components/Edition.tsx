@@ -135,7 +135,7 @@ export const EditionSummary = ({ edition, person, showPerson, showVersion }: Edi
             <>. {edition.publisher && (
                 <Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link>
             )}</>
-            <>{edition.pubyear}. </>
+            <> {edition.pubyear}. </>
             <GenreList genres={edition.work[0].genres} />
         </div>
     )

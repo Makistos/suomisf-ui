@@ -172,8 +172,8 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
     return (
         <div>
             {card && <b><EditionVersion edition={edition} /></b>}
-            {card !== undefined && work !== undefined && edition.title !== work.title &&
-                <p>{edition.title}</p>
+            {work !== undefined && edition.title !== work.title &&
+                <><br /><i className="font-medium">{edition.title}</i></>
             }
             {edition.publisher && (
                 <><br /><Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link> </>)}
@@ -193,8 +193,9 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
             {edition.pages && (<><br />{edition.pages} sivua. </>)}
             {edition.size && edition.size + " cm."}
             {edition.misc && (<><br />{edition.misc}</>)}
-            {edition.isbn && (<><br />ISBN {edition.isbn}</>)}
-            {edition.binding && " " + edition.binding.name}.
+            {(edition.isbn || edition.binding.id > 1) && <br />}
+            {edition.isbn && (<>ISBN {edition.isbn}</>)}
+            {edition.binding.id > 1 && (<> {edition.binding.name}.</>)}
             {edition.dustcover === 3 && (
                 <span><br />Kansipaperi.</span>
             )}

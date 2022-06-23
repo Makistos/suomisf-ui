@@ -332,7 +332,7 @@ export const Work = () => {
             <div className="col-12">
                 <div className="grid">
                     <div className="col-8" >
-                        <EditionDetails edition={edition} card />
+                        <EditionDetails edition={edition} card work={edition.work[0]} />
                     </div>
                     <div className="flex col-4 justify-content-end align-content-center">
                         {edition.images.length > 0 &&

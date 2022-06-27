@@ -159,8 +159,8 @@ export const Person = () => {
                                         </div>
                                     )}
                                 </div>
-                                <div className="grid col-12 mt-1 mb-0 p-0 justify-content-center">
-                                    <h2 className="grid mb-2 p-1">
+                                <div className="grid mt-0 col-12 mb-0 p-0 justify-content-center">
+                                    <h2 className="grid">
                                         {personDetails(person.nationality, person.dob, person.dod)}
                                     </h2>
                                 </div>
@@ -184,10 +184,10 @@ export const Person = () => {
                                 <TagGroup tags={getTags()} overflow={5} showOneCount />
                             </div>
                             <div className="grid col-12 mb-5 justify-content-center">
-                                <div className="grid col-6 p-3 justify-content-end">
+                                <div className="grid col-6 pr-3 justify-content-end">
                                     <AwardPanel awards={[...person.awarded, ...workAwards()]}></AwardPanel>
                                 </div>
-                                <div className="grid col-6 p-3 justify-content-start">
+                                <div className="grid col-6 pl-3 justify-content-start">
                                     <LinkPanel links={person.links} />
                                 </div>
                             </div>

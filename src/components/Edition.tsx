@@ -100,6 +100,18 @@ export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
             (showFirst || edition.editionnum !== 1 || (!isFirstVersion(edition.version)))) ? (
             <div className="edition-oneliner">
                 <>{EditionString(edition) + ":"}</>
+                {edition.title !== edition.work[0].title && (
+                    <><i> {edition.title}. </i></>
+                )}
+                {edition.version > 1 && edition.editionnum === 1 &&
+                    edition.translators.length > 0 &&
+                    <>
+                        <> Suom. </>
+                        <LinkList path="people"
+                            items={edition.translators}
+                        />
+                        . </>
+                }
                 <> {edition.publisher && edition.publisher.name} </>
                 <>{edition.pubyear}.</>
                 {edition.pubseries && (

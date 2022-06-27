@@ -193,7 +193,7 @@ export const Person = () => {
                             </div>
                             <div className="col-12">
                                 <ContributorBookControl viewNonSf={false} person={person}></ContributorBookControl>
-                                {person.stories.length > 0 &&
+                                {(person.stories.length > 0 || person.magazine_stories.length > 0) &&
                                     <ShortsControl key={"sfshorts"} person={person} listPublications what={"sf"}></ShortsControl>
                                 }
                                 {hasNonSf("all") && <Fieldset legend="Ei-SF/Mainstream" toggleable collapsed>

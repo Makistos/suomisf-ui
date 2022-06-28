@@ -28,6 +28,7 @@ export interface IPerson {
     aliases: IPerson[],
     alt_name: string,
     fullname: string,
+    other_names: string,
     image_src: string,
     dob: number,
     dod: number,
@@ -131,6 +132,12 @@ export const Person = () => {
         return _.flatten(all_genres).some(genre => genre.abbr === 'eiSF');
     }
 
+    const combineNames = (aliases: IPerson[], other_names: string) => {
+        let retval = aliases.map(alias => alias.alt_name ? alias.alt_name : alias.name);
+        if (other_names) retval.push(other_names);
+        return retval.join(', ');
+    }
+
     return (
         <main className="mt-5">
             {
@@ -164,15 +171,12 @@ export const Person = () => {
                                         {personDetails(person.nationality, person.dob, person.dod)}
                                     </h2>
                                 </div>
-                                {person.aliases.length > 0 &&
+                                {(person.aliases.length > 0 || person.other_names.length > 0) &&
                                     <div className="grid col-12 mt-0 p-2 justify-content-center">
                                         <h3 className="grid mb-5">
-                                            {person.aliases.length === 1 ? (
-                                                "Julkaissut myös nimellä ")
-                                                : ("Julkaissut myös nimillä ")
-                                            }
-                                            {person.aliases.map(alias =>
-                                                alias.alt_name ? alias.alt_name : alias.name).join(", ")}.
+                                            <>Myös{' '}
+                                                {combineNames(person.aliases, person.other_names)}
+                                                .</>
                                         </h3>
                                     </div>
                                 }
@@ -192,7 +196,9 @@ export const Person = () => {
                                 </div>
                             </div>
                             <div className="col-12">
-                                <ContributorBookControl viewNonSf={false} person={person}></ContributorBookControl>
+                                {person.works.length > 0 && (
+                                    <ContributorBookControl viewNonSf={false} person={person}></ContributorBookControl>
+                                )}
                                 {(person.stories.length > 0 || person.magazine_stories.length > 0) &&
                                     <ShortsControl key={"sfshorts"} person={person} listPublications what={"sf"}></ShortsControl>
                                 }

@@ -2,9 +2,11 @@ import { IPerson } from "./Person";
 import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
 import { ShortsList } from "./ShortsList";
-import { IShort } from "./Short";
+import { IShort, IShortType } from "./Short";
 import { useEffect, useState } from "react";
 import { listIsSf } from "./Genre";
+import _ from "lodash";
+
 interface ShortsProps {
     /**
      * This can be used to skip showing the name of a certain author. Used to
@@ -24,6 +26,7 @@ interface ShortsProps {
 
 export const ShortsControl = ({ person, listPublications, what }: ShortsProps) => {
     const [shorts, setShorts]: [IShort[], (shorts: IShort[]) => void] = useState<IShort[]>([]);
+    const [shortTypes, setShortTypes]: [IShortType[], (shortTypes: IShortType[]) => void] = useState<IShortType[]>([]);
     useEffect(() => {
         const filterShorts = (short: IShort) => {
             if (what === "all") return true;
@@ -45,36 +48,34 @@ export const ShortsControl = ({ person, listPublications, what }: ShortsProps) =
             person.stories.filter(filterShorts),
             person.magazine_stories.filter(filterShorts));
         setShorts(newShorts);
+        setShortTypes(getShortTypes(newShorts));
     }, [person, listPublications, what])
 
     const headerText = (staticText: string, count: number) => {
         return staticText + " (" + count + ")";
     }
 
-    const shortTypes = (shorts: IShort[]) => {
+    const getShortTypes = (shorts: IShort[]) => {
         const typeList = shorts.map(short => short.type);
-        let types = typeList.filter((v, i, types) => types.find(v => v.id === i));
-        types = types.sort((a, b) => a.id < b.id ? -1 : 1);
+        const types = _.uniqBy(typeList, 'id').sort((a, b) => a.id < b.id ? -1 : 1);
         return types;
     }
 
     return (
-        <>
-            <Fieldset legend="Lyhyet" toggleable>
-                <TabView>
-                    {shortTypes(shorts).map((shortType) => {
-                        return (
-                            <TabPanel key={shortType.id} header={headerText(shortType.name,
-                                shorts.filter((s) => s.type.id === shortType.id).length)}>
-                                <ShortsList shorts={shorts.filter((s) => s.type.id === shortType.id)}
-                                    person={person} key={person.id}
-                                    {...(listPublications ? { listPublications } : {})}
-                                />
-                            </TabPanel>
-                        )
-                    })}
-                </TabView>
-            </Fieldset>
-        </>
+        <Fieldset legend="Lyhyet" toggleable>
+            <TabView>
+                {shortTypes.map((shortType) => {
+                    return (
+                        <TabPanel key={shortType.id} header={headerText(shortType.name,
+                            shorts.filter((s) => s.type.id === shortType.id).length)}>
+                            <ShortsList shorts={shorts.filter((s) => s.type.id === shortType.id)}
+                                person={person} key={person.id}
+                                {...(listPublications ? { listPublications } : {})}
+                            />
+                        </TabPanel>
+                    )
+                })}
+            </TabView>
+        </Fieldset>
     )
 }

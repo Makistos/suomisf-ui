@@ -11,7 +11,7 @@ interface ShortsListProps {
      * This can be used to skip showing the name of a certain author. Used to
      * list shorts on a person's page where we don't want to repeat his name.
      */
-    person: IPerson,
+    person?: IPerson,
     /**
      * Whether to group the shorts by author.
      */
@@ -42,8 +42,10 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications, ant
     ]
 
     const sortGroups = (a: [string, IShort[]], b: [string, IShort[]]) => {
-        if (a[0].localeCompare(person.name) === 0) return -1;
-        if (a[0].localeCompare(person.name) === 0) return 1;
+        if (person) {
+            if (a[0].localeCompare(person.name) === 0) return -1;
+            if (a[0].localeCompare(person.name) === 0) return 1;
+        }
         return (a[0].localeCompare(b[0]));
     }
 

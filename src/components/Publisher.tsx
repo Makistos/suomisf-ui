@@ -82,8 +82,8 @@ export const Publisher = () => {
                                     }
                                 </div>
                             </div>
-                            <div className="grid col-12 mt-0 justify-content-center">
-                                <TabView>
+                            <div className="grid col-12 mt-0 justify-content-center w-full">
+                                <TabView className="w-full">
                                     <TabPanel key="editions" header="Painokset">
                                         <EditionList editions={publisher.editions} />
                                     </TabPanel>

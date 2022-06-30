@@ -66,7 +66,7 @@ export const ShortsControl = ({ person, listPublications, what }: ShortsProps) =
 
     return (
         <Fieldset legend="Lyhyet" toggleable>
-            <TabView>
+            <TabView className="w-full">
                 {shortTypes.map((shortType) => {
                     return (
                         <TabPanel key={shortType.id} header={headerText(shortType.name,

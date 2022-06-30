@@ -129,7 +129,7 @@ export const ContributorBookControl = ({ person, viewNonSf }: CBCProps) => {
     return (
         <Fieldset legend={"Kirjat"} toggleable>
             <TabView key={viewNonSf ? "nonSF" : "SF"} activeIndex={activeIndex}
-                onTabChange={(e) => setActiveIndex(e.index)}
+                onTabChange={(e) => setActiveIndex(e.index)} className="w-full"
             >
                 <TabPanel key="Kirjoittanut" header={headerText("Kirjoittanut", works.length)}
                     disabled={!hasWorks()}

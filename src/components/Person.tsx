@@ -171,7 +171,7 @@ export const Person = () => {
                                         {personDetails(person.nationality, person.dob, person.dod)}
                                     </h2>
                                 </div>
-                                {(person.aliases.length > 0 || person.other_names.length > 0) &&
+                                {((person.aliases && person.aliases.length > 0) || (person.other_names && person.other_names.length > 0)) &&
                                     <div className="grid col-12 mt-0 p-2 justify-content-center">
                                         <h3 className="grid mb-5">
                                             <>Myös{' '}

@@ -418,7 +418,7 @@ export const Work = () => {
     const anthology = isAnthology(work);
 
     return (
-        <div>
+        <main className="all-content">
             <div className="mt-5 speeddial style={{ position: 'relative', height: '500px'}}">
                 {/* user !== null && user.is_admin && ( */}
                 <div>
@@ -466,6 +466,6 @@ export const Work = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     )
 }

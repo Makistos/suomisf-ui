@@ -86,7 +86,7 @@ export const WorkList = ({ works, personName = "" }: WorksProp) => {
 
     return (
         works.length > 0 ? (
-            <div className="grid">
+            <div className="grid w-full">
                 <div className="grid col-6 justify-content-start">
                     <SelectButton value={workView}
                         options={workViewOptions}

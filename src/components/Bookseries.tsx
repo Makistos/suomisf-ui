@@ -63,7 +63,7 @@ export const Bookseries = () => {
     if (!bookseries) return null;
 
     return (
-        <main className="mt-5">
+        <main className="all-content">
             <div className="mb-5">
                 <div className="grid col-12 mb-1 justify-content-center">
                     <h1 className="maintitle">{bookseries.name}</h1>

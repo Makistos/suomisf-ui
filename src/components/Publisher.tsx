@@ -53,7 +53,7 @@ export const Publisher = () => {
     }, [params.publisherId, user])
 
     return (
-        <main className="grid col-12 mt-5">
+        <main className="all-content">
             {
                 loading ? (
                     <div className="progressbar">

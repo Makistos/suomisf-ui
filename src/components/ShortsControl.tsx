@@ -28,12 +28,14 @@ export const ShortsControl = ({ person, listPublications, what }: ShortsProps) =
     const [shorts, setShorts]: [IShort[], (shorts: IShort[]) => void] = useState<IShort[]>([]);
     const [shortTypes, setShortTypes]: [IShortType[], (shortTypes: IShortType[]) => void] = useState<IShortType[]>([]);
     useEffect(() => {
+        /** Filter shorts by the what parameter. Either all or sf or non-sf stories. */
         const filterShorts = (short: IShort) => {
             if (what === "all") return true;
             else if (what === "nonsf") return !listIsSf(short.genres);
             else return listIsSf(short.genres);
         }
 
+        /** Joins two lists of short stories into one. */
         const joinShortsLists = (aList: IShort[], bList: IShort[]) => {
             const keys = Object.assign({}, ...aList.map(item => ({ [item.id]: item.title })));
             bList.map(item => {
@@ -55,6 +57,7 @@ export const ShortsControl = ({ person, listPublications, what }: ShortsProps) =
         return staticText + " (" + count + ")";
     }
 
+    /** Return a list of unique short types ordered by their id. */
     const getShortTypes = (shorts: IShort[]) => {
         const typeList = shorts.map(short => short.type);
         const types = _.uniqBy(typeList, 'id').sort((a, b) => a.id < b.id ? -1 : 1);

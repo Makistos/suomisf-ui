@@ -67,7 +67,7 @@ export const EditionList = ({ editions, person, sort }: EditionListProps) => {
     }
 
     return (
-        <div className="grid">
+        <div className="grid w-full">
             <div className="grid col-6 justify-content-start">
                 <SelectButton value={editionView}
                     options={editionViewOptions}

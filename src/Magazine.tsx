@@ -80,7 +80,7 @@ const Magazine = () => {
 
     return (
 
-        <main>
+        <main className="all-content">
             <h1 className="title">{magazine.name}</h1>
             {magazine !== undefined ? (
                 <div>

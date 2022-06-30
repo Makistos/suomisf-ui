@@ -44,7 +44,7 @@ export const Pubseries = () => {
         return null;
 
     return (
-        <main className="mt-5">
+        <main className="all-content">
             <div className="mb-5">
                 <div className="grid col-12 pb-0 justify-content-center">
                     <h1 className="maintitle">{pubseries.name}</h1>

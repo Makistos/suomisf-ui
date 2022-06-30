@@ -89,56 +89,57 @@ export const PublisherList = () => {
     }
 
     return (
-        <main>{
-            loading ?
-                <div className="progressbar">
-                    <ProgressSpinner />
-                </div>
-                : (publishers && (
-                    <div>
-                        <h1 className="title">Kustantajat</h1>
-                        <p>Kustantajia yhteensä: {publishers?.length}</p>
-                        <DataTable value={publishers}
-                            size="small"
-                            dataKey="id"
-                            emptyMessage="Kustantajia ei löytynyt"
-                            loading={loading}
-                        >
-                            <Column field="name" header="Nimi"
-                                body={nameTemplate}
-                                filter sortable>
-                            </Column>
-                            <Column field="edition_count" header="Julkaisuja"
-                                filter sortable
-                                dataType="numeric">
-                            </Column>
-                            <Column field="edition_oldest"
-                                body={oldestEditionTemplate}
-                                header="Vanhin julkaisu"
-                                dataType="numeric"
-                                filter sortable>
-                            </Column>
-                            <Column field="edition_newest"
-                                body={newestEditionTemplate}
-                                header="Uusin julkaisu"
-                                dataType="numeric"
-                                filter sortable>
-                            </Column>
-                            <Column field="image_count"
-                                header="Kansikuvia"
-                                dataType="numeric"
-                                filter sortable>
-                            </Column>
-                            <Column field="image_count_p"
-                                body={imageCountPercentageTemplate}
-                                header="Kansikuvia%"
-                                dataType="numeric"
-                            >
-                            </Column>
-
-                        </DataTable>
+        <main className="all-content">
+            {
+                loading ?
+                    <div className="progressbar">
+                        <ProgressSpinner />
                     </div>
-                ))}
+                    : (publishers && (
+                        <div>
+                            <h1 className="title">Kustantajat</h1>
+                            <p>Kustantajia yhteensä: {publishers?.length}</p>
+                            <DataTable value={publishers}
+                                size="small"
+                                dataKey="id"
+                                emptyMessage="Kustantajia ei löytynyt"
+                                loading={loading}
+                            >
+                                <Column field="name" header="Nimi"
+                                    body={nameTemplate}
+                                    filter sortable>
+                                </Column>
+                                <Column field="edition_count" header="Julkaisuja"
+                                    filter sortable
+                                    dataType="numeric">
+                                </Column>
+                                <Column field="edition_oldest"
+                                    body={oldestEditionTemplate}
+                                    header="Vanhin julkaisu"
+                                    dataType="numeric"
+                                    filter sortable>
+                                </Column>
+                                <Column field="edition_newest"
+                                    body={newestEditionTemplate}
+                                    header="Uusin julkaisu"
+                                    dataType="numeric"
+                                    filter sortable>
+                                </Column>
+                                <Column field="image_count"
+                                    header="Kansikuvia"
+                                    dataType="numeric"
+                                    filter sortable>
+                                </Column>
+                                <Column field="image_count_p"
+                                    body={imageCountPercentageTemplate}
+                                    header="Kansikuvia%"
+                                    dataType="numeric"
+                                >
+                                </Column>
+
+                            </DataTable>
+                        </div>
+                    ))}
         </main>
     )
 }

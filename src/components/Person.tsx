@@ -139,7 +139,7 @@ export const Person = () => {
     }
 
     return (
-        <main className="mt-5">
+        <main className="all-content">
             {
                 loading ?
                     <div className="progressbar">

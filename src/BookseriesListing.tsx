@@ -46,7 +46,7 @@ export const BookseriesListing = () => {
     }
 
     return (
-        <main>
+        <main className="all-content">
             {
                 loading ? (
                     <div className="progressbar">

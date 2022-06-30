@@ -61,7 +61,7 @@ export const ArticleView = ({ id }: ArticleProps) => {
     if (!article) return null;
 
     return (
-        <main className="p-mt-6 p-pt-6">
+        <main className="all-content">
             <h3 className="name">
                 <LinkList
                     path="people"

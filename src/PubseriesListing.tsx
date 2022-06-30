@@ -50,7 +50,7 @@ export const PubseriesListing = () => {
         return "";
     }
     return (
-        <main>
+        <main className="all-content">
             {
                 loading ? (
                     <div className="progressbar">

@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { ErrorMessage, Form, Formik } from "formik";
 import { Button } from "primereact/button";
-import { login } from "../services/auth-service";
 import { InputText } from "primereact/inputtext";
+import { useState } from "react";
+import * as Yup from "yup";
+import { login } from "../services/auth-service";
+import { Link } from "react-router-dom";
 
 export const Login = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -60,7 +61,7 @@ export const Login = () => {
                                 <div className="text-center mb-5">
                                     <div className="text-900 text-3x1 font-medium mb-3">Tervetuloa</div>
                                     <span className="text-600 font-medium line-height-3">Ei tunnusta?</span>
-                                    <a className="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Luo tunnus!</a>
+                                    <Link to={`/register`} className="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Luo tunnus!</Link>
                                 </div>
                                 <div>
                                     <label htmlFor="username" className="block text-900 font-medium mb-3">Käyttäjätunnus</label>

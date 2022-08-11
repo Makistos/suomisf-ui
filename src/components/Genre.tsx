@@ -59,6 +59,10 @@ export const getGenreColors = (genres: string[]) => {
     return genres.map(genre => GenreColors[genre]);
 }
 
+export const getGenreIcon = (genre: string) => {
+    return genreIcons[genre];
+}
+
 export const listIsSf = (genres: IGenre[]) => {
     /**
      * Check whether supplied list of genres would constitute an SF or non-SF

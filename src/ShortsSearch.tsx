@@ -1,18 +1,15 @@
-import { IShort } from "./components/Short";
-import { useEffect, useState, useRef } from "react";
+import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { Button } from 'primereact/button';
 import { getCurrenUser } from "./services/auth-service";
-import { postApiContent } from "./services/user-service";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { ShortsControl } from "./components/ShortsControl";
 import { ShortsList } from './components/ShortsList';
 import axios from "axios";
 import { API_URL } from "./systemProps";
 import _ from "lodash";
-import { Toast } from 'primereact/toast';
+//import { Toast } from 'primereact/toast';
 
 type IFormData = {
     [index: string]: any,
@@ -34,8 +31,9 @@ export const ShortSearch = () => {
     const onSubmit: SubmitHandler<IFormData> = data => {
         function search() {
             // Make sure at least one parameter is given.
-            if (Object.keys(data).length == 0 &&
-                _.pickBy(data, function (param) { return data[param].length > 0 }).length == 0) {
+            if (Object.keys(data).length === 0 &&
+                _.pickBy(data, function (param) { return data[param].length > 0 }).length === 0) {
+                return;
                 // if (toast !== null) {
                 //     toast.show({ severity: 'warn', life: 3000 });
                 //     return;
@@ -44,11 +42,6 @@ export const ShortSearch = () => {
             try {
                 axios.post(API_URL + 'searchshorts', data)
                     .then(response => setShorts(response.data));
-                // const response = postApiContent('searchshorts', data, user);
-                // if (response !== undefined) {
-                //     setShorts(response);
-                // }
-                setLoading(false);
             } catch (e) {
                 console.error(e);
             }
@@ -70,7 +63,7 @@ export const ShortSearch = () => {
                 </div>
                 : (<>
                     <div className="grid mb-4 mt-5 justify-content-center">
-                        <h1 className="text-center">Novellien haku</h1>
+                        <h1 className="text-center">Novellitietokanta</h1>
                     </div>
                     <div className="flex justify-content-center mt-5 mb-5">
                         <form onSubmit={handleSubmit(onSubmit)}>

@@ -294,3 +294,7 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     transform: rotate(360deg);
   }
 } */
+
+.initialsbutton {
+  min-width: 2rem;
+}

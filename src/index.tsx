@@ -22,6 +22,7 @@ import { PublisherList } from './PublisherList';
 import { BookseriesListing } from './BookseriesListing';
 import { PubseriesListing } from './PubseriesListing';
 import { ShortSearch } from './ShortsSearch';
+import { BookSearch } from './BookSearch';
 
 const rootElement = document.getElementById("root");
 
@@ -29,6 +30,7 @@ ReactDOM.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />}>
+        <Route path="bookindex" element={<BookSearch />} />
         <Route path="shortstoryindex" element={<ShortSearch />} />
         <Route path="people" element={<People />} />
         <Route path="people/:personId" element={<Person />} />

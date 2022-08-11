@@ -19,3 +19,32 @@ export const getApiContent = (url: string, user: IUser | null) => {
         return getUserContent(url);
     }
 }
+
+const postPublicContent = (url: string, data: any, user: IUser | null): any => {
+    let retval;
+    let headers;
+    if (user === undefined || user === null) {
+        headers = { "Content-Type": "multipart/form-data" };
+        // } else {
+        //     headers = {
+        //         "Content-Type": "multipart/form-data",
+        //         authHeader();
+        //     };
+
+    }
+    const addr = API_URL + url;
+    console.log('Posting to address ' + addr);
+    axios.post(addr, data)
+        .then((response) => {
+            return response.data;
+            //console.log("Post response: " + retval)
+        })
+        .catch((response) => {
+            console.log(response);
+        })
+    //return retval;
+}
+
+export const postApiContent = (url: string, data: any, user: IUser | null) => {
+    return postPublicContent(url, data, user);
+}

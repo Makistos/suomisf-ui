@@ -35,7 +35,7 @@ export const logout = () => {
     console.log("logged out user");
 }
 
-export const getCurrenUser = () => {
+export const getCurrenUser = (): IUser | null => {
     const userStr = localStorage.getItem("user");
     if (userStr) return JSON.parse(userStr);
     return null;

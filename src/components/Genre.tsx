@@ -11,7 +11,7 @@ const genreIcons: { [key: string]: string } = {
     'Nuorten kauhu': 'fa-solid fa-ghost',
     'Paleofiktio': 'fa-solid fa-fire',
     'Poliittinen fiktio': 'fa-solid fa-landmark-dome',
-    'Vaihtoehtoishistoria': 'fa-solid fa-arrows-split-up-and-left',
+    'Vaihtoehtohistoria': 'fa-solid fa-arrows-split-up-and-left',
     'Utopia': 'fa-solid fa-face-smile',
     'Lasten Science Fiction': 'fa-solid fa-robot',
     'Satu': 'fa-solid fa-baby',

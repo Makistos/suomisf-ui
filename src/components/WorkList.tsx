@@ -7,10 +7,11 @@ import "primeflex/primeflex.css";
 
 type WorksProp = {
     works: IWork[],
-    personName?: string
+    personName?: string,
+    collaborationsLast?: boolean
 }
 
-export const WorkList = ({ works, personName = "" }: WorksProp) => {
+export const WorkList = ({ works, personName = "", collaborationsLast = false }: WorksProp) => {
     const [groupedWorks, setGroupedWorks]: [Record<string, IWork[]>,
         (works: Record<string, IWork[]>) => void] = useState({});
     const [detailLevel, setDetailLevel] = useState("condensed");
@@ -59,9 +60,11 @@ export const WorkList = ({ works, personName = "" }: WorksProp) => {
             if (aName.localeCompare(personName) === 0) return -1;
             else if (bName.localeCompare(personName) === 0) return 1;
         }
-        if (aName.includes('&')) return 1;
-        if (bName.includes('&')) return -1;
-        return aName > bName ? 1 : -1;
+        if (collaborationsLast) {
+            if (aName.includes('&')) return 1;
+            if (bName.includes('&')) return -1;
+        }
+        return aName.localeCompare(bName) ? -1 : 1;
     }
 
     const compareWorks = (a: IWork, b: IWork) => {

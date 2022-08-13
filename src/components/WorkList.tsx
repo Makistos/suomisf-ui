@@ -4,6 +4,7 @@ import { CoverImageList } from "./CoverImageList";
 import { SelectButton } from 'primereact/selectbutton';
 import { Dropdown } from "primereact/dropdown";
 import "primeflex/primeflex.css";
+import { WorkStatsPanel } from "./Stats";
 
 type WorksProp = {
     works: IWork[],
@@ -90,13 +91,16 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
     return (
         works && works.length > 0 ? (
             <div className="grid w-full">
-                <div className="grid col-6 justify-content-start">
+                <div className="grid col-4 justify-content-start">
                     <SelectButton value={workView}
                         options={workViewOptions}
                         onChange={(e) => setWorkView(e.value)}
                     />
                 </div>
-                <div className="grid col-6 justify-content-end">
+                <div className="grid col-4 justify-content-center">
+                    <WorkStatsPanel works={works} />
+                </div>
+                <div className="grid col-4 justify-content-end">
                     <div className="p-1">
                         <SelectButton value={detailLevel} options={detailOptions}
                             optionLabel="icon"

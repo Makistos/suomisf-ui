@@ -43,23 +43,23 @@ export const BookSearch = () => {
     const [initial, setInitial] = useState("");
 
     const onSubmit: SubmitHandler<IFormData> = data => {
-        setLoading(true);
         function search() {
             if (Object.keys(data).length === 0 &&
                 _.pickBy(data, function (param) { return data[param].length > 0 }).length === 0) {
                 return;
             }
+            setLoading(true);
             try {
                 axios.post(API_URL + 'searchworks', data)
                     .then(response => setWorks(response.data));
             } catch (e) {
                 console.error(e);
             }
+            setLoading(false);
         }
         console.log(data);
         search();
         setInitial("");
-        setLoading(false);
     }
 
     useEffect(() => {

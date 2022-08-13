@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "primereact/button";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { IEdition } from "./Edition";
+import { IWork } from "./Work";
 import { Chart } from "primereact/chart";
 import { getGenreColors } from "./Genre";
 import _ from "lodash";
@@ -11,9 +12,12 @@ interface EditionsProps {
     editions: IEdition[];
 }
 
+interface WorksProps {
+    works: IWork[];
+}
+
 export const EditionsStats = ({ editions }: EditionsProps) => {
     const [genres, setGenres]: [ChartData, (genres: ChartData) => void] = useState<ChartData>({ datasets: [], labels: [] });
-    //const [counts, setCounts]: [number[], (counts: number[]) => void] = useState<number[]>([]);
 
     const genreLabels = (genres: [string, number][]) => {
         let retval: string[] = [];
@@ -90,6 +94,78 @@ export const EditionsStatsPanel = ({ editions }: EditionsProps) => {
                 id="editionsstats_panel">
                 <EditionsStats editions={editions} />
             </OverlayPanel>
+        </div>
+    )
+}
+
+const WorkStats = ({ works }: WorksProps) => {
+    const [genres, setGenres]: [ChartData, (genres: ChartData) => void] = useState<ChartData>({ datasets: [], labels: [] });
+
+    const genreLabels = (genres: [string, number][]) => {
+        let retval: string[] = [];
+        let total: number = 0;
+        genres.forEach(number => { total += number[1]; })
+
+        retval = genres.map(genre =>
+            genre[0] + "(" + genre[1] + "/" + Math.floor((genre[1] / total * 100)).toString() + "%)");
+        return retval;
+    }
+
+    useEffect(() => {
+        let genresCount = Object.entries(              // Convert to array
+            _.countBy(                                 // Count occurences of genres
+                _.flatten(works                     // Flatten array
+                    .map(work => work.genres)),        // Pick all work genres
+                (value => value.abbr)))                // Count by genre abbreviation
+            .sort((a, b) => a[1] > b[1] ? -1 : 1);     // Sort by count in descending order
+        genresCount = genresCount.filter(genre => genre[0] !== 'kok' && genre[0] !== 'eiSF');
+        let newGenres: ChartData = {};
+        newGenres.datasets = [];
+        const data = genresCount.map(genre => genre[1]);
+        const labels = genreLabels(genresCount);
+        newGenres.datasets[0] = {};
+        newGenres.datasets[0].data = data;
+        newGenres.datasets[0].backgroundColor = getGenreColors(genresCount.map(genre => genre[0]));
+        newGenres.labels = labels;
+        setGenres(newGenres);
+    }, [works])
+    return (
+        <div className="grid justify-content-center">
+            <div className="grid col-12 justify-content-center">
+                <Chart type="doughnut"
+                    data={genres}
+                />
+            </div>
+            <div className="grid col-12 justify-content-center">
+                <span><b>Yhteensä</b>: {works.length}</span>
+            </div>
+        </div>
+    )
+}
+
+export const WorkStatsPanel = ({ works }: WorksProps) => {
+    const op = useRef<OverlayPanel>(null);
+
+    if (!works) return null;
+
+    return (
+        <div>
+            <Button
+                type="button"
+                label="Tilastoja"
+                className="p-button-secondary"
+                icon="fa-solid fa-chart-line"
+                onClick={(e) => op.current?.toggle(e)}
+                aria-haspopup
+                aria-controls="workstats_panel"
+            />
+            <OverlayPanel
+                ref={op}
+                id="editionsstats_panel">
+                <WorkStats works={works} />
+            </OverlayPanel>
+
+
         </div>
     )
 }

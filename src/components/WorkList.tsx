@@ -64,7 +64,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
             if (aName.includes('&')) return 1;
             if (bName.includes('&')) return -1;
         }
-        return aName.localeCompare(bName) ? -1 : 1;
+        return aName.localeCompare(bName) ? 1 : -1;
     }
 
     const compareWorks = (a: IWork, b: IWork) => {

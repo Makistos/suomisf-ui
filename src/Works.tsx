@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { IWork, groupWorks } from './components/Work';
-import { ContributorBookControl } from './components/BookControl';
 import { getApiContent } from './services/user-service';
 import { getCurrenUser } from './services/auth-service';
 import { WorkList } from './components/WorkList';
-import { group } from 'console';
 
 type WorksProp = {
     letter: string,

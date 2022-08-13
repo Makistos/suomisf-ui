@@ -197,14 +197,16 @@ export const Person = () => {
                             </div>
                             <div className="col-12">
                                 {person.works.length > 0 && (
-                                    <ContributorBookControl viewNonSf={false} person={person}></ContributorBookControl>
+                                    <ContributorBookControl viewNonSf={false} person={person}
+                                        collaborationsLast={true}></ContributorBookControl>
                                 )}
                                 {(person.stories.length > 0 || person.magazine_stories.length > 0) &&
                                     <ShortsControl key={"sfshorts"} person={person} listPublications what={"sf"}></ShortsControl>
                                 }
                                 {hasNonSf("all") && <Fieldset legend="Ei-SF/Mainstream" toggleable collapsed>
                                     {hasNonSf("works") &&
-                                        <ContributorBookControl viewNonSf={true} person={person}></ContributorBookControl>
+                                        <ContributorBookControl viewNonSf={true} person={person}
+                                            collaborationsLast={true}></ContributorBookControl>
                                     }
                                     {hasNonSf("stories") &&
                                         <ShortsControl key={"nonsfshorts"} person={person} listPublications what={"nonsf"}></ShortsControl>

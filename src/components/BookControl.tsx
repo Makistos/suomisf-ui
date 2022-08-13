@@ -13,9 +13,10 @@ import _ from "lodash";
 interface CBCProps {
     person: IPerson,
     viewNonSf: boolean,
+    collaborationsLast?: boolean
 }
 
-export const ContributorBookControl = ({ person, viewNonSf }: CBCProps) => {
+export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast = false }: CBCProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [works, setWorks]: [IWork[], (sfWorks: IWork[]) => void]
         = useState<IWork[]>([]);
@@ -134,7 +135,8 @@ export const ContributorBookControl = ({ person, viewNonSf }: CBCProps) => {
                 <TabPanel key="Kirjoittanut" header={headerText("Kirjoittanut", works.length)}
                     disabled={!hasWorks()}
                 >
-                    <WorkList works={works} personName={person.name} />
+                    <WorkList works={works} personName={person.name}
+                        collaborationsLast={collaborationsLast} />
                 </TabPanel>
                 <TabPanel key="Toimittanut" header={headerText("Toimittanut", edits.length)}
                     disabled={!hasEditions("edits")}

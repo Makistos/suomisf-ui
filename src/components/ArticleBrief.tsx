@@ -36,7 +36,6 @@ export const ArticleBrief = ({ article }: ArticleProps) => {
                         >{article.title}
                         </Link>
                     }
-
                 </div>
             )}
         </div >

@@ -6,10 +6,10 @@ import { IPublicationSize } from './PublicationSize';
 import { LinkList } from './components/LinkList';
 import { ShortSummary, IShort } from './components/Short';
 import { IArticle } from './components/Article';
-import { ArticleBrief } from './components/ArticleBrief';
 import { Image } from 'primereact/image';
 import { IMagazine } from './Magazine';
 import { useParams } from "react-router-dom";
+import { ArticleList } from './components/ArticleList';
 
 const baseURL = 'issues/';
 
@@ -92,14 +92,7 @@ export const Issue = ({ id, index }: IssueProps) => {
                         {issue.articles.length > 0 && (
                             <div className="p-pt-2"><b>Artikkelit</b>
                                 <div className="p-ml-3">
-                                    {
-                                        issue.articles
-                                            .map((article) => (
-                                                <ArticleBrief key={article.id}
-                                                    article={article}
-                                                />
-                                            ))
-                                    }
+                                    <ArticleList articles={issue.articles} />
                                 </div>
                             </div>
                         )

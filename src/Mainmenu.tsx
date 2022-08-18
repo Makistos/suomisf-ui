@@ -82,6 +82,10 @@ export default function MainMenu() {
                     url: '/pubseries'
                 },
                 {
+                    label: 'Asiasanaat',
+                    url: '/tags'
+                },
+                {
                     label: 'Palkinnot'
                 }
             ]

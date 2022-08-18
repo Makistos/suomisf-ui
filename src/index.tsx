@@ -23,6 +23,7 @@ import { BookseriesListing } from './BookseriesListing';
 import { PubseriesListing } from './PubseriesListing';
 import { ShortSearch } from './ShortsSearch';
 import { BookSearch } from './BookSearch';
+import { SFTag, SFTags } from './components/SFTag';
 
 const rootElement = document.getElementById("root");
 
@@ -45,6 +46,8 @@ ReactDOM.render(
         <Route path="pubseries/:bookseriesId" element={<Pubseries />} />
         <Route path="publishers/:publisherId" element={<Publisher />} />
         <Route path="publishers" element={<PublisherList />} />
+        <Route path="tags" element={<SFTags />} />
+        <Route path="tags/:tagid" element={<SFTag />} />
         <Route path="/login" element={<Login />} />
         <Route path="*"
           element={

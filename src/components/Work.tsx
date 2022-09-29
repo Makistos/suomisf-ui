@@ -4,7 +4,7 @@ import { IBookseries } from "./Bookseries";
 import { ICountry } from "./Country";
 import { IPerson, IPersonBrief } from "./Person";
 import { GenreGroup, GenreList } from "./Genre";
-import { TagGroup } from "./SFTag";
+import { TagGroup } from "./SFTagGroup";
 import { LinkList } from "./LinkList";
 import { ILink } from "./Link";
 import { IMAGE_URL } from "../systemProps";

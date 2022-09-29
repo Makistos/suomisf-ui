@@ -23,7 +23,8 @@ import { BookseriesListing } from './BookseriesListing';
 import { PubseriesListing } from './PubseriesListing';
 import { ShortSearch } from './ShortsSearch';
 import { BookSearch } from './BookSearch';
-import { SFTag, SFTags } from './components/SFTag';
+import { SFTag } from './components/SFTag';
+import { SFTags } from './components/SFTags';
 
 const rootElement = document.getElementById("root");
 

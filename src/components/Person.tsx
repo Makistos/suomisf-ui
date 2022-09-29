@@ -10,7 +10,7 @@ import { IArticle } from './Article';
 import { IShort } from './Short';
 import { ShortsControl } from './ShortsControl';
 import { GenreGroup, IGenre } from './Genre';
-import { TagGroup } from './SFTag';
+import { TagGroup } from './SFTagGroup';
 import { ILink } from './Link';
 import { LinkPanel } from './Links';
 import { AwardPanel, IAwarded } from './Awarded';

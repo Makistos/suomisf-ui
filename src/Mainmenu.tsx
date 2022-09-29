@@ -82,7 +82,7 @@ export default function MainMenu() {
                     url: '/pubseries'
                 },
                 {
-                    label: 'Asiasanaat',
+                    label: 'Asiasanat',
                     url: '/tags'
                 },
                 {

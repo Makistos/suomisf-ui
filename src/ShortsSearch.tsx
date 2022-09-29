@@ -71,8 +71,10 @@ export const ShortSearch = () => {
                                 <span className="p-float-label">
                                     <Controller name="author" control={control}
                                         render={({ field, fieldState }) => (
-                                            <InputText id={field.name} {...field} autoFocus
-                                                className={classNames({ 'p-invalid': fieldState.error })} />
+                                            <InputText
+                                                id={field.name} {...field} autoFocus
+                                                className={classNames({ 'p-invalid': fieldState.error })}
+                                            />
                                         )} />
                                     <label htmlFor="author" className={classNames({ 'p-error': errors })}>Kirjoittaja</label>
                                 </span>

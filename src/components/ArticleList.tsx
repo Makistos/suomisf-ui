@@ -18,8 +18,7 @@ export const ArticleList = ({ articles }: ArticleListProps) => {
                             />
                         </div>
                     )
-                }
-                )
+                })
             }
         </>
     )

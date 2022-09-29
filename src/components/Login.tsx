@@ -1,35 +1,34 @@
-import { ErrorMessage, Form, Formik } from "formik";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { useState } from "react";
-import * as Yup from "yup";
 import { login } from "../services/auth-service";
 import { Link } from "react-router-dom";
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { classNames } from "primereact/utils";
+
+type IFormData = {
+    username: string,
+    password: string
+}
+
+const defaultValues: IFormData = {
+    username: "",
+    password: "",
+};
 
 export const Login = () => {
+    //const { control, handleSubmit, formState: { errors } } = useForm<IFormData>({ defaultValues: defaultValues });
+    const form = useForm<IFormData>({ defaultValues: defaultValues });
     const [loading, setLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
 
-    const initialValues: {
-        username: string,
-        password: string;
-    } = {
-        username: "",
-        password: "",
-    };
 
-    const validationSchema = Yup.object().shape({
-        username: Yup.string().required("Käyttäjätunnus puuttuu!"),
-        password: Yup.string().required("Salasana puuttuu!"),
-    });
-
-    const handleLogin = (formValue: { username: string; password: string }) => {
-        const { username, password } = formValue;
+    const onSubmit: SubmitHandler<IFormData> = (data) => {
 
         setMessage("");
         setLoading(true);
 
-        login(username, password).then(
+        login(data.username, data.password).then(
             () => {
                 //history.push("/profile");
                 window.location.reload();
@@ -50,56 +49,65 @@ export const Login = () => {
     return (
         <div className="col-md-12">
             <div className="card card-container">
-                <Formik
-                    initialValues={initialValues}
-                    validationSchema={validationSchema}
-                    onSubmit={handleLogin}
-                >
-                    <Form>
-                        <div className="flex align-items-center justify-content-center mb-5">
-                            <div className="surface-card">
-                                <div className="text-center mb-5">
-                                    <div className="text-900 text-3x1 font-medium mb-3">Tervetuloa</div>
-                                    <span className="text-600 font-medium line-height-3">Ei tunnusta?</span>
-                                    <Link to={`/register`} className="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Luo tunnus!</Link>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
+                    <div className="flex align-items-center justify-content-center mb-5">
+                        <div className="surface-card">
+                            <div className="text-center mb-5">
+                                <div className="text-900 text-3x1 font-medium mb-3">Tervetuloa</div>
+                                <span className="text-600 font-medium line-height-3">Ei tunnusta?</span>
+                                <Link to={`/register`} className="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Luo tunnus!</Link>
+                            </div>
+                            <div>
+                                <div className="field">
+                                    <span>
+                                        <label htmlFor="username">Käyttäjätunnus</label>
+                                        <Controller name="username" control={form.control}
+                                            render={({ field, fieldState }) => (
+                                                <InputText
+                                                    id={field.name} {...field} autoFocus
+                                                    {...form.register("username", { required: true })}
+                                                    className={classNames({ 'p-invalid': fieldState.error },
+                                                        "w-full mb-3")}
+                                                />
+                                            )} />
+                                    </span>
                                 </div>
-                                <div>
-                                    <label htmlFor="username" className="block text-900 font-medium mb-3">Käyttäjätunnus</label>
-                                    <InputText id="username" name="username" type="text" className="w-full mb-3" />
-                                    <ErrorMessage
-                                        name="username"
-                                        component="div"
-                                        className="alert alert-danger"
-                                    />
-
-                                    <label htmlFor="password" className="block text-900 font-medium mb-2">Salasana</label>
-                                    <InputText id="password" name="password" type="password" className="w-full mb-3" />
-                                    <ErrorMessage
-                                        name="password"
-                                        component="div"
-                                        className="alert alert-danger"
-                                    />
-                                    <Button type="submit" icon="pi pi-user" className="w-full" disabled={loading}>
-                                        {loading && (
-                                            <span className="spinner-border spinner-border-sm"></span>
-                                        )}
-                                        <span>Kirjaudu</span>
-                                    </Button>
+                                <div className="field">
+                                    <span>
+                                        <label htmlFor="password">Salasana</label>
+                                        <Controller name="password" control={form.control}
+                                            render={({ field, fieldState }) => (
+                                                <InputText
+                                                    id={field.name} {...field}
+                                                    {...form.register("password", { required: true })}
+                                                    type="password"
+                                                    className={classNames({ 'p-invalid': fieldState.error },
+                                                        "w-full mb-3")}
+                                                />
+                                            )} />
+                                    </span>
                                 </div>
+                                <Button type="submit" icon="pi pi-user" className="w-full" disabled={loading}>
+                                    {loading && (
+                                        <span className="spinner-border spinner-border-sm"></span>
+                                    )}
+                                    <span>Kirjaudu</span>
+                                </Button>
                             </div>
                         </div>
-                        {message && (
-                            <div className="form-group">
-                                <div className="alert alert-danger" role="alert">
-                                    {message}
-                                </div>
+                    </div>
+                    {message && (
+                        <div className="form-group">
+                            <div className="alert alert-danger" role="alert">
+                                {message}
                             </div>
-                        )}
-                    </Form>
-                </Formik>
+                        </div>
+                    )}
+                </form>
             </div>
         </div>
     );
 };
+
 
 export default Login;

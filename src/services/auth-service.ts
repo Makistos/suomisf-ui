@@ -13,13 +13,14 @@ export const register = (username: string, email: string, password: string) => {
     });
 };
 
-export const login = (username: string, password: string) => {
-    return axios.post(API_URL + "login", {
-        username,
-        password,
-    })
+export async function login(username: string, password: string) {
+    return await axios.post(API_URL + "login",
+        {
+            'username': username,
+            'password': password
+        })
         .then((response) => {
-            console.log(response);
+            console.log("Login response: " + JSON.stringify(response, null, 2));
             if (response.data.accessToken) {
                 console.log("accessToken");
                 localStorage.setItem("user", JSON.stringify(response.data));

@@ -4,6 +4,11 @@ import authHeader from "./auth-header";
 import { API_URL } from "../systemProps";
 
 const baseURL = API_URL;
+
+interface cbType {
+    (data: any): any;
+}
+
 export const getPublicContent = (url: string) => {
     return axios.get(baseURL + url);
 };
@@ -20,22 +25,25 @@ export const getApiContent = (url: string, user: IUser | null) => {
     }
 }
 
-const postPublicContent = (url: string, data: any, user: IUser | null): any => {
-    let retval;
-    let headers;
-    if (user === undefined || user === null) {
-        headers = { "Content-Type": "multipart/form-data" };
-        // } else {
-        //     headers = {
-        //         "Content-Type": "multipart/form-data",
-        //         authHeader();
-        //     };
+const postPublicContent = (url: string, data: any, callback: cbType | null, user: IUser | null): any => {
+    // let retval;
+    // let headers;
+    // if (user === undefined || user === null) {
+    //     headers = { "Content-Type": "multipart/form-data" };
+    //     // } else {
+    //     //     headers = {
+    //     //         "Content-Type": "multipart/form-data",
+    //     //         authHeader();
+    //     //     };
 
-    }
+    // }
     const addr = API_URL + url;
     console.log('Posting to address ' + addr);
-    axios.post(addr, data)
+    axios.post(addr, data, { headers: authHeader() })
         .then((response) => {
+            if (callback) {
+                callback(response.data);
+            }
             return response.data;
             //console.log("Post response: " + retval)
         })
@@ -45,6 +53,34 @@ const postPublicContent = (url: string, data: any, user: IUser | null): any => {
     //return retval;
 }
 
+export const putContent = (url: string, data: any, user: IUser | null): any => {
+    const addr = API_URL + url;
+    axios.put(addr, data, { headers: authHeader() })
+        .then((response) => {
+            return response.data;
+        })
+        .catch((response) => {
+            console.log(response);
+        })
+}
+
+export const deleteApiContent = (url: string): any => {
+    const addr = API_URL + url;
+    axios.delete(addr, { headers: authHeader() })
+        .then((response) => {
+            return response.data;
+        })
+        .catch((err) => {
+            if (err.response) {
+                console.log("server error: " + JSON.stringify(err.response, null, 2));
+            } else if (err.request) {
+                console.log("no response: " + JSON.stringify(err.request, null, 2));
+            } else {
+                console.log("other error: " + JSON.stringify(err.tostring, null, 2));
+            }
+        })
+}
+
 export const postApiContent = (url: string, data: any, user: IUser | null) => {
-    return postPublicContent(url, data, user);
+    return postPublicContent(url, data, null, user);
 }

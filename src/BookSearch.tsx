@@ -8,7 +8,7 @@ import { Button } from 'primereact/button';
 import { Fieldset } from 'primereact/fieldset';
 import { Dropdown } from "primereact/dropdown";
 import { IGenre, getGenreIcon } from "./components/Genre";
-import { getApiContent, postApiContent } from "./services/user-service";
+import { getApiContent } from "./services/user-service";
 import { ICountry } from "./components/Country";
 import { IBookType } from "./components/BookType";
 import axios from "axios";

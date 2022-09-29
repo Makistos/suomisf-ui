@@ -306,7 +306,7 @@ export const SFTag = ({ id }: TagProps) => {
                 reject={() => setDisplayDelete(false)}
             />
             <div className="mt-5 speeddial style={{position: 'relative', height: '500px}}">
-                {user && user.role == "admin" &&
+                {user && user.role === "admin" &&
                     <div>
                         <Tooltip target=".speeddial .speeddial-right .p-speeddial-action" position="left" />
                         <SpeedDial className="speeddial-right"

@@ -1,6 +1,6 @@
-import { Link, Navigate, Route, useNavigate } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
-import { getApiContent, deleteApiContent } from '../services/user-service';
+import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { getApiContent } from '../services/user-service';
 import { getCurrenUser } from '../services/auth-service';
 import { ProgressSpinner } from 'primereact/progressspinner';
 

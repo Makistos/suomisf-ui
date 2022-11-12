@@ -1,5 +1,5 @@
 import { ArticleBrief } from "./ArticleBrief";
-import { IArticle } from "./Article";
+import type { IArticle } from "./Article";
 
 type ArticleListProps = {
     articles: IArticle[]

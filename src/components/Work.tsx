@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { EditionDetails, EditionString, IEdition, OtherEdition } from "./Edition";
-import { IBookseries } from "./Bookseries";
-import { ICountry } from "./Country";
-import { IPerson, IPersonBrief } from "./Person";
+import type { IBookseries } from "./Bookseries";
+import type { ICountry } from "./Country";
+import type { IPerson, IPersonBrief } from "./Person";
 import { GenreGroup, GenreList } from "./Genre";
 import { TagGroup } from "./SFTagGroup";
 import { LinkList } from "./LinkList";
-import { ILink } from "./Link";
+import type { ILink } from "./Link";
 import { IMAGE_URL } from "../systemProps";
 import { Link } from "react-router-dom";
 import { Tooltip } from "primereact/tooltip";
@@ -18,13 +18,13 @@ import { DataView, DataViewLayoutOptions, DataViewLayoutType, DataViewLayoutOpti
 import { Panel } from "primereact/panel";
 import { Ripple } from "primereact/ripple";
 import { ShortsList } from "./ShortsList";
-import { IShort } from "./Short";
+import type { IShort } from "./Short";
 import { SpeedDial } from "primereact/speeddial";
 import { confirmDialog } from "primereact/confirmdialog";
-import { IAwarded } from "./Awarded";
+import type { IAwarded } from "./Awarded";
 import { AwardPanel } from "./Awarded";
 import { LinkPanel } from "./Links";
-import { IPubseries } from "./Pubseries";
+import type { IPubseries } from "./Pubseries";
 export interface IWork {
     [index: string]: any,
     author_str: string,

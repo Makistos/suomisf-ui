@@ -1,14 +1,13 @@
-import { Fragment } from "react";
-import { IPublisher } from "./Publisher";
-import { IPersonBrief } from "./Person";
-import { IWork } from "./Work";
+import type { IPublisher } from "./Publisher";
+import type { IPersonBrief } from "./Person";
+import type { IWork } from "./Work";
 import { GenreList } from "./Genre";
 import { Link } from "react-router-dom";
-import { IImage } from "./Image";
+import type { IImage } from "./Image";
 import { LinkList } from "./LinkList";
-import { IFormat } from "./Format";
-import { IBinding } from "./Binding";
-import { IPubseries } from "./Pubseries";
+import type { IFormat } from "./Format";
+import type { IBinding } from "./Binding";
+import type { IPubseries } from "./Pubseries";
 export interface IEdition {
     binding: IBinding,
     coll_info: string,

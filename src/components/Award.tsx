@@ -1,5 +1,5 @@
-import { IAwardCategory } from "./AwardCategory"
-import { IAwarded } from "./Awarded"
+import type { IAwardCategory } from "./AwardCategory"
+import type { IAwarded } from "./Awarded"
 
 export interface IAward {
     id: number,

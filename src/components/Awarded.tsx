@@ -1,11 +1,11 @@
 import { useRef } from "react";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { Button } from "primereact/button";
-import { IPerson } from "./Person";
-import { IWork } from "./Work";
-import { IShort } from "./Short"
-import { IAward } from "./Award";
-import { IAwardCategory } from "./AwardCategory";
+import type { IPerson } from "./Person";
+import type { IWork } from "./Work";
+import type { IShort } from "./Short"
+import type { IAward } from "./Award";
+import type { IAwardCategory } from "./AwardCategory";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { classNames } from "primereact/utils";

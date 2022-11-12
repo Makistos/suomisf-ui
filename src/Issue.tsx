@@ -1,13 +1,13 @@
 import React from 'react';
 import { getCurrenUser } from './services/auth-service';
 import { getApiContent } from './services/user-service';
-import { IPerson } from './components/Person';
+import type { IPerson } from './components/Person';
 import { IPublicationSize } from './PublicationSize';
 import { LinkList } from './components/LinkList';
 import { ShortSummary, IShort } from './components/Short';
-import { IArticle } from './components/Article';
+import type { IArticle } from './components/Article';
 import { Image } from 'primereact/image';
-import { IMagazine } from './Magazine';
+import type { IMagazine } from './Magazine';
 import { useParams } from "react-router-dom";
 import { ArticleList } from './components/ArticleList';
 

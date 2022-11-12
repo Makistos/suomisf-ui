@@ -1,9 +1,15 @@
 import { Link } from 'react-router-dom';
 import { LinkList } from "./LinkList";
-import { IPerson } from "./Person";
-import { IEdition } from "./Edition";
-import { IIssue } from "../Issue";
-import { IGenre, GenreList } from './Genre';
+import type { IPerson } from "./Person";
+import type { IEdition } from "./Edition";
+import type { IIssue } from "../Issue";
+import type { IGenre } from './Genre';
+import { GenreList } from './Genre';
+import { Dialog } from 'primereact/dialog';
+import { ShortsForm } from './forms/ShortsForm';
+import { useState } from 'react';
+import { Button } from 'primereact/button';
+import { IContribution } from './Contribution';
 
 export interface IShortType {
     id: number,
@@ -19,7 +25,8 @@ export interface IShort {
     type: IShortType,
     editions: IEdition[],
     issues: IIssue[],
-    genres: IGenre[]
+    genres: IGenre[],
+    contributors: IContribution[]
 }
 
 interface ShortProps {
@@ -66,6 +73,7 @@ export const groupShorts = (shorts: IShort[]) => {
 export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProps) => {
     //const user = getCurrenUser();
     //let [short, setShort]: [IShort | null, (story: IShort) => void] = React.useState<IShort | null>(null);
+    const [isEditVisible, setEditVisible] = useState(false);
 
     const PickLinks = (items: IPerson[]) => {
         return items.map((item) => ({ id: item['id'], name: item['alt_name'] }));
@@ -116,10 +124,25 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
         return retval;
     }
 
+    const translators = (contributors: IContribution[]) => {
+        if (!contributors) return (<></>)
+        const translators = contributors.filter(contributor => contributor.role.name === 'Kääntäjä');
+        if (translators.length === 0) return (<></>)
+        return (
+            <>
+                Suom. {translators.map(tr => tr.person.name).join(', ')}
+                .</>
+        )
+    }
+
     return (
         <div>
+            <Dialog modal resizable closeOnEscape maximizable
+                header={short.title} visible={isEditVisible} onHide={() => setEditVisible(false)} >
+                <ShortsForm short={short} />
+            </Dialog>
             {short !== null && short !== undefined ? (
-                <div>
+                <div key={short.id}>
                     <div>
                         {!skipAuthors &&
                             <b>
@@ -138,9 +161,16 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
                         )
                         }
                         <>. </>
+                        {translators(short.contributors)}
                         {short.genres.length > 0 &&
                             <GenreList genres={short.genres} />
                         }
+                        <Button
+                            icon="fa-solid fa-pen-to-square"
+                            className="p-button-rounded p-button-info p-button-text"
+                            onClick={() => setEditVisible(true)}
+                        />
+
                     </div>
                     {listPublications &&
                         short.editions.length > 0 && (
@@ -153,6 +183,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
                             {shortIssues(short.issues)}
                         </div>
                     )}
+
 
                 </div>
             ) : (

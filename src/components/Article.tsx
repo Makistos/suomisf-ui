@@ -1,11 +1,12 @@
 import React from 'react';
 import { useParams } from "react-router-dom";
 import { LinkList } from './LinkList';
-import { IPerson } from './Person';
+import type { IPerson } from './Person';
 import { getApiContent } from '../services/user-service';
 import { getCurrenUser } from '../services/auth-service';
-import { ITag, PickTagLinks } from './SFTag';
-import { IIssue } from '../Issue';
+import type { ITag } from './SFTag';
+import { PickTagLinks } from './SFTag';
+import type { IIssue } from '../Issue';
 const baseURL = 'articles/';
 
 export interface IArticle {

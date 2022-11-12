@@ -53,6 +53,11 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications, ant
         if (orderField === "Title") {
             return a.title < b.title ? -1 : 1;
         }
+        // a first if both are are null. Otherwise if one is null,
+        // that goes first.
+        if (!a.pubyear && !b.pubyear) return -1;
+        if (!a.pubyear) return -1;
+        if (!b.pubyear) return 1;
         if (orderField === "Year") {
             return a.pubyear < b.pubyear ? -1 : 1;
         }

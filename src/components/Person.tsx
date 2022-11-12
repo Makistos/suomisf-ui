@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { useParams } from "react-router-dom";
 import { getCurrenUser } from "../services/auth-service";
 import { getApiContent } from "../services/user-service";
-import { IWork } from "./Work";
+import type { IWork } from "./Work";
 import { ICountry } from "./Country";
 import { ContributorBookControl } from "./BookControl";
-import { IEdition } from './Edition';
-import { IArticle } from './Article';
-import { IShort } from './Short';
+import type { IEdition } from './Edition';
+import type { IArticle } from './Article';
+import type { IShort } from './Short';
 import { ShortsControl } from './ShortsControl';
 import { GenreGroup, IGenre } from './Genre';
 import { TagGroup } from './SFTagGroup';
@@ -23,6 +23,7 @@ interface INationality {
 }
 
 export interface IPerson {
+    [index: string]: any,
     id: number,
     name: string,
     aliases: IPerson[],

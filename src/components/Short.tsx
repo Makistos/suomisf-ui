@@ -138,7 +138,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
     return (
         <div>
             <Dialog modal resizable closeOnEscape maximizable
-                header={short.title} visible={isEditVisible} onHide={() => setEditVisible(false)} >
+                header="Novellin muokkaus" visible={isEditVisible} onHide={() => setEditVisible(false)} >
                 <ShortsForm short={short} />
             </Dialog>
             {short !== null && short !== undefined ? (

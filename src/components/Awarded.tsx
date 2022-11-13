@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { Button } from "primereact/button";
 import type { IPerson } from "./Person";
-import type { IWork } from "./Work";
+import type { IWork } from "../feature/Work/Work";
 import type { IShort } from "./Short"
 import type { IAward } from "./Award";
 import type { IAwardCategory } from "./AwardCategory";

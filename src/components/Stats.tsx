@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "primereact/button";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { IEdition } from "./Edition";
-import { IWork } from "./Work";
+import { IWork } from "../feature/Work/Work";
 import { Chart } from "primereact/chart";
 import { getGenreColors } from "./Genre";
 import _ from "lodash";

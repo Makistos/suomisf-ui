@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from "react-router-dom";
 import { getCurrenUser } from "../services/auth-service";
 import { getApiContent } from "../services/user-service";
-import type { IWork } from "./Work";
+import type { IWork } from "../feature/Work/Work";
 import { ICountry } from "./Country";
 import { ContributorBookControl } from "./BookControl";
 import type { IEdition } from './Edition';

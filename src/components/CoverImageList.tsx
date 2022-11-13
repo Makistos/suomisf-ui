@@ -1,4 +1,4 @@
-import { IWork } from './Work';
+import { IWork } from '../feature/Work/Work';
 import { IImage } from './Image';
 import { Image } from "primereact/image";
 import { IMAGE_URL } from "../systemProps";

@@ -1,30 +1,30 @@
 import { useEffect, useState } from "react";
-import { EditionDetails, EditionString, IEdition, OtherEdition } from "./Edition";
-import type { IBookseries } from "./Bookseries";
-import type { ICountry } from "./Country";
-import type { IPerson, IPersonBrief } from "./Person";
-import { GenreGroup, GenreList } from "./Genre";
-import { TagGroup } from "./SFTagGroup";
-import { LinkList } from "./LinkList";
-import type { ILink } from "./Link";
-import { IMAGE_URL } from "../systemProps";
+import { EditionDetails, EditionString, IEdition, OtherEdition } from "../../components/Edition";
+import type { IBookseries } from "../../components/Bookseries";
+import type { ICountry } from "../../components/Country";
+import type { IPerson, IPersonBrief } from "../../components/Person";
+import { GenreGroup, GenreList } from "../../components/Genre";
+import { TagGroup } from "../../components/SFTagGroup";
+import { LinkList } from "../../components/LinkList";
+import type { ILink } from "../../components/Link";
+import { IMAGE_URL } from "../../systemProps";
 import { Link } from "react-router-dom";
 import { Tooltip } from "primereact/tooltip";
 import { useParams } from "react-router-dom";
-import { getCurrenUser } from "../services/auth-service";
-import { getApiContent } from "../services/user-service";
+import { getCurrenUser } from "../../services/auth-service";
+import { getApiContent } from "../../services/user-service";
 import { Image } from "primereact/image";
 import { DataView, DataViewLayoutOptions, DataViewLayoutType, DataViewLayoutOptionsChangeParams } from "primereact/dataview";
 import { Panel } from "primereact/panel";
 import { Ripple } from "primereact/ripple";
-import { ShortsList } from "./ShortsList";
-import type { IShort } from "./Short";
+import { ShortsList } from "../../components/ShortsList";
+import type { IShort } from "../../components/Short";
 import { SpeedDial } from "primereact/speeddial";
 import { confirmDialog } from "primereact/confirmdialog";
-import type { IAwarded } from "./Awarded";
-import { AwardPanel } from "./Awarded";
-import { LinkPanel } from "./Links";
-import type { IPubseries } from "./Pubseries";
+import type { IAwarded } from "../../components/Awarded";
+import { AwardPanel } from "../../components/Awarded";
+import { LinkPanel } from "../../components/Links";
+import type { IPubseries } from "../../components/Pubseries";
 export interface IWork {
     [index: string]: any,
     author_str: string,

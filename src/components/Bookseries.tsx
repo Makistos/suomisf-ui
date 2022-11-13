@@ -4,8 +4,8 @@ import { getCurrenUser } from "../services/auth-service";
 import { getApiContent } from "../services/user-service";
 import { IEdition } from "./Edition";
 import { IPublisher } from "./Publisher";
-import { IWork } from "./Work";
-import { WorkList } from "./WorkList";
+import { IWork } from "../feature/Work/Work";
+import { WorkList } from "../feature/Work/WorkList";
 
 const baseURL = 'bookseries/';
 export interface IBookseries {

@@ -13,7 +13,7 @@ import { ArticleView } from './components/Article';
 import { Issue } from './Issue';
 import { People } from './People';
 import { Person } from './components/Person';
-import { Work } from './components/Work';
+import { Work } from './feature/Work/Work';
 import Login from './components/Login';
 import { Bookseries } from './components/Bookseries';
 import { Pubseries } from './components/Pubseries';

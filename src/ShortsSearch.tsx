@@ -110,6 +110,7 @@ export const ShortSearch = () => {
                                 <Controller name="pubyear_first" control={control}
                                     render={({ field, fieldState }) => (
                                         <InputText id={field.name} {...field}
+                                            keyfilter="pint"
                                             className={classNames({ 'p-invalid': fieldState })} />
                                     )} />
                                 <label htmlFor="title" className={classNames({ 'p-error': errors })}>Julkaistu aikaisintaan</label>

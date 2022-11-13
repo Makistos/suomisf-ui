@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { WorkSummary, IWork, groupWorks } from './Work';
-import { CoverImageList } from "./CoverImageList";
+import { CoverImageList } from "../../components/CoverImageList";
 import { SelectButton } from 'primereact/selectbutton';
 import { Dropdown } from "primereact/dropdown";
 import "primeflex/primeflex.css";
-import { WorkStatsPanel } from "./Stats";
+import { WorkStatsPanel } from "../../components/Stats";
 
 type WorksProp = {
     works: IWork[],

@@ -1,8 +1,9 @@
 import { Dropdown } from 'primereact/dropdown';
+import { MultiSelect } from "primereact/multiselect";
 import { Button } from 'primereact/button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, Controller, SubmitHandler, useFieldArray, FieldValues } from 'react-hook-form';
-import type { IGenre } from '../Genre';
+import { getGenreColors, IGenre } from '../Genre';
 import { IShort, IShortType, shortIsSf } from '../Short';
 import { InputText } from 'primereact/inputtext';
 import type { IPerson } from '../Person';
@@ -10,8 +11,9 @@ import { classNames } from 'primereact/utils';
 import { ContributorField } from './ContributorField';
 import { IContribution } from '../Contribution';
 import { KeyValuePair } from './forms';
-import { postApiContent } from '../../services/user-service';
+import { getApiContent, postApiContent } from '../../services/user-service';
 import { getCurrenUser } from '../../services/auth-service';
+import { AutoComplete } from 'primereact/autocomplete';
 
 interface hasIdAndName {
     id: number,
@@ -68,7 +70,7 @@ export const ShortsForm = (props: IShortFormProps) => {
         language: '',
         pubyear: null,
         authors: [],
-        type: 0,
+        type: 1,
         genres: [],
         contributors: []
     }
@@ -85,8 +87,25 @@ export const ShortsForm = (props: IShortFormProps) => {
     //     control,
     //     name: "genres"
     // })
+    const [typeList, setTypeList] = useState([]);
+    const [genres, setGenres] = useState([]);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        async function getTypes() {
+            const url = "shorttypes";
+            const response = await getApiContent(url, user);
+            setTypeList(response.data);
+        }
+        async function getGenres() {
+            const url = "genres";
+            const response = await getApiContent(url, user);
+            setGenres(response.data);
+        }
+        getTypes();
+        getGenres();
+    }, [])
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         const retval: IShortFormSubmit = { data, changed: dirtyFields }
         setMessage("");
@@ -99,6 +118,9 @@ export const ShortsForm = (props: IShortFormProps) => {
             console.log(dirtyFields)
         }
         setLoading(false);
+    }
+    const filterGenres = () => {
+
     }
 
     return (
@@ -146,6 +168,42 @@ export const ShortsForm = (props: IShortFormProps) => {
                                 )}
                             />
                             <label htmlFor="pubyear">Alkuperäinen julkaisuvuosi</label>
+                        </span>
+                    </div>
+                    <div className="field col-12">
+                        <span className="p-float-label">
+                            <Controller name="type" control={control}
+                                render={({ field, fieldState }) => (
+                                    <Dropdown
+                                        {...field}
+                                        optionLabel="name"
+                                        optionValue="id"
+                                        options={typeList}
+                                        className={classNames(
+                                            { "p-invalid": fieldState.error }, "w-full"
+                                        )}
+                                        tooltip="Tyyppi"
+                                    />
+                                )}
+                            />
+                            <label htmlFor="type">Tyyppi</label>
+                        </span>
+                    </div>
+                    <div className="field col-12">
+                        <span className="p-float-label">
+                            <Controller name="genres" control={control}
+                                render={({ field, fieldState }) => (
+                                    <MultiSelect
+                                        {...field}
+                                        options={genres}
+                                        optionLabel="name"
+                                        optionValue="id"
+                                        display="chip"
+                                        scrollHeight="400px"
+                                    />
+                                )}
+                            />
+                            <label htmlFor="genres">Genret</label>
                         </span>
                     </div>
                     <div className="field col-12 py-0">

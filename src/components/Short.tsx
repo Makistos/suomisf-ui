@@ -10,6 +10,7 @@ import { ShortsForm } from './forms/ShortsForm';
 import { useState } from 'react';
 import { Button } from 'primereact/button';
 import { IContribution } from './Contribution';
+import { ITag } from './SFTag';
 
 export interface IShortType {
     id: number,
@@ -26,7 +27,8 @@ export interface IShort {
     editions: IEdition[],
     issues: IIssue[],
     genres: IGenre[],
-    contributors: IContribution[]
+    contributors: IContribution[],
+    tags: ITag[]
 }
 
 interface ShortProps {
@@ -137,7 +139,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
 
     return (
         <div>
-            <Dialog modal resizable closeOnEscape maximizable
+            <Dialog maximizable blockScroll
                 header="Novellin muokkaus" visible={isEditVisible} onHide={() => setEditVisible(false)} >
                 <ShortsForm short={short} />
             </Dialog>

@@ -14,7 +14,8 @@ import { KeyValuePair } from './forms';
 import { getApiContent, postApiContent } from '../../services/user-service';
 import { getCurrenUser } from '../../services/auth-service';
 import { AutoComplete } from 'primereact/autocomplete';
-
+import type { ITag } from '../SFTag';
+import { isAdmin } from '../../user';
 interface hasIdAndName {
     id: number,
     name: string
@@ -28,7 +29,8 @@ interface IShortForm {
     authors: KeyValuePair[],
     type: number,
     genres: KeyValuePair[],
-    contributors: IContribution[]
+    contributors: IContribution[],
+    tags: ITag[]
 }
 
 interface IShortFormSubmit {
@@ -60,7 +62,8 @@ export const ShortsForm = (props: IShortFormProps) => {
         authors: toKeyValue(short.authors),
         type: short.type.id,
         genres: toKeyValue(short.genres),
-        contributors: short.contributors
+        contributors: short.contributors,
+        tags: short.tags
     });
 
     const defaultValues: IShortForm = {
@@ -72,7 +75,8 @@ export const ShortsForm = (props: IShortFormProps) => {
         authors: [],
         type: 1,
         genres: [],
-        contributors: []
+        contributors: [],
+        tags: []
     }
     const formData = props.short !== null ? convToForm(props.short) : defaultValues;
 
@@ -91,6 +95,8 @@ export const ShortsForm = (props: IShortFormProps) => {
     const [genres, setGenres] = useState([]);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const [filteredLanguages, setFilteredLanguages] = useState([]);
+    const [filteredTags, setFilteredTags] = useState([]);
 
     useEffect(() => {
         async function getTypes() {
@@ -119,8 +125,16 @@ export const ShortsForm = (props: IShortFormProps) => {
         }
         setLoading(false);
     }
-    const filterGenres = () => {
+    async function filterLanguages(event: any) {
+        const url = "filter/languages/" + event.query;
+        const response = await getApiContent(url, user);
+        setFilteredLanguages(response.data);
+    }
 
+    async function filterTags(event: any) {
+        const url = "filter/tags/" + event.query;
+        const response = await getApiContent(url, user);
+        setFilteredTags(response.data);
     }
 
     return (
@@ -164,13 +178,14 @@ export const ShortsForm = (props: IShortFormProps) => {
                                 render={({ field, fieldState }) => (
                                     <InputText id={field.name} {...field}
                                         {...register("pubyear")}
+                                        keyfilter="pint"
                                     />
                                 )}
                             />
                             <label htmlFor="pubyear">Alkuperäinen julkaisuvuosi</label>
                         </span>
                     </div>
-                    <div className="field col-12">
+                    <div className="field col-6">
                         <span className="p-float-label">
                             <Controller name="type" control={control}
                                 render={({ field, fieldState }) => (
@@ -189,6 +204,32 @@ export const ShortsForm = (props: IShortFormProps) => {
                             <label htmlFor="type">Tyyppi</label>
                         </span>
                     </div>
+                    <div className="field col-6">
+                        <span className="p-float-label">
+                            <Controller name="language" control={control}
+                                render={({ field, fieldState }) => (
+                                    <AutoComplete
+                                        {...field}
+                                        field="name"
+                                        completeMethod={filterLanguages}
+                                        suggestions={filteredLanguages}
+                                        placeholder="Kieli"
+                                        tooltip="Kieli"
+                                        delay={300}
+                                        minLength={2}
+                                        removeIcon
+                                        className={classNames(
+                                            { "p-invalid": fieldState.error },
+                                            "w-full"
+                                        )}
+                                        inputClassName="w-full"
+                                        disabled={!isAdmin(user)}
+                                    />
+                                )}
+                            />
+                            <label htmlFor="language">Kieli</label>
+                        </span>
+                    </div>
                     <div className="field col-12">
                         <span className="p-float-label">
                             <Controller name="genres" control={control}
@@ -200,10 +241,41 @@ export const ShortsForm = (props: IShortFormProps) => {
                                         optionValue="id"
                                         display="chip"
                                         scrollHeight="400px"
+                                        className={classNames(
+                                            { "p-invalid": fieldState.error },
+                                            "w-full"
+                                        )}
+                                        showClear
+                                        showSelectAll={false}
                                     />
                                 )}
                             />
                             <label htmlFor="genres">Genret</label>
+                        </span>
+                    </div>
+                    <div className="field col-12">
+                        <span className="p-float-label">
+                            <Controller name="tags" control={control}
+                                render={({ field, fieldState }) => (
+                                    <AutoComplete
+                                        {...field}
+                                        field="name"
+                                        multiple
+                                        completeMethod={filterTags}
+                                        suggestions={filteredTags}
+                                        placeholder="Asiasanat"
+                                        tooltip="Asiasanat"
+                                        delay={300}
+                                        minLength={2}
+                                        className={classNames(
+                                            { "p-invalid": fieldState.error },
+                                            "w-full"
+                                        )}
+                                        inputClassName="w-full"
+                                    />
+                                )}
+                            />
+                            <label htmlFor="language">Asiasanat</label>
                         </span>
                     </div>
                     <div className="field col-12 py-0">

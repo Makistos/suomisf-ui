@@ -1,14 +1,16 @@
 import { useRef } from "react";
+
 import { OverlayPanel } from "primereact/overlaypanel";
 import { Button } from "primereact/button";
-import type { IPerson } from "../feature/Person/Person";
-import type { IWork } from "../feature/Work/Work";
-import type { IShort } from "../feature/Short/Short"
-import type { IAward } from "./Award";
-import type { IAwardCategory } from "./AwardCategory";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { classNames } from "primereact/utils";
+
+import type { IPerson } from "../Person/Person";
+import type { IWork } from "../Work/Work";
+import type { IShort } from "../Short/Short"
+import type { IAward } from "./Award";
+import type { IAwardCategory } from "./AwardCategory";
 
 export interface IAwarded {
     id: number,

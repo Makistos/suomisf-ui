@@ -1,7 +1,7 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
+
 import { LinkList } from '../../components/LinkList';
 import type { IPerson } from '../Person/Person';
-import { Link } from 'react-router-dom';
 import type { IArticle } from './Article';
 
 interface ArticleProps {

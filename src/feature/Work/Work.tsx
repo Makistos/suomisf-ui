@@ -23,8 +23,8 @@ import { getCurrenUser } from "../../services/auth-service";
 import { getApiContent } from "../../services/user-service";
 import { ShortsList } from "../Short/ShortsList";
 import type { IShort } from "../Short/Short";
-import type { IAwarded } from "../../components/Awarded";
-import { AwardPanel } from "../../components/Awarded";
+import type { IAwarded } from "../Award/Awarded";
+import { AwardPanel } from "../Award/Awarded";
 import { LinkPanel } from "../../components/Links";
 import type { IPubseries } from "../../components/Pubseries";
 

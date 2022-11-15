@@ -18,7 +18,7 @@ import { GenreGroup, IGenre } from '../../components/Genre';
 import { TagGroup } from '../../components/Tag/SFTagGroup';
 import { ILink } from '../../components/Link';
 import { LinkPanel } from '../../components/Links';
-import { AwardPanel, IAwarded } from '../../components/Awarded';
+import { AwardPanel, IAwarded } from '../Award/Awarded';
 
 interface INationality {
     id: number,

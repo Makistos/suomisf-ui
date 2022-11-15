@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from "react";
-import { IWork, WorkSummary } from "../feature/Work/Work";
+import { IWork, WorkSummary } from "../pages/Work/Work";
 import { groupByBookSeries } from "./Bookseries";
 
 interface SeriesListProps {

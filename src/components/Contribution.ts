@@ -1,5 +1,5 @@
 
-import { IPerson } from "../feature/Person/Person";
+import { IPerson } from "../pages/Person/Person";
 
 export interface IRole {
     id: number,

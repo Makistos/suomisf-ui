@@ -1,9 +1,9 @@
-import { IWork } from '../feature/Work/Work';
+import { IWork } from '../pages/Work/Work';
 import { IImage } from './Image';
 import { Image } from "primereact/image";
 import { IMAGE_URL } from "../systemProps";
 import { Tooltip } from 'primereact/tooltip';
-import { EditionString, IEdition } from '../feature/Edition/Edition';
+import { EditionString, IEdition } from '../pages/Edition/Edition';
 
 interface CoverImageListProps {
     works?: IWork[],

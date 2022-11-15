@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getCurrenUser } from "../services/auth-service";
 import { getApiContent } from "../services/user-service";
-import { IEdition } from "../feature/Edition/Edition";
-import { IPublisher } from "../feature/Publisher/Publisher";
-import { IWork } from "../feature/Work/Work";
-import { WorkList } from "../feature/Work/WorkList";
+import { IEdition } from "../pages/Edition/Edition";
+import { IPublisher } from "../pages/Publisher/Publisher";
+import { IWork } from "../pages/Work/Work";
+import { WorkList } from "../pages/Work/WorkList";
 
 const baseURL = 'bookseries/';
 export interface IBookseries {

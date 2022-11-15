@@ -12,7 +12,7 @@ import { confirmDialog } from "primereact/confirmdialog";
 
 import { EditionDetails, EditionString, IEdition, OtherEdition } from "../Edition/Edition";
 import type { IBookseries } from "../../components/Bookseries";
-import type { ICountry } from "../../components/Country";
+import type { ICountry } from "../../components/Country/Country";
 import type { IPerson, IPersonBrief } from "../Person/Person";
 import { GenreGroup, GenreList } from "../../components/Genre";
 import { TagGroup } from "../../components/Tag/SFTagGroup";

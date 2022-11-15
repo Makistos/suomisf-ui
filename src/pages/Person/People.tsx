@@ -10,7 +10,7 @@ import { DataTablePFSEvent } from 'primereact/datatable';
 import { getApiContent } from '../../services/user-service';
 import { getCurrenUser } from '../../services/auth-service';
 import type { IPerson } from './Person';
-import type { ICountry } from '../../components/Country';
+import type { ICountry } from '../../components/Country/Country';
 
 const baseURL = 'people';
 

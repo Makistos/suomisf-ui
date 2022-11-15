@@ -7,8 +7,8 @@ import 'primereact/resources/primereact.min.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Magazines from './Magazines';
-import Magazine from './Magazine';
+import Magazines from './feature/Magazine/Magazines';
+import Magazine from './feature/Magazine/Magazine';
 import { ArticleView } from './feature/Article/Article';
 import { Issue } from './feature/Issue/Issue';
 import { People } from './People';

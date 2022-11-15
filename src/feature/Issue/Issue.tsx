@@ -7,7 +7,7 @@ import { LinkList } from '../../components/LinkList';
 import { ShortSummary, IShort } from '../../components/Short';
 import type { IArticle } from '../Article/Article';
 import { Image } from 'primereact/image';
-import type { IMagazine } from '../../Magazine';
+import type { IMagazine } from '../Magazine/Magazine';
 import { useParams } from "react-router-dom";
 import { ArticleList } from '../Article/ArticleList';
 

@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 // import './App.css';
 // import './index.css';
 import type { IMagazine } from "./Magazine";
-import { API_URL } from "./systemProps";
+import { API_URL } from "../../systemProps";
 
 const client = axios.create({
     baseURL: API_URL + 'magazines'

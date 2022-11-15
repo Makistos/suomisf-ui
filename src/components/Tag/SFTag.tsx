@@ -18,7 +18,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { InputText } from 'primereact/inputtext';
 import { classNames } from "primereact/utils";
 import { AutoComplete } from 'primereact/autocomplete';
-import type { IMagazine } from '../../Magazine';
+import type { IMagazine } from '../../feature/Magazine/Magazine';
 import type { IPerson } from '../../feature/Person/Person';
 import type { IIssue } from '../../feature/Issue/Issue';
 import type { IUser } from '../../user';

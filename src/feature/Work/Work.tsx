@@ -1,5 +1,16 @@
 import { useEffect, useState } from "react";
-import { EditionDetails, EditionString, IEdition, OtherEdition } from "../../components/Edition";
+import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
+import { Image } from "primereact/image";
+import { DataView, DataViewLayoutOptions, DataViewLayoutType, DataViewLayoutOptionsChangeParams } from "primereact/dataview";
+import { Panel } from "primereact/panel";
+import { Ripple } from "primereact/ripple";
+import { Tooltip } from "primereact/tooltip";
+import { SpeedDial } from "primereact/speeddial";
+import { confirmDialog } from "primereact/confirmdialog";
+
+import { EditionDetails, EditionString, IEdition, OtherEdition } from "../Edition/Edition";
 import type { IBookseries } from "../../components/Bookseries";
 import type { ICountry } from "../../components/Country";
 import type { IPerson, IPersonBrief } from "../Person/Person";
@@ -8,23 +19,15 @@ import { TagGroup } from "../../components/Tag/SFTagGroup";
 import { LinkList } from "../../components/LinkList";
 import type { ILink } from "../../components/Link";
 import { IMAGE_URL } from "../../systemProps";
-import { Link } from "react-router-dom";
-import { Tooltip } from "primereact/tooltip";
-import { useParams } from "react-router-dom";
 import { getCurrenUser } from "../../services/auth-service";
 import { getApiContent } from "../../services/user-service";
-import { Image } from "primereact/image";
-import { DataView, DataViewLayoutOptions, DataViewLayoutType, DataViewLayoutOptionsChangeParams } from "primereact/dataview";
-import { Panel } from "primereact/panel";
-import { Ripple } from "primereact/ripple";
 import { ShortsList } from "../Short/ShortsList";
 import type { IShort } from "../Short/Short";
-import { SpeedDial } from "primereact/speeddial";
-import { confirmDialog } from "primereact/confirmdialog";
 import type { IAwarded } from "../../components/Awarded";
 import { AwardPanel } from "../../components/Awarded";
 import { LinkPanel } from "../../components/Links";
 import type { IPubseries } from "../../components/Pubseries";
+
 export interface IWork {
     [index: string]: any,
     author_str: string,

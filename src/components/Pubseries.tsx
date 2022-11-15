@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import { getCurrenUser } from "../services/auth-service";
 import { getApiContent } from "../services/user-service";
 import { IPublisher } from "../feature/Publisher/Publisher";
-import { IEdition } from "./Edition";
-import { EditionList } from "./EditionList";
+import { IEdition } from "../feature/Edition/Edition";
+import { EditionList } from "../feature/Edition/EditionList";
 
 
 const baseURL = 'pubseries/';

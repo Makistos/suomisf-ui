@@ -6,8 +6,8 @@ import { ProgressSpinner } from "primereact/progressspinner";
 
 import { getCurrenUser } from "../../services/auth-service";
 import { getApiContent } from "../../services/user-service";
-import { IEdition } from "../../components/Edition";
-import { EditionList } from "../../components/EditionList";
+import { IEdition } from "../Edition/Edition";
+import { EditionList } from "../Edition/EditionList";
 import { IPubseries } from "../../components/Pubseries";
 import { EditionsStatsPanel } from "../Stats/Stats";
 import { ILink } from "../../components/Link";

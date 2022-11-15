@@ -1,9 +1,9 @@
 import { Dropdown } from "primereact/dropdown";
 import { useEffect, useState } from "react";
 import { IEdition, EditionSummary, groupEditions } from "./Edition";
-import { IPerson } from "../feature/Person/Person";
+import { IPerson } from "../Person/Person";
 import { SelectButton } from "primereact/selectbutton";
-import { CoverImageList } from "./CoverImageList";
+import { CoverImageList } from "../../components/CoverImageList";
 interface EditionListProps {
     editions: IEdition[],
     person?: IPerson,

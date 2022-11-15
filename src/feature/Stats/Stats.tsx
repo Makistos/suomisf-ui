@@ -6,7 +6,7 @@ import { ChartData } from "chart.js/index";
 import _ from "lodash";
 
 import { OverlayPanel } from "primereact/overlaypanel";
-import { IEdition } from "../../components/Edition";
+import { IEdition } from "../Edition/Edition";
 import { IWork } from "../Work/Work";
 import { getGenreColors } from "../../components/Genre";
 

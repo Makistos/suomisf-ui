@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getCurrenUser } from "../services/auth-service";
 import { getApiContent } from "../services/user-service";
-import { IEdition } from "./Edition";
+import { IEdition } from "../feature/Edition/Edition";
 import { IPublisher } from "../feature/Publisher/Publisher";
 import { IWork } from "../feature/Work/Work";
 import { WorkList } from "../feature/Work/WorkList";

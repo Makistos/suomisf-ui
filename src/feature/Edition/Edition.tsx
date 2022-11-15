@@ -1,13 +1,15 @@
-import type { IPublisher } from "../feature/Publisher/Publisher";
-import type { IPersonBrief } from "../feature/Person/Person";
-import type { IWork } from "../feature/Work/Work";
-import { GenreList } from "./Genre";
 import { Link } from "react-router-dom";
-import type { IImage } from "./Image";
-import { LinkList } from "./LinkList";
-import type { IFormat } from "./Format";
-import type { IBinding } from "./Binding";
-import type { IPubseries } from "./Pubseries";
+
+import type { IPublisher } from "../Publisher/Publisher";
+import type { IPersonBrief } from "../Person/Person";
+import type { IWork } from "../Work/Work";
+import { GenreList } from "../../components/Genre";
+import type { IImage } from "../../components/Image";
+import { LinkList } from "../../components/LinkList";
+import type { IFormat } from "../../components/Format";
+import type { IBinding } from "../../components/Binding";
+import type { IPubseries } from "../../components/Pubseries";
+
 export interface IEdition {
     binding: IBinding,
     coll_info: string,

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { LinkList } from "../../components/LinkList";
 import type { IPerson } from "../Person/Person";
-import type { IEdition } from "../../components/Edition";
+import type { IEdition } from "../Edition/Edition";
 import type { IIssue } from "../Issue/Issue";
 import type { IGenre } from '../../components/Genre';
 import { GenreList } from '../../components/Genre';

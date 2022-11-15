@@ -10,7 +10,7 @@ import { getApiContent } from "../../services/user-service";
 import type { IWork } from "../Work/Work";
 import { ICountry } from "../../components/Country";
 import { ContributorBookControl } from "../../components/BookControl";
-import type { IEdition } from '../../components/Edition';
+import type { IEdition } from '../Edition/Edition';
 import type { IArticle } from '../Article/Article';
 import type { IShort } from '../Short/Short';
 import { ShortsControl } from '../Short/ShortsControl';

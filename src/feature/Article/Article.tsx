@@ -6,7 +6,7 @@ import { getApiContent } from '../../services/user-service';
 import { getCurrenUser } from '../../services/auth-service';
 import type { ITag } from '../../components/Tag/SFTag';
 import { PickTagLinks } from '../../components/Tag/SFTag';
-import type { IIssue } from '../../Issue';
+import type { IIssue } from '../Issue/Issue';
 const baseURL = 'articles/';
 
 export interface IArticle {

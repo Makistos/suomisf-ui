@@ -20,7 +20,7 @@ import { classNames } from "primereact/utils";
 import { AutoComplete } from 'primereact/autocomplete';
 import type { IMagazine } from '../../Magazine';
 import type { IPerson } from '../../feature/Person/Person';
-import type { IIssue } from '../../Issue';
+import type { IIssue } from '../../feature/Issue/Issue';
 import type { IUser } from '../../user';
 import axios from 'axios';
 import { API_URL } from '../../systemProps';

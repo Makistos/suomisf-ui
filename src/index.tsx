@@ -10,7 +10,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Magazines from './Magazines';
 import Magazine from './Magazine';
 import { ArticleView } from './feature/Article/Article';
-import { Issue } from './Issue';
+import { Issue } from './feature/Issue/Issue';
 import { People } from './People';
 import { Person } from './feature/Person/Person';
 import { Work } from './feature/Work/Work';

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { LinkList } from "./LinkList";
 import type { IPerson } from "../feature/Person/Person";
 import type { IEdition } from "./Edition";
-import type { IIssue } from "../Issue";
+import type { IIssue } from "../feature/Issue/Issue";
 import type { IGenre } from './Genre';
 import { GenreList } from './Genre';
 import { Dialog } from 'primereact/dialog';

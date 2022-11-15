@@ -7,7 +7,7 @@ import _ from "lodash";
 
 import { getCurrenUser } from "../../services/auth-service";
 import { getApiContent } from "../../services/user-service";
-import type { IWork } from "../Work/Work";
+import type { IWork } from "../Work";
 import { ICountry } from "../../components/Country";
 import { ContributorBookControl } from "../../components/BookControl";
 import type { IEdition } from '../Edition/Edition';

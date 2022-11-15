@@ -11,53 +11,17 @@ import { SpeedDial } from "primereact/speeddial";
 import { confirmDialog } from "primereact/confirmdialog";
 
 import { EditionDetails, EditionString, IEdition, OtherEdition } from "../Edition/Edition";
-import type { IBookseries } from "../../components/Bookseries";
-import type { ICountry } from "../../components/Country";
-import type { IPerson, IPersonBrief } from "../Person/Person";
 import { GenreGroup, GenreList } from "../../components/Genre";
 import { TagGroup } from "../../components/Tag/SFTagGroup";
 import { LinkList } from "../../components/LinkList";
-import type { ILink } from "../../components/Link";
 import { IMAGE_URL } from "../../systemProps";
 import { getCurrenUser } from "../../services/auth-service";
 import { getApiContent } from "../../services/user-service";
 import { ShortsList } from "../Short/ShortsList";
-import type { IShort } from "../Short/Short";
-import type { IAwarded } from "../Award/Awarded";
 import { AwardPanel } from "../Award/Awarded";
 import { LinkPanel } from "../../components/Links";
-import type { IPubseries } from "../../components/Pubseries";
 
-export interface IWork {
-    [index: string]: any,
-    author_str: string,
-    authors: IPerson[],
-    awards: IAwarded[],
-    bookseries: IBookseries,
-    bookseriesnum: string,
-    bookseriesorder: number,
-    desc_attr: string,
-    description: string,
-    editions: IEdition[],
-    id: number,
-    imported_string: string,
-    language: ICountry,
-    links: ILink[],
-    misc: string,
-    orig_title: string,
-    pubseries: IPubseries,
-    pubyear: number,
-    stories: IShort[],
-    subtitle: string,
-    title: string,
-    translators: IPersonBrief[]
-}
-
-interface WorkProps {
-    work: IWork,
-    detailLevel?: string,
-    orderField?: string
-}
+import { IWork, WorkProps } from "./types";
 
 export const isAnthology = (work: IWork) => {
     // Check if work is a collection with multiple

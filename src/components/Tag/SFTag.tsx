@@ -5,7 +5,7 @@ import { getApiContent, deleteApiContent } from '../../services/user-service';
 import { getCurrenUser } from '../../services/auth-service';
 import { ProgressSpinner } from "primereact/progressspinner";
 import { useParams } from "react-router-dom";
-import type { IWork } from "../../feature/Work/Work";
+import type { IWork } from "../../feature/Work";
 import { WorkList } from '../../feature/Work/WorkList';
 import { ShortsList } from '../../feature/Short/ShortsList';
 import type { IArticle } from '../../feature/Article/Article';

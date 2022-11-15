@@ -7,7 +7,7 @@ import { Column } from "primereact/column";
 import { classNames } from "primereact/utils";
 
 import type { IPerson } from "../Person/Person";
-import type { IWork } from "../Work/Work";
+import type { IWork } from "../Work";
 import type { IShort } from "../Short/Short"
 import type { IAward } from "./Award";
 import type { IAwardCategory } from "./AwardCategory";

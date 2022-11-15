@@ -4,7 +4,7 @@ import { getCurrenUser } from "../services/auth-service";
 import { getApiContent } from "../services/user-service";
 import { IEdition } from "../feature/Edition/Edition";
 import { IPublisher } from "../feature/Publisher/Publisher";
-import { IWork } from "../feature/Work/Work";
+import { IWork } from "../feature/Work";
 import { WorkList } from "../feature/Work/WorkList";
 
 const baseURL = 'bookseries/';

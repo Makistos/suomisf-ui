@@ -5,7 +5,7 @@ import { TabView, TabPanel } from "primereact/tabview";
 import { WorkList } from "../feature/Work/WorkList";
 import { EditionList } from "../feature/Edition/EditionList";
 import { SeriesList } from "./BookseriesList";
-import { IWork } from "../feature/Work/Work";
+import { IWork } from "../feature/Work";
 import { IGenre } from "./Genre";
 import { IEdition } from "../feature/Edition/Edition";
 import _ from "lodash";

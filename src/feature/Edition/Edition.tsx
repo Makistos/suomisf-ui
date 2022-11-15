@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 import type { IPublisher } from "../Publisher/Publisher";
 import type { IPersonBrief } from "../Person/Person";
-import type { IWork } from "../Work/Work";
+import type { IWork } from "../Work";
 import { GenreList } from "../../components/Genre";
 import type { IImage } from "../../components/Image";
 import { LinkList } from "../../components/LinkList";

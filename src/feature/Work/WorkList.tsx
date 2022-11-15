@@ -4,9 +4,11 @@ import { SelectButton } from 'primereact/selectbutton';
 import { Dropdown } from "primereact/dropdown";
 import "primeflex/primeflex.css";
 
-import { WorkSummary, IWork, groupWorks } from './Work';
+import { WorkSummary, groupWorks } from './Work';
 import { CoverImageList } from "../../components/CoverImageList";
 import { WorkStatsPanel } from "../Stats/Stats";
+
+import { IWork } from "./types";
 
 type WorksProp = {
     works: IWork[],

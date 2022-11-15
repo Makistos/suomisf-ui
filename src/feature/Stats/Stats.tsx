@@ -7,7 +7,7 @@ import _ from "lodash";
 
 import { OverlayPanel } from "primereact/overlaypanel";
 import { IEdition } from "../Edition/Edition";
-import { IWork } from "../Work/Work";
+import { IWork } from "../Work";
 import { getGenreColors } from "../../components/Genre";
 
 interface EditionsProps {

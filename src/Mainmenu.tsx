@@ -86,7 +86,8 @@ export default function MainMenu() {
                     url: '/tags'
                 },
                 {
-                    label: 'Palkinnot'
+                    label: 'Palkinnot',
+                    url: '/awards'
                 }
             ]
         },

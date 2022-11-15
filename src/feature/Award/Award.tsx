@@ -9,3 +9,9 @@ export interface IAward {
     categories: IAwardCategory[],
     winners: IAwarded[]
 }
+
+export const Award = () => {
+    return (
+        <></>
+    )
+}

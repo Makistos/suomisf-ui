@@ -24,6 +24,7 @@ import { ShortSearch } from './feature/Short/ShortsSearch';
 import { BookSearch } from './BookSearch';
 import { SFTag } from './components/Tag/SFTag';
 import { SFTags } from './components/Tag/SFTags';
+import { Awards } from './feature/Award/Awards'
 
 const rootElement = document.getElementById("root");
 
@@ -31,6 +32,7 @@ ReactDOM.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />}>
+        <Route path="awards" element={<Awards />} />
         <Route path="bookindex" element={<BookSearch />} />
         <Route path="shortstoryindex" element={<ShortSearch />} />
         <Route path="people" element={<People />} />

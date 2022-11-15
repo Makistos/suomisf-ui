@@ -1,6 +1,6 @@
 import React from 'react';
-import { LinkList } from './LinkList';
-import type { IPerson } from '../feature/Person/Person';
+import { LinkList } from '../../components/LinkList';
+import type { IPerson } from '../Person/Person';
 import { Link } from 'react-router-dom';
 import type { IArticle } from './Article';
 

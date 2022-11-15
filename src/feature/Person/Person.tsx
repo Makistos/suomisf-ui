@@ -11,7 +11,7 @@ import type { IWork } from "../Work/Work";
 import { ICountry } from "../../components/Country";
 import { ContributorBookControl } from "../../components/BookControl";
 import type { IEdition } from '../../components/Edition';
-import type { IArticle } from '../../components/Article';
+import type { IArticle } from '../Article/Article';
 import type { IShort } from '../../components/Short';
 import { ShortsControl } from '../../components/ShortsControl';
 import { GenreGroup, IGenre } from '../../components/Genre';

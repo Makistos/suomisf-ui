@@ -9,7 +9,7 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Magazines from './Magazines';
 import Magazine from './Magazine';
-import { ArticleView } from './components/Article';
+import { ArticleView } from './feature/Article/Article';
 import { Issue } from './Issue';
 import { People } from './People';
 import { Person } from './feature/Person/Person';

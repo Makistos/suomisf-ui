@@ -5,11 +5,11 @@ import type { IPerson } from './feature/Person/Person';
 import { IPublicationSize } from './PublicationSize';
 import { LinkList } from './components/LinkList';
 import { ShortSummary, IShort } from './components/Short';
-import type { IArticle } from './components/Article';
+import type { IArticle } from './feature/Article/Article';
 import { Image } from 'primereact/image';
 import type { IMagazine } from './Magazine';
 import { useParams } from "react-router-dom";
-import { ArticleList } from './components/ArticleList';
+import { ArticleList } from './feature/Article/ArticleList';
 
 const baseURL = 'issues/';
 

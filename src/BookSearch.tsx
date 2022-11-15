@@ -9,11 +9,11 @@ import { Fieldset } from 'primereact/fieldset';
 import { Dropdown } from "primereact/dropdown";
 import { IGenre, getGenreIcon } from "./components/Genre";
 import { getApiContent } from "./services/user-service";
-import { ICountry } from "./components/Country/Country";
+import { ICountry } from "./components/Country";
 import { IBookType } from "./components/BookType";
 import axios from "axios";
 import { API_URL } from "./systemProps";
-import { WorkList } from "./pages/Work/WorkList";
+import { WorkList } from "./feature/Work/WorkList";
 import { Divider } from 'primereact/divider';
 import _ from "lodash";
 

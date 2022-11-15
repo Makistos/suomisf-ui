@@ -6,7 +6,7 @@ import { logout } from './services/auth-service';
 import { getApiContent } from './services/user-service';
 import { SITE_URL } from './systemProps';
 import { MenuItemCommandParams } from 'primereact/menuitem';
-import { IUser } from './user';
+import { IUser } from './feature/User/User';
 import { Login } from './components/Login';
 import { Dialog } from 'primereact/dialog';
 

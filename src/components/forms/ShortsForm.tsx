@@ -15,7 +15,7 @@ import { getApiContent, postApiContent } from '../../services/user-service';
 import { getCurrenUser } from '../../services/auth-service';
 import { AutoComplete } from 'primereact/autocomplete';
 import type { ITag } from '../Tag/SFTag';
-import { isAdmin } from '../../user';
+import { isAdmin } from '../../feature/User/User';
 interface hasIdAndName {
     id: number,
     name: string

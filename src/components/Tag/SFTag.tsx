@@ -21,7 +21,7 @@ import { AutoComplete } from 'primereact/autocomplete';
 import type { IMagazine } from '../../feature/Magazine/Magazine';
 import type { IPerson } from '../../feature/Person/Person';
 import type { IIssue } from '../../feature/Issue/Issue';
-import type { IUser } from '../../user';
+import type { IUser } from '../../feature/User/User';
 import axios from 'axios';
 import { API_URL } from '../../systemProps';
 import { ConfirmDialog } from 'primereact/confirmdialog';

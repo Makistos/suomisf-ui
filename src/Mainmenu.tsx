@@ -7,7 +7,7 @@ import { getApiContent } from './services/user-service';
 import { SITE_URL } from './systemProps';
 import { MenuItemCommandParams } from 'primereact/menuitem';
 import { IUser } from './feature/User/User';
-import { Login } from './components/Login';
+import { Login } from './feature/User/Login';
 import { Dialog } from 'primereact/dialog';
 
 export default function MainMenu() {

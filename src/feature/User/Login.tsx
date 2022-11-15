@@ -1,10 +1,12 @@
-import { Button } from "primereact/button";
-import { InputText } from "primereact/inputtext";
 import { useState } from "react";
-import { login } from "../services/auth-service";
 import { Link } from "react-router-dom";
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
+
+import { login } from "../../services/auth-service";
 
 type IFormData = {
     username: string,

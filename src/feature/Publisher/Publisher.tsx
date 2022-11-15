@@ -4,15 +4,15 @@ import { useParams } from "react-router-dom";
 import { TabPanel, TabView } from "primereact/tabview";
 import { ProgressSpinner } from "primereact/progressspinner";
 
-import { getCurrenUser } from "../services/auth-service";
-import { getApiContent } from "../services/user-service";
-import { IEdition } from "./Edition";
-import { EditionList } from "./EditionList";
-import { IPubseries } from "./Pubseries";
-import { EditionsStatsPanel } from "../feature/Stats/Stats";
-import { ILink } from "./Link";
-import { LinkPanel } from "./Links";
-import { PubseriesList } from "./PubseriesList";
+import { getCurrenUser } from "../../services/auth-service";
+import { getApiContent } from "../../services/user-service";
+import { IEdition } from "../../components/Edition";
+import { EditionList } from "../../components/EditionList";
+import { IPubseries } from "../../components/Pubseries";
+import { EditionsStatsPanel } from "../Stats/Stats";
+import { ILink } from "../../components/Link";
+import { LinkPanel } from "../../components/Links";
+import { PubseriesList } from "../../components/PubseriesList";
 
 export interface IPublisher {
     description: string,

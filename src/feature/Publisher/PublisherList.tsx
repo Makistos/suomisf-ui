@@ -1,11 +1,13 @@
+import { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
+
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { useEffect, useState } from "react";
-import { IPublisher } from "./components/Publisher";
-import { getCurrenUser } from "./services/auth-service";
-import { getApiContent } from "./services/user-service";
-import { Link } from 'react-router-dom';
+
+import { IPublisher } from "./Publisher";
+import { getCurrenUser } from "../../services/auth-service";
+import { getApiContent } from "../../services/user-service";
 
 const baseURL = "publishers";
 

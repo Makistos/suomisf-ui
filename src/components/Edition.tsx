@@ -1,4 +1,4 @@
-import type { IPublisher } from "./Publisher";
+import type { IPublisher } from "../feature/Publisher/Publisher";
 import type { IPersonBrief } from "../feature/Person/Person";
 import type { IWork } from "../feature/Work/Work";
 import { GenreList } from "./Genre";

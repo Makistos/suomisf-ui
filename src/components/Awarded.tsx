@@ -3,7 +3,7 @@ import { OverlayPanel } from "primereact/overlaypanel";
 import { Button } from "primereact/button";
 import type { IPerson } from "../feature/Person/Person";
 import type { IWork } from "../feature/Work/Work";
-import type { IShort } from "./Short"
+import type { IShort } from "../feature/Short/Short"
 import type { IAward } from "./Award";
 import type { IAwardCategory } from "./AwardCategory";
 import { DataTable } from "primereact/datatable";

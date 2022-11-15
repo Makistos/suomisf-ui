@@ -1,10 +1,10 @@
-import type { IPerson } from "../feature/Person/Person";
+import type { IPerson } from "../Person/Person";
 import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
 import { ShortsList } from "./ShortsList";
 import type { IShort, IShortType } from "./Short";
 import { useEffect, useState } from "react";
-import { listIsSf } from "./Genre";
+import { listIsSf } from "../../components/Genre";
 import _ from "lodash";
 
 interface ShortsProps {

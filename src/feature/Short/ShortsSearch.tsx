@@ -9,9 +9,9 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import _ from "lodash";
 
 import { getCurrenUser } from "../../services/auth-service";
-import { ShortsList } from '../../components/ShortsList';
+import { ShortsList } from './ShortsList';
 import { API_URL } from "../../systemProps";
-import { IShort } from "../../components/Short";
+import { IShort } from "./Short";
 //import { Toast } from 'primereact/toast';
 
 type IFormData = {

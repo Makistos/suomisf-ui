@@ -4,7 +4,7 @@ import { getApiContent } from '../../services/user-service';
 import type { IPerson } from '../Person/Person';
 import { IPublicationSize } from '../../PublicationSize';
 import { LinkList } from '../../components/LinkList';
-import { ShortSummary, IShort } from '../../components/Short';
+import { ShortSummary, IShort } from '../Short/Short';
 import type { IArticle } from '../Article/Article';
 import { Image } from 'primereact/image';
 import type { IMagazine } from '../Magazine/Magazine';

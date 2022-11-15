@@ -4,7 +4,7 @@ import { Button } from 'primereact/button';
 import { useEffect, useState } from 'react';
 import { useForm, Controller, SubmitHandler, useFieldArray, FieldValues } from 'react-hook-form';
 import { getGenreColors, IGenre } from '../Genre';
-import { IShort, IShortType, shortIsSf } from '../Short';
+import { IShort, IShortType, shortIsSf } from '../../feature/Short/Short';
 import { InputText } from 'primereact/inputtext';
 import type { IPerson } from '../../feature/Person/Person';
 import { classNames } from 'primereact/utils';

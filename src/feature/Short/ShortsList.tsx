@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IPerson } from "../feature/Person/Person";
+import { IPerson } from "../Person/Person";
 import { IShort, ShortSummary, groupShorts } from "./Short";
 import { Dropdown } from "primereact/dropdown";
 interface ShortsListProps {

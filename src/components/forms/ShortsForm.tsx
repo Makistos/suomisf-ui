@@ -6,7 +6,7 @@ import { useForm, Controller, SubmitHandler, useFieldArray, FieldValues } from '
 import { getGenreColors, IGenre } from '../Genre';
 import { IShort, IShortType, shortIsSf } from '../Short';
 import { InputText } from 'primereact/inputtext';
-import type { IPerson } from '../Person';
+import type { IPerson } from '../../feature/Person/Person';
 import { classNames } from 'primereact/utils';
 import { ContributorField } from './ContributorField';
 import { IContribution } from '../Contribution';
@@ -14,7 +14,7 @@ import { KeyValuePair } from './forms';
 import { getApiContent, postApiContent } from '../../services/user-service';
 import { getCurrenUser } from '../../services/auth-service';
 import { AutoComplete } from 'primereact/autocomplete';
-import type { ITag } from '../SFTag';
+import type { ITag } from '../Tag/SFTag';
 import { isAdmin } from '../../user';
 interface hasIdAndName {
     id: number,

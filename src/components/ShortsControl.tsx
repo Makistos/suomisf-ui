@@ -1,4 +1,4 @@
-import type { IPerson } from "./Person";
+import type { IPerson } from "../feature/Person/Person";
 import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
 import { ShortsList } from "./ShortsList";

@@ -12,7 +12,7 @@ import Magazine from './Magazine';
 import { ArticleView } from './components/Article';
 import { Issue } from './Issue';
 import { People } from './People';
-import { Person } from './components/Person';
+import { Person } from './feature/Person/Person';
 import { Work } from './feature/Work/Work';
 import Login from './components/Login';
 import { Bookseries } from './components/Bookseries';
@@ -23,8 +23,8 @@ import { BookseriesListing } from './BookseriesListing';
 import { PubseriesListing } from './PubseriesListing';
 import { ShortSearch } from './ShortsSearch';
 import { BookSearch } from './BookSearch';
-import { SFTag } from './components/SFTag';
-import { SFTags } from './components/SFTags';
+import { SFTag } from './components/Tag/SFTag';
+import { SFTags } from './components/Tag/SFTags';
 
 const rootElement = document.getElementById("root");
 

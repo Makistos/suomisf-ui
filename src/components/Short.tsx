@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { LinkList } from "./LinkList";
-import type { IPerson } from "./Person";
+import type { IPerson } from "../feature/Person/Person";
 import type { IEdition } from "./Edition";
 import type { IIssue } from "../Issue";
 import type { IGenre } from './Genre';
@@ -10,7 +10,7 @@ import { ShortsForm } from './forms/ShortsForm';
 import { useState } from 'react';
 import { Button } from 'primereact/button';
 import { IContribution } from './Contribution';
-import { ITag } from './SFTag';
+import { ITag } from './Tag/SFTag';
 
 export interface IShortType {
     id: number,

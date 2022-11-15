@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { Button } from 'primereact/button';
-import { getApiContent, deleteApiContent } from '../services/user-service';
-import { getCurrenUser } from '../services/auth-service';
+import { getApiContent, deleteApiContent } from '../../services/user-service';
+import { getCurrenUser } from '../../services/auth-service';
 import { ProgressSpinner } from "primereact/progressspinner";
 import { useParams } from "react-router-dom";
-import type { IWork } from "../feature/Work/Work";
-import { WorkList } from '../feature/Work/WorkList';
-import { ShortsList } from './ShortsList';
-import type { IArticle } from './Article';
-import type { IShort } from './Short';
-import { ArticleList } from './ArticleList';
+import type { IWork } from "../../feature/Work/Work";
+import { WorkList } from '../../feature/Work/WorkList';
+import { ShortsList } from '../ShortsList';
+import type { IArticle } from '../Article';
+import type { IShort } from '../Short';
+import { ArticleList } from '../ArticleList';
 import { SpeedDial } from 'primereact/speeddial';
 import { Tooltip } from "primereact/tooltip";
 import { Dialog } from 'primereact/dialog';
@@ -18,14 +18,14 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { InputText } from 'primereact/inputtext';
 import { classNames } from "primereact/utils";
 import { AutoComplete } from 'primereact/autocomplete';
-import type { IMagazine } from '../Magazine';
-import type { IPerson } from './Person';
-import type { IIssue } from '../Issue';
-import type { IUser } from '../user';
+import type { IMagazine } from '../../Magazine';
+import type { IPerson } from '../../feature/Person/Person';
+import type { IIssue } from '../../Issue';
+import type { IUser } from '../../user';
 import axios from 'axios';
-import { API_URL } from '../systemProps';
+import { API_URL } from '../../systemProps';
 import { ConfirmDialog } from 'primereact/confirmdialog';
-import authHeader from '../services/auth-header';
+import authHeader from '../../services/auth-header';
 
 
 export interface ITag {

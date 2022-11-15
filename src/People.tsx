@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { getApiContent } from './services/user-service';
 import { getCurrenUser } from './services/auth-service';
-import type { IPerson } from './components/Person';
+import type { IPerson } from './feature/Person/Person';
 import type { ICountry } from './components/Country';
 import { FilterMatchMode } from "primereact/api";
 import { DataTable } from 'primereact/datatable';

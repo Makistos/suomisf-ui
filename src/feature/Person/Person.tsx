@@ -1,22 +1,25 @@
 import React, { useState } from 'react';
 import { useParams } from "react-router-dom";
-import { getCurrenUser } from "../services/auth-service";
-import { getApiContent } from "../services/user-service";
-import type { IWork } from "../feature/Work/Work";
-import { ICountry } from "./Country";
-import { ContributorBookControl } from "./BookControl";
-import type { IEdition } from './Edition';
-import type { IArticle } from './Article';
-import type { IShort } from './Short';
-import { ShortsControl } from './ShortsControl';
-import { GenreGroup, IGenre } from './Genre';
-import { TagGroup } from './SFTagGroup';
-import { ILink } from './Link';
-import { LinkPanel } from './Links';
-import { AwardPanel, IAwarded } from './Awarded';
+
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Fieldset } from 'primereact/fieldset';
 import _ from "lodash";
+
+import { getCurrenUser } from "../../services/auth-service";
+import { getApiContent } from "../../services/user-service";
+import type { IWork } from "../Work/Work";
+import { ICountry } from "../../components/Country";
+import { ContributorBookControl } from "../../components/BookControl";
+import type { IEdition } from '../../components/Edition';
+import type { IArticle } from '../../components/Article';
+import type { IShort } from '../../components/Short';
+import { ShortsControl } from '../../components/ShortsControl';
+import { GenreGroup, IGenre } from '../../components/Genre';
+import { TagGroup } from '../../components/Tag/SFTagGroup';
+import { ILink } from '../../components/Link';
+import { LinkPanel } from '../../components/Links';
+import { AwardPanel, IAwarded } from '../../components/Awarded';
+
 interface INationality {
     id: number,
     name: string

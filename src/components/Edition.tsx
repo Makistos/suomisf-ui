@@ -1,5 +1,5 @@
 import type { IPublisher } from "./Publisher";
-import type { IPersonBrief } from "./Person";
+import type { IPersonBrief } from "../feature/Person/Person";
 import type { IWork } from "../feature/Work/Work";
 import { GenreList } from "./Genre";
 import { Link } from "react-router-dom";

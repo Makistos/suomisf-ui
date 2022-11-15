@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IPerson } from "./Person";
+import { IPerson } from "../feature/Person/Person";
 import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
 import { WorkList } from "../feature/Work/WorkList";

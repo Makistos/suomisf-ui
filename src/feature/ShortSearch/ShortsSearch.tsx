@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+
+import axios from "axios";
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { Button } from 'primereact/button';
-import { getCurrenUser } from "./services/auth-service";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { ShortsList } from './components/ShortsList';
-import axios from "axios";
-import { API_URL } from "./systemProps";
 import _ from "lodash";
-import { IShort } from "./components/Short";
+
+import { getCurrenUser } from "../../services/auth-service";
+import { ShortsList } from '../../components/ShortsList';
+import { API_URL } from "../../systemProps";
+import { IShort } from "../../components/Short";
 //import { Toast } from 'primereact/toast';
 
 type IFormData = {

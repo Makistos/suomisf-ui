@@ -1,12 +1,11 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 import "primereact/resources/themes/mdc-light-indigo/theme.css";
 import 'primereact/resources/primereact.min.css'
-// import 'primeicons/primeicons.css';
-//import './index.css';
+
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Magazines from './feature/Magazine/Magazines';
 import Magazine from './feature/Magazine/Magazine';
 import { ArticleView } from './feature/Article/Article';
@@ -21,7 +20,7 @@ import { Publisher } from './components/Publisher';
 import { PublisherList } from './PublisherList';
 import { BookseriesListing } from './BookseriesListing';
 import { PubseriesListing } from './PubseriesListing';
-import { ShortSearch } from './ShortsSearch';
+import { ShortSearch } from './feature/ShortSearch/ShortsSearch';
 import { BookSearch } from './BookSearch';
 import { SFTag } from './components/Tag/SFTag';
 import { SFTags } from './components/Tag/SFTags';

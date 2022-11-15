@@ -10,7 +10,7 @@ import Magazines from './feature/Magazine/Magazines';
 import Magazine from './feature/Magazine/Magazine';
 import { ArticleView } from './feature/Article/Article';
 import { Issue } from './feature/Issue/Issue';
-import { People } from './People';
+import { People } from './feature/Person/People';
 import { Person } from './feature/Person/Person';
 import { Work } from './feature/Work/Work';
 import Login from './feature/User/Login';

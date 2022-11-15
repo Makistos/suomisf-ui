@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
+
+import { TabPanel, TabView } from "primereact/tabview";
+import { ProgressSpinner } from "primereact/progressspinner";
+
 import { getCurrenUser } from "../services/auth-service";
 import { getApiContent } from "../services/user-service";
 import { IEdition } from "./Edition";
 import { EditionList } from "./EditionList";
 import { IPubseries } from "./Pubseries";
-import { ProgressSpinner } from "primereact/progressspinner";
-import { EditionsStatsPanel } from "./Stats";
-import { TabPanel, TabView } from "primereact/tabview";
+import { EditionsStatsPanel } from "../feature/Stats/Stats";
 import { ILink } from "./Link";
 import { LinkPanel } from "./Links";
 import { PubseriesList } from "./PubseriesList";

@@ -1,4 +1,4 @@
-import { IPublisher } from "../../Publisher/Publisher";
+import { Publisher } from "../../publisher/types";
 import { PersonBrief } from "../../person/types";
 import { Work } from "../../work";
 import { IImage } from "../../../components/Image";
@@ -22,7 +22,7 @@ export interface Edition {
     misc: string;
     pages?: number;
     printedin?: string;
-    publisher: IPublisher;
+    publisher: Publisher;
     pubseries: IPubseries;
     pubseriesnum?: number;
     pubyear: number;

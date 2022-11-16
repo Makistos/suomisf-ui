@@ -5,22 +5,22 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { ProgressSpinner } from "primereact/progressspinner";
 
-import { IPublisher } from "./Publisher";
-import { getCurrenUser } from "../../services/auth-service";
-import { getApiContent } from "../../services/user-service";
+import { Publisher } from "../types";
+import { getCurrenUser } from "../../../services/auth-service";
+import { getApiContent } from "../../../services/user-service";
 
 const baseURL = "publishers";
 
-export const PublisherList = () => {
+export const PublisherListPage = () => {
     /** Page that shows all the publishers in the system in a table.
      */
     const user = getCurrenUser();
-    const [publishers, setPublishers]: [IPublisher[] | null, (publishers: IPublisher[] | null) => void] = useState<IPublisher[] | null>(null);
+    const [publishers, setPublishers]: [Publisher[] | null, (publishers: Publisher[] | null) => void] = useState<Publisher[] | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function getPublishers() {
-            let publisherList: IPublisher[];
+            let publisherList: Publisher[];
             try {
                 const response = await getApiContent(baseURL, user);
                 publisherList = response.data;
@@ -61,7 +61,7 @@ export const PublisherList = () => {
         getPublishers();
     }, [user])
 
-    const nameTemplate = (rowData: IPublisher) => {
+    const nameTemplate = (rowData: Publisher) => {
         return (
             <Link to={`/publishers/${rowData.id}`} key={rowData.id}>
                 {rowData.name}
@@ -69,21 +69,21 @@ export const PublisherList = () => {
         )
     }
 
-    const oldestEditionTemplate = (rowData: IPublisher) => {
+    const oldestEditionTemplate = (rowData: Publisher) => {
         if (rowData.edition_oldest) {
             return rowData.edition_oldest;
         }
         return null;
     }
 
-    const newestEditionTemplate = (rowData: IPublisher) => {
+    const newestEditionTemplate = (rowData: Publisher) => {
         if (rowData.edition_newest) {
             return rowData.edition_newest;
         }
         return null;
     }
 
-    const imageCountPercentageTemplate = (rowData: IPublisher) => {
+    const imageCountPercentageTemplate = (rowData: Publisher) => {
         if (rowData.editions.length > 0 && rowData.image_count) {
             return Math.round(rowData.image_count / rowData.editions.length * 100);
         }

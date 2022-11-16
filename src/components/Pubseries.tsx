@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getCurrenUser } from "../services/auth-service";
 import { getApiContent } from "../services/user-service";
-import { IPublisher } from "../feature/Publisher/Publisher";
+import { Publisher } from "../feature/publisher/types";
 import { Edition } from "../feature/edition/types";
 import { EditionList } from "../feature/edition/components/edition-list";
 
@@ -16,7 +16,7 @@ export interface IPubseries {
     important: number,
     image_src: string,
     image_attr: string,
-    publisher: IPublisher,
+    publisher: Publisher,
     editions: Edition[]
 }
 

@@ -4,40 +4,22 @@ import { useParams } from "react-router-dom";
 import { TabPanel, TabView } from "primereact/tabview";
 import { ProgressSpinner } from "primereact/progressspinner";
 
-import { getCurrenUser } from "../../services/auth-service";
-import { getApiContent } from "../../services/user-service";
-import { Edition } from "../edition/types";
-import { EditionList } from "../edition/components/edition-list";
-import { IPubseries } from "../../components/Pubseries";
-import { EditionsStatsPanel } from "../Stats/Stats";
-import { ILink } from "../../components/Link";
-import { LinkPanel } from "../../components/Links";
-import { PubseriesList } from "../../components/PubseriesList";
-
-export interface IPublisher {
-    description: string,
-    edition_count?: number,
-    edition_oldest?: number | null,
-    edition_newest?: number | null,
-    editions: Edition[],
-    fullname: string,
-    id: number,
-    image_attr?: string,
-    image_count?: number,
-    image_src?: string,
-    links?: ILink[],
-    name: string,
-    series: IPubseries[]
-}
+import { getCurrenUser } from "../../../services/auth-service";
+import { getApiContent } from "../../../services/user-service";
+import { EditionList } from "../../edition/components/edition-list";
+import { EditionsStatsPanel } from "../../Stats/Stats";
+import { LinkPanel } from "../../../components/Links";
+import { PubseriesList } from "../../../components/PubseriesList";
+import { Publisher } from "../types";
 
 const baseURL = 'publishers/';
 
-export const Publisher = () => {
+export const PublisherPage = () => {
     const params = useParams();
     const user = getCurrenUser();
 
-    const [publisher, setPublisher]: [IPublisher | null, (publisher: IPublisher) => void] =
-        useState<IPublisher | null>(null);
+    const [publisher, setPublisher]: [Publisher | null, (publisher: Publisher) => void] =
+        useState<Publisher | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { getCurrenUser } from "../services/auth-service";
 import { getApiContent } from "../services/user-service";
 import { Edition } from "../feature/edition/types";
-import { IPublisher } from "../feature/Publisher/Publisher";
+import { Publisher } from "../feature/publisher/types";
 import { Work } from "../feature/work";
 import { WorkList } from "../feature/work/components/work-list";
 
@@ -16,7 +16,7 @@ export interface IBookseries {
     image_src: string,
     image_attr: string,
     works: Work[],
-    publisher: IPublisher,
+    publisher: Publisher,
     editions: Edition[]
 }
 

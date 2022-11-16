@@ -6,12 +6,12 @@ import { ChartData } from "chart.js/index";
 import _ from "lodash";
 
 import { OverlayPanel } from "primereact/overlaypanel";
-import { IEdition } from "../Edition/Edition";
+import { Edition } from "../edition/types";
 import { Work } from "../work";
 import { getGenreColors } from "../../components/Genre";
 
 interface EditionsProps {
-    editions: IEdition[];
+    editions: Edition[];
 }
 
 interface WorksProps {

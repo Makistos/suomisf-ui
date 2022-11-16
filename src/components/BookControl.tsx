@@ -3,11 +3,11 @@ import { IPerson } from "../feature/Person/Person";
 import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
 import { WorkList } from "../feature/work/components/work-list";
-import { EditionList } from "../feature/Edition/EditionList";
+import { EditionList } from "../feature/edition/components/edition-list";
 import { SeriesList } from "./BookseriesList";
 import { Work } from "../feature/work";
 import { IGenre } from "./Genre";
-import { IEdition } from "../feature/Edition/Edition";
+import { Edition } from "../feature/edition/types";
 import _ from "lodash";
 
 interface CBCProps {
@@ -20,9 +20,9 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
     const [activeIndex, setActiveIndex] = useState(0);
     const [works, setWorks]: [Work[], (sfWorks: Work[]) => void]
         = useState<Work[]>([]);
-    const [edits, setEdits]: [IEdition[], (sfEdits: IEdition[]) => void] = useState<IEdition[]>([]);
-    const [translations, setTranslations]: [IEdition[], (sfTranslations: IEdition[]) => void]
-        = useState<IEdition[]>([]);
+    const [edits, setEdits]: [Edition[], (sfEdits: Edition[]) => void] = useState<Edition[]>([]);
+    const [translations, setTranslations]: [Edition[], (sfTranslations: Edition[]) => void]
+        = useState<Edition[]>([]);
 
     /**
      * Given list of genres, determines if they match a non-SF list.
@@ -54,7 +54,7 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
      * @param translations - Books translated by person.
      * @returns Tab number (0-2)
      */
-    const calcActiveIndex = (works: Work[], edits: IEdition[], translations: IEdition[]) => {
+    const calcActiveIndex = (works: Work[], edits: Edition[], translations: Edition[]) => {
         if (works.length > 0) return 0;
         if (edits.length > 0) return 1;
         if (translations.length > 0) return 2;
@@ -62,7 +62,7 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
 
     }
 
-    const removeDuplicateWorks = (editions: IEdition[]) => {
+    const removeDuplicateWorks = (editions: Edition[]) => {
         /**
          * Remove duplicate work entries from list. This will prevent the same
          * work being repeated in the edition list for each edition.
@@ -71,15 +71,15 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
         /* First make sure oldest edition is first in the array by sorting by
            year. Then pick unique work ids. */
 
-        let retval: IEdition[] = _.sortBy(editions, [function (e) { return e.pubyear }]);
+        let retval: Edition[] = _.sortBy(editions, [function (e) { return e.pubyear }]);
         retval = _.uniqBy(retval, (value => value.work[0].id));
         return retval;
     }
 
     useEffect(() => {
         let newWorks: Work[] = [];
-        let newEdits: IEdition[] = [];
-        let newTranslations: IEdition[] = [];
+        let newEdits: Edition[] = [];
+        let newTranslations: Edition[] = [];
 
         if (viewNonSf) {
             newWorks = person.works.filter(work => isNonSf(work.genres));

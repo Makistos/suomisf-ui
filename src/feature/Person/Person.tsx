@@ -10,7 +10,7 @@ import { getApiContent } from "../../services/user-service";
 import type { Work } from "../work";
 import { ICountry } from "../../components/Country";
 import { ContributorBookControl } from "../../components/BookControl";
-import type { IEdition } from '../Edition/Edition';
+import { Edition } from "../edition/types";
 import type { IArticle } from '../Article/Article';
 import type { IShort } from '../Short/Short';
 import { ShortsControl } from '../Short/ShortsControl';
@@ -41,8 +41,8 @@ export interface IPerson {
     roles: string[],
     nationality: INationality,
     works: Work[],
-    translations: IEdition[],
-    edits: IEdition[],
+    translations: Edition[],
+    edits: Edition[],
     articles: IArticle[],
     stories: IShort[],
     magazine_stories: IShort[],

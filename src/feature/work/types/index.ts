@@ -5,7 +5,7 @@ import type { ILink } from "../../../components/Link";
 import type { IShort } from "../../Short/Short";
 import type { IAwarded } from "../../Award/Awarded";
 import type { IPubseries } from "../../../components/Pubseries";
-import { IEdition } from "../../Edition/Edition";
+import { Edition } from "../../edition/types";
 
 export interface Work {
     [index: string]: any,
@@ -17,7 +17,7 @@ export interface Work {
     bookseriesorder: number,
     desc_attr: string,
     description: string,
-    editions: IEdition[],
+    editions: Edition[],
     id: number,
     imported_string: string,
     language: ICountry,

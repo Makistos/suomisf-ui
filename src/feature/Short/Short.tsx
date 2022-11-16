@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { LinkList } from "../../components/LinkList";
 import type { IPerson } from "../Person/Person";
-import type { IEdition } from "../Edition/Edition";
+import { Edition } from "../edition/types";
 import type { IIssue } from "../Issue/Issue";
 import type { IGenre } from '../../components/Genre';
 import { GenreList } from '../../components/Genre';
@@ -24,7 +24,7 @@ export interface IShort {
     pubyear: number,
     authors: IPerson[],
     type: IShortType,
-    editions: IEdition[],
+    editions: Edition[],
     issues: IIssue[],
     genres: IGenre[],
     contributors: IContribution[],
@@ -81,7 +81,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
         return items.map((item) => ({ id: item['id'], name: item['alt_name'] }));
     }
 
-    const shortEditions = (editions: IEdition[]) => {
+    const shortEditions = (editions: Edition[]) => {
         // Only show one item even if there are several editions,
         // e.g. remove editions of the same work.
         if (editions.length === 0) {

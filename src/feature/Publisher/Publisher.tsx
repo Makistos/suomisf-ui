@@ -6,8 +6,8 @@ import { ProgressSpinner } from "primereact/progressspinner";
 
 import { getCurrenUser } from "../../services/auth-service";
 import { getApiContent } from "../../services/user-service";
-import { IEdition } from "../Edition/Edition";
-import { EditionList } from "../Edition/EditionList";
+import { Edition } from "../edition/types";
+import { EditionList } from "../edition/components/edition-list";
 import { IPubseries } from "../../components/Pubseries";
 import { EditionsStatsPanel } from "../Stats/Stats";
 import { ILink } from "../../components/Link";
@@ -19,7 +19,7 @@ export interface IPublisher {
     edition_count?: number,
     edition_oldest?: number | null,
     edition_newest?: number | null,
-    editions: IEdition[],
+    editions: Edition[],
     fullname: string,
     id: number,
     image_attr?: string,

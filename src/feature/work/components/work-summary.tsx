@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 import { Tooltip } from "primereact/tooltip";
 
-import { OtherEdition } from "../../Edition/Edition";
+import { OtherEdition } from "../../edition";
 import { GenreList } from "../../../components/Genre";
 import { LinkList } from "../../../components/LinkList";
 import { WorkProps } from "../routes/work-page";

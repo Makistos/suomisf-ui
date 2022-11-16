@@ -1,18 +1,23 @@
-import { Dropdown } from "primereact/dropdown";
 import { useEffect, useState } from "react";
-import { IEdition, EditionSummary, groupEditions } from "./Edition";
-import { IPerson } from "../Person/Person";
+
+import { Dropdown } from "primereact/dropdown";
 import { SelectButton } from "primereact/selectbutton";
-import { CoverImageList } from "../../components/CoverImageList";
+
+import { EditionSummary } from "./edition-summary";
+import { groupEditions } from "../utils/group-editions";
+import { Edition } from "../types";
+import { IPerson } from "../../Person/Person";
+import { CoverImageList } from "../../../components/CoverImageList";
+
 interface EditionListProps {
-    editions: IEdition[],
+    editions: Edition[],
     person?: IPerson,
     sort?: string
 }
 
 export const EditionList = ({ editions, person, sort }: EditionListProps) => {
-    const [groupedEditions, setGroupedEditions]: [Record<string, IEdition[]>,
-        (editions: Record<string, IEdition[]>) => void] = useState({});
+    const [groupedEditions, setGroupedEditions]: [Record<string, Edition[]>,
+        (editions: Record<string, Edition[]>) => void] = useState({});
     const [sorting, setSorting] = useState<string>("year");
     const [editionView, setEditionView] = useState("Lista");
 
@@ -35,7 +40,7 @@ export const EditionList = ({ editions, person, sort }: EditionListProps) => {
         }
     }, [editions, sorting])
 
-    const editionListCmp = (a: [string, IEdition[]], b: [string, IEdition[]]) => {
+    const editionListCmp = (a: [string, Edition[]], b: [string, Edition[]]) => {
         if (sorting === "author") {
             const aFirst = a[1][0];
             const bFirst = b[1][0];
@@ -57,7 +62,7 @@ export const EditionList = ({ editions, person, sort }: EditionListProps) => {
         return -1;
     }
 
-    const cmpEditions = (a: IEdition, b: IEdition) => {
+    const cmpEditions = (a: Edition, b: Edition) => {
         if (sorting === "year") {
             return a.pubyear >= b.pubyear ? 1 : -1;
         } else if (sorting === "title") {
@@ -96,7 +101,7 @@ export const EditionList = ({ editions, person, sort }: EditionListProps) => {
                                         )
                                     }
                                     {editionView === "Lista" ? (
-                                        ed.sort(cmpEditions).map((edition: IEdition) => (
+                                        ed.sort(cmpEditions).map((edition: Edition) => (
                                             <div className="grid col-12" key={edition.id}>
                                                 <EditionSummary edition={edition} showVersion={true}
                                                     key={edition.id} showPerson={sorting !== "author"}

@@ -9,7 +9,9 @@ import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
 import { confirmDialog } from "primereact/confirmdialog";
 
-import { EditionDetails, EditionString, IEdition } from "../../Edition/Edition";
+import { EditionString } from "../../edition/utils/edition-string";
+import { EditionDetails } from "../../edition/components/edition-details";
+import { Edition } from "../../edition/types";
 import { IMAGE_URL } from "../../../systemProps";
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
@@ -101,7 +103,7 @@ export const WorkPage = () => {
         getWork();
     }, [params.workId, user])
 
-    const renderListItem = (edition: IEdition) => {
+    const renderListItem = (edition: Edition) => {
         return (
             <div className="col-12">
                 <div className="grid">
@@ -118,7 +120,7 @@ export const WorkPage = () => {
         )
     }
 
-    const renderGridItem = (edition: IEdition) => {
+    const renderGridItem = (edition: Edition) => {
         return (
             <div className="col-12 md:col-4 editioncard">
                 <div className="editionheader">
@@ -145,7 +147,7 @@ export const WorkPage = () => {
     }
 
 
-    const itemTemplate = (edition: IEdition, layout: DataViewLayoutType) => {
+    const itemTemplate = (edition: Edition, layout: DataViewLayoutType) => {
         if (!edition) {
             return;
         }

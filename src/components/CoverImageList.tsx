@@ -3,16 +3,17 @@ import { IImage } from './Image';
 import { Image } from "primereact/image";
 import { IMAGE_URL } from "../systemProps";
 import { Tooltip } from 'primereact/tooltip';
-import { EditionString, IEdition } from '../feature/Edition/Edition';
+import { EditionString } from "../feature/edition/utils/edition-string";
+import { Edition } from "../feature/edition/types";
 
 interface CoverImageListProps {
     works?: Work[],
-    editions?: IEdition[]
+    editions?: Edition[]
 }
 
 export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
 
-    const updateImageDict = (editions: IEdition[]) => {
+    const updateImageDict = (editions: Edition[]) => {
         let retval: Record<string, IImage> = {};
         editions.every(edition => {
             if (edition.images !== undefined) {
@@ -48,8 +49,8 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
     const imageTooltip = (image: IImage) => {
         let retval = (<div></div>);
 
-        const hasImage = (editions: IEdition[], image_src: string) => {
-            let retval: IEdition[] = [];
+        const hasImage = (editions: Edition[], image_src: string) => {
+            let retval: Edition[] = [];
             if (editions) {
                 editions.map(edition => {
                     edition.images.map(image => {
@@ -64,7 +65,7 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
             return retval;
         }
 
-        const toolTipText = (title: string, editions: IEdition[]) => {
+        const toolTipText = (title: string, editions: Edition[]) => {
             if (editions.length > 0) {
                 retval = (
                     <div>

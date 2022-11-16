@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getCurrenUser } from "../services/auth-service";
 import { getApiContent } from "../services/user-service";
-import { IEdition } from "../feature/Edition/Edition";
+import { Edition } from "../feature/edition/types";
 import { IPublisher } from "../feature/Publisher/Publisher";
 import { Work } from "../feature/work";
 import { WorkList } from "../feature/work/components/work-list";
@@ -17,7 +17,7 @@ export interface IBookseries {
     image_attr: string,
     works: Work[],
     publisher: IPublisher,
-    editions: IEdition[]
+    editions: Edition[]
 }
 
 export const groupByBookSeries = (works: Work[], seriesType: string) => {

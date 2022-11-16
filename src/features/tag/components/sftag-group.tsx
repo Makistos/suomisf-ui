@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
+
 import { Tag } from 'primereact/tag';
 import { Button } from 'primereact/button';
 
-import { ITag } from "./SFTag";
+import { TagType } from "..";
 
 interface TagsProps {
-    tags: ITag[],
+    tags: TagType[],
     overflow: number,
     showOneCount: boolean
 }
@@ -23,14 +24,14 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
     const [subgenres, setSubgenres] = useState<string[]>([]);
     const [styles, setStyles] = useState<string[]>([]);
 
-    const filterTypes = (tags: ITag[], type: string) => {
+    const filterTypes = (tags: TagType[], type: string) => {
         return tags.filter(tag => tag.type === type)
             .map(tag => tag.name)
     }
 
     useEffect(() => {
         const countTags = () => {
-            let retval = tags.reduce((acc, currentValue: ITag) => {
+            let retval = tags.reduce((acc, currentValue: TagType) => {
                 const tagName: string = currentValue.name;
                 if (!acc[tagName]) {
                     acc[tagName] = 1;

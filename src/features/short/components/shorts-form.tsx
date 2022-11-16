@@ -15,7 +15,7 @@ import { IContribution } from '../../../components/Contribution';
 import { KeyValuePair } from '../../../components/forms/forms';
 import { getApiContent, postApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
-import type { ITag } from '../../../components/Tag/SFTag';
+import { TagType } from "../../tag";
 import { isAdmin } from '../../User/User';
 
 interface hasIdAndName {
@@ -32,7 +32,7 @@ interface IShortForm {
     type: number,
     genres: KeyValuePair[],
     contributors: IContribution[],
-    tags: ITag[]
+    tags: TagType[]
 }
 
 interface IShortFormSubmit {

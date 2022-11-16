@@ -1,31 +1,19 @@
 import React from 'react';
 import { useParams } from "react-router-dom";
 
-import { LinkList } from '../../components/LinkList';
-import { Person } from "../person/types";
-import { getApiContent } from '../../services/user-service';
-import { getCurrenUser } from '../../services/auth-service';
-import type { ITag } from '../../components/Tag/SFTag';
-import { PickTagLinks } from '../../components/Tag/SFTag';
-import type { IIssue } from '../Issue/Issue';
+import { LinkList } from '../../../components/LinkList';
+import { Person } from "../../person/types";
+import { getApiContent } from '../../../services/user-service';
+import { getCurrenUser } from '../../../services/auth-service';
+import { PickTagLinks } from "../../tag";
+import { Article } from "../types";
 
 const baseURL = 'articles/';
-
-export interface IArticle {
-    id: number,
-    title: string,
-    person: string,
-    excerpt: string,
-    author_rel: Person[],
-    issue: IIssue,
-    //links: ILink[],
-    tags: ITag[]
-}
 
 interface ArticleProps {
     id: number | null
 }
-export const Article = () => {
+export const ArticlePage = () => {
     const params = useParams();
     let id: number | null = null;
     if (params.id !== undefined && params.articleId !== undefined) {
@@ -40,7 +28,7 @@ export const Article = () => {
 export const ArticleView = ({ id }: ArticleProps) => {
     const user = getCurrenUser();
     let params = useParams();
-    const [article, setArticle]: [IArticle | null, (article: IArticle) => void] = React.useState<IArticle | null>(null);
+    const [article, setArticle]: [Article | null, (article: Article) => void] = React.useState<Article | null>(null);
     //const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
     const PickLinks = (items: Person[]) => {
         return items.map((item) => ({ id: item['id'], name: item['name'] }))
@@ -87,4 +75,4 @@ export const ArticleView = ({ id }: ArticleProps) => {
     )
 }
 
-export default Article;
+export default ArticlePage;

@@ -1,8 +1,8 @@
-import { ArticleBrief } from "./ArticleBrief";
-import type { IArticle } from "./Article";
+import { ArticleBrief } from "./article-brief";
+import { Article } from "../types";
 
 type ArticleListProps = {
-    articles: IArticle[]
+    articles: Article[]
 }
 
 export const ArticleList = ({ articles }: ArticleListProps) => {
@@ -10,7 +10,7 @@ export const ArticleList = ({ articles }: ArticleListProps) => {
     return (
         <>
             {
-                articles.map((article: IArticle) => {
+                articles.map((article: Article) => {
                     return (
                         <div key={article.id}>
                             <ArticleBrief key={article.id}

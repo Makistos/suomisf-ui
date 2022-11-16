@@ -8,7 +8,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Magazines from './features/Magazine/Magazines';
 import Magazine from './features/Magazine/Magazine';
-import { ArticleView } from './features/Article/Article';
+import { ArticleView } from './features/article/routes/article-page';
 import { Issue } from './features/Issue/Issue';
 import { PeoplePage, PersonPage } from './features/person';
 import { WorkPage } from './features/work';
@@ -21,8 +21,8 @@ import { BookseriesListing } from './BookseriesListing';
 import { PubseriesListing } from './PubseriesListing';
 import { ShortSearchPage } from './features/short/routes/short-search-page';
 import { BookSearch } from './BookSearch';
-import { SFTag } from './components/Tag/SFTag';
-import { SFTags } from './components/Tag/SFTags';
+import { SFTag } from './features/tag/components/sftag';
+import { SFTags } from './features/tag/routes/sftags-page';
 import { Awards } from './features/Award/Awards'
 
 const rootElement = document.getElementById("root");

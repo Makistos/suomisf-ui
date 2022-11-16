@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getApiContent } from '../../services/user-service';
-import { getCurrenUser } from '../../services/auth-service';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
-import { ITag } from "./SFTag";
+import { getApiContent } from '../../../services/user-service';
+import { getCurrenUser } from '../../../services/auth-service';
+import { TagType } from "../types";
 
 interface TagProps {
     id?: number | null,
@@ -12,9 +12,9 @@ interface TagProps {
     count?: number | null
 }
 export const SFTags = ({ id }: TagProps) => {
-    const [genreTags, setGenreTags]: [ITag[], (tag: ITag[]) => void] = useState<ITag[]>([]);
-    const [styleTags, setStyleTags]: [ITag[], (tag: ITag[]) => void] = useState<ITag[]>([]);
-    const [otherTags, setOtherTags]: [ITag[], (tag: ITag[]) => void] = useState<ITag[]>([]);
+    const [genreTags, setGenreTags]: [TagType[], (tag: TagType[]) => void] = useState<TagType[]>([]);
+    const [styleTags, setStyleTags]: [TagType[], (tag: TagType[]) => void] = useState<TagType[]>([]);
+    const [otherTags, setOtherTags]: [TagType[], (tag: TagType[]) => void] = useState<TagType[]>([]);
 
     const [loading, setLoading] = useState(false);
     const user = getCurrenUser();
@@ -25,7 +25,7 @@ export const SFTags = ({ id }: TagProps) => {
             let url = 'tags';
             try {
                 const response = await getApiContent(url, user);
-                const tags: ITag[] = response.data;
+                const tags: TagType[] = response.data;
                 setGenreTags(tags.filter(tag => tag.type === 'subgenre'));
                 setStyleTags(tags.filter(tag => tag.type === 'style'));
                 setOtherTags(tags.filter(tag => tag.type === null));
@@ -37,8 +37,8 @@ export const SFTags = ({ id }: TagProps) => {
         getTags();
     }, [id])
 
-    const renderTags = (tags: ITag[]) => {
-        return tags.map((tag: ITag) => {
+    const renderTags = (tags: TagType[]) => {
+        return tags.map((tag: TagType) => {
             return <><Link to={`/tags/${tag.id}`} key={tag.id}>{tag.name}</Link><br /></>
         })
     }

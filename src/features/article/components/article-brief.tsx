@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 
-import { LinkList } from '../../components/LinkList';
-import { Person } from "../person/types";
-import type { IArticle } from './Article';
+import { LinkList } from '../../../components/LinkList';
+import { Person } from "../../person/types";
+import { Article } from "../types";
 
 interface ArticleProps {
-    article: IArticle,
+    article: Article,
     skipAuthors?: boolean
 }
 

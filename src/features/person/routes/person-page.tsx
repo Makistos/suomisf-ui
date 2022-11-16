@@ -11,7 +11,7 @@ import { ICountry } from "../../../components/Country";
 import { ContributorBookControl } from "../../../components/BookControl";
 import { ShortsControl } from '../../short/components/shorts-control';
 import { GenreGroup, IGenre } from '../../../components/Genre';
-import { TagGroup } from '../../../components/Tag/SFTagGroup';
+import { TagGroup } from '../../tag/components/sftag-group';
 import { LinkPanel } from '../../../components/Links';
 import { AwardPanel, IAwarded } from '../../Award/Awarded';
 import { Person } from '../types';

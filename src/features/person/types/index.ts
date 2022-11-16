@@ -1,6 +1,6 @@
 import { Work } from "../../work";
 import { Edition } from "../../edition/types";
-import { IArticle } from '../../Article/Article';
+import { Article } from "../../article";
 import { Short } from "../../short/types";
 import { ILink } from '../../../components/Link';
 import { IAwarded } from '../../Award/Awarded';
@@ -25,7 +25,7 @@ export interface Person {
     works: Work[];
     translations: Edition[];
     edits: Edition[];
-    articles: IArticle[];
+    articles: Article[];
     stories: Short[];
     magazine_stories: Short[];
     awarded: IAwarded[];

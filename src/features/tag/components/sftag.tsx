@@ -1,44 +1,29 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { Button } from 'primereact/button';
-import { getApiContent, deleteApiContent } from '../../services/user-service';
-import { getCurrenUser } from '../../services/auth-service';
-import { ProgressSpinner } from "primereact/progressspinner";
 import { useParams } from "react-router-dom";
-import type { Work } from "../../features/work";
-import { WorkList } from '../../features/work/components/work-list';
-import { ShortsList } from '../../features/short/components/shorts-list';
-import type { IArticle } from '../../features/Article/Article';
-import { Short } from "../../features/short/types";
-import { ArticleList } from '../../features/Article/ArticleList';
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+
+import { Button } from 'primereact/button';
+import { ProgressSpinner } from "primereact/progressspinner";
 import { SpeedDial } from 'primereact/speeddial';
 import { Tooltip } from "primereact/tooltip";
 import { Dialog } from 'primereact/dialog';
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { InputText } from 'primereact/inputtext';
 import { classNames } from "primereact/utils";
 import { AutoComplete } from 'primereact/autocomplete';
-import type { IMagazine } from '../../features/Magazine/Magazine';
-import { Person } from "../../features/person/types";
-import type { IIssue } from '../../features/Issue/Issue';
-import type { IUser } from '../../features/User/User';
-import axios from 'axios';
-import { API_URL } from '../../systemProps';
 import { ConfirmDialog } from 'primereact/confirmdialog';
-import authHeader from '../../services/auth-header';
+import axios from 'axios';
 
+import { getApiContent, deleteApiContent } from '../../../services/user-service';
+import { getCurrenUser } from '../../../services/auth-service';
+import { WorkList } from '../../work';
+import { ShortsList } from '../../short';
+import { ArticleList } from '../../article/components/article-list';
+import type { IUser } from '../../User/User';
+import { API_URL } from '../../../systemProps';
+import authHeader from '../../../services/auth-header';
+import { TagType } from '../types';
 
-export interface ITag {
-    id: number,
-    name: string,
-    type: string,
-    works?: Work[],
-    shorts?: Short[],
-    articles?: IArticle[],
-    magazines?: IMagazine[],
-    people?: Person[],
-    issues?: IIssue[]
-}
 
 interface TagProps {
     id?: number | null,
@@ -47,14 +32,9 @@ interface TagProps {
 }
 
 
-export const PickTagLinks = (tags: ITag[]) => {
-    return tags.map((tag) => ({ id: tag['id'], name: tag['name'] }))
-}
-
-
 export const SFTag = ({ id }: TagProps) => {
     const params = useParams();
-    const [tag, setTag]: [ITag | null, (tag: ITag) => void] = useState<ITag | null>(null);
+    const [tag, setTag]: [TagType | null, (tag: TagType) => void] = useState<TagType | null>(null);
     const [displayChangeName, setDisplayChangeName] = useState(false);
     const [displayMerge, setDisplayMerge] = useState(false);
     const [displayDelete, setDisplayDelete] = useState(false);
@@ -72,7 +52,7 @@ export const SFTag = ({ id }: TagProps) => {
         'displayDelete': setDisplayDelete
     }
 
-    const tagHasContent = (tag: ITag | null) => {
+    const tagHasContent = (tag: TagType | null) => {
         if (tag === undefined || tag === null) return false;
         if (tag?.articles && tag.articles.length > 0) return true;
         if (tag?.issues && tag.issues.length > 0) return true;
@@ -139,7 +119,7 @@ export const SFTag = ({ id }: TagProps) => {
         const changeName: SubmitHandler<IName> = (data) => {
             async function rename() {
                 if (tag) {
-                    let p: ITag = {
+                    let p: TagType = {
                         'id': tag.id,
                         'name': data.name,
                         'type': tag.type
@@ -189,14 +169,14 @@ export const SFTag = ({ id }: TagProps) => {
     }
 
     const MergeTagsDialog = () => {
-        type ITagInfo = {
+        type TagTypeInfo = {
             id: number,
             name: string
         }
-        const { control, handleSubmit, formState: { errors } } = useForm<ITagInfo>();
+        const { control, handleSubmit, formState: { errors } } = useForm<TagTypeInfo>();
         const [filteredTags, setFilteredTags] = useState<any>(null);
         const [selectedTag, setSelectedTag] = useState<any>(null);
-        const mergeTags: SubmitHandler<ITagInfo> = (data) => {
+        const mergeTags: SubmitHandler<TagTypeInfo> = (data) => {
             console.log(data);
         }
 
@@ -213,7 +193,7 @@ export const SFTag = ({ id }: TagProps) => {
             getTags(event.query);
         }
 
-        const selectTag = (tag: ITagInfo) => {
+        const selectTag = (tag: TagTypeInfo) => {
             setSelectedTag(null);
         }
 

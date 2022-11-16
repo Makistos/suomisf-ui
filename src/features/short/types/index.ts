@@ -3,7 +3,7 @@ import { Edition } from "../../edition/types";
 import { IIssue } from "../../Issue/Issue";
 import { IGenre } from '../../../components/Genre';
 import { IContribution } from '../../../components/Contribution';
-import { ITag } from '../../../components/Tag/SFTag';
+import { TagType } from "../../tag";
 
 
 export interface ShortType {
@@ -22,5 +22,5 @@ export interface Short {
     issues: IIssue[];
     genres: IGenre[];
     contributors: IContribution[];
-    tags: ITag[];
+    tags: TagType[];
 }

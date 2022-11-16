@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 import { GenreGroup } from "../../../components/Genre";
-import { TagGroup } from "../../../components/Tag/SFTagGroup";
+import { TagGroup } from "../../tag/components/sftag-group";
 import { LinkList } from "../../../components/LinkList";
 import { AwardPanel } from "../../Award/Awarded";
 import { LinkPanel } from "../../../components/Links";

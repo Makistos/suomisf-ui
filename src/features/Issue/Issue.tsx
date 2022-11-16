@@ -6,11 +6,11 @@ import { IPublicationSize } from '../../PublicationSize';
 import { LinkList } from '../../components/LinkList';
 import { ShortSummary } from '../short/components/short-summary';
 import { Short } from "../short/types";
-import type { IArticle } from '../Article/Article';
+import { Article } from "../article";
 import { Image } from 'primereact/image';
 import type { IMagazine } from '../Magazine/Magazine';
 import { useParams } from "react-router-dom";
-import { ArticleList } from '../Article/ArticleList';
+import { ArticleList } from '../article/components/article-list';
 
 const baseURL = 'issues/';
 
@@ -30,7 +30,7 @@ export interface IIssue {
     notes: string,
     title: string,
     editors: Person[],
-    articles: IArticle[],
+    articles: Article[],
     stories: Short[],
     magazine: IMagazine
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IPerson } from "../feature/Person/Person";
+import { Person } from "../feature/person/types";
 import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
 import { WorkList } from "../feature/work/components/work-list";
@@ -11,7 +11,7 @@ import { Edition } from "../feature/edition/types";
 import _ from "lodash";
 
 interface CBCProps {
-    person: IPerson,
+    person: Person,
     viewNonSf: boolean,
     collaborationsLast?: boolean
 }

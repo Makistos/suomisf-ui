@@ -5,63 +5,23 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Fieldset } from 'primereact/fieldset';
 import _ from "lodash";
 
-import { getCurrenUser } from "../../services/auth-service";
-import { getApiContent } from "../../services/user-service";
-import type { Work } from "../work";
-import { ICountry } from "../../components/Country";
-import { ContributorBookControl } from "../../components/BookControl";
-import { Edition } from "../edition/types";
-import type { IArticle } from '../Article/Article';
-import type { IShort } from '../Short/Short';
-import { ShortsControl } from '../Short/ShortsControl';
-import { GenreGroup, IGenre } from '../../components/Genre';
-import { TagGroup } from '../../components/Tag/SFTagGroup';
-import { ILink } from '../../components/Link';
-import { LinkPanel } from '../../components/Links';
-import { AwardPanel, IAwarded } from '../Award/Awarded';
-
-interface INationality {
-    id: number,
-    name: string
-}
-
-export interface IPerson {
-    [index: string]: any,
-    id: number,
-    name: string,
-    aliases: IPerson[],
-    alt_name: string,
-    fullname: string,
-    other_names: string,
-    image_src: string,
-    dob: number,
-    dod: number,
-    bio: string,
-    links: ILink[],
-    roles: string[],
-    nationality: INationality,
-    works: Work[],
-    translations: Edition[],
-    edits: Edition[],
-    articles: IArticle[],
-    stories: IShort[],
-    magazine_stories: IShort[],
-    awarded: IAwarded[],
-}
-
-export interface IPersonBrief {
-    id: number,
-    name: string,
-    alt_name: string,
-    image_src: string
-}
+import { getCurrenUser } from "../../../services/auth-service";
+import { getApiContent } from "../../../services/user-service";
+import { ICountry } from "../../../components/Country";
+import { ContributorBookControl } from "../../../components/BookControl";
+import { ShortsControl } from '../../Short/ShortsControl';
+import { GenreGroup, IGenre } from '../../../components/Genre';
+import { TagGroup } from '../../../components/Tag/SFTagGroup';
+import { LinkPanel } from '../../../components/Links';
+import { AwardPanel, IAwarded } from '../../Award/Awarded';
+import { Person } from '../types';
 
 const baseURL = "people/";
 
-export const Person = () => {
+export const PersonPage = () => {
     const params = useParams();
     const user = getCurrenUser();
-    const [person, setPerson]: [IPerson | null, (person: IPerson) => void] = React.useState<IPerson | null>(null);
+    const [person, setPerson]: [Person | null, (person: Person) => void] = React.useState<Person | null>(null);
     const [loading, setLoading] = useState(true);
 
     React.useEffect(() => {
@@ -136,7 +96,7 @@ export const Person = () => {
         return _.flatten(all_genres).some(genre => genre.abbr === 'eiSF');
     }
 
-    const combineNames = (aliases: IPerson[], other_names: string) => {
+    const combineNames = (aliases: Person[], other_names: string) => {
         let retval = aliases.map(alias => alias.alt_name ? alias.alt_name : alias.name);
         if (other_names) retval.push(other_names);
         return retval.join(', ');

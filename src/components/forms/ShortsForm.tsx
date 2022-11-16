@@ -6,7 +6,7 @@ import { useForm, Controller, SubmitHandler, useFieldArray, FieldValues } from '
 import { getGenreColors, IGenre } from '../Genre';
 import { IShort, IShortType, shortIsSf } from '../../feature/Short/Short';
 import { InputText } from 'primereact/inputtext';
-import type { IPerson } from '../../feature/Person/Person';
+import { Person } from "../../feature/person/types";
 import { classNames } from 'primereact/utils';
 import { ContributorField } from './ContributorField';
 import { IContribution } from '../Contribution';

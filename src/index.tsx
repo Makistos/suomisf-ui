@@ -10,9 +10,8 @@ import Magazines from './feature/Magazine/Magazines';
 import Magazine from './feature/Magazine/Magazine';
 import { ArticleView } from './feature/Article/Article';
 import { Issue } from './feature/Issue/Issue';
-import { People } from './feature/Person/People';
-import { Person } from './feature/Person/Person';
-import { WorkPage } from './feature/work/routes/work-page';
+import { PeoplePage, PersonPage } from './feature/person';
+import { WorkPage } from './feature/work';
 import Login from './feature/User/Login';
 import { Bookseries } from './components/Bookseries';
 import { Pubseries } from './components/Pubseries';
@@ -35,8 +34,8 @@ ReactDOM.render(
         <Route path="awards" element={<Awards />} />
         <Route path="bookindex" element={<BookSearch />} />
         <Route path="shortstoryindex" element={<ShortSearch />} />
-        <Route path="people" element={<People />} />
-        <Route path="people/:personId" element={<Person />} />
+        <Route path="people" element={<PeoplePage />} />
+        <Route path="people/:personId" element={<PersonPage />} />
         <Route path="magazines" element={<Magazines />} />
         <Route path="magazines/:magazineId" element={<Magazine />} />
         <Route path="issues/:issueId" element={<Issue id={null} />} />

@@ -1,5 +1,5 @@
 
-import { IPerson } from "../feature/Person/Person";
+import { Person } from "../feature/person/types";
 
 export interface IRole {
     id: number,
@@ -7,10 +7,10 @@ export interface IRole {
 }
 
 export interface IContribution {
-    person: IPerson,
+    person: Person,
     role: IRole,
     description?: string,
-    real_person?: IPerson
+    real_person?: Person
 }
 // export interface IContribution {
 //     id: number;

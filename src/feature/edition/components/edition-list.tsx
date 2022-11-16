@@ -6,12 +6,12 @@ import { SelectButton } from "primereact/selectbutton";
 import { EditionSummary } from "./edition-summary";
 import { groupEditions } from "../utils/group-editions";
 import { Edition } from "../types";
-import { IPerson } from "../../Person/Person";
+import { Person } from "../../person/types";
 import { CoverImageList } from "../../../components/CoverImageList";
 
 interface EditionListProps {
     editions: Edition[],
-    person?: IPerson,
+    person?: Person,
     sort?: string
 }
 

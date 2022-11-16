@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import { LinkList } from '../../components/LinkList';
-import type { IPerson } from '../Person/Person';
+import { Person } from "../person/types";
 import type { IArticle } from './Article';
 
 interface ArticleProps {
@@ -13,7 +13,7 @@ export const ArticleBrief = ({ article }: ArticleProps) => {
     //const user = getCurrenUser();
     //const op = useRef<OverlayPanel>(null);
     //let [article, setArticle]: [IArticle | null, (article: IArticle) => void] = React.useState<IArticle | null>(null);
-    const PickLinks = (items: IPerson[]) => {
+    const PickLinks = (items: Person[]) => {
         return items.map((item) => ({ id: item['id'], name: item['alt_name'] ? item['alt_name'] : item['name'] }))
     }
 

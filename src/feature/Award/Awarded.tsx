@@ -6,7 +6,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { classNames } from "primereact/utils";
 
-import type { IPerson } from "../Person/Person";
+import { Person } from "../person/types";
 import type { Work } from "../work";
 import type { IShort } from "../Short/Short"
 import type { IAward } from "./Award";
@@ -16,7 +16,7 @@ export interface IAwarded {
     id: number,
     year: number,
     award: IAward,
-    person: IPerson,
+    person: Person,
     work: Work,
     category: IAwardCategory,
     story: IShort

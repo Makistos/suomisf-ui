@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { LinkList } from "../../components/LinkList";
-import type { IPerson } from "../Person/Person";
+import { Person } from "../person/types";
 import { Edition } from "../edition/types";
 import type { IIssue } from "../Issue/Issue";
 import type { IGenre } from '../../components/Genre';
@@ -22,7 +22,7 @@ export interface IShort {
     orig_title: string,
     language: string,
     pubyear: number,
-    authors: IPerson[],
+    authors: Person[],
     type: IShortType,
     editions: Edition[],
     issues: IIssue[],
@@ -77,7 +77,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
     //let [short, setShort]: [IShort | null, (story: IShort) => void] = React.useState<IShort | null>(null);
     const [isEditVisible, setEditVisible] = useState(false);
 
-    const PickLinks = (items: IPerson[]) => {
+    const PickLinks = (items: Person[]) => {
         return items.map((item) => ({ id: item['id'], name: item['alt_name'] }));
     }
 

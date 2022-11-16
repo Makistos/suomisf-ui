@@ -1,7 +1,7 @@
 import React from 'react';
 import { getCurrenUser } from '../../services/auth-service';
 import { getApiContent } from '../../services/user-service';
-import type { IPerson } from '../Person/Person';
+import { Person } from "../person/types";
 import { IPublicationSize } from '../../PublicationSize';
 import { LinkList } from '../../components/LinkList';
 import { ShortSummary, IShort } from '../Short/Short';
@@ -28,7 +28,7 @@ export interface IIssue {
     link: string,
     notes: string,
     title: string,
-    editors: IPerson[],
+    editors: Person[],
     articles: IArticle[],
     stories: IShort[],
     magazine: IMagazine
@@ -46,7 +46,7 @@ export const Issue = ({ id, index }: IssueProps) => {
     //const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
     //const [error, setError]: [string, (error: string) => void] = React.useState("");
 
-    const PickLinks = (items: IPerson[]) => {
+    const PickLinks = (items: Person[]) => {
         return items.map((item) => ({ id: item['id'], name: item['alt_name'] ? item['alt_name'] : item['name'] }))
     }
 

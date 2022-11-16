@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams } from "react-router-dom";
 
 import { LinkList } from '../../components/LinkList';
-import type { IPerson } from '../Person/Person';
+import { Person } from "../person/types";
 import { getApiContent } from '../../services/user-service';
 import { getCurrenUser } from '../../services/auth-service';
 import type { ITag } from '../../components/Tag/SFTag';
@@ -16,7 +16,7 @@ export interface IArticle {
     title: string,
     person: string,
     excerpt: string,
-    author_rel: IPerson[],
+    author_rel: Person[],
     issue: IIssue,
     //links: ILink[],
     tags: ITag[]
@@ -42,7 +42,7 @@ export const ArticleView = ({ id }: ArticleProps) => {
     let params = useParams();
     const [article, setArticle]: [IArticle | null, (article: IArticle) => void] = React.useState<IArticle | null>(null);
     //const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
-    const PickLinks = (items: IPerson[]) => {
+    const PickLinks = (items: Person[]) => {
         return items.map((item) => ({ id: item['id'], name: item['name'] }))
     }
 

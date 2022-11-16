@@ -1,4 +1,4 @@
-import type { IPerson } from "../Person/Person";
+import { Person } from "../person/types";
 import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
 import { ShortsList } from "./ShortsList";
@@ -12,7 +12,7 @@ interface ShortsProps {
      * This can be used to skip showing the name of a certain author. Used to
      * list shorts on a person's page where we don't want to repeat his name.
      */
-    person: IPerson,
+    person: Person,
     /**
      * Whether to show where shorts were published (books and magazines).
      */

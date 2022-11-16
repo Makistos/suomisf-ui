@@ -1,7 +1,7 @@
 import { KeyValuePair } from "./forms";
 import { useForm, Controller, SubmitHandler, useFieldArray, Control, FieldArray } from 'react-hook-form';
 import { useState, useRef, useEffect } from "react";
-import { IPerson } from '../../feature/Person/Person';
+import { Person } from "../../feature/person/types";
 import { Button } from "primereact/button";
 import { IContributor } from "../Contributor";
 import { AutoComplete } from "primereact/autocomplete";
@@ -44,7 +44,7 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
         name: "contributors"
     })
 
-    const peopleToContribution = (people: IPerson[]) => {
+    const peopleToContribution = (people: Person[]) => {
         let retval = [];
         retval = people.map((person) => {
             const r: IContribution = pickProperties(person, "id", "name");

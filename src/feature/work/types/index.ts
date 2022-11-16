@@ -1,6 +1,6 @@
 import type { IBookseries } from "../../../components/Bookseries";
 import type { ICountry } from "../../../components/Country";
-import type { IPerson, IPersonBrief } from "../../Person/Person";
+import { Person, PersonBrief } from "../../person/types";
 import type { ILink } from "../../../components/Link";
 import type { IShort } from "../../Short/Short";
 import type { IAwarded } from "../../Award/Awarded";
@@ -10,7 +10,7 @@ import { Edition } from "../../edition/types";
 export interface Work {
     [index: string]: any,
     author_str: string,
-    authors: IPerson[],
+    authors: Person[],
     awards: IAwarded[],
     bookseries: IBookseries,
     bookseriesnum: string,
@@ -29,6 +29,6 @@ export interface Work {
     stories: IShort[],
     subtitle: string,
     title: string,
-    translators: IPersonBrief[]
+    translators: PersonBrief[]
 }
 

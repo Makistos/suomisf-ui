@@ -7,16 +7,16 @@ import { Column, ColumnFilterElementType } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
 import { DataTablePFSEvent } from 'primereact/datatable';
 
-import { getApiContent } from '../../services/user-service';
-import { getCurrenUser } from '../../services/auth-service';
-import type { IPerson } from './Person';
-import type { ICountry } from '../../components/Country';
+import { getApiContent } from '../../../services/user-service';
+import { getCurrenUser } from '../../../services/auth-service';
+import { Person } from "../types";
+import type { ICountry } from '../../../components/Country';
 
 const baseURL = 'people';
 
-export const People = () => {
+export const PeoplePage = () => {
     const user = getCurrenUser();
-    const [people, setPeople]: [IPerson[], (people: IPerson[]) => void] = React.useState<IPerson[]>([]);
+    const [people, setPeople]: [Person[], (people: Person[]) => void] = React.useState<Person[]>([]);
     const [countries, setCountries]: [ICountry[], (countries: ICountry[]) => void] = React.useState<ICountry[]>([]);
     //const [roles, setRoles]: [string[], (roles: string[]) => void] = React.useState<string[]>([]);
     const [totalRecords, setTotalRecords] = React.useState(0);
@@ -60,16 +60,7 @@ export const People = () => {
             }
             return retval;
         }
-        // const getRoles = (people: IPerson[]) => {
-        //     let _roles: string[] = [];
-        //     for (let i = 0; i < people.length; i++) {
-        //         for (let j = 0; j < people[i].roles.length; j++) {
-        //             _roles.push(people[i].roles[j]);
-        //         }
-        //     }
-        //     let _unique = new Set(_roles);
-        //     setRoles(Array.from(_unique));
-        // }
+
         async function getPeople() {
             const url = baseURL + "?" +
                 queryParams(lazyParams).join('&');
@@ -96,12 +87,6 @@ export const People = () => {
             catch (e) {
                 console.error(e);
             }
-            // for (let i = 0; i < people.length; i++) {
-            //     let country = people[i].nationalityname;
-            //     if (country !== null && country !== undefined) {
-            //         _countries.push(country);
-            //     }
-            // }
         }
         getCountries();
         getPeople();
@@ -119,27 +104,11 @@ export const People = () => {
         setLazyParams(event);
     }
 
-    /*const onGlobalFilterChange = (e: React.ChangeEventHandler) => {
-        const value = e.target.value;
-        let _filters = { ...filters };
-        _filters["global"].value = value;
-        setFilters(_filters);
-        setGlobalFilterValue(value);
-    };*/
-    /*
-    const renderHeader1 = () => {
-        return (
-            <div className="flex justify-content-between">
-                <Button type="button" icon="pi pi-filter-slash" label="Tyhjennä" className="p-button-outlined" onClick={clearFilter1} />
-            </div>
-        )
-    }*/
-
-    const roleTemplate = (rowData: IPerson) => {
+    const roleTemplate = (rowData: Person) => {
         return rowData.roles.join(", ");
     };
 
-    const nameTemplate = (rowData: IPerson) => {
+    const nameTemplate = (rowData: Person) => {
         return (
             <Link to={`/people/${rowData.id}`} key={rowData.id}>
                 {rowData.name}
@@ -159,34 +128,6 @@ export const People = () => {
             />
         );
     }
-
-    // const shortStoryFilterTemplate: ColumnFilterElementType = (options) => {
-    //     if (options === null || options === undefined) {
-    //         return <div></div>
-    //     }
-    //     return (
-    //         <InputNumber value={options.value} mode='decimal'
-    //             onChange={(e) => options.filterApplyCallback(e.value, options.index)}
-    //             className="p-column-filter"
-    //             placeholder="Lukumäärä"
-    //         />
-    //     );
-
-    // }
-    // const roleFilterTemplate: ColumnFilterElementType = (options) => {
-    //     if (options === null || options === undefined) {
-    //         return <div></div>
-    //     }
-    //     return (
-    //         <Dropdown value={options.value} options={roles}
-    //             onChange={(e) => options.filterApplyCallback(e.value)}
-    //             className="p-column-filter" showClear
-    //         />
-    //     );
-    // }
-    // const nationalityBodyTemplate = (rowData: IPerson) => {
-
-    // }
 
     if (!people) return null;
 

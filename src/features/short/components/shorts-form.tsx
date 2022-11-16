@@ -1,20 +1,23 @@
+import { useEffect, useState } from 'react';
+import { useForm, Controller, SubmitHandler, FieldValues } from 'react-hook-form';
+
 import { Dropdown } from 'primereact/dropdown';
 import { MultiSelect } from "primereact/multiselect";
 import { Button } from 'primereact/button';
-import { useEffect, useState } from 'react';
-import { useForm, Controller, SubmitHandler, FieldValues } from 'react-hook-form';
-import { IGenre } from '../Genre';
-import { Short } from "../../features/short/types";
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
-import { ContributorField } from './ContributorField';
-import { IContribution } from '../Contribution';
-import { KeyValuePair } from './forms';
-import { getApiContent, postApiContent } from '../../services/user-service';
-import { getCurrenUser } from '../../services/auth-service';
 import { AutoComplete } from 'primereact/autocomplete';
-import type { ITag } from '../Tag/SFTag';
-import { isAdmin } from '../../features/User/User';
+
+import { IGenre } from '../../../components/Genre';
+import { Short } from "../types";
+import { ContributorField } from '../../../components/forms/ContributorField';
+import { IContribution } from '../../../components/Contribution';
+import { KeyValuePair } from '../../../components/forms/forms';
+import { getApiContent, postApiContent } from '../../../services/user-service';
+import { getCurrenUser } from '../../../services/auth-service';
+import type { ITag } from '../../../components/Tag/SFTag';
+import { isAdmin } from '../../User/User';
+
 interface hasIdAndName {
     id: number,
     name: string

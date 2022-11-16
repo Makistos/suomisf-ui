@@ -9,7 +9,7 @@ import { Person } from "../../person/types";
 import { Edition } from "../../edition/types";
 import type { IIssue } from "../../Issue/Issue";
 import { GenreList } from '../../../components/Genre';
-import { ShortsForm } from '../../../components/forms/ShortsForm';
+import { ShortsForm } from './shorts-form';
 import { IContribution } from '../../../components/Contribution';
 import { Short } from '../types';
 

@@ -9,7 +9,7 @@ import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
 import { ICountry } from "../../../components/Country";
 import { ContributorBookControl } from "../../../components/BookControl";
-import { ShortsControl } from '../../Short/ShortsControl';
+import { ShortsControl } from '../../short/components/shorts-control';
 import { GenreGroup, IGenre } from '../../../components/Genre';
 import { TagGroup } from '../../../components/Tag/SFTagGroup';
 import { LinkPanel } from '../../../components/Links';

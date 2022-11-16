@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
-import { Person } from "../person/types";
-import { IShort, ShortSummary, groupShorts } from "./Short";
+
 import { Dropdown } from "primereact/dropdown";
+
+import { Person } from "../../person/types";
+import { ShortSummary } from "./short-summary";
+import { groupShorts } from "../utils";
+import { Short } from "../types";
+
 interface ShortsListProps {
     /**
      * List of shorts.
      */
-    shorts: IShort[],
+    shorts: Short[],
     /**
      * This can be used to skip showing the name of a certain author. Used to
      * list shorts on a person's page where we don't want to repeat his name.
@@ -33,15 +38,15 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications, ant
      * articles etc.
      */
     const [orderField, setOrderField] = useState("Year");
-    const [groupedShorts, setGroupedShorts]: [Record<string, IShort[]>,
-        (groupedShorts: Record<string, IShort[]>) => void] = useState({});
+    const [groupedShorts, setGroupedShorts]: [Record<string, Short[]>,
+        (groupedShorts: Record<string, Short[]>) => void] = useState({});
 
     const sortOptions = [
         { name: 'Nimi', code: 'Title' },
         { name: 'Julkaisuvuosi', code: 'Year' }
     ]
 
-    const sortGroups = (a: [string, IShort[]], b: [string, IShort[]]) => {
+    const sortGroups = (a: [string, Short[]], b: [string, Short[]]) => {
         if (person) {
             if (a[0].localeCompare(person.name) === 0) return -1;
             if (a[0].localeCompare(person.name) === 0) return 1;
@@ -49,7 +54,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications, ant
         return (a[0].localeCompare(b[0]));
     }
 
-    const shortsCmp = (a: IShort, b: IShort) => {
+    const shortsCmp = (a: Short, b: Short) => {
         if (orderField === "Title") {
             return a.title < b.title ? -1 : 1;
         }
@@ -68,7 +73,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications, ant
         if (groupAuthors) {
             setGroupedShorts(groupShorts(shorts));
         } else {
-            let grouped: Record<any, IShort[]> = {};
+            let grouped: Record<any, Short[]> = {};
             grouped["null"] = shorts;
             setGroupedShorts(grouped);
         }
@@ -98,7 +103,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications, ant
                                 ) : (<></>)
                                 }
                                 {
-                                    shortList.sort(shortsCmp).map((short: IShort) => (
+                                    shortList.sort(shortsCmp).map((short: Short) => (
                                         <ShortSummary short={short} key={short.id}
                                             skipAuthors={skipAuthors}
                                             {...(listPublications ? { listPublications } : {})}

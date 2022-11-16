@@ -1,41 +1,23 @@
 import { Link } from 'react-router-dom';
-import { LinkList } from "../../components/LinkList";
-import { Person } from "../person/types";
-import { Edition } from "../edition/types";
-import type { IIssue } from "../Issue/Issue";
-import type { IGenre } from '../../components/Genre';
-import { GenreList } from '../../components/Genre';
-import { Dialog } from 'primereact/dialog';
-import { ShortsForm } from '../../components/forms/ShortsForm';
 import { useState } from 'react';
-import { Button } from 'primereact/button';
-import { IContribution } from '../../components/Contribution';
-import { ITag } from '../../components/Tag/SFTag';
 
-export interface IShortType {
-    id: number,
-    name: string
-}
-export interface IShort {
-    id: number,
-    title: string,
-    orig_title: string,
-    language: string,
-    pubyear: number,
-    authors: Person[],
-    type: IShortType,
-    editions: Edition[],
-    issues: IIssue[],
-    genres: IGenre[],
-    contributors: IContribution[],
-    tags: ITag[]
-}
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+
+import { LinkList } from "../../../components/LinkList";
+import { Person } from "../../person/types";
+import { Edition } from "../../edition/types";
+import type { IIssue } from "../../Issue/Issue";
+import { GenreList } from '../../../components/Genre';
+import { ShortsForm } from '../../../components/forms/ShortsForm';
+import { IContribution } from '../../../components/Contribution';
+import { Short } from '../types';
 
 interface ShortProps {
     /**
      * Short object.
      */
-    short: IShort,
+    short: Short,
     /**
      * Whether to show authors.
      */
@@ -45,31 +27,6 @@ interface ShortProps {
      * magazines).
      */
     listPublications?: boolean,
-}
-
-export const shortIsSf = (short: IShort) => {
-    /**
-     * Checks whether short is the sf genre.
-     *
-     * A short is not SF is it has exactly one genre and that genre's
-     * abbreviation is "eiSF". Any other combination means it's SF.
-     */
-    if (short.genres.length === 1 && short.genres[0].abbr === 'eiSF')
-        return false;
-    return true;
-}
-
-export const groupShorts = (shorts: IShort[]) => {
-    let grouped: Record<string, IShort[]> =
-        shorts.reduce((acc: { [index: string]: any }, currentValue) => {
-            const groupKey = currentValue.authors.map((author) => author.name).join(", ");
-            if (!acc[groupKey]) {
-                acc[groupKey] = []
-            }
-            acc[groupKey].push(currentValue);
-            return acc;
-        }, {});
-    return grouped;
 }
 
 export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProps) => {

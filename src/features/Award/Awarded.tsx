@@ -8,7 +8,7 @@ import { classNames } from "primereact/utils";
 
 import { Person } from "../person/types";
 import type { Work } from "../work";
-import type { IShort } from "../Short/Short"
+import { Short } from "../short/types";
 import type { IAward } from "./Award";
 import type { IAwardCategory } from "./AwardCategory";
 
@@ -19,7 +19,7 @@ export interface IAwarded {
     person: Person,
     work: Work,
     category: IAwardCategory,
-    story: IShort
+    story: Short
 }
 
 interface AwardedProps {

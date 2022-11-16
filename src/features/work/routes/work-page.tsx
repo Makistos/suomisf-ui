@@ -15,7 +15,7 @@ import { Edition } from "../../edition/types";
 import { IMAGE_URL } from "../../../systemProps";
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
-import { ShortsList } from "../../Short/ShortsList";
+import { ShortsList } from "../../short/components/shorts-list";
 
 import { Work } from "../types";
 import { WorkDetails } from "../components/work-details";

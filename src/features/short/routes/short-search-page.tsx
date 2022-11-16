@@ -8,11 +8,10 @@ import { Button } from 'primereact/button';
 import { ProgressSpinner } from "primereact/progressspinner";
 import _ from "lodash";
 
-import { getCurrenUser } from "../../services/auth-service";
-import { ShortsList } from './ShortsList';
-import { API_URL } from "../../systemProps";
-import { IShort } from "./Short";
-//import { Toast } from 'primereact/toast';
+import { getCurrenUser } from "../../../services/auth-service";
+import { ShortsList } from '../components/shorts-list';
+import { API_URL } from "../../../systemProps";
+import { Short } from "../types";
 
 type IFormData = {
     [index: string]: any,
@@ -31,13 +30,13 @@ const defaultValues: IFormData = {
     pubyear_last: ''
 }
 
-export const ShortSearch = () => {
+export const ShortSearchPage = () => {
     const user = getCurrenUser();
     const { control, handleSubmit, formState: { errors } } = useForm<IFormData>(
         { defaultValues: defaultValues }
     );
     const [loading, setLoading] = useState(false);
-    const [shorts, setShorts]: [IShort[], (shorts: IShort[]) => void] = useState<IShort[]>([]);
+    const [shorts, setShorts]: [Short[], (shorts: Short[]) => void] = useState<Short[]>([]);
     //const [shorts, setShorts]: [any, (shorts: any[]) => void] = useState<any[]>([]);
     // const toast: Toast | null = useRef<Toast | null>(null);
 

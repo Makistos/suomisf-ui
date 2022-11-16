@@ -4,7 +4,8 @@ import { getApiContent } from '../../services/user-service';
 import { Person } from "../person/types";
 import { IPublicationSize } from '../../PublicationSize';
 import { LinkList } from '../../components/LinkList';
-import { ShortSummary, IShort } from '../Short/Short';
+import { ShortSummary } from '../short/components/short-summary';
+import { Short } from "../short/types";
 import type { IArticle } from '../Article/Article';
 import { Image } from 'primereact/image';
 import type { IMagazine } from '../Magazine/Magazine';
@@ -30,7 +31,7 @@ export interface IIssue {
     title: string,
     editors: Person[],
     articles: IArticle[],
-    stories: IShort[],
+    stories: Short[],
     magazine: IMagazine
 }
 

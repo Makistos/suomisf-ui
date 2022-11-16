@@ -19,7 +19,7 @@ import { PublisherPage } from './features/publisher/routes/publisher-page';
 import { PublisherListPage } from './features/publisher/routes/publisher-list-page';
 import { BookseriesListing } from './BookseriesListing';
 import { PubseriesListing } from './PubseriesListing';
-import { ShortSearch } from './features/Short/ShortsSearch';
+import { ShortSearchPage } from './features/short/routes/short-search-page';
 import { BookSearch } from './BookSearch';
 import { SFTag } from './components/Tag/SFTag';
 import { SFTags } from './components/Tag/SFTags';
@@ -33,7 +33,7 @@ ReactDOM.render(
       <Route path="/" element={<App />}>
         <Route path="awards" element={<Awards />} />
         <Route path="bookindex" element={<BookSearch />} />
-        <Route path="shortstoryindex" element={<ShortSearch />} />
+        <Route path="shortstoryindex" element={<ShortSearchPage />} />
         <Route path="people" element={<PeoplePage />} />
         <Route path="people/:personId" element={<PersonPage />} />
         <Route path="magazines" element={<Magazines />} />

@@ -1,11 +1,13 @@
-import { Person } from "../person/types";
+import { useEffect, useState } from "react";
+
 import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
-import { ShortsList } from "./ShortsList";
-import type { IShort, IShortType } from "./Short";
-import { useEffect, useState } from "react";
-import { listIsSf } from "../../components/Genre";
 import _ from "lodash";
+
+import { Person } from "../../person";
+import { ShortsList } from "./shorts-list";
+import { Short, ShortType } from "../types";
+import { listIsSf } from "../../../components/Genre";
 
 interface ShortsProps {
     /**
@@ -25,18 +27,18 @@ interface ShortsProps {
 }
 
 export const ShortsControl = ({ person, listPublications, what }: ShortsProps) => {
-    const [shorts, setShorts]: [IShort[], (shorts: IShort[]) => void] = useState<IShort[]>([]);
-    const [shortTypes, setShortTypes]: [IShortType[], (shortTypes: IShortType[]) => void] = useState<IShortType[]>([]);
+    const [shorts, setShorts]: [Short[], (shorts: Short[]) => void] = useState<Short[]>([]);
+    const [shortTypes, setShortTypes]: [ShortType[], (shortTypes: ShortType[]) => void] = useState<ShortType[]>([]);
     useEffect(() => {
         /** Filter shorts by the what parameter. Either all or sf or non-sf stories. */
-        const filterShorts = (short: IShort) => {
+        const filterShorts = (short: Short) => {
             if (what === "all") return true;
             else if (what === "nonsf") return !listIsSf(short.genres);
             else return listIsSf(short.genres);
         }
 
         /** Joins two lists of short stories into one. */
-        const joinShortsLists = (aList: IShort[], bList: IShort[]) => {
+        const joinShortsLists = (aList: Short[], bList: Short[]) => {
             const keys = Object.assign({}, ...aList.map(item => ({ [item.id]: item.title })));
             bList.map(item => {
                 if (!(item.id in keys)) {
@@ -58,7 +60,7 @@ export const ShortsControl = ({ person, listPublications, what }: ShortsProps) =
     }
 
     /** Return a list of unique short types ordered by their id. */
-    const getShortTypes = (shorts: IShort[]) => {
+    const getShortTypes = (shorts: Short[]) => {
         const typeList = shorts.map(short => short.type);
         const types = _.uniqBy(typeList, 'id').sort((a, b) => a.id < b.id ? -1 : 1);
         return types;

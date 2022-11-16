@@ -7,9 +7,9 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { useParams } from "react-router-dom";
 import type { Work } from "../../features/work";
 import { WorkList } from '../../features/work/components/work-list';
-import { ShortsList } from '../../features/Short/ShortsList';
+import { ShortsList } from '../../features/short/components/shorts-list';
 import type { IArticle } from '../../features/Article/Article';
-import type { IShort } from '../../features/Short/Short';
+import { Short } from "../../features/short/types";
 import { ArticleList } from '../../features/Article/ArticleList';
 import { SpeedDial } from 'primereact/speeddial';
 import { Tooltip } from "primereact/tooltip";
@@ -33,7 +33,7 @@ export interface ITag {
     name: string,
     type: string,
     works?: Work[],
-    shorts?: IShort[],
+    shorts?: Short[],
     articles?: IArticle[],
     magazines?: IMagazine[],
     people?: Person[],

@@ -2,11 +2,10 @@ import { Dropdown } from 'primereact/dropdown';
 import { MultiSelect } from "primereact/multiselect";
 import { Button } from 'primereact/button';
 import { useEffect, useState } from 'react';
-import { useForm, Controller, SubmitHandler, useFieldArray, FieldValues } from 'react-hook-form';
-import { getGenreColors, IGenre } from '../Genre';
-import { IShort, IShortType, shortIsSf } from '../../features/Short/Short';
+import { useForm, Controller, SubmitHandler, FieldValues } from 'react-hook-form';
+import { IGenre } from '../Genre';
+import { Short } from "../../features/short/types";
 import { InputText } from 'primereact/inputtext';
-import { Person } from "../../features/person/types";
 import { classNames } from 'primereact/utils';
 import { ContributorField } from './ContributorField';
 import { IContribution } from '../Contribution';
@@ -48,12 +47,12 @@ const genreToKeyValue = (arr: IGenre[]): KeyValuePair[] => {
 }
 
 interface IShortFormProps {
-    short: IShort
+    short: Short
 }
 
 export const ShortsForm = (props: IShortFormProps) => {
     const user = getCurrenUser();
-    const convToForm = (short: IShort): IShortForm => ({
+    const convToForm = (short: Short): IShortForm => ({
         id: short.id,
         title: short.title,
         orig_title: short.orig_title,

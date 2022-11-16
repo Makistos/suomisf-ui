@@ -7,7 +7,7 @@ import "primeflex/primeflex.css";
 import { groupWorks } from "../utils/group-works";
 import { WorkSummary } from "./work-summary";
 import { CoverImageList } from "../../../components/CoverImageList";
-import { WorkStatsPanel } from "../../Stats/Stats";
+import { WorkStatsPanel } from "../../stats/components/work-stats-panel";
 
 import { Work } from "../types";
 

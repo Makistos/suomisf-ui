@@ -7,7 +7,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
 import { EditionList } from "../../edition/components/edition-list";
-import { EditionsStatsPanel } from "../../Stats/Stats";
+import { EditionsStatsPanel } from "../../stats/components/editions-stats-panel";
 import { LinkPanel } from "../../../components/Links";
 import { PubseriesList } from "../../../components/PubseriesList";
 import { Publisher } from "../types";

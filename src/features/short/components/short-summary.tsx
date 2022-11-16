@@ -7,7 +7,7 @@ import { Dialog } from 'primereact/dialog';
 import { LinkList } from "../../../components/LinkList";
 import { Person } from "../../person/types";
 import { Edition } from "../../edition/types";
-import type { IIssue } from "../../Issue/Issue";
+import { Issue } from "../../issue/types";
 import { GenreList } from '../../../components/Genre';
 import { ShortsForm } from './shorts-form';
 import { IContribution } from '../../../components/Contribution';
@@ -67,7 +67,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
         return retval;
     }
 
-    const shortIssues = (issues: IIssue[]) => {
+    const shortIssues = (issues: Issue[]) => {
         if (issues.length === 0) {
             return <></>
         }

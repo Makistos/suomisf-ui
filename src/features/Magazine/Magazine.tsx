@@ -2,7 +2,7 @@ import React from 'react';
 import { getCurrenUser } from "../../services/auth-service";
 import { getApiContent } from "../../services/user-service";
 import { useParams } from "react-router-dom";
-import { Issue } from '../Issue/Issue';
+import { IssuePage } from '../issue/routes/issue-page';
 
 
 export interface IMagazine {
@@ -90,7 +90,7 @@ const Magazine = () => {
                                 magazine.issues
                                     .map((issue, index) => (
                                         <div className="card" key={issue}>
-                                            <Issue
+                                            <IssuePage
                                                 id={issue}
                                                 index={index}
                                             />

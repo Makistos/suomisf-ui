@@ -1,6 +1,6 @@
 import { Person } from "../../person/types";
 import { Edition } from "../../edition/types";
-import { IIssue } from "../../Issue/Issue";
+import { Issue } from "../../issue/types";
 import { IGenre } from '../../../components/Genre';
 import { IContribution } from '../../../components/Contribution';
 import { TagType } from "../../tag";
@@ -19,7 +19,7 @@ export interface Short {
     authors: Person[];
     type: ShortType;
     editions: Edition[];
-    issues: IIssue[];
+    issues: Issue[];
     genres: IGenre[];
     contributors: IContribution[];
     tags: TagType[];

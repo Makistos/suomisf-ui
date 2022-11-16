@@ -3,7 +3,7 @@ import { Article } from "../../article";
 import { Short } from "../../short";
 import { IMagazine } from '../../Magazine/Magazine';
 import { Person } from "../../person";
-import { IIssue } from '../../Issue/Issue';
+import { Issue } from "../../issue/types";
 
 export interface TagType {
     id: number;
@@ -14,5 +14,5 @@ export interface TagType {
     articles?: Article[];
     magazines?: IMagazine[];
     people?: Person[];
-    issues?: IIssue[];
+    issues?: Issue[];
 }

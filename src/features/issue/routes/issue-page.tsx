@@ -1,49 +1,27 @@
 import React from 'react';
-import { getCurrenUser } from '../../services/auth-service';
-import { getApiContent } from '../../services/user-service';
-import { Person } from "../person/types";
-import { IPublicationSize } from '../../PublicationSize';
-import { LinkList } from '../../components/LinkList';
-import { ShortSummary } from '../short/components/short-summary';
-import { Short } from "../short/types";
-import { Article } from "../article";
-import { Image } from 'primereact/image';
-import type { IMagazine } from '../Magazine/Magazine';
 import { useParams } from "react-router-dom";
-import { ArticleList } from '../article/components/article-list';
+
+import { Image } from 'primereact/image';
+
+import { getCurrenUser } from '../../../services/auth-service';
+import { getApiContent } from '../../../services/user-service';
+import { Person } from "../../person/types";
+import { LinkList } from '../../../components/LinkList';
+import { ShortSummary } from '../../short/components/short-summary';
+import { ArticleList } from '../../article/components/article-list';
+import { Issue } from '../types';
 
 const baseURL = 'issues/';
-
-export interface IIssue {
-    id: number,
-    type: number,
-    number: number,
-    number_extra: string,
-    count: number,
-    year: number,
-    cover_number: string,
-    publisher_id: number,
-    image_src: string,
-    pages: number,
-    size: IPublicationSize,
-    link: string,
-    notes: string,
-    title: string,
-    editors: Person[],
-    articles: Article[],
-    stories: Short[],
-    magazine: IMagazine
-}
 
 export type IssueProps = {
     id: number | null,
     index?: number
 };
 
-export const Issue = ({ id, index }: IssueProps) => {
+export const IssuePage = ({ id, index }: IssueProps) => {
     let params = useParams();
     const user = getCurrenUser();
-    const [issue, setIssue]: [IIssue | null, (issue: IIssue) => void] = React.useState<IIssue | null>(null);
+    const [issue, setIssue]: [Issue | null, (issue: Issue) => void] = React.useState<Issue | null>(null);
     //const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
     //const [error, setError]: [string, (error: string) => void] = React.useState("");
 

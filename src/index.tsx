@@ -9,7 +9,7 @@ import reportWebVitals from './reportWebVitals';
 import Magazines from './features/Magazine/Magazines';
 import Magazine from './features/Magazine/Magazine';
 import { ArticleView } from './features/article/routes/article-page';
-import { Issue } from './features/Issue/Issue';
+import { IssuePage } from './features/issue/routes/issue-page';
 import { PeoplePage, PersonPage } from './features/person';
 import { WorkPage } from './features/work';
 import Login from './features/User/Login';
@@ -38,7 +38,7 @@ ReactDOM.render(
         <Route path="people/:personId" element={<PersonPage />} />
         <Route path="magazines" element={<Magazines />} />
         <Route path="magazines/:magazineId" element={<Magazine />} />
-        <Route path="issues/:issueId" element={<Issue id={null} />} />
+        <Route path="issues/:issueId" element={<IssuePage id={null} />} />
         <Route path="articles/:articleId" element={<ArticleView id={null} />} />
         <Route path="works/:workId" element={<WorkPage />} />
         <Route path="bookseries" element={<BookseriesListing />} />

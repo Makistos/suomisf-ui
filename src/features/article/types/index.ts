@@ -1,6 +1,6 @@
 import { Person } from "../../person";
 import { TagType } from "../../tag";
-import { IIssue } from '../../Issue/Issue';
+import { Issue } from "../../issue/types";
 
 
 export interface Article {
@@ -9,6 +9,6 @@ export interface Article {
     person: string;
     excerpt: string;
     author_rel: Person[];
-    issue: IIssue;
+    issue: Issue;
     tags: TagType[];
 }

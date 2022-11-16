@@ -1,32 +1,15 @@
-import { useRef } from "react";
 
-import { OverlayPanel } from "primereact/overlaypanel";
-import { Button } from "primereact/button";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { classNames } from "primereact/utils";
 
-import { Person } from "../person/types";
-import type { Work } from "../work";
-import { Short } from "../short/types";
-import type { IAward } from "./Award";
-import type { IAwardCategory } from "./AwardCategory";
+import { IAwarded } from "../types";
 
-export interface IAwarded {
-    id: number,
-    year: number,
-    award: IAward,
-    person: Person,
-    work: Work,
-    category: IAwardCategory,
-    story: Short
-}
-
-interface AwardedProps {
+export interface AwardedProps {
     awards: IAwarded[];
 }
 
-export const Awarded = ({ awards }: AwardedProps) => {
+export const AwardList = ({ awards }: AwardedProps) => {
 
     const awardIcon = (rowData: IAwarded) => {
         if (rowData.person) {
@@ -69,31 +52,3 @@ export const Awarded = ({ awards }: AwardedProps) => {
     )
 }
 
-export const AwardPanel = ({ awards }: AwardedProps) => {
-    const op = useRef<OverlayPanel>(null);
-
-    const buttonHeader = () => {
-        return "Palkinnot (" + awards.length.toString() + ")";
-    }
-    if (!awards) return null;
-
-    return (
-        <div>
-            <Button
-                type="button"
-                label={buttonHeader()}
-                className="p-button-secondary"
-                icon="fa-solid fa-award"
-                onClick={(e) => op.current?.toggle(e)}
-                aria-haspopup
-                aria-controls="awards_panel"
-                disabled={awards.length === 0}
-            />
-            <OverlayPanel
-                ref={op}
-                id="awards_panel">
-                <Awarded awards={awards} />
-            </OverlayPanel>
-        </div>
-    )
-}

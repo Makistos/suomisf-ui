@@ -3,7 +3,7 @@ import { Edition } from "../../edition/types";
 import { Article } from "../../article";
 import { Short } from "../../short/types";
 import { ILink } from '../../../components/Link';
-import { IAwarded } from '../../Award/Awarded';
+import { IAwarded } from '../../award';
 import { Nationality } from "../../../types/nationality-type";
 
 

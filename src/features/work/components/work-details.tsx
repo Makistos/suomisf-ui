@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { GenreGroup } from "../../../components/Genre";
 import { TagGroup } from "../../tag/components/sftag-group";
 import { LinkList } from "../../../components/LinkList";
-import { AwardPanel } from "../../Award/Awarded";
+import { AwardPanel } from "../../award/components/award-panel";
 import { LinkPanel } from "../../../components/Links";
 import { WorkProps } from "../routes/work-page";
 

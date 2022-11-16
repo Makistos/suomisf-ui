@@ -23,7 +23,7 @@ import { ShortSearchPage } from './features/short/routes/short-search-page';
 import { BookSearch } from './BookSearch';
 import { SFTag } from './features/tag/components/sftag';
 import { SFTags } from './features/tag/routes/sftags-page';
-import { Awards } from './features/Award/Awards'
+import { Awards } from './features/award/routes/awards-page'
 
 const rootElement = document.getElementById("root");
 

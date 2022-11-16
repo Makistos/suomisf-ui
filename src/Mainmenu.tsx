@@ -6,8 +6,8 @@ import { logout } from './services/auth-service';
 import { getApiContent } from './services/user-service';
 import { SITE_URL } from './systemProps';
 import { MenuItemCommandParams } from 'primereact/menuitem';
-import { IUser } from './feature/User/User';
-import { Login } from './feature/User/Login';
+import { IUser } from './features/User/User';
+import { Login } from './features/User/Login';
 import { Dialog } from 'primereact/dialog';
 
 export default function MainMenu() {

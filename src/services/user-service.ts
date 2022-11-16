@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IUser } from "../feature/User/User";
+import { IUser } from "../features/User/User";
 import authHeader from "./auth-header";
 import { API_URL } from "../systemProps";
 

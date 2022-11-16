@@ -6,24 +6,24 @@ import 'primereact/resources/primereact.min.css'
 
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Magazines from './feature/Magazine/Magazines';
-import Magazine from './feature/Magazine/Magazine';
-import { ArticleView } from './feature/Article/Article';
-import { Issue } from './feature/Issue/Issue';
-import { PeoplePage, PersonPage } from './feature/person';
-import { WorkPage } from './feature/work';
-import Login from './feature/User/Login';
+import Magazines from './features/Magazine/Magazines';
+import Magazine from './features/Magazine/Magazine';
+import { ArticleView } from './features/Article/Article';
+import { Issue } from './features/Issue/Issue';
+import { PeoplePage, PersonPage } from './features/person';
+import { WorkPage } from './features/work';
+import Login from './features/User/Login';
 import { Bookseries } from './components/Bookseries';
 import { Pubseries } from './components/Pubseries';
-import { PublisherPage } from './feature/publisher/routes/publisher-page';
-import { PublisherListPage } from './feature/publisher/routes/publisher-list-page';
+import { PublisherPage } from './features/publisher/routes/publisher-page';
+import { PublisherListPage } from './features/publisher/routes/publisher-list-page';
 import { BookseriesListing } from './BookseriesListing';
 import { PubseriesListing } from './PubseriesListing';
-import { ShortSearch } from './feature/Short/ShortsSearch';
+import { ShortSearch } from './features/Short/ShortsSearch';
 import { BookSearch } from './BookSearch';
 import { SFTag } from './components/Tag/SFTag';
 import { SFTags } from './components/Tag/SFTags';
-import { Awards } from './feature/Award/Awards'
+import { Awards } from './features/Award/Awards'
 
 const rootElement = document.getElementById("root");
 

@@ -1,10 +1,10 @@
-import { Work } from '../feature/work';
+import { Work } from '../features/work';
 import { IImage } from './Image';
 import { Image } from "primereact/image";
 import { IMAGE_URL } from "../systemProps";
 import { Tooltip } from 'primereact/tooltip';
-import { EditionString } from "../feature/edition/utils/edition-string";
-import { Edition } from "../feature/edition/types";
+import { EditionString } from "../features/edition/utils/edition-string";
+import { Edition } from "../features/edition/types";
 
 interface CoverImageListProps {
     works?: Work[],

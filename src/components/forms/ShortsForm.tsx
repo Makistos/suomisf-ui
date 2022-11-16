@@ -4,9 +4,9 @@ import { Button } from 'primereact/button';
 import { useEffect, useState } from 'react';
 import { useForm, Controller, SubmitHandler, useFieldArray, FieldValues } from 'react-hook-form';
 import { getGenreColors, IGenre } from '../Genre';
-import { IShort, IShortType, shortIsSf } from '../../feature/Short/Short';
+import { IShort, IShortType, shortIsSf } from '../../features/Short/Short';
 import { InputText } from 'primereact/inputtext';
-import { Person } from "../../feature/person/types";
+import { Person } from "../../features/person/types";
 import { classNames } from 'primereact/utils';
 import { ContributorField } from './ContributorField';
 import { IContribution } from '../Contribution';
@@ -15,7 +15,7 @@ import { getApiContent, postApiContent } from '../../services/user-service';
 import { getCurrenUser } from '../../services/auth-service';
 import { AutoComplete } from 'primereact/autocomplete';
 import type { ITag } from '../Tag/SFTag';
-import { isAdmin } from '../../feature/User/User';
+import { isAdmin } from '../../features/User/User';
 interface hasIdAndName {
     id: number,
     name: string

@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getCurrenUser } from "../services/auth-service";
 import { getApiContent } from "../services/user-service";
-import { Publisher } from "../feature/publisher/types";
-import { Edition } from "../feature/edition/types";
-import { EditionList } from "../feature/edition/components/edition-list";
+import { Publisher } from "../features/publisher/types";
+import { Edition } from "../features/edition/types";
+import { EditionList } from "../features/edition/components/edition-list";
 
 
 const baseURL = 'pubseries/';

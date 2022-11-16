@@ -1,7 +1,7 @@
 import { KeyValuePair } from "./forms";
 import { useForm, Controller, SubmitHandler, useFieldArray, Control, FieldArray } from 'react-hook-form';
 import { useState, useRef, useEffect } from "react";
-import { Person } from "../../feature/person/types";
+import { Person } from "../../features/person/types";
 import { Button } from "primereact/button";
 import { IContributor } from "../Contributor";
 import { AutoComplete } from "primereact/autocomplete";

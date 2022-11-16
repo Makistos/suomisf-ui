@@ -7,7 +7,7 @@ import _ from "lodash";
 
 import { OverlayPanel } from "primereact/overlaypanel";
 import { IEdition } from "../Edition/Edition";
-import { IWork } from "../Work";
+import { Work } from "../work";
 import { getGenreColors } from "../../components/Genre";
 
 interface EditionsProps {
@@ -15,7 +15,7 @@ interface EditionsProps {
 }
 
 interface WorksProps {
-    works: IWork[];
+    works: Work[];
 }
 
 export const EditionsStats = ({ editions }: EditionsProps) => {

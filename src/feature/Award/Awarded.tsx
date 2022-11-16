@@ -7,7 +7,7 @@ import { Column } from "primereact/column";
 import { classNames } from "primereact/utils";
 
 import type { IPerson } from "../Person/Person";
-import type { IWork } from "../Work";
+import type { Work } from "../work";
 import type { IShort } from "../Short/Short"
 import type { IAward } from "./Award";
 import type { IAwardCategory } from "./AwardCategory";
@@ -17,7 +17,7 @@ export interface IAwarded {
     year: number,
     award: IAward,
     person: IPerson,
-    work: IWork,
+    work: Work,
     category: IAwardCategory,
     story: IShort
 }

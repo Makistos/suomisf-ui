@@ -1,21 +1,21 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from "react";
-import { IWork } from "../feature/Work";
-import { WorkSummary } from "../feature/Work/Work";
+import { Work } from "../feature/work";
+import { WorkSummary } from "../feature/work/components/work-summary";
 import { groupByBookSeries } from "./Bookseries";
 
 interface SeriesListProps {
-    works: IWork[],
+    works: Work[],
     seriesType: string
 }
 
 export const SeriesList = ({ works, seriesType }: SeriesListProps) => {
-    const [groupedSeries, setGroupedSeries]: [Record<string, IWork[]>,
-        (works: Record<string, IWork[]>) => void] = useState({});
+    const [groupedSeries, setGroupedSeries]: [Record<string, Work[]>,
+        (works: Record<string, Work[]>) => void] = useState({});
     const [bookseries, setBookseries]: [Record<string, number>,
         (bookseries: Record<string, number>) => void] = useState({});
 
-    const findBookseries = (works: IWork[]) => {
+    const findBookseries = (works: Work[]) => {
         /* Create a dictionary which maps bookseries names with bookseries ids.
            This is needed for creating links to bookseries.
          */
@@ -44,7 +44,7 @@ export const SeriesList = ({ works, seriesType }: SeriesListProps) => {
                                 </Link>
                                 </h3>
                                 {
-                                    ser.sort((a, b) => a.pubyear < b.pubyear ? -1 : 1).map((work: IWork) => (
+                                    ser.sort((a, b) => a.pubyear < b.pubyear ? -1 : 1).map((work: Work) => (
                                         <WorkSummary work={work} key={work.id}
                                             detailLevel="brief"
                                             orderField="title"

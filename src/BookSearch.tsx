@@ -13,7 +13,7 @@ import { ICountry } from "./components/Country";
 import { IBookType } from "./components/BookType";
 import axios from "axios";
 import { API_URL } from "./systemProps";
-import { WorkList } from "./feature/Work/WorkList";
+import { WorkList } from "./feature/work/components/work-list";
 import { Divider } from 'primereact/divider';
 import _ from "lodash";
 

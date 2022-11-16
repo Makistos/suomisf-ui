@@ -4,8 +4,8 @@ import { getCurrenUser } from "../services/auth-service";
 import { getApiContent } from "../services/user-service";
 import { IEdition } from "../feature/Edition/Edition";
 import { IPublisher } from "../feature/Publisher/Publisher";
-import { IWork } from "../feature/Work";
-import { WorkList } from "../feature/Work/WorkList";
+import { Work } from "../feature/work";
+import { WorkList } from "../feature/work/components/work-list";
 
 const baseURL = 'bookseries/';
 export interface IBookseries {
@@ -15,13 +15,13 @@ export interface IBookseries {
     important: number,
     image_src: string,
     image_attr: string,
-    works: IWork[],
+    works: Work[],
     publisher: IPublisher,
     editions: IEdition[]
 }
 
-export const groupByBookSeries = (works: IWork[], seriesType: string) => {
-    const grouped: Record<string, IWork[]> =
+export const groupByBookSeries = (works: Work[], seriesType: string) => {
+    const grouped: Record<string, Work[]> =
         works.reduce((acc: { [index: string]: any }, currentValue) => {
 
             const groupKey = currentValue[seriesType].name;

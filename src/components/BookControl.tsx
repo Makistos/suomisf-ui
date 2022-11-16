@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { IPerson } from "../feature/Person/Person";
 import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
-import { WorkList } from "../feature/Work/WorkList";
+import { WorkList } from "../feature/work/components/work-list";
 import { EditionList } from "../feature/Edition/EditionList";
 import { SeriesList } from "./BookseriesList";
-import { IWork } from "../feature/Work";
+import { Work } from "../feature/work";
 import { IGenre } from "./Genre";
 import { IEdition } from "../feature/Edition/Edition";
 import _ from "lodash";
@@ -18,8 +18,8 @@ interface CBCProps {
 
 export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast = false }: CBCProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
-    const [works, setWorks]: [IWork[], (sfWorks: IWork[]) => void]
-        = useState<IWork[]>([]);
+    const [works, setWorks]: [Work[], (sfWorks: Work[]) => void]
+        = useState<Work[]>([]);
     const [edits, setEdits]: [IEdition[], (sfEdits: IEdition[]) => void] = useState<IEdition[]>([]);
     const [translations, setTranslations]: [IEdition[], (sfTranslations: IEdition[]) => void]
         = useState<IEdition[]>([]);
@@ -54,7 +54,7 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
      * @param translations - Books translated by person.
      * @returns Tab number (0-2)
      */
-    const calcActiveIndex = (works: IWork[], edits: IEdition[], translations: IEdition[]) => {
+    const calcActiveIndex = (works: Work[], edits: IEdition[], translations: IEdition[]) => {
         if (works.length > 0) return 0;
         if (edits.length > 0) return 1;
         if (translations.length > 0) return 2;
@@ -77,7 +77,7 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
     }
 
     useEffect(() => {
-        let newWorks: IWork[] = [];
+        let newWorks: Work[] = [];
         let newEdits: IEdition[] = [];
         let newTranslations: IEdition[] = [];
 

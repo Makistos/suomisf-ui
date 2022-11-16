@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 import type { IPublisher } from "../Publisher/Publisher";
 import type { IPersonBrief } from "../Person/Person";
-import type { IWork } from "../Work";
+import type { Work } from "../work";
 import { GenreList } from "../../components/Genre";
 import type { IImage } from "../../components/Image";
 import { LinkList } from "../../components/LinkList";
@@ -34,7 +34,7 @@ export interface IEdition {
     title: string,
     translators: IPersonBrief[],
     version: number,
-    work: IWork[]
+    work: Work[]
 
 }
 
@@ -45,7 +45,7 @@ interface EditionProps {
     details?: string,
     person?: string,
     showPerson?: boolean,
-    work?: IWork,
+    work?: Work,
     card?: boolean,
     showVersion?: boolean
 }

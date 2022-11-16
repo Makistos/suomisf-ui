@@ -7,7 +7,7 @@ import type { IAwarded } from "../../Award/Awarded";
 import type { IPubseries } from "../../../components/Pubseries";
 import { IEdition } from "../../Edition/Edition";
 
-export interface IWork {
+export interface Work {
     [index: string]: any,
     author_str: string,
     authors: IPerson[],
@@ -32,8 +32,3 @@ export interface IWork {
     translators: IPersonBrief[]
 }
 
-export interface WorkProps {
-    work: IWork,
-    detailLevel?: string,
-    orderField?: string
-}

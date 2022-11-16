@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { IWork } from './types';
-import { getApiContent } from '../../services/user-service';
-import { getCurrenUser } from '../../services/auth-service';
-import { WorkList } from './WorkList';
+import { useEffect, useState } from 'react';
+
+import { Work } from '../types';
+import { getApiContent } from '../../../services/user-service';
+import { getCurrenUser } from '../../../services/auth-service';
+import { WorkList } from '../components/work-list';
 
 type WorksProp = {
     letter: string,
@@ -10,8 +11,8 @@ type WorksProp = {
 
 const baseURL = 'works/';
 
-export const Works = ({ letter }: WorksProp) => {
-    const [works, setWorks] = useState<IWork[]>([]);
+export const WorksPage = ({ letter }: WorksProp) => {
+    const [works, setWorks] = useState<Work[]>([]);
     const [firstLetter, setFirstLetter] = useState(letter);
     const user = getCurrenUser();
 

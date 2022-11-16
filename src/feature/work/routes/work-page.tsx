@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
 import { Image } from "primereact/image";
@@ -10,193 +9,28 @@ import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
 import { confirmDialog } from "primereact/confirmdialog";
 
-import { EditionDetails, EditionString, IEdition, OtherEdition } from "../Edition/Edition";
-import { GenreGroup, GenreList } from "../../components/Genre";
-import { TagGroup } from "../../components/Tag/SFTagGroup";
-import { LinkList } from "../../components/LinkList";
-import { IMAGE_URL } from "../../systemProps";
-import { getCurrenUser } from "../../services/auth-service";
-import { getApiContent } from "../../services/user-service";
-import { ShortsList } from "../Short/ShortsList";
-import { AwardPanel } from "../Award/Awarded";
-import { LinkPanel } from "../../components/Links";
+import { EditionDetails, EditionString, IEdition } from "../../Edition/Edition";
+import { IMAGE_URL } from "../../../systemProps";
+import { getCurrenUser } from "../../../services/auth-service";
+import { getApiContent } from "../../../services/user-service";
+import { ShortsList } from "../../Short/ShortsList";
 
-import { IWork, WorkProps } from "./types";
+import { Work } from "../types";
+import { WorkDetails } from "../components/work-details";
+import { isAnthology } from "../utils/is-anthology";
 
-export const isAnthology = (work: IWork) => {
-    // Check if work is a collection with multiple
-    // authors. This is the definition of anthology.
-    if (work.stories.length === 0) {
-        // Not even a collection
-        return false;
-    }
-    // Create a dictionary with the authors' names
-    // as key. If our dictionary has more than one
-    // value it's an anthology.
-    let authors: Record<string, any> = {};
-    work.stories.map(story => {
-        const author_name: string = story.authors
-            .sort((a, b) => a.name > b.name ? -1 : 1)
-            .map(author => author.name).toString();
-        if (!(author_name in authors)) {
-            authors[author_name] = author_name;
-        }
-        return true;
-    })
-    if (Object.keys(authors).length > 1) {
-        return true;
-    }
-    return false;
-}
-
-export const groupWorks = (works: IWork[]) => {
-    const grouped: Record<string, IWork[]> =
-        works.reduce((acc: { [index: string]: any }, currentValue) => {
-            const groupKey = currentValue["author_str"];
-            if (!acc[groupKey]) {
-                acc[groupKey] = []
-            }
-            acc[groupKey].push(currentValue);
-            return acc;
-        }, {});
-
-    return grouped;
-}
-
-export const WorkDetails = ({ work }: WorkProps) => {
-    return (
-        <div className="grid align-items-center justify-content-center">
-            {work.authors && (
-                <div className="grid col-12 justify-content-center">
-                    <h3 className="mb-0">
-                        <LinkList path="people"
-                            separator=" &amp; "
-                            items={
-                                work.authors.map((item) => ({
-                                    id: item['id'],
-                                    name: item['alt_name'] ? item['alt_name'] : item['name']
-                                }))
-                            }
-                        />
-                    </h3>
-                </div>
-            )}
-            <div className="grid col-12 justify-content-center"><h1 className="mt-1 mb-0">{work.title}</h1></div>
-            <div className="grid col-12 justify-content-center">
-                <p className="mt-1">
-                    {work.orig_title !== work.title && work.orig_title + ", "}
-                    {work.pubyear}
-                    {work.language_name && " (" + work.language_name.name + ")"}
-                </p>
-                <div className="col-12">
-                    <GenreGroup genres={work.genres} />
-                </div>
-                <div className="col-12">
-                    <TagGroup tags={work.tags} overflow={5} showOneCount />
-                </div>
-                <div className="grid col-12 justify-content-center">
-                    <div className="grid col-6 p-3 justify-content-end">
-                        <AwardPanel awards={work.awards}></AwardPanel>
-                    </div>
-                    <div className="grid col-6 p-3 justify-content-start">
-                        <LinkPanel links={work.links} />
-                    </div>
-                </div>
-                {work.bookseries && (
-                    <div className="col-12">
-                        <Link to={`/bookseries/${work.bookseries.id}`}>
-                            <b>{work.bookseries.name}</b>
-                        </Link>
-                        {work.bookseriesnum && (
-                            ", numero " + work.bookseriesnum
-                        )}
-                    </div>
-                )}
-                <div className="col-12">
-                    {work.misc}
-                </div>
-                {work.description && (
-                    <div className="col-12">
-                        <div dangerouslySetInnerHTML={{ __html: work.description }} />
-                    </div>
-                )}
-            </div>
-        </div>
-    )
-}
-
-export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
-
-    return (
-
-        <div className="work-oneliner">
-            <Tooltip position="right" autoHide={false} className="tooltip"
-                target={".work-link-" + work.id}
-            >
-                <WorkDetails work={work} />
-            </Tooltip>
-            <b>
-                <Link className={"work-link-" + work.id}
-                    to={`/works/${work.id}`}
-                    key={work.id}
-                >
-                    {work.title}
-                </Link>
-            </b>
-            <>. </>
-
-            {work.bookseries && (
-                <><Link to={`/bookseries/${work.bookseries.id}`}>
-                    {work.bookseries.name}
-                </Link>
-                    {work.bookseriesnum && (
-                        <> {work.bookseriesnum}</>
-                    )}
-                    .</>
-            )}
-
-            {(work.orig_title !== work.title) && (
-                <> ({work.orig_title !== work.title && work.orig_title}
-                    {/* Add comma only if both original title and pubyear are
-                         shown. */}
-                    {work.orig_title !== work.title && work.pubyear && (
-                        <>, </>
-                    )}
-                    {work.pubyear && <>{work.pubyear}</>}
-                    )
-                </>
-            )}
-            {work.editions[0].translators.length > 0 && (
-                <>
-                    <> Suom. </>
-                    <LinkList path="people"
-                        items={work.editions[0].translators}
-                    />.
-                </>
-            )}
-            {work.editions[0].publisher &&
-                <Link to={`/publishers/${work.editions[0].publisher.id}`}> {work.editions[0].publisher.name}</Link>
-            }
-            <> {work.editions[0].pubyear}. </>
-            {work.editions[0].pubseries && (
-                <Link to={`/pubseries/${work.editions[0].pubseries.id}`}>
-                    {work.editions[0].pubseries.name}.<> </>
-                </Link>
-            )}
-            <GenreList genres={work.genres} />
-            {work.editions.map((edition) => (
-                <OtherEdition key={edition.id} edition={edition} details={detailLevel} />
-            ))}
-        </div>
-    )
+export interface WorkProps {
+    work: Work,
+    detailLevel?: string,
+    orderField?: string
 }
 
 const baseURL = "works/";
 
-export const Work = () => {
+export const WorkPage = () => {
     const params = useParams();
     const user = getCurrenUser();
-    const [work, setWork]: [IWork | null, (work: IWork) => void] = useState<IWork | null>(null);
+    const [work, setWork]: [Work | null, (work: Work) => void] = useState<Work | null>(null);
     const [layout, setLayout]: [DataViewLayoutType, (layout: DataViewLayoutType) => void] = useState<DataViewLayoutType>('list');
     const ConfirmNewWork = () => {
         confirmDialog({
@@ -266,33 +100,6 @@ export const Work = () => {
         }
         getWork();
     }, [params.workId, user])
-
-    // const editionHeader = (images: IImage[]) => {
-    //     if (images.length > 0) {
-    //         return (
-    //             <Image preview width="50" src={"https://www.sf-bibliografia.fi/" + images[0].image_src} />
-    //         )
-    //     } else {
-    //         return (<></>)
-    //     }
-    // }
-
-    // const editionSubtitle = (title: string, original_title: string) => {
-    //     if (title === original_title) {
-    //         return <></>
-    //     } else {
-    //         return <>{title}</>
-    //     }
-    // }
-
-    // const editionFooter = (edition: IEdition) => {
-    //     return (
-    //         <span>
-    //             <Button label="Muokkaa" />
-
-    //         </span>
-    //     )
-    // }
 
     const renderListItem = (edition: IEdition) => {
         return (

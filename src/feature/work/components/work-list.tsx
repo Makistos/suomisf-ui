@@ -4,21 +4,22 @@ import { SelectButton } from 'primereact/selectbutton';
 import { Dropdown } from "primereact/dropdown";
 import "primeflex/primeflex.css";
 
-import { WorkSummary, groupWorks } from './Work';
-import { CoverImageList } from "../../components/CoverImageList";
-import { WorkStatsPanel } from "../Stats/Stats";
+import { groupWorks } from "../utils/group-works";
+import { WorkSummary } from "./work-summary";
+import { CoverImageList } from "../../../components/CoverImageList";
+import { WorkStatsPanel } from "../../Stats/Stats";
 
-import { IWork } from "./types";
+import { Work } from "../types";
 
 type WorksProp = {
-    works: IWork[],
+    works: Work[],
     personName?: string,
     collaborationsLast?: boolean
 }
 
 export const WorkList = ({ works, personName = "", collaborationsLast = false }: WorksProp) => {
-    const [groupedWorks, setGroupedWorks]: [Record<string, IWork[]>,
-        (works: Record<string, IWork[]>) => void] = useState({});
+    const [groupedWorks, setGroupedWorks]: [Record<string, Work[]>,
+        (works: Record<string, Work[]>) => void] = useState({});
     const [detailLevel, setDetailLevel] = useState("condensed");
     const [orderField, setOrderField] = useState("Title");
     const [workView, setWorkView] = useState("Lista");
@@ -50,13 +51,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
         { name: "Suom. järjestys", code: 'Pubyear' }
     ];
 
-    // const detailOptions = [
-    //     { name: 'Teos', value: 1 },
-    //     { name: 'Tiivis', value: 2 },
-    //     { name: 'Kaikki', value: 3 }
-    // ];
-
-    const compareAuthors = (a: [string, IWork[]], b: [string, IWork[]]) => {
+    const compareAuthors = (a: [string, Work[]], b: [string, Work[]]) => {
         // Special compare needed because we want the works by the person (if given)
         // to come first.
         const aName = a[0];
@@ -72,7 +67,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
         return aName.localeCompare(bName) ? 1 : -1;
     }
 
-    const compareWorks = (a: IWork, b: IWork) => {
+    const compareWorks = (a: Work, b: Work) => {
         if (orderField === 'Title') {
             if (a.title < b.title) return -1;
             if (a.title > b.title) return 1;
@@ -134,7 +129,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
                                         </div>
                                         <div>
                                             {workView === 'Lista' ? (
-                                                ws.sort(compareWorks).map((work: IWork) => (
+                                                ws.sort(compareWorks).map((work: Work) => (
                                                     <WorkSummary work={work} key={work.id}
                                                         detailLevel={detailLevel}
                                                         orderField={orderField} />

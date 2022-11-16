@@ -5,8 +5,8 @@ import { getApiContent, deleteApiContent } from '../../services/user-service';
 import { getCurrenUser } from '../../services/auth-service';
 import { ProgressSpinner } from "primereact/progressspinner";
 import { useParams } from "react-router-dom";
-import type { IWork } from "../../feature/Work";
-import { WorkList } from '../../feature/Work/WorkList';
+import type { Work } from "../../feature/work";
+import { WorkList } from '../../feature/work/components/work-list';
 import { ShortsList } from '../../feature/Short/ShortsList';
 import type { IArticle } from '../../feature/Article/Article';
 import type { IShort } from '../../feature/Short/Short';
@@ -32,7 +32,7 @@ export interface ITag {
     id: number,
     name: string,
     type: string,
-    works?: IWork[],
+    works?: Work[],
     shorts?: IShort[],
     articles?: IArticle[],
     magazines?: IMagazine[],

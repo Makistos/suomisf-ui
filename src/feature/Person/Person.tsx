@@ -7,7 +7,7 @@ import _ from "lodash";
 
 import { getCurrenUser } from "../../services/auth-service";
 import { getApiContent } from "../../services/user-service";
-import type { IWork } from "../Work";
+import type { Work } from "../work";
 import { ICountry } from "../../components/Country";
 import { ContributorBookControl } from "../../components/BookControl";
 import type { IEdition } from '../Edition/Edition';
@@ -40,7 +40,7 @@ export interface IPerson {
     links: ILink[],
     roles: string[],
     nationality: INationality,
-    works: IWork[],
+    works: Work[],
     translations: IEdition[],
     edits: IEdition[],
     articles: IArticle[],

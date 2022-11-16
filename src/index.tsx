@@ -12,7 +12,7 @@ import { ArticleView } from './feature/Article/Article';
 import { Issue } from './feature/Issue/Issue';
 import { People } from './feature/Person/People';
 import { Person } from './feature/Person/Person';
-import { Work } from './feature/Work/Work';
+import { WorkPage } from './feature/work/routes/work-page';
 import Login from './feature/User/Login';
 import { Bookseries } from './components/Bookseries';
 import { Pubseries } from './components/Pubseries';
@@ -41,7 +41,7 @@ ReactDOM.render(
         <Route path="magazines/:magazineId" element={<Magazine />} />
         <Route path="issues/:issueId" element={<Issue id={null} />} />
         <Route path="articles/:articleId" element={<ArticleView id={null} />} />
-        <Route path="works/:workId" element={<Work />} />
+        <Route path="works/:workId" element={<WorkPage />} />
         <Route path="bookseries" element={<BookseriesListing />} />
         <Route path="bookseries/:bookseriesId" element={<Bookseries />} />
         <Route path="pubseries" element={<PubseriesListing />} />

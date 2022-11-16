@@ -4,7 +4,7 @@ import { Person, PersonBrief } from "../../person/types";
 import type { ILink } from "../../../components/Link";
 import type { IShort } from "../../Short/Short";
 import type { IAwarded } from "../../Award/Awarded";
-import type { IPubseries } from "../../../components/Pubseries";
+import { Pubseries } from "../../pubseries/types";
 import { Edition } from "../../edition/types";
 
 export interface Work {
@@ -24,7 +24,7 @@ export interface Work {
     links: ILink[],
     misc: string,
     orig_title: string,
-    pubseries: IPubseries,
+    pubseries: Pubseries,
     pubyear: number,
     stories: IShort[],
     subtitle: string,

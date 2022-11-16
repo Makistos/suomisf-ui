@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { IPubseries } from "./Pubseries";
+import { Pubseries } from "../features/pubseries/types";
 import { Link } from 'react-router-dom';
 
 type PubseriesListProps = {
-    pubseriesList: IPubseries[]
+    pubseriesList: Pubseries[]
 }
 
 export const PubseriesList = ({ pubseriesList }: PubseriesListProps) => {
-    const [pubseries, setPubseries]: [IPubseries[], (pubseries: IPubseries[]) => void] = useState<IPubseries[]>([]);
+    const [pubseries, setPubseries]: [Pubseries[], (pubseries: Pubseries[]) => void] = useState<Pubseries[]>([]);
 
     useEffect(() => {
         setPubseries(pubseriesList);

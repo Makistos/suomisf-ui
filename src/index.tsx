@@ -14,7 +14,7 @@ import { PeoplePage, PersonPage } from './features/person';
 import { WorkPage } from './features/work';
 import Login from './features/User/Login';
 import { Bookseries } from './components/Bookseries';
-import { Pubseries } from './components/Pubseries';
+import { PubseriesPage } from './features/pubseries/routes/pubseries-page';
 import { PublisherPage } from './features/publisher/routes/publisher-page';
 import { PublisherListPage } from './features/publisher/routes/publisher-list-page';
 import { BookseriesListing } from './BookseriesListing';
@@ -44,7 +44,7 @@ ReactDOM.render(
         <Route path="bookseries" element={<BookseriesListing />} />
         <Route path="bookseries/:bookseriesId" element={<Bookseries />} />
         <Route path="pubseries" element={<PubseriesListing />} />
-        <Route path="pubseries/:bookseriesId" element={<Pubseries />} />
+        <Route path="pubseries/:bookseriesId" element={<PubseriesPage />} />
         <Route path="publishers/:publisherId" element={<PublisherPage />} />
         <Route path="publishers" element={<PublisherListPage />} />
         <Route path="tags" element={<SFTags />} />

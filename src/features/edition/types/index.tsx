@@ -4,7 +4,7 @@ import { Work } from "../../work";
 import { IImage } from "../../../components/Image";
 import { IFormat } from "../../../components/Format";
 import { IBinding } from "../../../components/Binding";
-import { IPubseries } from "../../../components/Pubseries";
+import { Pubseries } from "../../pubseries/types";
 
 
 export interface Edition {
@@ -23,7 +23,7 @@ export interface Edition {
     pages?: number;
     printedin?: string;
     publisher: Publisher;
-    pubseries: IPubseries;
+    pubseries: Pubseries;
     pubseriesnum?: number;
     pubyear: number;
     size?: string;

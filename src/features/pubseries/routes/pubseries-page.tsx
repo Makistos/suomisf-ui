@@ -1,31 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getCurrenUser } from "../services/auth-service";
-import { getApiContent } from "../services/user-service";
-import { Publisher } from "../features/publisher/types";
-import { Edition } from "../features/edition/types";
-import { EditionList } from "../features/edition/components/edition-list";
+
+import { getCurrenUser } from "../../../services/auth-service";
+import { getApiContent } from "../../../services/user-service";
+import { EditionList } from "../../edition";
+import { Pubseries } from "../types";
 
 
 const baseURL = 'pubseries/';
 
-export interface IPubseries {
-    id: number,
-    name: string,
-    orig_name: string,
-    important: number,
-    image_src: string,
-    image_attr: string,
-    publisher: Publisher,
-    editions: Edition[]
-}
-
-
-export const Pubseries = () => {
+export const PubseriesPage = () => {
     const params = useParams();
     const user = getCurrenUser();
 
-    const [pubseries, setPubseries]: [IPubseries | null, (pubseries: IPubseries) => void] = useState<IPubseries | null>(null);
+    const [pubseries, setPubseries]: [Pubseries | null, (pubseries: Pubseries) => void] = useState<Pubseries | null>(null);
 
     useEffect(() => {
         async function getBookseries() {

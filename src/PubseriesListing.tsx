@@ -1,7 +1,7 @@
 import { DataTable } from "primereact/datatable";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { useState, useEffect } from "react";
-import { IPubseries } from "./components/Pubseries";
+import { Pubseries } from "./features/pubseries/types";
 import { getCurrenUser } from "./services/auth-service";
 import { getApiContent } from "./services/user-service";
 import { Column } from "primereact/column";
@@ -13,8 +13,8 @@ export const PubseriesListing = () => {
      */
     const user = getCurrenUser();
 
-    const [pubseriesList, setPubseriesList]: [IPubseries[] | null,
-        (pubseriesList: IPubseries[]) => void] = useState<IPubseries[] | null>(null);
+    const [pubseriesList, setPubseriesList]: [Pubseries[] | null,
+        (pubseriesList: Pubseries[]) => void] = useState<Pubseries[] | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -31,7 +31,7 @@ export const PubseriesListing = () => {
         getPubseriesList();
     }, [user])
 
-    const nameTemplate = (rowData: IPubseries) => {
+    const nameTemplate = (rowData: Pubseries) => {
         return (
             <Link to={`/pubseries/${rowData.id}`} key={rowData.id}>
                 {rowData.name}
@@ -39,7 +39,7 @@ export const PubseriesListing = () => {
         )
     }
 
-    const publisherTemplate = (rowData: IPubseries) => {
+    const publisherTemplate = (rowData: Pubseries) => {
         if (rowData.publisher) {
             return (
                 <Link to={`/publishers/${rowData.publisher.id}`} key={rowData.publisher.id}>

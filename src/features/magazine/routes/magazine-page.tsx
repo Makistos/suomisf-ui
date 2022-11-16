@@ -1,25 +1,14 @@
 import React from 'react';
-import { getCurrenUser } from "../../services/auth-service";
-import { getApiContent } from "../../services/user-service";
+import { getCurrenUser } from "../../../services/auth-service";
+import { getApiContent } from "../../../services/user-service";
 import { useParams } from "react-router-dom";
-import { IssuePage } from '../issue/routes/issue-page';
+import { IssuePage } from '../../issue/routes/issue-page';
+import { IMagazine } from '../types';
 
-
-export interface IMagazine {
-    id: number,
-    name: string,
-    //publisher_id: number,
-    description: string,
-    link: string,
-    issn: string,
-    type: number,
-    uri: string,
-    issues: number[]
-}
 
 const baseURL = "magazines/";
 
-const Magazine = () => {
+const MagazinePage = () => {
 
     /*var issueSort = function (a: IIssue, b: IIssue): number {
         // Prioritize count, this is a running number
@@ -110,4 +99,4 @@ const Magazine = () => {
     )
 }
 
-export default Magazine;
+export default MagazinePage;

@@ -1,7 +1,7 @@
 import { Work } from "../../work";
 import { Article } from "../../article";
 import { Short } from "../../short";
-import { IMagazine } from '../../Magazine/Magazine';
+import { IMagazine } from "../../magazine/types";
 import { Person } from "../../person";
 import { Issue } from "../../issue/types";
 

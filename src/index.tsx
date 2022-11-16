@@ -6,8 +6,8 @@ import 'primereact/resources/primereact.min.css'
 
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Magazines from './features/Magazine/Magazines';
-import Magazine from './features/Magazine/Magazine';
+import MagazinesPage from './features/magazine/routes/magazines-page';
+import MagazinePage from './features/magazine/routes/magazine-page';
 import { ArticleView } from './features/article/routes/article-page';
 import { IssuePage } from './features/issue/routes/issue-page';
 import { PeoplePage, PersonPage } from './features/person';
@@ -36,8 +36,8 @@ ReactDOM.render(
         <Route path="shortstoryindex" element={<ShortSearchPage />} />
         <Route path="people" element={<PeoplePage />} />
         <Route path="people/:personId" element={<PersonPage />} />
-        <Route path="magazines" element={<Magazines />} />
-        <Route path="magazines/:magazineId" element={<Magazine />} />
+        <Route path="magazines" element={<MagazinesPage />} />
+        <Route path="magazines/:magazineId" element={<MagazinePage />} />
         <Route path="issues/:issueId" element={<IssuePage id={null} />} />
         <Route path="articles/:articleId" element={<ArticleView id={null} />} />
         <Route path="works/:workId" element={<WorkPage />} />

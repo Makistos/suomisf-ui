@@ -1,24 +1,21 @@
 import axios from "axios";
 import React, { useState, useEffect } from 'react';
-//import { ProgressSpinner } from "primereact/progressspinner";
-import { ProgressBar } from "primereact/progressbar";
 import { Link } from 'react-router-dom';
-// import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
-// import 'primereact/resources/primereact.min.css'
-// import './App.css';
-// import './index.css';
-import type { IMagazine } from "./Magazine";
-import { API_URL } from "../../systemProps";
 
-const client = axios.create({
-    baseURL: API_URL + 'magazines'
-});
+import { ProgressBar } from "primereact/progressbar";
 
-function Magazines() {
+import { IMagazine } from "../types";
+import { API_URL } from "../../../systemProps";
+
+function MagazinesPage() {
     const defaultMagazines: IMagazine[] = [];
     const [magazines, setMagazines]: [IMagazine[], (magazines: IMagazine[]) => void] = useState(defaultMagazines);
     const [loading, setLoading] = useState(true);
-    //const [error, setError]: [string, (error: string) => void] = React.useState("");
+
+    const client = axios.create({
+        baseURL: API_URL + 'magazines'
+    });
+
 
     useEffect(() => {
         async function getMagazines() {
@@ -29,8 +26,6 @@ function Magazines() {
             }
             catch (e) {
                 console.error(e);
-                //let ex: string = e;
-                //setError(ex);
             }
         }
         getMagazines();
@@ -53,13 +48,13 @@ function Magazines() {
                                     magazines
                                         .sort((a, b) => a.name > b.name ? 1 : -1)
                                         .map((magazine) => (
-                                            <React.Fragment key={magazine.id}>
+                                            <>
                                                 <Link to={`/magazines/${magazine.id}`}
                                                     key={magazine.id}
                                                 >
                                                     {magazine.name}
                                                 </Link><br></br>
-                                            </React.Fragment>
+                                            </>
                                         ))
                                 }
                             </div>
@@ -70,4 +65,4 @@ function Magazines() {
     );
 }
 
-export default Magazines;
+export default MagazinesPage;

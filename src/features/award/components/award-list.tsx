@@ -3,15 +3,15 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { classNames } from "primereact/utils";
 
-import { IAwarded } from "../types";
+import { Awarded } from "../types";
 
 export interface AwardedProps {
-    awards: IAwarded[];
+    awards: Awarded[];
 }
 
 export const AwardList = ({ awards }: AwardedProps) => {
 
-    const awardIcon = (rowData: IAwarded) => {
+    const awardIcon = (rowData: Awarded) => {
         if (rowData.person) {
             return <i className={classNames('fa', 'fa-user')}></i>
         }
@@ -23,7 +23,7 @@ export const AwardList = ({ awards }: AwardedProps) => {
         }
     }
 
-    const targetTemplate = (rowData: IAwarded) => {
+    const targetTemplate = (rowData: Awarded) => {
         if (rowData.work) {
             return rowData.work.title;
         }

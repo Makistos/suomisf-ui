@@ -3,7 +3,7 @@ import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
 import { useParams } from "react-router-dom";
 import { IssuePage } from '../../issue/routes/issue-page';
-import { IMagazine } from '../types';
+import { Magazine } from '../types';
 
 
 const baseURL = "magazines/";
@@ -36,7 +36,7 @@ const MagazinePage = () => {
     let params = useParams();
     const user = getCurrenUser();
 
-    const [magazine, setMagazine]: [IMagazine | null, (magazine: IMagazine) => void] = React.useState<IMagazine | null>(null);
+    const [magazine, setMagazine]: [Magazine | null, (magazine: Magazine) => void] = React.useState<Magazine | null>(null);
     //const [issues, setIssue]: [string[], (issue: string[]) => void] = React.useState<string[]>([]);
     //const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
     //const [error, setError]: [string, (error: string) => void] = React.useState("");

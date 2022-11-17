@@ -1,7 +1,7 @@
 import { Work } from "../../work";
 import { Article } from "../../article";
 import { Short } from "../../short";
-import { IMagazine } from "../../magazine/types";
+import { Magazine } from "../../magazine/types";
 import { Person } from "../../person";
 import { Issue } from "../../issue/types";
 
@@ -12,7 +12,7 @@ export interface TagType {
     works?: Work[];
     shorts?: Short[];
     articles?: Article[];
-    magazines?: IMagazine[];
+    magazines?: Magazine[];
     people?: Person[];
     issues?: Issue[];
 }

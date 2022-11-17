@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 
 import { ProgressBar } from "primereact/progressbar";
 
-import { IMagazine } from "../types";
+import { Magazine } from "../types";
 import { API_URL } from "../../../systemProps";
 
 function MagazinesPage() {
-    const defaultMagazines: IMagazine[] = [];
-    const [magazines, setMagazines]: [IMagazine[], (magazines: IMagazine[]) => void] = useState(defaultMagazines);
+    const defaultMagazines: Magazine[] = [];
+    const [magazines, setMagazines]: [Magazine[], (magazines: Magazine[]) => void] = useState(defaultMagazines);
     const [loading, setLoading] = useState(true);
 
     const client = axios.create({

@@ -2,7 +2,7 @@ import { Person } from "../../person/types";
 import { IPublicationSize } from '../../../types/publication-size';
 import { Short } from "../../short/types";
 import { Article } from "../../article";
-import { IMagazine } from "../../magazine/types";
+import { Magazine } from "../../magazine/types";
 
 
 export interface Issue {
@@ -23,5 +23,5 @@ export interface Issue {
     editors: Person[];
     articles: Article[];
     stories: Short[];
-    magazine: IMagazine;
+    magazine: Magazine;
 }

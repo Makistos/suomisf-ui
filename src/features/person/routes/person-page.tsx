@@ -13,7 +13,7 @@ import { ShortsControl } from '../../short/components/shorts-control';
 import { GenreGroup, IGenre } from '../../../components/Genre';
 import { TagGroup } from '../../tag/components/sftag-group';
 import { LinkPanel } from '../../../components/Links';
-import { AwardPanel, IAwarded } from '../../award';
+import { AwardPanel, Awarded } from '../../award';
 import { Person } from '../types';
 
 const baseURL = "people/";
@@ -75,7 +75,7 @@ export const PersonPage = () => {
         const retval = person.works
             .filter(work => work.awards && work.awards.length > 0)
             .map(work => work.awards).flat()
-            .sort((a: IAwarded, b: IAwarded) => a.year < b.year ? -1 : 1);
+            .sort((a: Awarded, b: Awarded) => a.year < b.year ? -1 : 1);
         return retval;
     }
 

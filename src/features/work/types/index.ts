@@ -3,7 +3,7 @@ import type { Country } from "../../../types/country";
 import { Person, PersonBrief } from "../../person/types";
 import type { LinkType } from "../../../types/link";
 import { Short } from "../../short/types";
-import type { IAwarded } from "../../award";
+import type { Awarded } from "../../award";
 import { Pubseries } from "../../pubseries/types";
 import { Edition } from "../../edition/types";
 
@@ -11,7 +11,7 @@ export interface Work {
     [index: string]: any,
     author_str: string,
     authors: Person[],
-    awards: IAwarded[],
+    awards: Awarded[],
     bookseries: IBookseries,
     bookseriesnum: string,
     bookseriesorder: number,

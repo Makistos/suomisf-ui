@@ -3,7 +3,7 @@ import { Edition } from "../../edition/types";
 import { Article } from "../../article";
 import { Short } from "../../short/types";
 import { LinkType } from '../../../types/link';
-import { IAwarded } from '../../award';
+import { Awarded } from '../../award';
 import { Nationality } from "../../../types/nationality";
 
 
@@ -28,7 +28,7 @@ export interface Person {
     articles: Article[];
     stories: Short[];
     magazine_stories: Short[];
-    awarded: IAwarded[];
+    awarded: Awarded[];
 }
 
 export interface PersonBrief {

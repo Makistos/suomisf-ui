@@ -1,4 +1,4 @@
-export interface IMagazine {
+export interface Magazine {
     id: number;
     name: string;
     description: string;

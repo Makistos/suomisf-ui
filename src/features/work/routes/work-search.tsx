@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react";
-import { getCurrenUser } from "./services/auth-service";
-import { ProgressSpinner } from "primereact/progressspinner";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+
+import { ProgressSpinner } from "primereact/progressspinner";
 import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
 import { Button } from 'primereact/button';
 import { Fieldset } from 'primereact/fieldset';
 import { Dropdown } from "primereact/dropdown";
-import { IGenre, getGenreIcon } from "./components/Genre";
-import { getApiContent } from "./services/user-service";
-import { Country } from "./types/country";
-import { BookType } from "./types/book-type";
-import axios from "axios";
-import { API_URL } from "./systemProps";
-import { WorkList } from "./features/work/components/work-list";
 import { Divider } from 'primereact/divider';
 import _ from "lodash";
+import axios from "axios";
+
+import { getCurrenUser } from "../../../services/auth-service";
+import { IGenre, getGenreIcon } from "../../../components/Genre";
+import { getApiContent } from "../../../services/user-service";
+import { Country } from "../../../types/country";
+import { BookType } from "../../../types/book-type";
+import { API_URL } from "../../../systemProps";
+import { WorkList } from "../components/work-list";
 
 type IFormData = {
     [index: string]: any,
@@ -31,7 +33,7 @@ type IFormData = {
     type?: number
 };
 
-export const BookSearch = () => {
+export const WorkSearchPage = () => {
     const user = getCurrenUser();
     const { control, handleSubmit, formState: { errors } } = useForm<IFormData>();
     const [loading, setLoading] = useState(false);
@@ -91,8 +93,6 @@ export const BookSearch = () => {
             const data: Record<string, string> = {};
             data['target'] = 'works';
             try {
-                /*axios.post(API_URL + 'firstlettervector', data)
-                    .then(response => setInitials(response.data.split()));*/
                 const response = await getApiContent('firstlettervector/works', user);
                 const data: Record<string, number> = response.data;
                 if (data) {

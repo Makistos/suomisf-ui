@@ -18,7 +18,7 @@ import { PubseriesPage } from './features/pubseries/routes/pubseries-page';
 import { PublisherPage } from './features/publisher/routes/publisher-page';
 import { PublisherListPage } from './features/publisher/routes/publisher-list-page';
 import { BookseriesListing } from './BookseriesListing';
-import { PubseriesListing } from './PubseriesListing';
+import { PubseriesListPage } from './features/pubseries/routes/pubseries-list-page';
 import { ShortSearchPage } from './features/short/routes/short-search-page';
 import { WorkSearchPage } from './features/work/routes/work-search';
 import { SFTag } from './features/tag/components/sftag';
@@ -43,7 +43,7 @@ ReactDOM.render(
         <Route path="works/:workId" element={<WorkPage />} />
         <Route path="bookseries" element={<BookseriesListing />} />
         <Route path="bookseries/:bookseriesId" element={<Bookseries />} />
-        <Route path="pubseries" element={<PubseriesListing />} />
+        <Route path="pubseries" element={<PubseriesListPage />} />
         <Route path="pubseries/:bookseriesId" element={<PubseriesPage />} />
         <Route path="publishers/:publisherId" element={<PublisherPage />} />
         <Route path="publishers" element={<PublisherListPage />} />

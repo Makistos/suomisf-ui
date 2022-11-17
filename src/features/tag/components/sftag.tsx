@@ -19,7 +19,7 @@ import { getCurrenUser } from '../../../services/auth-service';
 import { WorkList } from '../../work';
 import { ShortsList } from '../../short';
 import { ArticleList } from '../../article/components/article-list';
-import type { IUser } from '../../User/User';
+import { User } from "../../user/types";
 import { API_URL } from '../../../systemProps';
 import authHeader from '../../../services/auth-header';
 import { TagType } from '../types';
@@ -39,7 +39,7 @@ export const SFTag = ({ id }: TagProps) => {
     const [displayMerge, setDisplayMerge] = useState(false);
     const [displayDelete, setDisplayDelete] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [user, setUser]: [IUser | null, (user: IUser) => void] = useState(getCurrenUser());
+    const [user, setUser]: [User | null, (user: User) => void] = useState(getCurrenUser());
     const navigate = useNavigate();
 
     // useEffect(() => {

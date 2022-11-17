@@ -1,6 +1,4 @@
-import React from 'react';
-
-export interface IPublicationSize {
+export interface PublicationSize {
     id: number,
     name: string
 }

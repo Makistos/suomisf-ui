@@ -6,7 +6,7 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
 
-import { login } from "../../services/auth-service";
+import { login } from "../../../services/auth-service";
 
 type IFormData = {
     username: string,
@@ -18,7 +18,7 @@ const defaultValues: IFormData = {
     password: "",
 };
 
-export const Login = () => {
+export const LoginView = () => {
     //const { control, handleSubmit, formState: { errors } } = useForm<IFormData>({ defaultValues: defaultValues });
     const form = useForm<IFormData>({ defaultValues: defaultValues });
     const [loading, setLoading] = useState<boolean>(false);
@@ -112,4 +112,4 @@ export const Login = () => {
 };
 
 
-export default Login;
+export default LoginView;

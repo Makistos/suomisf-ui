@@ -16,7 +16,7 @@ import { KeyValuePair } from '../../../components/forms/forms';
 import { getApiContent, postApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { TagType } from "../../tag";
-import { isAdmin } from '../../User/User';
+import { isAdmin } from '../../user/utils/is-admin';
 
 interface hasIdAndName {
     id: number,

@@ -6,12 +6,12 @@ import { logout } from './services/auth-service';
 import { getApiContent } from './services/user-service';
 import { SITE_URL } from './systemProps';
 import { MenuItemCommandParams } from 'primereact/menuitem';
-import { IUser } from './features/User/User';
-import { Login } from './features/User/Login';
+import { User } from "./features/user/types";
+import { LoginView } from './features/user/components/login-view';
 import { Dialog } from 'primereact/dialog';
 
 export default function MainMenu() {
-    const [user, setUser]: [IUser | null, (user: IUser | null) => void] = useState<IUser | null>(null);
+    const [user, setUser]: [User | null, (user: User | null) => void] = useState<User | null>(null);
     const [selectedItem, setSelectedItem] = useState<any>(null);
     const [filteredItems, setFilteredItems] = useState<any>(null);
     const [loginVisible, setLoginVisible] = useState(false);
@@ -184,7 +184,7 @@ export default function MainMenu() {
             <Dialog visible={loginVisible} onHide={() => onHide()}
                 breakpoints={{ '960px': '75vw', '640px': '100vw' }} style={{ width: '50vw' }}
             >
-                <Login />
+                <LoginView />
             </Dialog>
 
             <Menubar className="navbar-dark" model={items} start={start} end={End} />

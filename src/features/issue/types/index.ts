@@ -1,5 +1,5 @@
 import { Person } from "../../person/types";
-import { IPublicationSize } from '../../../types/publication-size';
+import { PublicationSize } from '../../../types/publication-size';
 import { Short } from "../../short/types";
 import { Article } from "../../article";
 import { Magazine } from "../../magazine/types";
@@ -16,7 +16,7 @@ export interface Issue {
     publisher_id: number;
     image_src: string;
     pages: number;
-    size: IPublicationSize;
+    size: PublicationSize;
     link: string;
     notes: string;
     title: string;

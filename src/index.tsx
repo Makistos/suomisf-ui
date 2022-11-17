@@ -12,7 +12,7 @@ import { ArticleView } from './features/article/routes/article-page';
 import { IssuePage } from './features/issue/routes/issue-page';
 import { PeoplePage, PersonPage } from './features/person';
 import { WorkPage } from './features/work';
-import Login from './features/User/Login';
+import LoginView from './features/user/components/login-view';
 import { Bookseries } from './components/Bookseries';
 import { PubseriesPage } from './features/pubseries/routes/pubseries-page';
 import { PublisherPage } from './features/publisher/routes/publisher-page';
@@ -49,7 +49,7 @@ ReactDOM.render(
         <Route path="publishers" element={<PublisherListPage />} />
         <Route path="tags" element={<SFTags />} />
         <Route path="tags/:tagid" element={<SFTag />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<LoginView />} />
         <Route path="*"
           element={
             <main style={{ padding: "3rem" }}>

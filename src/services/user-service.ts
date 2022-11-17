@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IUser } from "../features/User/User";
+import { User } from "../features/user/types";
 import authHeader from "./auth-header";
 import { API_URL } from "../systemProps";
 
@@ -17,7 +17,7 @@ export const getUserContent = (url: string) => {
     return axios.get(baseURL + url, { headers: authHeader() });
 }
 
-export const getApiContent = (url: string, user: IUser | null) => {
+export const getApiContent = (url: string, user: User | null) => {
     if (user === undefined || user === null) {
         return getPublicContent(url);
     } else {
@@ -25,7 +25,7 @@ export const getApiContent = (url: string, user: IUser | null) => {
     }
 }
 
-const postPublicContent = (url: string, data: any, callback: cbType | null, user: IUser | null): any => {
+const postPublicContent = (url: string, data: any, callback: cbType | null, user: User | null): any => {
     // let retval;
     // let headers;
     // if (user === undefined || user === null) {
@@ -53,7 +53,7 @@ const postPublicContent = (url: string, data: any, callback: cbType | null, user
     //return retval;
 }
 
-export const putContent = (url: string, data: any, user: IUser | null): any => {
+export const putContent = (url: string, data: any, user: User | null): any => {
     const addr = API_URL + url;
     axios.put(addr, data, { headers: authHeader() })
         .then((response) => {
@@ -81,6 +81,6 @@ export const deleteApiContent = (url: string): any => {
         })
 }
 
-export const postApiContent = (url: string, data: any, user: IUser | null) => {
+export const postApiContent = (url: string, data: any, user: User | null) => {
     return postPublicContent(url, data, null, user);
 }

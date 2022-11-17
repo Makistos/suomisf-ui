@@ -1,4 +1,4 @@
-const Register = () => {
+const RegisterView = () => {
     return (
         <div className="col-md-12">
 
@@ -6,4 +6,4 @@ const Register = () => {
     );
 }
 
-export default Register;
+export default RegisterView;

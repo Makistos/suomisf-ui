@@ -1,6 +1,6 @@
 import axios from "axios";
 import { API_URL } from "../systemProps";
-import { IUser } from "../features/User/User";
+import { User } from "../features/user/types";
 
 const baseURL = API_URL;
 
@@ -36,7 +36,7 @@ export const logout = () => {
     console.log("logged out user");
 }
 
-export const getCurrenUser = (): IUser | null => {
+export const getCurrenUser = (): User | null => {
     const userStr = localStorage.getItem("user");
     if (userStr) return JSON.parse(userStr);
     return null;

@@ -2,9 +2,9 @@ import { Work } from "../../work";
 import { Edition } from "../../edition/types";
 import { Article } from "../../article";
 import { Short } from "../../short/types";
-import { ILink } from '../../../components/Link';
+import { LinkType } from '../../../types/link';
 import { IAwarded } from '../../award';
-import { Nationality } from "../../../types/nationality-type";
+import { Nationality } from "../../../types/nationality";
 
 
 export interface Person {
@@ -19,7 +19,7 @@ export interface Person {
     dob: number;
     dod: number;
     bio: string;
-    links: ILink[];
+    links: LinkType[];
     roles: string[];
     nationality: Nationality;
     works: Work[];

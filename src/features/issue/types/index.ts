@@ -1,5 +1,5 @@
 import { Person } from "../../person/types";
-import { IPublicationSize } from '../../../PublicationSize';
+import { IPublicationSize } from '../../../types/publication-size';
 import { Short } from "../../short/types";
 import { Article } from "../../article";
 import { IMagazine } from "../../magazine/types";

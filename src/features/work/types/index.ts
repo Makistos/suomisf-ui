@@ -1,7 +1,7 @@
 import type { IBookseries } from "../../../components/Bookseries";
-import type { ICountry } from "../../../components/Country";
+import type { Country } from "../../../types/country";
 import { Person, PersonBrief } from "../../person/types";
-import type { ILink } from "../../../components/Link";
+import type { LinkType } from "../../../types/link";
 import { Short } from "../../short/types";
 import type { IAwarded } from "../../award";
 import { Pubseries } from "../../pubseries/types";
@@ -20,8 +20,8 @@ export interface Work {
     editions: Edition[],
     id: number,
     imported_string: string,
-    language: ICountry,
-    links: ILink[],
+    language: Country,
+    links: LinkType[],
     misc: string,
     orig_title: string,
     pubseries: Pubseries,

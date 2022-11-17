@@ -1,4 +1,4 @@
-export interface IFormat {
+export interface Binding {
     id: number,
     name: string
 }

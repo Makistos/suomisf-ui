@@ -10,7 +10,7 @@ import { Edition } from "../../edition/types";
 import { Issue } from "../../issue/types";
 import { GenreList } from '../../../components/Genre';
 import { ShortsForm } from './shorts-form';
-import { IContribution } from '../../../components/Contribution';
+import { Contribution } from '../../../types/contribution';
 import { Short } from '../types';
 
 interface ShortProps {
@@ -83,7 +83,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
         return retval;
     }
 
-    const translators = (contributors: IContribution[]) => {
+    const translators = (contributors: Contribution[]) => {
         if (!contributors) return (<></>)
         const translators = contributors.filter(contributor => contributor.role.name === 'Kääntäjä');
         if (translators.length === 0) return (<></>)

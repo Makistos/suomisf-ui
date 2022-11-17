@@ -2,19 +2,19 @@ import { Publisher } from "../../publisher/types";
 import { PersonBrief } from "../../person/types";
 import { Work } from "../../work";
 import { IImage } from "../../../components/Image";
-import { IFormat } from "../../../components/Format";
-import { IBinding } from "../../../components/Binding";
+import { EditionFormat } from "../../../types/edition-format";
+import { Binding } from "../../../types/binding";
 import { Pubseries } from "../../pubseries/types";
 
 
 export interface Edition {
-    binding: IBinding;
+    binding: Binding;
     coll_info: string;
     coverimage: number;
     dustcover: number;
     editionnum: number;
     editors: PersonBrief[];
-    format: IFormat;
+    format: EditionFormat;
     id: number;
     images: IImage[];
     imported_string: string;

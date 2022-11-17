@@ -10,14 +10,14 @@ import { DataTablePFSEvent } from 'primereact/datatable';
 import { getApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { Person } from "../types";
-import type { ICountry } from '../../../components/Country';
+import type { Country } from '../../../types/country';
 
 const baseURL = 'people';
 
 export const PeoplePage = () => {
     const user = getCurrenUser();
     const [people, setPeople]: [Person[], (people: Person[]) => void] = React.useState<Person[]>([]);
-    const [countries, setCountries]: [ICountry[], (countries: ICountry[]) => void] = React.useState<ICountry[]>([]);
+    const [countries, setCountries]: [Country[], (countries: Country[]) => void] = React.useState<Country[]>([]);
     //const [roles, setRoles]: [string[], (roles: string[]) => void] = React.useState<string[]>([]);
     const [totalRecords, setTotalRecords] = React.useState(0);
     const [lazyParams, setLazyParams]: [DataTablePFSEvent, (lazyParams: DataTablePFSEvent) => void] = React.useState<DataTablePFSEvent>({

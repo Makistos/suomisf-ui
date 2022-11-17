@@ -9,8 +9,8 @@ import { Fieldset } from 'primereact/fieldset';
 import { Dropdown } from "primereact/dropdown";
 import { IGenre, getGenreIcon } from "./components/Genre";
 import { getApiContent } from "./services/user-service";
-import { ICountry } from "./components/Country";
-import { IBookType } from "./components/BookType";
+import { Country } from "./types/country";
+import { BookType } from "./types/book-type";
 import axios from "axios";
 import { API_URL } from "./systemProps";
 import { WorkList } from "./features/work/components/work-list";
@@ -37,8 +37,8 @@ export const BookSearch = () => {
     const [loading, setLoading] = useState(false);
     const [works, setWorks]: [any, (books: any[]) => void] = useState<any>(null);
     const [genres, setGenres]: [IGenre[], (genres: IGenre[]) => void] = useState<IGenre[]>([]);
-    const [nationalities, setNationalities]: [ICountry[], (nationalities: ICountry[]) => void] = useState<ICountry[]>([]);
-    const [bookTypes, setBookTypes]: [IBookType[], (bookTypes: IBookType[]) => void] = useState<IBookType[]>([]);
+    const [nationalities, setNationalities]: [Country[], (nationalities: Country[]) => void] = useState<Country[]>([]);
+    const [bookTypes, setBookTypes]: [BookType[], (bookTypes: BookType[]) => void] = useState<BookType[]>([]);
     const [initials, setInitials]: [string[], (initialis: string[]) => void] = useState<string[]>([]);
     const [initial, setInitial] = useState("");
 

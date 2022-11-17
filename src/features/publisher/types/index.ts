@@ -1,6 +1,6 @@
 import { Edition } from "../../edition";
 import { Pubseries } from "../../pubseries/types";
-import { ILink } from "../../../components/Link";
+import { LinkType } from "../../../types/link";
 
 
 export interface Publisher {
@@ -14,7 +14,7 @@ export interface Publisher {
     image_attr?: string;
     image_count?: number;
     image_src?: string;
-    links?: ILink[];
+    links?: LinkType[];
     name: string;
     series: Pubseries[];
 }

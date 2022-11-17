@@ -1,4 +1,4 @@
-export interface IBookType {
+export interface EditionFormat {
     id: number,
     name: string
 }

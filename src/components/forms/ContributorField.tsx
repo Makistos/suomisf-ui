@@ -3,12 +3,12 @@ import { useForm, Controller, SubmitHandler, useFieldArray, Control, FieldArray 
 import { useState, useRef, useEffect } from "react";
 import { Person } from "../../features/person/types";
 import { Button } from "primereact/button";
-import { IContributor } from "../Contributor";
+import { Contributor } from "../../types/contributor";
 import { AutoComplete } from "primereact/autocomplete";
 import { getApiContent } from "../../services/user-service";
 import { getCurrenUser } from "../../services/auth-service";
 import { pickProperties } from "./forms";
-import { IContribution } from "../Contribution";
+import { Contribution } from "../../types/contribution";
 import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
 import { Dropdown } from "primereact/dropdown";
@@ -17,11 +17,11 @@ interface ContributorFieldProps {
     id: string,
     control: Control
     register: Function,
-    values: IContribution[]
+    values: Contribution[]
 }
 
 
-type IContributorField = Pick<IContributor, "id" | "name">;
+type IContributorField = Pick<Contributor, "id" | "name">;
 
 export const ContributorField = ({ id, control, values }: ContributorFieldProps) => {
     const user = getCurrenUser();
@@ -47,7 +47,7 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
     const peopleToContribution = (people: Person[]) => {
         let retval = [];
         retval = people.map((person) => {
-            const r: IContribution = pickProperties(person, "id", "name");
+            const r: Contribution = pickProperties(person, "id", "name");
             return r;
         });
         return retval;
@@ -76,7 +76,7 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
         const url = "filter/alias/";
         return null;
     }
-    const contributionSort = (a: IContribution, b: IContribution) => {
+    const contributionSort = (a: Contribution, b: Contribution) => {
         if (a.role.id !== b.role.id) {
             if (a.role.id < b.role.id) return -1;
             return 1;
@@ -84,7 +84,7 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
         return -1;
     }
 
-    const Contributor = (item: IContribution, index: number) => {
+    const Contributor = (item: Contribution, index: number) => {
         const fieldName = `contributors.${index}.person`;
         const fieldRole = `contributors.${index}.role`;
         const fieldDescription = `contributors.${index}.description`;
@@ -201,7 +201,7 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
                 <label htmlFor="contributors" className="form-field-header">Tekijät</label>
                 <div id="contributors" className="py-0">
                     {values &&
-                        values.sort(contributionSort).map((item: IContribution, index: number) =>
+                        values.sort(contributionSort).map((item: Contribution, index: number) =>
                             Contributor(item, index))
                     }
 

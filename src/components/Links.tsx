@@ -1,10 +1,10 @@
 import { useRef } from "react";
-import { ILink } from "./Link";
+import { LinkType } from "../types/link";
 import { Button } from "primereact/button";
 import { OverlayPanel } from "primereact/overlaypanel";
 
 interface LinksProps {
-    links: ILink[],
+    links: LinkType[],
     target?: string
 }
 

@@ -1,4 +1,4 @@
-export interface ILink {
+export interface LinkType {
     id: number,
     work_id?: number,
     person_id?: number,

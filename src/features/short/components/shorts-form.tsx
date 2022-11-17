@@ -11,7 +11,7 @@ import { AutoComplete } from 'primereact/autocomplete';
 import { IGenre } from '../../../components/Genre';
 import { Short } from "../types";
 import { ContributorField } from '../../../components/forms/ContributorField';
-import { IContribution } from '../../../components/Contribution';
+import { Contribution } from '../../../types/contribution';
 import { KeyValuePair } from '../../../components/forms/forms';
 import { getApiContent, postApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
@@ -31,7 +31,7 @@ interface IShortForm {
     authors: KeyValuePair[],
     type: number,
     genres: KeyValuePair[],
-    contributors: IContribution[],
+    contributors: Contribution[],
     tags: TagType[]
 }
 

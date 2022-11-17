@@ -1,4 +1,4 @@
-export interface IContributor {
+export interface BookType {
     id: number,
     name: string
 }

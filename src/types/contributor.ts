@@ -1,4 +1,4 @@
-export interface IBinding {
+export interface Contributor {
     id: number,
     name: string
 }

@@ -7,7 +7,7 @@ import _ from "lodash";
 
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
-import { ICountry } from "../../../components/Country";
+import { Country } from "../../../types/country";
 import { ContributorBookControl } from "../../../components/BookControl";
 import { ShortsControl } from '../../short/components/shorts-control';
 import { GenreGroup, IGenre } from '../../../components/Genre';
@@ -38,7 +38,7 @@ export const PersonPage = () => {
         getPerson();
     }, [params.personId, user])
 
-    const personDetails = (nationality: ICountry | null, dob: number | null, dod: number | null) => {
+    const personDetails = (nationality: Country | null, dob: number | null, dod: number | null) => {
         let retval: string = "";
         if (nationality) {
             retval = nationality.name

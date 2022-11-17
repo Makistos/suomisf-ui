@@ -2,7 +2,7 @@ import { Person } from "../../person/types";
 import { Edition } from "../../edition/types";
 import { Issue } from "../../issue/types";
 import { IGenre } from '../../../components/Genre';
-import { IContribution } from '../../../components/Contribution';
+import { Contribution } from '../../../types/contribution';
 import { TagType } from "../../tag";
 
 
@@ -21,6 +21,6 @@ export interface Short {
     editions: Edition[];
     issues: Issue[];
     genres: IGenre[];
-    contributors: IContribution[];
+    contributors: Contribution[];
     tags: TagType[];
 }

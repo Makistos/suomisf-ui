@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Pubseries } from "../features/pubseries/types";
 import { Link } from 'react-router-dom';
+
+import { Pubseries } from "../types";
 
 type PubseriesListProps = {
     pubseriesList: Pubseries[]

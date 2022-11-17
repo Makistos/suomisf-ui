@@ -6,10 +6,10 @@ import { ProgressSpinner } from "primereact/progressspinner";
 
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
-import { EditionList } from "../../edition/components/edition-list";
-import { EditionsStatsPanel } from "../../stats/components/editions-stats-panel";
+import { EditionList } from "../../edition";
+import { EditionsStatsPanel } from "../../stats";
 import { LinkPanel } from "../../../components/Links";
-import { PubseriesList } from "../../../components/PubseriesList";
+import { PubseriesList } from "../../pubseries";
 import { Publisher } from "../types";
 
 const baseURL = 'publishers/';

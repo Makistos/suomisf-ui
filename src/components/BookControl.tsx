@@ -4,7 +4,7 @@ import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
 import { WorkList } from "../features/work/components/work-list";
 import { EditionList } from "../features/edition/components/edition-list";
-import { SeriesList } from "./BookseriesList";
+import { BookSeriesList } from "../features/bookseries/components/bookseries-list";
 import { Work } from "../features/work";
 import { IGenre } from "./Genre";
 import { Edition } from "../features/edition/types";
@@ -150,7 +150,7 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
                 </TabPanel>
                 {viewNonSf === false &&
                     <TabPanel key="Sarjat" header="Sarjat" disabled={!hasSeries()}>
-                        <SeriesList works={person.works} seriesType='bookseries' />
+                        <BookSeriesList works={person.works} seriesType='bookseries' />
                     </TabPanel>
                 }
             </TabView>

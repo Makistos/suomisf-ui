@@ -1,4 +1,4 @@
-import type { IBookseries } from "../../../components/Bookseries";
+import { IBookseries } from "../../bookseries";
 import type { Country } from "../../../types/country";
 import { Person, PersonBrief } from "../../person/types";
 import type { LinkType } from "../../../types/link";

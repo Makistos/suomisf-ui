@@ -1,15 +1,16 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from "react";
-import { Work } from "../features/work";
-import { WorkSummary } from "../features/work/components/work-summary";
-import { groupByBookSeries } from "./Bookseries";
+
+import { Work } from "../../work";
+import { WorkSummary } from "../../work/components/work-summary";
+import { groupByBookSeries } from "../utils";
 
 interface SeriesListProps {
     works: Work[],
     seriesType: string
 }
 
-export const SeriesList = ({ works, seriesType }: SeriesListProps) => {
+export const BookSeriesList = ({ works, seriesType }: SeriesListProps) => {
     const [groupedSeries, setGroupedSeries]: [Record<string, Work[]>,
         (works: Record<string, Work[]>) => void] = useState({});
     const [bookseries, setBookseries]: [Record<string, number>,

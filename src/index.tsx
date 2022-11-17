@@ -13,11 +13,11 @@ import { IssuePage } from './features/issue/routes/issue-page';
 import { PeoplePage, PersonPage } from './features/person';
 import { WorkPage } from './features/work';
 import LoginView from './features/user/components/login-view';
-import { Bookseries } from './components/Bookseries';
+import { BookseriesPage } from './features/bookseries/routes/bookseries-page';
 import { PubseriesPage } from './features/pubseries/routes/pubseries-page';
 import { PublisherPage } from './features/publisher/routes/publisher-page';
 import { PublisherListPage } from './features/publisher/routes/publisher-list-page';
-import { BookseriesListing } from './BookseriesListing';
+import { BookseriesListPage } from './features/bookseries/routes/bookseries-list-page';
 import { PubseriesListPage } from './features/pubseries/routes/pubseries-list-page';
 import { ShortSearchPage } from './features/short/routes/short-search-page';
 import { WorkSearchPage } from './features/work/routes/work-search';
@@ -41,8 +41,8 @@ ReactDOM.render(
         <Route path="issues/:issueId" element={<IssuePage id={null} />} />
         <Route path="articles/:articleId" element={<ArticleView id={null} />} />
         <Route path="works/:workId" element={<WorkPage />} />
-        <Route path="bookseries" element={<BookseriesListing />} />
-        <Route path="bookseries/:bookseriesId" element={<Bookseries />} />
+        <Route path="bookseries" element={<BookseriesListPage />} />
+        <Route path="bookseries/:bookseriesId" element={<BookseriesPage />} />
         <Route path="pubseries" element={<PubseriesListPage />} />
         <Route path="pubseries/:bookseriesId" element={<PubseriesPage />} />
         <Route path="publishers/:publisherId" element={<PublisherPage />} />

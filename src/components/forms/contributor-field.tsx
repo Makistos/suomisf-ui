@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Controller, useFieldArray, Control } from 'react-hook-form';
 
 import { AutoComplete } from "primereact/autocomplete";
@@ -26,13 +26,11 @@ type IContributorField = Pick<Contributor, "id" | "name">;
 
 export const ContributorField = ({ id, control, values }: ContributorFieldProps) => {
     const user = getCurrenUser();
-    const fieldId = id;
     const [filteredPeople, setFilteredPeople] = useState<any>(null);
     const [filteredAliases, setFilteredAliases] = useState<any>(null);
     const [roleList, setRoleList]: [IContributorField[],
         (roleList: IContributorField[]) => void]
         = useState<IContributorField[]>([]);
-    const dt = useRef(null);
     const emptyContributor = {
         description: null,
         person: { name: '', id: 0 },

@@ -13,7 +13,6 @@ const baseURL = 'works/';
 
 export const WorksPage = ({ letter }: WorksProp) => {
     const [works, setWorks] = useState<Work[]>([]);
-    const [firstLetter, setFirstLetter] = useState(letter);
     const user = getCurrenUser();
 
     useEffect(() => {

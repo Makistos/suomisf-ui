@@ -8,7 +8,6 @@ import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { AutoComplete } from 'primereact/autocomplete';
 
-import { Genre } from "../../genre/types";
 import { Short } from "../types";
 import { ContributorField } from '../../../components/forms/contributor-field';
 import { Contribution } from '../../../types/contribution';
@@ -42,12 +41,6 @@ interface ShortFormSubmit {
 
 const toKeyValue = <T extends hasIdAndName>(arr: T[]): KeyValuePair[] =>
     arr.map(item => ({ id: item.id, value: item.name }));
-
-// const genreToKeyValue = (arr: Genre[]): KeyValuePair[] => {
-//     let retval: KeyValuePair[] = [];
-//     arr.map(item => retval.push({ id: item.id, value: item.name }));
-//     return retval;
-// }
 
 interface ShortFormProps {
     short: Short
@@ -85,14 +78,6 @@ export const ShortsForm = (props: ShortFormProps) => {
     const { register, control, handleSubmit,
         formState: { isDirty, dirtyFields } } =
         useForm<FieldValues>({ defaultValues: formData });
-    // const authorsArray = useFieldArray({
-    //     control,
-    //     name: "authors"
-    // })
-    // const genresArray = useFieldArray({
-    //     control,
-    //     name: "genres"
-    // })
     const [typeList, setTypeList] = useState([]);
     const [genres, setGenres] = useState([]);
     const [message, setMessage] = useState("");

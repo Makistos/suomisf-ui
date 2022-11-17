@@ -42,26 +42,22 @@ export const SFTag = ({ id }: TagProps) => {
     const [user, setUser]: [User | null, (user: User) => void] = useState(getCurrenUser());
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     setDeleteDisabled(!tagHasContent(tag));
-    // }, [tag, user])
-
     const dialogFuncMap: Record<string, React.Dispatch<React.SetStateAction<boolean>>> = {
         'displayChangeName': setDisplayChangeName,
         'displayMerge': setDisplayMerge,
         'displayDelete': setDisplayDelete
     }
 
-    const tagHasContent = (tag: TagType | null) => {
-        if (tag === undefined || tag === null) return false;
-        if (tag?.articles && tag.articles.length > 0) return true;
-        if (tag?.issues && tag.issues.length > 0) return true;
-        if (tag?.magazines && tag.magazines.length > 0) return true;
-        if (tag?.people && tag.people.length > 0) return true;
-        if (tag?.shorts && tag.shorts.length > 0) return true;
-        if (tag?.works && tag.works.length > 0) return true;
-        return false;
-    }
+    // const tagHasContent = (tag: TagType | null) => {
+    //     if (tag === undefined || tag === null) return false;
+    //     if (tag?.articles && tag.articles.length > 0) return true;
+    //     if (tag?.issues && tag.issues.length > 0) return true;
+    //     if (tag?.magazines && tag.magazines.length > 0) return true;
+    //     if (tag?.people && tag.people.length > 0) return true;
+    //     if (tag?.shorts && tag.shorts.length > 0) return true;
+    //     if (tag?.works && tag.works.length > 0) return true;
+    //     return false;
+    // }
 
     const onSpeeddialClick = (name: string) => {
         dialogFuncMap[`${name}`](true);

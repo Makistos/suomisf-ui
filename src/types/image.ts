@@ -1,4 +1,4 @@
-export interface IImage {
+export interface ImageType {
     id: number,
     edition_id: number,
     image_src: string,

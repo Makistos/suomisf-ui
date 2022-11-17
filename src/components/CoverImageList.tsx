@@ -1,5 +1,5 @@
 import { Work } from '../features/work';
-import { IImage } from './Image';
+import { ImageType } from '../types/image';
 import { Image } from "primereact/image";
 import { IMAGE_URL } from "../systemProps";
 import { Tooltip } from 'primereact/tooltip';
@@ -14,7 +14,7 @@ interface CoverImageListProps {
 export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
 
     const updateImageDict = (editions: Edition[]) => {
-        let retval: Record<string, IImage> = {};
+        let retval: Record<string, ImageType> = {};
         editions.every(edition => {
             if (edition.images !== undefined) {
                 edition.images.map(image => {
@@ -33,7 +33,7 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
     const imageList = () => {
         // Create a list of images on the page where duplicate images
         // are removed.
-        let imageDict: Record<string, IImage> = {};
+        let imageDict: Record<string, ImageType> = {};
         if (editions) {
             imageDict = updateImageDict(editions);
         }
@@ -46,7 +46,7 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
         return Object.values(imageDict);
     }
 
-    const imageTooltip = (image: IImage) => {
+    const imageTooltip = (image: ImageType) => {
         let retval = (<div></div>);
 
         const hasImage = (editions: Edition[], image_src: string) => {
@@ -100,7 +100,7 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
     return (
         <div>
             {
-                imageList().map((image: IImage) => {
+                imageList().map((image: ImageType) => {
                     return (
                         <>
                             <Tooltip>

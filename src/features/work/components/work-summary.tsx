@@ -1,11 +1,12 @@
+import React from 'react';
 import { Link } from "react-router-dom";
 
 import { Tooltip } from "primereact/tooltip";
 
 import { OtherEdition } from "../../edition";
-import { GenreList } from "../../../components/Genre";
+import { GenreList } from "../../genre";
 import { LinkList } from "../../../components/link-list";
-import { WorkProps } from "../routes/work-page";
+import { WorkProps } from "../routes";
 import { WorkDetails } from "./work-details";
 
 

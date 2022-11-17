@@ -7,7 +7,7 @@ import _ from "lodash";
 import { Person } from "../../person";
 import { ShortsList } from "./shorts-list";
 import { Short, ShortType } from "../types";
-import { listIsSf } from "../../../components/Genre";
+import { listIsSf } from "../../genre/utils/list-is-sf";
 
 interface ShortsProps {
     /**

@@ -1,11 +1,12 @@
+import React from 'react';
 import { Link } from "react-router-dom";
 
-import { GenreGroup } from "../../../components/Genre";
+import { GenreGroup } from "../../genre";
 import { TagGroup } from "../../tag/components/sftag-group";
 import { LinkList } from "../../../components/link-list";
 import { AwardPanel } from "../../award/components/award-panel";
 import { LinkPanel } from "../../../components/link-panel";
-import { WorkProps } from "../routes/work-page";
+import { WorkProps } from "../routes";
 
 
 export const WorkDetails = ({ work }: WorkProps) => {

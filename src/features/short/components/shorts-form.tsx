@@ -8,7 +8,7 @@ import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { AutoComplete } from 'primereact/autocomplete';
 
-import { IGenre } from '../../../components/Genre';
+import { IGenre } from "../../genre/types";
 import { Short } from "../types";
 import { ContributorField } from '../../../components/forms/ContributorField';
 import { Contribution } from '../../../types/contribution';

@@ -1,7 +1,7 @@
+import React from 'react';
 import { Link } from "react-router-dom";
 
-import type { Work } from "../../work";
-import { GenreList } from "../../../components/Genre";
+import { GenreList } from "../../genre";
 import { Edition, EditionProps } from "../types";
 import { EditionString } from "../utils/edition-string";
 

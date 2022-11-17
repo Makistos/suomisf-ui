@@ -1,8 +1,7 @@
+import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from "react";
 
-import { Work } from "../../work";
-import { WorkSummary } from "../../work/components/work-summary";
+import { Work, WorkSummary } from "../../work";
 import { groupByBookSeries } from "../utils";
 
 interface SeriesListProps {

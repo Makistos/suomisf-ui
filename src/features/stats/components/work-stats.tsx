@@ -4,7 +4,7 @@ import { Chart } from "primereact/chart";
 import { ChartData } from "chart.js/index";
 import _ from "lodash";
 
-import { getGenreColors } from "../../../components/Genre";
+import { getGenreColors } from "../../genre/utils/genre-colors";
 import { WorksProps } from "../types";
 
 

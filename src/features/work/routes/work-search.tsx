@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import { ProgressSpinner } from "primereact/progressspinner";
@@ -12,7 +12,8 @@ import _ from "lodash";
 import axios from "axios";
 
 import { getCurrenUser } from "../../../services/auth-service";
-import { IGenre, getGenreIcon } from "../../../components/Genre";
+import { getGenreIcon } from "../../genre/utils/genre-icons";
+import { IGenre } from "../../genre";
 import { getApiContent } from "../../../services/user-service";
 import { Country } from "../../../types/country";
 import { BookType } from "../../../types/book-type";

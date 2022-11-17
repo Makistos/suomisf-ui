@@ -1,7 +1,7 @@
 import { Person } from "../../person/types";
 import { Edition } from "../../edition/types";
 import { Issue } from "../../issue/types";
-import { IGenre } from '../../../components/Genre';
+import { IGenre } from "../../genre/types";
 import { Contribution } from '../../../types/contribution';
 import { TagType } from "../../tag";
 

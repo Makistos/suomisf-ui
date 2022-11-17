@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
@@ -9,7 +9,7 @@ import { WorkList } from "../features/work";
 import { EditionList } from "../features/edition";
 import { BookSeriesList } from "../features/bookseries";
 import { Work } from "../features/work";
-import { IGenre } from "./Genre";
+import { IGenre } from "../features/genre/types";
 import { Edition } from "../features/edition";
 
 interface CBCProps {

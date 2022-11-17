@@ -1,5 +1,5 @@
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
 
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
@@ -8,7 +8,7 @@ import { LinkList } from "../../../components/link-list";
 import { Person } from "../../person/types";
 import { Edition } from "../../edition/types";
 import { Issue } from "../../issue/types";
-import { GenreList } from '../../../components/Genre';
+import { GenreList } from "../../genre";
 import { ShortsForm } from './shorts-form';
 import { Contribution } from '../../../types/contribution';
 import { Short } from '../types';

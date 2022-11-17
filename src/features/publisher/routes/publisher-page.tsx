@@ -8,7 +8,7 @@ import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
 import { EditionList } from "../../edition";
 import { EditionsStatsPanel } from "../../stats";
-import { LinkPanel } from "../../../components/Links";
+import { LinkPanel } from "../../../components/link-panel";
 import { PubseriesList } from "../../pubseries";
 import { Publisher } from "../types";
 

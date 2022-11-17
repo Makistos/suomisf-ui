@@ -12,7 +12,7 @@ import { ContributorBookControl } from "../../../components/BookControl";
 import { ShortsControl } from '../../short/components/shorts-control';
 import { GenreGroup, IGenre } from '../../../components/Genre';
 import { TagGroup } from '../../tag/components/sftag-group';
-import { LinkPanel } from '../../../components/Links';
+import { LinkPanel } from "../../../components/link-panel";
 import { AwardPanel, Awarded } from '../../award';
 import { Person } from '../types';
 

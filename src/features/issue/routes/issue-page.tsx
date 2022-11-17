@@ -6,7 +6,7 @@ import { Image } from 'primereact/image';
 import { getCurrenUser } from '../../../services/auth-service';
 import { getApiContent } from '../../../services/user-service';
 import { Person } from "../../person/types";
-import { LinkList } from '../../../components/LinkList';
+import { LinkList } from '../../../components/link-list';
 import { ShortSummary } from '../../short/components/short-summary';
 import { ArticleList } from '../../article/components/article-list';
 import { Issue } from '../types';

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 
-import { LinkList } from "../../../components/LinkList";
+import { LinkList } from "../../../components/link-list";
 import { Person } from "../../person/types";
 import { Edition } from "../../edition/types";
 import { Issue } from "../../issue/types";

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { LinkList } from "../../../components/LinkList";
+import { LinkList } from "../../../components/link-list";
 import { EditionProps } from "../types";
 import { EditionVersion } from "../utils/edition-version";
 

@@ -4,7 +4,7 @@ import { Tooltip } from "primereact/tooltip";
 
 import { OtherEdition } from "../../edition";
 import { GenreList } from "../../../components/Genre";
-import { LinkList } from "../../../components/LinkList";
+import { LinkList } from "../../../components/link-list";
 import { WorkProps } from "../routes/work-page";
 import { WorkDetails } from "./work-details";
 

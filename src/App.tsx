@@ -1,11 +1,13 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
+
+import { locale, addLocale } from 'primereact/api';
 import 'primereact/resources/primereact.min.css'
 import "primeflex/primeflex.css";
-import './App.css';
 import "@fortawesome/fontawesome-free/css/all.css";
-import MainMenu from './Mainmenu';
-import { Outlet } from 'react-router-dom';
-import { locale, addLocale } from 'primereact/api';
+
+import './App.css';
+import MainMenu from './components/mainmenu';
 
 function App() {
   addLocale('fi', {

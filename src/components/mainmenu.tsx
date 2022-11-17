@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Menubar } from 'primereact/menubar';
 import { AutoComplete } from 'primereact/autocomplete';
-import { getCurrenUser } from './services/auth-service';
-import { logout } from './services/auth-service';
-import { getApiContent } from './services/user-service';
-import { SITE_URL } from './systemProps';
+import { getCurrenUser } from '../services/auth-service';
+import { logout } from '../services/auth-service';
+import { getApiContent } from '../services/user-service';
+import { SITE_URL } from '../systemProps';
 import { MenuItemCommandParams } from 'primereact/menuitem';
-import { User } from "./features/user/types";
-import { LoginView } from './features/user/components/login-view';
+import { User } from "../features/user/types";
+import { LoginView } from '../features/user/components/login-view';
 import { Dialog } from 'primereact/dialog';
 
 export default function MainMenu() {

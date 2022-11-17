@@ -1,5 +1,3 @@
-import { IGenre } from "../types";
-
 export const genreIcons: { [key: string]: string } = {
     'Science Fiction': 'fa-solid fa-atom',
     'Fantasia': 'fa-solid fa-scroll',

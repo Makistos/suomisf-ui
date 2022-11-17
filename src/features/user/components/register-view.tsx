@@ -1,3 +1,5 @@
+import React from 'react';
+
 const RegisterView = () => {
     return (
         <div className="col-md-12">

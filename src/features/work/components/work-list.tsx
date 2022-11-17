@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import { SelectButton } from 'primereact/selectbutton';
 import { Dropdown } from "primereact/dropdown";
@@ -7,7 +7,7 @@ import "primeflex/primeflex.css";
 import { groupWorks } from "../utils/group-works";
 import { WorkSummary } from "./work-summary";
 import { CoverImageList } from "../../../components/cover-image-list";
-import { WorkStatsPanel } from "../../stats/components/work-stats-panel";
+import { WorkStatsPanel } from "../../stats";
 
 import { Work } from "../types";
 

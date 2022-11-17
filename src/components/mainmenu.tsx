@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
+
 import { Menubar } from 'primereact/menubar';
 import { AutoComplete } from 'primereact/autocomplete';
+import { MenuItemCommandParams } from 'primereact/menuitem';
+import { Dialog } from 'primereact/dialog';
+
 import { getCurrenUser } from '../services/auth-service';
 import { logout } from '../services/auth-service';
 import { getApiContent } from '../services/user-service';
 import { SITE_URL } from '../systemProps';
-import { MenuItemCommandParams } from 'primereact/menuitem';
-import { User } from "../features/user/types";
-import { LoginView } from '../features/user/components/login-view';
-import { Dialog } from 'primereact/dialog';
+import { LoginView, User } from '../features/user';
 
 export default function MainMenu() {
     const [user, setUser]: [User | null, (user: User | null) => void] = useState<User | null>(null);

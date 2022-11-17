@@ -7,8 +7,8 @@ import { getCurrenUser } from '../../../services/auth-service';
 import { getApiContent } from '../../../services/user-service';
 import { Person } from "../../person/types";
 import { LinkList } from '../../../components/link-list';
-import { ShortSummary } from '../../short/components/short-summary';
-import { ArticleList } from '../../article/components/article-list';
+import { ShortSummary } from '../../short';
+import { ArticleList } from '../../article';
 import { Issue } from '../types';
 
 const baseURL = 'issues/';

@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams } from "react-router-dom";
 
 import { LinkList } from '../../../components/link-list';
-import { Person } from "../../person/types";
+import { Person } from "../../person";
 import { getApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { PickTagLinks } from "../../tag";

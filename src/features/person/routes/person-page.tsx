@@ -9,10 +9,10 @@ import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
 import { Country } from "../../../types/country";
 import { ContributorBookControl } from "../../../components/contributor-book-control";
-import { ShortsControl } from '../../short/components/shorts-control';
+import { ShortsControl } from '../../short';
 import { GenreGroup } from "../../genre";
-import { IGenre } from "../../genre/types";
-import { TagGroup } from '../../tag/components/sftag-group';
+import { Genre } from "../../genre";
+import { TagGroup } from '../../tag';
 import { LinkPanel } from "../../../components/link-panel";
 import { AwardPanel, Awarded } from '../../award';
 import { Person } from '../types';
@@ -85,7 +85,7 @@ export const PersonPage = () => {
          * Check if person has any non-SF content in database (works, shorts).
          */
         if (person === null) return false;
-        let all_genres: IGenre[] = [];
+        let all_genres: Genre[] = [];
         if (what === "all" || what === "works") {
             all_genres = _.concat(all_genres, person.works.map(work => work.genres))
         }

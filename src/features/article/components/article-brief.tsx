@@ -1,7 +1,8 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { LinkList } from '../../../components/link-list';
-import { Person } from "../../person/types";
+import { Person } from "../../person";
 import { Article } from "../types";
 
 interface ArticleProps {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { IGenre, GenresProps } from "../types";
+import { Genre, GenresProps } from "../types";
 import { GenreCount } from "./genre-count";
 
 
@@ -8,7 +8,7 @@ export const GenreGroup = ({ genres, showOneCount }: GenresProps) => {
 
     useEffect(() => {
         const countGenres = () => {
-            let retval = genres.reduce((acc, genre: IGenre) => {
+            let retval = genres.reduce((acc, genre: Genre) => {
                 const genreName: string = genre.name;
                 if (!acc[genreName]) {
                     acc[genreName] = 1;

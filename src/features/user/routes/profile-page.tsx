@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { getCurrenUser } from "../../../services/auth-service";
 
 const ProfilePage = () => {

@@ -1,7 +1,7 @@
-import { IGenre } from "../types";
+import { Genre } from "../types";
 
 
-export const listIsSf = (genres: IGenre[]) => {
+export const listIsSf = (genres: Genre[]) => {
     /**
      * Check whether supplied list of genres would constitute an SF or non-SF
      * item (work, short).

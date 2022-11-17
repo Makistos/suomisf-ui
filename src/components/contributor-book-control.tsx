@@ -4,12 +4,12 @@ import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
 import _ from "lodash";
 
-import { Person } from "../features/person/types";
+import { Person } from "../features/person";
 import { WorkList } from "../features/work";
 import { EditionList } from "../features/edition";
 import { BookSeriesList } from "../features/bookseries";
 import { Work } from "../features/work";
-import { IGenre } from "../features/genre/types";
+import { Genre } from "../features/genre";
 import { Edition } from "../features/edition";
 
 interface CBCProps {
@@ -37,7 +37,7 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
      * @param genres List of genres.
      * @returns True - is non-SF, false - is SF.
      */
-    const isNonSf = (genres: IGenre[]) => {
+    const isNonSf = (genres: Genre[]) => {
         let retval;
         retval = (genres.length === 0 || genres.filter(genre =>
             (genre.abbr !== 'kok') && (genre.abbr !== 'eiSF')).length > 0) ? false : true;

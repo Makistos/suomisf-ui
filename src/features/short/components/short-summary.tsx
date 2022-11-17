@@ -5,9 +5,9 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 
 import { LinkList } from "../../../components/link-list";
-import { Person } from "../../person/types";
-import { Edition } from "../../edition/types";
-import { Issue } from "../../issue/types";
+import { Person } from "../../person";
+import { Edition } from "../../edition";
+import { Issue } from "../../issue";
 import { GenreList } from "../../genre";
 import { ShortsForm } from './shorts-form';
 import { Contribution } from '../../../types/contribution';

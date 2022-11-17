@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { Image } from "primereact/image";
@@ -9,14 +9,11 @@ import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
 import { confirmDialog } from "primereact/confirmdialog";
 
-import { EditionString } from "../../edition/utils/edition-string";
-import { EditionDetails } from "../../edition/components/edition-details";
-import { Edition } from "../../edition/types";
+import { Edition, EditionString, EditionDetails } from "../../edition";
 import { IMAGE_URL } from "../../../systemProps";
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
-import { ShortsList } from "../../short/components/shorts-list";
-
+import { ShortsList } from "../../short";
 import { Work } from "../types";
 import { WorkDetails } from "../components/work-details";
 import { isAnthology } from "../utils/is-anthology";

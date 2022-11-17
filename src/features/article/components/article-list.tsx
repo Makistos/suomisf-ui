@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { ArticleBrief } from "./article-brief";
 import { Article } from "../types";
 

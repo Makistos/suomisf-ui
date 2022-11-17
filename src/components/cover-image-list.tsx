@@ -1,11 +1,12 @@
+import React from 'react';
+
 import { Image } from "primereact/image";
 import { Tooltip } from 'primereact/tooltip';
 
 import { Work } from '../features/work';
 import { ImageType } from '../types/image';
 import { IMAGE_URL } from "../systemProps";
-import { EditionString } from "../features/edition";
-import { Edition } from "../features/edition";
+import { Edition, EditionString } from "../features/edition";
 
 interface CoverImageListProps {
     works?: Work[],

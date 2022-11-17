@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
@@ -7,7 +7,7 @@ import _ from "lodash";
 import { Person } from "../../person";
 import { ShortsList } from "./shorts-list";
 import { Short, ShortType } from "../types";
-import { listIsSf } from "../../genre/utils/list-is-sf";
+import { listIsSf } from "../../genre";
 
 interface ShortsProps {
     /**

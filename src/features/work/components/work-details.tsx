@@ -2,9 +2,9 @@ import React from 'react';
 import { Link } from "react-router-dom";
 
 import { GenreGroup } from "../../genre";
-import { TagGroup } from "../../tag/components/sftag-group";
+import { TagGroup } from "../../tag";
 import { LinkList } from "../../../components/link-list";
-import { AwardPanel } from "../../award/components/award-panel";
+import { AwardPanel } from "../../award";
 import { LinkPanel } from "../../../components/link-panel";
 import { WorkProps } from "../routes";
 

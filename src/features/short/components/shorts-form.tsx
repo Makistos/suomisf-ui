@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm, Controller, SubmitHandler, FieldValues } from 'react-hook-form';
 
 import { Dropdown } from 'primereact/dropdown';
@@ -8,21 +8,21 @@ import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { AutoComplete } from 'primereact/autocomplete';
 
-import { IGenre } from "../../genre/types";
+import { Genre } from "../../genre/types";
 import { Short } from "../types";
-import { ContributorField } from '../../../components/forms/ContributorField';
+import { ContributorField } from '../../../components/forms/contributor-field';
 import { Contribution } from '../../../types/contribution';
 import { KeyValuePair } from '../../../components/forms/forms';
 import { getApiContent, postApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { TagType } from "../../tag";
-import { isAdmin } from '../../user/utils/is-admin';
+import { isAdmin } from '../../user';
 
 interface hasIdAndName {
     id: number,
     name: string
 }
-interface IShortForm {
+interface ShortForm {
     id: number | null,
     title: string,
     orig_title: string,
@@ -35,7 +35,7 @@ interface IShortForm {
     tags: TagType[]
 }
 
-interface IShortFormSubmit {
+interface ShortFormSubmit {
     data: Object,
     changed: Object
 }
@@ -43,19 +43,19 @@ interface IShortFormSubmit {
 const toKeyValue = <T extends hasIdAndName>(arr: T[]): KeyValuePair[] =>
     arr.map(item => ({ id: item.id, value: item.name }));
 
-const genreToKeyValue = (arr: IGenre[]): KeyValuePair[] => {
-    let retval: KeyValuePair[] = [];
-    arr.map(item => retval.push({ id: item.id, value: item.name }));
-    return retval;
-}
+// const genreToKeyValue = (arr: Genre[]): KeyValuePair[] => {
+//     let retval: KeyValuePair[] = [];
+//     arr.map(item => retval.push({ id: item.id, value: item.name }));
+//     return retval;
+// }
 
-interface IShortFormProps {
+interface ShortFormProps {
     short: Short
 }
 
-export const ShortsForm = (props: IShortFormProps) => {
+export const ShortsForm = (props: ShortFormProps) => {
     const user = getCurrenUser();
-    const convToForm = (short: Short): IShortForm => ({
+    const convToForm = (short: Short): ShortForm => ({
         id: short.id,
         title: short.title,
         orig_title: short.orig_title,
@@ -68,7 +68,7 @@ export const ShortsForm = (props: IShortFormProps) => {
         tags: short.tags
     });
 
-    const defaultValues: IShortForm = {
+    const defaultValues: ShortForm = {
         id: null,
         title: '',
         orig_title: '',
@@ -115,7 +115,7 @@ export const ShortsForm = (props: IShortFormProps) => {
         getGenres();
     }, [])
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
-        const retval: IShortFormSubmit = { data, changed: dirtyFields }
+        const retval: ShortFormSubmit = { data, changed: dirtyFields }
         setMessage("");
         setLoading(true);
 

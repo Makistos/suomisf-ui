@@ -1,11 +1,13 @@
+import React, { useState, useEffect } from "react";
+import { Link } from 'react-router-dom';
+
 import { DataTable } from "primereact/datatable";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { useState, useEffect } from "react";
+import { Column } from "primereact/column";
+
 import { Pubseries } from "../types";
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
-import { Column } from "primereact/column";
-import { Link } from 'react-router-dom';
 
 export const PubseriesListPage = () => {
     /**

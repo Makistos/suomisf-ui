@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Work } from '../types';
 import { getApiContent } from '../../../services/user-service';

@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Tag } from 'primereact/tag';
 import { Button } from 'primereact/button';
 
-import { TagType } from "..";
+import { TagType } from "../types";
 
 interface TagsProps {
     tags: TagType[],

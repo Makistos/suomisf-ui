@@ -1,17 +1,18 @@
-import { KeyValuePair } from "./forms";
-import { useForm, Controller, SubmitHandler, useFieldArray, Control, FieldArray } from 'react-hook-form';
-import { useState, useRef, useEffect } from "react";
-import { Person } from "../../features/person/types";
-import { Button } from "primereact/button";
-import { Contributor } from "../../types/contributor";
+import React, { useState, useRef, useEffect } from "react";
+import { Controller, useFieldArray, Control } from 'react-hook-form';
+
 import { AutoComplete } from "primereact/autocomplete";
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
+import { classNames } from "primereact/utils";
+import { Dropdown } from "primereact/dropdown";
+
+import { Person } from "../../features/person";
+import { Contributor } from "../../types/contributor";
 import { getApiContent } from "../../services/user-service";
 import { getCurrenUser } from "../../services/auth-service";
 import { pickProperties } from "./forms";
 import { Contribution } from "../../types/contribution";
-import { InputText } from "primereact/inputtext";
-import { classNames } from "primereact/utils";
-import { Dropdown } from "primereact/dropdown";
 
 interface ContributorFieldProps {
     id: string,
@@ -45,7 +46,7 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
     })
 
     const peopleToContribution = (people: Person[]) => {
-        let retval = [];
+        let retval: Contribution[] = [];
         retval = people.map((person) => {
             const r: Contribution = pickProperties(person, "id", "name");
             return r;

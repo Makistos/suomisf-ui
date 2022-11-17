@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
-import { WorkList } from "../../work/components/work-list";
+import { WorkList } from "../../work";
 import { IBookseries } from "../types";
 
 const baseURL = 'bookseries/';

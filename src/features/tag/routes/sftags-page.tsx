@@ -1,5 +1,6 @@
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 import { getApiContent } from '../../../services/user-service';
@@ -11,6 +12,7 @@ interface TagProps {
     tag?: string,
     count?: number | null
 }
+
 export const SFTags = ({ id }: TagProps) => {
     const [genreTags, setGenreTags]: [TagType[], (tag: TagType[]) => void] = useState<TagType[]>([]);
     const [styleTags, setStyleTags]: [TagType[], (tag: TagType[]) => void] = useState<TagType[]>([]);

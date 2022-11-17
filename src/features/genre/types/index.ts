@@ -1,11 +1,11 @@
-export interface IGenre {
+export interface Genre {
     id: number;
     name: string;
     abbr: string;
 }
 
 export interface GenresProps {
-    genres: IGenre[],
+    genres: Genre[],
     showOneCount?: boolean
 }
 

@@ -18,7 +18,7 @@ import { getApiContent, deleteApiContent } from '../../../services/user-service'
 import { getCurrenUser } from '../../../services/auth-service';
 import { WorkList } from '../../work';
 import { ShortsList } from '../../short';
-import { ArticleList } from '../../article/components/article-list';
+import { ArticleList } from '../../article';
 import { User } from "../../user/types";
 import { API_URL } from '../../../systemProps';
 import authHeader from '../../../services/auth-header';

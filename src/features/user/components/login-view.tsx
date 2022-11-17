@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
@@ -8,24 +8,24 @@ import { classNames } from "primereact/utils";
 
 import { login } from "../../../services/auth-service";
 
-type IFormData = {
+type FormData = {
     username: string,
     password: string
 }
 
-const defaultValues: IFormData = {
+const defaultValues: FormData = {
     username: "",
     password: "",
 };
 
 export const LoginView = () => {
     //const { control, handleSubmit, formState: { errors } } = useForm<IFormData>({ defaultValues: defaultValues });
-    const form = useForm<IFormData>({ defaultValues: defaultValues });
+    const form = useForm<FormData>({ defaultValues: defaultValues });
     const [loading, setLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
 
 
-    const onSubmit: SubmitHandler<IFormData> = (data) => {
+    const onSubmit: SubmitHandler<FormData> = (data) => {
 
         setMessage("");
         setLoading(true);

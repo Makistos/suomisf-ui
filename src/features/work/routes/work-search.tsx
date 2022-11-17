@@ -13,14 +13,14 @@ import axios from "axios";
 
 import { getCurrenUser } from "../../../services/auth-service";
 import { getGenreIcon } from "../../genre/utils/genre-icons";
-import { IGenre } from "../../genre";
+import { Genre } from "../../genre";
 import { getApiContent } from "../../../services/user-service";
 import { Country } from "../../../types/country";
 import { BookType } from "../../../types/book-type";
 import { API_URL } from "../../../systemProps";
 import { WorkList } from "../components/work-list";
 
-type IFormData = {
+type FormData = {
     [index: string]: any,
     author?: string,
     title?: string,
@@ -36,16 +36,16 @@ type IFormData = {
 
 export const WorkSearchPage = () => {
     const user = getCurrenUser();
-    const { control, handleSubmit, formState: { errors } } = useForm<IFormData>();
+    const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
     const [loading, setLoading] = useState(false);
     const [works, setWorks]: [any, (books: any[]) => void] = useState<any>(null);
-    const [genres, setGenres]: [IGenre[], (genres: IGenre[]) => void] = useState<IGenre[]>([]);
+    const [genres, setGenres]: [Genre[], (genres: Genre[]) => void] = useState<Genre[]>([]);
     const [nationalities, setNationalities]: [Country[], (nationalities: Country[]) => void] = useState<Country[]>([]);
     const [bookTypes, setBookTypes]: [BookType[], (bookTypes: BookType[]) => void] = useState<BookType[]>([]);
     const [initials, setInitials]: [string[], (initialis: string[]) => void] = useState<string[]>([]);
     const [initial, setInitial] = useState("");
 
-    const onSubmit: SubmitHandler<IFormData> = data => {
+    const onSubmit: SubmitHandler<FormData> = data => {
         function search() {
             if (Object.keys(data).length === 0 &&
                 _.pickBy(data, function (param) { return data[param].length > 0 }).length === 0) {

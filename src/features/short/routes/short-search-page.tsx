@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
 import axios from "axios";
@@ -13,7 +13,7 @@ import { ShortsList } from '../components/shorts-list';
 import { API_URL } from "../../../systemProps";
 import { Short } from "../types";
 
-type IFormData = {
+type FormData = {
     [index: string]: any,
     author?: string,
     title?: string,
@@ -22,7 +22,7 @@ type IFormData = {
     pubyear_last?: string
 };
 
-const defaultValues: IFormData = {
+const defaultValues: FormData = {
     author: '',
     title: '',
     orig_name: '',
@@ -32,7 +32,7 @@ const defaultValues: IFormData = {
 
 export const ShortSearchPage = () => {
     const user = getCurrenUser();
-    const { control, handleSubmit, formState: { errors } } = useForm<IFormData>(
+    const { control, handleSubmit, formState: { errors } } = useForm<FormData>(
         { defaultValues: defaultValues }
     );
     const [loading, setLoading] = useState(false);
@@ -40,7 +40,7 @@ export const ShortSearchPage = () => {
     //const [shorts, setShorts]: [any, (shorts: any[]) => void] = useState<any[]>([]);
     // const toast: Toast | null = useRef<Toast | null>(null);
 
-    const onSubmit: SubmitHandler<IFormData> = data => {
+    const onSubmit: SubmitHandler<FormData> = data => {
         function search() {
             // Make sure at least one parameter is given.
             if (Object.keys(data).length === 0 &&

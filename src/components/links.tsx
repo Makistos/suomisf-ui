@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { LinkType } from "../types/link";
 
 export interface LinksProps {

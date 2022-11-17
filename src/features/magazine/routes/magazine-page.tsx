@@ -2,7 +2,7 @@ import React from 'react';
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
 import { useParams } from "react-router-dom";
-import { IssuePage } from '../../issue/routes/issue-page';
+import { IssuePage } from '../../issue';
 import { Magazine } from '../types';
 
 

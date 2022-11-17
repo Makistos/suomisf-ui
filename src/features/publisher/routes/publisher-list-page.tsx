@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 
 import { DataTable } from "primereact/datatable";
@@ -8,6 +8,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Publisher } from "../types";
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
+import { Edition } from "../../edition";
 
 const baseURL = "publishers";
 
@@ -37,7 +38,7 @@ export const PublisherListPage = () => {
                                 return (curr.pubyear > prev.pubyear ? curr : prev);
                             });
                         publisher.edition_newest = newest.pubyear;
-                        let images = null;
+                        let images: Edition[] = [];
                         if (publisher.editions) {
                             images = publisher.editions.filter(edition => edition.images && edition.images.length > 0)
                         }

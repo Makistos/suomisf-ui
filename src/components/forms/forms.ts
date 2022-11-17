@@ -1,5 +1,3 @@
-import { TRBL } from "chart.js/types/geometric";
-
 export interface KeyValuePair {
     id: number | null,
     value: string | null

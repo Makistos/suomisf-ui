@@ -1,4 +1,4 @@
-import { IBookseries } from "../../bookseries";
+import { Bookseries } from "../../bookseries";
 import type { Country } from "../../../types/country";
 import { Person, PersonBrief } from "../../person/types";
 import type { LinkType } from "../../../types/link";
@@ -12,7 +12,7 @@ export interface Work {
     author_str: string,
     authors: Person[],
     awards: Awarded[],
-    bookseries: IBookseries,
+    bookseries: Bookseries,
     bookseriesnum: string,
     bookseriesorder: number,
     desc_attr: string,

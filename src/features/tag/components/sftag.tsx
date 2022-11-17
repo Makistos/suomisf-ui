@@ -169,7 +169,7 @@ export const SFTag = ({ id }: TagProps) => {
             id: number,
             name: string
         }
-        const { control, handleSubmit, formState: { errors } } = useForm<TagTypeInfo>();
+        const { control, handleSubmit } = useForm<TagTypeInfo>();
         const [filteredTags, setFilteredTags] = useState<any>(null);
         const [selectedTag, setSelectedTag] = useState<any>(null);
         const mergeTags: SubmitHandler<TagTypeInfo> = (data) => {

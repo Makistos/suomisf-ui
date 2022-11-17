@@ -2,7 +2,7 @@ import { Edition } from "../../edition/types";
 import { Publisher } from "../../publisher/types";
 import { Work } from "../../work";
 
-export interface IBookseries {
+export interface Bookseries {
     id: number;
     name: string;
     orig_name: string;

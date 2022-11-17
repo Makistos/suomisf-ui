@@ -5,7 +5,7 @@ import { DataTable } from "primereact/datatable";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Column } from "primereact/column";
 
-import { IBookseries } from "../types";
+import { Bookseries } from "../types";
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
 
@@ -15,8 +15,8 @@ export const BookseriesListPage = () => {
      */
     const user = getCurrenUser();
 
-    const [bookseriesList, setBookseriesList]: [IBookseries[] | null,
-        (bookseriesList: IBookseries[]) => void] = useState<IBookseries[] | null>(null);
+    const [bookseriesList, setBookseriesList]: [Bookseries[] | null,
+        (bookseriesList: Bookseries[]) => void] = useState<Bookseries[] | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -33,14 +33,14 @@ export const BookseriesListPage = () => {
         getBookseriesList();
     }, [user])
 
-    const nameTemplate = (rowData: IBookseries) => {
+    const nameTemplate = (rowData: Bookseries) => {
         return (
             <Link to={`/bookseries/${rowData.id}`} key={rowData.id}>
                 {rowData.name}
             </Link>
         )
     }
-    const workCountTemplate = (rowData: IBookseries) => {
+    const workCountTemplate = (rowData: Bookseries) => {
         if (rowData.works) {
             return rowData.works.length;
         }
@@ -65,6 +65,8 @@ export const BookseriesListPage = () => {
                                 dataKey="id"
                                 emptyMessage="Kirjasarjoja ei löytynyt"
                                 loading={loading}
+                                sortField="name"
+                                sortOrder={1}
                             >
                                 <Column field="name" header="Nimi"
                                     body={nameTemplate}

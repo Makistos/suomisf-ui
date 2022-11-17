@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
 import { WorkList } from "../../work";
-import { IBookseries } from "../types";
+import { Bookseries } from "../types";
 
 const baseURL = 'bookseries/';
 
@@ -12,7 +12,7 @@ export const BookseriesPage = () => {
     const params = useParams();
     const user = getCurrenUser();
 
-    const [bookseries, setBookseries]: [IBookseries | null, (bookseries: IBookseries) => void] = useState<IBookseries | null>(null);
+    const [bookseries, setBookseries]: [Bookseries | null, (bookseries: Bookseries) => void] = useState<Bookseries | null>(null);
 
     useEffect(() => {
         async function getBookseries() {

@@ -7,7 +7,7 @@ import { EditionSummary } from "./edition-summary";
 import { groupEditions } from "../utils/group-editions";
 import { Edition } from "../types";
 import { Person } from "../../person/types";
-import { CoverImageList } from "../../../components/CoverImageList";
+import { CoverImageList } from "../../../components/cover-image-list";
 
 interface EditionListProps {
     editions: Edition[],

@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import { Person } from "../features/person/types";
+
 import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
-import { WorkList } from "../features/work/components/work-list";
-import { EditionList } from "../features/edition/components/edition-list";
-import { BookSeriesList } from "../features/bookseries/components/bookseries-list";
+import _ from "lodash";
+
+import { Person } from "../features/person/types";
+import { WorkList } from "../features/work";
+import { EditionList } from "../features/edition";
+import { BookSeriesList } from "../features/bookseries";
 import { Work } from "../features/work";
 import { IGenre } from "./Genre";
-import { Edition } from "../features/edition/types";
-import _ from "lodash";
+import { Edition } from "../features/edition";
 
 interface CBCProps {
     person: Person,

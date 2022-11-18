@@ -41,6 +41,7 @@ export const PublisherPage = () => {
             {
                 loading ? (
                     <div className="progressbar">
+                        <p>Haetaan tietoja..</p>
                         <ProgressSpinner />
                     </div>
                 )

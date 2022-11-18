@@ -34,6 +34,8 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
     //let [short, setShort]: [IShort | null, (story: IShort) => void] = React.useState<IShort | null>(null);
     const [isEditVisible, setEditVisible] = useState(false);
 
+
+    console.log(short);
     const PickLinks = (items: Person[]) => {
         return items.map((item) => ({ id: item['id'], name: item['alt_name'] }));
     }
@@ -100,7 +102,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
                 header="Novellin muokkaus" visible={isEditVisible} onHide={() => setEditVisible(false)} >
                 <ShortsForm short={short} />
             </Dialog>
-            {short !== null && short !== undefined ? (
+            {short ? (
                 <div key={short.id}>
                     <div>
                         {!skipAuthors &&
@@ -121,9 +123,9 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
                         }
                         <>. </>
                         {translators(short.contributors)}
-                        {short.genres.length > 0 &&
+                        {/* {short.genres.length > 0 &&
                             <GenreList genres={short.genres} />
-                        }
+                        } */}
                         <Button
                             icon="fa-solid fa-pen-to-square"
                             className="p-button-rounded p-button-info p-button-text"
@@ -149,6 +151,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
                 <p>Haetaan tietoja..</p>
             )
             }
+        )}
         </div >
     )
 }

@@ -1,7 +1,7 @@
 export const singleShort = [
     {
-        "orig_title": "Robot Dreams",
-        "authors": [
+        orig_title: "Robot Dreams",
+        authors: [
             {
                 "image_src": "http://www.isfdb.org/wiki/images/4/47/Isaac_Asimov_on_Throne.png",
                 "storycount": 16.0,
@@ -295,7 +295,7 @@ export const singleShort = [
                 "pubseriesnum": null
             }
         ],
-        "genres": [],
+        genres: [],
         "id": 1,
         "pubyear": 1986
     }

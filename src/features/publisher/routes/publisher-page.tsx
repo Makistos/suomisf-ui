@@ -11,12 +11,26 @@ import { EditionsStatsPanel } from "../../stats";
 import { LinkPanel } from "../../../components/link-panel";
 import { PubseriesList } from "../../pubseries";
 import { Publisher } from "../types";
+import { parseCommandLine } from "typescript";
 
 const baseURL = 'publishers/';
 
-export const PublisherPage = () => {
+interface PublisherPageProps {
+    id: string | null;
+}
+
+export const PublisherPage = ({ id }: PublisherPageProps) => {
     const params = useParams();
     const user = getCurrenUser();
+    let publisherId: string = "";
+
+    if (params !== undefined && params.publisherId !== undefined) {
+        publisherId = params.publisherId.toString();
+    } else if (id !== null) {
+        publisherId = id;
+    } else {
+        console.log("No id given for Publisher.")
+    }
 
     const [publisher, setPublisher]: [Publisher | null, (publisher: Publisher) => void] =
         useState<Publisher | null>(null);
@@ -24,7 +38,7 @@ export const PublisherPage = () => {
 
     useEffect(() => {
         async function getPublisher() {
-            const url = baseURL + params.publisherId?.toString();
+            const url = baseURL + publisherId.toString();
             try {
                 const response = await getApiContent(url, user);
                 setPublisher(response.data);

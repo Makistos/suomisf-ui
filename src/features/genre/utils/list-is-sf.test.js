@@ -1,5 +1,5 @@
 import { listIsSf } from "./list-is-sf";
-import * as data from "../../../test-data";
+import * as data from "../../../testing";
 
 test("Check when every item is SF and has collection", () => {
   expect(listIsSf(data.allSfData)).toBe(true);

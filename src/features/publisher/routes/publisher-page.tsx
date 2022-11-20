@@ -51,7 +51,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
     }, [user])
 
     return (
-        <main className="all-content">
+        <main className="all-content" id="publisher-page">
             {
                 loading ? (
                     <div className="progressbar">

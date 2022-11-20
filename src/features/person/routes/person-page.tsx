@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams } from "react-router-dom";
 
 import { ProgressSpinner } from "primereact/progressspinner";
@@ -19,15 +19,29 @@ import { Person } from '../types';
 
 const baseURL = "people/";
 
-export const PersonPage = () => {
+interface PersonPageProps {
+    id: string | null;
+}
+
+let personId = "";
+
+export const PersonPage = ({ id }: PersonPageProps) => {
     const params = useParams();
-    const user = getCurrenUser();
     const [person, setPerson]: [Person | null, (person: Person) => void] = React.useState<Person | null>(null);
     const [loading, setLoading] = useState(true);
+    const user = useMemo(() => { return getCurrenUser() }, []);
+
+    if (params !== undefined && params.publisherId !== undefined) {
+        personId = params.publisherId.toString();
+    } else if (id !== null) {
+        personId = id;
+    } else {
+        console.log("No id given for Publisher.")
+    }
 
     React.useEffect(() => {
         async function getPerson() {
-            let url = baseURL + params.personId?.toString();
+            let url = baseURL + id?.toString();
             try {
                 const response = await getApiContent(url, user);
                 setPerson(response.data);
@@ -104,7 +118,7 @@ export const PersonPage = () => {
     }
 
     return (
-        <main className="all-content">
+        <main className="all-content" id="person-page">
             {
                 loading ?
                     <div className="progressbar">

@@ -21,6 +21,5 @@ describe("PublisherPage", () => {
         expect(screen.getByText(/Absurdia/i).textContent).toMatch(/Absurdia/),
       { timeout: 5000 }
     );
-    //screen.debug();
   });
 });

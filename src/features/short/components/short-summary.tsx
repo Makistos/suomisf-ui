@@ -35,7 +35,6 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
     const [isEditVisible, setEditVisible] = useState(false);
 
 
-    console.log(short);
     const PickLinks = (items: Person[]) => {
         return items.map((item) => ({ id: item['id'], name: item['alt_name'] }));
     }
@@ -123,9 +122,9 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
                         }
                         <>. </>
                         {translators(short.contributors)}
-                        {/* {short.genres.length > 0 &&
+                        {short.genres.length > 0 &&
                             <GenreList genres={short.genres} />
-                        } */}
+                        }
                         <Button
                             icon="fa-solid fa-pen-to-square"
                             className="p-button-rounded p-button-info p-button-text"

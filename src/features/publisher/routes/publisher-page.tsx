@@ -48,8 +48,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
             }
         }
         getPublisher();
-        // eslint-disable-line react-hooks/exhaustive-deps
-    }, [user, publisherId])
+    }, [user])
 
     return (
         <main className="all-content">

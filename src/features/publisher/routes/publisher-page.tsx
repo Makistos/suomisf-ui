@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useMemo } from "react"
 import { useParams } from "react-router-dom";
 
 import { TabPanel, TabView } from "primereact/tabview";
@@ -11,7 +11,6 @@ import { EditionsStatsPanel } from "../../stats";
 import { LinkPanel } from "../../../components/link-panel";
 import { PubseriesList } from "../../pubseries";
 import { Publisher } from "../types";
-import { parseCommandLine } from "typescript";
 
 const baseURL = 'publishers/';
 
@@ -19,10 +18,11 @@ interface PublisherPageProps {
     id: string | null;
 }
 
+let publisherId: string = "";
+
 export const PublisherPage = ({ id }: PublisherPageProps) => {
     const params = useParams();
-    const user = getCurrenUser();
-    let publisherId: string = "";
+    const user = useMemo(() => { return getCurrenUser() }, []);
 
     if (params !== undefined && params.publisherId !== undefined) {
         publisherId = params.publisherId.toString();
@@ -48,7 +48,8 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
             }
         }
         getPublisher();
-    }, [params.publisherId, user])
+        // eslint-disable-line react-hooks/exhaustive-deps
+    }, [user, publisherId])
 
     return (
         <main className="all-content">

@@ -150,7 +150,6 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
                 <p>Haetaan tietoja..</p>
             )
             }
-            )
         </div >
     )
 }

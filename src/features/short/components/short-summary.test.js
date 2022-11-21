@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import { ShortSummary } from "./short-summary";
 
-import { singleShort } from "../../../testing/shorts";
+import { singleShort } from "../../../testing";
 
 it("renders empty short summary", () => {
   render(<ShortSummary />);

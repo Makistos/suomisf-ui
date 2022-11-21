@@ -1,7 +1,6 @@
 import React from "react";
 import { screen, waitFor } from "@testing-library/react";
 
-//it("mocks test", () => {});
 import { PublisherPage } from "./publisher-page";
 import { renderWithRouter } from "../../../testing";
 

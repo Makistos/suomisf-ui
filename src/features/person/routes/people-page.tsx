@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import { FilterMatchMode } from "primereact/api";
@@ -15,7 +15,7 @@ import type { Country } from '../../../types/country';
 const baseURL = 'people';
 
 export const PeoplePage = () => {
-    const user = getCurrenUser();
+    const user = useMemo(() => { return getCurrenUser() }, []);
     const [people, setPeople]: [Person[], (people: Person[]) => void] = React.useState<Person[]>([]);
     const [countries, setCountries]: [Country[], (countries: Country[]) => void] = React.useState<Country[]>([]);
     //const [roles, setRoles]: [string[], (roles: string[]) => void] = React.useState<string[]>([]);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import { Image } from "primereact/image";
@@ -34,7 +34,7 @@ let workId = "";
 
 export const WorkPage = ({ id }: WorkPageProps) => {
     const params = useParams();
-    const user = getCurrenUser();
+    const user = useMemo(() => { return getCurrenUser() }, []);
     const [work, setWork]: [Work | null, (work: Work) => void] = useState<Work | null>(null);
     const [layout, setLayout]: [DataViewLayoutType, (layout: DataViewLayoutType) => void] = useState<DataViewLayoutType>('list');
     const ConfirmNewWork = () => {

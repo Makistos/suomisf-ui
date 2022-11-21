@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
 import { WorkList } from "../../work";
 import { Bookseries } from "../types";
+import { User } from "../../user";
 
 const baseURL = 'bookseries/';
 
 export const BookseriesPage = () => {
     const params = useParams();
-    const user = getCurrenUser();
+    const user = useMemo(() => { return getCurrenUser() }, []);
 
     const [bookseries, setBookseries]: [Bookseries | null, (bookseries: Bookseries) => void] = useState<Bookseries | null>(null);
 

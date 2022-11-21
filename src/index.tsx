@@ -1,3 +1,4 @@
+import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -40,7 +41,7 @@ ReactDOM.render(
         <Route path="magazines/:magazineId" element={<MagazinePage />} />
         <Route path="issues/:issueId" element={<IssuePage id={null} />} />
         <Route path="articles/:articleId" element={<ArticleView id={null} />} />
-        <Route path="works/:workId" element={<WorkPage />} />
+        <Route path="works/:workId" element={<WorkPage id={null} />} />
         <Route path="bookseries" element={<BookseriesListPage />} />
         <Route path="bookseries/:bookseriesId" element={<BookseriesPage />} />
         <Route path="pubseries" element={<PubseriesListPage />} />

@@ -26,7 +26,13 @@ export interface WorkProps {
 
 const baseURL = "works/";
 
-export const WorkPage = () => {
+interface WorkPageProps {
+    id: string | null;
+}
+
+let workId = "";
+
+export const WorkPage = ({ id }: WorkPageProps) => {
     const params = useParams();
     const user = getCurrenUser();
     const [work, setWork]: [Work | null, (work: Work) => void] = useState<Work | null>(null);
@@ -38,6 +44,14 @@ export const WorkPage = () => {
             icon: 'fa-solid fa-circle-plus'
         });
     };
+
+    if (params !== undefined && params.publisherId !== undefined) {
+        workId = params.publisherId.toString();
+    } else if (id !== null) {
+        workId = id;
+    } else {
+        console.log("No id given for Publisher.")
+    }
 
     const ConfirmEdit = () => {
         confirmDialog({
@@ -89,7 +103,7 @@ export const WorkPage = () => {
     ]
     useEffect(() => {
         async function getWork() {
-            let url = baseURL + params.workId?.toString();
+            let url = baseURL + workId;
             try {
                 const response = await getApiContent(url, user);
                 setWork(response.data);

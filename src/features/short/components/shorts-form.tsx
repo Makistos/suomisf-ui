@@ -12,7 +12,7 @@ import { Short } from "../types";
 import { ContributorField } from '../../../components/forms/contributor-field';
 import { Contribution } from '../../../types/contribution';
 import { KeyValuePair } from '../../../components/forms/forms';
-import { getApiContent, postApiContent } from '../../../services/user-service';
+import { getApiContent, putApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { TagType } from "../../tag";
 import { isAdmin } from '../../user';
@@ -28,7 +28,7 @@ interface ShortForm {
     language: string | null,
     pubyear: number | null
     authors: KeyValuePair[],
-    type: number,
+    story_type: number,
     genres: KeyValuePair[],
     contributors: Contribution[],
     tags: TagType[]
@@ -55,7 +55,7 @@ export const ShortsForm = (props: ShortFormProps) => {
         language: short.language,
         pubyear: short.pubyear,
         authors: toKeyValue(short.authors),
-        type: short.type.id,
+        story_type: short.type.id,
         genres: toKeyValue(short.genres),
         contributors: short.contributors,
         tags: short.tags
@@ -68,7 +68,7 @@ export const ShortsForm = (props: ShortFormProps) => {
         language: '',
         pubyear: null,
         authors: [],
-        type: 1,
+        story_type: 1,
         genres: [],
         contributors: [],
         tags: []
@@ -107,7 +107,7 @@ export const ShortsForm = (props: ShortFormProps) => {
 
         console.log(data);
 
-        postApiContent('shorts/', retval, user);
+        putApiContent('shorts/', retval, user);
         if (isDirty) {
             console.log(dirtyFields)
         }

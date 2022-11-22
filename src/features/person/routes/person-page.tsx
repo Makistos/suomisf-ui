@@ -31,17 +31,17 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     const [loading, setLoading] = useState(true);
     const user = useMemo(() => { return getCurrenUser() }, []);
 
-    if (params !== undefined && params.publisherId !== undefined) {
-        personId = params.publisherId.toString();
+    if (params !== undefined && params.personId !== undefined) {
+        personId = params.personId;
     } else if (id !== null) {
         personId = id;
     } else {
-        console.log("No id given for Publisher.")
+        console.log("No id given for Person.")
     }
 
     React.useEffect(() => {
         async function getPerson() {
-            let url = baseURL + id?.toString();
+            let url = baseURL + personId;
             try {
                 const response = await getApiContent(url, user);
                 setPerson(response.data);

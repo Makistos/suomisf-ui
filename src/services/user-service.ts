@@ -84,3 +84,7 @@ export const deleteApiContent = (url: string): any => {
 export const postApiContent = (url: string, data: any, user: User | null) => {
     return postPublicContent(url, data, null, user);
 }
+
+export const putApiContent = (url: string, data: any, user: User | null) => {
+    return putContent(url, data, user);
+}

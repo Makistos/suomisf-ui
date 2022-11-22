@@ -5,7 +5,7 @@ import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
 import { WorkList } from "../../work";
 import { Bookseries } from "../types";
-import { User } from "../../user";
+import { selectId } from "../../../utils";
 
 const baseURL = 'bookseries/';
 
@@ -13,7 +13,7 @@ interface BookseriesPageProps {
     id: string | null;
 }
 
-let bookseriesId = "";
+let thisId = "";
 
 export const BookseriesPage = ({ id }: BookseriesPageProps) => {
     const params = useParams();
@@ -21,12 +21,10 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
 
     const [bookseries, setBookseries]: [Bookseries | null, (bookseries: Bookseries) => void] = useState<Bookseries | null>(null);
 
-    if (params !== undefined && params.bookseriesId !== undefined) {
-        bookseriesId = params.bookseriesId.toString();
-    } else if (id !== null) {
-        bookseriesId = id;
-    } else {
-        console.log("No id give for Bookseries.")
+    try {
+        thisId = selectId(params, id);
+    } catch (e) {
+        console.log(`${e} bookseries.`);
     }
 
     useEffect(() => {

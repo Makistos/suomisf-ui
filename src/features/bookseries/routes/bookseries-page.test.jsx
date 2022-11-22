@@ -1,7 +1,7 @@
 import React from "react";
 import { screen, waitFor, render, cleanup } from "@testing-library/react";
 
-import { BookseriesPage, BookseriesPageProps } from "./bookseries-page";
+import { BookseriesPage } from "./bookseries-page";
 import { renderWithRouter } from "../../../testing";
 
 afterEach(cleanup);

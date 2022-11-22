@@ -62,9 +62,8 @@ export const PeoplePage = () => {
         }
 
         async function getPeople() {
-            const url = baseURL + "?" +
+            const url = baseURL + "/?" +
                 queryParams(lazyParams).join('&');
-            console.log(url);
             try {
                 //console.log(url);
                 setLoading(true);

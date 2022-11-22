@@ -9,15 +9,29 @@ import { User } from "../../user";
 
 const baseURL = 'bookseries/';
 
-export const BookseriesPage = () => {
+interface BookseriesPageProps {
+    id: string | null;
+}
+
+let bookseriesId = "";
+
+export const BookseriesPage = ({ id }: BookseriesPageProps) => {
     const params = useParams();
     const user = useMemo(() => { return getCurrenUser() }, []);
 
     const [bookseries, setBookseries]: [Bookseries | null, (bookseries: Bookseries) => void] = useState<Bookseries | null>(null);
 
+    if (params !== undefined && params.bookseriesId !== undefined) {
+        bookseriesId = params.bookseriesId.toString();
+    } else if (id !== null) {
+        bookseriesId = id;
+    } else {
+        console.log("No id give for Bookseries.")
+    }
+
     useEffect(() => {
         async function getBookseries() {
-            let url = baseURL + params.bookseriesId?.toString();
+            let url = baseURL + id;
             try {
                 const response = await getApiContent(url, user);
                 setBookseries(response.data);

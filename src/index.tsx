@@ -43,7 +43,7 @@ ReactDOM.render(
         <Route path="articles/:articleId" element={<ArticleView id={null} />} />
         <Route path="works/:workId" element={<WorkPage id={null} />} />
         <Route path="bookseries" element={<BookseriesListPage />} />
-        <Route path="bookseries/:bookseriesId" element={<BookseriesPage />} />
+        <Route path="bookseries/:bookseriesId" element={<BookseriesPage id={null} />} />
         <Route path="pubseries" element={<PubseriesListPage />} />
         <Route path="pubseries/:bookseriesId" element={<PubseriesPage />} />
         <Route path="publishers/:publisherId" element={<PublisherPage id={null} />} />

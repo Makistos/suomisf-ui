@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -19,7 +19,7 @@ export const SFTags = ({ id }: TagProps) => {
     const [otherTags, setOtherTags]: [TagType[], (tag: TagType[]) => void] = useState<TagType[]>([]);
 
     const [loading, setLoading] = useState(false);
-    const user = getCurrenUser();
+    const user = useMemo(() => { return getCurrenUser() }, []);
 
     useEffect(() => {
         async function getTags() {
@@ -37,7 +37,7 @@ export const SFTags = ({ id }: TagProps) => {
             setLoading(false);
         }
         getTags();
-    }, [id])
+    }, [id, user])
 
     const renderTags = (tags: TagType[]) => {
         return tags.map((tag: TagType) => {

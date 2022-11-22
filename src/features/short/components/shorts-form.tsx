@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useForm, Controller, SubmitHandler, FieldValues } from 'react-hook-form';
 
 import { Dropdown } from 'primereact/dropdown';
@@ -47,7 +47,7 @@ interface ShortFormProps {
 }
 
 export const ShortsForm = (props: ShortFormProps) => {
-    const user = getCurrenUser();
+    const user = useMemo(() => { return getCurrenUser() }, []);
     const convToForm = (short: Short): ShortForm => ({
         id: short.id,
         title: short.title,
@@ -98,7 +98,8 @@ export const ShortsForm = (props: ShortFormProps) => {
         }
         getTypes();
         getGenres();
-    }, [])
+    }, [user])
+
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         const retval: ShortFormSubmit = { data, changed: dirtyFields }
         setMessage("");

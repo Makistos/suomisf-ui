@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
 import { Work } from '../types';
 import { getApiContent } from '../../../services/user-service';
@@ -13,7 +13,7 @@ const baseURL = 'works/';
 
 export const WorksPage = ({ letter }: WorksProp) => {
     const [works, setWorks] = useState<Work[]>([]);
-    const user = getCurrenUser();
+    const user = useMemo(() => { return getCurrenUser() }, []);
 
     useEffect(() => {
         async function getWorks() {
@@ -26,7 +26,7 @@ export const WorksPage = ({ letter }: WorksProp) => {
             }
         }
         getWorks();
-    }, [letter])
+    }, [letter, user])
 
     return (
         <div>

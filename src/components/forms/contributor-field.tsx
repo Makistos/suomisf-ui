@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Controller, useFieldArray, Control } from 'react-hook-form';
 
 import { AutoComplete } from "primereact/autocomplete";
@@ -26,7 +26,7 @@ interface ContributorFieldProps {
 type IContributorField = Pick<Contributor, "id" | "name">;
 
 export const ContributorField = ({ id, control, values }: ContributorFieldProps) => {
-    const user = getCurrenUser();
+    const user = useMemo(() => { return getCurrenUser() }, []);
     const [filteredPeople, setFilteredPeople] = useState<any>(null);
     const [filteredAliases, setFilteredAliases] = useState<any>(null);
     const [roleList, setRoleList]: [IContributorField[],
@@ -60,7 +60,7 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
             setRoleList(response.data);
         }
         getRoles();
-    }, [])
+    }, [user])
 
     async function filterPeople(event: any) {
         const url =
@@ -73,7 +73,6 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
     }
 
     async function filterAliases(event: any) {
-        const url = "filter/alias/";
         return null;
     }
     const contributionSort = (a: Contribution, b: Contribution) => {

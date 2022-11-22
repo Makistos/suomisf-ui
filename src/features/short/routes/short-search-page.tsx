@@ -8,7 +8,6 @@ import { Button } from 'primereact/button';
 import { ProgressSpinner } from "primereact/progressspinner";
 import _ from "lodash";
 
-import { getCurrenUser } from "../../../services/auth-service";
 import { ShortsList } from '../components/shorts-list';
 import { API_URL } from "../../../systemProps";
 import { Short } from "../types";
@@ -31,14 +30,12 @@ const defaultValues: FormData = {
 }
 
 export const ShortSearchPage = () => {
-    const user = getCurrenUser();
     const { control, handleSubmit, formState: { errors } } = useForm<FormData>(
         { defaultValues: defaultValues }
     );
     const [loading, setLoading] = useState(false);
     const [shorts, setShorts]: [Short[], (shorts: Short[]) => void] = useState<Short[]>([]);
-    //const [shorts, setShorts]: [any, (shorts: any[]) => void] = useState<any[]>([]);
-    // const toast: Toast | null = useRef<Toast | null>(null);
+    //const user = useMemo(() => { return getCurrenUser() }, []);
 
     const onSubmit: SubmitHandler<FormData> = data => {
         function search() {
@@ -46,10 +43,6 @@ export const ShortSearchPage = () => {
             if (Object.keys(data).length === 0 &&
                 _.pickBy(data, function (param) { return data[param].length > 0 }).length === 0) {
                 return;
-                // if (toast !== null) {
-                //     toast.show({ severity: 'warn', life: 3000 });
-                //     return;
-                // }
             }
             try {
                 axios.post(API_URL + 'searchshorts', data)

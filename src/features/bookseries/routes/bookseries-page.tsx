@@ -29,7 +29,7 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
 
     useEffect(() => {
         async function getBookseries() {
-            let url = baseURL + id;
+            let url = baseURL + thisId;
             try {
                 const response = await getApiContent(url, user);
                 setBookseries(response.data);

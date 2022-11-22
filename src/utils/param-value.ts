@@ -13,6 +13,6 @@ export const selectId = (params: any, propsId: string | null): string => {
     } else if (propsId !== undefined && propsId !== null) {
         return propsId;
     } else {
-        throw ("No id given for");
+        throw new Error("No id given for");
     }
 }

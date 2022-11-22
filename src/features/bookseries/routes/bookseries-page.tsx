@@ -38,7 +38,7 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
             }
         }
         getBookseries();
-    }, [params.bookseriesId, user])
+    }, [params.bookseriesId, id, user])
 
     if (!bookseries) return null;
 

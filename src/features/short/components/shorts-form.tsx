@@ -138,6 +138,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                         {...register("title")}
                                         className={classNames({ 'p-invalid': fieldState.error },
                                             "w-full")}
+                                        disabled={!isAdmin(user)}
                                     />
                                 )}
                             />
@@ -153,6 +154,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                         {...register("orig_title")}
                                         className={classNames({ 'p-invalid': fieldState.error },
                                             "w-full")}
+                                        disabled={!isAdmin(user)}
                                     />
                                 )}
                             />
@@ -166,6 +168,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                     <InputText id={field.name} {...field}
                                         {...register("pubyear")}
                                         keyfilter="pint"
+                                        disabled={!isAdmin(user)}
                                     />
                                 )}
                             />
@@ -185,6 +188,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                             { "p-invalid": fieldState.error }, "w-full"
                                         )}
                                         tooltip="Tyyppi"
+                                        disabled={!isAdmin(user)}
                                     />
                                 )}
                             />
@@ -234,6 +238,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                         )}
                                         showClear
                                         showSelectAll={false}
+                                        disabled={!isAdmin(user)}
                                     />
                                 )}
                             />
@@ -259,6 +264,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                             "w-full"
                                         )}
                                         inputClassName="w-full"
+                                        disabled={!isAdmin(user)}
                                     />
                                 )}
                             />

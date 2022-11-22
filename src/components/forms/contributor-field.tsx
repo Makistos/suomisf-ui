@@ -13,6 +13,7 @@ import { getApiContent } from "../../services/user-service";
 import { getCurrenUser } from "../../services/auth-service";
 import { pickProperties } from "./forms";
 import { Contribution } from "../../types/contribution";
+import { isAdmin } from '../../features/user';
 
 interface ContributorFieldProps {
     id: string,
@@ -111,6 +112,7 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
                                     "w-full"
                                 )}
                                 inputClassName="w-full"
+                                disabled={!isAdmin(user)}
                             />
                         )}
                     />
@@ -129,6 +131,7 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
                                 )}
                                 placeholder="Rooli"
                                 tooltip="Rooli"
+                                disabled={!isAdmin(user)}
                             />
                         )}
                     />
@@ -147,6 +150,7 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
                                     { "p-invalid": fieldState.error },
                                     "w-full"
                                 )}
+                                disabled={!isAdmin(user)}
                             />
                         )}
                     />

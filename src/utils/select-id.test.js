@@ -1,4 +1,4 @@
-import { selectId } from "./param-value";
+import { selectId } from "./select-id";
 
 const params = {
   itemId: "0",

@@ -46,7 +46,7 @@ ReactDOM.render(
         <Route path="bookseries/:itemId" element={<BookseriesPage id={null} />} />
         <Route path="pubseries" element={<PubseriesListPage />} />
         <Route path="pubseries/:itemId" element={<PubseriesPage id={null} />} />
-        <Route path="publishers/:publisherId" element={<PublisherPage id={null} />} />
+        <Route path="publishers/:itemId" element={<PublisherPage id={null} />} />
         <Route path="publishers" element={<PublisherListPage />} />
         <Route path="tags" element={<SFTags />} />
         <Route path="tags/:tagid" element={<SFTag />} />

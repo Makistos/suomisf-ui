@@ -17,6 +17,7 @@ import { ShortsList } from "../../short";
 import { Work } from "../types";
 import { WorkDetails } from "../components/work-details";
 import { isAnthology } from "../utils/is-anthology";
+import { selectId } from "../../../utils";
 
 export interface WorkProps {
     work: Work,
@@ -45,13 +46,12 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         });
     };
 
-    if (params !== undefined && params.publisherId !== undefined) {
-        workId = params.publisherId.toString();
-    } else if (id !== null) {
-        workId = id;
-    } else {
-        console.log("No id given for Publisher.")
+    try {
+        workId = selectId(params, id);
+    } catch (e) {
+        console.log(`${e} bookseries`);
     }
+
 
     const ConfirmEdit = () => {
         confirmDialog({

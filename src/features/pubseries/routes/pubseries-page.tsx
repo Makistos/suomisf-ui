@@ -10,7 +10,6 @@ import { selectId } from "../../../utils";
 import { EditionList } from "../../edition";
 import { Pubseries } from "../types";
 import { User } from "../../user";
-import { AxiosResponse } from "axios";
 
 const baseURL = 'pubseries/';
 

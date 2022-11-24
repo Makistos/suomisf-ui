@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 import { locale, addLocale } from 'primereact/api';
 import 'primereact/resources/primereact.min.css'
@@ -69,6 +70,7 @@ function App() {
           <Outlet />
         </div>
       </div >
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }

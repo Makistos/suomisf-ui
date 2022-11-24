@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Link } from 'react-router-dom';
+import { useQuery } from "react-query";
 
 import { DataTable } from "primereact/datatable";
 import { ProgressSpinner } from "primereact/progressspinner";
@@ -15,23 +16,41 @@ export const PubseriesListPage = () => {
      */
     const user = getCurrenUser();
 
-    const [pubseriesList, setPubseriesList]: [Pubseries[] | null,
-        (pubseriesList: Pubseries[]) => void] = useState<Pubseries[] | null>(null);
+    // const [pubseriesList, setPubseriesList]: [Pubseries[] | null,
+    //     (pubseriesList: Pubseries[]) => void] = useState<Pubseries[] | null>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        async function getPubseriesList() {
-            const url = 'pubseries';
-            try {
-                const response = await getApiContent(url, user);
-                setPubseriesList(response.data);
-                setLoading(false);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        getPubseriesList();
-    }, [user])
+    const fetchPubseriesList = async () => {
+        const url = 'pubseries';
+        const data = await getApiContent(url, user).then(response => {
+            setLoading(false);
+            return response.data;
+        })
+            .catch(error => console.log(error));
+        return data;
+    }
+    const pubseriesList =
+        useQuery("pubserieslist", () => fetchPubseriesList(),
+            {
+                staleTime: Infinity,
+                cacheTime: Infinity,
+                //onSuccess: () => { console.log("updated"); setLoading(false); },
+                //onSettled: () => { console.log("settled"); setLoading(false); }
+            }).data;
+
+    // useEffect(() => {
+    //     async function getPubseriesList() {
+    //         const url = 'pubseries';
+    //         try {
+    //             const response = await getApiContent(url, user);
+    //             setPubseriesList(response.data);
+    //             setLoading(false);
+    //         } catch (e) {
+    //             console.error(e);
+    //         }
+    //     }
+    //     getPubseriesList();
+    // }, [user])
 
     const nameTemplate = (rowData: Pubseries) => {
         return (
@@ -54,7 +73,7 @@ export const PubseriesListPage = () => {
     return (
         <main className="all-content">
             {
-                loading ? (
+                false ? (
                     <div className="progressbar">
                         <ProgressSpinner />
                     </div>

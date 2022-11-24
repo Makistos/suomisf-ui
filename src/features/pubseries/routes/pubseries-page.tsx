@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "react-query";
 
+import { useQuery } from "@tanstack/react-query";
 import { ProgressSpinner } from "primereact/progressspinner";
 
 import { getCurrenUser } from "../../../services/auth-service";
@@ -18,10 +18,6 @@ interface PubseriesPageProps {
 }
 
 let thisId = "";
-
-type QueryParams = {
-    queryKey: string
-}
 
 export const PubseriesPage = ({ id }: PubseriesPageProps) => {
     const params = useParams();
@@ -43,33 +39,14 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
         return response;
     }
 
-    //const [pubseries, setPubseries]: [Pubseries | null, (pubseries: Pubseries) => void] = useState<Pubseries | null>(null);
-    const data = useQuery("pubseries", () => fetchPubseries(thisId, user)).data;
-    //const data = useMemo(() => queryInfo.data, [params, id, queryInfo.data]);
-
-    // try {
-    //     thisId = selectId(params, id);
-    // } catch (e) {
-    //     console.log(`${e} pubseries.`);
-    // }
-
-    // useEffect(() => {
-    //     async function getBookseries() {
-    //         let url = baseURL + thisId;
-    //         try {
-    //             const response = await getApiContent(url, user);
-    //             setPubseries(response.data);
-    //             setLoading(false);
-    //         } catch (e) {
-    //             console.error(e);
-    //         }
-    //     }
-    //     getBookseries();
-    // }, [params.itemId, id, user])
+    const { isLoading, data } = useQuery({
+        queryKey: ["pubseries", thisId],
+        queryFn: () => fetchPubseries(thisId, user)
+    });
 
     return (
         <main className="all-content">
-            {loading ? (
+            {isLoading ? (
                 <div className="progressbar">
                     <ProgressSpinner />
                 </div>

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 import { Pubseries } from "../types";
 import { getCurrenUser } from "../../../services/auth-service";
@@ -49,11 +50,10 @@ export const PubseriesListPage = () => {
     }
     return (
         <main className="all-content">
-            {
-                data &&
-                <div>
-                    <h1 className="title">Kustantajien sarjat</h1>
-                    <p>Sarjoja yhteensä: {data.length}</p>
+            <div>
+                <h1 className="title">Kustantajien sarjat</h1>
+                <>
+                    <p>Sarjoja yhteensä: {data?.length}</p>
                     <DataTable value={data}
                         size="small"
                         dataKey="id"
@@ -71,8 +71,8 @@ export const PubseriesListPage = () => {
                             filter sortable
                             dataType="numeric" />
                     </DataTable>
-                </div>
-            }
+                </>
+            </div>
         </main>
     )
 }

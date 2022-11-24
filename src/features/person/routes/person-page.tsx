@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useParams } from "react-router-dom";
 
+import { useQuery } from '@tanstack/react-query';
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Fieldset } from 'primereact/fieldset';
 import _ from "lodash";
@@ -16,6 +17,8 @@ import { TagGroup } from '../../tag';
 import { LinkPanel } from "../../../components/link-panel";
 import { AwardPanel, Awarded } from '../../award';
 import { Person } from '../types';
+import { selectId } from '../../../utils';
+import { User } from "../../user";
 
 const baseURL = "people/";
 
@@ -23,35 +26,30 @@ interface PersonPageProps {
     id: string | null;
 }
 
-let personId = "";
+let thisId = "";
 
 export const PersonPage = ({ id }: PersonPageProps) => {
     const params = useParams();
-    const [person, setPerson]: [Person | null, (person: Person) => void] = React.useState<Person | null>(null);
-    const [loading, setLoading] = useState(true);
-    const user = useMemo(() => { return getCurrenUser() }, []);
-
-    if (params !== undefined && params.personId !== undefined) {
-        personId = params.personId;
-    } else if (id !== null) {
-        personId = id;
-    } else {
-        console.log("No id given for Person.")
+    const user = getCurrenUser();
+    try {
+        thisId = selectId(params, id);
+    } catch (e) {
+        console.log(`${e} person`);
+    }
+    const fetchPerson = async (id: string, user: User | null): Promise<Person> => {
+        const url = baseURL + id;
+        const response = await getApiContent(url, user).then(response =>
+            response.data
+        )
+            .catch((error) => console.log(error));
+        console.log(response);
+        return response;
     }
 
-    React.useEffect(() => {
-        async function getPerson() {
-            let url = baseURL + personId;
-            try {
-                const response = await getApiContent(url, user);
-                setPerson(response.data);
-                setLoading(false);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        getPerson();
-    }, [params.personId, user])
+    const { isLoading, data } = useQuery({
+        queryKey: ["person", thisId],
+        queryFn: () => fetchPerson(thisId, user)
+    });
 
     const personDetails = (nationality: Country | null, dob: number | null, dod: number | null) => {
         let retval: string = "";
@@ -75,19 +73,19 @@ export const PersonPage = ({ id }: PersonPageProps) => {
 
 
     const getGenres = () => {
-        if (!person) return [];
-        return person.works.map(work => work.genres).flat();
+        if (!data) return [];
+        return data.works.map(work => work.genres).flat();
     }
     const getTags = () => {
-        if (!person) return [];
-        return person.works.map(work => work.tags).flat();
+        if (!data) return [];
+        return data.works.map(work => work.tags).flat();
     }
 
     const workAwards = () => {
         // Return a list of all awards to works awarded to this person.
         // List is automatically sorted by year in ascending order.
-        if (!person) return [];
-        const retval = person.works
+        if (!data) return [];
+        const retval = data.works
             .filter(work => work.awards && work.awards.length > 0)
             .map(work => work.awards).flat()
             .sort((a: Awarded, b: Awarded) => a.year < b.year ? -1 : 1);
@@ -98,17 +96,21 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         /**
          * Check if person has any non-SF content in database (works, shorts).
          */
-        if (person === null) return false;
+        if (!data) return false;
         let all_genres: Genre[] = [];
         if (what === "all" || what === "works") {
-            all_genres = _.concat(all_genres, person.works.map(work => work.genres))
+            all_genres = _.concat(all_genres, data.works.map(work => work.genres))
         }
         if (what === "all" || what === "stories") {
             all_genres = _.concat(all_genres,
-                ...person.stories.map(story => story.genres),
-                ...person.magazine_stories.map(story => story.genres));
+                ...data.stories.map(story => story.genres),
+                ...data.magazine_stories.map(story => story.genres));
         }
         return _.flatten(all_genres).some(genre => genre.abbr === 'eiSF');
+    }
+
+    const hasBooks = (data: Person) => {
+        return (data.works.length > 0 || data.translations.length > 0 || data.edits.length > 0);
     }
 
     const combineNames = (aliases: Person[], other_names: string) => {
@@ -120,41 +122,41 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     return (
         <main className="all-content" id="person-page">
             {
-                loading ?
+                isLoading ?
                     <div className="progressbar">
                         <ProgressSpinner />
                     </div>
-                    : (person && (
+                    : (data && (
                         <div>
                             <div className="grid justify-content-center">
                                 <div className="grid col-12 mt-5 mb-1">
-                                    {person.alt_name ? (
+                                    {data.alt_name ? (
                                         <div className="grid col-12 p-0 justify-content-center">
                                             <div className="grid col-12 pb-0 pt-5 mb-0 justify-content-center">
-                                                <h1 className="maintitle">{person.alt_name}</h1>
+                                                <h1 className="maintitle">{data.alt_name}</h1>
                                             </div>
-                                            {person.fullname && (
+                                            {data.fullname && (
                                                 <div className="grid col-12 p-0 mt-0 mb-0 justify-content-center">
-                                                    <h2>({person.fullname})</h2>
+                                                    <h2>({data.fullname})</h2>
                                                 </div>
                                             )}
                                         </div>
                                     ) : (
                                         <div className="grid col-12 p-0 mt-0 mb-0 justify-content-center">
-                                            <h1 className="maintitle">{person.fullname}</h1>
+                                            <h1 className="maintitle">{data.fullname}</h1>
                                         </div>
                                     )}
                                 </div>
                                 <div className="grid mt-0 col-12 mb-0 p-0 justify-content-center">
                                     <h2 className="grid">
-                                        {personDetails(person.nationality, person.dob, person.dod)}
+                                        {personDetails(data.nationality, data.dob, data.dod)}
                                     </h2>
                                 </div>
-                                {((person.aliases && person.aliases.length > 0) || (person.other_names && person.other_names.length > 0)) &&
+                                {((data.aliases && data.aliases.length > 0) || (data.other_names && data.other_names.length > 0)) &&
                                     <div className="grid col-12 mt-0 p-2 justify-content-center">
                                         <h3 className="grid mb-5">
                                             <>Myös{' '}
-                                                {combineNames(person.aliases, person.other_names)}
+                                                {combineNames(data.aliases, data.other_names)}
                                                 .</>
                                         </h3>
                                     </div>
@@ -168,27 +170,27 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                             </div>
                             <div className="grid col-12 mb-5 justify-content-center">
                                 <div className="grid col-6 pr-3 justify-content-end">
-                                    <AwardPanel awards={[...person.awarded, ...workAwards()]}></AwardPanel>
+                                    <AwardPanel awards={[...data.awarded, ...workAwards()]}></AwardPanel>
                                 </div>
                                 <div className="grid col-6 pl-3 justify-content-start">
-                                    <LinkPanel links={person.links} />
+                                    <LinkPanel links={data.links} />
                                 </div>
                             </div>
                             <div className="col-12">
-                                {person.works.length > 0 && (
-                                    <ContributorBookControl viewNonSf={false} person={person}
+                                {hasBooks(data) && (
+                                    <ContributorBookControl viewNonSf={false} person={data}
                                         collaborationsLast={true}></ContributorBookControl>
                                 )}
-                                {(person.stories.length > 0 || person.magazine_stories.length > 0) &&
-                                    <ShortsControl key={"sfshorts"} person={person} listPublications what={"sf"}></ShortsControl>
+                                {(data.stories.length > 0 || data.magazine_stories.length > 0) &&
+                                    <ShortsControl key={"sfshorts"} person={data} listPublications what={"sf"}></ShortsControl>
                                 }
                                 {hasNonSf("all") && <Fieldset legend="Ei-SF/Mainstream" toggleable collapsed>
                                     {hasNonSf("works") &&
-                                        <ContributorBookControl viewNonSf={true} person={person}
+                                        <ContributorBookControl viewNonSf={true} person={data}
                                             collaborationsLast={true}></ContributorBookControl>
                                     }
                                     {hasNonSf("stories") &&
-                                        <ShortsControl key={"nonsfshorts"} person={person} listPublications what={"nonsf"}></ShortsControl>
+                                        <ShortsControl key={"nonsfshorts"} person={data} listPublications what={"nonsf"}></ShortsControl>
                                     }
                                 </Fieldset>
                                 }

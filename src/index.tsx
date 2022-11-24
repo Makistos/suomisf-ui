@@ -36,7 +36,7 @@ ReactDOM.render(
         <Route path="bookindex" element={<WorkSearchPage />} />
         <Route path="shortstoryindex" element={<ShortSearchPage />} />
         <Route path="people" element={<PeoplePage />} />
-        <Route path="people/:personId" element={<PersonPage id={null} />} />
+        <Route path="people/:itemId" element={<PersonPage id={null} />} />
         <Route path="magazines" element={<MagazinesPage />} />
         <Route path="magazines/:magazineId" element={<MagazinePage />} />
         <Route path="issues/:issueId" element={<IssuePage id={null} />} />

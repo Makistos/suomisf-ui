@@ -33,7 +33,6 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
         async function getBookseries() {
             let url = baseURL + thisId;
             try {
-                setLoading(true);
                 const response = await getApiContent(url, user);
                 setPubseries(response.data);
                 setLoading(false);
@@ -43,9 +42,6 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
         }
         getBookseries();
     }, [params.itemId, id, user])
-
-    if (!pubseries)
-        return null;
 
     return (
         <main className="all-content">
@@ -58,14 +54,14 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
                 <>
                     <div className="mb-5">
                         <div className="grid col-12 pb-0 justify-content-center">
-                            <h1 className="maintitle">{pubseries.name}</h1>
+                            <h1 className="maintitle">{pubseries?.name}</h1>
                         </div>
                         <div className="grid col-12 justify-content-center">
-                            <h2>({pubseries.publisher.name})</h2>
+                            <h2>({pubseries?.publisher.name})</h2>
                         </div>
                     </div>
                     <div className="grid col-12 p-0 mt-5 justify-content-center">
-                        {pubseries.editions && (
+                        {pubseries?.editions && (
                             <EditionList
                                 editions={pubseries.editions.map(edition => edition)}
                                 sort="author"

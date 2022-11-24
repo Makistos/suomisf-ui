@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
+import { useQuery } from "react-query";
 
 import { ProgressSpinner } from "primereact/progressspinner";
 
@@ -8,6 +9,8 @@ import { getApiContent } from "../../../services/user-service";
 import { selectId } from "../../../utils";
 import { EditionList } from "../../edition";
 import { Pubseries } from "../types";
+import { User } from "../../user";
+import { AxiosResponse } from "axios";
 
 const baseURL = 'pubseries/';
 
@@ -17,31 +20,53 @@ interface PubseriesPageProps {
 
 let thisId = "";
 
+type QueryParams = {
+    queryKey: string
+}
+
 export const PubseriesPage = ({ id }: PubseriesPageProps) => {
     const params = useParams();
-    const user = useMemo(() => { return getCurrenUser() }, []);
+    const user = getCurrenUser();
     const [loading, setLoading] = useState(true);
-    const [pubseries, setPubseries]: [Pubseries | null, (pubseries: Pubseries) => void] = useState<Pubseries | null>(null);
-
     try {
         thisId = selectId(params, id);
     } catch (e) {
-        console.log(`${e} pubseries.`);
+        console.log(`${e} bookseries`);
     }
 
-    useEffect(() => {
-        async function getBookseries() {
-            let url = baseURL + thisId;
-            try {
-                const response = await getApiContent(url, user);
-                setPubseries(response.data);
-                setLoading(false);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        getBookseries();
-    }, [params.itemId, id, user])
+    const fetchPubseries = async (id: string, user: User | null): Promise<Pubseries> => {
+        const url = baseURL + id;
+        const response = await getApiContent(url, user).then(response => {
+            setLoading(false);
+            return response.data;
+        })
+            .catch((error) => console.log(error));
+        return response;
+    }
+
+    //const [pubseries, setPubseries]: [Pubseries | null, (pubseries: Pubseries) => void] = useState<Pubseries | null>(null);
+    const data = useQuery("pubseries", () => fetchPubseries(thisId, user)).data;
+    //const data = useMemo(() => queryInfo.data, [params, id, queryInfo.data]);
+
+    // try {
+    //     thisId = selectId(params, id);
+    // } catch (e) {
+    //     console.log(`${e} pubseries.`);
+    // }
+
+    // useEffect(() => {
+    //     async function getBookseries() {
+    //         let url = baseURL + thisId;
+    //         try {
+    //             const response = await getApiContent(url, user);
+    //             setPubseries(response.data);
+    //             setLoading(false);
+    //         } catch (e) {
+    //             console.error(e);
+    //         }
+    //     }
+    //     getBookseries();
+    // }, [params.itemId, id, user])
 
     return (
         <main className="all-content">
@@ -54,16 +79,16 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
                 <>
                     <div className="mb-5">
                         <div className="grid col-12 pb-0 justify-content-center">
-                            <h1 className="maintitle">{pubseries?.name}</h1>
+                            <h1 className="maintitle">{data?.name}</h1>
                         </div>
                         <div className="grid col-12 justify-content-center">
-                            <h2>({pubseries?.publisher.name})</h2>
+                            <h2>({data?.publisher.name})</h2>
                         </div>
                     </div>
                     <div className="grid col-12 p-0 mt-5 justify-content-center">
-                        {pubseries?.editions && (
+                        {data?.editions && (
                             <EditionList
-                                editions={pubseries.editions.map(edition => edition)}
+                                editions={data.editions.map(edition => edition)}
                                 sort="author"
                             />
                         )}

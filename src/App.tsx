@@ -1,5 +1,6 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { locale, addLocale } from 'primereact/api';
 import 'primereact/resources/primereact.min.css'
@@ -56,15 +57,19 @@ function App() {
 
   locale('fi');
 
+  const queryClient = new QueryClient();
+
   return (
-    <div className="App container grid">
-      <div className="grid col-12 ">
-        <MainMenu />
-      </div>
-      <div className="grid col-12 justify-content-center">
-        <Outlet />
-      </div>
-    </div >
+    <QueryClientProvider client={queryClient}>
+      <div className="App container grid">
+        <div className="grid col-12 ">
+          <MainMenu />
+        </div>
+        <div className="grid col-12 justify-content-center">
+          <Outlet />
+        </div>
+      </div >
+    </QueryClientProvider>
   );
 }
 

@@ -8,6 +8,9 @@ import { Column } from "primereact/column";
 import { Bookseries } from "../types";
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
+import { useQuery } from "@tanstack/react-query";
+import { Work } from "../../work";
+import { array } from "yup";
 
 export const BookseriesListPage = () => {
     /**
@@ -15,23 +18,19 @@ export const BookseriesListPage = () => {
      */
     const user = getCurrenUser();
 
-    const [bookseriesList, setBookseriesList]: [Bookseries[] | null,
-        (bookseriesList: Bookseries[]) => void] = useState<Bookseries[] | null>(null);
-    const [loading, setLoading] = useState(true);
+    const fetchBookseries = async (): Promise<Bookseries[]> => {
+        const url = 'bookseries';
+        const data = await getApiContent(url, user).then(response => {
+            return response.data;
+        })
+        return data;
+    }
 
-    useEffect(() => {
-        async function getBookseriesList() {
-            const url = 'bookseries';
-            try {
-                const response = await getApiContent(url, user);
-                setBookseriesList(response.data);
-                setLoading(false);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        getBookseriesList();
-    }, [user])
+    const { isLoading, data } =
+        useQuery({
+            queryKey: ["bookserieslist"],
+            queryFn: () => fetchBookseries()
+        });
 
     const nameTemplate = (rowData: Bookseries) => {
         return (
@@ -47,38 +46,41 @@ export const BookseriesListPage = () => {
         return 0;
     }
 
+    const authorTemplate = (rowData: Bookseries) => {
+        const authors = rowData.works.map(work => work.author_str);
+        return authors
+            .filter((author, index) => authors.indexOf(author) === index)
+            .join(" / ")
+    }
+
     return (
         <main className="all-content">
             {
-                loading ? (
-                    <div className="progressbar">
-                        <ProgressSpinner />
-                    </div>
-                )
-                    : (
-                        bookseriesList &&
-                        <div>
-                            <h1 className="title">Kirjasarjat</h1>
-                            <p>Kirjasarjoja yhteensä: {bookseriesList?.length}</p>
-                            <DataTable value={bookseriesList}
-                                size="small"
-                                dataKey="id"
-                                emptyMessage="Kirjasarjoja ei löytynyt"
-                                loading={loading}
-                                sortField="name"
-                                sortOrder={1}
-                            >
-                                <Column field="name" header="Nimi"
-                                    body={nameTemplate}
-                                    filter sortable />
-                                <Column field="orig_name" header="Alkup. nimi" filter sortable />
-                                <Column field="works.length" header="Teoksia"
-                                    body={workCountTemplate} dataType="numeric"
-                                    sortable filter
-                                />
-                            </DataTable>
-                        </div>
-                    )
+                <div>
+                    <h1 className="title">Kirjasarjat</h1>
+                    <p>Kirjasarjoja yhteensä: {data?.length}</p>
+                    <DataTable value={data}
+                        size="small"
+                        dataKey="id"
+                        emptyMessage="Kirjasarjoja ei löytynyt"
+                        loading={isLoading}
+                        sortField="name"
+                        sortOrder={1}
+                    >
+                        <Column field="name" header="Nimi"
+                            body={nameTemplate}
+                            filter sortable />
+                        <Column field="orig_name" header="Alkup. nimi" filter sortable />
+                        <Column field="authors" header="Kirjoittaja(t)"
+                            body={authorTemplate}
+                            sortable
+                        />
+                        <Column field="works.length" header="Teoksia"
+                            body={workCountTemplate} dataType="numeric"
+                            sortable filter
+                        />
+                    </DataTable>
+                </div>
             }
         </main>
     )

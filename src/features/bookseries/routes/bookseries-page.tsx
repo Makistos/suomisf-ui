@@ -1,11 +1,15 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
+
+import { useQuery } from "@tanstack/react-query";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
 import { WorkList } from "../../work";
 import { Bookseries } from "../types";
 import { selectId } from "../../../utils";
+import { User } from "../../user";
 
 const baseURL = 'bookseries/';
 
@@ -17,9 +21,7 @@ let thisId = "";
 
 export const BookseriesPage = ({ id }: BookseriesPageProps) => {
     const params = useParams();
-    const user = useMemo(() => { return getCurrenUser() }, []);
-
-    const [bookseries, setBookseries]: [Bookseries | null, (bookseries: Bookseries) => void] = useState<Bookseries | null>(null);
+    const user = getCurrenUser();
 
     try {
         thisId = selectId(params, id);
@@ -27,36 +29,46 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
         console.log(`${e} bookseries.`);
     }
 
-    useEffect(() => {
-        async function getBookseries() {
-            let url = baseURL + thisId;
-            try {
-                const response = await getApiContent(url, user);
-                setBookseries(response.data);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        getBookseries();
-    }, [params.itemId, id, user])
+    const fetchBookseries = async (id: string, user: User | null): Promise<Bookseries> => {
+        const url = baseURL + id;
+        const data = await getApiContent(url, user).then(response =>
+            response.data
+        )
+            .catch((error) => console.log(error));
+        return data;
+    }
 
-    if (!bookseries) return null;
+    const { isLoading, data } = useQuery({
+        queryKey: ["bookseries", thisId],
+        queryFn: () => fetchBookseries(thisId, user)
+    });
 
     return (
         <main className="all-content">
-            <div className="mb-5">
-                <div className="grid col-12 mb-1 justify-content-center">
-                    <h1 className="maintitle">{bookseries.name}</h1>
+            {isLoading ? (
+                <div className="progressbar">
+                    <ProgressSpinner />
                 </div>
-                {bookseries.orig_name && (
-                    <div className="grid col-12 mt-0 justify-content-center">
-                        <h2>({bookseries.orig_name})</h2>
+
+            ) : (
+                <>
+                    <div className="mb-5">
+                        <div className="grid col-12 mb-1 justify-content-center">
+                            <h1 className="maintitle">{data?.name}</h1>
+                        </div>
+                        {data?.orig_name && (
+                            <div className="grid col-12 mt-0 justify-content-center">
+                                <h2>({data?.orig_name})</h2>
+                            </div>
+                        )}
                     </div>
-                )}
-            </div>
-            <div className="mt-5">
-                <WorkList works={bookseries.works} />
-            </div>
+                    {data &&
+                        <div className="mt-5">
+                            <WorkList works={data.works} />
+                        </div>
+                    }
+                </>
+            )}
         </main>
     )
 }

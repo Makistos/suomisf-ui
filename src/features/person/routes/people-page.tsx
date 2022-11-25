@@ -18,7 +18,6 @@ export const PeoplePage = () => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [people, setPeople]: [Person[], (people: Person[]) => void] = React.useState<Person[]>([]);
     const [countries, setCountries]: [Country[], (countries: Country[]) => void] = React.useState<Country[]>([]);
-    //const [roles, setRoles]: [string[], (roles: string[]) => void] = React.useState<string[]>([]);
     const [totalRecords, setTotalRecords] = React.useState(0);
     const [lazyParams, setLazyParams]: [DataTablePFSEvent, (lazyParams: DataTablePFSEvent) => void] = React.useState<DataTablePFSEvent>({
         first: 0,

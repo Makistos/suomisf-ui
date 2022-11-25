@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
+import { useQuery } from "@tanstack/react-query";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
@@ -19,6 +20,7 @@ import { Country } from "../../../types/country";
 import { BookType } from "../../../types/book-type";
 import { API_URL } from "../../../systemProps";
 import { WorkList } from "../components/work-list";
+import { User } from "../../user";
 
 type FormData = {
     [index: string]: any,
@@ -39,10 +41,10 @@ export const WorkSearchPage = () => {
     const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
     const [loading, setLoading] = useState(false);
     const [works, setWorks]: [any, (books: any[]) => void] = useState<any>(null);
-    const [genres, setGenres]: [Genre[], (genres: Genre[]) => void] = useState<Genre[]>([]);
-    const [nationalities, setNationalities]: [Country[], (nationalities: Country[]) => void] = useState<Country[]>([]);
-    const [bookTypes, setBookTypes]: [BookType[], (bookTypes: BookType[]) => void] = useState<BookType[]>([]);
-    const [initials, setInitials]: [string[], (initialis: string[]) => void] = useState<string[]>([]);
+    //const [genres, setGenres]: [Genre[], (genres: Genre[]) => void] = useState<Genre[]>([]);
+    //const [nationalities, setNationalities]: [Country[], (nationalities: Country[]) => void] = useState<Country[]>([]);
+    //const [bookTypes, setBookTypes]: [BookType[], (bookTypes: BookType[]) => void] = useState<BookType[]>([]);
+    //const [initials, setInitials]: [string[], (initialis: string[]) => void] = useState<string[]>([]);
     const [initial, setInitial] = useState("");
 
     const onSubmit: SubmitHandler<FormData> = data => {
@@ -65,50 +67,37 @@ export const WorkSearchPage = () => {
         setInitial("");
     }
 
-    useEffect(() => {
-        async function getGenres() {
-            try {
-                const response = await getApiContent('genres', user);
-                setGenres(response.data);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        async function getNationalities() {
-            try {
-                const response = await getApiContent('countries', user);
-                setNationalities(response.data);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        async function getBookTypes() {
-            try {
-                const response = await getApiContent('worktypes', user);
-                setBookTypes(response.data);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        async function getInitials() {
-            const data: Record<string, string> = {};
-            data['target'] = 'works';
-            try {
-                const response = await getApiContent('firstlettervector/works', user);
-                const data: Record<string, number> = response.data;
-                if (data) {
-                    setInitials(Object.keys(data));
-                }
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        getGenres();
-        getNationalities();
-        getBookTypes();
-        getInitials();
+    async function getOptions<T>(endpoint: string, user: User | null): Promise<T> {
+        const data = await getApiContent(endpoint, user)
+            .then(response => response.data)
+            .catch((error) => console.log(error));
+        return data;
+    }
 
-    }, [user])
+    const genres = useQuery({
+        queryKey: ["genres"],
+        queryFn: () => getOptions<Genre[]>('genres', user)
+    })
+    const nationalities = useQuery({
+        queryKey: ["nationalities"],
+        queryFn: () => getOptions<Country[]>('countries', user)
+    });
+    const worktypes = useQuery({
+        queryKey: ["worktypes"],
+        queryFn: () => getOptions<BookType[]>('worktypes', user)
+    })
+
+    const fetchInitials = async (user: User | null): Promise<string[]> => {
+        const data = await getApiContent('firstlettervector/works', user)
+            .then(response => response.data)
+            .catch((error) => error.log(error));
+        return Object.keys(data);
+    }
+
+    const initials = useQuery({
+        queryKey: ["initials"],
+        queryFn: () => fetchInitials(user)
+    })
 
     const genreOptionTemplate = (option: any) => {
         return (
@@ -139,8 +128,8 @@ export const WorkSearchPage = () => {
             <div className="grid  col-12 mt-5 justify-content-center">
                 <h1 className="text-center">Kirjatietokanta</h1>
             </div>
-            <div className="grid mb-5 justify-content-center">{initials && initials.length > 0 &&
-                initials.map(letter => (
+            <div className="grid mb-5 justify-content-center">{initials && initials.data && initials.data.length > 0 &&
+                initials?.data?.map(letter => (
                     <Button label={letter} key={letter} onClick={() => worksByAuthor(letter)}
                         className={letter === initial ? "m-0 p-0 initialsbutton" : "m-0 p-0 p-button-link initialsbutton"} />
                 ))
@@ -230,7 +219,7 @@ export const WorkSearchPage = () => {
                                 <div className="field grid md:col-4 sm:col-12 pr-3">
                                     <Controller name="genre" control={control}
                                         render={({ field, fieldState }) => (
-                                            <Dropdown options={genres} placeholder="Genret" className="w-full"
+                                            <Dropdown options={genres.data} placeholder="Genret" className="w-full"
                                                 id={field.name} {...field} value={field.value}
                                                 optionLabel="name" optionValue="id" filter showClear
                                                 itemTemplate={genreOptionTemplate}
@@ -240,7 +229,7 @@ export const WorkSearchPage = () => {
                                 <div className="field grid md:col-4 sm:col-12 pr-3">
                                     <Controller name="nationality" control={control}
                                         render={({ field, fieldState }) => (
-                                            <Dropdown options={nationalities} placeholder="Kansallisuus" className="w-full"
+                                            <Dropdown options={nationalities.data} placeholder="Kansallisuus" className="w-full"
                                                 id={field.name} {...field} value={field.value}
                                                 optionLabel="name" optionValue="id" filter showClear
                                                 onChange={(e) => field.onChange(e.value)} />
@@ -249,7 +238,7 @@ export const WorkSearchPage = () => {
                                 <div className="field grid md:col-4 sm:col-12">
                                     <Controller name="type" control={control}
                                         render={({ field, fieldState }) => (
-                                            <Dropdown options={bookTypes} placeholder="Tyyppi" className="w-full"
+                                            <Dropdown options={worktypes.data} placeholder="Tyyppi" className="w-full"
                                                 id={field.name} {...field} value={field.value} showClear
                                                 optionLabel="name" optionValue="id"
                                                 onChange={(e) => field.onChange(e.value)} />

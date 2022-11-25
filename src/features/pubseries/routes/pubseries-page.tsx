@@ -22,7 +22,6 @@ let thisId = "";
 export const PubseriesPage = ({ id }: PubseriesPageProps) => {
     const params = useParams();
     const user = getCurrenUser();
-    const [loading, setLoading] = useState(true);
     try {
         thisId = selectId(params, id);
     } catch (e) {
@@ -32,7 +31,6 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
     const fetchPubseries = async (id: string, user: User | null): Promise<Pubseries> => {
         const url = baseURL + id;
         const response = await getApiContent(url, user).then(response => {
-            setLoading(false);
             return response.data;
         })
             .catch((error) => console.log(error));

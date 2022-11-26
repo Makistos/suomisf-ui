@@ -19,8 +19,10 @@ export const PublisherListPage = () => {
 
     const fetchPublishers = async () => {
         let publisherList: Publisher[] = [];
-        publisherList = await getApiContent(baseURL, user).then(resp =>
-            resp.data)
+        publisherList = await getApiContent(baseURL, user).then(resp => {
+            console.log(resp.data);
+            return resp.data;
+        })
             .catch((error) => console.log(error));
 
         publisherList.map(publisher => {
@@ -36,18 +38,18 @@ export const PublisherListPage = () => {
                         return (curr.pubyear > prev.pubyear ? curr : prev);
                     });
                 publisher.edition_newest = newest.pubyear;
-                let images: Edition[] = [];
-                if (publisher.editions) {
-                    images = publisher.editions.filter(edition => edition.images && edition.images.length > 0)
-                }
-                if (images !== null) {
-                    publisher.image_count = images.length;
-                } else {
-                    publisher.image_count = 0;
-                }
+                // let images: Edition[] = [];
+                // if (publisher.editions) {
+                //     images = publisher.editions.filter(edition => edition.images && edition.images.length > 0)
+                // }
+                // if (images !== null) {
+                //     publisher.image_count = images.length;
+                // } else {
+                //     publisher.image_count = 0;
+                // }
             } else {
                 publisher.edition_count = 0;
-                publisher.image_count = 0;
+                // publisher.image_count = 0;
             }
             return true;
         })
@@ -81,12 +83,12 @@ export const PublisherListPage = () => {
         return null;
     }
 
-    const imageCountPercentageTemplate = (rowData: Publisher) => {
-        if (rowData.editions.length > 0 && rowData.image_count) {
-            return Math.round(rowData.image_count / rowData.editions.length * 100);
-        }
-        return 0;
-    }
+    // const imageCountPercentageTemplate = (rowData: Publisher) => {
+    //     if (rowData.editions.length > 0 && rowData.image_count) {
+    //         return Math.round(rowData.image_count / rowData.editions.length * 100);
+    //     }
+    //     return 0;
+    // }
 
     return (
         <main className="all-content">
@@ -120,7 +122,7 @@ export const PublisherListPage = () => {
                             dataType="numeric"
                             filter sortable>
                         </Column>
-                        <Column field="image_count"
+                        {/*<Column field="image_count"
                             header="Kansikuvia"
                             dataType="numeric"
                             filter sortable>
@@ -130,7 +132,7 @@ export const PublisherListPage = () => {
                             header="Kansikuvia%"
                             dataType="numeric"
                         >
-                        </Column>
+            </Column> */}
 
                     </DataTable>
                 </div>

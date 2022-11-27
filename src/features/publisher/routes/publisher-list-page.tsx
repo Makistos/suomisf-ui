@@ -20,7 +20,7 @@ export const PublisherListPage = () => {
     const fetchPublishers = async () => {
         let publisherList: Publisher[] = [];
         publisherList = await getApiContent(baseURL, user).then(resp => {
-            console.log(resp.data);
+            //console.log(resp.data);
             return resp.data;
         })
             .catch((error) => console.log(error));

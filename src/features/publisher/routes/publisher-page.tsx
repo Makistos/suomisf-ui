@@ -34,8 +34,10 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
 
     const fetchPublisher = async (id: string, user: User | null): Promise<Publisher> => {
         const url = baseURL + id;
-        const data = await getApiContent(url, user).then(response =>
-            response.data
+        const data = await getApiContent(url, user).then(response => {
+            console.log(response.data);
+            return response.data;
+        }
         )
             .catch((error) => console.log(error));
         return data;
@@ -62,7 +64,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
                                 </div>
                                 {data.name && data.name !== data.fullname &&
                                     <div className="grid col-12 p-0 mt-0 justify-content-center">
-                                        <h2>({data.name})</h2>
+                                        <h2 data-testid="short-name">({data.name})</h2>
                                     </div>
                                 }
                             </div>

@@ -1,19 +1,19 @@
 import React from "react";
-import { screen, waitFor } from "@testing-library/react";
+import { Router } from "react-router-dom";
+
+import { createMemoryHistory } from "history";
 
 import { WorkPage } from "../../work";
-import { renderWithRouter } from "../../../testing";
+import { renderWithClient } from "../../../testing";
 
-jest.setTimeout(10000);
 describe("PublisherPage", () => {
   it("renders PublisherPage", async () => {
-    renderWithRouter(<WorkPage id={1} />);
-    await waitFor(
-      () =>
-        expect(screen.getByText(/Kivineitsyt/i).textContent).toMatch(
-          /Kivineitsyt/
-        ),
-      { timeout: 5000 }
+    const history = createMemoryHistory();
+    const result = renderWithClient(
+      <Router navigator={history} location="/">
+        <WorkPage id={1} />
+      </Router>
     );
+    expect(await result.findByText(/Kivineitsyt/)).toBeInTheDocument();
   });
 });

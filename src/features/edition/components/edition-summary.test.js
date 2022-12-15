@@ -1,10 +1,20 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { Router } from "react-router-dom";
+
+import { screen } from "@testing-library/react";
+import { createMemoryHistory } from "history";
+
 import { EditionSummary } from "./edition-summary";
+import { renderWithClient, singleEdition } from "../../../testing";
 
-import { renderWithRouter, singleEdition } from "../../../testing";
-
-it("renders valid short story", () => {
-  renderWithRouter(<EditionSummary edition={singleEdition} />);
-  expect(screen.getByText(/Kivineitsyt/)).toBeInTheDocument();
+describe("EditionSummary", () => {
+  it("renders valid short story", async () => {
+    const history = createMemoryHistory();
+    renderWithClient(
+      <Router navigator={history} location="/">
+        <EditionSummary edition={singleEdition} />
+      </Router>
+    );
+    expect(await screen.getByText(/Kivineitsyt/)).toBeInTheDocument();
+  });
 });

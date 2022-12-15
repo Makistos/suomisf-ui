@@ -13,7 +13,7 @@ export const EditionSummary = ({ edition, person, showPerson, showVersion }: Edi
     }
     return (
         <div>
-            {(showPerson || (person && person === edition.work[0].author_str)) && <b>{edition.work[0].author_str}: </b>}
+            {edition.work[0] && (showPerson || (person && person === edition.work[0].author_str)) && <b>{edition.work[0].author_str}: </b>}
             <Link to={`/works/${edition.work[0].id}`}>
                 {edition.title}</Link>
             {edition.work[0].title !== edition.work[0].orig_title && (

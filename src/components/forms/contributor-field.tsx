@@ -10,36 +10,61 @@ import { Dropdown } from "primereact/dropdown";
 import { Person } from "../../features/person";
 import { Contributor } from "../../types/contributor";
 import { getApiContent } from "../../services/user-service";
-import { getCurrenUser } from "../../services/auth-service";
+import { getCurrenUser, register } from "../../services/auth-service";
 import { pickProperties } from "./forms";
 import { Contribution } from "../../types/contribution";
 import { isAdmin } from '../../features/user';
+import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
+import { string } from "yup";
 
 interface ContributorFieldProps {
     id: string,
     control: Control
     register: Function,
-    values: Contribution[]
+    values: Contribution[],
+    disabled: boolean
 }
 
 
-type IContributorField = Pick<Contributor, "id" | "name">;
+type ContributorField = Pick<Contributor, "id" | "name">;
 
-export const ContributorField = ({ id, control, values }: ContributorFieldProps) => {
+export const ContributorField = ({ id, control, values, disabled }: ContributorFieldProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [filteredPeople, setFilteredPeople] = useState<any>(null);
     const [filteredAliases, setFilteredAliases] = useState<any>(null);
-    const [roleList, setRoleList]: [IContributorField[],
-        (roleList: IContributorField[]) => void]
-        = useState<IContributorField[]>([]);
+    const [roleList, setRoleList]: [ContributorField[],
+        (roleList: ContributorField[]) => void]
+        = useState<ContributorField[]>([]);
     const emptyContributor = {
-        description: null,
-        person: { name: '', id: 0 },
+        description: undefined,
+        /*person: {
+            name: '',
+            id: 0,
+            aliases: [],
+            alt_name: '',
+            fullname: '',
+            other_names: '',
+            image_src: '',
+            dob: 0,
+            dod: 0,
+            bio: '',
+            links: [],
+            roles: [],
+            nationality: { id: 0, name: '' },
+            works: [],
+            translations: [],
+            edits: [],
+            articles: [],
+            stories: [],
+            magazine_stories: [],
+            awarded: []
+        },*/
+        person: { id: 0, name: '', real_person: null },
         role: { name: '', id: 0 },
-        real_person: null
+        real_person: undefined
     }
 
-    const fieldArray = useFieldArray({
+    const { fields, append, remove } = useFieldArray({
         control,
         name: "contributors"
     })
@@ -66,7 +91,7 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
         const url =
             "filter/people/" + event.query;
         const response = await getApiContent(url, user);
-        const p = peopleToContribution(response.data);
+        const p = response.data;
         //console.log(p);
         setFilteredPeople(p);
         return p;
@@ -83,10 +108,20 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
         return -1;
     }
 
+    const addEmptyContributor = () => {
+        console.log("Adding");
+        fields.map(field => console.log(field.id))
+        console.log(fields.length);
+        console.log("Added");
+        append(emptyContributor);
+        fields.map(field => console.log(field.id))
+        console.log(fields.length)
+    }
+
     const Contributor = (item: Contribution, index: number) => {
         const fieldName = `contributors.${index}.person`;
         const fieldRole = `contributors.${index}.role`;
-        const fieldDescription = `contributors.${index}.description`;
+        //const fieldDescription = `contributors.${index}.description`;
         const fieldAlias = `contributors.${index}.alias`;
         const keyValue = item.person.id || '0';
         return (
@@ -111,7 +146,7 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
                                     "w-full"
                                 )}
                                 inputClassName="w-full"
-                                disabled={!isAdmin(user)}
+                                disabled={disabled}
                             />
                         )}
                     />
@@ -130,18 +165,17 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
                                 )}
                                 placeholder="Rooli"
                                 tooltip="Rooli"
-                                disabled={!isAdmin(user)}
+                                disabled={disabled}
                             />
                         )}
                     />
                 </div>
                 <div className="field sm:col-12 lg:col-3">
                     <Controller
-                        name={fieldDescription}
+                        name={`contributors.${index}.description` as const}
                         control={control}
                         render={({ field, fieldState }) => (
                             <InputText
-                                id={field.name}
                                 {...field}
                                 tooltip="Kuvaus"
                                 placeholder="Kuvaus"
@@ -149,7 +183,7 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
                                     { "p-invalid": fieldState.error },
                                     "w-full"
                                 )}
-                                disabled={!isAdmin(user)}
+                                disabled={disabled}
                             />
                         )}
                     />
@@ -180,16 +214,17 @@ export const ContributorField = ({ id, control, values }: ContributorFieldProps)
                 </div>
 
                 <div className="field sm:col-12 lg:col-1">
-                    <Button
+                    <Button type="button"
                         className="p-button-rounded p-button-text"
-                        onClick={() => fieldArray.remove(index)}
+                        onClick={() => remove(index)}
                         icon="pi pi-minus"
-                        disabled={index === 0}
+                        disabled={index === 0 || disabled}
                     />
-                    {index === fieldArray.fields.length - 1 && (
-                        <Button className="p-button-rounded p-button-text"
+                    {index === fields.length - 1 && (
+                        <Button type="button" className="p-button-rounded p-button-text"
                             icon="pi pi-plus"
-                            onClick={() => fieldArray.append(emptyContributor)}
+                            onClick={() => addEmptyContributor()}
+                            disabled={disabled}
                         />
                     )}
                 </div>

@@ -11,6 +11,7 @@ import _ from "lodash";
 import { ShortsList } from '../components/shorts-list';
 import { API_URL } from "../../../systemProps";
 import { Short } from "../types";
+import { useQuery } from "@tanstack/react-query";
 
 type FormData = {
     [index: string]: any,
@@ -34,30 +35,38 @@ export const ShortSearchPage = () => {
         { defaultValues: defaultValues }
     );
     const [loading, setLoading] = useState(false);
-    const [shorts, setShorts]: [Short[], (shorts: Short[]) => void] = useState<Short[]>([]);
+    // const [shorts, setShorts]: [Short[], (shorts: Short[]) => void] = useState<Short[]>([]);
+    const [searchParams, setSearchParams]: [FormData | null, (params: FormData) => void] = useState<FormData | null>(null);
+    const [queryEnabled, setQueryEnabled] = useState(false);
+
     //const user = useMemo(() => { return getCurrenUser() }, []);
 
-    const onSubmit: SubmitHandler<FormData> = data => {
-        function search() {
-            // Make sure at least one parameter is given.
-            if (Object.keys(data).length === 0 &&
-                _.pickBy(data, function (param) { return data[param].length > 0 }).length === 0) {
-                return;
-            }
-            try {
-                axios.post(API_URL + 'searchshorts', data)
-                    .then(response => setShorts(response.data));
-            } catch (e) {
-                console.error(e);
-            }
+    const searchShorts = async () => {
+        //let response: Short[] | null = null;
+        if (searchParams === null) return null;
+        if (Object.keys(searchParams).length === 0 &&
+            _.pickBy(searchParams, function (param) { return searchParams[param].length > 0 }).length === 0) {
+            return null;
         }
+        const response = await axios.post(API_URL + 'searchshorts', searchParams)
+            .then(resp => resp.data);
+        console.log(response)
+        return response;
+    }
+
+    const onSubmit: SubmitHandler<FormData> = data => {
         setLoading(true);
         console.log(data);
-        search();
+        setSearchParams(data);
+        setQueryEnabled(true);
         setLoading(false);
     }
 
-
+    const { status, data, fetchStatus } = useQuery({
+        queryKey: ["searchShorts", { params: searchParams }],
+        enabled: queryEnabled,
+        queryFn: () => searchShorts()
+    })
 
     return (
         <main className="all-content">
@@ -121,20 +130,20 @@ export const ShortSearchPage = () => {
                             </span>
                         </div>
                         <Button type="submit" className="w-full justify-content-center"
-                            disabled={loading}
+                            disabled={status === 'loading' && fetchStatus === 'fetching'}
                         >
                             Hae
                         </Button>
                     </form>
                 </div>
                 <div className="w-full">
-                    {loading ? (
+                    {status === 'loading' && fetchStatus === 'fetching' ? (
                         <div className="progressbar">
                             <ProgressSpinner />
                         </div>
                     ) : (
                         <div>
-                            {shorts && <ShortsList shorts={shorts} listPublications groupAuthors anthology />}
+                            {data && <ShortsList shorts={data} listPublications groupAuthors anthology />}
                         </div>
                     )}
                 </div>

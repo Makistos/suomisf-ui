@@ -99,7 +99,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
         <div>
             <Dialog maximizable blockScroll
                 header="Novellin muokkaus" visible={isEditVisible} onHide={() => setEditVisible(false)} >
-                <ShortsForm short={short} />
+                <ShortsForm short={short} onSubmitCallback={setEditVisible} />
             </Dialog>
             {short ? (
                 <div key={short.id}>

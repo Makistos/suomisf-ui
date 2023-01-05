@@ -7,8 +7,11 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { AutoComplete } from 'primereact/autocomplete';
+import { useQueryClient } from '@tanstack/react-query';
 
-import { Short } from "../types";
+import { Short, ShortType } from "../types";
+import { Person } from "../../person";
+import { Genre } from "../../genre";
 import { ContributorField } from '../../../components/forms/contributor-field';
 import { Contribution } from '../../../types/contribution';
 import { KeyValuePair } from '../../../components/forms/forms';
@@ -16,6 +19,8 @@ import { getApiContent, putApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { TagType } from "../../tag";
 import { isAdmin } from '../../user';
+import { useLocation } from 'react-router-dom';
+import { Fieldset } from 'primereact/fieldset';
 
 interface hasIdAndName {
     id: number,
@@ -25,11 +30,11 @@ interface ShortForm {
     id: number | null,
     title: string,
     orig_title: string,
-    language: string | null,
+    lang: string | null,
     pubyear: number | null
-    authors: KeyValuePair[],
-    story_type: number,
-    genres: KeyValuePair[],
+    authors: Person[],
+    type: ShortType | null,
+    genres: Genre[],
     contributors: Contribution[],
     tags: TagType[]
 }
@@ -39,41 +44,40 @@ interface ShortFormSubmit {
     changed: Object
 }
 
-const toKeyValue = <T extends hasIdAndName>(arr: T[]): KeyValuePair[] =>
-    arr.map(item => ({ id: item.id, value: item.name }));
-
 interface ShortFormProps {
-    short: Short
+    short: Short,
+    onSubmitCallback: ((state: boolean) => void)
 }
 
 export const ShortsForm = (props: ShortFormProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
-    const convToForm = (short: Short): ShortForm => ({
-        id: short.id,
-        title: short.title,
-        orig_title: short.orig_title,
-        language: short.language,
-        pubyear: short.pubyear,
-        authors: toKeyValue(short.authors),
-        story_type: short.type.id,
-        genres: toKeyValue(short.genres),
-        contributors: short.contributors,
-        tags: short.tags
-    });
+    // const convToForm = (short: Short): ShortForm => ({
+    //     id: short.id,
+    //     title: short.title,
+    //     orig_title: short.orig_title,
+    //     lang: short.lang,
+    //     pubyear: short.pubyear,
+    //     authors: short.authors,
+    //     type: short.type,
+    //     genres: short.genres,
+    //     contributors: short.contributors,
+    //     tags: short.tags
+    // });
 
     const defaultValues: ShortForm = {
         id: null,
         title: '',
         orig_title: '',
-        language: '',
+        lang: '',
         pubyear: null,
         authors: [],
-        story_type: 1,
+        type: null,
         genres: [],
         contributors: [],
         tags: []
     }
-    const formData = props.short !== null ? convToForm(props.short) : defaultValues;
+    const formData = props.short !== null ? props.short : defaultValues;
+    const queryClient = useQueryClient()
 
     const { register, control, handleSubmit,
         formState: { isDirty, dirtyFields } } =
@@ -96,8 +100,10 @@ export const ShortsForm = (props: ShortFormProps) => {
             const response = await getApiContent(url, user);
             setGenres(response.data);
         }
+        setLoading(true);
         getTypes();
         getGenres();
+        setLoading(false);
     }, [user])
 
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
@@ -112,6 +118,11 @@ export const ShortsForm = (props: ShortFormProps) => {
             console.log(dirtyFields)
         }
         setLoading(false);
+        queryClient.invalidateQueries(
+            //queryKey: ['searchShorts']
+        )
+        // Close modal
+        props.onSubmitCallback(false);
     }
     async function filterLanguages(event: any) {
         const url = "filter/languages/" + event.query;
@@ -125,6 +136,10 @@ export const ShortsForm = (props: ShortFormProps) => {
         setFilteredTags(response.data);
     }
 
+    const isDisabled = (): boolean => {
+        return !isAdmin(user) || loading
+    }
+
     return (
         <div className="card mt-3">
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -133,13 +148,13 @@ export const ShortsForm = (props: ShortFormProps) => {
                         <span className="p-float-label">
                             <Controller name="title" control={control}
                                 render={({ field, fieldState }) => (
-                                    <InputText id={field.name}
+                                    <InputText
                                         {...field}
                                         autoFocus
                                         {...register("title")}
                                         className={classNames({ 'p-invalid': fieldState.error },
                                             "w-full")}
-                                        disabled={!isAdmin(user)}
+                                        disabled={isDisabled()}
                                     />
                                 )}
                             />
@@ -150,12 +165,12 @@ export const ShortsForm = (props: ShortFormProps) => {
                         <span className="p-float-label">
                             <Controller name="orig_title" control={control}
                                 render={({ field, fieldState }) => (
-                                    <InputText id={field.name}
+                                    <InputText
                                         {...field}
                                         {...register("orig_title")}
                                         className={classNames({ 'p-invalid': fieldState.error },
                                             "w-full")}
-                                        disabled={!isAdmin(user)}
+                                        disabled={isDisabled()}
                                     />
                                 )}
                             />
@@ -166,10 +181,11 @@ export const ShortsForm = (props: ShortFormProps) => {
                         <span className="p-float-label">
                             <Controller name="pubyear" control={control}
                                 render={({ field, fieldState }) => (
-                                    <InputText id={field.name} {...field}
+                                    <InputText
+                                        {...field}
                                         {...register("pubyear")}
                                         keyfilter="pint"
-                                        disabled={!isAdmin(user)}
+                                        disabled={isDisabled()}
                                     />
                                 )}
                             />
@@ -178,18 +194,20 @@ export const ShortsForm = (props: ShortFormProps) => {
                     </div>
                     <div className="field col-6">
                         <span className="p-float-label">
-                            <Controller name="type" control={control}
+                            <Controller
+                                name="type"
+                                control={control}
                                 render={({ field, fieldState }) => (
                                     <Dropdown
                                         {...field}
                                         optionLabel="name"
-                                        optionValue="id"
                                         options={typeList}
                                         className={classNames(
                                             { "p-invalid": fieldState.error }, "w-full"
                                         )}
+                                        placeholder="Tyyppi"
                                         tooltip="Tyyppi"
-                                        disabled={!isAdmin(user)}
+                                        disabled={isDisabled()}
                                     />
                                 )}
                             />
@@ -198,7 +216,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                     </div>
                     <div className="field col-6">
                         <span className="p-float-label">
-                            <Controller name="language" control={control}
+                            <Controller name="lang" control={control}
                                 render={({ field, fieldState }) => (
                                     <AutoComplete
                                         {...field}
@@ -215,7 +233,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                             "w-full"
                                         )}
                                         inputClassName="w-full"
-                                        disabled={!isAdmin(user)}
+                                        disabled={isDisabled()}
                                     />
                                 )}
                             />
@@ -230,7 +248,6 @@ export const ShortsForm = (props: ShortFormProps) => {
                                         {...field}
                                         options={genres}
                                         optionLabel="name"
-                                        optionValue="id"
                                         display="chip"
                                         scrollHeight="400px"
                                         className={classNames(
@@ -239,7 +256,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                         )}
                                         showClear
                                         showSelectAll={false}
-                                        disabled={!isAdmin(user)}
+                                        disabled={isDisabled()}
                                     />
                                 )}
                             />
@@ -265,7 +282,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                             "w-full"
                                         )}
                                         inputClassName="w-full"
-                                        disabled={!isAdmin(user)}
+                                        disabled={isDisabled()}
                                     />
                                 )}
                             />
@@ -278,6 +295,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                             control={control}
                             register={register}
                             values={formData.contributors}
+                            disabled={isDisabled()}
                         />
                     </div>
                     <Button type="submit" className="w-full justify-content-center">Tallenna</Button>

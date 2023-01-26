@@ -1,6 +1,6 @@
 import { Bookseries } from "../../bookseries";
 import type { Country } from "../../../types/country";
-import { Person, PersonBrief } from "../../person/types";
+import { Person } from "../../person/types";
 import type { LinkType } from "../../../types/link";
 import { Short } from "../../short/types";
 import type { Awarded } from "../../award";
@@ -29,6 +29,6 @@ export interface Work {
     stories: Short[],
     subtitle: string,
     title: string,
-    translators: PersonBrief[]
+    translators: Person[]
 }
 

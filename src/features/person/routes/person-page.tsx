@@ -16,7 +16,7 @@ import { Genre } from "../../genre";
 import { TagGroup } from '../../tag';
 import { LinkPanel } from "../../../components/link-panel";
 import { AwardPanel, Awarded } from '../../award';
-import { Person } from '../types';
+import { Person, PersonBrief } from '../types';
 import { selectId } from '../../../utils';
 import { User } from "../../user";
 
@@ -113,7 +113,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         return (data.works.length > 0 || data.translations.length > 0 || data.edits.length > 0);
     }
 
-    const combineNames = (aliases: Person[], other_names: string) => {
+    const combineNames = (aliases: PersonBrief[], other_names: string) => {
         let retval = aliases.map(alias => alias.alt_name ? alias.alt_name : alias.name);
         if (other_names) retval.push(other_names);
         return retval.join(', ');

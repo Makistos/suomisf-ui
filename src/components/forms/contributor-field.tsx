@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Controller, useFieldArray, Control } from 'react-hook-form';
+import { Controller, useFieldArray, Control, UseFormRegister, FieldArrayWithId } from 'react-hook-form';
 
 import { AutoComplete } from "primereact/autocomplete";
 import { Button } from "primereact/button";
@@ -12,56 +12,47 @@ import { Contributor } from "../../types/contributor";
 import { getApiContent } from "../../services/user-service";
 import { getCurrenUser, register } from "../../services/auth-service";
 import { pickProperties } from "./forms";
-import { Contribution } from "../../types/contribution";
+import { Contribution, ContributionSimple } from "../../types/contribution";
 import { isAdmin } from '../../features/user';
-import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
-import { string } from "yup";
+import { ShortForm } from '../../features/short/types';
 
 interface ContributorFieldProps {
     id: string,
-    control: Control
-    register: Function,
-    values: Contribution[],
+    control: Control<ShortForm>,
+    register: UseFormRegister<ShortForm>
+    defValues?: ContributionSimple[],
     disabled: boolean
 }
 
 
-type ContributorField = Pick<Contributor, "id" | "name">;
+type ContributorFieldPair = Pick<Contributor, "id" | "name">;
 
-export const ContributorField = ({ id, control, values, disabled }: ContributorFieldProps) => {
+export const ContributorField = ({ control, defValues, register, disabled }: ContributorFieldProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [filteredPeople, setFilteredPeople] = useState<any>(null);
     const [filteredAliases, setFilteredAliases] = useState<any>(null);
-    const [roleList, setRoleList]: [ContributorField[],
-        (roleList: ContributorField[]) => void]
-        = useState<ContributorField[]>([]);
-    const emptyContributor = {
-        description: undefined,
-        /*person: {
+    const [roleList, setRoleList]: [ContributorFieldPair[],
+        (roleList: ContributorFieldPair[]) => void]
+        = useState<ContributorFieldPair[]>([]);
+    const emptyContributor: ContributionSimple = {
+        person: {
             name: '',
             id: 0,
-            aliases: [],
             alt_name: '',
             fullname: '',
             other_names: '',
-            image_src: '',
-            dob: 0,
-            dod: 0,
-            bio: '',
-            links: [],
-            roles: [],
-            nationality: { id: 0, name: '' },
-            works: [],
-            translations: [],
-            edits: [],
-            articles: [],
-            stories: [],
-            magazine_stories: [],
-            awarded: []
+            image_src: ''
+        },
+        /*role: { name: '', id: 0 },
+        description: "",
+        real_person: {
+            name: '',
+            id: 0,
+            alt_name: '',
+            fullname: '',
+            other_names: '',
+            image_src: ''
         },*/
-        person: { id: 0, name: '', real_person: null },
-        role: { name: '', id: 0 },
-        real_person: undefined
     }
 
     const { fields, append, remove } = useFieldArray({
@@ -100,36 +91,43 @@ export const ContributorField = ({ id, control, values, disabled }: ContributorF
     async function filterAliases(event: any) {
         return null;
     }
-    const contributionSort = (a: Contribution, b: Contribution) => {
-        if (a.role.id !== b.role.id) {
-            if (a.role.id < b.role.id) return -1;
-            return 1;
-        }
-        return -1;
-    }
+    // const contributionSort = (a: Contribution, b: Contribution) => {
+    //     if (a.role.id !== b.role.id) {
+    //         if (a.role.id < b.role.id) return -1;
+    //         return 1;
+    //     }
+    //     return -1;
+    // }
 
     const addEmptyContributor = () => {
         console.log("Adding");
         fields.map(field => console.log(field.id))
         console.log(fields.length);
         console.log("Added");
-        append(emptyContributor);
+        //append(emptyContributor);
         fields.map(field => console.log(field.id))
         console.log(fields.length)
     }
 
-    const Contributor = (item: Contribution, index: number) => {
-        const fieldName = `contributors.${index}.person`;
-        const fieldRole = `contributors.${index}.role`;
+    const removeContributor = (index: number) => {
+        console.log("Removing")
+        remove(index)
+        console.log("Removed")
+        console.log(fields.length)
+    }
+
+    const ContributorRow = (item: ContributionSimple, index: number) => {
+        //const fieldName = `contributors.${index}.person`;
+        //const fieldRole = `contributors.${index}.role`;
         //const fieldDescription = `contributors.${index}.description`;
-        const fieldAlias = `contributors.${index}.alias`;
+        //const fieldAlias = `contributors.${index}.alias`;
         const keyValue = item.person.id || '0';
         return (
             <div key={keyValue}
                 className="grid gap-1">
                 <div className="field sm:col-12 lg:col-3">
                     <Controller
-                        name={fieldName}
+                        name={`contributors.${index}.person` as const}
                         control={control}
                         render={({ field, fieldState }) => (
                             <AutoComplete
@@ -151,9 +149,10 @@ export const ContributorField = ({ id, control, values, disabled }: ContributorF
                         )}
                     />
                 </div>
+                {/*
                 <div className="field sm:col-12 lg:col-2">
                     <Controller
-                        name={fieldRole}
+                        name={`contributors.${index}.role` as const}
                         control={control}
                         render={({ field, fieldState }) => (
                             <Dropdown
@@ -179,6 +178,7 @@ export const ContributorField = ({ id, control, values, disabled }: ContributorF
                                 {...field}
                                 tooltip="Kuvaus"
                                 placeholder="Kuvaus"
+                                value=""
                                 className={classNames(
                                     { "p-invalid": fieldState.error },
                                     "w-full"
@@ -188,9 +188,10 @@ export const ContributorField = ({ id, control, values, disabled }: ContributorF
                         )}
                     />
                 </div>
-                <div className="field sm:col-12 lg:col-3">
+                                */}
+                {/* <div className="field sm:col-12 lg:col-3">
                     <Controller
-                        name={fieldAlias}
+                        name={`contributors.${index}.person.aliases` as const}
                         control={control}
                         render={({ field, fieldState }) => (
                             <AutoComplete
@@ -211,12 +212,12 @@ export const ContributorField = ({ id, control, values, disabled }: ContributorF
                             />
                         )}
                     />
-                </div>
+                </div> */}
 
                 <div className="field sm:col-12 lg:col-1">
                     <Button type="button"
                         className="p-button-rounded p-button-text"
-                        onClick={() => remove(index)}
+                        onClick={() => removeContributor(index)}
                         icon="pi pi-minus"
                         disabled={index === 0 || disabled}
                     />
@@ -237,9 +238,14 @@ export const ContributorField = ({ id, control, values, disabled }: ContributorF
             <span >
                 <label htmlFor="contributors" className="form-field-header">Tekijät</label>
                 <div id="contributors" className="py-0">
-                    {values &&
+                    {/*{values &&
                         values.sort(contributionSort).map((item: Contribution, index: number) =>
                             Contributor(item, index))
+                    } */}
+                    {defValues && defValues.map((item, index) => ContributorRow(item, index))}
+
+                    {fields && fields.map((item: FieldArrayWithId<ShortForm, "contributors", "id">, index: number) =>
+                        ContributorRow(item, index))
                     }
 
                 </div>

@@ -2,7 +2,7 @@ import { Person } from "../../person/types";
 import { Edition } from "../../edition/types";
 import { Issue } from "../../issue/types";
 import { Genre } from "../../genre/types";
-import { Contribution } from '../../../types/contribution';
+import { Contribution, ContributionSimple } from '../../../types/contribution';
 import { TagType } from "../../tag";
 
 
@@ -15,12 +15,24 @@ export interface Short {
     title: string;
     orig_title: string;
     lang: string;
-    pubyear: number;
+    pubyear: string;
     authors: Person[];
     type: ShortType;
     editions: Edition[];
     issues: Issue[];
     genres: Genre[];
-    contributors: Contribution[];
+    contributors: ContributionSimple[];
     tags: TagType[];
+}
+
+export interface ShortForm {
+    id: number | null,
+    title: string,
+    orig_title: string,
+    lang: string | null,
+    pubyear: string,
+    type: ShortType | null,
+    genres: Genre[],
+    contributors: ContributionSimple[],
+    tags: Pick<TagType, "id" | "name" | "type">[]
 }

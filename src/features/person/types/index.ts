@@ -6,12 +6,11 @@ import { LinkType } from '../../../types/link';
 import { Awarded } from '../../award';
 import { Nationality } from "../../../types/nationality";
 
-
 export interface Person {
     [index: string]: any;
     id: number;
     name: string;
-    aliases: Person[];
+    aliases: PersonBrief[],
     alt_name: string;
     fullname: string;
     other_names: string;
@@ -23,7 +22,7 @@ export interface Person {
     roles: string[];
     nationality: Nationality;
     works: Work[];
-    translations: Edition[];
+    translations: Edition[],
     edits: Edition[];
     articles: Article[];
     stories: Short[];
@@ -35,5 +34,7 @@ export interface PersonBrief {
     id: number;
     name: string;
     alt_name: string;
+    fullname: string;
+    other_names: string;
     image_src: string;
 }

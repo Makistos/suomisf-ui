@@ -68,6 +68,10 @@ export const ShortSearchPage = () => {
         queryFn: () => searchShorts()
     })
 
+    const enableQuery = (state: boolean) => {
+        setQueryEnabled(state)
+    }
+
     return (
         <main className="all-content">
             <>
@@ -143,7 +147,8 @@ export const ShortSearchPage = () => {
                         </div>
                     ) : (
                         <div>
-                            {data && <ShortsList shorts={data} listPublications groupAuthors anthology />}
+                            {data && <ShortsList shorts={data} listPublications groupAuthors anthology
+                                enableQueries={enableQuery} />}
                         </div>
                     )}
                 </div>

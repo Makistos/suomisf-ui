@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useForm, Controller, SubmitHandler, FieldValues } from 'react-hook-form';
+import { useForm, Controller, SubmitHandler, FieldValues, useFieldArray } from 'react-hook-form';
 
 import { Dropdown } from 'primereact/dropdown';
 import { MultiSelect } from "primereact/multiselect";
@@ -21,28 +21,14 @@ import { TagType } from "../../tag";
 import { isAdmin } from '../../user';
 import { useLocation } from 'react-router-dom';
 import { Fieldset } from 'primereact/fieldset';
-
-interface hasIdAndName {
-    id: number,
-    name: string
-}
-interface ShortForm {
-    id: number | null,
-    title: string,
-    orig_title: string,
-    lang: string | null,
-    pubyear: number | null
-    authors: Person[],
-    type: ShortType | null,
-    genres: Genre[],
-    contributors: Contribution[],
-    tags: TagType[]
-}
+import { ShortForm } from '../types';
 
 interface ShortFormSubmit {
     data: Object,
     changed: Object
 }
+
+type ShortFormType = Pick<Short, "id">
 
 interface ShortFormProps {
     short: Short,
@@ -51,37 +37,35 @@ interface ShortFormProps {
 
 export const ShortsForm = (props: ShortFormProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
-    // const convToForm = (short: Short): ShortForm => ({
-    //     id: short.id,
-    //     title: short.title,
-    //     orig_title: short.orig_title,
-    //     lang: short.lang,
-    //     pubyear: short.pubyear,
-    //     authors: short.authors,
-    //     type: short.type,
-    //     genres: short.genres,
-    //     contributors: short.contributors,
-    //     tags: short.tags
-    // });
+    const convToForm = (short: Short): ShortForm => ({
+        id: short.id,
+        title: short.title,
+        orig_title: short.orig_title,
+        lang: short.lang,
+        pubyear: short.pubyear,
+        type: short.type,
+        genres: short.genres,
+        contributors: short.contributors,
+        tags: short.tags
+    });
 
     const defaultValues: ShortForm = {
         id: null,
         title: '',
         orig_title: '',
         lang: '',
-        pubyear: null,
-        authors: [],
+        pubyear: "",
         type: null,
         genres: [],
         contributors: [],
         tags: []
     }
-    const formData = props.short !== null ? props.short : defaultValues;
+    const formData = props.short ? convToForm(props.short) : defaultValues;
     const queryClient = useQueryClient()
 
     const { register, control, handleSubmit,
         formState: { isDirty, dirtyFields } } =
-        useForm<FieldValues>({ defaultValues: formData });
+        useForm<ShortForm>({ defaultValues: formData });
     const [typeList, setTypeList] = useState([]);
     const [genres, setGenres] = useState([]);
     const [message, setMessage] = useState("");
@@ -105,6 +89,11 @@ export const ShortsForm = (props: ShortFormProps) => {
         getGenres();
         setLoading(false);
     }, [user])
+
+    const contributorArray = useFieldArray({
+        control,
+        name: "contributors"
+    })
 
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         const retval: ShortFormSubmit = { data, changed: dirtyFields }
@@ -184,7 +173,10 @@ export const ShortsForm = (props: ShortFormProps) => {
                                     <InputText
                                         {...field}
                                         {...register("pubyear")}
-                                        keyfilter="pint"
+                                        className={classNames(
+                                            { "p-invalid": fieldState.error },
+                                            "w-full"
+                                        )}
                                         disabled={isDisabled()}
                                     />
                                 )}
@@ -294,7 +286,6 @@ export const ShortsForm = (props: ShortFormProps) => {
                             id={"authors"}
                             control={control}
                             register={register}
-                            values={formData.contributors}
                             disabled={isDisabled()}
                         />
                     </div>

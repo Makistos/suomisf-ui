@@ -12,7 +12,7 @@ export interface TagType {
     works?: Work[];
     shorts?: Short[];
     articles?: Article[];
-    magazines?: Magazine[];
-    people?: Person[];
-    issues?: Issue[];
+    //magazines?: Magazine[];
+    //people?: Person[];
+    //issues?: Issue[];
 }

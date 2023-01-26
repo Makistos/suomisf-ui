@@ -30,9 +30,11 @@ interface ShortsListProps {
      * show the authors in front of each row.
      */
     anthology?: boolean,
+    enableQueries?: (state: boolean) => void
 }
 
-export const ShortsList = ({ shorts, person, groupAuthors, listPublications, anthology }: ShortsListProps) => {
+export const ShortsList = ({ shorts, person, groupAuthors, listPublications,
+    anthology, enableQueries }: ShortsListProps) => {
     /**
      * A component for showing a list of shorts. Shorts include short stories,
      * articles etc.
@@ -107,6 +109,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications, ant
                                         <ShortSummary short={short} key={short.id}
                                             skipAuthors={skipAuthors}
                                             {...(listPublications ? { listPublications } : {})}
+                                            enableQueries={enableQueries}
                                         />
                                     ))
                                 }

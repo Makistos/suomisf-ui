@@ -1,6 +1,7 @@
 import React from "react";
 import { Router } from "react-router-dom";
 
+import { waitFor } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 
 import { EditionDetails } from "./edition-details";
@@ -15,6 +16,8 @@ describe("edition-details", () => {
         <EditionDetails edition={singleEdition} />
       </Router>
     );
-    expect(await result.getByText(/Aira Buffa/)).toBeInTheDocument();
+    await waitFor(() =>
+      expect(result.getByText(/Aira Buffa/)).toBeInTheDocument()
+    );
   });
 });

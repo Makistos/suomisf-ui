@@ -1,12 +1,12 @@
 import React from "react";
 import { Router } from "react-router-dom";
 
-import { screen } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 
 import { EditionList } from "./edition-list";
 import { renderWithClient } from "../../../testing";
 import { MultiEditions } from "../../../testing";
+import { waitFor } from "@testing-library/react";
 
 describe("EditionList", () => {
   it("renders EditionList", async () => {
@@ -16,6 +16,6 @@ describe("EditionList", () => {
         <EditionList editions={MultiEditions} />
       </Router>
     );
-    expect(await result.getAllByText(/Lydecken, Arvid/i).toString).toBeDefined();
+    await waitFor(() => expect(result.getAllByText(/Lydecken, Arvid/i).toString).toBeDefined())
   });
 });

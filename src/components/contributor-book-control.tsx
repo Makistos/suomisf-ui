@@ -73,7 +73,7 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
         /* First make sure oldest edition is first in the array by sorting by
            year. Then pick unique work ids. */
 
-        let retval: Edition[] = _.sortBy(editions, [function (e) { return e.pubyear }]);
+        let retval = _.sortBy(editions, [function (e) { return e.pubyear }]);
         retval = _.uniqBy(retval, (value => value.work[0].id));
         return retval;
     }

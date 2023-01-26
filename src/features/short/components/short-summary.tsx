@@ -27,9 +27,11 @@ interface ShortProps {
      * magazines).
      */
     listPublications?: boolean,
+    enableQueries?: (state: boolean) => void
 }
 
-export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProps) => {
+export const ShortSummary = ({ short, skipAuthors, listPublications,
+    enableQueries }: ShortProps) => {
     //const user = getCurrenUser();
     //let [short, setShort]: [IShort | null, (story: IShort) => void] = React.useState<IShort | null>(null);
     const [isEditVisible, setEditVisible] = useState(false);
@@ -95,10 +97,24 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
         )
     }
 
+    const onDialogShow = () => {
+        if (enableQueries) {
+            enableQueries(false);
+        }
+    }
+
+    const onDialogHide = () => {
+        if (enableQueries) {
+            enableQueries(true)
+        }
+        setEditVisible(false);
+    }
     return (
         <div>
             <Dialog maximizable blockScroll
-                header="Novellin muokkaus" visible={isEditVisible} onHide={() => setEditVisible(false)} >
+                header="Novellin muokkaus" visible={isEditVisible}
+                onShow={() => onDialogShow()}
+                onHide={() => onDialogHide()} >
                 <ShortsForm short={short} onSubmitCallback={setEditVisible} />
             </Dialog>
             {short ? (
@@ -121,7 +137,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications }: ShortProp
                         )
                         }
                         <>. </>
-                        {translators(short.contributors)}
+                        {/*{translators(short.contributors)} */}
                         {short.genres.length > 0 &&
                             <GenreList genres={short.genres} />
                         }

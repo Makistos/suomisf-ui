@@ -1,5 +1,5 @@
 import { Publisher } from "../../publisher/types";
-import { PersonBrief } from "../../person/types";
+import { Person } from "../../person/types";
 import { Work } from "../../work";
 import { ImageType } from "../../../types/image";
 import { EditionFormat } from "../../../types/edition-format";
@@ -13,7 +13,7 @@ export interface Edition {
     coverimage: number;
     dustcover: number;
     editionnum: number;
-    editors: PersonBrief[];
+    editors: Person[];
     format: EditionFormat;
     id: number;
     images: ImageType[];
@@ -29,7 +29,7 @@ export interface Edition {
     size?: string;
     subtitle: string;
     title: string;
-    translators: PersonBrief[];
+    translators: Person[];
     version: number;
     work: Work[];
 

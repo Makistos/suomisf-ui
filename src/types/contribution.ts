@@ -1,5 +1,5 @@
 
-import { Person } from "../features/person/types";
+import { PersonBrief } from "../features/person/types";
 
 export interface ContributorRole {
     id: number,
@@ -7,8 +7,12 @@ export interface ContributorRole {
 }
 
 export interface Contribution {
-    person: Person,
+    person: PersonBrief,
     role: ContributorRole,
     description?: string,
-    real_person?: Person
+    real_person?: PersonBrief,
+}
+
+export interface ContributionSimple {
+    person: PersonBrief
 }

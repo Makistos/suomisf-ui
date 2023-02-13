@@ -8,12 +8,13 @@ import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { AutoComplete } from 'primereact/autocomplete';
 import { useQueryClient } from '@tanstack/react-query';
+import _ from "lodash";
 
 import { Short, ShortType } from "../types";
 import { Person } from "../../person";
 import { Genre } from "../../genre";
 import { ContributorField } from '../../../components/forms/contributor-field';
-import { Contribution } from '../../../types/contribution';
+import { Contribution, ContributionSimple } from '../../../types/contribution';
 import { KeyValuePair } from '../../../components/forms/forms';
 import { getApiContent, putApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
@@ -35,6 +36,17 @@ interface ShortFormProps {
     onSubmitCallback: ((state: boolean) => void)
 }
 
+const makeBriefContributor = (contributions: Contribution[]): ContributionSimple[] => {
+    const simplifyContribution = (contribution: Contribution) => {
+        return {
+            'person': _.pick(contribution.person, ['id', 'name', 'alt_name', 'fullname']),
+            'role': _.pick(contribution.role, ['id', 'name']),
+            'description': contribution.description,
+        }
+    }
+    return contributions.map(simplifyContribution);
+}
+
 export const ShortsForm = (props: ShortFormProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const convToForm = (short: Short): ShortForm => ({
@@ -45,7 +57,7 @@ export const ShortsForm = (props: ShortFormProps) => {
         pubyear: short.pubyear,
         type: short.type,
         genres: short.genres,
-        contributors: short.contributors,
+        contributors: makeBriefContributor(short.contributors),
         tags: short.tags
     });
 
@@ -287,6 +299,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                             control={control}
                             register={register}
                             disabled={isDisabled()}
+                            defValues={formData.contributors}
                         />
                     </div>
                     <Button type="submit" className="w-full justify-content-center">Tallenna</Button>

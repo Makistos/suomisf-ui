@@ -20,7 +20,7 @@ interface ContributorFieldProps {
     id: string,
     control: Control<ShortForm>,
     register: UseFormRegister<ShortForm>
-    defValues?: ContributionSimple[],
+    defValues?: Contribution[],
     disabled: boolean
 }
 
@@ -34,25 +34,21 @@ export const ContributorField = ({ control, defValues, register, disabled }: Con
     const [roleList, setRoleList]: [ContributorFieldPair[],
         (roleList: ContributorFieldPair[]) => void]
         = useState<ContributorFieldPair[]>([]);
-    const emptyContributor: ContributionSimple = {
+    const emptyContributor: Contribution = {
         person: {
             name: '',
             id: 0,
             alt_name: '',
             fullname: '',
-            other_names: '',
-            image_src: ''
         },
-        /*role: { name: '', id: 0 },
+        role: { name: '', id: 0 },
         description: "",
         real_person: {
             name: '',
             id: 0,
             alt_name: '',
             fullname: '',
-            other_names: '',
-            image_src: ''
-        },*/
+        },
     }
 
     const { fields, append, remove } = useFieldArray({
@@ -76,6 +72,12 @@ export const ContributorField = ({ control, defValues, register, disabled }: Con
             setRoleList(response.data);
         }
         getRoles();
+        async function getPeople() {
+            const url = "people";
+            const response = await getApiContent(url, user);
+            setFilteredPeople(response.data);
+        }
+        getPeople();
     }, [user])
 
     async function filterPeople(event: any) {
@@ -100,13 +102,8 @@ export const ContributorField = ({ control, defValues, register, disabled }: Con
     // }
 
     const addEmptyContributor = () => {
-        console.log("Adding");
-        fields.map(field => console.log(field.id))
-        console.log(fields.length);
-        console.log("Added");
-        //append(emptyContributor);
-        fields.map(field => console.log(field.id))
-        console.log(fields.length)
+        console.log(control._fields)
+        append(emptyContributor);
     }
 
     const removeContributor = (index: number) => {
@@ -121,7 +118,7 @@ export const ContributorField = ({ control, defValues, register, disabled }: Con
         //const fieldRole = `contributors.${index}.role`;
         //const fieldDescription = `contributors.${index}.description`;
         //const fieldAlias = `contributors.${index}.alias`;
-        const keyValue = item.person.id || '0';
+        const keyValue = item.person.id || index;
         return (
             <div key={keyValue}
                 className="grid gap-1">
@@ -149,7 +146,6 @@ export const ContributorField = ({ control, defValues, register, disabled }: Con
                         )}
                     />
                 </div>
-                {/*
                 <div className="field sm:col-12 lg:col-2">
                     <Controller
                         name={`contributors.${index}.role` as const}
@@ -188,8 +184,8 @@ export const ContributorField = ({ control, defValues, register, disabled }: Con
                         )}
                     />
                 </div>
-                                */}
-                {/* <div className="field sm:col-12 lg:col-3">
+                {/*
+                <div className="field sm:col-12 lg:col-3">
                     <Controller
                         name={`contributors.${index}.person.aliases` as const}
                         control={control}
@@ -212,8 +208,8 @@ export const ContributorField = ({ control, defValues, register, disabled }: Con
                             />
                         )}
                     />
-                </div> */}
-
+                </div>
+                                */}
                 <div className="field sm:col-12 lg:col-1">
                     <Button type="button"
                         className="p-button-rounded p-button-text"
@@ -238,12 +234,6 @@ export const ContributorField = ({ control, defValues, register, disabled }: Con
             <span >
                 <label htmlFor="contributors" className="form-field-header">Tekijät</label>
                 <div id="contributors" className="py-0">
-                    {/*{values &&
-                        values.sort(contributionSort).map((item: Contribution, index: number) =>
-                            Contributor(item, index))
-                    } */}
-                    {defValues && defValues.map((item, index) => ContributorRow(item, index))}
-
                     {fields && fields.map((item: FieldArrayWithId<ShortForm, "contributors", "id">, index: number) =>
                         ContributorRow(item, index))
                     }

@@ -5,15 +5,9 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 
 import { getApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
-import { TagType } from "../types";
+import { TagType, SfTagProps } from "../types";
 
-interface TagProps {
-    id?: number | null,
-    tag?: string,
-    count?: number | null
-}
-
-export const SFTags = ({ id }: TagProps) => {
+export const SFTags = ({ id }: SfTagProps) => {
     const [genreTags, setGenreTags]: [TagType[], (tag: TagType[]) => void] = useState<TagType[]>([]);
     const [styleTags, setStyleTags]: [TagType[], (tag: TagType[]) => void] = useState<TagType[]>([]);
     const [otherTags, setOtherTags]: [TagType[], (tag: TagType[]) => void] = useState<TagType[]>([]);

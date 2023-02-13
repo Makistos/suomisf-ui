@@ -21,17 +21,11 @@ import { ShortsList } from '../../short';
 import { ArticleList } from '../../article';
 import { API_URL } from '../../../systemProps';
 import authHeader from '../../../services/auth-header';
-import { TagType } from '../types';
+import { TagType, SfTagProps } from '../types';
 
 
-interface TagProps {
-    id?: number | null,
-    tag?: string,
-    count?: number | null
-}
 
-
-export const SFTag = ({ id }: TagProps) => {
+export const SFTag = ({ id }: SfTagProps) => {
     const params = useParams();
     const [tag, setTag]: [TagType | null, (tag: TagType) => void] = useState<TagType | null>(null);
     const [displayChangeName, setDisplayChangeName] = useState(false);

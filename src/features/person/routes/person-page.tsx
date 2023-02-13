@@ -114,7 +114,8 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     }
 
     const combineNames = (aliases: PersonBrief[], other_names: string) => {
-        let retval = aliases.map(alias => alias.alt_name ? alias.alt_name : alias.name);
+        //let retval = aliases.map(alias => alias.alt_name ? alias.alt_name : alias.name);
+        let retval = aliases.map(alias => alias.name);
         if (other_names) retval.push(other_names);
         return retval.join(', ');
     }

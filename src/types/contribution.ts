@@ -6,6 +6,10 @@ export interface ContributorRole {
     name: string
 }
 
+export interface RoleBrief {
+    id: number,
+    name: string
+}
 export interface Contribution {
     person: PersonBrief,
     role: ContributorRole,
@@ -14,5 +18,7 @@ export interface Contribution {
 }
 
 export interface ContributionSimple {
-    person: PersonBrief
+    person: PersonBrief,
+    role: RoleBrief,
+    description?: string
 }

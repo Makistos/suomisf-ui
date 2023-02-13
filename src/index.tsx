@@ -1,5 +1,4 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import "primereact/resources/themes/mdc-light-indigo/theme.css";
@@ -26,9 +25,11 @@ import { SFTag } from './features/tag/components/sftag';
 import { SFTags } from './features/tag/routes/sftags-page';
 import { Awards } from './features/award/routes/awards-page'
 
-const rootElement = document.getElementById("root");
+const container = document.getElementById('root')!;
 
-ReactDOM.render(
+const root = createRoot(container);
+
+root.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />}>
@@ -59,8 +60,7 @@ ReactDOM.render(
           } />
       </Route>
     </Routes>
-  </BrowserRouter>,
-  rootElement);
+  </BrowserRouter>);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

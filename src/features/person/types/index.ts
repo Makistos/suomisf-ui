@@ -6,6 +6,7 @@ import { LinkType } from '../../../types/link';
 import { Awarded } from '../../award';
 import { Nationality } from "../../../types/nationality";
 
+export type PersonBrief = Pick<Person, "id" | "name" | "alt_name" | "fullname">
 export interface Person {
     [index: string]: any;
     id: number;
@@ -30,11 +31,11 @@ export interface Person {
     awarded: Awarded[];
 }
 
-export interface PersonBrief {
-    id: number;
-    name: string;
-    alt_name: string;
-    fullname: string;
-    other_names: string;
-    image_src: string;
-}
+// export interface PersonBrief {
+//     id: number;
+//     name: string;
+//     // alt_name: string;
+//     // fullname: string;
+//     // other_names: string;
+//     // image_src: string;
+// }

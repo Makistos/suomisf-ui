@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
-import { Tag } from 'primereact/tag';
+import { Tag, TagProps, TagSeverityType } from 'primereact/tag';
 import { Button } from 'primereact/button';
 
-import { TagType } from "../types";
+import { TagType, SfTagProps } from "../types";
 
 interface TagsProps {
     tags: TagType[],
     overflow: number,
     showOneCount: boolean
-}
-
-interface TagProps {
-    id?: number | null,
-    tag?: string,
-    count?: number | null
 }
 
 
@@ -52,9 +46,9 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
     }, [tags])
 
 
-    const TagCount = ({ tag, count }: TagProps) => {
+    const TagCount = ({ tag, count }: SfTagProps) => {
         const TypeToSeverity = (type: string) => {
-            if (tag === undefined) return "";
+            if (tag === undefined) return undefined;
             if (type !== null) {
                 if (subgenres.includes(tag)) {
                     return "success";
@@ -63,7 +57,7 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
                     return "warning";
                 }
             }
-            return "";
+            return undefined;
         }
 
         const headerText = (name: string, count: number | null) => {

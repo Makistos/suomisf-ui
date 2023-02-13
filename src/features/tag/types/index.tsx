@@ -16,3 +16,9 @@ export interface TagType {
     //people?: Person[];
     //issues?: Issue[];
 }
+
+export interface SfTagProps {
+    id?: number | null,
+    tag?: string,
+    count?: number | null
+}

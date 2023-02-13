@@ -21,7 +21,7 @@ export interface Short {
     editions: Edition[];
     issues: Issue[];
     genres: Genre[];
-    contributors: ContributionSimple[];
+    contributors: Contribution[];
     tags: TagType[];
 }
 
@@ -33,6 +33,6 @@ export interface ShortForm {
     pubyear: string,
     type: ShortType | null,
     genres: Genre[],
-    contributors: ContributionSimple[],
+    contributors: Contribution[],
     tags: Pick<TagType, "id" | "name" | "type">[]
 }

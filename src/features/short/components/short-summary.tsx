@@ -92,9 +92,16 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
         if (translators.length === 0) return (<></>)
         return (
             <>
-                Suom. {translators.map(tr => tr.person.name).join(', ')}
-                .</>
+                Suom {translators.map(tr => tr.person.name).join(', ')}
+                . </>
         )
+    }
+
+    const orderContributions = (short: Short): Short => {
+        let retval: Short = short
+        let contrib = short.contributors.sort((a, b) => a.role.id - b.role.id)
+        retval.contributors = contrib
+        return retval
     }
 
     const onDialogShow = () => {
@@ -115,7 +122,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                 header="Novellin muokkaus" visible={isEditVisible}
                 onShow={() => onDialogShow()}
                 onHide={() => onDialogHide()} >
-                <ShortsForm short={short} onSubmitCallback={setEditVisible} />
+                <ShortsForm short={orderContributions(short)} onSubmitCallback={setEditVisible} />
             </Dialog>
             {short ? (
                 <div key={short.id}>
@@ -137,6 +144,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                         )
                         }
                         <>. </>
+                        <>{translators(short.contributors)}</>
                         {/*{translators(short.contributors)} */}
                         {short.genres.length > 0 &&
                             <GenreList genres={short.genres} />

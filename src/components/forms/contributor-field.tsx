@@ -172,9 +172,9 @@ export const ContributorField = ({ control, defValues, register, disabled }: Con
                         render={({ field, fieldState }) => (
                             <InputText
                                 {...field}
+                                id={field.name}
                                 tooltip="Kuvaus"
                                 placeholder="Kuvaus"
-                                value=""
                                 className={classNames(
                                     { "p-invalid": fieldState.error },
                                     "w-full"
@@ -215,7 +215,7 @@ export const ContributorField = ({ control, defValues, register, disabled }: Con
                         className="p-button-rounded p-button-text"
                         onClick={() => removeContributor(index)}
                         icon="pi pi-minus"
-                        disabled={index === 0 || disabled}
+                        disabled={fields.length < 2 || disabled}
                     />
                     {index === fields.length - 1 && (
                         <Button type="button" className="p-button-rounded p-button-text"

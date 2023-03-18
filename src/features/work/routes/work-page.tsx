@@ -18,6 +18,7 @@ import { Work } from "../types";
 import { WorkDetails } from "../components/work-details";
 import { isAnthology } from "../utils/is-anthology";
 import { selectId } from "../../../utils";
+import { useDocumentTitle } from '../../../components/document-title';
 
 export interface WorkProps {
     work: Work,
@@ -38,6 +39,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [work, setWork]: [Work | null, (work: Work) => void] = useState<Work | null>(null);
     const [layout, setLayout]: [DataViewLayoutType, (layout: DataViewLayoutType) => void] = useState<DataViewLayoutType>('list');
+    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
     const ConfirmNewWork = () => {
         confirmDialog({
             message: 'Tähän tulee uuden teoksen lisäys-näkymä',
@@ -113,6 +115,11 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         }
         getWork();
     }, [params.workId, user])
+
+    useEffect(() => {
+        if (work !== undefined && work !== null)
+            setDocumentTitle(work.title);
+    }, [work])
 
     const renderListItem = (edition: Edition) => {
         return (

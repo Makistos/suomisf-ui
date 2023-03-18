@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from "react-router-dom";
 
 import { LinkList } from '../../../components/link-list';
@@ -7,6 +7,7 @@ import { getApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { PickTagLinks } from "../../tag";
 import { Article } from "../types";
+import { useDocumentTitle } from '../../../components/document-title';
 
 const baseURL = 'articles/';
 
@@ -30,6 +31,7 @@ export const ArticleView = ({ id }: ArticleProps) => {
     let params = useParams();
     const [article, setArticle]: [Article | null, (article: Article) => void] = React.useState<Article | null>(null);
     //const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
+    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
     const PickLinks = (items: Person[]) => {
         return items.map((item) => ({ id: item['id'], name: item['name'] }))
     }
@@ -48,6 +50,11 @@ export const ArticleView = ({ id }: ArticleProps) => {
         }
         getArticle();
     }, [params.articleId, user])
+
+    useEffect(() => {
+        if (article !== undefined && article !== null)
+            setDocumentTitle("Artikkeli: " + article.title);
+    }, [article])
 
     if (!article) return null;
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 
 import { useQuery } from '@tanstack/react-query';
@@ -19,6 +19,7 @@ import { AwardPanel, Awarded } from '../../award';
 import { Person, PersonBrief } from '../types';
 import { selectId } from '../../../utils';
 import { User } from "../../user";
+import { useDocumentTitle } from '../../../components/document-title';
 
 const baseURL = "people/";
 
@@ -31,6 +32,8 @@ let thisId = "";
 export const PersonPage = ({ id }: PersonPageProps) => {
     const params = useParams();
     const user = getCurrenUser();
+    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+
     try {
         thisId = selectId(params, id);
     } catch (e) {
@@ -50,6 +53,11 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         queryKey: ["person", thisId],
         queryFn: () => fetchPerson(thisId, user)
     });
+
+    useEffect(() => {
+        if (data !== undefined)
+            setDocumentTitle(data.name);
+    }, [data])
 
     const personDetails = (nationality: Country | null, dob: number | null, dod: number | null) => {
         let retval: string = "";
@@ -197,8 +205,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                 }
                             </div>
                         </div>
-                    )
-                    )
+                    ))
             }
         </main >
     );

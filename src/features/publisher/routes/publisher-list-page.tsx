@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from 'react-router-dom';
 
 import { DataTable } from "primereact/datatable";
@@ -9,6 +9,7 @@ import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
 import { Edition } from "../../edition";
 import { useQuery } from "@tanstack/react-query";
+import { useDocumentTitle } from '../../../components/document-title';
 
 const baseURL = "publishers";
 
@@ -16,6 +17,12 @@ export const PublisherListPage = () => {
     /** Page that shows all the publishers in the system in a table.
      */
     const user = getCurrenUser();
+    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+
+    useEffect(() => {
+        if (data !== undefined)
+            setDocumentTitle("Kustantajat");
+    }, [])
 
     const fetchPublishers = async () => {
         let publisherList: Publisher[] = [];

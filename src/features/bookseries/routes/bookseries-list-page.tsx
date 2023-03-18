@@ -9,14 +9,14 @@ import { Bookseries } from "../types";
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
 import { useQuery } from "@tanstack/react-query";
-import { Work } from "../../work";
-import { array } from "yup";
+import { useDocumentTitle } from '../../../components/document-title';
 
 export const BookseriesListPage = () => {
     /**
      * Page that lists all bookseries in in the system in a table.
      */
     const user = getCurrenUser();
+    const [documentTitle, setDocumentTitle] = useDocumentTitle("Kirjasarjat");
 
     const fetchBookseries = async (): Promise<Bookseries[]> => {
         const url = 'bookseries';
@@ -31,6 +31,11 @@ export const BookseriesListPage = () => {
             queryKey: ["bookserieslist"],
             queryFn: () => fetchBookseries()
         });
+
+    useEffect(() => {
+        if (data !== undefined)
+            setDocumentTitle("Kirjasarjat");
+    }, [data])
 
     const nameTemplate = (rowData: Bookseries) => {
         return (

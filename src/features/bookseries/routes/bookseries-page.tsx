@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import { useQuery } from "@tanstack/react-query";
@@ -10,6 +10,7 @@ import { WorkList } from "../../work";
 import { Bookseries } from "../types";
 import { selectId } from "../../../utils";
 import { User } from "../../user";
+import { useDocumentTitle } from '../../../components/document-title';
 
 const baseURL = 'bookseries/';
 
@@ -22,6 +23,7 @@ let thisId = "";
 export const BookseriesPage = ({ id }: BookseriesPageProps) => {
     const params = useParams();
     const user = getCurrenUser();
+    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
 
     try {
         thisId = selectId(params, id);
@@ -42,6 +44,11 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
         queryKey: ["bookseries", thisId],
         queryFn: () => fetchBookseries(thisId, user)
     });
+
+    useEffect(() => {
+        if (data !== undefined)
+            setDocumentTitle(data.name);
+    }, [data])
 
     return (
         <main className="all-content">

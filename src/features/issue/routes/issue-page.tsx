@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from "react-router-dom";
 
 import { Image } from 'primereact/image';
@@ -46,6 +46,7 @@ export const IssuePage = ({ id, index }: IssueProps) => {
         }
         getIssue();
     }, [id, user, params.issueId])
+
 
     if (!issue) return null;
 

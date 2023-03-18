@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
 import axios from "axios";
@@ -7,11 +7,12 @@ import { classNames } from 'primereact/utils';
 import { Button } from 'primereact/button';
 import { ProgressSpinner } from "primereact/progressspinner";
 import _ from "lodash";
+import { useQuery } from "@tanstack/react-query";
 
 import { ShortsList } from '../components/shorts-list';
 import { API_URL } from "../../../systemProps";
 import { Short } from "../types";
-import { useQuery } from "@tanstack/react-query";
+import { useDocumentTitle } from '../../../components/document-title';
 
 type FormData = {
     [index: string]: any,
@@ -34,11 +35,15 @@ export const ShortSearchPage = () => {
     const { control, handleSubmit, formState: { errors } } = useForm<FormData>(
         { defaultValues: defaultValues }
     );
+    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
     const [loading, setLoading] = useState(false);
     // const [shorts, setShorts]: [Short[], (shorts: Short[]) => void] = useState<Short[]>([]);
     const [searchParams, setSearchParams]: [FormData | null, (params: FormData) => void] = useState<FormData | null>(null);
     const [queryEnabled, setQueryEnabled] = useState(false);
 
+    useEffect(() => {
+        setDocumentTitle("Novellihaku");
+    }, [])
     //const user = useMemo(() => { return getCurrenUser() }, []);
 
     const searchShorts = async () => {
@@ -50,7 +55,7 @@ export const ShortSearchPage = () => {
         }
         const response = await axios.post(API_URL + 'searchshorts', searchParams)
             .then(resp => resp.data);
-        console.log(response)
+        // console.log(response)
         return response;
     }
 
@@ -71,6 +76,7 @@ export const ShortSearchPage = () => {
     const enableQuery = (state: boolean) => {
         setQueryEnabled(state)
     }
+
 
     return (
         <main className="all-content">

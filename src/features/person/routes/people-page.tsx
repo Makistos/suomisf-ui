@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import { FilterMatchMode } from "primereact/api";
@@ -11,11 +11,13 @@ import { getApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { Person } from "../types";
 import type { Country } from '../../../types/country';
+import { useDocumentTitle } from '../../../components/document-title';
 
 const baseURL = 'people';
 
 export const PeoplePage = () => {
     const user = useMemo(() => { return getCurrenUser() }, []);
+    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
     const [people, setPeople]: [Person[], (people: Person[]) => void] = React.useState<Person[]>([]);
     const [countries, setCountries]: [Country[], (countries: Country[]) => void] = React.useState<Country[]>([]);
     const [totalRecords, setTotalRecords] = React.useState(0);
@@ -38,6 +40,10 @@ export const PeoplePage = () => {
         }
     });
     const [loading, setLoading] = React.useState(true);
+
+    useEffect(() => {
+        setDocumentTitle("Henkilöt");
+    })
 
     React.useEffect(() => {
         const queryParams = (params: any, prefix = "") => {

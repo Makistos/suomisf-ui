@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -9,6 +10,7 @@ import "@fortawesome/fontawesome-free/css/all.css";
 
 import './App.css';
 import MainMenu from './components/mainmenu';
+//import { useDocumentTitle } from './components/document-title';
 
 function App() {
   addLocale('fi', {
@@ -58,6 +60,11 @@ function App() {
   locale('fi');
 
   const queryClient = new QueryClient();
+  const [title, setTitle] = useState("SF-Bibliografia");
+
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -1,3 +1,4 @@
+import { isAdmin, User } from '../../features/user';
 export interface KeyValuePair {
     id: number | null,
     value: string | null
@@ -26,3 +27,12 @@ export const pickProperties = (item: any, ...fields: any[]) => {
         return result;
     }, {});
 };
+
+export const isDisabled = (user: User | null, loading: boolean): boolean => {
+    return !isAdmin(user) || loading
+}
+
+export interface FormSubmitObject {
+    data: Object,
+    changed: Object
+}

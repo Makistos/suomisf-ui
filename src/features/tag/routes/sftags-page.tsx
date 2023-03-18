@@ -6,11 +6,16 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { getApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { TagType, SfTagProps } from "../types";
+import { useDocumentTitle } from '../../../components/document-title';
 
 export const SFTags = ({ id }: SfTagProps) => {
     const [genreTags, setGenreTags]: [TagType[], (tag: TagType[]) => void] = useState<TagType[]>([]);
     const [styleTags, setStyleTags]: [TagType[], (tag: TagType[]) => void] = useState<TagType[]>([]);
     const [otherTags, setOtherTags]: [TagType[], (tag: TagType[]) => void] = useState<TagType[]>([]);
+    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+    useEffect(() => {
+        setDocumentTitle("Asiasanat");
+    })
 
     const [loading, setLoading] = useState(false);
     const user = useMemo(() => { return getCurrenUser() }, []);

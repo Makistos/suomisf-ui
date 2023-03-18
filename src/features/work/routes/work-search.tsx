@@ -21,6 +21,7 @@ import { BookType } from "../../../types/book-type";
 import { API_URL } from "../../../systemProps";
 import { WorkList } from "../components/work-list";
 import { User } from "../../user";
+import { useDocumentTitle } from "../../../components/document-title";
 
 type FormData = {
     [index: string]: any,
@@ -46,6 +47,11 @@ export const WorkSearchPage = () => {
     //const [bookTypes, setBookTypes]: [BookType[], (bookTypes: BookType[]) => void] = useState<BookType[]>([]);
     //const [initials, setInitials]: [string[], (initialis: string[]) => void] = useState<string[]>([]);
     const [initial, setInitial] = useState("");
+
+    const [documentTitle, setDocumentTitle] = useDocumentTitle("Kirjahaku");
+
+    if (documentTitle !== undefined)
+        document.title = documentTitle;
 
     const onSubmit: SubmitHandler<FormData> = data => {
         function search() {

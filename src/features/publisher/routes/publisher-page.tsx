@@ -1,8 +1,9 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { useParams } from "react-router-dom";
 
 import { TabPanel, TabView } from "primereact/tabview";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { useQuery } from "@tanstack/react-query";
 
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
@@ -13,7 +14,7 @@ import { PubseriesList } from "../../pubseries";
 import { Publisher } from "../types";
 import { selectId } from "../../../utils";
 import { User } from "../../user";
-import { useQuery } from "@tanstack/react-query";
+import { useDocumentTitle } from '../../../components/document-title';
 
 const baseURL = 'publishers/';
 
@@ -26,6 +27,7 @@ let thisId: string = "";
 export const PublisherPage = ({ id }: PublisherPageProps) => {
     const params = useParams();
     const user = getCurrenUser();
+    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
     try {
         thisId = selectId(params, id);
     } catch (e) {
@@ -47,6 +49,11 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
         queryKey: ["publisher", thisId],
         queryFn: () => fetchPublisher(thisId, user)
     });
+
+    useEffect(() => {
+        if (data !== undefined)
+            setDocumentTitle(data.name);
+    }, [data])
 
     return (
         <main className="all-content" id="publisher-page">

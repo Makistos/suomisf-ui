@@ -99,8 +99,10 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
 
     const orderContributions = (short: Short): Short => {
         let retval: Short = short
-        let contrib = short.contributors.sort((a, b) => a.role.id - b.role.id)
-        retval.contributors = contrib
+        if (short.contributors !== undefined) {
+            let contrib = short.contributors.sort((a, b) => a.role.id - b.role.id)
+            retval.contributors = contrib
+        }
         return retval
     }
 

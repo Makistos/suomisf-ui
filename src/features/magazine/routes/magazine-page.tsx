@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
 import { useParams } from "react-router-dom";
 import { IssuePage } from '../../issue';
 import { Magazine } from '../types';
+import { useDocumentTitle } from '../../../components/document-title';
 
 
 const baseURL = "magazines/";
@@ -35,6 +36,7 @@ const MagazinePage = () => {
 
     let params = useParams();
     const user = getCurrenUser();
+    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
 
     const [magazine, setMagazine]: [Magazine | null, (magazine: Magazine) => void] = React.useState<Magazine | null>(null);
     //const [issues, setIssue]: [string[], (issue: string[]) => void] = React.useState<string[]>([]);
@@ -65,6 +67,11 @@ const MagazinePage = () => {
         setIssue(newArray);
     }
     */
+    useEffect(() => {
+        if (magazine !== undefined && magazine !== null)
+            setDocumentTitle(magazine.name);
+    }, [magazine])
+
     if (!magazine) return null;
 
     return (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useForm, Controller, SubmitHandler, FieldValues, useFieldArray } from 'react-hook-form';
 
 import { Dropdown } from 'primereact/dropdown';
@@ -10,24 +10,13 @@ import { AutoComplete } from 'primereact/autocomplete';
 import { useQueryClient } from '@tanstack/react-query';
 import _ from "lodash";
 
-import { Short, ShortType } from "../types";
-import { Person } from "../../person";
-import { Genre } from "../../genre";
+import { Short } from "../types";
 import { ContributorField } from '../../../components/forms/contributor-field';
 import { Contribution, ContributionSimple } from '../../../types/contribution';
-import { KeyValuePair } from '../../../components/forms/forms';
 import { getApiContent, putApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
-import { TagType } from "../../tag";
-import { isAdmin } from '../../user';
-import { useLocation } from 'react-router-dom';
-import { Fieldset } from 'primereact/fieldset';
 import { ShortForm } from '../types';
-
-interface ShortFormSubmit {
-    data: Object,
-    changed: Object
-}
+import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
 
 type ShortFormType = Pick<Short, "id">
 
@@ -108,16 +97,16 @@ export const ShortsForm = (props: ShortFormProps) => {
     })
 
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
-        const retval: ShortFormSubmit = { data, changed: dirtyFields }
+        const retval: FormSubmitObject = { data, changed: dirtyFields }
         setMessage("");
         setLoading(true);
 
-        console.log(data);
+        // console.log(data);
 
         putApiContent('shorts/', retval, user);
-        if (isDirty) {
-            console.log(dirtyFields)
-        }
+        // if (isDirty) {
+        //     console.log(dirtyFields)
+        // }
         setLoading(false);
         queryClient.invalidateQueries(
             //queryKey: ['searchShorts']
@@ -137,10 +126,6 @@ export const ShortsForm = (props: ShortFormProps) => {
         setFilteredTags(response.data);
     }
 
-    const isDisabled = (): boolean => {
-        return !isAdmin(user) || loading
-    }
-
     return (
         <div className="card mt-3">
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -155,7 +140,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                         {...register("title")}
                                         className={classNames({ 'p-invalid': fieldState.error },
                                             "w-full")}
-                                        disabled={isDisabled()}
+                                        disabled={isDisabled(user, loading)}
                                     />
                                 )}
                             />
@@ -171,7 +156,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                         {...register("orig_title")}
                                         className={classNames({ 'p-invalid': fieldState.error },
                                             "w-full")}
-                                        disabled={isDisabled()}
+                                        disabled={isDisabled(user, loading)}
                                     />
                                 )}
                             />
@@ -189,7 +174,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                             { "p-invalid": fieldState.error },
                                             "w-full"
                                         )}
-                                        disabled={isDisabled()}
+                                        disabled={isDisabled(user, loading)}
                                     />
                                 )}
                             />
@@ -211,7 +196,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                         )}
                                         placeholder="Tyyppi"
                                         tooltip="Tyyppi"
-                                        disabled={isDisabled()}
+                                        disabled={isDisabled(user, loading)}
                                     />
                                 )}
                             />
@@ -237,7 +222,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                             "w-full"
                                         )}
                                         inputClassName="w-full"
-                                        disabled={isDisabled()}
+                                        disabled={isDisabled(user, loading)}
                                     />
                                 )}
                             />
@@ -260,7 +245,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                         )}
                                         showClear
                                         showSelectAll={false}
-                                        disabled={isDisabled()}
+                                        disabled={isDisabled(user, loading)}
                                     />
                                 )}
                             />
@@ -286,7 +271,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                             "w-full"
                                         )}
                                         inputClassName="w-full"
-                                        disabled={isDisabled()}
+                                        disabled={isDisabled(user, loading)}
                                     />
                                 )}
                             />
@@ -298,7 +283,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                             id={"authors"}
                             control={control}
                             register={register}
-                            disabled={isDisabled()}
+                            disabled={isDisabled(user, loading)}
                             defValues={formData.contributors}
                         />
                     </div>

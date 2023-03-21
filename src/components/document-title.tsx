@@ -6,7 +6,6 @@ export const useDocumentTitle = (title: string) => {
   useEffect(() => {
     if (title !== undefined)
       document.title = "SF-Bibliografia - " + documentTitle;
-    console.log("boo")
   }, [documentTitle]);
 
   return [documentTitle, setDocumentTitle] as const;

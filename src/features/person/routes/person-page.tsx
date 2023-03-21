@@ -45,7 +45,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
             response.data
         )
             .catch((error) => console.log(error));
-        console.log(response);
+        //console.log(response);
         return response;
     }
 

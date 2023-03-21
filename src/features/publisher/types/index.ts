@@ -18,3 +18,10 @@ export interface Publisher {
     name: string;
     series: Pubseries[];
 }
+
+export type PublisherFormData = {
+    [index: string]: any,
+    name: string,
+    fullname?: string,
+    description: string
+}

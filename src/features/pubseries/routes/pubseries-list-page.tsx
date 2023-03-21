@@ -9,12 +9,18 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Pubseries } from "../types";
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
+import { useDocumentTitle } from '../../../components/document-title';
 
 export const PubseriesListPage = () => {
     /**
      * Page that lists all the publisher series in the system in a table.
      */
     const user = getCurrenUser();
+    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+
+    useEffect(() => {
+        setDocumentTitle("Kustantajien sarjat");
+    }, [])
 
     const fetchPubseriesList = async (): Promise<Pubseries[]> => {
         const url = 'pubseries';

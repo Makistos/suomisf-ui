@@ -13,6 +13,28 @@ h1 {
   line-height: 3rem;
 }
 
+h1.frontpage {
+  font-size: 2rem !important;
+  font-weight: bolder;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+p.frontpage {
+  font-size: 1.5rem;
+}
+
+.front-stats-box {
+  position: relative;
+  box-shadow: 4px 4px 5px 0px #EDEDED;
+}
+
+.front-page-image {
+ clip-path: circle(50% at 50% 40%);
+}
+.stats-number {
+  font-size: 1.2rem;
+  font-weight: bolder;
+}
 .name {
   text-align: center;
 }

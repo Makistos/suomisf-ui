@@ -6,7 +6,7 @@ import { InputText } from 'primereact/inputtext';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from 'primereact/button';
 
-import { getApiContent, putApiContent } from '../../../services/user-service';
+import { getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
 import { FormSubmitObject, isDisabled } from '../../../components/forms/forms';
 import { register } from '../../../services/auth-service';
 import { getCurrenUser } from '../../../services/auth-service';
@@ -37,7 +37,11 @@ export const PublisherForm = (props: PublisherFormProps) => {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const retval: FormSubmitObject = { data, changed: dirtyFields }
     setLoading(true);
-    putApiContent('publishers/', retval, user);
+    if (data.id !== null) {
+      putApiContent('publishers/', retval, user);
+    } else {
+      postApiContent('publishers/', retval, user);
+    }
     setLoading(false);
     queryClient.invalidateQueries();
     props.onSubmitCallback(false);

@@ -69,7 +69,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="App container grid">
-        <div className="grid col-12 ">
+        <div className="grid col-12 justify-content-start">
           <MainMenu />
         </div>
         <div className="grid col-12 justify-content-center">

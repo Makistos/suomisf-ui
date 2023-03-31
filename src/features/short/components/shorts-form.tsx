@@ -13,7 +13,7 @@ import _ from "lodash";
 import { Short } from "../types";
 import { ContributorField } from '../../../components/forms/contributor-field';
 import { Contribution, ContributionSimple } from '../../../types/contribution';
-import { getApiContent, putApiContent } from '../../../services/user-service';
+import { getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { ShortForm } from '../types';
 import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
@@ -102,8 +102,11 @@ export const ShortsForm = (props: ShortFormProps) => {
         setLoading(true);
 
         // console.log(data);
-
-        putApiContent('shorts/', retval, user);
+        if (data.id !== null) {
+            putApiContent('shorts/', retval, user);
+        } else {
+            postApiContent('shorts/', retval, user);
+        }
         // if (isDirty) {
         //     console.log(dirtyFields)
         // }

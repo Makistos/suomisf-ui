@@ -1,9 +1,6 @@
 export interface LinkType {
-    id: number,
-    work_id?: number,
-    person_id?: number,
-    article_id?: number,
-    publisher_link?: number,
+    id?: number | null,
+    item_id?: number | null,
     link: string,
     description: string
 }

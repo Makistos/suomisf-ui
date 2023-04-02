@@ -2,9 +2,12 @@ import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 import { useQuery } from "@tanstack/react-query";
+import { Image } from "primereact/image";
 
 import { getApiContent } from "./services/user-service";
 import { getCurrenUser } from './services/auth-service';
+import { Edition } from "./features/edition";
+import { IMAGE_URL } from "./systemProps";
 
 interface Statistics {
   works: number,
@@ -12,6 +15,7 @@ interface Statistics {
   shorts: number,
   magazines: number
   covers: number,
+  latest: Edition[]
 }
 
 export const Home = () => {
@@ -54,9 +58,29 @@ export const Home = () => {
             voittaneista teoksista, novelleista ja henkilöistä (palkintosivut tulossa) sekä <Link to={`/tags`}>asiasanalistauksen</Link>.
           </p>
         </div>
-        <div className="latest-additions bg-blue-100 mt-8">
-          <div className="grid bg-blue-600">
-            Uusimmat
+        <div className="latest-additions mt-8 mb-8">
+          <div className="grid">
+            <div className="grid col-12 bg-blue-500">
+              Uusimmat
+            </div>
+            <div className="flex col-12">
+              {stats && stats.latest && stats.latest.map((edition) => (
+                <div className="grid col-3 justify-content-between">
+                  <div className="grid col-12">
+                    <Link to={`/works/${edition.work[0].id}`}>
+                      {edition.title}</Link>
+                    <br />
+                  </div>
+                  <div className="grid col-12">
+                    {edition.images.length > 0 && (
+                      <Link to={`/works/${edition.work[0].id}`}>
+                        <Image src={IMAGE_URL + edition.images[0].image_src} height={String(edition.size ? Number(edition.size) * 8 : 160)} />
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
           <div className="">
 

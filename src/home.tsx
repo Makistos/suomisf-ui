@@ -61,7 +61,7 @@ export const Home = () => {
         <div className="latest-additions mt-8 mb-8">
           <div className="grid">
             <div className="grid col-12 bg-blue-500">
-              Uusimmat
+              Viimeisimmät lisäykset
             </div>
             <div className="flex col-12">
               {stats && stats.latest && stats.latest.map((edition) => (

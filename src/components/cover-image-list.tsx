@@ -5,7 +5,7 @@ import { Tooltip } from 'primereact/tooltip';
 
 import { Work } from '../features/work';
 import { ImageType } from '../types/image';
-import { IMAGE_URL } from "../systemProps";
+//import { IMAGE_URL } from "../systemProps";
 import { Edition, EditionString } from "../features/edition";
 
 interface CoverImageListProps {
@@ -109,7 +109,7 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
                                 {imageTooltip(image)}
                             </Tooltip>
                             <Image preview className={"p-1 image-" + image.id} width="150px"
-                                src={IMAGE_URL + image.image_src}
+                                src={process.env.REACT_APP_IMAGE_URL + image.image_src}
                                 key={".image-" + image.id}
                             />
                         </>

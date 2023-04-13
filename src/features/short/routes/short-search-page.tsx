@@ -10,7 +10,7 @@ import _ from "lodash";
 import { useQuery } from "@tanstack/react-query";
 
 import { ShortsList } from '../components/shorts-list';
-import { API_URL } from "../../../systemProps";
+//import { API_URL } from "../../../systemProps";
 import { Short } from "../types";
 import { useDocumentTitle } from '../../../components/document-title';
 
@@ -53,7 +53,7 @@ export const ShortSearchPage = () => {
             _.pickBy(searchParams, function (param) { return searchParams[param].length > 0 }).length === 0) {
             return null;
         }
-        const response = await axios.post(API_URL + 'searchshorts', searchParams)
+        const response = await axios.post(process.env.REACT_APP_API_URL + 'searchshorts', searchParams)
             .then(resp => resp.data);
         // console.log(response)
         return response;

@@ -8,7 +8,7 @@ import { Dialog } from 'primereact/dialog';
 import { getCurrenUser } from '../services/auth-service';
 import { logout } from '../services/auth-service';
 import { getApiContent } from '../services/user-service';
-import { SITE_URL } from '../systemProps';
+//import { SITE_URL } from '../systemProps';
 import { LoginView, User } from '../features/user';
 
 export default function MainMenu() {
@@ -148,7 +148,7 @@ export default function MainMenu() {
         }
 
         const selectItem = (item: any) => {
-            let target = SITE_URL;
+            let target = process.env.REACT_APP_SITE_URL;
             switch (item.type) {
                 case 'work':
                     target = target + 'works/';

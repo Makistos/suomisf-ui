@@ -5,7 +5,7 @@ import axios from "axios";
 import { ProgressBar } from "primereact/progressbar";
 
 import { Magazine } from "../types";
-import { API_URL } from "../../../systemProps";
+//import { API_URL } from "../../../systemProps";
 
 function MagazinesPage() {
     const defaultMagazines: Magazine[] = [];
@@ -13,7 +13,7 @@ function MagazinesPage() {
     const [loading, setLoading] = useState(true);
 
     const client = axios.create({
-        baseURL: API_URL + 'magazines'
+        baseURL: process.env.REACT_APP_API_URL + 'magazines'
     });
 
 

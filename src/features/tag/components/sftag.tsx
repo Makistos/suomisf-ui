@@ -19,7 +19,7 @@ import { getCurrenUser } from '../../../services/auth-service';
 import { WorkList } from '../../work';
 import { ShortsList } from '../../short';
 import { ArticleList } from '../../article';
-import { API_URL } from '../../../systemProps';
+//import { API_URL } from '../../../systemProps';
 import authHeader from '../../../services/auth-header';
 import { TagType, SfTagProps } from '../types';
 
@@ -113,7 +113,7 @@ export const SFTag = ({ id }: SfTagProps) => {
                         'name': data.name,
                         'type': tag.type
                     };
-                    await axios.put(API_URL + 'tags', p, { headers: authHeader() })
+                    await axios.put(process.env.REACT_APP_API_URL + 'tags', p, { headers: authHeader() })
                         .then(response => {
                             console.log(response.data);
                             setTag(response.data)

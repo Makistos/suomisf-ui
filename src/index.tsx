@@ -26,6 +26,8 @@ import { SFTag } from './features/tag/components/sftag';
 import { SFTags } from './features/tag/routes/sftags-page';
 import { Awards } from './features/award/routes/awards-page'
 
+console.log(process.env)
+
 const container = document.getElementById('root')!;
 
 const root = createRoot(container);

@@ -18,7 +18,7 @@ import { Genre } from "../../genre";
 import { getApiContent } from "../../../services/user-service";
 import { Country } from "../../../types/country";
 import { BookType } from "../../../types/book-type";
-import { API_URL } from "../../../systemProps";
+//import { API_URL } from "../../../systemProps";
 import { WorkList } from "../components/work-list";
 import { User } from "../../user";
 import { useDocumentTitle } from "../../../components/document-title";
@@ -61,7 +61,7 @@ export const WorkSearchPage = () => {
             }
             setLoading(true);
             try {
-                axios.post(API_URL + 'searchworks', data)
+                axios.post(process.env.REACT_APP_API_URL + 'searchworks', data)
                     .then(response => setWorks(response.data));
             } catch (e) {
                 console.error(e);

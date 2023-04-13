@@ -10,7 +10,7 @@ import { SpeedDial } from "primereact/speeddial";
 import { confirmDialog } from "primereact/confirmdialog";
 
 import { Edition, EditionString, EditionDetails } from "../../edition";
-import { IMAGE_URL } from "../../../systemProps";
+//import { IMAGE_URL } from "../../../systemProps";
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
 import { ShortsList } from "../../short";
@@ -130,7 +130,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                     </div>
                     <div className="flex col-4 justify-content-end align-content-center">
                         {edition.images.length > 0 &&
-                            <Image className="pt-2" preview width="100px" src={IMAGE_URL + edition.images[0].image_src} />
+                            <Image className="pt-2" preview width="100px" src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src} />
                         }
                     </div>
                 </div>
@@ -149,7 +149,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                 <div className="editionimage">
                     {edition.images.length > 0 &&
                         <Image preview height="250px"
-                            src={IMAGE_URL + edition.images[0].image_src}
+                            src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src}
                             alt={EditionString(edition) + " kansikuva"}
                         />
                     }

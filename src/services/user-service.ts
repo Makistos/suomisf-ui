@@ -1,9 +1,9 @@
 import axios from "axios";
 import { User } from "../features/user/types";
 import authHeader from "./auth-header";
-import { API_URL } from "../systemProps";
+//import { API_URL } from "../systemProps";
 
-const baseURL = API_URL;
+const baseURL = process.env.REACT_APP_API_URL;
 
 interface cbType {
     (data: any): any;
@@ -37,7 +37,7 @@ const postPublicContent = (url: string, data: any, callback: cbType | null, user
     //     //     };
 
     // }
-    const addr = API_URL + url;
+    const addr = process.env.REACT_APP_API_URL + url;
     console.log('Posting to address ' + addr);
     axios.post(addr, data, { headers: authHeader() })
         .then((response) => {
@@ -54,7 +54,7 @@ const postPublicContent = (url: string, data: any, callback: cbType | null, user
 }
 
 export const putContent = (url: string, data: any, user: User | null): any => {
-    const addr = API_URL + url;
+    const addr = process.env.REACT_APP_API_URL + url;
     axios.put(addr, data, { headers: authHeader() })
         .then((response) => {
             return response.data;
@@ -65,7 +65,7 @@ export const putContent = (url: string, data: any, user: User | null): any => {
 }
 
 export const deleteApiContent = (url: string): any => {
-    const addr = API_URL + url;
+    const addr = process.env.REACT_APP_API_URL + url;
     axios.delete(addr, { headers: authHeader() })
         .then((response) => {
             return response.data;

@@ -1,8 +1,8 @@
 import axios from "axios";
-import { API_URL } from "../systemProps";
+//import { API_URL } from "../systemProps";
 import { User } from "../features/user/types";
 
-const baseURL = API_URL;
+const baseURL = process.env.REACT_APP_API_URL;
 
 export const register = (username: string, email: string, password: string) => {
 
@@ -14,7 +14,7 @@ export const register = (username: string, email: string, password: string) => {
 };
 
 export async function login(username: string, password: string) {
-    return await axios.post(API_URL + "login",
+    return await axios.post(baseURL + "login",
         {
             'username': username,
             'password': password

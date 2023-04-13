@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "primereact/image";
+import { Tooltip } from 'primereact/tooltip';
 
 import { getApiContent } from "./services/user-service";
 import { getCurrenUser } from './services/auth-service';
 import { Edition } from "./features/edition";
-import { IMAGE_URL } from "./systemProps";
+//import { IMAGE_URL } from "./systemProps";
+import { ImageTooltip } from "./utils/image-tooltip";
 
 interface Statistics {
   works: number,
@@ -21,24 +23,21 @@ interface Statistics {
 export const Home = () => {
   const user = useMemo(() => { return getCurrenUser() }, []);
   const [stats, setStats]: [Statistics | null, (data: Statistics) => void] = useState<Statistics | null>(null);
-  // const getStats = async (user: User | null): Promise<Statistics> => {
-  //   const url = 'frontpagedata';
-  //   const data: Statistics = await getApiContent(url, user).then(response => {
-  //     console.log(response.data)
-  //     return response.data
-  //   }).catch((error) => console.log(error));
-  //   return data;
-  // }
 
+  // React hook to retrieve data from the API
   useEffect(() => {
+
     const getStats = async () => {
       try {
+        // Call the API
         const response = await getApiContent('frontpagedata', user);
+        // Save the data
         setStats(response.data);
       } catch (e) {
         console.log(e);
       }
     };
+    // Call the function
     getStats();
   }, [user])
 
@@ -67,15 +66,17 @@ export const Home = () => {
               {stats && stats.latest && stats.latest.map((edition) => (
                 <div className="grid col-3 justify-content-between">
                   <div className="grid col-12">
-                    <Link to={`/works/${edition.work[0].id}`}>
-                      {edition.title}</Link>
-                    <br />
-                  </div>
-                  <div className="grid col-12">
                     {edition.images.length > 0 && (
-                      <Link to={`/works/${edition.work[0].id}`}>
-                        <Image src={IMAGE_URL + edition.images[0].image_src} height={String(edition.size ? Number(edition.size) * 8 : 160)} />
-                      </Link>
+                      <>
+                        <Tooltip target={`.image-${edition.id}`} position="top" mouseTrack mouseTrackLeft={10}>
+                          <div className="flex align-items-center">
+                            <ImageTooltip edition={edition} />
+                          </div>
+                        </Tooltip>
+                        <Link to={`/works/${edition.work[0].id}`}>
+                          <img className={`image-${edition.id}}`} src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src} height={String(edition.size ? Number(edition.size) * 10 : 200)} />
+                        </Link>
+                      </>
                     )}
                   </div>
                 </div>

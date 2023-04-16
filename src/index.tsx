@@ -25,6 +25,7 @@ import { WorkSearchPage } from './features/work/routes/work-search';
 import { SFTag } from './features/tag/components/sftag';
 import { SFTags } from './features/tag/routes/sftags-page';
 import { Awards } from './features/award/routes/awards-page'
+import { Changes } from './features/changes/routes/changes-page';
 
 console.log(process.env)
 
@@ -56,6 +57,7 @@ root.render(
         <Route path="tags" element={<SFTags />} />
         <Route path="tags/:tagid" element={<SFTag />} />
         <Route path="/login" element={<LoginView />} />
+        <Route path="/changes" element={<Changes />} />
         <Route path="*"
           element={
             <main style={{ padding: "3rem" }}>

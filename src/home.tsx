@@ -119,7 +119,7 @@ export const Home = () => {
           <div className="grid justify-content-center vertical-align-bottom">
             <span className="mr-3"><a href="#">Tietoja</a></span>
             <span className="mr-3"><a href="#">Tilastot</a></span>
-            <span><a href="#">Muutokset</a></span>
+            <span><a href="/changes">Muutokset</a></span>
           </div>
         </div>
       </div>

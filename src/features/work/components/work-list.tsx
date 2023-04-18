@@ -135,7 +135,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
                                                         orderField={orderField} />
                                                 ))
                                             ) : (
-                                                <CoverImageList works={ws} />
+                                                <CoverImageList key={group} works={ws} />
                                             )}
                                         </div>
                                     </div>

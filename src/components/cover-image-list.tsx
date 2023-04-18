@@ -105,12 +105,16 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
         return retval;
     }
 
-    const imageHeight = (edition_id: number): string => {
+    const imageHeight = (edition_id: number, image_height: string | null): string => {
+        if (!image_height) image_height = "20";
         if (!editions && !works) return "200";
         if (editions) {
             for (let edition of editions) {
                 if (edition.id === edition_id) {
-                    return String(10 * Number(edition.size));
+                    if (edition.size) {
+                        return String(10 * Number(image_height));
+                    }
+                    return "200";
                 }
             }
         }
@@ -118,7 +122,10 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
             for (let work of works) {
                 for (let edition of work.editions) {
                     if (edition.id === edition_id) {
-                        return String(10 * Number(edition.size));
+                        if (edition.size) {
+                            return String(10 * Number(image_height));
+                        }
+                        return "200";
                     }
                 }
             }
@@ -136,7 +143,7 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
                                 {imageTooltip(image)}
                             </Tooltip>
                             <Image preview className={"p-1 image-" + image.id}
-                                height={imageHeight(image.edition_id)}
+                                height={imageHeight(image.edition_id, image.size)}
                                 src={process.env.REACT_APP_IMAGE_URL + image.image_src}
                                 key={".image-" + image.id}
                             />

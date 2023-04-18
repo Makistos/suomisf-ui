@@ -21,6 +21,12 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
             if (edition.images !== undefined) {
                 edition.images.map(image => {
                     if (!(image.image_src in retval)) {
+                        image.edition_id = edition.id;
+                        if (edition.size) {
+                            image.size = edition.size;
+                        } else {
+                            image.size = "20";
+                        }
                         retval[image.image_src] = image;
                     }
                     return true;
@@ -99,20 +105,42 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
         return retval;
     }
 
+    const imageHeight = (edition_id: number): string => {
+        if (!editions && !works) return "200";
+        if (editions) {
+            for (let edition of editions) {
+                if (edition.id === edition_id) {
+                    return String(10 * Number(edition.size));
+                }
+            }
+        }
+        if (works) {
+            for (let work of works) {
+                for (let edition of work.editions) {
+                    if (edition.id === edition_id) {
+                        return String(10 * Number(edition.size));
+                    }
+                }
+            }
+        }
+        return "200";
+    }
+
     return (
         <div>
             {
                 imageList().map((image: ImageType) => {
                     return (
-                        <>
+                        <span key={image.image_src}>
                             <Tooltip>
                                 {imageTooltip(image)}
                             </Tooltip>
-                            <Image preview className={"p-1 image-" + image.id} width="150px"
+                            <Image preview className={"p-1 image-" + image.id}
+                                height={imageHeight(image.edition_id)}
                                 src={process.env.REACT_APP_IMAGE_URL + image.image_src}
                                 key={".image-" + image.id}
                             />
-                        </>
+                        </span>
                     )
                 })
             }

@@ -25,9 +25,11 @@ export const WorkDetails = ({ work }: WorkProps) => {
                 </div>
             )}
             <div className="grid col-12 justify-content-center"><h1 className="mt-1 mb-0">{work.title}</h1></div>
+            <div className="grid col-12 justify-content-center"><h2 className="mt-1 mb-0">{work.subtitle}</h2></div>
             <div className="grid col-12 justify-content-center">
                 <p className="mt-1">
                     {work.orig_title !== work.title && work.orig_title + ", "}
+
                     {work.pubyear}
                     {work.language_name && " (" + work.language_name.name + ")"}
                 </p>

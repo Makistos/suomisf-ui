@@ -139,13 +139,13 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
                 imageList().map((image: ImageType) => {
                     return (
                         <span key={image.image_src}>
-                            <Tooltip>
+                            <Tooltip target={".image-" + image.id}>
                                 {imageTooltip(image)}
                             </Tooltip>
                             <Image preview className={"p-1 image-" + image.id}
                                 height={imageHeight(image.edition_id, image.size)}
                                 src={process.env.REACT_APP_IMAGE_URL + image.image_src}
-                                key={".image-" + image.id}
+                                key={"image-" + image.id}
                             />
                         </span>
                     )

@@ -24,6 +24,10 @@ export default function MainMenu() {
         setLoginVisible(true);
     }
 
+    const userName = (): string => {
+        return user !== null ? user.name : "";
+    }
+
     const not_logged_items = [
         {
             label: 'Kirjaudu',
@@ -93,9 +97,7 @@ export default function MainMenu() {
             ]
         },
         {
-            label: 'Tilastoja'
-        },
-        {
+            label: userName(),
             icon: 'fa-solid fa-circle-user',
             command: (event: MenuItemCommandParams) => {
                 if (user === null) {
@@ -115,6 +117,7 @@ export default function MainMenu() {
         const newUser = getCurrenUser();
         setUser(newUser);
     }, [])
+
     const start = <span><a href="/" > <b>SuomiSF </b></a > </span>
     const End = () => {
         async function getResults(query: string) {

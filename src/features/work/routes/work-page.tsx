@@ -8,6 +8,8 @@ import { Ripple } from "primereact/ripple";
 import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
 import { confirmDialog } from "primereact/confirmdialog";
+import { Dialog } from "primereact/dialog";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { Edition, EditionString, EditionDetails } from "../../edition";
 //import { IMAGE_URL } from "../../../systemProps";
@@ -19,6 +21,8 @@ import { WorkDetails } from "../components/work-details";
 import { isAnthology } from "../utils/is-anthology";
 import { selectId } from "../../../utils";
 import { useDocumentTitle } from '../../../components/document-title';
+import { WorkForm } from "../components/work-form";
+import { User } from "../../user";
 
 export interface WorkProps {
     work: Work,
@@ -37,9 +41,11 @@ let workId = "";
 export const WorkPage = ({ id }: WorkPageProps) => {
     const params = useParams();
     const user = useMemo(() => { return getCurrenUser() }, []);
-    const [work, setWork]: [Work | null, (work: Work) => void] = useState<Work | null>(null);
+    //const [work, setWork]: [Work | null, (work: Work) => void] = useState<Work | null>(null);
     const [layout, setLayout]: [DataViewLayoutType, (layout: DataViewLayoutType) => void] = useState<DataViewLayoutType>('list');
     const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+    const [isEditVisible, setEditVisible] = useState(false);
+    const [queryEnabled, setQueryEnabled] = useState(true);
     const ConfirmNewWork = () => {
         confirmDialog({
             message: 'Tähän tulee uuden teoksen lisäys-näkymä',
@@ -54,6 +60,20 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         console.log(`${e} bookseries`);
     }
 
+    const fetchWork = async (id: string, user: User | null): Promise<Work> => {
+        let url = baseURL + workId;
+        const data = await getApiContent(url, user).then(response => {
+            return response.data;
+        }).catch((error) => console.log(error))
+        console.log(data)
+        return data
+    }
+
+    const { isLoading, data } = useQuery({
+        queryKey: ["work", workId],
+        queryFn: () => fetchWork(workId, user),
+        enabled: queryEnabled
+    })
 
     const ConfirmEdit = () => {
         confirmDialog({
@@ -82,7 +102,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             label: 'Muokkaa',
             icon: 'fa-solid fa-pen-to-square',
             command: () => {
-                ConfirmEdit();
+                setEditVisible(true);
             }
         },
         {
@@ -95,31 +115,31 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         {
             label: 'Muokkaa novelleja',
             icon: 'fa-solid fa-list-ul',
-            disabled: !(work !== null &&
-                work.stories !== null &&
-                work.stories.length > 0),
+            disabled: !(data !== undefined && data !== null &&
+                data.stories !== null &&
+                data.stories.length > 0),
             command: () => {
 
             }
         }
     ]
-    useEffect(() => {
-        async function getWork() {
-            let url = baseURL + workId;
-            try {
-                const response = await getApiContent(url, user);
-                setWork(response.data);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        getWork();
-    }, [params.workId, user])
+    // useEffect(() => {
+    //     async function getWork() {
+    //         let url = baseURL + workId;
+    //         try {
+    //             const response = await getApiContent(url, user);
+    //             setWork(response.data);
+    //         } catch (e) {
+    //             console.error(e);
+    //         }
+    //     }
+    //     getWork();
+    // }, [params.workId, user])
 
     useEffect(() => {
-        if (work !== undefined && work !== null)
-            setDocumentTitle(work.title);
-    }, [work])
+        if (data !== undefined && data !== null)
+            setDocumentTitle(data.title);
+    }, [data])
 
     const renderListItem = (edition: Edition) => {
         return (
@@ -207,16 +227,29 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         )
     }
 
-    if (!work) return null;
+    const onDialogShow = () => {
+        setEditVisible(true);
+        setQueryEnabled(false)
+    }
 
-    const anthology = isAnthology(work);
+    const queryClient = useQueryClient();
+    const onDialogHide = () => {
+        queryClient.invalidateQueries({ queryKey: ["work", workId] });
+        setQueryEnabled(true);
+        setEditVisible(false);
+    }
+
+    if (!data) return null;
+
+    const anthology = isAnthology(data);
+
 
     return (
         <main className="all-content">
             <div className="mt-5 speeddial style={{ position: 'relative', height: '500px'}}">
                 {/* user !== null && user.is_admin && ( */}
                 <div>
-                    <Tooltip target=".speeddial .speeddial-right .p-speedial-action">
+                    <Tooltip position="left" target=".speeddial .speeddial-right .p-speeddial-action">
 
                     </Tooltip>
                     <SpeedDial className="speeddial-right"
@@ -227,13 +260,20 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                     />
                 </div>
                 {/* ) */}
-                <WorkDetails work={work} />
+                <Dialog maximizable blockScroll
+                    header="Teoksen muokkaus" visible={isEditVisible}
+                    onShow={() => onDialogShow()}
+                    onHide={() => onDialogHide()}
+                >
+                    <WorkForm work={data} onSubmitCallback={onDialogHide} />
+                </Dialog>
+                <WorkDetails work={data} />
                 {
-                    work.stories.length > 0 && (
+                    data.stories.length > 0 && (
                         <Panel header="Novellit"
                             headerTemplate={panelTemplate}
                             toggleable collapsed>
-                            <ShortsList shorts={work.stories} person={work.authors[0]}
+                            <ShortsList shorts={data.stories} person={data.authors[0]}
                                 anthology={anthology}
                             />
                         </Panel>
@@ -242,7 +282,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                 <div>
                     <h2>Painokset</h2>
                     <div>
-                        <DataView value={work.editions} layout={layout}
+                        <DataView value={data.editions} layout={layout}
                             header={header} itemTemplate={itemTemplate} />
                         {/*{work.editions.map((edition) => {
                         return (

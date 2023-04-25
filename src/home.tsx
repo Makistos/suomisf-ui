@@ -64,19 +64,19 @@ export const Home = () => {
             </div>
             <div className="flex col-12">
               {stats && stats.latest && stats.latest.map((edition) => (
-                <div className="grid col-3 justify-content-between">
-                  <div className="grid col-12">
+                <div className="grid col-3 justify-content-between" key={edition.id}>
+                  <div className="grid col-12" >
                     {edition.images.length > 0 && (
-                      <>
-                        <Tooltip target={`.image-${edition.id}`} position="top" mouseTrack mouseTrackLeft={10}>
+                      <div>
+                        <Tooltip target={".image-" + edition.id} position="top" mouseTrack mouseTrackLeft={10}>
                           <div className="flex align-items-center">
                             <ImageTooltip edition={edition} />
                           </div>
                         </Tooltip>
                         <Link to={`/works/${edition.work[0].id}`}>
-                          <img className={`image-${edition.id}}`} src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src} height={String(edition.size ? Number(edition.size) * 10 : 200)} />
+                          <img className={"image-" + edition.id} src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src} height={String(edition.size ? Number(edition.size) * 10 : 200)} />
                         </Link>
-                      </>
+                      </div>
                     )}
                   </div>
                 </div>

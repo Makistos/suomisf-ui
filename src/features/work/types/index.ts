@@ -6,7 +6,8 @@ import { Short } from "../../short/types";
 import type { Awarded } from "../../award";
 import { Pubseries } from "../../pubseries/types";
 import { Edition } from "../../edition/types";
-
+import { Contribution } from "../../../types/contribution";
+import { Language } from "../../../types/language";
 export interface Work {
     [index: string]: any,
     author_str: string,
@@ -20,7 +21,7 @@ export interface Work {
     editions: Edition[],
     id: number,
     imported_string: string,
-    language: Country,
+    language_name: Language,
     links: LinkType[],
     misc: string,
     orig_title: string,
@@ -32,3 +33,20 @@ export interface Work {
     translators: Person[]
 }
 
+export type WorkFormData = {
+    [index: string]: any,
+    id: number | null,
+    title: string,
+    subtitle?: string,
+    orig_title?: string,
+    pubyear?: number,
+    language?: Language | null,
+    bookseries?: Bookseries | null,
+    bookseriesnum?: string,
+    bookseriesorder?: number,
+    description?: string,
+    desc_attr?: string,
+    misc?: string,
+    imported_strin?: string,
+    contributors?: Contribution[]
+}

@@ -108,7 +108,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
                                     onShow={() => onDialogShow()}
                                     onHide={() => onDialogHide()}
                                 >
-                                    <PublisherForm publisher={data} onSubmitCallback={setEditVisible} />
+                                    <PublisherForm publisher={data} onSubmitCallback={onDialogHide} />
                                 </Dialog>
 
                                 <div className="grid mb-5 col-12 justify-content-center">

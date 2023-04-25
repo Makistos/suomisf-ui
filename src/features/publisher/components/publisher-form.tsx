@@ -16,7 +16,7 @@ import { QueryClient } from '@tanstack/react-query';
 
 interface PublisherFormProps {
   publisher: Publisher,
-  onSubmitCallback: ((state: boolean) => void)
+  onSubmitCallback: (() => void)
 }
 
 export const PublisherForm = (props: PublisherFormProps) => {
@@ -44,7 +44,7 @@ export const PublisherForm = (props: PublisherFormProps) => {
     }
     setLoading(false);
     queryClient.invalidateQueries();
-    props.onSubmitCallback(false);
+    props.onSubmitCallback();
   }
 
   return (

@@ -11,6 +11,7 @@ export const ImageTooltip = ({ edition }: ImageTooltipProps) => {
 
   return (
     <div>
+      {edition.work[0].author_str}<br></br>
       <b>
         <u>{edition.title}</u>
       </b>

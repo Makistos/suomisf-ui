@@ -8,32 +8,20 @@ import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { AutoComplete } from 'primereact/autocomplete';
 import { useQueryClient } from '@tanstack/react-query';
-import _ from "lodash";
 
 import { Short } from "../types";
 import { ContributorField } from '../../../components/forms/contributor-field';
-import { Contribution, ContributionSimple } from '../../../types/contribution';
 import { getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { ShortForm } from '../types';
 import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
+import { makeBriefContributor } from '../../../components/forms/makeBriefContributor';
 
 type ShortFormType = Pick<Short, "id">
 
 interface ShortFormProps {
     short: Short,
     onSubmitCallback: ((state: boolean) => void)
-}
-
-const makeBriefContributor = (contributions: Contribution[]): ContributionSimple[] => {
-    const simplifyContribution = (contribution: Contribution) => {
-        return {
-            'person': _.pick(contribution.person, ['id', 'name', 'alt_name', 'fullname']),
-            'role': _.pick(contribution.role, ['id', 'name']),
-            'description': contribution.description,
-        }
-    }
-    return contributions.map(simplifyContribution);
 }
 
 export const ShortsForm = (props: ShortFormProps) => {
@@ -278,7 +266,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                                     />
                                 )}
                             />
-                            <label htmlFor="language">Asiasanat</label>
+                            <label htmlFor="tags">Asiasanat</label>
                         </span>
                     </div>
                     <div className="field col-12 py-0">

@@ -108,6 +108,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
         async function filterPeople(event: any) {
             const url =
                 "filter/people/" + event.query;
+            console.log("Person search url:" + url);
             const response = await getApiContent(url, user);
             const p = response.data;
             //console.log(p);
@@ -248,7 +249,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                 <label htmlFor="contributors" className="form-field-header">Tekijät</label>
                 <div id="contributors" className="py-0" key={id}>
                     {fields && fields.map((_, index: number) =>
-                        <ContributorRow index={index} />
+                        <ContributorRow index={index} key={index} />
                     )}
                 </div>
             </span>

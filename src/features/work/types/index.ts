@@ -8,6 +8,7 @@ import { Pubseries } from "../../pubseries/types";
 import { Edition } from "../../edition/types";
 import { Contribution } from "../../../types/contribution";
 import { Language } from "../../../types/language";
+import { Contributable } from "../../../types/generic";
 export interface Work {
     [index: string]: any,
     author_str: string,
@@ -33,7 +34,7 @@ export interface Work {
     translators: Person[]
 }
 
-export type WorkFormData = {
+export interface WorkFormData extends Contributable {
     [index: string]: any,
     id: number | null,
     title: string,
@@ -48,5 +49,5 @@ export type WorkFormData = {
     desc_attr?: string,
     misc?: string,
     imported_strin?: string,
-    contributors?: Contribution[]
+    contributors: Contribution[]
 }

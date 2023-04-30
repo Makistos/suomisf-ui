@@ -37,8 +37,9 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
     const [isEditVisible, setEditVisible] = useState(false);
 
 
-    const PickLinks = (items: Person[]) => {
-        return items.map((item) => ({ id: item['id'], name: item['alt_name'] }));
+    const PickLinks = (items: Contribution[]) => {
+        const retval = items.map((item) => item.person);
+        return retval;
     }
 
     const shortEditions = (editions: Edition[]) => {
@@ -133,7 +134,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                             <b>
                                 <LinkList
                                     path="people"
-                                    items={PickLinks(short.authors)}
+                                    items={PickLinks(short.contributors.filter(contributor => contributor.role.name === 'Kirjoittaja'))}
                                 />:<> </>
                             </b>
                         }
@@ -158,13 +159,13 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                         />
 
                     </div>
-                    {listPublications &&
+                    {listPublications && short && short.editions &&
                         short.editions.length > 0 && (
                             <div>
                                 {shortEditions(short.editions)}
                             </div>
                         )}
-                    {listPublications && short.issues.length > 0 && (
+                    {listPublications && short.issues && short.issues.length > 0 && (
                         <div>
                             {shortIssues(short.issues)}
                         </div>

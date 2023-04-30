@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Controller, useFieldArray, Control, UseFormRegister, FieldArrayWithId } from 'react-hook-form';
-
+import { Controller, useFieldArray, Control, UseFormRegister, FieldArrayWithId, useFormContext } from 'react-hook-form';
 import { AutoComplete } from "primereact/autocomplete";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
@@ -14,48 +13,30 @@ import { getCurrenUser, register } from "../../services/auth-service";
 import { pickProperties } from "./forms";
 import { Contribution, ContributionSimple } from "../../types/contribution";
 import { isAdmin } from '../../features/user';
-import { ShortForm } from '../../features/short/types';
+import { WorkFormData } from '../../features/work/types';
+import { Contributable } from "../../types/generic";
+//import { ContributorRow } from "./contributor-row";
 
 interface ContributorFieldProps {
     id: string,
-    control: Control<ShortForm>,
-    register: UseFormRegister<ShortForm>
+    // control: Control<T>,
+    // register: UseFormRegister<T>
     defValues?: Contribution[],
     disabled: boolean
 }
-
+// interface ContributorFieldProps {
+//     id: string,
+//     control: Control<WorkFormData>,
+//     register: UseFormRegister<WorkFormData>,
+//     defValues?: Contribution[],
+//     disabled: boolean
+// }
 
 type ContributorFieldPair = Pick<Contributor, "id" | "name">;
 
-export const ContributorField = ({ control, defValues, register, disabled }: ContributorFieldProps) => {
+export const ContributorField = ({ id, defValues, disabled }: ContributorFieldProps) => {
+    //const { register, control } = useFormContext();
     const user = useMemo(() => { return getCurrenUser() }, []);
-    const [filteredPeople, setFilteredPeople] = useState<any>(null);
-    const [filteredAliases, setFilteredAliases] = useState<any>(null);
-    const [roleList, setRoleList]: [ContributorFieldPair[],
-        (roleList: ContributorFieldPair[]) => void]
-        = useState<ContributorFieldPair[]>([]);
-    const emptyContributor: Contribution = {
-        person: {
-            name: '',
-            id: 0,
-            alt_name: '',
-            fullname: '',
-        },
-        role: { name: '', id: 0 },
-        description: "",
-        real_person: {
-            name: '',
-            id: 0,
-            alt_name: '',
-            fullname: '',
-        },
-    }
-
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: "contributors"
-    })
-
     const peopleToContribution = (people: Person[]) => {
         let retval: Contribution[] = [];
         retval = people.map((person) => {
@@ -65,34 +46,13 @@ export const ContributorField = ({ control, defValues, register, disabled }: Con
         return retval;
     };
 
-    useEffect(() => {
-        async function getRoles() {
-            const url = "roles";
-            const response = await getApiContent(url, user);
-            setRoleList(response.data);
-        }
-        getRoles();
-        async function getPeople() {
-            const url = "people";
-            const response = await getApiContent(url, user);
-            setFilteredPeople(response.data);
-        }
-        getPeople();
-    }, [user])
+    const { control, register } = useFormContext();
 
-    async function filterPeople(event: any) {
-        const url =
-            "filter/people/" + event.query;
-        const response = await getApiContent(url, user);
-        const p = response.data;
-        //console.log(p);
-        setFilteredPeople(p);
-        return p;
-    }
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: "contributors"
+    })
 
-    async function filterAliases(event: any) {
-        return null;
-    }
     // const contributionSort = (a: Contribution, b: Contribution) => {
     //     if (a.role.id !== b.role.id) {
     //         if (a.role.id < b.role.id) return -1;
@@ -100,25 +60,78 @@ export const ContributorField = ({ control, defValues, register, disabled }: Con
     //     }
     //     return -1;
     // }
-
-    const addEmptyContributor = () => {
-        console.log(control._fields)
-        append(emptyContributor);
+    interface ContributorRowProps {
+        index: number,
     }
+    const ContributorRow = ({ index }: ContributorRowProps) => {
+        const user = useMemo(() => { return getCurrenUser() }, []);
+        const keyValue = index;
+        const [filteredPeople, setFilteredPeople] = useState<any>(null);
+        const [filteredAliases, setFilteredAliases] = useState<any>(null);
+        const [roleList, setRoleList]: [ContributorFieldPair[],
+            (roleList: ContributorFieldPair[]) => void]
+            = useState<ContributorFieldPair[]>([]);
 
-    const removeContributor = (index: number) => {
-        console.log("Removing")
-        remove(index)
-        console.log("Removed")
-        console.log(fields.length)
-    }
+        const emptyContributor: Contribution = {
+            person: {
+                name: '',
+                id: 0,
+                alt_name: '',
+                fullname: '',
+            },
+            role: { name: '', id: 0 },
+            description: "",
+            real_person: {
+                name: '',
+                id: 0,
+                alt_name: '',
+                fullname: '',
+            },
+        }
 
-    const ContributorRow = (item: ContributionSimple, index: number) => {
-        //const fieldName = `contributors.${index}.person`;
-        //const fieldRole = `contributors.${index}.role`;
-        //const fieldDescription = `contributors.${index}.description`;
-        //const fieldAlias = `contributors.${index}.alias`;
-        const keyValue = item.person.id || index;
+        useEffect(() => {
+            async function getRoles() {
+                const url = "roles/";
+                const response = await getApiContent(url, user);
+                setRoleList(response.data);
+            }
+            getRoles();
+            async function getPeople() {
+                const url = "people/";
+                const response = await getApiContent(url, user);
+                setFilteredPeople(response.data);
+            }
+            getPeople();
+            getRoles();
+        }, [user])
+
+        async function filterPeople(event: any) {
+            const url =
+                "filter/people/" + event.query;
+            const response = await getApiContent(url, user);
+            const p = response.data;
+            //console.log(p);
+            setFilteredPeople(p);
+            return p;
+        }
+
+        async function filterAliases(event: any) {
+            return null;
+        }
+
+        const addEmptyContributor = () => {
+            console.log(control._fields)
+            append(emptyContributor);
+        }
+
+        const removeContributor = (index: number) => {
+            console.log("Removing")
+            remove(index)
+            console.log("Removed")
+            console.log(fields.length)
+        }
+
+
         return (
             <div key={keyValue}
                 className="grid gap-1">
@@ -233,11 +246,10 @@ export const ContributorField = ({ control, defValues, register, disabled }: Con
         <>
             <span >
                 <label htmlFor="contributors" className="form-field-header">Tekijät</label>
-                <div id="contributors" className="py-0">
-                    {fields && fields.map((item: FieldArrayWithId<ShortForm, "contributors", "id">, index: number) =>
-                        ContributorRow(item, index))
-                    }
-
+                <div id="contributors" className="py-0" key={id}>
+                    {fields && fields.map((_, index: number) =>
+                        <ContributorRow index={index} />
+                    )}
                 </div>
             </span>
         </>

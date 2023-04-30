@@ -1,4 +1,5 @@
 
+import { FieldValues } from "react-hook-form";
 import { PersonBrief } from "../features/person/types";
 
 export interface ContributorRole {
@@ -17,7 +18,7 @@ export interface Contribution {
     real_person?: PersonBrief,
 }
 
-export interface ContributionSimple {
+export interface ContributionSimple extends FieldValues {
     person: PersonBrief,
     role: RoleBrief,
     description?: string

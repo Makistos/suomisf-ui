@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { useForm, Controller, SubmitHandler, FieldValues, useFieldArray } from 'react-hook-form';
+import { useForm, Controller, SubmitHandler, FieldValues, FormProvider } from 'react-hook-form';
 
 import { classNames } from 'primereact/utils';
 import { InputText } from 'primereact/inputtext';
@@ -60,6 +60,7 @@ export const WorkForm = (props: WorkFormProps) => {
     bookseries: work.bookseries,
     bookseries_number: work.bookseries_number,
     bookseriesorder: work.bookseriesorder,
+    contributors: []
 
   });
 
@@ -78,14 +79,19 @@ export const WorkForm = (props: WorkFormProps) => {
     bookseries: null,
     bookseries_number: '',
     bookseriesorder: 0,
+    contributors: []
   }
 
   const formData = props.work ? convToForm(props.work) : defaultValues;
   const queryClient = useQueryClient()
 
-  const { register, control, handleSubmit,
-    formState: { isDirty, dirtyFields } } =
-    useForm<WorkFormData>({ defaultValues: formData });
+  // const { register, control, handleSubmit,
+  //   formState: { isDirty, dirtyFields } } =
+  //   useForm<WorkFormData>({ defaultValues: formData });
+
+  const methods = useForm<WorkFormData>({ defaultValues: formData });
+  const register = methods.register;
+  const control = methods.control;
 
   async function filterLanguages(event: any) {
     const url = "filter/languages/" + event.query;
@@ -106,7 +112,7 @@ export const WorkForm = (props: WorkFormProps) => {
   }
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    const retval: FormSubmitObject = { data, changed: dirtyFields }
+    const retval: FormSubmitObject = { data, changed: methods.formState.dirtyFields }
     setMessage("");
     setLoading(true);
     if (data.id != null) {
@@ -121,186 +127,187 @@ export const WorkForm = (props: WorkFormProps) => {
 
   return (
     <div className="card mt-3">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="formgrid grid">
-          <div className="field col-12">
-            <span className="p-float-label">
-              <Controller name="title" control={control}
-                render={({ field, fieldState }) => (
-                  <InputText
-                    {...field}
-                    autoFocus
-                    {...register("title")}
-                    className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-                    disabled={isDisabled(user, loading)}
-                  />
-                )}
-              />
-              <label htmlFor="title">Nimeke</label>
-            </span>
-          </div>
-          <div className="field col-12">
-            <span className="p-float-label">
-              <Controller name="subtitle" control={control}
-                render={({ field, fieldState }) => (
-                  <InputText
-                    {...field}
-                    {...register("subtitle")}
-                    className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-                    disabled={isDisabled(user, loading)}
-                  />
-                )}
-              />
-              <label htmlFor="subtitle">Alaotsikko</label>
-            </span>
-          </div>
-          <div className="field col-12">
-            <span className='p-float-label'>
-              <Controller name="orig_title" control={control}
-                render={({ field, fieldState }) => (
-                  <InputText
-                    {...field}
-                    {...register("orig_title")}
-                    className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-                    disabled={isDisabled(user, loading)}
-                  />
-                )}
-              />
-              <label htmlFor="orig_title">Alkuperäinen nimeke</label>
-            </span>
-          </div>
-          <div className="field col-4">
-            <span className='p-float-label'>
-              <Controller name="pubyear" control={control}
-                render={({ field, fieldState }) => (
-                  <InputText
-                    {...field}
-                    {...register("pubyear")}
-                    className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-                    disabled={isDisabled(user, loading)}
-                  />
-                )}
-              />
-              <label htmlFor="pubyear">Julkaisuvuosi</label>
-            </span>
-          </div>
-          <div className="field col-8">
-            <span className='p-float-label'>
-              <Controller name="language" control={control}
-                render={({ field, fieldState }) => (
-                  <AutoComplete
-                    {...field}
-                    field="name"
-                    completeMethod={filterLanguages}
-                    suggestions={filteredLanguages}
-                    placeholder="Kieli"
-                    delay={300}
-                    minLength={2}
-                    removeIcon
-                    className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-                    inputClassName="w-full"
-                    disabled={isDisabled(user, loading)}
-                  />
-                )}
-              />
-              <label htmlFor="language">Kieli</label>
-            </span>
-          </div>
-          <div className="field col-6">
-            <span className='p-float-label'>
-              <Controller name="bookseries" control={control}
-                render={({ field, fieldState }) => (
-                  <AutoComplete
-                    {...field}
-                    field="name"
-                    completeMethod={filterBookseries}
-                    suggestions={filteredBookseries}
-                    placeholder="Kirjasarja"
-                    delay={300}
-                    minLength={2}
-                    removeIcon
-                    className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-                    inputClassName="w-full"
-                    disabled={isDisabled(user, loading)}
-                  />
-                )}
-              />
-              <label htmlFor="bookseries">Kirjasarja</label>
-            </span>
-          </div>
-          <div className="field col-3">
-            <span className='p-float-label'>
-              <Controller name="bookseries_number" control={control}
-                render={({ field, fieldState }) => (
-                  <InputText
-                    {...field}
-                    {...register("bookseries_number")}
-                    className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-                    disabled={isDisabled(user, loading)}
-                  />
-                )}
-              />
-              <label htmlFor="bookseries_number">Kirjasarjan numero</label>
-            </span>
-          </div>
-          <div className="field col-3">
-            <span className='p-float-label'>
-              <Controller name="bookseriesorder" control={control}
-                render={({ field, fieldState }) => (
-                  <InputText
-                    {...field}
-                    {...register("bookseriesorder")}
-                    className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-                    disabled={isDisabled(user, loading)}
-                  />
-                )}
-              />
-              <label htmlFor="bookseriesorder">Kirjasarjan järjestys</label>
-            </span>
-          </div>
-          <div className="field col-12">
-            <span className='p-float-label'>
-              <Controller name="genres" control={control}
-                render={({ field, fieldState }) => (
-                  <MultiSelect
-                    {...field}
-                    options={genres}
-                    optionLabel="name"
-                    display='chip'
-                    scrollHeight='400px'
-                    className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-                    showClear
-                    showSelectAll={false}
-                    disabled={isDisabled(user, loading)}
-                  />
-                )}
-              />
-              <label htmlFor="genres">Genret</label>
-            </span>
-          </div>
-          <div className="field col-12">
-            <span className='p-float-label'>
-              <Controller name="tags" control={control}
-                render={({ field, fieldState }) => (
-                  <AutoComplete
-                    {...field}
-                    field="name"
-                    multiple
-                    completeMethod={filterTags}
-                    suggestions={filteredTags}
-                    placeholder="Asiasanat"
-                    delay={300}
-                    minLength={2}
-                    className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-                    inputClassName="w-full"
-                    disabled={isDisabled(user, loading)}
-                  />
-                )}
-              />
-              <label htmlFor="tags">Asiasanat</label>
-            </span>
-          </div>
-          {/*<div className="field col-12">
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
+          <div className="formgrid grid">
+            <div className="field col-12">
+              <span className="p-float-label">
+                <Controller name="title" control={control}
+                  render={({ field, fieldState }) => (
+                    <InputText
+                      {...field}
+                      autoFocus
+                      {...register("title")}
+                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                      disabled={isDisabled(user, loading)}
+                    />
+                  )}
+                />
+                <label htmlFor="title">Nimeke</label>
+              </span>
+            </div>
+            <div className="field col-12">
+              <span className="p-float-label">
+                <Controller name="subtitle" control={control}
+                  render={({ field, fieldState }) => (
+                    <InputText
+                      {...field}
+                      {...register("subtitle")}
+                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                      disabled={isDisabled(user, loading)}
+                    />
+                  )}
+                />
+                <label htmlFor="subtitle">Alaotsikko</label>
+              </span>
+            </div>
+            <div className="field col-12">
+              <span className='p-float-label'>
+                <Controller name="orig_title" control={control}
+                  render={({ field, fieldState }) => (
+                    <InputText
+                      {...field}
+                      {...register("orig_title")}
+                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                      disabled={isDisabled(user, loading)}
+                    />
+                  )}
+                />
+                <label htmlFor="orig_title">Alkuperäinen nimeke</label>
+              </span>
+            </div>
+            <div className="field col-4">
+              <span className='p-float-label'>
+                <Controller name="pubyear" control={control}
+                  render={({ field, fieldState }) => (
+                    <InputText
+                      {...field}
+                      {...register("pubyear")}
+                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                      disabled={isDisabled(user, loading)}
+                    />
+                  )}
+                />
+                <label htmlFor="pubyear">Julkaisuvuosi</label>
+              </span>
+            </div>
+            <div className="field col-8">
+              <span className='p-float-label'>
+                <Controller name="language" control={control}
+                  render={({ field, fieldState }) => (
+                    <AutoComplete
+                      {...field}
+                      field="name"
+                      completeMethod={filterLanguages}
+                      suggestions={filteredLanguages}
+                      placeholder="Kieli"
+                      delay={300}
+                      minLength={2}
+                      removeIcon
+                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                      inputClassName="w-full"
+                      disabled={isDisabled(user, loading)}
+                    />
+                  )}
+                />
+                <label htmlFor="language">Kieli</label>
+              </span>
+            </div>
+            <div className="field col-6">
+              <span className='p-float-label'>
+                <Controller name="bookseries" control={control}
+                  render={({ field, fieldState }) => (
+                    <AutoComplete
+                      {...field}
+                      field="name"
+                      completeMethod={filterBookseries}
+                      suggestions={filteredBookseries}
+                      placeholder="Kirjasarja"
+                      delay={300}
+                      minLength={2}
+                      removeIcon
+                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                      inputClassName="w-full"
+                      disabled={isDisabled(user, loading)}
+                    />
+                  )}
+                />
+                <label htmlFor="bookseries">Kirjasarja</label>
+              </span>
+            </div>
+            <div className="field col-3">
+              <span className='p-float-label'>
+                <Controller name="bookseries_number" control={control}
+                  render={({ field, fieldState }) => (
+                    <InputText
+                      {...field}
+                      {...register("bookseries_number")}
+                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                      disabled={isDisabled(user, loading)}
+                    />
+                  )}
+                />
+                <label htmlFor="bookseries_number">Kirjasarjan numero</label>
+              </span>
+            </div>
+            <div className="field col-3">
+              <span className='p-float-label'>
+                <Controller name="bookseriesorder" control={control}
+                  render={({ field, fieldState }) => (
+                    <InputText
+                      {...field}
+                      {...register("bookseriesorder")}
+                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                      disabled={isDisabled(user, loading)}
+                    />
+                  )}
+                />
+                <label htmlFor="bookseriesorder">Kirjasarjan järjestys</label>
+              </span>
+            </div>
+            <div className="field col-12">
+              <span className='p-float-label'>
+                <Controller name="genres" control={control}
+                  render={({ field, fieldState }) => (
+                    <MultiSelect
+                      {...field}
+                      options={genres}
+                      optionLabel="name"
+                      display='chip'
+                      scrollHeight='400px'
+                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                      showClear
+                      showSelectAll={false}
+                      disabled={isDisabled(user, loading)}
+                    />
+                  )}
+                />
+                <label htmlFor="genres">Genret</label>
+              </span>
+            </div>
+            <div className="field col-12">
+              <span className='p-float-label'>
+                <Controller name="tags" control={control}
+                  render={({ field, fieldState }) => (
+                    <AutoComplete
+                      {...field}
+                      field="name"
+                      multiple
+                      completeMethod={filterTags}
+                      suggestions={filteredTags}
+                      placeholder="Asiasanat"
+                      delay={300}
+                      minLength={2}
+                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                      inputClassName="w-full"
+                      disabled={isDisabled(user, loading)}
+                    />
+                  )}
+                />
+                <label htmlFor="tags">Asiasanat</label>
+              </span>
+            </div>
+            {/*<div className="field col-12">
             <ContributorField
               id={"contributors"}
               control={control}
@@ -310,44 +317,45 @@ export const WorkForm = (props: WorkFormProps) => {
             />
           </div>
                 */}
-          <div className="field col-12">
-            <Controller name="description" control={control}
-              render={({ field, fieldState }) => (
-                <Editor {...field} />
-              )}
-            />
-          </div>
-          <div className="field col-12">
-            <span className="p-float-label">
-              <Controller name="desc_attrs" control={control}
+            <div className="field col-12">
+              <Controller name="description" control={control}
                 render={({ field, fieldState }) => (
-                  <InputText {...field}
-                    {...register("desc_attrs")}
-                    className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-                    disabled={isDisabled(user, loading)}
-                  />
+                  <Editor {...field} />
                 )}
               />
-              <label htmlFor="desc_attrs">Kuvauksen lähde</label>
-            </span>
+            </div>
+            <div className="field col-12">
+              <span className="p-float-label">
+                <Controller name="desc_attrs" control={control}
+                  render={({ field, fieldState }) => (
+                    <InputText {...field}
+                      {...register("desc_attrs")}
+                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                      disabled={isDisabled(user, loading)}
+                    />
+                  )}
+                />
+                <label htmlFor="desc_attrs">Kuvauksen lähde</label>
+              </span>
+            </div>
+            <div className="field col-12">
+              <span className="p-float-label">
+                <Controller name="misc" control={control}
+                  render={({ field, fieldState }) => (
+                    <InputText {...field}
+                      {...register("misc")}
+                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                      disabled={isDisabled(user, loading)}
+                    />
+                  )}
+                />
+                <label htmlFor="misc">Muuta</label>
+              </span>
+            </div>
+            <Button type="submit" className="w-full justify-content-center">Tallenna</Button>
           </div>
-          <div className="field col-12">
-            <span className="p-float-label">
-              <Controller name="misc" control={control}
-                render={({ field, fieldState }) => (
-                  <InputText {...field}
-                    {...register("misc")}
-                    className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-                    disabled={isDisabled(user, loading)}
-                  />
-                )}
-              />
-              <label htmlFor="misc">Muuta</label>
-            </span>
-          </div>
-          <Button type="submit" className="w-full justify-content-center">Tallenna</Button>
-        </div>
-      </form>
+        </form>
+      </FormProvider>
     </div>
   )
 }

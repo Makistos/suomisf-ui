@@ -13,9 +13,9 @@ export const isAnthology = (work: Work) => {
     // value it's an anthology.
     let authors: Record<string, any> = {};
     work.stories.map(story => {
-        const author_name: string = story.authors
-            .sort((a, b) => a.name > b.name ? -1 : 1)
-            .map(author => author.name).toString();
+        const author_name: string = story.contributors.filter(contribution => contribution.role.name === 'author')
+            .sort((a, b) => a.person.name > b.person.name ? -1 : 1)
+            .map(author => author.person.name).toString();
         if (!(author_name in authors)) {
             authors[author_name] = author_name;
         }

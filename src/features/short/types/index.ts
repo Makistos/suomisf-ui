@@ -16,7 +16,6 @@ export interface Short {
     orig_title: string;
     lang: string;
     pubyear: string;
-    authors: Person[];
     type: ShortType;
     editions: Edition[];
     issues: Issue[];

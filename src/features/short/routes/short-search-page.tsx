@@ -75,6 +75,7 @@ export const ShortSearchPage = () => {
 
     const enableQuery = (state: boolean) => {
         setQueryEnabled(state)
+        console.log("Query enabled: " + state)
     }
 
 

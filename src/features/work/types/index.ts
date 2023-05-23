@@ -6,9 +6,9 @@ import { Short } from "../../short/types";
 import type { Awarded } from "../../award";
 import { Pubseries } from "../../pubseries/types";
 import { Edition } from "../../edition/types";
-import { Contribution } from "../../../types/contribution";
 import { Language } from "../../../types/language";
 import { Contributable } from "../../../types/generic";
+import { Contribution } from "../../../types/contribution";
 export interface Work {
     [index: string]: any,
     author_str: string,
@@ -31,10 +31,11 @@ export interface Work {
     stories: Short[],
     subtitle: string,
     title: string,
-    translators: Person[]
+    translators: Person[],
+    contributors: Contribution[],
 }
 
-export interface WorkFormData extends Contributable {
+export interface WorkFormData {
     [index: string]: any,
     id: number | null,
     title: string,
@@ -49,5 +50,5 @@ export interface WorkFormData extends Contributable {
     desc_attr?: string,
     misc?: string,
     imported_strin?: string,
-    contributors: Contribution[]
+    contributors: Contribution[],
 }

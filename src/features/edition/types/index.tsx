@@ -5,11 +5,13 @@ import { ImageType } from "../../../types/image";
 import { EditionFormat } from "../../../types/edition-format";
 import { Binding } from "../../../types/binding";
 import { Pubseries } from "../../pubseries/types";
+import { Contribution } from "../../../types/contribution";
 
 
 export interface Edition {
     binding: Binding;
     coll_info: string;
+    contributions: Contribution[];
     coverimage: number;
     dustcover: number;
     editionnum: number;

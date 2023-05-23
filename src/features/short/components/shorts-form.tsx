@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
-import { useForm, Controller, SubmitHandler, FieldValues, useFieldArray, FormProvider } from 'react-hook-form';
 
+import { useForm, Controller, SubmitHandler, FieldValues, useFieldArray, FormProvider } from 'react-hook-form';
 import { Dropdown } from 'primereact/dropdown';
 import { MultiSelect } from "primereact/multiselect";
 import { Button } from 'primereact/button';
@@ -8,9 +8,10 @@ import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { AutoComplete } from 'primereact/autocomplete';
 import { useQueryClient } from '@tanstack/react-query';
+import { DevTool } from "@hookform/devtools";
 
 import { Short } from "../types";
-import { ContributorField } from '../../../components/forms/contributor-field';
+import { ShortContributorField } from '../../../components/forms/short-contributor-field';
 import { getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { ShortForm } from '../types';
@@ -54,12 +55,14 @@ export const ShortsForm = (props: ShortFormProps) => {
     const queryClient = useQueryClient()
 
     const methods = useForm<ShortForm>({ defaultValues: formData });
-    const register = methods.register;
-    const control = methods.control;
+    // const register = methods.register;
+    //const control = methods.control;
+    // const handleSubmit = methods.handleSubmit;
+    // const formState = methods.formState;
 
     // const { register, control, handleSubmit,
     //     formState: { isDirty, dirtyFields } } =
-    //     useForm<ShortForm>({ defaultValues: formData });
+    //     useForm<ShortForm>({ mode: "onChange", defaultValues: formData });
     const [typeList, setTypeList] = useState([]);
     const [genres, setGenres] = useState([]);
     const [message, setMessage] = useState("");
@@ -84,25 +87,23 @@ export const ShortsForm = (props: ShortFormProps) => {
         setLoading(false);
     }, [user])
 
-    const contributorArray = useFieldArray({
-        control,
-        name: "contributors"
-    })
+    // const contributorArray = useFieldArray({
+    //     control,
+    //     name: "contributors"
+    // })
 
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
-        const retval: FormSubmitObject = { data, changed: methods.formState.dirtyFields }
+        const retval = { data, changed: methods.formState.dirtyFields }
         setMessage("");
         setLoading(true);
 
         // console.log(data);
+        console.log(retval)
         if (data.id !== null) {
             putApiContent('shorts/', retval, user);
         } else {
             postApiContent('shorts/', retval, user);
         }
-        // if (isDirty) {
-        //     console.log(dirtyFields)
-        // }
         setLoading(false);
         queryClient.invalidateQueries(
             //queryKey: ['searchShorts']
@@ -129,12 +130,12 @@ export const ShortsForm = (props: ShortFormProps) => {
                     <div className="formgrid grid">
                         <div className="field col-12">
                             <span className="p-float-label">
-                                <Controller name="title" control={control}
+                                <Controller name="title" control={methods.control}
                                     render={({ field, fieldState }) => (
                                         <InputText
                                             {...field}
                                             autoFocus
-                                            {...register("title")}
+                                            {...methods.register("title")}
                                             className={classNames({ 'p-invalid': fieldState.error },
                                                 "w-full")}
                                             disabled={isDisabled(user, loading)}
@@ -146,11 +147,11 @@ export const ShortsForm = (props: ShortFormProps) => {
                         </div>
                         <div className="field col-12">
                             <span className="p-float-label">
-                                <Controller name="orig_title" control={control}
+                                <Controller name="orig_title" control={methods.control}
                                     render={({ field, fieldState }) => (
                                         <InputText
                                             {...field}
-                                            {...register("orig_title")}
+                                            {...methods.register("orig_title")}
                                             className={classNames({ 'p-invalid': fieldState.error },
                                                 "w-full")}
                                             disabled={isDisabled(user, loading)}
@@ -162,11 +163,11 @@ export const ShortsForm = (props: ShortFormProps) => {
                         </div>
                         <div className="field col-12">
                             <span className="p-float-label">
-                                <Controller name="pubyear" control={control}
+                                <Controller name="pubyear" control={methods.control}
                                     render={({ field, fieldState }) => (
                                         <InputText
                                             {...field}
-                                            {...register("pubyear")}
+                                            {...methods.register("pubyear")}
                                             className={classNames(
                                                 { "p-invalid": fieldState.error },
                                                 "w-full"
@@ -182,7 +183,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                             <span className="p-float-label">
                                 <Controller
                                     name="type"
-                                    control={control}
+                                    control={methods.control}
                                     render={({ field, fieldState }) => (
                                         <Dropdown
                                             {...field}
@@ -202,7 +203,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                         </div>
                         <div className="field col-6">
                             <span className="p-float-label">
-                                <Controller name="lang" control={control}
+                                <Controller name="lang" control={methods.control}
                                     render={({ field, fieldState }) => (
                                         <AutoComplete
                                             {...field}
@@ -228,7 +229,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                         </div>
                         <div className="field col-12">
                             <span className="p-float-label">
-                                <Controller name="genres" control={control}
+                                <Controller name="genres" control={methods.control}
                                     render={({ field, fieldState }) => (
                                         <MultiSelect
                                             {...field}
@@ -251,7 +252,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                         </div>
                         <div className="field col-12">
                             <span className="p-float-label">
-                                <Controller name="tags" control={control}
+                                <Controller name="tags" control={methods.control}
                                     render={({ field, fieldState }) => (
                                         <AutoComplete
                                             {...field}
@@ -276,7 +277,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                             </span>
                         </div>
                         <div className="field col-12 py-0">
-                            <ContributorField
+                            <ShortContributorField
                                 id={"authors"}
                                 disabled={isDisabled(user, loading)}
                                 defValues={formData.contributors}
@@ -285,6 +286,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                         <Button type="submit" className="w-full justify-content-center">Tallenna</Button>
                     </div>
                 </form>
+                <DevTool control={methods.control} />
             </FormProvider>
         </div>
     )

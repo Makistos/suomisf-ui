@@ -6,7 +6,7 @@ export const makeBriefContributor = (contributions: Contribution[]): Contributio
     return {
       'person': _.pick(contribution.person, ['id', 'name', 'alt_name', 'fullname']),
       'role': _.pick(contribution.role, ['id', 'name']),
-      'description': contribution.description,
+      'description': contribution.description || '',
     };
   };
   return contributions.map(simplifyContribution);

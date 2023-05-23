@@ -17,6 +17,8 @@ import { WorkFormData } from '../types';
 import { makeBriefContributor } from '../../../components/forms/makeBriefContributor';
 import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
 import { ContributorField } from '../../../components/forms/contributor-field';
+import { Contribution } from '../../../types/contribution';
+import { workCreators } from '../../../components/forms/work-creators';
 
 interface WorkFormProps {
   work: Work,
@@ -60,8 +62,7 @@ export const WorkForm = (props: WorkFormProps) => {
     bookseries: work.bookseries,
     bookseries_number: work.bookseries_number,
     bookseriesorder: work.bookseriesorder,
-    contributors: []
-
+    contributors: work.contributions.filter((contribution: Contribution, index: number, arr: Contribution[]) => arr.indexOf(contribution) === index)
   });
 
   const defaultValues: WorkFormData = {
@@ -79,7 +80,7 @@ export const WorkForm = (props: WorkFormProps) => {
     bookseries: null,
     bookseries_number: '',
     bookseriesorder: 0,
-    contributors: []
+    contributors: [],
   }
 
   const formData = props.work ? convToForm(props.work) : defaultValues;
@@ -307,16 +308,13 @@ export const WorkForm = (props: WorkFormProps) => {
                 <label htmlFor="tags">Asiasanat</label>
               </span>
             </div>
-            {/*<div className="field col-12">
-            <ContributorField
-              id={"contributors"}
-              control={control}
-              register={register}
-              disabled={isDisabled(user, loading)}
-              defValues={formData.contributors}
-            />
-          </div>
-                */}
+            <div className="field col-12">
+              <ContributorField
+                id={"contributors"}
+                disabled={isDisabled(user, loading)}
+                defValues={formData.contributors}
+              />
+            </div>
             <div className="field col-12">
               <Controller name="description" control={control}
                 render={({ field, fieldState }) => (

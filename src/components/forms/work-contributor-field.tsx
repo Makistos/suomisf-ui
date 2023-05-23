@@ -15,12 +15,13 @@ import { Contribution, ContributionSimple } from "../../types/contribution";
 import { isAdmin } from '../../features/user';
 import { WorkFormData } from '../../features/work/types';
 import { Contributable } from "../../types/generic";
+import { ShortForm } from "../../features/short";
 //import { ContributorRow } from "./contributor-row";
 
 interface ContributorFieldProps {
     id: string,
-    // control: Control<T>,
-    // register: UseFormRegister<T>
+    control: Control<WorkFormData>,
+    register: UseFormRegister<WorkFormData>
     defValues?: Contribution[],
     disabled: boolean
 }
@@ -34,8 +35,7 @@ interface ContributorFieldProps {
 
 type ContributorFieldPair = Pick<Contributor, "id" | "name">;
 
-export const ContributorField = ({ id, defValues, disabled }: ContributorFieldProps) => {
-    //const { register, control } = useFormContext();
+export const ContributorField = ({ id, defValues, disabled, control, register }: ContributorFieldProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const peopleToContribution = (people: Person[]) => {
         let retval: Contribution[] = [];
@@ -46,7 +46,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
         return retval;
     };
 
-    const { control, register } = useFormContext();
+    //const { control, register } = useFormContext();
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -63,7 +63,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
     interface ContributorRowProps {
         index: number,
     }
-    const ContributorRow = ({ index }: ContributorRowProps) => {
+    const ContributorRow = (index: number) => {
         const user = useMemo(() => { return getCurrenUser() }, []);
         const keyValue = index;
         const [filteredPeople, setFilteredPeople] = useState<any>(null);
@@ -249,7 +249,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                 <label htmlFor="contributors" className="form-field-header">Tekijät</label>
                 <div id="contributors" className="py-0" key={id}>
                     {fields && fields.map((_, index: number) =>
-                        <ContributorRow index={index} key={index} />
+                        ContributorRow(index)
                     )}
                 </div>
             </span>

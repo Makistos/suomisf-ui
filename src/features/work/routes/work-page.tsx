@@ -121,6 +121,16 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             command: () => {
 
             }
+        },
+        {
+            label: "Poista",
+            icon: 'fa-solid fa-trash',
+            disabled: !(data !== undefined && data !== null &&
+                data.editions !== null &&
+                data.editions.length == 1),
+            command: () => {
+
+            }
         }
     ]
     // useEffect(() => {

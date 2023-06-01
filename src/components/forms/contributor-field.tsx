@@ -66,7 +66,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
     const ContributorRow = ({ index }: ContributorRowProps) => {
         const user = useMemo(() => { return getCurrenUser() }, []);
         const keyValue = index;
-        const [filteredPeople, setFilteredPeople] = useState<any>(null);
+        const [filteredPeople, setFilteredPeople] = useState<any>([]);
         const [filteredAliases, setFilteredAliases] = useState<any>(null);
         const [roleList, setRoleList]: [ContributorFieldPair[],
             (roleList: ContributorFieldPair[]) => void]
@@ -96,12 +96,13 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                 setRoleList(response.data);
             }
             getRoles();
-            async function getPeople() {
-                const url = "people/";
-                const response = await getApiContent(url, user);
-                setFilteredPeople(response.data);
-            }
-            getPeople();
+            //     async function getPeople() {
+            //         const url = "people/";
+            //         const response = await getApiContent(url, user);
+            //         setFilteredPeople(response.data);
+            //         //console.log("People response:" + filteredPeople);
+            //     }
+            //     getPeople();
             getRoles();
         }, [user])
 
@@ -112,6 +113,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
             const response = await getApiContent(url, user);
             const p = response.data;
             //console.log(p);
+
             setFilteredPeople(p);
             return p;
         }
@@ -157,6 +159,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                                 )}
                                 inputClassName="w-full"
                                 disabled={disabled}
+                                inputRef={field.ref}
                             />
                         )}
                     />
@@ -169,6 +172,8 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                             <Dropdown
                                 {...field}
                                 optionLabel="name"
+                                id={field.value.id}
+                                value={field.value}
                                 options={roleList}
                                 className={classNames(
                                     { "p-invalid": fieldState.error }, "w-full"
@@ -176,6 +181,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                                 placeholder="Rooli"
                                 tooltip="Rooli"
                                 disabled={disabled}
+                                focusInputRef={field.ref}
                             />
                         )}
                     />

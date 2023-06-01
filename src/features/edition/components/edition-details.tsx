@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { LinkList } from "../../../components/link-list";
 import { EditionProps } from "../types";
 import { EditionVersion } from "../utils/edition-version";
+import { Button } from 'primereact/button';
 
 
 export const EditionDetails = ({ edition, work, card }: EditionProps) => {
@@ -34,7 +35,14 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                 <span><br />Kansipaperi.</span>
             )}
             {edition.coverimage === 3 &&
-                <span><br />Ylivetokannet.</span>}
+                <span><br />Ylivetokannet.</span>}<br />
+            <div>
+                <Button icon="pi pi-pencil" className="p-button-text" />
+                <Button icon="pi pi-trash" className="p-button-text" />
+                {work && work.stories && work.stories.length > 0 && (
+                    <Button icon="fa fa-list-ul" className='p-button-text' />
+                )}
+            </div>
         </div>
     );
 

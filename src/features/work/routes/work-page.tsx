@@ -146,7 +146,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             <div className="col-12">
                 <div className="grid">
                     <div className="col-8" >
-                        <EditionDetails edition={edition} card work={edition.work[0]} />
+                        <EditionDetails edition={edition} card work={data} />
                     </div>
                     <div className="flex col-4 justify-content-end align-content-center">
                         {edition.images.length > 0 &&
@@ -197,13 +197,13 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     }
 
     const renderHeader = () => {
-        return (
-            <div className="grid grid-nogutter">
-                <div className="col" style={{ textAlign: 'left' }}>
-                    <DataViewLayoutOptions layout={layout}
-                        onChange={(e: DataViewLayoutOptionsChangeParams) => setLayout(e.value)} />
-                </div>
-            </div>
+        return (<> </>
+            // <div className="grid grid-nogutter">
+            //     <div className="col" style={{ textAlign: 'left' }}>
+            //         <DataViewLayoutOptions layout={layout}
+            //             onChange={(e: DataViewLayoutOptionsChangeParams) => setLayout(e.value)} />
+            //     </div>
+            // </div>
         )
     }
 
@@ -270,18 +270,20 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                 <WorkDetails work={data} />
                 {
                     data.stories.length > 0 && (
-                        <Panel header="Novellit"
-                            headerTemplate={panelTemplate}
-                            toggleable collapsed>
-                            <ShortsList shorts={data.stories} person={data.authors[0]}
-                                anthology={anthology}
-                            />
-                        </Panel>
+                        <div className="mb-3">
+                            <Panel header="Novellit"
+                                headerTemplate={panelTemplate}
+                                toggleable collapsed>
+                                <ShortsList shorts={data.stories} person={data.authors[0]}
+                                    anthology={anthology}
+                                />
+                            </Panel>
+                        </div>
                     )
                 }
-                <div>
-                    <h2>Painokset</h2>
-                    <div>
+                <div className="mt-5 mb-0">
+                    <h2 className="mb-0">Painokset</h2>
+                    <div className="mt-0">
                         <DataView value={data.editions} layout={layout}
                             header={header} itemTemplate={itemTemplate} />
                         {/*{work.editions.map((edition) => {

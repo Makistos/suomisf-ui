@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { useForm, Controller, SubmitHandler, FieldValues, FormProvider } from 'react-hook-form';
 
+import { useForm, Controller, SubmitHandler, FieldValues, FormProvider } from 'react-hook-form';
 import { classNames } from 'primereact/utils';
 import { InputText } from 'primereact/inputtext';
 import { Editor } from 'primereact/editor';
@@ -34,7 +34,7 @@ export const WorkForm = (props: WorkFormProps) => {
   const [filteredTags, setFilteredTags] = useState([]);
   const [filteredBookseries, setFilteredBookseries] = useState([]);
 
-  console.log(props.work);
+  //console.log(props.work);
 
   useEffect(() => {
     async function getGenres() {
@@ -315,12 +315,16 @@ export const WorkForm = (props: WorkFormProps) => {
                 defValues={formData.contributors}
               />
             </div>
+
             <div className="field col-12">
-              <Controller name="description" control={control}
-                render={({ field, fieldState }) => (
-                  <Editor {...field} />
-                )}
-              />
+              <span className='p-float-label'>
+                <Controller name="description" control={control}
+                  render={({ field, fieldState }) => (
+                    <Editor {...field} />
+                  )}
+                />
+                <label htmlFor="description">Kuvaus</label>
+              </span>
             </div>
             <div className="field col-12">
               <span className="p-float-label">

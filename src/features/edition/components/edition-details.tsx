@@ -1,14 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from "react-router-dom";
+
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
 import { LinkList } from "../../../components/link-list";
 import { EditionProps } from "../types";
 import { EditionVersion } from "../utils/edition-version";
-import { Button } from 'primereact/button';
-
+import { EditionForm } from './edition-form';
 
 export const EditionDetails = ({ edition, work, card }: EditionProps) => {
+    const [isEditVisible, setEditVisible] = useState(false);
+    const [queryEnabled, setQueryEnabled] = useState(true);
+
+    const onDialogShow = () => {
+        setEditVisible(true);
+        setQueryEnabled(false)
+    }
+
+    const queryClient = useQueryClient();
+    const onDialogHide = () => {
+        queryClient.invalidateQueries({ queryKey: ["work", work?.id] });
+        setQueryEnabled(true);
+        setEditVisible(false);
+    }
+
+
     return (
         <div>
+            <Dialog maximizable blockScroll
+                header="Teoksen muokkaus" visible={isEditVisible}
+                onShow={() => onDialogShow()}
+                onHide={() => onDialogHide()}
+            >
+                <EditionForm edition={edition} onSubmitCallback={onDialogHide} />
+            </Dialog>
+
             {card && <b><EditionVersion edition={edition} /></b>}
             {work !== undefined && edition.title !== work.title &&
                 <><br /><i className="font-medium">{edition.title}</i></>}
@@ -37,10 +65,10 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
             {edition.coverimage === 3 &&
                 <span><br />Ylivetokannet.</span>}<br />
             <div>
-                <Button icon="pi pi-pencil" className="p-button-text" />
-                <Button icon="pi pi-trash" className="p-button-text" />
+                <Button icon="pi pi-pencil" tooltip="Muokkaa" className="p-button-text" onClick={() => onDialogShow()} />
+                <Button icon="pi pi-trash" tooltip="Poista" className="p-button-text" />
                 {work && work.stories && work.stories.length > 0 && (
-                    <Button icon="fa fa-list-ul" className='p-button-text' />
+                    <Button icon="fa fa-list-ul" tooltip="Novellit" className='p-button-text' />
                 )}
             </div>
         </div>

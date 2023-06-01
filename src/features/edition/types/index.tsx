@@ -47,3 +47,8 @@ export interface EditionProps {
     card?: boolean,
     showVersion?: boolean
 }
+
+export interface EditionFormData {
+    [index: string]: any,
+
+}

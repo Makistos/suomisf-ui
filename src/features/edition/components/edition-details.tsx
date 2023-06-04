@@ -53,17 +53,26 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                         }))} />.
                 </>
             )}
+            {edition.pubseries && (<>
+                <br /><Link to={`/pubseries/${edition.pubseries.id}`}>{edition.pubseries.name}</Link>
+                {edition.pubseriesnum && (<> {edition.pubseriesnum}</>)}
+                .</>
+            )}
             {edition.pages && (<><br />{edition.pages} sivua. </>)}
             {edition.size && edition.size + " cm."}
             {edition.misc && (<><br />{edition.misc}</>)}
             {(edition.isbn || edition.binding.id > 1) && <br />}
             {edition.isbn && (<>ISBN {edition.isbn}</>)}
             {edition.binding.id > 1 && (<> {edition.binding.name}.</>)}
-            {edition.dustcover === 3 && (
-                <span><br />Kansipaperi.</span>
-            )}
-            {edition.coverimage === 3 &&
-                <span><br />Ylivetokannet.</span>}<br />
+            {
+                edition.dustcover === 3 && (
+                    <span><br />Kansipaperi.</span>
+                )
+            }
+            {
+                edition.coverimage === 3 &&
+                <span><br />Ylivetokannet.</span>
+            }<br />
             <div>
                 <Button icon="pi pi-pencil" tooltip="Muokkaa" className="p-button-text" onClick={() => onDialogShow()} />
                 <Button icon="pi pi-trash" tooltip="Poista" className="p-button-text" />
@@ -71,7 +80,7 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                     <Button icon="fa fa-list-ul" tooltip="Novellit" className='p-button-text' />
                 )}
             </div>
-        </div>
+        </div >
     );
 
 };

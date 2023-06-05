@@ -7,6 +7,7 @@ import { InputText } from 'primereact/inputtext';
 import { AutoComplete } from 'primereact/autocomplete';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 import { RadioButton } from 'primereact/radiobutton';
+import { Button } from 'primereact/button';
 
 import { getCurrenUser } from '../../../services/auth-service';
 import { Edition } from '../types';
@@ -48,6 +49,7 @@ export const EditionForm = (props: EditionFormProps) => {
       pages: data.pages,
       size: data.size,
       misc: data.misc,
+      imported_string: data.imported_string,
       isbn: data.isbn,
       printedin: data.printedin,
       coll_info: data.coll_info,
@@ -69,10 +71,13 @@ export const EditionForm = (props: EditionFormProps) => {
     const retval: FormSubmitObject = { data, changed: methods.formState.dirtyFields }
     setMessage("");
     setLoading(true);
+    // Convert values back to API format
+    data.dustcover = data.dustcover === null ? 1 : data.dustcover === false ? 2 : 3;
+    data.coverimage = data.coverimage === null ? 1 : data.coverimage === false ? 2 : 3;
     if (data.id != null) {
-      putApiContent('works', retval, user)
+      putApiContent('editions', retval, user)
     } else {
-      postApiContent('works', retval, user)
+      postApiContent('editions', retval, user)
     }
     setLoading(false);
     // queryClient.invalidateQueries({ queryKey: ["work", props.work.id] });
@@ -453,6 +458,7 @@ export const EditionForm = (props: EditionFormProps) => {
                 <label htmlFor="imported_string">Lähde</label>
               </span>
             </div>
+            <Button type="submit" className="w-full justify-content-center">Tallenna</Button>
           </div>
         </form>
       </FormProvider>

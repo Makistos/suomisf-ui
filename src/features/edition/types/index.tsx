@@ -59,6 +59,7 @@ export interface EditionFormData {
     pages?: number,
     size?: string,
     misc: string,
+    imported_string: string,
     isbn: string,
     printedin?: string,
     coll_info: string,

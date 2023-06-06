@@ -6,7 +6,7 @@ import { classNames } from 'primereact/utils';
 import { InputText } from 'primereact/inputtext';
 import { AutoComplete } from 'primereact/autocomplete';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
-import { RadioButton } from 'primereact/radiobutton';
+import { RadioButton, RadioButtonChangeParams, RadioButtonProps } from 'primereact/radiobutton';
 import { Button } from 'primereact/button';
 
 import { getCurrenUser } from '../../../services/auth-service';
@@ -16,6 +16,7 @@ import { Contribution } from '../../../types/contribution';
 import { EditionFormData } from '../types';
 import { putApiContent, postApiContent, getApiContent } from '../../../services/user-service';
 import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
+import { Binding } from '../../../types/binding';
 
 interface EditionFormProps {
   edition: Edition;
@@ -28,8 +29,8 @@ export const EditionForm = (props: EditionFormProps) => {
   const [message, setMessage] = useState("");
   const [filteredPublishers, setFilteredPublishers] = useState<any>([]);
   const [filteredPubseries, setFilteredPubseries] = useState<any>([]);
-  const [binding, setBinding] = useState<any>(null);
-  const bindingTypes = [{ id: '1', name: 'Ei tietoa' }, { id: '2', name: 'Nidottu' }, { id: '3', name: 'Sidottu' }];
+  const [binding, setBinding] = useState<Binding>(props.edition.binding);
+  const bindingTypes: Binding[] = [{ id: '1', name: 'Ei tietoa' }, { id: '2', name: 'Nidottu' }, { id: '3', name: 'Sidottu' }];
 
   console.log("EditionForm: ", props.edition);
 
@@ -68,12 +69,14 @@ export const EditionForm = (props: EditionFormProps) => {
   const control = methods.control;
 
   const onSubmit: SubmitHandler<FieldValues> = data => {
-    const retval: FormSubmitObject = { data, changed: methods.formState.dirtyFields }
+    // Convert values back to API format
+    let updatedData: FieldValues = JSON.parse(JSON.stringify(data));
+    updatedData.dustcover = data.dustcover === null ? 1 : data.dustcover === false ? 2 : 3;
+    updatedData.coverimage = data.coverimage === null ? 1 : data.coverimage === false ? 2 : 3;
+    updatedData.binding = binding;
+    const retval: FormSubmitObject = { data: updatedData, changed: methods.formState.dirtyFields }
     setMessage("");
     setLoading(true);
-    // Convert values back to API format
-    data.dustcover = data.dustcover === null ? 1 : data.dustcover === false ? 2 : 3;
-    data.coverimage = data.coverimage === null ? 1 : data.coverimage === false ? 2 : 3;
     if (data.id != null) {
       putApiContent('editions', retval, user)
     } else {
@@ -95,6 +98,7 @@ export const EditionForm = (props: EditionFormProps) => {
     const response = await getApiContent(url, user);
     setFilteredPubseries(response.data);
   }
+
   return (
     <div className='card mt-3'>
       <FormProvider {...methods}>
@@ -341,6 +345,29 @@ export const EditionForm = (props: EditionFormProps) => {
                   <label htmlFor="size">Koko (korkeus cm)</label>
                 </span>
               </div>
+              <div className="field col-2">
+                {bindingTypes.map((item) => {
+                  return (
+                    <div key={"binding" + item.id} className="flex align-items-center">
+                      <Controller
+                        name={"binding" + item.id}
+                        control={methods.control}
+                        render={({ field, fieldState }) => (
+                          <RadioButton
+                            inputId={item.id}
+                            name="binding"
+                            value={item}
+                            onChange={(e: RadioButtonChangeParams) => setBinding(e.value)}
+                            checked={binding.id === item.id}
+                          />
+                        )}
+                      />
+                      <label htmlFor={"binding" + item.id}>{item.name}</label>
+                    </div>
+                  );
+                })}
+              </div>
+              {/*
               <div className='field col-2'>
                 <div className="flex align-items-center">
                   <Controller
@@ -350,7 +377,7 @@ export const EditionForm = (props: EditionFormProps) => {
                       <RadioButton inputId="Ei tiedossa"
                         {...field}
                         inputRef={field.ref}
-                        value="Ei tiedossa"
+                        name="binding"
                         checked={field.value && field.value.id === 1}
                       />
                     )}
@@ -363,7 +390,7 @@ export const EditionForm = (props: EditionFormProps) => {
                       <RadioButton inputId="Nidottu"
                         {...field}
                         inputRef={field.ref}
-                        value="Nidottu"
+                        name="binding"
                         checked={field.value && field.value.id === 2}
                       />
                     )}
@@ -376,7 +403,7 @@ export const EditionForm = (props: EditionFormProps) => {
                       <RadioButton inputId="Sidottu"
                         {...field}
                         inputRef={field.ref}
-                        value="Sidottu"
+                        name="binding"
                         checked={field.value && field.value.id === 3}
                       />
                     )}
@@ -384,6 +411,7 @@ export const EditionForm = (props: EditionFormProps) => {
                   <label htmlFor="Sidottu">Sidottu</label>
                 </div>
               </div>
+                    */}
               <div className='field col-1'>
                 <Controller
                   name="dustcover"

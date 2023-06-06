@@ -61,9 +61,9 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
             {edition.pages && (<><br />{edition.pages} sivua. </>)}
             {edition.size && edition.size + " cm."}
             {edition.misc && (<><br />{edition.misc}</>)}
-            {(edition.isbn || edition.binding.id > 1) && <br />}
+            {(edition.isbn || parseInt(edition.binding.id) > 1) && <br />}
             {edition.isbn && (<>ISBN {edition.isbn}</>)}
-            {edition.binding.id > 1 && (<> {edition.binding.name}.</>)}
+            {parseInt(edition.binding.id) > 1 && (<> {edition.binding.name}.</>)}
             {
                 edition.dustcover === 3 && (
                     <span><br />Kansipaperi.</span>

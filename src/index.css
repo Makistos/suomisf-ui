@@ -51,3 +51,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+p-radiobutton-label {
+  margin-right: 5rem;
+}

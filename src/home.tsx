@@ -1,8 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 
-import { useQuery } from "@tanstack/react-query";
-import { Image } from "primereact/image";
 import { Tooltip } from 'primereact/tooltip';
 
 import { getApiContent } from "./services/user-service";
@@ -74,7 +72,8 @@ export const Home = () => {
                           </div>
                         </Tooltip>
                         <Link to={`/works/${edition.work[0].id}`}>
-                          <img className={"image-" + edition.id} src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src} height={String(edition.size ? Number(edition.size) * 10 : 200)} />
+                          <img alt={edition.title} className={"image-" + edition.id} src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src}
+                            height={String(edition.size ? Number(edition.size) * 10 : 200)} />
                         </Link>
                       </div>
                     )}
@@ -124,7 +123,7 @@ export const Home = () => {
         </div>
       </div>
       <div className="col-4 mt-4">
-        <img className="front-page-image" src="pexels-gunnar-ridderström-4318441.jpg"></img>
+        <img alt="Image from a library" className="front-page-image" src="pexels-gunnar-ridderström-4318441.jpg"></img>
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 
 export const useDocumentTitle = (title: string) => {
   const [documentTitle, setDocumentTitle] = useState(title);
@@ -6,7 +6,7 @@ export const useDocumentTitle = (title: string) => {
   useEffect(() => {
     if (title !== undefined)
       document.title = "SF-Bibliografia - " + documentTitle;
-  }, [documentTitle]);
+  }, [documentTitle, title]);
 
   return [documentTitle, setDocumentTitle] as const;
 }

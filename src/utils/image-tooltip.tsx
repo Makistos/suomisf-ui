@@ -1,7 +1,7 @@
 import React from 'react';
 import { Edition, EditionString } from "../features/edition";
-import { ImageType } from "../types/image";
-import { Work } from '../features/work';
+// import { ImageType } from "../types/image";
+// import { Work } from '../features/work';
 
 interface ImageTooltipProps {
   edition: Edition,

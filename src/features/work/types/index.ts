@@ -1,5 +1,5 @@
 import { Bookseries } from "../../bookseries";
-import type { Country } from "../../../types/country";
+// import type { Country } from "../../../types/country";
 import { Person } from "../../person/types";
 import type { LinkType } from "../../../types/link";
 import { Short } from "../../short/types";
@@ -7,7 +7,7 @@ import type { Awarded } from "../../award";
 import { Pubseries } from "../../pubseries/types";
 import { Edition } from "../../edition/types";
 import { Language } from "../../../types/language";
-import { Contributable } from "../../../types/generic";
+// import { Contributable } from "../../../types/generic";
 import { Contribution } from "../../../types/contribution";
 export interface Work {
     [index: string]: any,

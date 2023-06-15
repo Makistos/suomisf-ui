@@ -127,7 +127,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             icon: 'fa-solid fa-trash',
             disabled: !(data !== undefined && data !== null &&
                 data.editions !== null &&
-                data.editions.length == 1),
+                data.editions.length === 1),
             command: () => {
 
             }

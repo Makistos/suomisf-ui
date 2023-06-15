@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link } from 'react-router-dom';
 
 import { useQuery } from "@tanstack/react-query";
@@ -58,26 +58,32 @@ export const PubseriesListPage = () => {
         <main className="all-content">
             <div>
                 <h1 className="title">Kustantajien sarjat</h1>
-                <>
-                    <p>Sarjoja yhteensä: {data?.length}</p>
-                    <DataTable value={data}
-                        size="small"
-                        dataKey="id"
-                        emptyMessage="Sarjoja ei löytynyt"
-                        loading={isLoading}
-                    >
-                        <Column field="name" header="Nimi"
-                            body={nameTemplate}
-                            filter sortable />
-                        <Column field="publisher.name" header="Kustantaja"
-                            body={publisherTemplate}
-                            sortable filter
-                        />
-                        <Column field="editions.length" header="Kirjoja"
-                            filter sortable
-                            dataType="numeric" />
-                    </DataTable>
-                </>
+                {isLoading ?
+                    <div className="progressbar">
+                        <ProgressSpinner />
+                    </div>
+                    :
+                    <>
+                        <p>Sarjoja yhteensä: {data?.length}</p>
+                        <DataTable value={data}
+                            size="small"
+                            dataKey="id"
+                            emptyMessage="Sarjoja ei löytynyt"
+                            loading={isLoading}
+                        >
+                            <Column field="name" header="Nimi"
+                                body={nameTemplate}
+                                filter sortable />
+                            <Column field="publisher.name" header="Kustantaja"
+                                body={publisherTemplate}
+                                sortable filter
+                            />
+                            <Column field="editions.length" header="Kirjoja"
+                                filter sortable
+                                dataType="numeric" />
+                        </DataTable>
+                    </>
+                }
             </div>
         </main>
     )

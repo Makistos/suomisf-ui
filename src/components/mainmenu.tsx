@@ -116,7 +116,7 @@ export default function MainMenu() {
     useEffect(() => {
         const newUser = getCurrenUser();
         setUser(newUser);
-    }, [])
+    }, [user])
 
     const start = <span><a href="/" > <b>SuomiSF </b></a > </span>
     const End = () => {

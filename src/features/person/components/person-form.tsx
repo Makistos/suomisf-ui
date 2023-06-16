@@ -53,7 +53,6 @@ export const PersonForm = (props: FormProps<Person>) => {
     }
 
     const formData = props.data ? convToForm(props.data) : defaultValues;
-    console.log(formData);
     const methods = useForm<PersonFormData>({ defaultValues: formData });
     const queryClient = useQueryClient()
 
@@ -92,7 +91,7 @@ export const PersonForm = (props: FormProps<Person>) => {
                                         />
                                     )}
                                 />
-                                <label htmlFor="name">Nimi</label>
+                                <label htmlFor="name">Nimi<sup>*</sup></label>
                                 <small id="name-help">Kuten esiintyy kirjoissa (sukunimi, etunimi)</small>
                             </span>
                         </div>
@@ -187,7 +186,7 @@ export const PersonForm = (props: FormProps<Person>) => {
                                             completeMethod={filterCountries}
                                             suggestions={filteredCountries}
                                             placeholder="Kansallisuus"
-                                            tooltip="Kansallisuus"
+                                            emptyMessage='Ei tuloksia'
                                             delay={300}
                                             minLength={2}
                                             className={classNames(

@@ -20,7 +20,7 @@ import { TagGroup } from '../../tag';
 import { LinkPanel } from "../../../components/link-panel";
 import { AwardPanel, Awarded } from '../../award';
 import { Person, PersonBrief } from '../types';
-import { PersonForm } from './person-form';
+import { PersonForm } from '../components/person-form';
 import { selectId } from '../../../utils';
 import { User } from "../../user";
 import { useDocumentTitle } from '../../../components/document-title';
@@ -40,6 +40,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     const [isEditVisible, setEditVisible] = useState(false);
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [editPerson, setEditPerson] = useState(true);
+    const [formData, setFormData]: [Person | null, (formData: Person | null) => void] = useState<Person | null>(null);
 
     try {
         thisId = selectId(params, id);
@@ -73,15 +74,19 @@ export const PersonPage = ({ id }: PersonPageProps) => {
             icon: "fa-solid fa-circle-plus",
             command: () => {
                 setEditPerson(false);
-                setEditPerson(true);
+                setFormData(null);
+                setEditVisible(true);
             }
         },
         {
             label: 'Muokkaa',
             icon: 'fa-solid fa-pen-to-square',
             command: () => {
-                setEditPerson(true);
-                setEditVisible(true);
+                if (data) {
+                    setEditPerson(true);
+                    setFormData(data);
+                    setEditVisible(true);
+                }
             }
         }
     ]
@@ -187,7 +192,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                     onShow={() => onDialogShow()}
                     onHide={() => onDialogHide()}
                 >
-                    <PersonForm data={!data || !editPerson ? null : data} onSubmitCallback={onDialogHide} />
+                    <PersonForm data={!formData || !editPerson ? null : formData} onSubmitCallback={onDialogHide} />
                 </Dialog>
                 {
                     isLoading ?

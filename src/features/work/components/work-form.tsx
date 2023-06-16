@@ -14,11 +14,11 @@ import { Work } from '../types';
 import { getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { WorkFormData } from '../types';
-import { makeBriefContributor } from '../../../components/forms/makeBriefContributor';
+//import { makeBriefContributor } from '../../../components/forms/makeBriefContributor';
 import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
 import { ContributorField } from '../../../components/forms/contributor-field';
 import { Contribution } from '../../../types/contribution';
-import { workCreators } from '../../../components/forms/work-creators';
+//import { workCreators } from '../../../components/forms/work-creators';
 
 interface WorkFormProps {
   work: Work,
@@ -84,7 +84,7 @@ export const WorkForm = (props: WorkFormProps) => {
   }
 
   const formData = props.work ? convToForm(props.work) : defaultValues;
-  const queryClient = useQueryClient()
+  //const queryClient = useQueryClient()
 
   // const { register, control, handleSubmit,
   //   formState: { isDirty, dirtyFields } } =

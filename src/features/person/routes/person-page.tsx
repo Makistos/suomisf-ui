@@ -1,9 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Fieldset } from 'primereact/fieldset';
+import { Tooltip } from "primereact/tooltip";
+import { SpeedDial } from "primereact/speeddial";
+import { Dialog } from "primereact/dialog";
 import _ from "lodash";
 
 import { getCurrenUser } from "../../../services/auth-service";
@@ -17,6 +20,7 @@ import { TagGroup } from '../../tag';
 import { LinkPanel } from "../../../components/link-panel";
 import { AwardPanel, Awarded } from '../../award';
 import { Person, PersonBrief } from '../types';
+import { PersonForm } from './person-form';
 import { selectId } from '../../../utils';
 import { User } from "../../user";
 import { useDocumentTitle } from '../../../components/document-title';
@@ -33,6 +37,9 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     const params = useParams();
     const user = getCurrenUser();
     const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+    const [isEditVisible, setEditVisible] = useState(false);
+    const [queryEnabled, setQueryEnabled] = useState(true);
+    const [editPerson, setEditPerson] = useState(true);
 
     try {
         thisId = selectId(params, id);
@@ -51,13 +58,33 @@ export const PersonPage = ({ id }: PersonPageProps) => {
 
     const { isLoading, data } = useQuery({
         queryKey: ["person", thisId],
-        queryFn: () => fetchPerson(thisId, user)
+        queryFn: () => fetchPerson(thisId, user),
+        enabled: queryEnabled
     });
 
     useEffect(() => {
         if (data !== undefined)
             setDocumentTitle(data.name);
     }, [data])
+
+    const dialItems = [
+        {
+            label: 'Uusi henkilö',
+            icon: "fa-solid fa-circle-plus",
+            command: () => {
+                setEditPerson(false);
+                setEditPerson(true);
+            }
+        },
+        {
+            label: 'Muokkaa',
+            icon: 'fa-solid fa-pen-to-square',
+            command: () => {
+                setEditPerson(true);
+                setEditVisible(true);
+            }
+        }
+    ]
 
     const personDetails = (nationality: Country | null, dob: number | null, dod: number | null) => {
         let retval: string = "";
@@ -128,85 +155,118 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         return retval.join(', ');
     }
 
+    const onDialogShow = () => {
+        setEditVisible(true);
+        setQueryEnabled(false);
+    }
+
+    const queryClient = useQueryClient();
+
+    const onDialogHide = () => {
+        queryClient.invalidateQueries({ queryKey: ["person", data?.id] });
+        setQueryEnabled(true);
+        setEditVisible(false);
+    }
+
     return (
         <main className="all-content" id="person-page">
-            {
-                isLoading ?
-                    <div className="progressbar">
-                        <ProgressSpinner />
-                    </div>
-                    : (data && (
-                        <div>
-                            <div className="grid justify-content-center">
-                                <div className="grid col-12 mt-5 mb-1">
-                                    {data.alt_name ? (
-                                        <div className="grid col-12 p-0 justify-content-center">
-                                            <div className="grid col-12 pb-0 pt-5 mb-0 justify-content-center">
-                                                <h1 className="maintitle">{data.alt_name}</h1>
-                                            </div>
-                                            {data.fullname && (
-                                                <div className="grid col-12 p-0 mt-0 mb-0 justify-content-center">
-                                                    <h2>({data.fullname})</h2>
+            <div className="mt-5 speeddial style={{ position: 'relative', height: 500px'}}">
+                <div>
+                    <Tooltip position="left" target=".speeddial .speeddial-right .p-speeddial-action">
+                    </Tooltip>
+                    <SpeedDial className="speeddial-right"
+                        model={dialItems}
+                        direction="left"
+                        type="semi-circle"
+                        radius={80}
+                    />
+                </div >
+                <Dialog maximizable blockScroll
+                    className="w-full lg:w-6"
+                    header="Henkilön tietojen muokkaus" visible={isEditVisible}
+                    onShow={() => onDialogShow()}
+                    onHide={() => onDialogHide()}
+                >
+                    <PersonForm data={!data || !editPerson ? null : data} onSubmitCallback={onDialogHide} />
+                </Dialog>
+                {
+                    isLoading ?
+                        <div className="progressbar">
+                            < ProgressSpinner />
+                        </div >
+                        : (data && (
+                            <div>
+                                <div className="grid justify-content-center">
+                                    <div className="grid col-12 mt-5 mb-1">
+                                        {data.alt_name ? (
+                                            <div className="grid col-12 p-0 justify-content-center">
+                                                <div className="grid col-12 pb-0 pt-5 mb-0 justify-content-center">
+                                                    <h1 className="maintitle">{data.alt_name}</h1>
                                                 </div>
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <div className="grid col-12 p-0 mt-0 mb-0 justify-content-center">
-                                            <h1 className="maintitle">{data.fullname}</h1>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="grid mt-0 col-12 mb-0 p-0 justify-content-center">
-                                    <h2 className="grid">
-                                        {personDetails(data.nationality, data.dob, data.dod)}
-                                    </h2>
-                                </div>
-                                {((data.aliases && data.aliases.length > 0) || (data.other_names && data.other_names.length > 0)) &&
-                                    <div className="grid col-12 mt-0 p-2 justify-content-center">
-                                        <h3 className="grid mb-5">
-                                            <>Myös{' '}
-                                                {combineNames(data.aliases, data.other_names)}
-                                                .</>
-                                        </h3>
+                                                {data.fullname && (
+                                                    <div className="grid col-12 p-0 mt-0 mb-0 justify-content-center">
+                                                        <h2>({data.fullname})</h2>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div className="grid col-12 p-0 mt-0 mb-0 justify-content-center">
+                                                <h1 className="maintitle">{data.fullname}</h1>
+                                            </div>
+                                        )}
                                     </div>
-                                }
-                            </div>
-                            <div className="col-12 mt-2">
-                                <GenreGroup genres={getGenres()} showOneCount></GenreGroup>
-                            </div>
-                            <div className="col-12 mb-5">
-                                <TagGroup tags={getTags()} overflow={5} showOneCount />
-                            </div>
-                            <div className="grid col-12 mb-5 justify-content-center">
-                                <div className="grid col-6 pr-3 justify-content-end">
-                                    <AwardPanel awards={[...data.awarded, ...workAwards()]}></AwardPanel>
+                                    <div className="grid mt-0 col-12 mb-0 p-0 justify-content-center">
+                                        <h2 className="grid">
+                                            {personDetails(data.nationality, data.dob, data.dod)}
+                                        </h2>
+                                    </div>
+                                    {((data.aliases && data.aliases.length > 0) || (data.other_names && data.other_names.length > 0)) &&
+                                        <div className="grid col-12 mt-0 p-2 justify-content-center">
+                                            <h3 className="grid mb-5">
+                                                <>Myös{' '}
+                                                    {combineNames(data.aliases, data.other_names)}
+                                                    .</>
+                                            </h3>
+                                        </div>
+                                    }
                                 </div>
-                                <div className="grid col-6 pl-3 justify-content-start">
-                                    <LinkPanel links={data.links} />
+                                <div className="col-12 mt-2">
+                                    <GenreGroup genres={getGenres()} showOneCount></GenreGroup>
                                 </div>
-                            </div>
-                            <div className="col-12">
-                                {hasBooks(data) && (
-                                    <ContributorBookControl viewNonSf={false} person={data}
-                                        collaborationsLast={true}></ContributorBookControl>
-                                )}
-                                {(data.stories.length > 0 || data.magazine_stories.length > 0) &&
-                                    <ShortsControl key={"sfshorts"} person={data} listPublications what={"sf"}></ShortsControl>
-                                }
-                                {hasNonSf("all") && <Fieldset legend="Ei-SF/Mainstream" toggleable collapsed>
-                                    {hasNonSf("works") &&
-                                        <ContributorBookControl viewNonSf={true} person={data}
+                                <div className="col-12 mb-5">
+                                    <TagGroup tags={getTags()} overflow={5} showOneCount />
+                                </div>
+                                <div className="grid col-12 mb-5 justify-content-center">
+                                    <div className="grid col-6 pr-3 justify-content-end">
+                                        <AwardPanel awards={[...data.awarded, ...workAwards()]}></AwardPanel>
+                                    </div>
+                                    <div className="grid col-6 pl-3 justify-content-start">
+                                        <LinkPanel links={data.links} />
+                                    </div>
+                                </div>
+                                <div className="col-12">
+                                    {hasBooks(data) && (
+                                        <ContributorBookControl viewNonSf={false} person={data}
                                             collaborationsLast={true}></ContributorBookControl>
+                                    )}
+                                    {(data.stories.length > 0 || data.magazine_stories.length > 0) &&
+                                        <ShortsControl key={"sfshorts"} person={data} listPublications what={"sf"}></ShortsControl>
                                     }
-                                    {hasNonSf("stories") &&
-                                        <ShortsControl key={"nonsfshorts"} person={data} listPublications what={"nonsf"}></ShortsControl>
+                                    {hasNonSf("all") && <Fieldset legend="Ei-SF/Mainstream" toggleable collapsed>
+                                        {hasNonSf("works") &&
+                                            <ContributorBookControl viewNonSf={true} person={data}
+                                                collaborationsLast={true}></ContributorBookControl>
+                                        }
+                                        {hasNonSf("stories") &&
+                                            <ShortsControl key={"nonsfshorts"} person={data} listPublications what={"nonsf"}></ShortsControl>
+                                        }
+                                    </Fieldset>
                                     }
-                                </Fieldset>
-                                }
+                                </div>
                             </div>
-                        </div>
-                    ))
-            }
+                        ))
+                }
+            </div>
         </main >
     );
 }

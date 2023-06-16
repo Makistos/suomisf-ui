@@ -17,9 +17,9 @@ import { getCurrenUser } from '../../../services/auth-service';
 import { ShortForm } from '../types';
 import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
 import { makeBriefContributor } from '../../../components/forms/makeBriefContributor';
-import { shortIsSf } from '../utils';
+// import { shortIsSf } from '../utils';
 
-type ShortFormType = Pick<Short, "id">
+// type ShortFormType = Pick<Short, "id">
 
 interface ShortFormProps {
     short: Short,

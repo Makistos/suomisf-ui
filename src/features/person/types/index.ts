@@ -31,6 +31,20 @@ export interface Person {
     awarded: Awarded[];
 }
 
+export interface PersonFormData {
+    [index: string]: any;
+    id: number | null;
+    name: string;
+    aliases: PersonBrief[];
+    alt_name: string;
+    fullname: string;
+    other_names: string;
+    dob: string;
+    dod: string;
+    bio: string;
+    links: LinkType[];
+    nationality: Nationality | null;
+}
 // export interface PersonBrief {
 //     id: number;
 //     name: string;

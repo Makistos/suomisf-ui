@@ -24,7 +24,7 @@ export const LinksField = ({ id, disabled }: LinksFieldProps) => {
   });
 
   const LinksRow = ({ index }: { index: number }) => {
-    const keyName = `${id}[${index}]`;
+    const keyName = `{links.${index}}`;
 
     const emptyLink: LinkType = {
       link: "",

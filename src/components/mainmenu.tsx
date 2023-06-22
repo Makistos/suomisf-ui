@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Menubar } from 'primereact/menubar';
 import { AutoComplete } from 'primereact/autocomplete';
-import { MenuItemCommandParams } from 'primereact/menuitem';
+import { MenuItemCommandEvent } from 'primereact/menuitem';
 import { Dialog } from 'primereact/dialog';
 
 import { getCurrenUser } from '../services/auth-service';
@@ -99,7 +99,7 @@ export default function MainMenu() {
         {
             label: userName(),
             icon: 'fa-solid fa-circle-user',
-            command: (event: MenuItemCommandParams) => {
+            command: (event: MenuItemCommandEvent) => {
                 if (user === null) {
                     event.item.items = not_logged_items;
                 } else {

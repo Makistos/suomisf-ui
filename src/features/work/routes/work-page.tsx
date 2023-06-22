@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import { Image } from "primereact/image";
-import { DataView, DataViewLayoutOptions, DataViewLayoutType, DataViewLayoutOptionsChangeParams } from "primereact/dataview";
+import { DataView, DataViewLayoutOptions } from "primereact/dataview";
 import { Panel } from "primereact/panel";
 import { Ripple } from "primereact/ripple";
 import { Tooltip } from "primereact/tooltip";
@@ -18,6 +18,7 @@ import { getApiContent } from "../../../services/user-service";
 import { ShortsList } from "../../short";
 import { Work } from "../types";
 import { WorkDetails } from "../components/work-details";
+import { EditionForm } from "../../edition/components/edition-form";
 import { isAnthology } from "../utils/is-anthology";
 import { selectId } from "../../../utils";
 import { useDocumentTitle } from '../../../components/document-title';
@@ -43,12 +44,13 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     const params = useParams();
     const user = useMemo(() => { return getCurrenUser() }, []);
     //const [work, setWork]: [Work | null, (work: Work) => void] = useState<Work | null>(null);
-    const [layout, setLayout]: [DataViewLayoutType, (layout: DataViewLayoutType) => void] = useState<DataViewLayoutType>('list');
+    //const [layout, setLayout]: [DataViewLayoutType, (layout: DataViewLayoutType) => void] = useState<DataViewLayoutType>('list');
     const [documentTitle, setDocumentTitle] = useDocumentTitle("");
     const [isEditVisible, setEditVisible] = useState(false);
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [formData, setFormData] = useState<Work | null>(null);
     const [editWork, setEditWork] = useState(true);
+    const [isEditionFormVisible, setEditionFormVisible] = useState(false);
 
     const ConfirmNewWork = () => {
         confirmDialog({
@@ -126,7 +128,8 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             label: 'Uusi painos',
             icon: 'fa-solid fa-file-circle-plus',
             command: () => {
-                ConfirmNewEdition();
+                setEditionFormVisible(true);
+                //ConfirmNewEdition();
             }
         },
         {
@@ -213,15 +216,11 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     }
 
 
-    const itemTemplate = (edition: Edition, layout: DataViewLayoutType) => {
+    const itemTemplate = (edition: Edition) => {
         if (!edition) {
             return;
         }
-        if (layout === 'list') {
-            return renderListItem(edition);
-        } else if (layout === 'grid') {
-            return renderGridItem(edition);
-        }
+        return renderListItem(edition);
     }
 
     const renderHeader = () => {
@@ -266,6 +265,17 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         setEditVisible(false);
     }
 
+    const onEditionDialogShow = () => {
+        setEditionFormVisible(true);
+        setQueryEnabled(false)
+    }
+
+    const onEditionDialogHide = () => {
+        queryClient.invalidateQueries({ queryKey: ["work", workId] });
+        setQueryEnabled(true);
+        setEditionFormVisible(false);
+    }
+
     if (!data) return null;
 
     const anthology = isAnthology(data);
@@ -294,6 +304,13 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                 >
                     <WorkForm data={!formData || !editWork ? null : formData} onSubmitCallback={onDialogHide} />
                 </Dialog>
+                <Dialog maximizable blockScroll
+                    header="Uusi painos" visible={isEditionFormVisible}
+                    onShow={() => onEditionDialogShow()}
+                    onHide={() => onEditionDialogHide()}
+                >
+                    <EditionForm edition={null} work={data.id} onSubmitCallback={onEditionDialogHide} />
+                </Dialog>
                 {
                     isLoading ?
                         <div className="progressbar">
@@ -316,7 +333,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                 <div className="mt-5 mb-0">
                                     <h2 className="mb-0">Painokset</h2>
                                     <div className="mt-0">
-                                        <DataView value={data.editions} layout={layout}
+                                        <DataView value={data.editions}
                                             header={header} itemTemplate={itemTemplate} />
                                     </div>
                                 </div>

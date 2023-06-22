@@ -6,7 +6,7 @@ import { classNames } from 'primereact/utils';
 import { InputText } from 'primereact/inputtext';
 import { AutoComplete } from 'primereact/autocomplete';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
-import { RadioButton, RadioButtonChangeParams, RadioButtonProps } from 'primereact/radiobutton';
+import { RadioButton, RadioButtonChangeEvent, RadioButtonProps } from 'primereact/radiobutton';
 import { Button } from 'primereact/button';
 
 import { getCurrenUser } from '../../../services/auth-service';
@@ -19,7 +19,8 @@ import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
 import { Binding } from '../../../types/binding';
 
 interface EditionFormProps {
-  edition: Edition;
+  edition: Edition | null;
+  work?: number;
   onSubmitCallback: () => void;
 }
 
@@ -29,8 +30,8 @@ export const EditionForm = (props: EditionFormProps) => {
   const [message, setMessage] = useState("");
   const [filteredPublishers, setFilteredPublishers] = useState<any>([]);
   const [filteredPubseries, setFilteredPubseries] = useState<any>([]);
-  const [binding, setBinding] = useState<Binding>(props.edition.binding);
   const bindingTypes: Binding[] = [{ id: '1', name: 'Ei tietoa' }, { id: '2', name: 'Nidottu' }, { id: '3', name: 'Sidottu' }];
+  const [binding, setBinding] = useState<Binding>(bindingTypes[0]);
 
   console.log("EditionForm: ", props.edition);
 
@@ -38,16 +39,15 @@ export const EditionForm = (props: EditionFormProps) => {
   }, [user]);
 
   const queryClient = useQueryClient()
-  const formData = props.edition;
 
   const convToFormData = (data: Edition): EditionFormData => {
     return {
       id: data.id,
       title: data.title,
       subtitle: data.subtitle,
-      editionnum: data.editionnum,
-      pubyear: data.pubyear,
-      pages: data.pages,
+      editionnum: data.editionnum ? data.editionnum.toString() : '',
+      pubyear: data.pubyear ? data.pubyear.toString() : '',
+      pages: data.pages ? data.pages.toString() : '',
       size: data.size,
       misc: data.misc,
       imported_string: data.imported_string,
@@ -57,14 +57,39 @@ export const EditionForm = (props: EditionFormProps) => {
       dustcover: data.dustcover === null || data.dustcover === 1 ? null : data.dustcover === 2 ? false : true,
       publisher: data.publisher,
       pubseries: data.pubseries,
-      pubseriesnum: data.pubseriesnum,
+      pubseriesnum: data.pubseriesnum?.toString(),
       contributors: data.contributions,
       format: data.format,
       binding: data.binding,
       coverimage: data.coverimage === null || data.coverimage === 1 ? null : data.coverimage === 2 ? false : true,
     }
   }
-  const methods = useForm<EditionFormData>({ defaultValues: convToFormData(formData) });
+
+  const defaultValues: EditionFormData = {
+    id: null,
+    title: "",
+    subtitle: "",
+    editionnum: '',
+    pubyear: '',
+    pages: '',
+    size: "",
+    misc: "",
+    imported_string: "",
+    isbn: "",
+    printedin: "",
+    coll_info: "",
+    dustcover: null,
+    publisher: null,
+    pubseries: null,
+    pubseriesnum: '',
+    contributors: [],
+    format: null,
+    binding: bindingTypes[0],
+    coverimage: null,
+  }
+
+  const formData = props.edition ? convToFormData(props.edition) : defaultValues;
+  const methods = useForm<EditionFormData>({ defaultValues: formData });
   const register = methods.register;
   const control = methods.control;
 
@@ -357,7 +382,7 @@ export const EditionForm = (props: EditionFormProps) => {
                             inputId={item.id}
                             name="binding"
                             value={item}
-                            onChange={(e: RadioButtonChangeParams) => setBinding(e.value)}
+                            onChange={(e: RadioButtonChangeEvent) => setBinding(e.value)}
                             checked={binding.id === item.id}
                           />
                         )}

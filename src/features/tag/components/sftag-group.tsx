@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Tag, TagProps, TagSeverityType } from 'primereact/tag';
+import { Tag } from 'primereact/tag';
 import { Button } from 'primereact/button';
 
 import { TagType, SfTagProps } from "../types";

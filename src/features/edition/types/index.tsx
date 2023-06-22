@@ -51,12 +51,12 @@ export interface EditionProps {
 
 export interface EditionFormData {
     [index: string]: any,
-    id: number,
+    id: number | null,
     title: string,
     subtitle: string,
-    editionnum: number,
-    pubyear: number,
-    pages?: number,
+    editionnum: string,
+    pubyear: string,
+    pages?: string,
     size?: string,
     misc: string,
     imported_string: string,
@@ -66,10 +66,10 @@ export interface EditionFormData {
     contributors: Contribution[],
     dustcover?: boolean | null,
     coverimage?: boolean | null,
-    format: EditionFormat,
+    format: EditionFormat | null,
     binding: Binding,
-    pubseries?: Pubseries,
-    pubseriesnum?: number,
-    publisher: Publisher,
+    pubseries?: Pubseries | null,
+    pubseriesnum?: string,
+    publisher: Publisher | null,
 
 }

@@ -56,7 +56,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
     }
     const ContributorRow = ({ index }: ContributorRowProps) => {
         //const user = useMemo(() => { return getCurrenUser() }, []);
-        const keyValue = index;
+        const keyValue = `{contributors.${index}}`;
         const [filteredPeople, setFilteredPeople] = useState<any>([]);
         const [filteredAliases, setFilteredAliases] = useState<any>(null);
         const [roleList, setRoleList]: [ContributorFieldPair[],

@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 
 import { useForm, Controller, SubmitHandler, FieldValues, FormProvider } from 'react-hook-form';
+import { DevTool } from '@hookform/devtools';
 import { classNames } from 'primereact/utils';
 import { InputText } from 'primereact/inputtext';
 import { Editor } from 'primereact/editor';
@@ -51,18 +52,18 @@ export const WorkForm = (props: FormProps<Work>) => {
   const convToForm = (work: Work): WorkFormData => ({
     id: work.id,
     title: work.title,
-    subtitle: work.subtitle,
-    orig_title: work.orig_title,
-    pubyear: work.pubyear,
+    subtitle: work.subtitle ? work.subtitle : '',
+    orig_title: work.orig_title ? work.orig_title : '',
+    pubyear: work.pubyear ? work.pubyear.toString() : '',
     language: work.language_name,
     genres: work.genres,
     tags: work.tags,
-    description: work.description,
+    description: work.description ? work.description : '',
     desc_attrs: work.desc_attrs,
-    misc: work.misc,
+    misc: work.misc ? work.misc : '',
     bookseries: work.bookseries,
     bookseries_number: work.bookseries_number,
-    bookseriesorder: work.bookseriesorder,
+    bookseriesorder: work.bookseriesorder ? work.bookseriesorder.toString() : '',
     contributors: work.contributions.filter((contribution: Contribution, index: number, arr: Contribution[]) => arr.indexOf(contribution) === index),
     links: work.links.length > 0 ? work.links : [{ link: '', description: '' }]
   });
@@ -72,7 +73,7 @@ export const WorkForm = (props: FormProps<Work>) => {
     title: '',
     subtitle: '',
     orig_title: '',
-    pubyear: 0,
+    pubyear: '',
     language: null,
     genres: [],
     tags: [],
@@ -81,7 +82,7 @@ export const WorkForm = (props: FormProps<Work>) => {
     misc: '',
     bookseries: null,
     bookseries_number: '',
-    bookseriesorder: 0,
+    bookseriesorder: '',
     contributors: [],
     links: [{ link: '', description: '' }]
   }
@@ -367,6 +368,7 @@ export const WorkForm = (props: FormProps<Work>) => {
             <Button type="submit" className="w-full justify-content-center">Tallenna</Button>
           </div>
         </form>
+        <DevTool control={control} />
       </FormProvider>
     </div>
   )

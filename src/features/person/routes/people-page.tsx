@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 
 import { FilterMatchMode } from "primereact/api";
 import { DataTable } from 'primereact/datatable';
-import { Column, ColumnFilterElementType } from 'primereact/column';
+import { Column, ColumnFilterElementTemplateOptions } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
-import { DataTablePFSEvent } from 'primereact/datatable';
+import { DataTableStateEvent } from 'primereact/datatable';
 
 import { getApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
@@ -21,7 +21,7 @@ export const PeoplePage = () => {
     const [people, setPeople]: [Person[], (people: Person[]) => void] = React.useState<Person[]>([]);
     const [countries, setCountries]: [Country[], (countries: Country[]) => void] = React.useState<Country[]>([]);
     const [totalRecords, setTotalRecords] = React.useState(0);
-    const [lazyParams, setLazyParams]: [DataTablePFSEvent, (lazyParams: DataTablePFSEvent) => void] = React.useState<DataTablePFSEvent>({
+    const [lazyParams, setLazyParams]: [DataTableStateEvent, (lazyParams: DataTableStateEvent) => void] = React.useState<DataTableStateEvent>({
         first: 0,
         rows: 50,
         page: 0,
@@ -96,14 +96,14 @@ export const PeoplePage = () => {
         getPeople();
     }, [lazyParams]) // eslint-disable-line react-hooks/exhaustive-deps
 
-    const onPage = (event: DataTablePFSEvent) => {
+    const onPage = (event: DataTableStateEvent) => {
         setLazyParams(event);
     }
 
-    const onSort = (event: DataTablePFSEvent) => {
+    const onSort = (event: DataTableStateEvent) => {
         setLazyParams(event);
     }
-    const onFilter = (event: DataTablePFSEvent) => {
+    const onFilter = (event: DataTableStateEvent) => {
         event['first'] = 0;
         setLazyParams(event);
     }
@@ -120,7 +120,7 @@ export const PeoplePage = () => {
         )
     }
 
-    const nationalityFilterTemplate: ColumnFilterElementType = (options) => {
+    const nationalityFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
         if (options === null || options === undefined) {
             return <div></div>
         }

@@ -35,18 +35,9 @@ interface ContributorFieldProps {
 type ContributorFieldPair = Pick<Contributor, "id" | "name">;
 
 export const ContributorField = ({ id, defValues, disabled }: ContributorFieldProps) => {
-    //const { register, control } = useFormContext();
     const user = useMemo(() => { return getCurrenUser() }, []);
-    const peopleToContribution = (people: Person[]) => {
-        let retval: Contribution[] = [];
-        retval = people.map((person) => {
-            const r: Contribution = pickProperties(person, "id", "name");
-            return r;
-        });
-        return retval;
-    };
 
-    const { control, register } = useFormContext();
+    const { control } = useFormContext();
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -64,7 +55,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
         index: number,
     }
     const ContributorRow = ({ index }: ContributorRowProps) => {
-        const user = useMemo(() => { return getCurrenUser() }, []);
+        //const user = useMemo(() => { return getCurrenUser() }, []);
         const keyValue = index;
         const [filteredPeople, setFilteredPeople] = useState<any>([]);
         const [filteredAliases, setFilteredAliases] = useState<any>(null);

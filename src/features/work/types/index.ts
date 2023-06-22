@@ -51,4 +51,5 @@ export interface WorkFormData {
     misc?: string,
     imported_strin?: string,
     contributors: Contribution[],
+    links: LinkType[],
 }

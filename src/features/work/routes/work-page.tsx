@@ -23,6 +23,7 @@ import { selectId } from "../../../utils";
 import { useDocumentTitle } from '../../../components/document-title';
 import { WorkForm } from "../components/work-form";
 import { User } from "../../user";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 export interface WorkProps {
     work: Work,
@@ -46,6 +47,9 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     const [documentTitle, setDocumentTitle] = useDocumentTitle("");
     const [isEditVisible, setEditVisible] = useState(false);
     const [queryEnabled, setQueryEnabled] = useState(true);
+    const [formData, setFormData] = useState<Work | null>(null);
+    const [editWork, setEditWork] = useState(true);
+
     const ConfirmNewWork = () => {
         confirmDialog({
             message: 'Tähän tulee uuden teoksen lisäys-näkymä',
@@ -62,11 +66,12 @@ export const WorkPage = ({ id }: WorkPageProps) => {
 
     const fetchWork = async (id: string, user: User | null): Promise<Work> => {
         let url = baseURL + workId;
-        const data = await getApiContent(url, user).then(response => {
-            return response.data;
-        }).catch((error) => console.log(error))
+        const data = await getApiContent(url, user).then(response =>
+            response.data
+        )
+            .catch((error) => console.log(error));
         console.log(data)
-        return data
+        return data;
     }
 
     const { isLoading, data } = useQuery({
@@ -74,6 +79,12 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         queryFn: () => fetchWork(workId, user),
         enabled: queryEnabled
     })
+
+    useEffect(() => {
+        if (data !== undefined && data !== null) {
+            setDocumentTitle(data.title);
+        }
+    }, [data, setDocumentTitle]);
 
     const ConfirmEdit = () => {
         confirmDialog({
@@ -95,14 +106,20 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             label: 'Uusi teos',
             icon: 'fa-solid fa-circle-plus',
             command: () => {
-                ConfirmNewWork();
+                setEditWork(false);
+                setFormData(null);
+                setEditVisible(true);
             }
         },
         {
             label: 'Muokkaa',
             icon: 'fa-solid fa-pen-to-square',
             command: () => {
-                setEditVisible(true);
+                if (data) {
+                    setEditWork(true);
+                    setFormData(data);
+                    setEditVisible(true);
+                }
             }
         },
         {
@@ -146,6 +163,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     //     getWork();
     // }, [params.workId, user])
 
+    const queryClient = useQueryClient();
     useEffect(() => {
         if (data !== undefined && data !== null)
             setDocumentTitle(data.title);
@@ -242,7 +260,6 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         setQueryEnabled(false)
     }
 
-    const queryClient = useQueryClient();
     const onDialogHide = () => {
         queryClient.invalidateQueries({ queryKey: ["work", workId] });
         setQueryEnabled(true);
@@ -275,42 +292,36 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                     onShow={() => onDialogShow()}
                     onHide={() => onDialogHide()}
                 >
-                    <WorkForm work={data} onSubmitCallback={onDialogHide} />
+                    <WorkForm data={!formData || !editWork ? null : formData} onSubmitCallback={onDialogHide} />
                 </Dialog>
-                <WorkDetails work={data} />
                 {
-                    data.stories.length > 0 && (
-                        <div className="mb-3">
-                            <Panel header="Novellit"
-                                headerTemplate={panelTemplate}
-                                toggleable collapsed>
-                                <ShortsList shorts={data.stories} person={data.authors[0]}
-                                    anthology={anthology}
-                                />
-                            </Panel>
+                    isLoading ?
+                        <div className="progressbar">
+                            <ProgressSpinner />
                         </div>
-                    )
-                }
-                <div className="mt-5 mb-0">
-                    <h2 className="mb-0">Painokset</h2>
-                    <div className="mt-0">
-                        <DataView value={data.editions} layout={layout}
-                            header={header} itemTemplate={itemTemplate} />
-                        {/*{work.editions.map((edition) => {
-                        return (
-                            <div className="grid col-fixed m-1">
-                                <Card title={EditionString(edition)}
-                                    subTitle={editionSubtitle(edition.title, edition.work[0].orig_title)}
-                                    header={editionHeader(edition.images)}
-                                    footer={editionFooter(edition)}
-                                    key={edition.id}>
-                                    <EditionDetails edition={edition} work={work} />
-                                </Card>
-                            </div>
-                        )
-                    })} */}
-                    </div>
-                </div>
+                        : (data && (
+                            <>
+                                <WorkDetails work={data} />
+                                {data.stories.length > 0 && (
+                                    <div className="mb-3">
+                                        <Panel header="Novellit"
+                                            headerTemplate={panelTemplate}
+                                            toggleable collapsed>
+                                            <ShortsList shorts={data.stories} person={data.authors[0]}
+                                                anthology={anthology}
+                                            />
+                                        </Panel>
+                                    </div>
+                                )}
+                                <div className="mt-5 mb-0">
+                                    <h2 className="mb-0">Painokset</h2>
+                                    <div className="mt-0">
+                                        <DataView value={data.editions} layout={layout}
+                                            header={header} itemTemplate={itemTemplate} />
+                                    </div>
+                                </div>
+                            </>
+                        ))}
             </div>
         </main>
     )

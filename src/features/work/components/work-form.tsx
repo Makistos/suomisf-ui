@@ -19,13 +19,14 @@ import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
 import { ContributorField } from '../../../components/forms/contributor-field';
 import { Contribution } from '../../../types/contribution';
 //import { workCreators } from '../../../components/forms/work-creators';
+import { LinksField } from '../../../components/forms/links-field';
 
-interface WorkFormProps {
-  work: Work,
+interface FormProps<T> {
+  data: T | null,
   onSubmitCallback: (() => void)
 }
 
-export const WorkForm = (props: WorkFormProps) => {
+export const WorkForm = (props: FormProps<Work>) => {
   const user = useMemo(() => { return getCurrenUser() }, []);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -62,7 +63,8 @@ export const WorkForm = (props: WorkFormProps) => {
     bookseries: work.bookseries,
     bookseries_number: work.bookseries_number,
     bookseriesorder: work.bookseriesorder,
-    contributors: work.contributions.filter((contribution: Contribution, index: number, arr: Contribution[]) => arr.indexOf(contribution) === index)
+    contributors: work.contributions.filter((contribution: Contribution, index: number, arr: Contribution[]) => arr.indexOf(contribution) === index),
+    links: work.links.length > 0 ? work.links : [{ link: '', description: '' }]
   });
 
   const defaultValues: WorkFormData = {
@@ -81,9 +83,11 @@ export const WorkForm = (props: WorkFormProps) => {
     bookseries_number: '',
     bookseriesorder: 0,
     contributors: [],
+    links: [{ link: '', description: '' }]
   }
 
-  const formData = props.work ? convToForm(props.work) : defaultValues;
+  const formData = props.data ? convToForm(props.data) : defaultValues;
+  console.log(props.data);
   //const queryClient = useQueryClient()
 
   // const { register, control, handleSubmit,
@@ -267,6 +271,13 @@ export const WorkForm = (props: WorkFormProps) => {
               </span>
             </div>
             <div className="field col-12">
+              <ContributorField
+                id={"contributors"}
+                disabled={isDisabled(user, loading)}
+                defValues={formData.contributors}
+              />
+            </div>
+            <div className="field col-12">
               <span className='p-float-label'>
                 <Controller name="genres" control={control}
                   render={({ field, fieldState }) => (
@@ -309,22 +320,21 @@ export const WorkForm = (props: WorkFormProps) => {
               </span>
             </div>
             <div className="field col-12">
-              <ContributorField
-                id={"contributors"}
+              <LinksField
+                id={"links"}
                 disabled={isDisabled(user, loading)}
-                defValues={formData.contributors}
               />
             </div>
 
             <div className="field col-12">
-              <span className='p-float-label'>
-                <Controller name="description" control={control}
-                  render={({ field, fieldState }) => (
-                    <Editor {...field} />
-                  )}
-                />
-                <label htmlFor="description">Kuvaus</label>
-              </span>
+              Kuvaus
+              <Controller name="description" control={control}
+                render={({ field, fieldState }) => (
+                  <Editor {...field}
+                    style={{ height: '320px' }}
+                    readOnly={isDisabled(user, loading)} />
+                )}
+              />
             </div>
             <div className="field col-12">
               <span className="p-float-label">

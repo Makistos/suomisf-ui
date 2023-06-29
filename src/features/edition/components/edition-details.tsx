@@ -29,15 +29,15 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
 
     return (
         <div>
-            <Dialog maximizable blockScroll
+            <Dialog maximizable blockScroll className="full md:w-6"
                 header="Teoksen muokkaus" visible={isEditVisible}
                 onShow={() => onDialogShow()}
                 onHide={() => onDialogHide()}
             >
-                <EditionForm edition={edition} onSubmitCallback={onDialogHide} />
+                <EditionForm edition={edition} work={work} onSubmitCallback={onDialogHide} />
             </Dialog>
 
-            {card && <b><EditionVersion edition={edition} /></b>}
+            {card && <b><EditionVersion edition={edition} work={work} /></b>}
             {work !== undefined && edition.title !== work.title &&
                 <><br /><i className="font-medium">{edition.title}</i></>}
             {edition.publisher && (
@@ -61,9 +61,9 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
             {edition.pages && (<><br />{edition.pages} sivua. </>)}
             {edition.size && edition.size + " cm."}
             {edition.misc && (<><br />{edition.misc}</>)}
-            {(edition.isbn || parseInt(edition.binding.id) > 1) && <br />}
+            {(edition.isbn || edition.binding.id > 1) && <br />}
             {edition.isbn && (<>ISBN {edition.isbn}</>)}
-            {parseInt(edition.binding.id) > 1 && (<> {edition.binding.name}.</>)}
+            {edition.binding.id > 1 && (<> {edition.binding.name}.</>)}
             {
                 edition.dustcover === 3 && (
                     <span><br />Kansipaperi.</span>

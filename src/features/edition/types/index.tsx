@@ -43,7 +43,7 @@ export interface EditionProps {
     details?: string,
     person?: string,
     showPerson?: boolean,
-    work?: Work,
+    work: Work,
     card?: boolean,
     showVersion?: boolean
     contributions?: Contribution[],
@@ -54,9 +54,9 @@ export interface EditionFormData {
     id: number | null,
     title: string,
     subtitle: string,
-    editionnum: string,
-    pubyear: string,
-    pages?: string,
+    editionnum?: number | null,
+    pubyear?: number | null,
+    pages?: number | null,
     size?: string,
     misc: string,
     imported_string: string,
@@ -69,7 +69,7 @@ export interface EditionFormData {
     format: EditionFormat | null,
     binding: Binding,
     pubseries?: Pubseries | null,
-    pubseriesnum?: string,
+    pubseriesnum?: number | null,
     publisher: Publisher | null,
 
 }

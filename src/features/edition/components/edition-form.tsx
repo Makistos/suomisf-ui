@@ -8,6 +8,7 @@ import { AutoComplete } from 'primereact/autocomplete';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 import { RadioButton, RadioButtonChangeEvent, RadioButtonProps } from 'primereact/radiobutton';
 import { Button } from 'primereact/button';
+import { InputNumber } from 'primereact/inputnumber';
 
 import { getCurrenUser } from '../../../services/auth-service';
 import { Edition } from '../types';
@@ -17,10 +18,12 @@ import { EditionFormData } from '../types';
 import { putApiContent, postApiContent, getApiContent } from '../../../services/user-service';
 import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
 import { Binding } from '../../../types/binding';
+import { Work } from '../../work/types';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 
 interface EditionFormProps {
   edition: Edition | null;
-  work?: number;
+  work: Work;
   onSubmitCallback: () => void;
 }
 
@@ -30,12 +33,21 @@ export const EditionForm = (props: EditionFormProps) => {
   const [message, setMessage] = useState("");
   const [filteredPublishers, setFilteredPublishers] = useState<any>([]);
   const [filteredPubseries, setFilteredPubseries] = useState<any>([]);
-  const bindingTypes: Binding[] = [{ id: '1', name: 'Ei tietoa' }, { id: '2', name: 'Nidottu' }, { id: '3', name: 'Sidottu' }];
-  const [binding, setBinding] = useState<Binding>(bindingTypes[0]);
+  // const bindingTypes: Binding[] = [
+  //   { id: 1, name: 'Ei tietoa' },
+  //   { id: 2, name: 'Nidottu' },
+  //   { id: 3, name: 'Sidottu' }
+  // ];
+  const [bindings, setBindings] = useState<Binding[]>([]);
 
   console.log("EditionForm: ", props.edition);
 
   useEffect(() => {
+    async function fetchBindings() {
+      const bindings = await getApiContent('bindings', user);
+      setBindings(bindings.data);
+    }
+    fetchBindings();
   }, [user]);
 
   const queryClient = useQueryClient()
@@ -45,9 +57,9 @@ export const EditionForm = (props: EditionFormProps) => {
       id: data.id,
       title: data.title,
       subtitle: data.subtitle,
-      editionnum: data.editionnum ? data.editionnum.toString() : '',
-      pubyear: data.pubyear ? data.pubyear.toString() : '',
-      pages: data.pages ? data.pages.toString() : '',
+      editionnum: data.editionnum,
+      pubyear: data.pubyear,
+      pages: data.pages,
       size: data.size,
       misc: data.misc,
       imported_string: data.imported_string,
@@ -57,7 +69,7 @@ export const EditionForm = (props: EditionFormProps) => {
       dustcover: data.dustcover === null || data.dustcover === 1 ? null : data.dustcover === 2 ? false : true,
       publisher: data.publisher,
       pubseries: data.pubseries,
-      pubseriesnum: data.pubseriesnum?.toString(),
+      pubseriesnum: data.pubseriesnum,
       contributors: data.contributions,
       format: data.format,
       binding: data.binding,
@@ -67,11 +79,11 @@ export const EditionForm = (props: EditionFormProps) => {
 
   const defaultValues: EditionFormData = {
     id: null,
-    title: "",
-    subtitle: "",
-    editionnum: '',
-    pubyear: '',
-    pages: '',
+    title: props.work.title,
+    subtitle: props.work.subtitle,
+    editionnum: null,
+    pubyear: props.work.pubyear,
+    pages: null,
     size: "",
     misc: "",
     imported_string: "",
@@ -81,14 +93,15 @@ export const EditionForm = (props: EditionFormProps) => {
     dustcover: null,
     publisher: null,
     pubseries: null,
-    pubseriesnum: '',
+    pubseriesnum: null,
     contributors: [],
     format: null,
-    binding: bindingTypes[0],
+    binding: bindings[0],
     coverimage: null,
   }
 
   const formData = props.edition ? convToFormData(props.edition) : defaultValues;
+  console.log("formData: ", formData);
   const methods = useForm<EditionFormData>({ defaultValues: formData });
   const register = methods.register;
   const control = methods.control;
@@ -98,7 +111,6 @@ export const EditionForm = (props: EditionFormProps) => {
     let updatedData: FieldValues = JSON.parse(JSON.stringify(data));
     updatedData.dustcover = data.dustcover === null ? 1 : data.dustcover === false ? 2 : 3;
     updatedData.coverimage = data.coverimage === null ? 1 : data.coverimage === false ? 2 : 3;
-    updatedData.binding = binding;
     const retval: FormSubmitObject = { data: updatedData, changed: methods.formState.dirtyFields }
     setMessage("");
     setLoading(true);
@@ -113,7 +125,7 @@ export const EditionForm = (props: EditionFormProps) => {
   };
 
   async function filterPublishers(event: any) {
-    const url = "filter/languages/" + event.query;
+    const url = "filter/publishers/" + event.query;
     const response = await getApiContent(url, user);
     setFilteredPublishers(response.data);
   }
@@ -145,7 +157,7 @@ export const EditionForm = (props: EditionFormProps) => {
                     />
                   )}
                 />
-                <label htmlFor="title">Nimi</label>
+                <label htmlFor="title" className="required-field">Nimi</label>
               </span>
             </div>
             <div className="field col-12">
@@ -172,13 +184,14 @@ export const EditionForm = (props: EditionFormProps) => {
                   <Controller
                     name="publisher"
                     control={methods.control}
+                    rules={{ required: 'Kustantaja on pakollinen' }}
                     render={({ field, fieldState }) => (
                       <AutoComplete
                         {...field}
                         field="name"
                         completeMethod={filterPublishers}
                         suggestions={filteredPublishers}
-                        placeholder="Kieli"
+                        placeholder="Kustantaja"
                         delay={300}
                         minLength={2}
                         removeIcon
@@ -188,45 +201,53 @@ export const EditionForm = (props: EditionFormProps) => {
                       />
                     )}
                   />
-                  <label htmlFor="publisher">Kustantaja</label>
+                  <label htmlFor="publisher" className="required-field">Kustantaja</label>
                 </span>
               </div>
 
-              <div className="field col-1">
+              <div className="field col-2">
                 <span className="p-float-label">
                   <Controller
                     name="pubyear"
                     control={methods.control}
+                    rules={{ required: 'Vuosi on pakollinen' }}
                     render={({ field, fieldState }) => (
-                      <InputText id="pubyear"
-                        {...field}
-                        {...methods.register("pubyear")}
+                      <InputNumber
+                        id={field.name}
+                        inputRef={field.ref}
+                        value={field.value}
+                        useGrouping={false}
                         className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                         disabled={isDisabled(user, loading)}
                       />
                     )}
                   />
-                  <label htmlFor="pubyear">Julkaisuvuosi</label>
+                  <label htmlFor="pubyear" className="required-field">Vuosi</label>
                 </span>
               </div>
-              <div className="field col-1">
+              <div className="field col-2">
                 <span className="p-float-label">
                   <Controller
                     name="editionnum"
                     control={methods.control}
+                    rules={{
+                      required: 'Painos on pakollinen',
+                    }}
                     render={({ field, fieldState }) => (
-                      <InputText id="editionnum"
-                        {...field}
-                        {...methods.register("editionnum")}
+                      <InputNumber
+                        id={field.name}
+                        inputRef={field.ref}
+                        value={field.value}
+                        useGrouping={false}
                         className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                         disabled={isDisabled(user, loading)}
                       />
                     )}
                   />
-                  <label htmlFor="editionnum">Painosnumero</label>
+                  <label htmlFor="editionnum" className="required-field">Painos</label>
                 </span>
               </div>
-              <div className="field col-1">
+              <div className="field col-2">
                 <span className="p-float-label">
                   <Controller
                     name="version"
@@ -244,7 +265,7 @@ export const EditionForm = (props: EditionFormProps) => {
                   <label htmlFor="version">Laitos</label>
                 </span>
               </div>
-              <div className="field col-4">
+              <div className="field col-3">
                 <span className="p-float-label">
                   <Controller
                     name="printedin"
@@ -263,7 +284,7 @@ export const EditionForm = (props: EditionFormProps) => {
                 </span>
               </div>
             </div>
-            <div className="field col-3">
+            <div className="field col-5">
               <span className="p-float-label">
                 <Controller
                   name="pubseries"
@@ -284,19 +305,20 @@ export const EditionForm = (props: EditionFormProps) => {
                     />
                   )}
                 />
-                <label htmlFor="pubseries">Kustantajan sarja</label>
+                <label htmlFor="pubseries" className="">Kustantajan sarja</label>
               </span>
             </div>
-            <div className="field col-1">
+            <div className="field col-2">
               <span className="p-float-label">
                 <Controller
                   name="pubseriesnum"
                   control={methods.control}
                   render={({ field, fieldState }) => (
-                    <InputText id="pubseriesnum"
-                      {...field}
-                      {...methods.register("pubseriesnum")}
-                      value={field.value ? field.value : ""}
+                    <InputNumber
+                      id={field.name}
+                      inputRef={field.ref}
+                      useGrouping={false}
+                      value={field.value}
                       className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                       disabled={isDisabled(user, loading)}
                     />
@@ -306,7 +328,7 @@ export const EditionForm = (props: EditionFormProps) => {
               </span>
             </div>
             <div className="grid col-12 mt-2">
-              <div className="field col-2">
+              <div className="field col-4">
                 <span className="p-float-label">
                   <Controller
                     name="isbn"
@@ -334,25 +356,26 @@ export const EditionForm = (props: EditionFormProps) => {
             </div>
 
             <div className="grid col-12 mt-3">
-              <div className="field col-1">
+              <div className="field col-2">
                 <span className="p-float-label">
                   <Controller
                     name="pages"
                     control={methods.control}
                     render={({ field, fieldState }) => (
-                      <InputText id="pages"
-                        {...field}
-                        {...methods.register("pages")}
-                        value={field.value ? field.value : ""}
+                      <InputNumber
+                        id={field.name}
+                        inputRef={field.ref}
+                        useGrouping={false}
+                        value={field.value}
                         className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                         disabled={isDisabled(user, loading)}
                       />
                     )}
                   />
-                  <label htmlFor="pages">Sivumäärä</label>
+                  <label htmlFor="pages">Sivuja</label>
                 </span>
               </div>
-              <div className="field col-1">
+              <div className="field col-2">
                 <span className="p-float-label">
                   <Controller
                     name="size"
@@ -367,30 +390,32 @@ export const EditionForm = (props: EditionFormProps) => {
                       />
                     )}
                   />
-                  <label htmlFor="size">Koko (korkeus cm)</label>
+                  <label htmlFor="size">Korkeus cm</label>
                 </span>
               </div>
-              <div className="field col-2">
-                {bindingTypes.map((item) => {
-                  return (
-                    <div key={"binding" + item.id} className="flex align-items-center">
-                      <Controller
-                        name={"binding" + item.id}
-                        control={methods.control}
-                        render={({ field, fieldState }) => (
-                          <RadioButton
-                            inputId={item.id}
-                            name="binding"
-                            value={item}
-                            onChange={(e: RadioButtonChangeEvent) => setBinding(e.value)}
-                            checked={binding.id === item.id}
-                          />
-                        )}
-                      />
-                      <label htmlFor={"binding" + item.id}>{item.name}</label>
-                    </div>
-                  );
-                })}
+              <div className="field col-3">
+                <span className="p-float-label">
+                  <div key="binding" className="flex align-items-center">
+                    <Controller
+                      name={"binding"}
+                      control={methods.control}
+                      render={({ field, fieldState }) => (
+                        <Dropdown
+                          {...field}
+                          optionLabel="name"
+                          options={bindings}
+                          className={classNames(
+                            { "p-invalid": fieldState.error }, "w-full"
+                          )}
+                          placeholder="Sidonta"
+                          tooltip="Sidonta"
+                          disabled={isDisabled(user, loading)}
+                        />
+                      )}
+                    />
+                    <label htmlFor="binding">Sidonta</label>
+                  </div>
+                </span>
               </div>
               {/*
               <div className='field col-2'>
@@ -437,7 +462,7 @@ export const EditionForm = (props: EditionFormProps) => {
                 </div>
               </div>
                     */}
-              <div className='field col-1'>
+              <div className='field col-2'>
                 <Controller
                   name="dustcover"
                   control={methods.control}
@@ -455,7 +480,7 @@ export const EditionForm = (props: EditionFormProps) => {
                 />
                 <label htmlFor="binding">Kansipaperi</label>
               </div>
-              <div className='field col-1'>
+              <div className='field col-2'>
                 <Controller
                   name="coverimage"
                   control={methods.control}

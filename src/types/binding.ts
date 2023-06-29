@@ -1,4 +1,4 @@
 export interface Binding {
-    id: string,
+    id: number,
     name: string
 }

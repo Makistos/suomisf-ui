@@ -142,6 +142,9 @@ div.three-column {
   transform: scale(0.7);
 }
 
+.required-field {
+  font-weight: bold;
+}
 /* Edition card stuff */
 
 .sfcard {

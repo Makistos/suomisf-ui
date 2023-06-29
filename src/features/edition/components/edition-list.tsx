@@ -103,7 +103,7 @@ export const EditionList = ({ editions, person, sort }: EditionListProps) => {
                                     {editionView === "Lista" ? (
                                         ed.sort(cmpEditions).map((edition: Edition) => (
                                             <div className="grid col-12" key={edition.id}>
-                                                <EditionSummary edition={edition} showVersion={true}
+                                                <EditionSummary edition={edition} showVersion={true} work={edition.work[0]}
                                                     key={edition.id} showPerson={sorting !== "author"}
                                                 />
                                             </div>

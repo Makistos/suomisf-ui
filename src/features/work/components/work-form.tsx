@@ -4,8 +4,8 @@ import { useForm, Controller, SubmitHandler, FieldValues, FormProvider } from 'r
 import { DevTool } from '@hookform/devtools';
 import { classNames } from 'primereact/utils';
 import { InputText } from 'primereact/inputtext';
+import { InputNumber } from 'primereact/inputnumber';
 import { Editor } from 'primereact/editor';
-import { Dropdown } from 'primereact/dropdown';
 import { MultiSelect } from "primereact/multiselect";
 import { Button } from 'primereact/button';
 import { AutoComplete } from 'primereact/autocomplete';
@@ -17,7 +17,7 @@ import { getCurrenUser } from '../../../services/auth-service';
 import { WorkFormData } from '../types';
 //import { makeBriefContributor } from '../../../components/forms/makeBriefContributor';
 import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
-import { ContributorField } from '../../../components/forms/contributor-field';
+import { ContributorField, emptyContributor } from '../../../components/forms/contributor-field';
 import { Contribution } from '../../../types/contribution';
 //import { workCreators } from '../../../components/forms/work-creators';
 import { LinksField } from '../../../components/forms/links-field';
@@ -49,12 +49,19 @@ export const WorkForm = (props: FormProps<Work>) => {
     setLoading(false);
   }, [user])
 
+  let contributors: Contribution[] = [];
+  if (props.data) {
+    contributors = props.data.contributions.filter((contribution: Contribution, index: number, arr: Contribution[]) => arr.indexOf(contribution) === index);
+  }
+  if (contributors.length === 0) {
+    contributors = [emptyContributor];
+  }
   const convToForm = (work: Work): WorkFormData => ({
     id: work.id,
     title: work.title,
     subtitle: work.subtitle ? work.subtitle : '',
     orig_title: work.orig_title ? work.orig_title : '',
-    pubyear: work.pubyear ? work.pubyear.toString() : '',
+    pubyear: work.pubyear,
     language: work.language_name,
     genres: work.genres,
     tags: work.tags,
@@ -63,8 +70,8 @@ export const WorkForm = (props: FormProps<Work>) => {
     misc: work.misc ? work.misc : '',
     bookseries: work.bookseries,
     bookseries_number: work.bookseries_number,
-    bookseriesorder: work.bookseriesorder ? work.bookseriesorder.toString() : '',
-    contributors: work.contributions.filter((contribution: Contribution, index: number, arr: Contribution[]) => arr.indexOf(contribution) === index),
+    bookseriesorder: work.bookseriesorder,
+    contributors: contributors,
     links: work.links.length > 0 ? work.links : [{ link: '', description: '' }]
   });
 
@@ -73,7 +80,7 @@ export const WorkForm = (props: FormProps<Work>) => {
     title: '',
     subtitle: '',
     orig_title: '',
-    pubyear: '',
+    pubyear: null,
     language: null,
     genres: [],
     tags: [],
@@ -82,8 +89,8 @@ export const WorkForm = (props: FormProps<Work>) => {
     misc: '',
     bookseries: null,
     bookseries_number: '',
-    bookseriesorder: '',
-    contributors: [],
+    bookseriesorder: null,
+    contributors: [emptyContributor],
     links: [{ link: '', description: '' }]
   }
 
@@ -144,6 +151,7 @@ export const WorkForm = (props: FormProps<Work>) => {
                       {...field}
                       autoFocus
                       {...register("title")}
+                      value={field.value ? field.value : ''}
                       className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                       disabled={isDisabled(user, loading)}
                     />
@@ -159,6 +167,7 @@ export const WorkForm = (props: FormProps<Work>) => {
                     <InputText
                       {...field}
                       {...register("subtitle")}
+                      value={field.value ? field.value : ''}
                       className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                       disabled={isDisabled(user, loading)}
                     />
@@ -174,6 +183,7 @@ export const WorkForm = (props: FormProps<Work>) => {
                     <InputText
                       {...field}
                       {...register("orig_title")}
+                      value={field.value ? field.value : ''}
                       className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                       disabled={isDisabled(user, loading)}
                     />
@@ -186,10 +196,13 @@ export const WorkForm = (props: FormProps<Work>) => {
               <span className='p-float-label'>
                 <Controller name="pubyear" control={control}
                   render={({ field, fieldState }) => (
-                    <InputText
-                      {...field}
-                      {...register("pubyear")}
-                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                    <InputNumber
+                      id={field.name}
+                      inputRef={field.ref}
+                      value={field.value}
+                      onBlur={field.onBlur}
+                      useGrouping={false}
+                      inputClassName={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                       disabled={isDisabled(user, loading)}
                     />
                   )}
@@ -248,6 +261,7 @@ export const WorkForm = (props: FormProps<Work>) => {
                     <InputText
                       {...field}
                       {...register("bookseries_number")}
+                      value={field.value ? field.value : ''}
                       className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                       disabled={isDisabled(user, loading)}
                     />
@@ -260,10 +274,13 @@ export const WorkForm = (props: FormProps<Work>) => {
               <span className='p-float-label'>
                 <Controller name="bookseriesorder" control={control}
                   render={({ field, fieldState }) => (
-                    <InputText
-                      {...field}
-                      {...register("bookseriesorder")}
-                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                    <InputNumber
+                      id={field.name}
+                      inputRef={field.ref}
+                      value={field.value}
+                      onBlur={field.onBlur}
+                      useGrouping={false}
+                      inputClassName={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                       disabled={isDisabled(user, loading)}
                     />
                   )}
@@ -343,6 +360,7 @@ export const WorkForm = (props: FormProps<Work>) => {
                   render={({ field, fieldState }) => (
                     <InputText {...field}
                       {...register("desc_attrs")}
+                      value={field.value ? field.value : ''}
                       className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                       disabled={isDisabled(user, loading)}
                     />
@@ -357,6 +375,7 @@ export const WorkForm = (props: FormProps<Work>) => {
                   render={({ field, fieldState }) => (
                     <InputText {...field}
                       {...register("misc")}
+                      value={field.value ? field.value : ''}
                       className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                       disabled={isDisabled(user, loading)}
                     />

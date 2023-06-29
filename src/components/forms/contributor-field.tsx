@@ -34,6 +34,23 @@ interface ContributorFieldProps {
 
 type ContributorFieldPair = Pick<Contributor, "id" | "name">;
 
+export const emptyContributor: Contribution = {
+    person: {
+        name: '',
+        id: 0,
+        alt_name: '',
+        fullname: '',
+    },
+    role: { name: '', id: 0 },
+    description: "",
+    real_person: {
+        name: '',
+        id: 0,
+        alt_name: '',
+        fullname: '',
+    },
+}
+
 export const ContributorField = ({ id, defValues, disabled }: ContributorFieldProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
 
@@ -62,23 +79,6 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
         const [roleList, setRoleList]: [ContributorFieldPair[],
             (roleList: ContributorFieldPair[]) => void]
             = useState<ContributorFieldPair[]>([]);
-
-        const emptyContributor: Contribution = {
-            person: {
-                name: '',
-                id: 0,
-                alt_name: '',
-                fullname: '',
-            },
-            role: { name: '', id: 0 },
-            description: "",
-            real_person: {
-                name: '',
-                id: 0,
-                alt_name: '',
-                fullname: '',
-            },
-        }
 
         useEffect(() => {
             async function getRoles() {
@@ -114,15 +114,11 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
         }
 
         const addEmptyContributor = () => {
-            console.log(control._fields)
             append(emptyContributor);
         }
 
         const removeContributor = (index: number) => {
-            console.log("Removing")
             remove(index)
-            console.log("Removed")
-            console.log(fields.length)
         }
 
 
@@ -245,7 +241,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
             <span >
                 <label htmlFor="contributors" className="form-field-header">Tekijät</label>
                 <div id="contributors" className="py-0" key={id}>
-                    {fields && fields.map((_, index: number) =>
+                    {fields && fields.map((_, index) =>
                         <ContributorRow index={index} key={index} />
                     )}
                 </div>

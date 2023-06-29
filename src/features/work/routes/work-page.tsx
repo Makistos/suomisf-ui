@@ -86,7 +86,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         if (data !== undefined && data !== null) {
             setDocumentTitle(data.title);
         }
-    }, [data, setDocumentTitle]);
+    }, [data]);
 
     const ConfirmEdit = () => {
         confirmDialog({
@@ -172,55 +172,57 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             setDocumentTitle(data.title);
     }, [data])
 
-    const renderListItem = (edition: Edition) => {
+    const renderListItem = (edition: Edition, work?: Work) => {
         return (
-            <div className="col-12">
-                <div className="grid">
-                    <div className="col-8" >
-                        <EditionDetails edition={edition} card work={data} />
-                    </div>
-                    <div className="flex col-4 justify-content-end align-content-center">
-                        {edition.images.length > 0 &&
-                            <Image className="pt-2" preview width="100px" src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src} />
-                        }
+            (work &&
+                <div className="col-12">
+                    <div className="grid">
+                        <div className="col-8" >
+                            <EditionDetails edition={edition} card work={work} />
+                        </div>
+                        <div className="flex col-4 justify-content-end align-content-center">
+                            {edition.images.length > 0 &&
+                                <Image className="pt-2" preview width="100px" src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src} />
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
+            )
         )
     }
 
-    const renderGridItem = (edition: Edition) => {
-        return (
-            <div className="col-12 md:col-4 editioncard">
-                <div className="editionheader">
-                    <div className="editionnum">
-                        {EditionString(edition)}
-                    </div>
-                </div>
-                <div className="editionimage">
-                    {edition.images.length > 0 &&
-                        <Image preview height="250px"
-                            src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src}
-                            alt={EditionString(edition) + " kansikuva"}
-                        />
-                    }
-                </div>
-                <div className="editioncontent">
-                    <p className="editiontitle">{edition.title}</p>
-                    <EditionDetails edition={edition} />
-                </div>
-                <div className="editionfooter">
-                </div>
-            </div>
-        )
-    }
+    // const renderGridItem = (edition: Edition) => {
+    //     return (
+    //         <div className="col-12 md:col-4 editioncard">
+    //             <div className="editionheader">
+    //                 <div className="editionnum">
+    //                     {EditionString(edition)}
+    //                 </div>
+    //             </div>
+    //             <div className="editionimage">
+    //                 {edition.images.length > 0 &&
+    //                     <Image preview height="250px"
+    //                         src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src}
+    //                         alt={EditionString(edition) + " kansikuva"}
+    //                     />
+    //                 }
+    //             </div>
+    //             <div className="editioncontent">
+    //                 <p className="editiontitle">{edition.title}</p>
+    //                 <EditionDetails edition={edition} />
+    //             </div>
+    //             <div className="editionfooter">
+    //             </div>
+    //         </div>
+    //     )
+    // }
 
 
     const itemTemplate = (edition: Edition) => {
         if (!edition) {
             return;
         }
-        return renderListItem(edition);
+        return renderListItem(edition, data);
     }
 
     const renderHeader = () => {
@@ -298,6 +300,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                 </div>
                 {/* ) */}
                 <Dialog maximizable blockScroll
+                    className="w-full lg:w-6"
                     header="Teoksen muokkaus" visible={isEditVisible}
                     onShow={() => onDialogShow()}
                     onHide={() => onDialogHide()}
@@ -305,11 +308,12 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                     <WorkForm data={!formData || !editWork ? null : formData} onSubmitCallback={onDialogHide} />
                 </Dialog>
                 <Dialog maximizable blockScroll
+                    className="w-full lg:w-6"
                     header="Uusi painos" visible={isEditionFormVisible}
                     onShow={() => onEditionDialogShow()}
                     onHide={() => onEditionDialogHide()}
                 >
-                    <EditionForm edition={null} work={data.id} onSubmitCallback={onEditionDialogHide} />
+                    <EditionForm edition={null} work={data} onSubmitCallback={onEditionDialogHide} />
                 </Dialog>
                 {
                     isLoading ?

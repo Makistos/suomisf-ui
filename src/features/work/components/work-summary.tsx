@@ -68,7 +68,7 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
             )}
             <GenreList genres={work.genres} />
             {work.editions.map((edition) => (
-                <OtherEdition key={edition.id} edition={edition} details={detailLevel} />
+                <OtherEdition key={edition.id} work={work} edition={edition} details={detailLevel} />
             ))}
         </div>
     );

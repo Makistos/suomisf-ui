@@ -12,7 +12,9 @@ import { getApiContent } from '../services/user-service';
 import { LoginView, User } from '../features/user';
 
 export default function MainMenu() {
-    const [user, setUser]: [User | null, (user: User | null) => void] = useState<User | null>(null);
+    //const [user, setUser]: [User | null, (user: User | null) => void] = useState<User | null>(null);
+    const user = getCurrenUser();
+    const [currentUser, setCurrentUser] = useState<User | null>(user);
     const [selectedItem, setSelectedItem] = useState<any>(null);
     const [filteredItems, setFilteredItems] = useState<any>(null);
     const [loginVisible, setLoginVisible] = useState(false);
@@ -25,7 +27,7 @@ export default function MainMenu() {
     }
 
     const userName = (): string => {
-        return user !== null ? user.name : "";
+        return currentUser !== null ? currentUser.name : "";
     }
 
     const not_logged_items = [
@@ -50,7 +52,7 @@ export default function MainMenu() {
         },
         {
             label: 'Kirjaudu ulos',
-            command: () => { logout(); setUser(null); }
+            command: () => { logout(); }
         }
     ]
 
@@ -114,9 +116,8 @@ export default function MainMenu() {
     let items = common_items;
 
     useEffect(() => {
-        const newUser = getCurrenUser();
-        setUser(newUser);
-    }, [user])
+        setCurrentUser(user);
+    }, [])
 
     const start = <span><a href="/" > <b>SuomiSF </b></a > </span>
     const End = () => {

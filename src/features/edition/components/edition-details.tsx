@@ -30,7 +30,7 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
     return (
         <div>
             <Dialog maximizable blockScroll className="full md:w-6"
-                header="Teoksen muokkaus" visible={isEditVisible}
+                header="Painoksen muokkaus" visible={isEditVisible}
                 onShow={() => onDialogShow()}
                 onHide={() => onDialogHide()}
             >

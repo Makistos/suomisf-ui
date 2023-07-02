@@ -108,7 +108,7 @@ export const PersonForm = (props: FormProps<Person>) => {
                                         />
                                     )}
                                 />
-                                <label htmlFor="alt_name">Vaihtoehtoinen kirjailijanimen muoto</label>
+                                <label htmlFor="alt_name">Vaihtoehtoinen nimi</label>
                                 <small id="alt_name-help">Vaihtoehtoinen muoto (etunimi sukunimi)</small>
                             </span>
                         </div>

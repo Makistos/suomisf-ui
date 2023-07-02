@@ -1,9 +1,60 @@
+import React, { useRef } from "react";
 import axios from "axios";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { Toast } from "primereact/toast";
+
 import { User } from "../features/user/types";
 import authHeader from "./auth-header";
-//import { API_URL } from "../systemProps";
 
 const baseURL = process.env.REACT_APP_API_URL;
+
+const ConfirmAccessDenied = () => {
+    // const toast = useRef<Toast>(null);
+    // const accept = () => {
+    //     toast.current?.show({ severity: 'error', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
+    // }
+    // const reject = () => {
+    //     toast.current?.show({ severity: 'warn', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+    // }
+    // const confirm1 = () => {
+    //     confirmDialog
+    //         ({
+    //             message: "Ole hyvä ja kirjaudu uudestaan",
+    //             header: "Istunto vanhentunut",
+    //             icon: "pi pi-exclamation-triangle",
+    //             accept,
+    //             reject
+    //         });
+    // };
+
+    return (
+        <ConfirmDialog
+            visible={true}
+            message="Ole hyvä ja kirjaudu uudestaan"
+            header="Istunto vanhentunut"
+            icon="pi pi-exclamation-triangle"
+        />
+    )
+}
+
+const handleError = (error: any) => {
+    let message = "";
+    if (error.response) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+        message = error.response.status + ": " + error.response.data;
+    } else if (error.request) {
+        console.log(error.request);
+        message = error.request;
+    } else {
+        console.log('Error', error.message);
+        message = error.message;
+    }
+    console.log(error.config);
+    //<ConfirmAccessDenied />
+
+}
 
 interface cbType {
     (data: any): any;
@@ -26,17 +77,6 @@ export const getApiContent = (url: string, user: User | null) => {
 }
 
 const postPublicContent = (url: string, data: any, callback: cbType | null, user: User | null): any => {
-    // let retval;
-    // let headers;
-    // if (user === undefined || user === null) {
-    //     headers = { "Content-Type": "multipart/form-data" };
-    //     // } else {
-    //     //     headers = {
-    //     //         "Content-Type": "multipart/form-data",
-    //     //         authHeader();
-    //     //     };
-
-    // }
     const addr = process.env.REACT_APP_API_URL + url;
     console.log('Posting to address ' + addr);
     axios.post(addr, data, { headers: authHeader() })
@@ -60,16 +100,7 @@ export const putContent = (url: string, data: any, user: User | null): any => {
             return response.data;
         })
         .catch((error) => {
-            if (error.response) {
-                console.log(error.response.data);
-                console.log(error.response.status);
-                console.log(error.response.headers);
-            } else if (error.request) {
-                console.log(error.request);
-            } else {
-                console.log('Error', error.message);
-            }
-            console.log(error.config);
+            handleError(error);
         })
 }
 

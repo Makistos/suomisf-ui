@@ -28,7 +28,7 @@ export interface Edition {
     pubseries: Pubseries;
     pubseriesnum?: number;
     pubyear: number;
-    size?: string;
+    size?: number;
     subtitle: string;
     title: string;
     translators: Person[];
@@ -55,9 +55,10 @@ export interface EditionFormData {
     title: string,
     subtitle: string,
     editionnum?: number | null,
+    version?: number | null,
     pubyear?: number | null,
     pages?: number | null,
-    size?: string,
+    size?: number | null,
     misc: string,
     imported_string: string,
     isbn: string,

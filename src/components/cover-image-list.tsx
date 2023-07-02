@@ -23,7 +23,7 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
                     if (!(image.image_src in retval)) {
                         image.edition_id = edition.id;
                         if (edition.size) {
-                            image.size = edition.size;
+                            image.size = edition.size.toString();
                         } else {
                             image.size = "20";
                         }

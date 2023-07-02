@@ -32,8 +32,6 @@ export async function login(username: string, password: string) {
 export const logout = () => {
     localStorage.removeItem("user");
     window.location.reload();
-    // const navigate = useNavigate();
-    // navigate('/');
     console.log("logged out user");
 }
 

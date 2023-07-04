@@ -27,7 +27,7 @@ export default function MainMenu() {
     }
 
     const userName = (): string => {
-        return currentUser !== null ? currentUser.name : "";
+        return currentUser !== null ? currentUser.user : "";
     }
 
     const not_logged_items = [

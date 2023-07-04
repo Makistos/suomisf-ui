@@ -59,7 +59,14 @@ function App() {
 
   locale('fi');
 
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: true,
+      }
+    }
+  });
+
   // const [title, setTitle] = useState("SF-Bibliografia");
 
   // useEffect(() => {

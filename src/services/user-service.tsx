@@ -4,46 +4,17 @@ import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 
 import { User } from "../features/user/types";
-import authHeader from "./auth-header";
+import authHeader, { refreshHeader } from "./auth-header";
 
 const baseURL = process.env.REACT_APP_API_URL;
 
-const ConfirmAccessDenied = () => {
-    // const toast = useRef<Toast>(null);
-    // const accept = () => {
-    //     toast.current?.show({ severity: 'error', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
-    // }
-    // const reject = () => {
-    //     toast.current?.show({ severity: 'warn', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
-    // }
-    // const confirm1 = () => {
-    //     confirmDialog
-    //         ({
-    //             message: "Ole hyvä ja kirjaudu uudestaan",
-    //             header: "Istunto vanhentunut",
-    //             icon: "pi pi-exclamation-triangle",
-    //             accept,
-    //             reject
-    //         });
-    // };
-
-    return (
-        <ConfirmDialog
-            visible={true}
-            message="Ole hyvä ja kirjaudu uudestaan"
-            header="Istunto vanhentunut"
-            icon="pi pi-exclamation-triangle"
-        />
-    )
-}
-
-const handleError = (error: any) => {
+const handleError = (error: any): string => {
     let message = "";
     if (error.response) {
         console.log(error.response.data);
         console.log(error.response.status);
         console.log(error.response.headers);
-        message = error.response.status + ": " + error.response.data;
+        message = error.response.data['msg']
     } else if (error.request) {
         console.log(error.request);
         message = error.request;
@@ -53,7 +24,7 @@ const handleError = (error: any) => {
     }
     console.log(error.config);
     //<ConfirmAccessDenied />
-
+    return message;
 }
 
 interface cbType {
@@ -95,12 +66,13 @@ const postPublicContent = (url: string, data: any, callback: cbType | null, user
 
 export const putContent = (url: string, data: any, user: User | null): any => {
     const addr = process.env.REACT_APP_API_URL + url;
+    let error_msg = "";
     axios.put(addr, data, { headers: authHeader() })
         .then((response) => {
             return response.data;
         })
         .catch((error) => {
-            handleError(error);
+            error_msg = handleError(error);
         })
 }
 

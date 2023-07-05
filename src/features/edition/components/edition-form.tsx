@@ -8,6 +8,7 @@ import { AutoComplete } from 'primereact/autocomplete';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 
 import { getCurrenUser } from '../../../services/auth-service';
 import { Edition } from '../types';
@@ -17,7 +18,6 @@ import { putApiContent, postApiContent, getApiContent } from '../../../services/
 import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
 import { Binding } from '../../../types/binding';
 import { Work } from '../../work/types';
-import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 
 interface EditionFormProps {
   edition: Edition | null;
@@ -151,7 +151,7 @@ export const EditionForm = (props: EditionFormProps) => {
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <div className="formgrid grid">
-            <div className="field col-12">
+            <div className="field col-12 mb-0 pb-0">
               <span className="p-float-label">
                 <Controller
                   name="title"
@@ -173,7 +173,7 @@ export const EditionForm = (props: EditionFormProps) => {
                 <label htmlFor="title" className="required-field">Nimi</label>
               </span>
             </div>
-            <div className="field col-12">
+            <div className="field col-12 mt-0 pt-0">
               <span className="p-float-label">
                 <Controller
                   name="subtitle"
@@ -194,8 +194,8 @@ export const EditionForm = (props: EditionFormProps) => {
                 <label htmlFor="subtitle">Alaotsikko</label>
               </span>
             </div>
-            <div className="grid col-12 mt-2">
-              <div className="field col-3">
+            <div className="grid col-12">
+              <div className="field col-12 lg:col-4 md:col-6 mb-0 pb-0">
                 <span className="p-float-label">
                   <Controller
                     name="publisher"
@@ -224,8 +224,8 @@ export const EditionForm = (props: EditionFormProps) => {
                 </span>
               </div>
 
-              <div className="field col-2">
-                <span className="p-float-label">
+              <div className="field col-4">
+                <span className="p-float-label col-12 md:col-6 lg:col-4">
                   <Controller
                     name="pubyear"
                     control={methods.control}
@@ -249,7 +249,28 @@ export const EditionForm = (props: EditionFormProps) => {
                   <label htmlFor="pubyear" className="required-field">Vuosi</label>
                 </span>
               </div>
-              <div className="field col-2">
+              <div className="field col-12 lg:col-4 mb-0 pb-0">
+                <span className="p-float-label">
+                  <Controller
+                    name="printedin"
+                    control={methods.control}
+                    render={({ field, fieldState }) => (
+                      <>
+                        <InputText id="printedin"
+                          {...field}
+                          value={field.value ? field.value : ""}
+                          {...methods.register("printedin")}
+                          className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                          disabled={isDisabled(user, loading)}
+                        />
+                        {getFormErrorMessage(field.name)}
+                      </>
+                    )}
+                  />
+                  <label htmlFor="printedin">Painopaikka</label>
+                </span>
+              </div>
+              <div className="field col-6 mt-0 pt-0">
                 <span className="p-float-label">
                   <Controller
                     name="editionnum"
@@ -276,7 +297,7 @@ export const EditionForm = (props: EditionFormProps) => {
                   <label htmlFor="editionnum" className="required-field">Painos</label>
                 </span>
               </div>
-              <div className="field col-2">
+              <div className="field col-6 mt-0 pt-0">
                 <span className="p-float-label">
                   <Controller
                     name="version"
@@ -300,29 +321,8 @@ export const EditionForm = (props: EditionFormProps) => {
                   <label htmlFor="version">Laitos</label>
                 </span>
               </div>
-              <div className="field col-3">
-                <span className="p-float-label">
-                  <Controller
-                    name="printedin"
-                    control={methods.control}
-                    render={({ field, fieldState }) => (
-                      <>
-                        <InputText id="printedin"
-                          {...field}
-                          value={field.value ? field.value : ""}
-                          {...methods.register("printedin")}
-                          className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-                          disabled={isDisabled(user, loading)}
-                        />
-                        {getFormErrorMessage(field.name)}
-                      </>
-                    )}
-                  />
-                  <label htmlFor="printedin">Painopaikka</label>
-                </span>
-              </div>
             </div>
-            <div className="field col-5">
+            <div className="field col-5 p-2">
               <span className="p-float-label">
                 <Controller
                   name="pubseries"
@@ -334,7 +334,6 @@ export const EditionForm = (props: EditionFormProps) => {
                         field="name"
                         completeMethod={filterPubseries}
                         suggestions={filteredPubseries}
-                        placeholder="Kustantajan sarja"
                         delay={300}
                         minLength={2}
                         removeIcon
@@ -349,7 +348,7 @@ export const EditionForm = (props: EditionFormProps) => {
                 <label htmlFor="pubseries" className="">Kustantajan sarja</label>
               </span>
             </div>
-            <div className="field col-2">
+            <div className="field col-2 p-2">
               <span className="p-float-label">
                 <Controller
                   name="pubseriesnum"
@@ -374,7 +373,7 @@ export const EditionForm = (props: EditionFormProps) => {
               </span>
             </div>
             <div className="grid col-12 mt-2">
-              <div className="field col-4">
+              <div className="field col-4 p-2">
                 <span className="p-float-label">
                   <Controller
                     name="isbn"
@@ -396,7 +395,7 @@ export const EditionForm = (props: EditionFormProps) => {
                 </span>
               </div>
             </div>
-            <div className="field col-12">
+            <div className="field col-12 p-2">
               <ContributorField
                 id={"contributors"}
                 disabled={isDisabled(user, loading)}
@@ -405,7 +404,7 @@ export const EditionForm = (props: EditionFormProps) => {
             </div>
 
             <div className="grid col-12 mt-3">
-              <div className="field col-2">
+              <div className="field col-12 lg:col-4 p-2">
                 <span className="p-float-label">
                   <Controller
                     name="pages"
@@ -430,7 +429,7 @@ export const EditionForm = (props: EditionFormProps) => {
                   <label htmlFor="pages">Sivuja</label>
                 </span>
               </div>
-              <div className="field col-2">
+              <div className="field col-12 lg:col-4 p-2">
                 <span className="p-float-label">
                   <Controller
                     name="size"
@@ -454,7 +453,7 @@ export const EditionForm = (props: EditionFormProps) => {
                   <label htmlFor="size">Korkeus cm</label>
                 </span>
               </div>
-              <div className="field col-3">
+              <div className="field col-12 lg:col-4 p-2">
                 <span className="p-float-label">
                   <div key="binding" className="flex align-items-center">
                     <Controller
@@ -481,7 +480,9 @@ export const EditionForm = (props: EditionFormProps) => {
                   </div>
                 </span>
               </div>
-              <div className='field col-2'>
+            </div>
+            <div className="grid col-12 mt-3">
+              <div className='field col-2 p-2'>
                 <Controller
                   name="dustcover"
                   control={methods.control}
@@ -502,7 +503,7 @@ export const EditionForm = (props: EditionFormProps) => {
                 />
                 <label htmlFor="binding">Kansipaperi</label>
               </div>
-              <div className='field col-2'>
+              <div className='field col-2 p-2'>
                 <Controller
                   name="coverimage"
                   control={methods.control}
@@ -525,7 +526,7 @@ export const EditionForm = (props: EditionFormProps) => {
               </div>
 
             </div>
-            <div className="field col-12">
+            <div className="field col-12 p-2">
               <span className="p-float-label">
                 <Controller
                   name="misc"
@@ -546,7 +547,7 @@ export const EditionForm = (props: EditionFormProps) => {
                 <label htmlFor="misc">Muuta</label>
               </span>
             </div>
-            <div className="field col-12">
+            <div className="field col-12 p-2">
               <span className="p-float-label">
                 <Controller
                   name="imported_string"

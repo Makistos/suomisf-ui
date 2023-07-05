@@ -300,7 +300,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                 </div>
                 {/* ) */}
                 <Dialog maximizable blockScroll
-                    className="w-full lg:w-6"
+                    className="w-full xl:w-6"
                     header="Teoksen muokkaus" visible={isEditVisible}
                     onShow={() => onDialogShow()}
                     onHide={() => onDialogHide()}
@@ -308,7 +308,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                     <WorkForm data={!formData || !editWork ? null : formData} onSubmitCallback={onDialogHide} />
                 </Dialog>
                 <Dialog maximizable blockScroll
-                    className="w-full lg:w-6"
+                    className="w-full xl:w-6"
                     header="Uusi painos" visible={isEditionFormVisible}
                     onShow={() => onEditionDialogShow()}
                     onHide={() => onEditionDialogHide()}

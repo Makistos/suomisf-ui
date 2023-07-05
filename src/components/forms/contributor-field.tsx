@@ -124,9 +124,9 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
 
         return (
             <div key={keyValue}
-                className="grid gap-1">
+                className="grid">
 
-                <div className="field sm:col-12 lg:col-3">
+                <div className="field col-12 lg:col-3 p-2">
                     <Controller
                         name={`contributors.${index}.person` as const}
                         control={control}
@@ -151,7 +151,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                         )}
                     />
                 </div>
-                <div className="field sm:col-12 lg:col-2">
+                <div className="field col-12 lg:col-3 p-2">
                     <Controller
                         name={`contributors.${index}.role` as const}
                         control={control}
@@ -173,7 +173,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                         )}
                     />
                 </div>
-                <div className="field sm:col-12 lg:col-3">
+                <div className="field col-12 lg:col-3 p-2">
                     <Controller
                         name={`contributors.${index}.description` as const}
                         control={control}
@@ -217,7 +217,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                     />
                 </div>
                                 */}
-                <div className="field sm:col-12 lg:col-1">
+                <div className="flex align-content-center flex-wrap col-12 lg:col-2">
                     <Button type="button"
                         className="p-button-rounded p-button-text"
                         onClick={() => removeContributor(index)}

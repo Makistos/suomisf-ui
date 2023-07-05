@@ -49,7 +49,7 @@ export const getApiContent = (url: string, user: User | null) => {
 
 const postPublicContent = (url: string, data: any, callback: cbType | null, user: User | null): any => {
     const addr = process.env.REACT_APP_API_URL + url;
-    console.log('Posting to address ' + addr);
+    //console.log('Posting to address ' + addr);
     axios.post(addr, data, { headers: authHeader() })
         .then((response) => {
             if (callback) {

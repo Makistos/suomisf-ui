@@ -28,9 +28,12 @@ p.frontpage {
   box-shadow: 4px 4px 5px 0px #EDEDED;
 }
 
-.front-page-image {
- clip-path: circle(50% at 50% 40%);
+@media only screen and (min-width: 960px) {
+  .front-page-image {
+  clip-path: circle(50% at 50% 40%);
+  }
 }
+
 .stats-number {
   font-size: 1.2rem;
   font-weight: bolder;

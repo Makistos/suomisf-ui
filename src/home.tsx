@@ -57,29 +57,31 @@ export const Home = () => {
         </div>
         <div className="latest-additions mt-8 mb-8">
           <div className="grid">
-            <div className="grid col-12">
+            <div className="col-12">
               Viimeisimmät lisäykset
             </div>
-            <div className="flex col-12">
-              {stats && stats.latest && stats.latest.map((edition) => (
-                <div className="grid col-3 justify-content-between" key={edition.id}>
-                  <div className="grid col-12" >
-                    {edition.images.length > 0 && (
-                      <div>
-                        <Tooltip target={".image-" + edition.id} position="top" mouseTrack mouseTrackLeft={10}>
-                          <div className="flex align-items-center">
-                            <ImageTooltip edition={edition} />
-                          </div>
-                        </Tooltip>
-                        <Link to={`/works/${edition.work[0].id}`}>
-                          <img alt={edition.title} className={"image-" + edition.id} src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src}
-                            height={String(edition.size ? Number(edition.size) * 10 : 200)} />
-                        </Link>
-                      </div>
-                    )}
+            <div className="col-12">
+              <div className="flex">
+                {stats && stats.latest && stats.latest.map((edition) => (
+                  <div className="col-3 justify-content-between" key={edition.id}>
+                    <div className="col-12" >
+                      {edition.images.length > 0 && (
+                        <div>
+                          <Tooltip target={".image-" + edition.id} position="top" mouseTrack mouseTrackLeft={10}>
+                            <div className="flex align-items-center">
+                              <ImageTooltip edition={edition} />
+                            </div>
+                          </Tooltip>
+                          <Link to={`/works/${edition.work[0].id}`}>
+                            <img alt={edition.title} className={"image-" + edition.id} src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src}
+                              height={String(edition.size ? Number(edition.size) * 10 : 200)} />
+                          </Link>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
           <div className="grid justify-content-end p-1">Lisää...</div>
@@ -87,25 +89,25 @@ export const Home = () => {
         {stats && (
           <div className="stats">
             <div className="flex justify-content-between p-3">
-              <div className="grid front-stats-box pt-2 pl-3 pr-3 pb-0 justify-content-center">
-                <div className="grid col-12 justify-content-center p-0">Teoksia</div>
-                <div className="grid col-12 justify-content-center stats-number pt-2">{stats.works}</div>
+              <div className="front-stats-box pt-2 pl-3 pr-3 pb-0 justify-content-center">
+                <div className="col-12 justify-content-center p-0">Teoksia</div>
+                <div className="col-12 justify-content-center stats-number pt-2">{stats.works}</div>
               </div>
-              <div className="grid front-stats-box pt-2 pl-3 pr-3 pb-0 justify-content-center">
-                <div className="grid col-12 justify-content-center p-0">Painoksia</div>
-                <div className="grid col-12 justify-content-center stats-number pt-2">{stats.editions}</div>
+              <div className="front-stats-box pt-2 pl-3 pr-3 pb-0 justify-content-center">
+                <div className="col-12 justify-content-center p-0">Painoksia</div>
+                <div className="col-12 justify-content-center stats-number pt-2">{stats.editions}</div>
               </div>
-              <div className="grid front-stats-box pt-2 pl-3 pr-3 pb-0 justify-content-center">
-                <div className="grid col-12 justify-content-center p-0">Novelleja</div>
-                <div className="grid col-12 justify-content-center stats-number pt-2">{stats.shorts}</div>
+              <div className="front-stats-box pt-2 pl-3 pr-3 pb-0 justify-content-center">
+                <div className="col-12 justify-content-center p-0">Novelleja</div>
+                <div className="col-12 justify-content-center stats-number pt-2">{stats.shorts}</div>
               </div>
-              <div className="grid front-stats-box pt-2 pl-3 pr-3 pb-0 justify-content-center">
-                <div className="grid col-12 justify-content-center p-0">Kansia</div>
-                <div className="grid col-12 justify-content-center stats-number pt-2">{stats.covers}</div>
+              <div className="front-stats-box pt-2 pl-3 pr-3 pb-0 justify-content-center">
+                <div className="col-12 justify-content-center p-0">Kansia</div>
+                <div className="col-12 justify-content-center stats-number pt-2">{stats.covers}</div>
               </div>
-              <div className="grid front-stats-box pt-2 pl-3 pr-3 pb-0 justify-content-center">
-                <div className="grid col-12 justify-content-center p-0">Lehtiä</div>
-                <div className="grid col-12 justify-content-center stats-number pt-2">{stats.magazines}</div>
+              <div className="front-stats-box pt-2 pl-3 pr-3 pb-0 justify-content-center">
+                <div className="col-12 justify-content-center p-0">Lehtiä</div>
+                <div className="col-12 justify-content-center stats-number pt-2">{stats.magazines}</div>
               </div>
             </div>
           </div>

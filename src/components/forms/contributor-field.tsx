@@ -222,7 +222,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                         className="p-button-rounded p-button-text"
                         onClick={() => removeContributor(index)}
                         icon="pi pi-minus"
-                        disabled={fields.length < 2 || disabled}
+                        disabled={disabled}
                     />
                     {index === fields.length - 1 && (
                         <Button type="button" className="p-button-rounded p-button-text"

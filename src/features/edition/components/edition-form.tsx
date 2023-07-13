@@ -12,12 +12,13 @@ import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 
 import { getCurrenUser } from '../../../services/auth-service';
 import { Edition } from '../types';
-import { ContributorField } from '../../../components/forms/contributor-field';
+import { ContributorField, emptyContributor } from '../../../components/forms/contributor-field';
 import { EditionFormData } from '../types';
 import { putApiContent, postApiContent, getApiContent } from '../../../services/user-service';
 import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
 import { Binding } from '../../../types/binding';
 import { Work } from '../../work/types';
+import { Contribution } from '../../../types/contribution';
 
 interface EditionFormProps {
   edition: Edition | null;
@@ -45,6 +46,14 @@ export const EditionForm = (props: EditionFormProps) => {
 
   const queryClient = useQueryClient()
 
+  let contributors: Contribution[] = [];
+  if (props.edition) {
+    contributors = props.edition.contributions.filter((contribution: Contribution, index: number, arr: Contribution[]) => arr.indexOf(contribution) === index);
+  }
+  if (contributors.length === 0) {
+    contributors = [emptyContributor];
+  }
+
   const convToFormData = (data: Edition): EditionFormData => {
     return {
       id: data.id,
@@ -64,7 +73,7 @@ export const EditionForm = (props: EditionFormProps) => {
       publisher: data.publisher,
       pubseries: data.pubseries,
       pubseriesnum: data.pubseriesnum,
-      contributors: data.contributions,
+      contributors: contributors,
       format: data.format,
       binding: data.binding,
       coverimage: data.coverimage === null || data.coverimage === 1 ? null : data.coverimage === 2 ? false : true,
@@ -89,7 +98,7 @@ export const EditionForm = (props: EditionFormProps) => {
     publisher: null,
     pubseries: null,
     pubseriesnum: null,
-    contributors: [],
+    contributors: [emptyContributor],
     format: null,
     binding: bindings[0],
     coverimage: null,
@@ -107,6 +116,9 @@ export const EditionForm = (props: EditionFormProps) => {
     let updatedData: FieldValues = JSON.parse(JSON.stringify(data));
     updatedData.dustcover = data.dustcover === null ? 1 : data.dustcover === false ? 2 : 3;
     updatedData.coverimage = data.coverimage === null ? 1 : data.coverimage === false ? 2 : 3;
+    if (updatedData.work_id === undefined) {
+      updatedData.work_id = props.work.id;
+    }
     const retval: FormSubmitObject = { data: updatedData, changed: methods.formState.dirtyFields }
     setMessage("");
     setLoading(true);
@@ -136,9 +148,6 @@ export const EditionForm = (props: EditionFormProps) => {
     const message = errors[name];
     const error = message?.message;
     let errorStr = "";
-    if (name === "publisher") {
-      console.log("publisher error: ", error);
-    }
     if (error !== undefined) {
       errorStr = error.toString();
     }

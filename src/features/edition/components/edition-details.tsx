@@ -3,12 +3,15 @@ import { Link } from "react-router-dom";
 
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
+import { confirmPopup, ConfirmPopup } from 'primereact/confirmpopup';
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { LinkList } from "../../../components/link-list";
 import { EditionProps } from "../types";
 import { EditionVersion } from "../utils/edition-version";
 import { EditionForm } from './edition-form';
+import { deleteApiContent } from '../../../services/user-service';
+import { reject } from 'lodash';
 
 export const EditionDetails = ({ edition, work, card }: EditionProps) => {
     const [isEditVisible, setEditVisible] = useState(false);
@@ -26,6 +29,27 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
         setEditVisible(false);
     }
 
+    const deleteEdition = (id: number) => {
+        if (id != null) {
+            deleteApiContent("editions/" + id);
+        }
+        queryClient.invalidateQueries();
+    }
+
+    const confirmDelete = (event: any) => {
+        confirmPopup({
+            target: event.currentTarget,
+            message: "Haluatko varmasti poistaa painoksen?",
+            icon: "pi pi-exclamation-triangle",
+            acceptClassName: "p-button-danger",
+            accept: () => {
+                deleteEdition(edition.id);
+            },
+            reject: () => {
+                console.log("reject");
+            }
+        })
+    }
 
     return (
         <div>
@@ -36,7 +60,7 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
             >
                 <EditionForm edition={edition} work={work} onSubmitCallback={onDialogHide} />
             </Dialog>
-
+            <ConfirmPopup />
             {card && <b><EditionVersion edition={edition} work={work} /></b>}
             {work !== undefined && edition.title !== work.title &&
                 <><br /><i className="font-medium">{edition.title}</i></>}
@@ -75,7 +99,8 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
             }<br />
             <div>
                 <Button icon="pi pi-pencil" tooltip="Muokkaa" className="p-button-text" onClick={() => onDialogShow()} />
-                <Button icon="pi pi-trash" tooltip="Poista" className="p-button-text" />
+                <Button icon="pi pi-trash" tooltip="Poista" className="p-button-text"
+                    onClick={confirmDelete} />
                 {work && work.stories && work.stories.length > 0 && (
                     <Button icon="fa fa-list-ul" tooltip="Novellit" className='p-button-text' />
                 )}

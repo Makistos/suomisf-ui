@@ -14,13 +14,14 @@ import { QueryClient, useQueryClient } from '@tanstack/react-query';
 import { Work } from '../types';
 import { getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
-import { WorkFormData } from '../types';
+import { WorkFormData, WorkType } from '../types';
 //import { makeBriefContributor } from '../../../components/forms/makeBriefContributor';
 import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
 import { ContributorField, emptyContributor } from '../../../components/forms/contributor-field';
 import { Contribution } from '../../../types/contribution';
 //import { workCreators } from '../../../components/forms/work-creators';
 import { LinksField } from '../../../components/forms/links-field';
+import { Dropdown } from 'primereact/dropdown';
 
 interface FormProps<T> {
   data: T | null,
@@ -33,6 +34,7 @@ export const WorkForm = (props: FormProps<Work>) => {
   const [loading, setLoading] = useState(false);
   const [filteredLanguages, setFilteredLanguages] = useState([]);
   const [genres, setGenres] = useState([]);
+  const [types, setTypes] = useState<WorkType[]>([]);
   const [filteredTags, setFilteredTags] = useState([]);
   const [filteredBookseries, setFilteredBookseries] = useState([]);
 
@@ -44,8 +46,14 @@ export const WorkForm = (props: FormProps<Work>) => {
       const response = await getApiContent(url, user);
       setGenres(response.data);
     }
+    async function getTypes() {
+      const url = "worktypes";
+      const response = await getApiContent(url, user);
+      setTypes(response.data);
+    }
     setLoading(true);
     getGenres();
+    getTypes();
     setLoading(false);
   }, [user])
 
@@ -72,6 +80,7 @@ export const WorkForm = (props: FormProps<Work>) => {
     bookseries_number: work.bookseries_number,
     bookseriesorder: work.bookseriesorder,
     contributors: contributors,
+    work_type: work.work_type,
     links: work.links.length > 0 ? work.links : [{ link: '', description: '' }]
   });
 
@@ -91,6 +100,7 @@ export const WorkForm = (props: FormProps<Work>) => {
     bookseries_number: '',
     bookseriesorder: null,
     contributors: [emptyContributor],
+    work_type: types[0],
     links: [{ link: '', description: '' }]
   }
 
@@ -105,6 +115,7 @@ export const WorkForm = (props: FormProps<Work>) => {
   const methods = useForm<WorkFormData>({ defaultValues: formData });
   const register = methods.register;
   const control = methods.control;
+  const errors = methods.formState.errors;
 
   async function filterLanguages(event: any) {
     const url = "filter/languages/" + event.query;
@@ -137,6 +148,22 @@ export const WorkForm = (props: FormProps<Work>) => {
     // queryClient.invalidateQueries({ queryKey: ["work", props.work.id] });
     props.onSubmitCallback();
   }
+
+  const getFormErrorMessage = (name: string) => {
+    const message = errors[name];
+    const error = message?.message;
+    let errorStr = "";
+    if (error !== undefined) {
+      errorStr = error.toString();
+    }
+    return error ? <small className="p-error">{errorStr}</small> :
+      <small className="p-error">&nbsp;</small>;
+  };
+
+  if (formData === null || loading) {
+    return <div>loading...</div>
+  }
+  console.log(formData);
 
   return (
     <div className="card mt-3">
@@ -286,6 +313,30 @@ export const WorkForm = (props: FormProps<Work>) => {
                   )}
                 />
                 <label htmlFor="bookseriesorder">Kirjasarjan järjestys</label>
+              </span>
+            </div>
+            <div className="field col-12">
+              <span className='p-float-label'>
+                <div key="work_type" className="flex align-items-center">
+                  <Controller
+                    name="work_type"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <>
+                        <Dropdown
+                          {...field}
+                          optionLabel="name"
+                          options={types}
+                          className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                          tooltip='Tyyppi'
+                          disabled={isDisabled(user, loading)}
+                        />
+                        {getFormErrorMessage(field.name)}
+                      </>
+                    )}
+                  />
+                  <label htmlFor="work_type" className="ml-2">Tyyppi</label>
+                </div>
               </span>
             </div>
             <div className="field col-12">

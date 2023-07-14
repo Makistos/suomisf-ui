@@ -9,6 +9,10 @@ import { Edition } from "../../edition/types";
 import { Language } from "../../../types/language";
 // import { Contributable } from "../../../types/generic";
 import { Contribution } from "../../../types/contribution";
+export interface WorkType {
+    id: number,
+    name: string,
+}
 export interface Work {
     [index: string]: any,
     author_str: string,
@@ -32,6 +36,7 @@ export interface Work {
     subtitle: string,
     title: string,
     translators: Person[],
+    work_type: WorkType,
     contributors: Contribution[],
 }
 
@@ -52,4 +57,5 @@ export interface WorkFormData {
     imported_strin?: string,
     contributors: Contribution[],
     links: LinkType[],
+    work_type: WorkType | null,
 }

@@ -180,6 +180,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                         render={({ field, fieldState }) => (
                             <InputText
                                 {...field}
+                                value={field.value ? field.value : ""}
                                 tooltip="Kuvaus"
                                 placeholder="Kuvaus"
                                 className={classNames(

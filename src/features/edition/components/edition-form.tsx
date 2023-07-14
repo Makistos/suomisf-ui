@@ -34,7 +34,7 @@ export const EditionForm = (props: EditionFormProps) => {
   const [filteredPubseries, setFilteredPubseries] = useState<any>([]);
   const [bindings, setBindings] = useState<Binding[]>([]);
 
-  console.log("EditionForm: ", props.edition);
+  //console.log("EditionForm: ", props.edition);
 
   useEffect(() => {
     async function fetchBindings() {
@@ -105,7 +105,7 @@ export const EditionForm = (props: EditionFormProps) => {
   }
 
   const formData = props.edition ? convToFormData(props.edition) : defaultValues;
-  console.log("formData: ", formData);
+  //console.log("formData: ", formData);
   const methods = useForm<EditionFormData>({ defaultValues: formData });
   const register = methods.register;
   const control = methods.control;

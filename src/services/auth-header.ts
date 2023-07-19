@@ -8,7 +8,7 @@ export default function authHeader() {
     if (user && user.access_token) {
         const retval = {
             "Authorization": "Bearer " + user.access_token,
-            "X-CSRF-TOKEN": user.access_token
+            //"X-CSRF-TOKEN": user.access_token
         };
         //console.log("authHeader: " + JSON.stringify(retval, null, 2));
         return retval;

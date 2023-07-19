@@ -52,9 +52,15 @@ export const refreshAccessTokenFn = async () => {
     if (!user) return Promise.reject("No user found");
     const header = refreshHeader();
     const data = { 'username': user.user };
-    const response = await axios.post(baseURL + "refresh", data, { headers: header });
-    localStorage.setItem("user", JSON.stringify(response.data));
-    return response.data;
+    console.log("refreshAccessTokenFn: " + JSON.stringify(data, null, 2));
+    try {
+        const response = await axios.post(baseURL + "refresh", data, { headers: header });
+        localStorage.setItem("user", JSON.stringify(response.data));
+        console.log("token refreshed with response: " + JSON.stringify(response.data, null, 2));
+        return response.data;
+    } catch (error) {
+        console.log("error refreshing token: " + JSON.stringify(error, null, 2));
+    }
 }
 
 axios.interceptors.response.use(

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 import { Image } from "primereact/image";
@@ -7,14 +7,18 @@ import { Panel } from "primereact/panel";
 import { Ripple } from "primereact/ripple";
 import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
+import { Toast } from "primereact/toast";
 import { confirmDialog } from "primereact/confirmdialog";
+import { FileUpload, FileUploadHandlerEvent } from "primereact/fileupload";
 import { Dialog } from "primereact/dialog";
+import { ProgressSpinner } from "primereact/progressspinner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 import { Edition, EditionString, EditionDetails } from "../../edition";
 //import { IMAGE_URL } from "../../../systemProps";
 import { getCurrenUser } from "../../../services/auth-service";
-import { getApiContent } from "../../../services/user-service";
+import { getApiContent, postApiContent } from "../../../services/user-service";
 import { ShortsList } from "../../short";
 import { Work } from "../types";
 import { WorkDetails } from "../components/work-details";
@@ -24,7 +28,8 @@ import { selectId } from "../../../utils";
 import { useDocumentTitle } from '../../../components/document-title';
 import { WorkForm } from "../components/work-form";
 import { User } from "../../user";
-import { ProgressSpinner } from "primereact/progressspinner";
+import { isDisabled } from '../../../components/forms/forms';
+import authHeader from "../../../services/auth-header";
 
 export interface WorkProps {
     work: Work,
@@ -173,6 +178,23 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     }, [data])
 
     const renderListItem = (edition: Edition, work?: Work) => {
+        const imageUploadUrl = `editions/${edition.id}/images`;
+        const customSave = async (event: FileUploadHandlerEvent) => {
+            const form = new FormData();
+            form.append('file', event.files[0], event.files[0].name);
+            const file = event.files[0];
+            const request = { file: file, filename: file.name };
+            const headers = authHeader();
+
+            const response = await axios.post(process.env.REACT_APP_API_URL + imageUploadUrl,
+                form, {
+                headers: headers
+            });
+        }
+        // const toast = useRef<Toast>(null);
+        // const onUpload = () => {
+        //     toast.current?.show({ severity: 'info', summary: 'Success', detail: 'Kuva tallennettu' });
+        // }
         return (
             (work &&
                 <div className="col-12">
@@ -181,8 +203,20 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                             <EditionDetails edition={edition} card work={work} />
                         </div>
                         <div className="flex col-4 justify-content-end align-content-center">
-                            {edition.images.length > 0 &&
+                            {edition.images.length > 0 ?
                                 <Image className="pt-2" preview width="100px" src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src} />
+                                :
+                                <FileUpload
+                                    id={"editionimage_" + edition.id}
+                                    mode="basic"
+                                    accept="image/*"
+                                    name="image"
+                                    uploadLabel="Lisää kuva"
+                                    auto
+                                    customUpload
+                                    uploadHandler={customSave}
+                                    disabled={isDisabled(user, isLoading)}
+                                />
                             }
                         </div>
                     </div>

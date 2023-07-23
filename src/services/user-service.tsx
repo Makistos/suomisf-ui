@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 
@@ -22,7 +22,7 @@ const handleError = (error: any): string => {
         console.log('Error', error.message);
         message = error.message;
     }
-    console.log(error.config);
+    //console.log(error.config);
     //<ConfirmAccessDenied />
     return message;
 }
@@ -64,16 +64,34 @@ const postPublicContent = (url: string, data: any, callback: cbType | null, user
     //return retval;
 }
 
-export const putContent = (url: string, data: any, user: User | null): any => {
+interface HttpStatusResponse {
+    response: string,
+    status: number
+}
+
+export const putContent = async (url: string, data: any, user: User | null): Promise<HttpStatusResponse | void> => {
     const addr = process.env.REACT_APP_API_URL + url;
     let error_msg = "";
-    axios.put(addr, data, { headers: authHeader() })
+    let status = 0;
+    await axios.put(addr, data, { headers: authHeader() })
         .then((response) => {
             return response.data;
         })
-        .catch((error) => {
-            error_msg = handleError(error);
+        .catch((err: AxiosError) => {
+            if (err.response) {
+                error_msg = JSON.stringify(err.response, null, 2);
+                status = err.response.status;
+                console.log("server error: " + error_msg);
+            } else if (err.request) {
+                error_msg = JSON.stringify(err.request, null, 2);
+                status = err.request.status;
+                console.log("no response: " + error_msg);
+            } else {
+                error_msg = JSON.stringify(err, null, 2);
+                console.log("other error: " + error_msg);
+            }
         })
+    return { response: error_msg, status: 0 };
 }
 
 export const deleteApiContent = (url: string): any => {

@@ -13,6 +13,7 @@ export default function authHeader() {
         //console.log("authHeader: " + JSON.stringify(retval, null, 2));
         return retval;
     } else {
+        console.log("authHeader: undefined");
         return undefined;
     }
 }

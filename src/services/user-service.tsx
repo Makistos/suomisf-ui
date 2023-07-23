@@ -47,10 +47,11 @@ export const getApiContent = (url: string, user: User | null) => {
     }
 }
 
-const postPublicContent = (url: string, data: any, callback: cbType | null, user: User | null): any => {
+const postPublicContent = async (url: string, data: any, callback: cbType | null, user: User | null): Promise<HttpStatusResponse | void> => {
     const addr = process.env.REACT_APP_API_URL + url;
-    //console.log('Posting to address ' + addr);
-    axios.post(addr, data, { headers: authHeader() })
+    let error_msg = "";
+    let status = 0;
+    await axios.post(addr, data, { headers: authHeader() })
         .then((response) => {
             if (callback) {
                 callback(response.data);
@@ -58,10 +59,22 @@ const postPublicContent = (url: string, data: any, callback: cbType | null, user
             return response.data;
             //console.log("Post response: " + retval)
         })
-        .catch((response) => {
-            console.log(response);
+        .catch((err: AxiosError) => {
+            if (err.response) {
+                error_msg = JSON.stringify(err.response, null, 2);
+                status = err.response.status;
+                console.log("server error: " + error_msg);
+            } else if (err.request) {
+                error_msg = JSON.stringify(err.request, null, 2);
+                status = err.request.status;
+                console.log("no response: " + error_msg);
+            } else {
+                error_msg = JSON.stringify(err, null, 2);
+                console.log("other error: " + error_msg);
+            }
         })
-    //return retval;
+    return { response: error_msg, status: 0 };
+
 }
 
 interface HttpStatusResponse {
@@ -94,21 +107,29 @@ export const putContent = async (url: string, data: any, user: User | null): Pro
     return { response: error_msg, status: 0 };
 }
 
-export const deleteApiContent = (url: string): any => {
+export const deleteApiContent = async (url: string): Promise<HttpStatusResponse | void> => {
     const addr = process.env.REACT_APP_API_URL + url;
+    let error_msg = "";
+    let status = 0;
     axios.delete(addr, { headers: authHeader() })
         .then((response) => {
             return response.data;
         })
-        .catch((err) => {
+        .catch((err: AxiosError) => {
             if (err.response) {
-                console.log("server error: " + JSON.stringify(err.response, null, 2));
+                error_msg = JSON.stringify(err.response, null, 2);
+                status = err.response.status;
+                console.log("server error: " + error_msg);
             } else if (err.request) {
-                console.log("no response: " + JSON.stringify(err.request, null, 2));
+                error_msg = JSON.stringify(err.request, null, 2);
+                status = err.request.status;
+                console.log("no response: " + error_msg);
             } else {
-                console.log("other error: " + JSON.stringify(err.tostring, null, 2));
+                error_msg = JSON.stringify(err, null, 2);
+                console.log("other error: " + error_msg);
             }
         })
+    return { response: error_msg, status: 0 };
 }
 
 export const postApiContent = (url: string, data: any, user: User | null) => {

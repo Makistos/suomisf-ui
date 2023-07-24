@@ -12,13 +12,15 @@ import { confirmDialog } from "primereact/confirmdialog";
 import { FileUpload, FileUploadHandlerEvent } from "primereact/fileupload";
 import { Dialog } from "primereact/dialog";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { ContextMenu } from "primereact/contextmenu";
+import { MenuItem } from "primereact/menuitem";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 import { Edition, EditionString, EditionDetails } from "../../edition";
 //import { IMAGE_URL } from "../../../systemProps";
 import { getCurrenUser } from "../../../services/auth-service";
-import { getApiContent, postApiContent } from "../../../services/user-service";
+import { getApiContent, postApiContent, deleteApiContent } from "../../../services/user-service";
 import { ShortsList } from "../../short";
 import { Work } from "../types";
 import { WorkDetails } from "../components/work-details";
@@ -45,6 +47,35 @@ interface WorkPageProps {
 
 let workId = "";
 
+interface ImageViewProps {
+    edition: Edition
+}
+
+const ImageView = ({ edition }: ImageViewProps) => {
+    const editionId = edition.id;
+    const imageUploadUrl = `editions/${editionId}/images/${edition.images[0].id}`;
+    const cm = useRef<ContextMenu>(null);
+    const imageItems = [
+        {
+            label: 'Poista kuva',
+            icon: 'pi pi-trash',
+            command: () => {
+                console.log(imageUploadUrl);
+                deleteApiContent(imageUploadUrl);
+            }
+        }
+    ];
+
+    return (
+        <>
+            <ContextMenu model={imageItems} ref={cm} />
+            <Image className="pt-2" preview width="100px" src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src}
+                onContextMenu={(e) => cm.current?.show(e)}
+            />
+        </>
+    )
+}
+
 export const WorkPage = ({ id }: WorkPageProps) => {
     const params = useParams();
     const user = useMemo(() => { return getCurrenUser() }, []);
@@ -56,6 +87,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     const [formData, setFormData] = useState<Work | null>(null);
     const [editWork, setEditWork] = useState(true);
     const [isEditionFormVisible, setEditionFormVisible] = useState(false);
+    const toast = useRef<Toast>(null);
 
     const ConfirmNewWork = () => {
         confirmDialog({
@@ -179,6 +211,12 @@ export const WorkPage = ({ id }: WorkPageProps) => {
 
     const renderListItem = (edition: Edition, work?: Work) => {
         const imageUploadUrl = `editions/${edition.id}/images`;
+        const eIdx = work?.editions.findIndex(e => e.id === edition.id);
+        if (eIdx === undefined || eIdx === null || eIdx == -1) {
+            return null;
+        }
+        const editionIdx: number = eIdx;
+        console.log(imageUploadUrl);
         const customSave = async (event: FileUploadHandlerEvent) => {
             const form = new FormData();
             form.append('file', event.files[0], event.files[0].name);
@@ -191,10 +229,10 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                 headers: headers
             });
         }
-        // const toast = useRef<Toast>(null);
-        // const onUpload = () => {
-        //     toast.current?.show({ severity: 'info', summary: 'Success', detail: 'Kuva tallennettu' });
-        // }
+
+        const onUpload = () => {
+            toast.current?.show({ severity: 'info', summary: 'Success', detail: 'Kuva tallennettu' });
+        }
         return (
             (work &&
                 <div className="col-12">
@@ -204,7 +242,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                         </div>
                         <div className="flex col-4 justify-content-end align-content-center">
                             {edition.images.length > 0 ?
-                                <Image className="pt-2" preview width="100px" src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src} />
+                                <ImageView edition={edition} />
                                 :
                                 <FileUpload
                                     id={"editionimage_" + edition.id}
@@ -215,6 +253,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                     auto
                                     customUpload
                                     uploadHandler={customSave}
+                                    onUpload={onUpload}
                                     disabled={isDisabled(user, isLoading)}
                                 />
                             }

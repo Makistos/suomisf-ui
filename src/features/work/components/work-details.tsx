@@ -10,16 +10,32 @@ import { WorkProps } from "../routes";
 
 
 export const WorkDetails = ({ work }: WorkProps) => {
+    console.log(work.contributions)
+
     return (
         <div className="grid align-items-center justify-content-center">
             {work.authors && (
                 <div className="grid col-12 justify-content-center">
-                    <h3 className="mb-0">
+                    <h2 className="mb-0 font-semibold">
                         <LinkList path="people"
                             separator=" &amp; "
                             items={work.authors.map((item) => ({
                                 id: item['id'],
                                 name: item['alt_name'] ? item['alt_name'] : item['name']
+                            }))} />
+                    </h2>
+                </div>
+            )}
+            {work.contributions && work.contributions.filter(person => person.role.id === 3).length > 0 && (
+                <div className="grid col-12 justify-content-center">
+                    <h3 className="mb-0 mt-0">
+                        Toim.&nbsp;
+                        <LinkList path="people"
+                            separator=" &amp; "
+                            items={work.contributions.filter(contrib => contrib.role.id === 3).map((item) => ({
+                                id: item.person['id'],
+                                name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
+
                             }))} />
                     </h3>
                 </div>

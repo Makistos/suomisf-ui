@@ -48,7 +48,8 @@ export const EditionForm = (props: EditionFormProps) => {
 
   let contributors: Contribution[] = [];
   if (props.edition) {
-    contributors = props.edition.contributions.filter((contribution: Contribution, index: number, arr: Contribution[]) => arr.indexOf(contribution) === index);
+    contributors = props.edition.contributions.filter((contribution: Contribution,
+      index: number, arr: Contribution[]) => arr.indexOf(contribution) === index);
   }
   if (contributors.length === 0) {
     contributors = [emptyContributor];
@@ -119,7 +120,8 @@ export const EditionForm = (props: EditionFormProps) => {
     if (updatedData.work_id === undefined) {
       updatedData.work_id = props.work.id;
     }
-    const retval: FormSubmitObject = { data: updatedData, changed: methods.formState.dirtyFields }
+    const retval: FormSubmitObject =
+      { data: updatedData, changed: methods.formState.dirtyFields }
     setMessage("");
     setLoading(true);
     if (data.id != null) {
@@ -172,7 +174,9 @@ export const EditionForm = (props: EditionFormProps) => {
                         {...methods.register("title", { required: true })}
                         value={field.value ? field.value : ""}
                         autoFocus
-                        className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                        className={classNames(
+                          { 'p-invalid': fieldState.error },
+                          "w-full")}
                         disabled={isDisabled(user, loading)}
                       />
                       {getFormErrorMessage(field.name)}
@@ -193,7 +197,9 @@ export const EditionForm = (props: EditionFormProps) => {
                         {...field}
                         {...methods.register("subtitle")}
                         value={field.value ? field.value : ""}
-                        className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                        className={classNames(
+                          { 'p-invalid': fieldState.error },
+                          "w-full")}
                         disabled={isDisabled(user, loading)}
                       />
                       {getFormErrorMessage(field.name)}
@@ -221,7 +227,9 @@ export const EditionForm = (props: EditionFormProps) => {
                           delay={300}
                           minLength={2}
                           removeIcon
-                          className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                          className={classNames(
+                            { 'p-invalid': fieldState.error },
+                            "w-full")}
                           inputClassName="w-full"
                           disabled={isDisabled(user, loading)}
                         />
@@ -248,7 +256,9 @@ export const EditionForm = (props: EditionFormProps) => {
                           useGrouping={false}
                           onBlur={field.onBlur}
                           onValueChange={(e) => field.onChange(e.value)}
-                          className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                          className={classNames(
+                            { 'p-invalid': fieldState.error },
+                            "w-full")}
                           disabled={isDisabled(user, loading)}
                         />
                         {getFormErrorMessage(field.name)}
@@ -269,7 +279,9 @@ export const EditionForm = (props: EditionFormProps) => {
                           {...field}
                           value={field.value ? field.value : ""}
                           {...methods.register("printedin")}
-                          className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                          className={classNames(
+                            { 'p-invalid': fieldState.error },
+                            "w-full")}
                           disabled={isDisabled(user, loading)}
                         />
                         {getFormErrorMessage(field.name)}
@@ -296,7 +308,9 @@ export const EditionForm = (props: EditionFormProps) => {
                           useGrouping={false}
                           onBlur={field.onBlur}
                           onValueChange={(e) => field.onChange(e.value)}
-                          className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                          className={classNames(
+                            { 'p-invalid': fieldState.error },
+                            "w-full")}
                           disabled={isDisabled(user, loading)}
                         />
                         {getFormErrorMessage(field.name)}
@@ -320,7 +334,9 @@ export const EditionForm = (props: EditionFormProps) => {
                           useGrouping={false}
                           onBlur={field.onBlur}
                           onValueChange={(e) => field.onChange(e.value)}
-                          className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                          className={classNames(
+                            { 'p-invalid': fieldState.error },
+                            "w-full")}
                           disabled={isDisabled(user, loading)}
                         />
                         {getFormErrorMessage(field.name)}
@@ -346,7 +362,9 @@ export const EditionForm = (props: EditionFormProps) => {
                         delay={300}
                         minLength={2}
                         removeIcon
-                        className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                        className={classNames(
+                          { 'p-invalid': fieldState.error },
+                          "w-full")}
                         inputClassName="w-full"
                         disabled={isDisabled(user, loading)}
                       />
@@ -371,7 +389,9 @@ export const EditionForm = (props: EditionFormProps) => {
                         value={field.value}
                         onBlur={field.onBlur}
                         onValueChange={(e) => field.onChange(e.value)}
-                        className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                        className={classNames(
+                          { 'p-invalid': fieldState.error },
+                          "w-full")}
                         disabled={isDisabled(user, loading)}
                       />
                       {getFormErrorMessage(field.name)}
@@ -393,7 +413,9 @@ export const EditionForm = (props: EditionFormProps) => {
                           {...field}
                           {...methods.register("isbn")}
                           value={field.value ? field.value : ""}
-                          className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                          className={classNames(
+                            { 'p-invalid': fieldState.error },
+                            "w-full")}
                           disabled={isDisabled(user, loading)}
                         />
                         {getFormErrorMessage(field.name)}
@@ -428,7 +450,9 @@ export const EditionForm = (props: EditionFormProps) => {
                           useGrouping={false}
                           onBlur={field.onBlur}
                           onValueChange={(e) => field.onChange(e.value)}
-                          className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                          className={classNames(
+                            { 'p-invalid': fieldState.error },
+                            "w-full")}
                           disabled={isDisabled(user, loading)}
                         />
                         {getFormErrorMessage(field.name)}
@@ -452,7 +476,9 @@ export const EditionForm = (props: EditionFormProps) => {
                           useGrouping={false}
                           onBlur={field.onBlur}
                           onValueChange={(e) => field.onChange(e.value)}
-                          className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                          className={classNames(
+                            { 'p-invalid': fieldState.error },
+                            "w-full")}
                           disabled={isDisabled(user, loading)}
                         />
                         {getFormErrorMessage(field.name)}
@@ -475,7 +501,8 @@ export const EditionForm = (props: EditionFormProps) => {
                             optionLabel="name"
                             options={bindings}
                             className={classNames(
-                              { "p-invalid": fieldState.error }, "w-full"
+                              { "p-invalid": fieldState.error },
+                              "w-full"
                             )}
                             placeholder="Sidonta"
                             tooltip="Sidonta"
@@ -546,7 +573,9 @@ export const EditionForm = (props: EditionFormProps) => {
                         {...field}
                         {...methods.register("misc")}
                         value={field.value ? field.value : ""}
-                        className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                        className={classNames(
+                          { 'p-invalid': fieldState.error },
+                          "w-full")}
                         disabled={isDisabled(user, loading)}
                       />
                       {getFormErrorMessage(field.name)}
@@ -567,7 +596,9 @@ export const EditionForm = (props: EditionFormProps) => {
                         {...field}
                         {...methods.register("imported_string")}
                         value={field.value ? field.value : ""}
-                        className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                        className={classNames(
+                          { 'p-invalid': fieldState.error },
+                          "w-full")}
                         disabled={isDisabled(user, loading)}
                       />
                     </>
@@ -576,7 +607,9 @@ export const EditionForm = (props: EditionFormProps) => {
                 <label htmlFor="imported_string">Lähde</label>
               </span>
             </div>
-            <Button type="submit" className="w-full justify-content-center">Tallenna</Button>
+            <Button type="submit" className="w-full justify-content-center">
+              Tallenna
+            </Button>
           </div>
         </form>
       </FormProvider>

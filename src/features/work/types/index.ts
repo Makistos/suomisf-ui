@@ -37,7 +37,7 @@ export interface Work {
     title: string,
     translators: Person[],
     work_type: WorkType,
-    contributors: Contribution[],
+    contributions: Contribution[],
 }
 
 export interface WorkFormData {

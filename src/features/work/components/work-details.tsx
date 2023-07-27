@@ -26,29 +26,46 @@ export const WorkDetails = ({ work }: WorkProps) => {
                     </h2>
                 </div>
             )}
-            {work.contributions && work.contributions.filter(person => person.role.id === 3).length > 0 && (
-                <div className="grid col-12 justify-content-center">
-                    <h3 className="mb-0 mt-0">
-                        Toim.&nbsp;
-                        <LinkList path="people"
-                            separator=" &amp; "
-                            items={work.contributions.filter(contrib => contrib.role.id === 3).map((item) => ({
-                                id: item.person['id'],
-                                name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
+            {work.authors.length === 0 && work.contributions &&
+                work.contributions.filter(person => person.role.id === 3).length > 0 && (
+                    <div className="grid col-12 justify-content-center">
+                        <h2 className="mb-0 mt-0">
+                            Toim.&nbsp;
+                            <LinkList path="people"
+                                separator=" &amp; "
+                                items={work.contributions.filter(
+                                    contrib => contrib.role.id === 3).map((item) => ({
+                                        id: item.person['id'],
+                                        name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
 
-                            }))} />
-                    </h3>
-                </div>
-            )}
+                                    }))} />
+                        </h2>
+                    </div>
+                )}
             <div className="grid col-12 justify-content-center"><h1 className="mt-1 mb-0">{work.title}</h1></div>
             <div className="grid col-12 justify-content-center"><h2 className="mt-1 mb-0">{work.subtitle}</h2></div>
             <div className="grid col-12 justify-content-center">
+                {work.authors.length > 0 && work.contributions && work.contributions.filter(person => person.role.id === 3).length > 0 && (
+                    <div className="grid col-12 justify-content-center">
+                        <h3 className="mb-0 mt-0">
+                            Toim.&nbsp;
+                            <LinkList path="people"
+                                separator=" &amp; "
+                                items={work.contributions.filter(contrib => contrib.role.id === 3).map((item) => ({
+                                    id: item.person['id'],
+                                    name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
+
+                                }))} />
+                        </h3>
+                    </div>
+                )}
                 <p className="mt-1">
                     {work.orig_title !== work.title && work.orig_title + ", "}
 
                     {work.pubyear}
                     {work.language_name && " (" + work.language_name.name + ")"}
                 </p>
+
                 <div className="col-12">
                     <GenreGroup genres={work.genres} />
                 </div>

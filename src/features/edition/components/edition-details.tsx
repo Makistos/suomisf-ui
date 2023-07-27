@@ -84,16 +84,19 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                     {edition.publisher && (
                         <><br /><Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link> </>)}
                     {edition.pubyear + "."}
-                    {edition.translators.length > 0 && (
-                        <><br /><>Suom. </>
-                            <LinkList path="people"
-                                separator=" &amp; "
-                                items={edition.translators.map((item) => ({
-                                    id: item['id'],
-                                    name: item['alt_name'] ? item['alt_name'] : item['name']
-                                }))} />.
-                        </>
-                    )}
+                    {edition.contributions && edition.contributions.length > 0 &&
+                        edition.contributions.filter(person => person.role.id === 2).length > 0 &&
+                        (
+                            <><br /><>Suom. </>
+                                <LinkList path="people"
+                                    separator=" &amp; "
+                                    items={edition.contributions.filter(
+                                        contrib => contrib.role.id === 2).map((item) => ({
+                                            id: item.person['id'],
+                                            name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
+                                        }))} />.
+                            </>
+                        )}
                     {edition.pubseries && (<>
                         <br /><Link to={`/pubseries/${edition.pubseries.id}`}>{edition.pubseries.name}</Link>
                         {edition.pubseriesnum && (<> {edition.pubseriesnum}</>)}

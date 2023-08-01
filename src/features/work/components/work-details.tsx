@@ -14,19 +14,20 @@ export const WorkDetails = ({ work }: WorkProps) => {
 
     return (
         <div className="grid align-items-center justify-content-center">
-            {work.authors && (
+            {work.contributions.filter(person => person.role.id === 1).length > 0 && (
                 <div className="grid col-12 justify-content-center">
                     <h2 className="mb-0 font-semibold">
                         <LinkList path="people"
                             separator=" &amp; "
-                            items={work.authors.map((item) => ({
-                                id: item['id'],
-                                name: item['alt_name'] ? item['alt_name'] : item['name']
+                            items={work.contributions.filter(person => person.role.id === 1).map((item) => ({
+                                id: item.person['id'],
+                                name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
                             }))} />
                     </h2>
                 </div>
             )}
-            {work.authors.length === 0 && work.contributions &&
+            {work.contributions &&
+                work.contributions.filter(person => person.role.id === 1).length === 0 &&
                 work.contributions.filter(person => person.role.id === 3).length > 0 && (
                     <div className="grid col-12 justify-content-center">
                         <h2 className="mb-0 mt-0">
@@ -42,25 +43,32 @@ export const WorkDetails = ({ work }: WorkProps) => {
                         </h2>
                     </div>
                 )}
-            <div className="grid col-12 justify-content-center"><h1 className="mt-1 mb-0">{work.title}</h1></div>
-            <div className="grid col-12 justify-content-center"><h2 className="mt-1 mb-0">{work.subtitle}</h2></div>
             <div className="grid col-12 justify-content-center">
-                {work.authors.length > 0 && work.contributions && work.contributions.filter(person => person.role.id === 3).length > 0 && (
-                    <div className="grid col-12 justify-content-center">
-                        <h3 className="mb-0 mt-0">
-                            Toim.&nbsp;
-                            <LinkList path="people"
-                                separator=" &amp; "
-                                items={work.contributions.filter(contrib => contrib.role.id === 3).map((item) => ({
-                                    id: item.person['id'],
-                                    name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
+                <h1 className="mt-1 mb-0">{work.title}</h1>
+            </div>
+            <div className="grid col-12 justify-content-center">
+                <h2 className="mt-1 mb-0">{work.subtitle}</h2>
+            </div>
+            <div className="grid col-12 justify-content-center">
+                {work.contributions &&
+                    work.contributions.filter(person => person.role.id === 1).length == 0 &&
+                    work.contributions.filter(person => person.role.id === 3).length > 0
+                    && (
+                        <div className="grid col-12 justify-content-center">
+                            <h3 className="mb-0 mt-0">
+                                Toim.&nbsp;
+                                <LinkList path="people"
+                                    separator=" &amp; "
+                                    items={work.contributions.filter(contrib => contrib.role.id === 3).map((item) => ({
+                                        id: item.person['id'],
+                                        name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
 
-                                }))} />
-                        </h3>
-                    </div>
-                )}
+                                    }))} />
+                            </h3>
+                        </div>
+                    )}
                 <p className="mt-1">
-                    {work.orig_title !== work.title && work.orig_title + ", "}
+                    {work.orig_title && work.orig_title !== work.title && work.orig_title + ", "}
 
                     {work.pubyear}
                     {work.language_name && " (" + work.language_name.name + ")"}

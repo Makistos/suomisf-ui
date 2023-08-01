@@ -11,6 +11,7 @@ import { WorkDetails } from "./work-details";
 
 
 export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
+    console.log(work)
 
     return (
 
@@ -51,25 +52,34 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                     )
                 </>
             )}
-            {work.editions[0].translators.length > 0 && (
-                <>
-                    <> Suom. </>
-                    <LinkList path="people"
-                        items={work.editions[0].translators} />.
-                </>
-            )}
-            {work.editions[0].publisher &&
+            {work.editions && work.editions.length > 0 &&
+                work.editions[0].contributions &&
+                work.editions[0].contributions
+                    .filter(person => person.role.id === 2).length > 0 && (
+                    <>
+                        <> Suom. </>
+                        <LinkList path="people"
+                            items={work.editions[0].contributions
+                                .filter(contrib => contrib.role.id === 2)
+                                .map(person => person.person)}
+                        />.
+                    </>
+                )}
+            {work.editions && work.editions.length > 0 &&
+                work.editions[0].publisher &&
                 <Link to={`/publishers/${work.editions[0].publisher.id}`}> {work.editions[0].publisher.name}</Link>}
-            <> {work.editions[0].pubyear}. </>
-            {work.editions[0].pubseries && (
-                <Link to={`/pubseries/${work.editions[0].pubseries.id}`}>
-                    {work.editions[0].pubseries.name}.<> </>
-                </Link>
-            )}
+            <> {work.editions[0].pubyear && work.editions[0].pubyear}. </>
+            {work.editions && work.editions.length > 0 &&
+                work.editions[0].pubseries && (
+                    <Link to={`/pubseries/${work.editions[0].pubseries.id}`}>
+                        {work.editions[0].pubseries.name}.<> </>
+                    </Link>
+                )}
             <GenreList genres={work.genres} />
-            {work.editions.map((edition) => (
-                <OtherEdition key={edition.id} work={work} edition={edition} details={detailLevel} />
-            ))}
+            {work.editions && work.editions.length > 0 &&
+                work.editions.map((edition) => (
+                    <OtherEdition key={edition.id} work={work} edition={edition} details={detailLevel} />
+                ))}
         </div>
     );
 };

@@ -58,7 +58,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
 
     const { fields, append, remove } = useFieldArray({
         control,
-        name: "contributors"
+        name: id
     })
 
     // const contributionSort = (a: Contribution, b: Contribution) => {
@@ -128,7 +128,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
 
                 <div className="field col-12 lg:col-3 p-2">
                     <Controller
-                        name={`contributors.${index}.person` as const}
+                        name={`${id}.${index}.person` as const}
                         control={control}
                         render={({ field, fieldState }) => (
                             <AutoComplete
@@ -153,7 +153,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                 </div>
                 <div className="field col-12 lg:col-3 p-2">
                     <Controller
-                        name={`contributors.${index}.role` as const}
+                        name={`${id}.${index}.role` as const}
                         control={control}
                         render={({ field, fieldState }) => (
                             <Dropdown
@@ -175,7 +175,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                 </div>
                 <div className="field col-12 lg:col-3 p-2">
                     <Controller
-                        name={`contributors.${index}.description` as const}
+                        name={`${id}.${index}.description` as const}
                         control={control}
                         render={({ field, fieldState }) => (
                             <InputText
@@ -195,7 +195,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                 {/*
                 <div className="field sm:col-12 lg:col-3">
                     <Controller
-                        name={`contributors.${index}.person.aliases` as const}
+                        name={`${id}.${index}.person.aliases` as const}
                         control={control}
                         render={({ field, fieldState }) => (
                             <AutoComplete
@@ -241,7 +241,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
         <>
             <span >
                 <label htmlFor="contributors" className="form-field-header">Tekijät</label>
-                <div id="contributors" className="py-0" key={id}>
+                <div id={id} className="py-0" key={id}>
                     {fields && fields.map((_, index) =>
                         <ContributorRow index={index} key={index} />
                     )}

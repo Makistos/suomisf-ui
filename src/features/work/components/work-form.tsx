@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useForm, Controller, SubmitHandler, FieldValues, FormProvider } from 'react-hook-form';
 import { DevTool } from '@hookform/devtools';
@@ -40,6 +41,8 @@ export const WorkForm = (props: FormProps<Work>) => {
 
   //console.log(props.work);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     async function getGenres() {
       const url = "genres";
@@ -56,6 +59,8 @@ export const WorkForm = (props: FormProps<Work>) => {
     getTypes();
     setLoading(false);
   }, [user])
+
+  const queryClient = useQueryClient()
 
   let contributors: Contribution[] = [];
   if (props.data) {
@@ -74,12 +79,12 @@ export const WorkForm = (props: FormProps<Work>) => {
     genres: work.genres,
     tags: work.tags,
     description: work.description ? work.description : '',
-    desc_attrs: work.desc_attrs,
+    descr_attr: work.descr_attr,
     misc: work.misc ? work.misc : '',
     bookseries: work.bookseries,
-    bookseries_number: work.bookseries_number,
+    bookseriesnum: work.bookseriesnum,
     bookseriesorder: work.bookseriesorder,
-    contributors: contributors,
+    contributions: contributors,
     work_type: work.work_type,
     links: work.links.length > 0 ? work.links : [{ link: '', description: '' }]
   });
@@ -94,12 +99,12 @@ export const WorkForm = (props: FormProps<Work>) => {
     genres: [],
     tags: [],
     description: '',
-    desc_attrs: '',
+    descr_attr: '',
     misc: '',
     bookseries: null,
-    bookseries_number: '',
+    bookseriesnum: '',
     bookseriesorder: null,
-    contributors: [emptyContributor],
+    contributions: [emptyContributor],
     work_type: types[0],
     links: [{ link: '', description: '' }]
   }
@@ -143,6 +148,11 @@ export const WorkForm = (props: FormProps<Work>) => {
       putApiContent('works', retval, user)
     } else {
       postApiContent('works', retval, user)
+        .then((response) => {
+          if (response && response.status === 201) {
+            navigate('/work/' + response.response, { replace: true })
+          }
+        })
     }
     setLoading(false);
     // queryClient.invalidateQueries({ queryKey: ["work", props.work.id] });
@@ -172,28 +182,36 @@ export const WorkForm = (props: FormProps<Work>) => {
           <div className="formgrid grid">
             <div className="field col-12">
               <span className="p-float-label">
-                <Controller name="title" control={control}
+                <Controller
+                  name="title"
+                  control={methods.control}
+                  rules={{ required: 'Nimeke on pakollinen' }}
                   render={({ field, fieldState }) => (
-                    <InputText
-                      {...field}
-                      autoFocus
-                      {...register("title")}
-                      value={field.value ? field.value : ''}
-                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-                      disabled={isDisabled(user, loading)}
-                    />
+                    <>
+                      <InputText
+                        {...field}
+                        autoFocus
+                        {...methods.register("title")}
+                        value={field.value ? field.value : ''}
+                        className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                        disabled={isDisabled(user, loading)}
+                      />
+                      {getFormErrorMessage(field.name)}
+                    </>
                   )}
                 />
-                <label htmlFor="title">Nimeke</label>
+                <label htmlFor="title" className="required-field">Nimeke</label>
               </span>
             </div>
             <div className="field col-12">
               <span className="p-float-label">
-                <Controller name="subtitle" control={control}
+                <Controller
+                  name="subtitle"
+                  control={methods.control}
                   render={({ field, fieldState }) => (
                     <InputText
                       {...field}
-                      {...register("subtitle")}
+                      {...methods.register("subtitle")}
                       value={field.value ? field.value : ''}
                       className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                       disabled={isDisabled(user, loading)}
@@ -205,11 +223,13 @@ export const WorkForm = (props: FormProps<Work>) => {
             </div>
             <div className="field col-12">
               <span className='p-float-label'>
-                <Controller name="orig_title" control={control}
+                <Controller
+                  name="orig_title"
+                  control={methods.control}
                   render={({ field, fieldState }) => (
                     <InputText
                       {...field}
-                      {...register("orig_title")}
+                      {...methods.register("orig_title")}
                       value={field.value ? field.value : ''}
                       className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                       disabled={isDisabled(user, loading)}
@@ -221,25 +241,31 @@ export const WorkForm = (props: FormProps<Work>) => {
             </div>
             <div className="field col-4">
               <span className='p-float-label'>
-                <Controller name="pubyear" control={control}
+                <Controller
+                  name="pubyear"
+                  control={methods.control}
+                  rules={{ required: 'Vuosi on pakollinen' }}
                   render={({ field, fieldState }) => (
                     <InputNumber
                       id={field.name}
                       inputRef={field.ref}
                       value={field.value}
-                      onBlur={field.onBlur}
                       useGrouping={false}
-                      inputClassName={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                      onBlur={field.onBlur}
+                      onValueChange={(e) => field.onChange(e.value)}
+                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                       disabled={isDisabled(user, loading)}
                     />
                   )}
                 />
-                <label htmlFor="pubyear">Julkaisuvuosi</label>
+                <label htmlFor="pubyear" className="required-field">Julkaisuvuosi</label>
               </span>
             </div>
             <div className="field col-8">
               <span className='p-float-label'>
-                <Controller name="language" control={control}
+                <Controller
+                  name="language"
+                  control={methods.control}
                   render={({ field, fieldState }) => (
                     <AutoComplete
                       {...field}
@@ -261,7 +287,9 @@ export const WorkForm = (props: FormProps<Work>) => {
             </div>
             <div className="field col-6">
               <span className='p-float-label'>
-                <Controller name="bookseries" control={control}
+                <Controller
+                  name="bookseries"
+                  control={methods.control}
                   render={({ field, fieldState }) => (
                     <AutoComplete
                       {...field}
@@ -283,11 +311,13 @@ export const WorkForm = (props: FormProps<Work>) => {
             </div>
             <div className="field col-3">
               <span className='p-float-label'>
-                <Controller name="bookseries_number" control={control}
+                <Controller
+                  name="bookseriesnum"
+                  control={methods.control}
                   render={({ field, fieldState }) => (
                     <InputText
                       {...field}
-                      {...register("bookseries_number")}
+                      {...methods.register("bookseriesnum")}
                       value={field.value ? field.value : ''}
                       className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                       disabled={isDisabled(user, loading)}
@@ -299,7 +329,9 @@ export const WorkForm = (props: FormProps<Work>) => {
             </div>
             <div className="field col-3">
               <span className='p-float-label'>
-                <Controller name="bookseriesorder" control={control}
+                <Controller
+                  name="bookseriesorder"
+                  control={methods.control}
                   render={({ field, fieldState }) => (
                     <InputNumber
                       id={field.name}
@@ -320,7 +352,8 @@ export const WorkForm = (props: FormProps<Work>) => {
                 <div key="work_type" className="flex align-items-center">
                   <Controller
                     name="work_type"
-                    control={control}
+                    control={methods.control}
+                    rules={{ required: 'Teoksen tyyppi on pakollinen' }}
                     render={({ field, fieldState }) => (
                       <>
                         <Dropdown
@@ -335,20 +368,22 @@ export const WorkForm = (props: FormProps<Work>) => {
                       </>
                     )}
                   />
-                  <label htmlFor="work_type" className="ml-2">Tyyppi</label>
+                  <label htmlFor="work_type" className="ml-2 required-field">Tyyppi</label>
                 </div>
               </span>
             </div>
             <div className="field col-12">
               <ContributorField
-                id={"contributors"}
+                id={"contributions"}
                 disabled={isDisabled(user, loading)}
-                defValues={formData.contributors}
+                defValues={formData.contributions}
               />
             </div>
             <div className="field col-12">
               <span className='p-float-label'>
-                <Controller name="genres" control={control}
+                <Controller
+                  name="genres"
+                  control={methods.control}
                   render={({ field, fieldState }) => (
                     <MultiSelect
                       {...field}
@@ -368,7 +403,9 @@ export const WorkForm = (props: FormProps<Work>) => {
             </div>
             <div className="field col-12">
               <span className='p-float-label'>
-                <Controller name="tags" control={control}
+                <Controller
+                  name="tags"
+                  control={methods.control}
                   render={({ field, fieldState }) => (
                     <AutoComplete
                       {...field}
@@ -397,7 +434,9 @@ export const WorkForm = (props: FormProps<Work>) => {
 
             <div className="field col-12">
               Kuvaus
-              <Controller name="description" control={control}
+              <Controller
+                name="description"
+                control={methods.control}
                 render={({ field, fieldState }) => (
                   <Editor {...field}
                     style={{ height: '320px' }}
@@ -407,10 +446,12 @@ export const WorkForm = (props: FormProps<Work>) => {
             </div>
             <div className="field col-12">
               <span className="p-float-label">
-                <Controller name="desc_attrs" control={control}
+                <Controller
+                  name="descr_attrs"
+                  control={methods.control}
                   render={({ field, fieldState }) => (
                     <InputText {...field}
-                      {...register("desc_attrs")}
+                      {...methods.register("descr_attrs")}
                       value={field.value ? field.value : ''}
                       className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                       disabled={isDisabled(user, loading)}
@@ -422,10 +463,12 @@ export const WorkForm = (props: FormProps<Work>) => {
             </div>
             <div className="field col-12">
               <span className="p-float-label">
-                <Controller name="misc" control={control}
+                <Controller
+                  name="misc"
+                  control={methods.control}
                   render={({ field, fieldState }) => (
                     <InputText {...field}
-                      {...register("misc")}
+                      {...methods.register("misc")}
                       value={field.value ? field.value : ''}
                       className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                       disabled={isDisabled(user, loading)}

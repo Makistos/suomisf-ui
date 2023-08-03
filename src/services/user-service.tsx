@@ -31,6 +31,11 @@ interface cbType {
     (data: any): any;
 }
 
+interface HttpStatusResponse {
+    response: string,
+    status: number
+}
+
 export const getPublicContent = (url: string) => {
     return axios.get(baseURL + url);
 };
@@ -47,39 +52,37 @@ export const getApiContent = (url: string, user: User | null) => {
     }
 }
 
-const postPublicContent = async (url: string, data: any, callback: cbType | null, user: User | null): Promise<HttpStatusResponse | void> => {
+const postPublicContent = async (url: string, dataOut: any, callback: cbType | null, user: User | null): Promise<HttpStatusResponse | void> => {
     const addr = process.env.REACT_APP_API_URL + url;
     let error_msg = "";
     let status = 0;
-    await axios.post(addr, data, { headers: authHeader() })
-        .then((response) => {
-            if (callback) {
-                callback(response.data);
-            }
-            return response.data;
-            //console.log("Post response: " + retval)
-        })
-        .catch((err: AxiosError) => {
-            if (err.response) {
-                error_msg = JSON.stringify(err.response, null, 2);
-                status = err.response.status;
-                console.log("server error: " + error_msg);
-            } else if (err.request) {
-                error_msg = JSON.stringify(err.request, null, 2);
-                status = err.request.status;
-                console.log("no response: " + error_msg);
-            } else {
-                error_msg = JSON.stringify(err, null, 2);
-                console.log("other error: " + error_msg);
-            }
-        })
-    return { response: error_msg, status: 0 };
-
-}
-
-interface HttpStatusResponse {
-    response: string,
-    status: number
+    //let retval: HttpStatusResponse = { response: '', status: 0 };
+    try {
+        const { data } = await axios.post<HttpStatusResponse>(addr, dataOut, { headers: authHeader() })
+        console.log(data)
+        return data
+        // .then((response) => {
+        //     if (callback) {
+        //         callback(response.data);
+        //     }
+        //     console.log("Post response: " + response.data)
+        //     return response.data;
+        // })
+    } catch (err: any) {
+        if (err.response) {
+            error_msg = JSON.stringify(err.response, null, 2);
+            status = err.response.status;
+            console.log("server error: " + error_msg);
+        } else if (err.request) {
+            error_msg = JSON.stringify(err.request, null, 2);
+            status = err.request.status;
+            console.log("no response: " + error_msg);
+        } else {
+            error_msg = JSON.stringify(err, null, 2);
+            console.log("other error: " + error_msg);
+        }
+        return { response: error_msg, status: 0 }
+    }
 }
 
 export const putContent = async (url: string, data: any, user: User | null): Promise<HttpStatusResponse | void> => {
@@ -133,7 +136,8 @@ export const deleteApiContent = async (url: string): Promise<HttpStatusResponse 
 }
 
 export const postApiContent = (url: string, data: any, user: User | null) => {
-    return postPublicContent(url, data, null, user);
+    const retval = postPublicContent(url, data, null, user)
+    return retval
 }
 
 export const putApiContent = (url: string, data: any, user: User | null) => {

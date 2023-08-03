@@ -108,8 +108,8 @@ export const EditionForm = (props: EditionFormProps) => {
   const formData = props.edition ? convToFormData(props.edition) : defaultValues;
   //console.log("formData: ", formData);
   const methods = useForm<EditionFormData>({ defaultValues: formData });
-  const register = methods.register;
-  const control = methods.control;
+  // const register = methods.register;
+  // const control = methods.control;
   const errors = methods.formState.errors;
 
   const onSubmit: SubmitHandler<FieldValues> = data => {

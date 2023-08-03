@@ -107,7 +107,7 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                     {edition.misc && (<><br />{edition.misc}</>)}
                     {(edition.isbn || edition.binding.id > 1) && <br />}
                     {edition.isbn && (<>ISBN {edition.isbn}</>)}
-                    {edition.binding.id > 1 && (<> {edition.binding.name}.</>)}
+                    {edition.binding && edition.binding.id > 1 && (<> {edition.binding.name}.</>)}
                     {
                         edition.dustcover === 3 && (
                             <span><br />Kansipaperi.</span>

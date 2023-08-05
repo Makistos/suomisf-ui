@@ -16,8 +16,8 @@ export const LinkList = ({ path, items, separator = SEPARATOR }: LinkListProps) 
         return <></>
     }
     const linkList = items
-        .map<React.ReactNode>(({ id, name }) => (
-            <Link key={id} to={`/${path}/${id}`}>
+        .map<React.ReactNode>(({ id, name }, index) => (
+            <Link key={id.toString() + "_" + index.toString()} to={`/${path}/${id}`}>
                 {name}
             </Link>
         ))

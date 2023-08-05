@@ -130,7 +130,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
                                         <div>
                                             {workView === 'Lista' ? (
                                                 ws.sort(compareWorks).map((work: Work) => (
-                                                    <WorkSummary work={work} key={work.id}
+                                                    <WorkSummary work={work} key={work.editions[0].id}
                                                         detailLevel={detailLevel}
                                                         orderField={orderField} />
                                                 ))

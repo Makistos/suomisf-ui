@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Tooltip } from "primereact/tooltip";
@@ -9,7 +9,7 @@ import { Dialog } from "primereact/dialog";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { getCurrenUser } from "../../../services/auth-service";
-import { getApiContent } from "../../../services/user-service";
+import { deleteApiContent, getApiContent } from "../../../services/user-service";
 import { WorkList } from "../../work";
 import { Bookseries } from "../types";
 import { selectId } from "../../../utils";
@@ -35,6 +35,7 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
     const [formHeader, setFormHeader] = useState("")
 
     const toast = useRef<Toast>(null);
+    const navigate = useNavigate();
 
     try {
         thisId = selectId(params, id);
@@ -81,6 +82,17 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
                     setFormData(data)
                     setFormHeader("Muokkaa kirjasarjaa")
                     setIsFormVisible(true)
+                }
+            }
+        },
+        {
+            label: 'Poista',
+            icon: 'pi pi-trash',
+            command: () => {
+                if (data) {
+                    deleteApiContent('bookseries/' + data.id);
+                    queryClient.invalidateQueries(['bookseries'])
+                    navigate(-1)
                 }
             }
         }

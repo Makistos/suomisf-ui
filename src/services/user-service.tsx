@@ -31,7 +31,7 @@ interface cbType {
     (data: any): any;
 }
 
-interface HttpStatusResponse {
+export interface HttpStatusResponse {
     response: string,
     status: number
 }
@@ -52,7 +52,7 @@ export const getApiContent = (url: string, user: User | null) => {
     }
 }
 
-const postPublicContent = async (url: string, dataOut: any, callback: cbType | null, user: User | null): Promise<HttpStatusResponse | void> => {
+const postPublicContent = async (url: string, dataOut: any, callback: cbType | null, user: User | null): Promise<HttpStatusResponse> => {
     const addr = process.env.REACT_APP_API_URL + url;
     let error_msg = "";
     let status = 0;
@@ -85,7 +85,7 @@ const postPublicContent = async (url: string, dataOut: any, callback: cbType | n
     }
 }
 
-export const putContent = async (url: string, data: any, user: User | null): Promise<HttpStatusResponse | void> => {
+export const putContent = async (url: string, data: any, user: User | null): Promise<HttpStatusResponse> => {
     const addr = process.env.REACT_APP_API_URL + url;
     let error_msg = "";
     let status = 0;
@@ -110,7 +110,7 @@ export const putContent = async (url: string, data: any, user: User | null): Pro
     return { response: error_msg, status: 0 };
 }
 
-export const deleteApiContent = async (url: string): Promise<HttpStatusResponse | void> => {
+export const deleteApiContent = async (url: string): Promise<HttpStatusResponse> => {
     const addr = process.env.REACT_APP_API_URL + url;
     let error_msg = "";
     let status = 0;
@@ -136,8 +136,7 @@ export const deleteApiContent = async (url: string): Promise<HttpStatusResponse 
 }
 
 export const postApiContent = (url: string, data: any, user: User | null) => {
-    const retval = postPublicContent(url, data, null, user)
-    return retval
+    return postPublicContent(url, data, null, user)
 }
 
 export const putApiContent = (url: string, data: any, user: User | null) => {

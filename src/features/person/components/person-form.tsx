@@ -13,13 +13,9 @@ import { classNames } from 'primereact/utils';
 import { isDisabled } from '../../../components/forms/forms';
 import { getApiContent } from '../../../services/user-service';
 import { QueryClient } from '@tanstack/react-query';
+import { FormProperties } from '../../../types/form-properties'
 
-interface FormProps<T> {
-    data: T | null,
-    onSubmitCallback: (() => void)
-}
-
-export const PersonForm = (props: FormProps<Person>) => {
+export const PersonForm = (props: FormProperties<Person>) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [loading, setLoading] = useState(false);
     const [filteredCountries, setFilteredCountries] = useState([]);

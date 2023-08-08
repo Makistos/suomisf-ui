@@ -15,6 +15,7 @@ import { Bookseries } from "../types";
 import { selectId } from "../../../utils";
 import { User } from "../../user";
 import { useDocumentTitle } from '../../../components/document-title';
+import { BookseriesForm } from "../components/bookseries-form";
 
 const baseURL = 'bookseries/';
 
@@ -88,10 +89,9 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
     const queryClient = useQueryClient()
 
     const onDialogHide = () => {
-        queryClient.invalidateQueries({ queryKey: ["bookseries", thisId] })
         setQueryEnabled(true)
         setIsFormVisible(false)
-
+        queryClient.invalidateQueries(['bookseries']);
     }
 
     const onDialogShow = () => {
@@ -123,7 +123,7 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
                     onHide={() => onDialogHide()}
                     header={formHeader}
                 >
-
+                    <BookseriesForm data={formData} onSubmitCallback={onDialogHide} />
                 </Dialog>
                 {isLoading ? (
                     <div className="progressbar">

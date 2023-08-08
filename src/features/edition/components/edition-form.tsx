@@ -149,11 +149,7 @@ export const EditionForm = (props: EditionFormProps) => {
   const getFormErrorMessage = (name: string) => {
     const message = errors[name];
     const error = message?.message;
-    let errorStr = "";
-    if (error !== undefined) {
-      errorStr = error.toString();
-    }
-    return error ? <small className="p-error">{errorStr}</small> :
+    return error ? <small className="p-error">{error.toString()}</small> :
       <small className="p-error">&nbsp;</small>;
   };
 

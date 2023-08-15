@@ -18,7 +18,8 @@ import { isDisabled } from "../../../components/forms/forms"
 import { User } from "../../user"
 import { ProgressBar } from "primereact/progressbar"
 import { formErrorMessage } from '../../../components/forms/form-error-message';
-import { FormInputText } from '../../../components/forms/form-input-text';
+import { FormInputText } from '../../../components/forms/field/form-input-text';
+import { FormCheckbox } from '../../../components/forms/field/form-checkbox';
 
 export interface FormObjectProps {
   onSubmit: any;
@@ -139,66 +140,22 @@ const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
                 autoFocus={true}
                 disabled={disabled}
               />
-              {/* <span className="p-float-label">
-                <Controller
-                  name="name"
-                  control={methods.control}
-                  render={({ field, fieldState }) => (
-                    <>
-                      <InputText
-                        {...field}
-                        autoFocus
-                        {...methods.register("name", { required: true })}
-                        value={field.value ? field.value : ""}
-                        className={classNames({ "p-invalid": fieldState.error }, "w-full")}
-                        disabled={disabled}
-                      />
-                      {formErrorMessage(field.name, errors)}
-                    </>
-                  )}
-                />
-                <label htmlFor="name">Nimi<sup>*</sup></label>
-              </span> */}
             </div>
             <div className="field col-12 lg:col-6">
-              <span className="p-float-label">
-                <Controller
-                  name="orig_name"
-                  control={methods.control}
-                  render={({ field, fieldState }) => (
-                    <InputText
-                      {...field}
-                      {...methods.register("orig_name")}
-                      value={field.value ? field.value : ""}
-                      className={classNames({ "p-invalis": fieldState.error }, "w-full")}
-                      disabled={disabled}
-                    />
-                  )}
-                />
-                <label htmlFor="orig_name">Alkukielinen nimi</label>
-                <small id="name-help">Alkukielinen sarjan nimi</small>
-              </span>
+              <FormInputText
+                name="orig_name"
+                methods={methods}
+                label="Alkukielinen nimi"
+                disabled={disabled}
+              />
             </div>
             <div className="field col-12">
-              <span className="p-float-label">
-                <Controller
-                  name="important"
-                  control={methods.control}
-                  render={({ field, fieldState }) => (
-                    <Checkbox
-                      {...field}
-                      inputId={field.name}
-                      inputRef={field.ref}
-                      onChange={(e) => field.onChange(e.checked)}
-                      tooltip="Tärkeä"
-                      className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-                      disabled={disabled}
-                      checked={field.value}
-                    />
-                  )}
-                />
-                <label htmlFor="important">Tärkeä</label>
-              </span>
+              <FormCheckbox
+                name="important"
+                methods={methods}
+                label="Tärkeä"
+                disabled={disabled}
+              />
             </div>
             <Button type="submit" className="w-full justify-content-center">
               Tallenna

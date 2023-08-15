@@ -2,12 +2,12 @@ import { Controller, RegisterOptions, UseFormReturn } from "react-hook-form"
 import { InputText } from "primereact/inputtext"
 import { classNames } from 'primereact/utils'
 
-import { formErrorMessage } from "./form-error-message"
+import { formErrorMessage } from "../form-error-message"
 
 interface FormInputTextProps {
   name: string,
   methods: UseFormReturn,
-  rules: RegisterOptions,
+  rules?: RegisterOptions,
   label: string,
   autoFocus?: boolean,
   disabled: boolean

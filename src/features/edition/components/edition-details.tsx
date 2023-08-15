@@ -57,7 +57,10 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                 deleteEdition(edition.id);
             },
             reject: () => {
-                toast.current?.show({ severity: 'info', summary: 'Painosta ei poistettu' });
+                toast.current?.show({
+                    severity: 'info',
+                    summary: 'Painosta ei poistettu'
+                });
             }
             //console.log("reject");
         })

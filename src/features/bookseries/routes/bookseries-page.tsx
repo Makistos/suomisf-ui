@@ -79,9 +79,9 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
             icon: 'fa-solid fa-pen-to-square',
             command: () => {
                 if (data) {
-                    setFormData(data)
-                    setFormHeader("Muokkaa kirjasarjaa")
-                    setIsFormVisible(true)
+                    setFormData(data);
+                    setFormHeader("Muokkaa kirjasarjaa");
+                    setIsFormVisible(true);
                 }
             }
         },
@@ -91,8 +91,8 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
             command: () => {
                 if (data) {
                     deleteApiContent('bookseries/' + data.id);
-                    queryClient.invalidateQueries(['bookseries'])
-                    navigate(-1)
+                    queryClient.invalidateQueries(['bookseries']);
+                    navigate(-1);
                 }
             }
         }
@@ -101,14 +101,18 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
     const queryClient = useQueryClient()
 
     const onDialogHide = () => {
-        setQueryEnabled(true)
-        setIsFormVisible(false)
+        toast.current?.show({
+            severity: 'success', summary: 'Tallentaminen onnistui',
+            detail: 'Tietojen päivitys onnistui', life: 4000
+        });
+        setQueryEnabled(true);
+        setIsFormVisible(false);
         queryClient.invalidateQueries(['bookseries']);
     }
 
     const onDialogShow = () => {
-        setIsFormVisible(true)
-        setQueryEnabled(false)
+        setIsFormVisible(true);
+        setQueryEnabled(false);
     }
 
     if (isError) {

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import { useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { FieldValues, FormProvider, useForm, SubmitHandler, Controller } from 'react-hook-form'
@@ -6,6 +6,7 @@ import { classNames } from 'primereact/utils'
 import { Checkbox } from 'primereact/checkbox'
 import { InputText } from 'primereact/inputtext'
 import { Button } from 'primereact/button'
+import { Toast } from 'primereact/toast'
 import { useQueryClient, useMutation } from "@tanstack/react-query"
 
 import { FormProperties } from "../../../types/form-properties"
@@ -16,11 +17,18 @@ import { HttpStatusResponse } from "../../../services/user-service"
 import { isDisabled } from "../../../components/forms/forms"
 import { User } from "../../user"
 import { ProgressBar } from "primereact/progressbar"
+import { formErrorMessage } from '../../../components/forms/form-error-message';
+
+export interface FormObjectProps {
+  onSubmit: any;
+  methods: any;
+  disabled: boolean;
+}
 
 export const BookseriesForm = (props: FormProperties<Bookseries>) => {
   const user = useMemo(() => { return getCurrenUser() }, [])
   const [loading, setLoading] = useState(false)
-
+  const toastRef = useRef<Toast>(null);
   const navigate = useNavigate();
 
   const convToForm = (bookseries: Bookseries): BookseriesFormData => ({
@@ -59,16 +67,46 @@ export const BookseriesForm = (props: FormProperties<Bookseries>) => {
 
   const { mutate } = useMutation({
     mutationFn: (values: BookseriesFormData) => updateBookseries(values),
-    onSuccess: (data, variables) => {
+    onSuccess: (data) => {
       props.onSubmitCallback();
-      if (variables.id === null) {
+      if (data.status === 201) {
         navigate('/bookseries/' + data, { replace: false })
+      } else if (data.status === 200) {
+        toastRef.current?.show([{
+          severity: 'success',
+          summary: 'Tallentaminen onnistui',
+          detail: 'Tietojen päivitys onnistui'
+        }]);
+      } else {
+        let errMsg = '';
+        console.log(data.response);
+        if (JSON.parse(data.response).data["msg"] !== undefined) {
+          errMsg = JSON.parse(data.response).data["msg"];
+          console.log(errMsg);
+        } else {
+          errMsg = 'Tuntematon virhe'
+        }
+        toastRef.current?.show({
+          severity: 'error',
+          summary: 'Tietojen tallentaminen epäonnistui',
+          detail: errMsg
+        })
       }
+    },
+    onError: (error: any) => {
+      const errMsg = JSON.parse(error.response).data["msg"];
+      toastRef.current?.show({
+        severity: 'error',
+        summary: 'Tietojen tallentaminen ei onnistunut',
+        detail: errMsg
+      });
+      console.log(error.message);
     }
   })
 
   return (
     <div>
+      <Toast ref={toastRef} />
       {data ? (
         <FormObject
           onSubmit={mutate}
@@ -76,27 +114,14 @@ export const BookseriesForm = (props: FormProperties<Bookseries>) => {
           disabled={isDisabled(user, loading)} />
       )
         :
-        (<ProgressBar />)
+        <ProgressBar />
       }
     </div>
   )
 }
 
-interface FormObjectProps {
-  onSubmit: any,
-  methods: any,
-  disabled: boolean
-}
-
 const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
   const errors = methods.formState.errors;
-
-  const getFormErrorMessage = (name: string) => {
-    const message = errors[name];
-    const error = message?.message;
-    return error ? <small className="p-error">{error.toString()}</small> :
-      <small className="p-error">&nbsp;</small>
-  }
 
   return (
     <div className="card mt-3">
@@ -118,7 +143,7 @@ const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
                         className={classNames({ "p-invalid": fieldState.error }, "w-full")}
                         disabled={disabled}
                       />
-                      {getFormErrorMessage(field.name)}
+                      {formErrorMessage(field.name, errors)}
                     </>
                   )}
                 />

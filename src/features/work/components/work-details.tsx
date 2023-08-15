@@ -10,7 +10,7 @@ import { WorkProps } from "../routes";
 
 
 export const WorkDetails = ({ work }: WorkProps) => {
-    console.log(work.contributions)
+    //console.log(work.contributions)
 
     return (
         <div className="grid align-items-center justify-content-center">

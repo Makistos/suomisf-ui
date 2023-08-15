@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { Image } from "primereact/image";
 import { DataView, DataViewLayoutOptions } from "primereact/dataview";
@@ -8,13 +8,14 @@ import { Ripple } from "primereact/ripple";
 import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
 import { Toast } from "primereact/toast";
-import { confirmDialog } from "primereact/confirmdialog";
+import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
+import { confirmPopup, ConfirmPopup } from 'primereact/confirmpopup';
 import { FileUpload, FileUploadHandlerEvent } from "primereact/fileupload";
 import { Dialog } from "primereact/dialog";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { ContextMenu } from "primereact/contextmenu";
 import { MenuItem } from "primereact/menuitem";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 import { Edition, EditionString, EditionDetails } from "../../edition";
@@ -32,6 +33,7 @@ import { WorkForm } from "../components/work-form";
 import { User } from "../../user";
 import { isDisabled } from '../../../components/forms/forms';
 import authHeader from "../../../services/auth-header";
+import { HttpStatusResponse } from "../../../services/user-service"
 
 export interface WorkProps {
     work: Work,
@@ -60,7 +62,7 @@ const ImageView = ({ edition }: ImageViewProps) => {
             label: 'Poista kuva',
             icon: 'pi pi-trash',
             command: () => {
-                console.log(imageUploadUrl);
+                //console.log(imageUploadUrl);
                 deleteApiContent(imageUploadUrl);
             }
         }
@@ -88,19 +90,12 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     const [editWork, setEditWork] = useState(true);
     const [isEditionFormVisible, setEditionFormVisible] = useState(false);
     const toast = useRef<Toast>(null);
-
-    const ConfirmNewWork = () => {
-        confirmDialog({
-            message: 'Tähän tulee uuden teoksen lisäys-näkymä',
-            header: 'Uuden teoksen lisääminen',
-            icon: 'fa-solid fa-circle-plus'
-        });
-    };
+    const navigate = useNavigate();
 
     try {
         workId = selectId(params, id);
     } catch (e) {
-        console.log(`${e} bookseries`);
+        console.log(`${e} work`);
     }
 
     const fetchWork = async (id: string, user: User | null): Promise<Work> => {
@@ -109,7 +104,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             response.data
         )
             .catch((error) => console.log(error));
-        console.log(data)
+        //console.log(data)
         return data;
     }
 
@@ -119,26 +114,37 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         enabled: queryEnabled
     })
 
+    const deleteWork = (id: number) => {
+        setQueryEnabled(false);
+        const retval = deleteApiContent('works/' + id);
+        setQueryEnabled(true);
+        return retval;
+    }
+
+    const { mutate } = useMutation({
+        mutationFn: (values: number) => deleteWork(values),
+        onSuccess: (data: HttpStatusResponse) => {
+            const msg = data.response;
+            //console.log(msg);
+            if (data.status === 200) {
+                navigate(-1);
+                toast.current?.show({ severity: 'success', summary: 'Teos poistettu' })
+            } else {
+                toast.current?.show({ severity: 'error', summary: 'Teoksen poisto ei onnistunut', detail: msg })
+            }
+        },
+        onError: (error: any) => {
+            const errMsg = JSON.parse(error.response).data["msg"];
+            console.log(errMsg);
+            toast.current?.show({ severity: 'error', summary: 'Teoksen poistaminen ei onnistunut', detail: errMsg })
+        }
+    })
+
     useEffect(() => {
         if (data !== undefined && data !== null) {
             setDocumentTitle(data.title);
         }
     }, [data]);
-
-    const ConfirmEdit = () => {
-        confirmDialog({
-            message: 'Tähän tulee teoksen muokkaus-näkymä',
-            header: 'Teoksen muokkaaminen',
-            icon: 'fa-solid fa-pen-to-square'
-        });
-    };
-    const ConfirmNewEdition = () => {
-        confirmDialog({
-            message: 'Tähän tulee uuden painoksen lisäys-näkymä',
-            header: 'Uuden painoksen lisääminen',
-            icon: 'fa-solid fa-circle-plus'
-        });
-    };
 
     const dialItems = [
         {
@@ -186,6 +192,23 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                 data.editions !== null &&
                 data.editions.length === 1),
             command: () => {
+                confirmDialog({
+                    message: 'Haluatko varmasti poistaa teoksen?',
+                    header: 'Varmistus',
+                    icon: 'pi pi-exclamation-triangle',
+                    acceptClassName: 'p-button-danger',
+                    accept: () => {
+                        if (data) {
+                            mutate(data.id);
+                        }
+                    },
+                    reject: () => {
+                        toast.current?.show({
+                            severity: 'info',
+                            summary: 'Teosta ei poistettu'
+                        })
+                    }
+                })
 
             }
         }
@@ -216,7 +239,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             return null;
         }
         const editionIdx: number = eIdx;
-        console.log(imageUploadUrl);
+        //console.log(imageUploadUrl);
         const customSave = async (event: FileUploadHandlerEvent) => {
             const form = new FormData();
             form.append('file', event.files[0], event.files[0].name);
@@ -358,6 +381,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
 
     return (
         <main className="all-content">
+            <ConfirmDialog />
             <div className="mt-5 speeddial style={{ position: 'relative', height: '500px'}}">
                 {/* user !== null && user.is_admin && ( */}
                 <div>

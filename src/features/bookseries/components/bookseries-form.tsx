@@ -18,6 +18,7 @@ import { isDisabled } from "../../../components/forms/forms"
 import { User } from "../../user"
 import { ProgressBar } from "primereact/progressbar"
 import { formErrorMessage } from '../../../components/forms/form-error-message';
+import { FormInputText } from '../../../components/forms/form-input-text';
 
 export interface FormObjectProps {
   onSubmit: any;
@@ -70,7 +71,7 @@ export const BookseriesForm = (props: FormProperties<Bookseries>) => {
     onSuccess: (data) => {
       props.onSubmitCallback();
       if (data.status === 201) {
-        navigate('/bookseries/' + data, { replace: false })
+        navigate('/bookseries/' + data.response, { replace: false })
       } else if (data.status === 200) {
         toastRef.current?.show([{
           severity: 'success',
@@ -80,7 +81,7 @@ export const BookseriesForm = (props: FormProperties<Bookseries>) => {
       } else {
         let errMsg = '';
         console.log(data.response);
-        if (JSON.parse(data.response).data["msg"] !== undefined) {
+        if (data.response && JSON.parse(data.response).data["msg"] !== undefined) {
           errMsg = JSON.parse(data.response).data["msg"];
           console.log(errMsg);
         } else {
@@ -122,6 +123,7 @@ export const BookseriesForm = (props: FormProperties<Bookseries>) => {
 
 const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
   const errors = methods.formState.errors;
+  const rules = { required: true };
 
   return (
     <div className="card mt-3">
@@ -129,7 +131,15 @@ const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <div className="formgrid grid">
             <div className="field col-12 lg:col-6">
-              <span className="p-float-label">
+              <FormInputText
+                name="name"
+                methods={methods}
+                rules={rules}
+                label="Nimi"
+                autoFocus={true}
+                disabled={disabled}
+              />
+              {/* <span className="p-float-label">
                 <Controller
                   name="name"
                   control={methods.control}
@@ -148,7 +158,7 @@ const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
                   )}
                 />
                 <label htmlFor="name">Nimi<sup>*</sup></label>
-              </span>
+              </span> */}
             </div>
             <div className="field col-12 lg:col-6">
               <span className="p-float-label">

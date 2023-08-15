@@ -10,7 +10,8 @@ import { Editor } from 'primereact/editor';
 import { MultiSelect } from "primereact/multiselect";
 import { Button } from 'primereact/button';
 import { AutoComplete } from 'primereact/autocomplete';
-import { QueryClient, useQueryClient } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
+import { ProgressBar } from 'primereact/progressbar';
 
 import { Work } from '../types';
 import { getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
@@ -23,44 +24,42 @@ import { Contribution } from '../../../types/contribution';
 //import { workCreators } from '../../../components/forms/work-creators';
 import { LinksField } from '../../../components/forms/links-field';
 import { Dropdown } from 'primereact/dropdown';
+import { formErrorMessage } from '../../../components/forms/form-error-message';
+import { User } from '../../user';
+import { HttpStatusResponse } from "../../../services/user-service"
 
 interface FormProps<T> {
   data: T | null,
   onSubmitCallback: (() => void)
 }
+export interface FormObjectProps {
+  onSubmit: any;
+  methods: any;
+  data: WorkFormData;
+  types: WorkType[];
+}
+
 
 export const WorkForm = (props: FormProps<Work>) => {
   const user = useMemo(() => { return getCurrenUser() }, []);
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [filteredLanguages, setFilteredLanguages] = useState([]);
-  const [genres, setGenres] = useState([]);
   const [types, setTypes] = useState<WorkType[]>([]);
-  const [filteredTags, setFilteredTags] = useState([]);
-  const [filteredBookseries, setFilteredBookseries] = useState([]);
+  const [loading, setLoading] = useState(false)
 
   //console.log(props.work);
 
   const navigate = useNavigate();
 
+  const queryClient = useQueryClient()
+
   useEffect(() => {
-    async function getGenres() {
-      const url = "genres";
-      const response = await getApiContent(url, user);
-      setGenres(response.data);
-    }
     async function getTypes() {
       const url = "worktypes";
       const response = await getApiContent(url, user);
       setTypes(response.data);
     }
-    setLoading(true);
-    getGenres();
     getTypes();
-    setLoading(false);
   }, [user])
-
-  const queryClient = useQueryClient()
 
   let contributors: Contribution[] = [];
   if (props.data) {
@@ -111,7 +110,6 @@ export const WorkForm = (props: FormProps<Work>) => {
 
   const formData = props.data ? convToForm(props.data) : defaultValues;
   console.log(props.data);
-  //const queryClient = useQueryClient()
 
   // const { register, control, handleSubmit,
   //   formState: { isDirty, dirtyFields } } =
@@ -121,6 +119,81 @@ export const WorkForm = (props: FormProps<Work>) => {
   const register = methods.register;
   const control = methods.control;
   const errors = methods.formState.errors;
+
+  const updateWork = (data: WorkFormData) => {
+    const saveData = { data: data };
+    if (data.id != null) {
+      return putApiContent('works', saveData, user);
+    } else {
+      return postApiContent('works', saveData, user)
+    }
+  }
+
+  const { mutate, error } = useMutation({
+    mutationFn: (values: WorkFormData) => updateWork(values),
+    onSuccess: (data: HttpStatusResponse, variables) => {
+      props.onSubmitCallback();
+      if (variables.id === null) {
+        navigate('/works/' + data, { replace: false })
+      } else if (data.status === 200) {
+
+      } else {
+        console.log(data.response);
+        if (JSON.parse(data.response).data["msg"] !== undefined) {
+          const errMsg = JSON.parse(data.response).data["msg"];
+          //toast('error', 'Tallentaminen epäonnistui', errMsg);
+          console.log(errMsg);
+        } else {
+          //toast('error', 'Tallentaminen epäonnistui', "Tuntematon virhe");
+        }
+      }
+    },
+    onError: (error: any) => {
+      console.log(error.message);
+    }
+  })
+
+  if (formData === null) {
+    return <div>loading...</div>
+  }
+  //console.log(formData);
+
+  return (
+    <>
+      {formData ? (
+        <FormObject
+          onSubmit={mutate}
+          methods={methods}
+          data={formData}
+          types={types}
+        />
+      )
+        :
+        <ProgressBar />
+      }
+    </>
+  )
+}
+
+const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
+  const user = useMemo(() => { return getCurrenUser() }, []);
+  const [genres, setGenres] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [filteredLanguages, setFilteredLanguages] = useState([]);
+  const [filteredTags, setFilteredTags] = useState([]);
+  const [filteredBookseries, setFilteredBookseries] = useState([]);
+  const errors = methods.formState.errors;
+
+  useEffect(() => {
+    async function getGenres() {
+      const url = "genres";
+      const response = await getApiContent(url, user);
+      setGenres(response.data);
+    }
+    setLoading(true);
+    getGenres();
+    setLoading(false);
+  }, [user])
 
   async function filterLanguages(event: any) {
     const url = "filter/languages/" + event.query;
@@ -139,41 +212,6 @@ export const WorkForm = (props: FormProps<Work>) => {
     const response = await getApiContent(url, user);
     setFilteredBookseries(response.data);
   }
-
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    const retval: FormSubmitObject = { data, changed: methods.formState.dirtyFields }
-    setMessage("");
-    setLoading(true);
-    if (data.id != null) {
-      putApiContent('works', retval, user)
-    } else {
-      postApiContent('works', retval, user)
-        .then((response) => {
-          if (response && response.status === 201) {
-            navigate('/work/' + response.response, { replace: true })
-          }
-        })
-    }
-    setLoading(false);
-    // queryClient.invalidateQueries({ queryKey: ["work", props.work.id] });
-    props.onSubmitCallback();
-  }
-
-  const getFormErrorMessage = (name: string) => {
-    const message = errors[name];
-    const error = message?.message;
-    let errorStr = "";
-    if (error !== undefined) {
-      errorStr = error.toString();
-    }
-    return error ? <small className="p-error">{errorStr}</small> :
-      <small className="p-error">&nbsp;</small>;
-  };
-
-  if (formData === null || loading) {
-    return <div>loading...</div>
-  }
-  console.log(formData);
 
   return (
     <div className="card mt-3">
@@ -196,7 +234,7 @@ export const WorkForm = (props: FormProps<Work>) => {
                         className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
                         disabled={isDisabled(user, loading)}
                       />
-                      {getFormErrorMessage(field.name)}
+                      {formErrorMessage(field.name, errors)}
                     </>
                   )}
                 />
@@ -364,7 +402,7 @@ export const WorkForm = (props: FormProps<Work>) => {
                           tooltip='Tyyppi'
                           disabled={isDisabled(user, loading)}
                         />
-                        {getFormErrorMessage(field.name)}
+                        {formErrorMessage(field.name, errors)}
                       </>
                     )}
                   />
@@ -376,7 +414,9 @@ export const WorkForm = (props: FormProps<Work>) => {
               <ContributorField
                 id={"contributions"}
                 disabled={isDisabled(user, loading)}
-                defValues={formData.contributions}
+              //defValues={formData.contributions}
+              //defValues={ }
+
               />
             </div>
             <div className="field col-12">
@@ -481,7 +521,7 @@ export const WorkForm = (props: FormProps<Work>) => {
             <Button type="submit" className="w-full justify-content-center">Tallenna</Button>
           </div>
         </form>
-        <DevTool control={control} />
+        <DevTool control={methods.control} />
       </FormProvider>
     </div>
   )

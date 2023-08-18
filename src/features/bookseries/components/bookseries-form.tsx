@@ -155,6 +155,7 @@ const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
                 methods={methods}
                 label="Tärkeä"
                 disabled={disabled}
+                checked={false}
               />
             </div>
             <Button type="submit" className="w-full justify-content-center">

@@ -1,19 +1,17 @@
 import { Controller, RegisterOptions, UseFormReturn } from "react-hook-form"
-import { InputText } from "primereact/inputtext"
+import { InputText, InputTextProps } from "primereact/inputtext"
 import { classNames } from 'primereact/utils'
 
 import { formErrorMessage } from "../form-error-message"
 
-interface FormInputTextProps {
+interface FormInputTextProps extends InputTextProps {
   name: string,
   methods: UseFormReturn,
   rules?: RegisterOptions,
   label: string,
-  autoFocus?: boolean,
-  disabled: boolean
 }
 
-export const FormInputText = ({ name, methods, rules, label, autoFocus, disabled }: FormInputTextProps) => {
+export const FormInputText = ({ name, methods, rules, label, ...rest }: FormInputTextProps) => {
   return (
     <span className="p-float-label">
       <Controller
@@ -24,10 +22,9 @@ export const FormInputText = ({ name, methods, rules, label, autoFocus, disabled
             <InputText
               {...field}
               {...methods.register(name, rules)}
-              autoFocus={autoFocus !== undefined && autoFocus === true ? true : false}
               value={field.value ? field.value : ''}
               className={classNames({ "p-invalid": fieldState.error }, "w-full")}
-              disabled={disabled}
+              {...rest}
             />
             {formErrorMessage(field.name, methods.formState.errors)}
           </>

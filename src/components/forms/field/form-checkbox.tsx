@@ -1,19 +1,23 @@
 import { Controller, RegisterOptions, UseFormReturn } from "react-hook-form"
-import { Checkbox } from "primereact/checkbox"
+import { Checkbox, CheckboxProps } from "primereact/checkbox"
 import { classNames } from 'primereact/utils'
 
 import { formErrorMessage } from "../form-error-message"
 
-interface FormCheckboxProps {
+interface FormCheckboxProps extends CheckboxProps {
   name: string,
   methods: UseFormReturn,
   rules?: RegisterOptions,
   label: string,
-  autoFocus?: boolean,
-  disabled: boolean
 }
 
-export const FormCheckbox = ({ name, methods, label, disabled }: FormCheckboxProps) => {
+export const FormCheckbox = ({ name, methods, label, ...rest }: FormCheckboxProps) => {
+  /**
+   *
+   * Note: checked needs to be defined in FormCheckbox as it's a required field
+   * for Checkbox. It can be anything because value will be overwritten by field
+   * value.
+   */
   return (
     <span className="p-float-label">
       <Controller
@@ -25,9 +29,9 @@ export const FormCheckbox = ({ name, methods, label, disabled }: FormCheckboxPro
             inputId={field.name}
             inputRef={field.ref}
             onChange={(e) => field.onChange(e.checked)}
-            tooltip="Tärkeä"
+            tooltip={label}
             className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-            disabled={disabled}
+            {...rest}
             checked={field.value}
           />
         )}

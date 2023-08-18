@@ -2,26 +2,23 @@ import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import { Image } from "primereact/image";
-import { DataView, DataViewLayoutOptions } from "primereact/dataview";
+import { DataView } from "primereact/dataview";
 import { Panel } from "primereact/panel";
 import { Ripple } from "primereact/ripple";
 import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
 import { Toast } from "primereact/toast";
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
-import { confirmPopup, ConfirmPopup } from 'primereact/confirmpopup';
 import { FileUpload, FileUploadHandlerEvent } from "primereact/fileupload";
 import { Dialog } from "primereact/dialog";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { ContextMenu } from "primereact/contextmenu";
-import { MenuItem } from "primereact/menuitem";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
-import { Edition, EditionString, EditionDetails } from "../../edition";
-//import { IMAGE_URL } from "../../../systemProps";
+import { Edition, EditionDetails } from "../../edition";
 import { getCurrenUser } from "../../../services/auth-service";
-import { getApiContent, postApiContent, deleteApiContent } from "../../../services/user-service";
+import { getApiContent, deleteApiContent } from "../../../services/user-service";
 import { ShortsList } from "../../short";
 import { Work } from "../types";
 import { WorkDetails } from "../components/work-details";
@@ -89,7 +86,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     const [formData, setFormData] = useState<Work | null>(null);
     const [editWork, setEditWork] = useState(true);
     const [isEditionFormVisible, setEditionFormVisible] = useState(false);
-    const toast = useRef<Toast>(null);
+    const toastRef = useRef<Toast>(null);
     const navigate = useNavigate();
 
     try {
@@ -128,15 +125,15 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             //console.log(msg);
             if (data.status === 200) {
                 navigate(-1);
-                toast.current?.show({ severity: 'success', summary: 'Teos poistettu' })
+                toastRef.current?.show({ severity: 'success', summary: 'Teos poistettu' })
             } else {
-                toast.current?.show({ severity: 'error', summary: 'Teoksen poisto ei onnistunut', detail: msg })
+                toastRef.current?.show({ severity: 'error', summary: 'Teoksen poisto ei onnistunut', detail: msg })
             }
         },
         onError: (error: any) => {
             const errMsg = JSON.parse(error.response).data["msg"];
             console.log(errMsg);
-            toast.current?.show({ severity: 'error', summary: 'Teoksen poistaminen ei onnistunut', detail: errMsg })
+            toastRef.current?.show({ severity: 'error', summary: 'Teoksen poistaminen ei onnistunut', detail: errMsg })
         }
     })
 
@@ -189,8 +186,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             label: "Poista",
             icon: 'fa-solid fa-trash',
             disabled: !(data !== undefined && data !== null &&
-                data.editions !== null &&
-                data.editions.length === 1),
+                data.editions !== null),
             command: () => {
                 confirmDialog({
                     message: 'Haluatko varmasti poistaa teoksen?',
@@ -203,7 +199,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                         }
                     },
                     reject: () => {
-                        toast.current?.show({
+                        toastRef.current?.show({
                             severity: 'info',
                             summary: 'Teosta ei poistettu'
                         })
@@ -254,7 +250,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         }
 
         const onUpload = () => {
-            toast.current?.show({ severity: 'info', summary: 'Success', detail: 'Kuva tallennettu' });
+            toastRef.current?.show({ severity: 'info', summary: 'Success', detail: 'Kuva tallennettu' });
         }
         return (
             (work &&
@@ -286,33 +282,6 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             )
         )
     }
-
-    // const renderGridItem = (edition: Edition) => {
-    //     return (
-    //         <div className="col-12 md:col-4 editioncard">
-    //             <div className="editionheader">
-    //                 <div className="editionnum">
-    //                     {EditionString(edition)}
-    //                 </div>
-    //             </div>
-    //             <div className="editionimage">
-    //                 {edition.images.length > 0 &&
-    //                     <Image preview height="250px"
-    //                         src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src}
-    //                         alt={EditionString(edition) + " kansikuva"}
-    //                     />
-    //                 }
-    //             </div>
-    //             <div className="editioncontent">
-    //                 <p className="editiontitle">{edition.title}</p>
-    //                 <EditionDetails edition={edition} />
-    //             </div>
-    //             <div className="editionfooter">
-    //             </div>
-    //         </div>
-    //     )
-    // }
-
 
     const itemTemplate = (edition: Edition) => {
         if (!edition) {

@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { useForm, Controller, SubmitHandler, FieldValues, FormProvider } from 'react-hook-form';
-import { QueryClient, useQueryClient } from '@tanstack/react-query';
+import { useForm, Controller, SubmitHandler, FieldValues, FormProvider, UseFormReturn } from 'react-hook-form';
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 import { classNames } from 'primereact/utils';
 import { InputText } from 'primereact/inputtext';
 import { AutoComplete } from 'primereact/autocomplete';
@@ -14,16 +15,28 @@ import { getCurrenUser } from '../../../services/auth-service';
 import { Edition } from '../types';
 import { ContributorField, emptyContributor } from '../../../components/forms/contributor-field';
 import { EditionFormData } from '../types';
-import { putApiContent, postApiContent, getApiContent } from '../../../services/user-service';
+import { putApiContent, postApiContent, getApiContent, HttpStatusResponse } from '../../../services/user-service';
 import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
 import { Binding } from '../../../types/binding';
 import { Work } from '../../work/types';
 import { Contribution } from '../../../types/contribution';
+import { FormInputText } from '../../../components/forms/field/form-input-text';
+import { ProgressBar } from 'primereact/progressbar';
+import { FormAutoComplete } from '../../../components/forms/field/form-auto-complete';
+import { FormInputNumber } from '../../../components/forms/field/form-input-number';
+import { FormDropdown } from '../../../components/forms/field/form-dropdown';
+import { FormTriStateCheckbox } from '../../../components/forms/field/form-tri-state-checkbox';
 
 interface EditionFormProps {
   edition: Edition | null;
   work: Work;
   onSubmitCallback: () => void;
+}
+
+interface FormObjectProps {
+  onSubmit: any,
+  methods: UseFormReturn<EditionFormData, any>,
+  disabled: boolean
 }
 
 export const EditionForm = (props: EditionFormProps) => {
@@ -36,13 +49,7 @@ export const EditionForm = (props: EditionFormProps) => {
 
   //console.log("EditionForm: ", props.edition);
 
-  useEffect(() => {
-    async function fetchBindings() {
-      const bindings = await getApiContent('bindings', user);
-      setBindings(bindings.data);
-    }
-    fetchBindings();
-  }, [user]);
+  const navigate = useNavigate();
 
   const queryClient = useQueryClient()
 
@@ -134,6 +141,70 @@ export const EditionForm = (props: EditionFormProps) => {
     props.onSubmitCallback();
   };
 
+  const updateEdition = (data: EditionFormData) => {
+    let updatedData: FieldValues = JSON.parse(JSON.stringify(data));
+    updatedData.dustcover = data.dustcover === null ? 1 : data.dustcover === false ? 2 : 3;
+    updatedData.coverimage = data.coverimage === null ? 1 : data.coverimage === false ? 2 : 3;
+    if (updatedData.work_id === undefined) {
+      updatedData.work_id = props.work.id;
+    }
+    const saveData = { data: updatedData };
+    if (data.id != null) {
+      return putApiContent('editions', saveData, user);
+    } else {
+      return postApiContent('editions', saveData, user);
+    }
+  }
+
+  const { mutate } = useMutation({
+    mutationFn: (values: EditionFormData) => updateEdition(values),
+    onSuccess: (data: HttpStatusResponse, variables) => {
+      props.onSubmitCallback();
+      if (data.status !== 200 && data.status !== 201) {
+        console.log(data.response);
+        if (JSON.parse(data.response).data["msg"] !== undefined) {
+          const errMsg = JSON.parse(data.response).data["msg"];
+          //toast('error', 'Tallentaminen epäonnistui', errMsg);
+          console.log(errMsg);
+        } else {
+          //toast('error', 'Tallentaminen epäonnistui', "Tuntematon virhe");
+        }
+      }
+    },
+    onError: (error: any) => {
+      console.log(error.message);
+    }
+  })
+
+  return (
+    <>
+      {formData ?
+        <FormObject onSubmit={mutate}
+          methods={methods}
+          disabled={isDisabled(user, loading)} />
+        :
+        <ProgressBar />
+      }
+    </>
+  )
+
+}
+
+const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
+  const user = useMemo(() => { return getCurrenUser() }, []);
+  const [filteredPublishers, setFilteredPublishers] = useState<any>([]);
+  const [filteredPubseries, setFilteredPubseries] = useState<any>([]);
+  const required_rule = { required: true };
+  const [bindings, setBindings] = useState<Binding[]>([]);
+
+  useEffect(() => {
+    async function fetchBindings() {
+      const bindings = await getApiContent('bindings', user);
+      setBindings(bindings.data);
+    }
+    fetchBindings();
+  }, [user]);
+
   async function filterPublishers(event: any) {
     const url = "filter/publishers/" + event.query;
     const response = await getApiContent(url, user);
@@ -146,464 +217,177 @@ export const EditionForm = (props: EditionFormProps) => {
     setFilteredPubseries(response.data);
   }
 
-  const getFormErrorMessage = (name: string) => {
-    const message = errors[name];
-    const error = message?.message;
-    return error ? <small className="p-error">{error.toString()}</small> :
-      <small className="p-error">&nbsp;</small>;
-  };
-
   return (
     <div className='card mt-3'>
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <div className="formgrid grid">
             <div className="field col-12 mb-0 pb-0">
-              <span className="p-float-label">
-                <Controller
-                  name="title"
-                  control={methods.control}
-                  render={({ field, fieldState }) => (
-                    <>
-                      <InputText id="title"
-                        {...field}
-                        {...methods.register("title", { required: true })}
-                        value={field.value ? field.value : ""}
-                        autoFocus
-                        className={classNames(
-                          { 'p-invalid': fieldState.error },
-                          "w-full")}
-                        disabled={isDisabled(user, loading)}
-                      />
-                      {getFormErrorMessage(field.name)}
-                    </>
-                  )}
-                />
-                <label htmlFor="title" className="required-field">Nimi</label>
-              </span>
+              <FormInputText
+                name="title"
+                methods={methods}
+                label="Nimi"
+                rules={required_rule}
+                autoFocus
+                disabled={disabled}
+                labelClass='required-field'
+              />
             </div>
             <div className="field col-12 mt-0 pt-0">
-              <span className="p-float-label">
-                <Controller
-                  name="subtitle"
-                  control={methods.control}
-                  render={({ field, fieldState }) => (
-                    <>
-                      <InputText id="subtitle"
-                        {...field}
-                        {...methods.register("subtitle")}
-                        value={field.value ? field.value : ""}
-                        className={classNames(
-                          { 'p-invalid': fieldState.error },
-                          "w-full")}
-                        disabled={isDisabled(user, loading)}
-                      />
-                      {getFormErrorMessage(field.name)}
-                    </>
-                  )}
-                />
-                <label htmlFor="subtitle">Alaotsikko</label>
-              </span>
+              <FormInputText
+                name="subtitle"
+                methods={methods}
+                label="Alaotsikko"
+                disabled={disabled}
+              />
             </div>
             <div className="grid col-12">
               <div className="field col-12 lg:col-4 md:col-6 mb-0 pb-0">
-                <span className="p-float-label">
-                  <Controller
-                    name="publisher"
-                    control={methods.control}
-                    rules={{ required: 'Kustantaja on pakollinen' }}
-                    render={({ field, fieldState }) => (
-                      <>
-                        <AutoComplete
-                          {...field}
-                          field="name"
-                          completeMethod={filterPublishers}
-                          suggestions={filteredPublishers}
-                          placeholder="Kustantaja"
-                          delay={300}
-                          minLength={2}
-                          removeIcon
-                          className={classNames(
-                            { 'p-invalid': fieldState.error },
-                            "w-full")}
-                          inputClassName="w-full"
-                          disabled={isDisabled(user, loading)}
-                        />
-                        {getFormErrorMessage(field.name)}
-                      </>
-                    )}
-                  />
-                  <label htmlFor="publisher" className="required-field">Kustantaja</label>
-                </span>
+                <FormAutoComplete
+                  name="publisher"
+                  methods={methods}
+                  label="Kustantaja"
+                  completeMethod={filterPublishers}
+                  suggestions={filteredPublishers}
+                  placeholder="Kustantaja"
+                  disabled={disabled}
+                />
               </div>
 
               <div className="field col-4">
-                <span className="p-float-label col-12 md:col-6 lg:col-4">
-                  <Controller
-                    name="pubyear"
-                    control={methods.control}
-                    rules={{ required: 'Vuosi on pakollinen' }}
-                    render={({ field, fieldState }) => (
-                      <>
-                        <InputNumber
-                          id={field.name}
-                          inputRef={field.ref}
-                          value={field.value}
-                          useGrouping={false}
-                          onBlur={field.onBlur}
-                          onValueChange={(e) => field.onChange(e.value)}
-                          className={classNames(
-                            { 'p-invalid': fieldState.error },
-                            "w-full")}
-                          disabled={isDisabled(user, loading)}
-                        />
-                        {getFormErrorMessage(field.name)}
-                      </>
-                    )}
-                  />
-                  <label htmlFor="pubyear" className="required-field">Vuosi</label>
-                </span>
+                <FormInputNumber
+                  name="pubyear"
+                  methods={methods}
+                  label="Vuosi"
+                  rules={required_rule}
+                  disabled={disabled}
+                />
               </div>
               <div className="field col-12 lg:col-4 mb-0 pb-0">
-                <span className="p-float-label">
-                  <Controller
-                    name="printedin"
-                    control={methods.control}
-                    render={({ field, fieldState }) => (
-                      <>
-                        <InputText id="printedin"
-                          {...field}
-                          value={field.value ? field.value : ""}
-                          {...methods.register("printedin")}
-                          className={classNames(
-                            { 'p-invalid': fieldState.error },
-                            "w-full")}
-                          disabled={isDisabled(user, loading)}
-                        />
-                        {getFormErrorMessage(field.name)}
-                      </>
-                    )}
-                  />
-                  <label htmlFor="printedin">Painopaikka</label>
-                </span>
+                <FormInputText
+                  name="printedin"
+                  methods={methods}
+                  label="Painopaikka"
+                  disabled={disabled}
+                />
               </div>
               <div className="field col-6 mt-0 pt-0">
-                <span className="p-float-label">
-                  <Controller
-                    name="editionnum"
-                    control={methods.control}
-                    rules={{
-                      required: 'Painos on pakollinen',
-                    }}
-                    render={({ field, fieldState }) => (
-                      <>
-                        <InputNumber
-                          id={field.name}
-                          inputRef={field.ref}
-                          value={field.value}
-                          useGrouping={false}
-                          onBlur={field.onBlur}
-                          onValueChange={(e) => field.onChange(e.value)}
-                          className={classNames(
-                            { 'p-invalid': fieldState.error },
-                            "w-full")}
-                          disabled={isDisabled(user, loading)}
-                        />
-                        {getFormErrorMessage(field.name)}
-                      </>
-                    )}
-                  />
-                  <label htmlFor="editionnum" className="required-field">Painos</label>
-                </span>
+                <FormInputNumber
+                  name="editionnum"
+                  label="Painos"
+                  methods={methods}
+                  rules={required_rule}
+                  labelClass='required-field'
+                  disabled={disabled}
+                />
               </div>
               <div className="field col-6 mt-0 pt-0">
-                <span className="p-float-label">
-                  <Controller
-                    name="version"
-                    control={methods.control}
-                    render={({ field, fieldState }) => (
-                      <>
-                        <InputNumber
-                          id={field.name}
-                          inputRef={field.ref}
-                          value={field.value}
-                          useGrouping={false}
-                          onBlur={field.onBlur}
-                          onValueChange={(e) => field.onChange(e.value)}
-                          className={classNames(
-                            { 'p-invalid': fieldState.error },
-                            "w-full")}
-                          disabled={isDisabled(user, loading)}
-                        />
-                        {getFormErrorMessage(field.name)}
-                      </>
-                    )}
-                  />
-                  <label htmlFor="version">Laitos</label>
-                </span>
+                <FormInputNumber
+                  name="version"
+                  label="Laitos"
+                  methods={methods}
+                  disabled={disabled}
+                />
               </div>
             </div>
             <div className="field col-5 p-2">
-              <span className="p-float-label">
-                <Controller
-                  name="pubseries"
-                  control={methods.control}
-                  render={({ field, fieldState }) => (
-                    <>
-                      <AutoComplete
-                        {...field}
-                        field="name"
-                        completeMethod={filterPubseries}
-                        suggestions={filteredPubseries}
-                        delay={300}
-                        minLength={2}
-                        removeIcon
-                        className={classNames(
-                          { 'p-invalid': fieldState.error },
-                          "w-full")}
-                        inputClassName="w-full"
-                        disabled={isDisabled(user, loading)}
-                      />
-                      {getFormErrorMessage(field.name)}
-                    </>
-                  )}
-                />
-                <label htmlFor="pubseries" className="">Kustantajan sarja</label>
-              </span>
+              <FormAutoComplete
+                name="pubseries"
+                methods={methods}
+                label="Kustantajan sarja"
+                completeMethod={filterPubseries}
+                suggestions={filteredPubseries}
+                disabled={disabled}
+              />
             </div>
             <div className="field col-2 p-2">
-              <span className="p-float-label">
-                <Controller
-                  name="pubseriesnum"
-                  control={methods.control}
-                  render={({ field, fieldState }) => (
-                    <>
-                      <InputNumber
-                        id={field.name}
-                        inputRef={field.ref}
-                        useGrouping={false}
-                        value={field.value}
-                        onBlur={field.onBlur}
-                        onValueChange={(e) => field.onChange(e.value)}
-                        className={classNames(
-                          { 'p-invalid': fieldState.error },
-                          "w-full")}
-                        disabled={isDisabled(user, loading)}
-                      />
-                      {getFormErrorMessage(field.name)}
-                    </>
-                  )}
-                />
-                <label htmlFor="pubseriesnum">Numero</label>
-              </span>
+              <FormInputNumber
+                name="pubseriesnum"
+                label="Numero"
+                methods={methods}
+                disabled={disabled}
+              />
             </div>
             <div className="grid col-12 mt-2">
               <div className="field col-4 p-2">
-                <span className="p-float-label">
-                  <Controller
-                    name="isbn"
-                    control={methods.control}
-                    render={({ field, fieldState }) => (
-                      <>
-                        <InputText id="isbn"
-                          {...field}
-                          {...methods.register("isbn")}
-                          value={field.value ? field.value : ""}
-                          className={classNames(
-                            { 'p-invalid': fieldState.error },
-                            "w-full")}
-                          disabled={isDisabled(user, loading)}
-                        />
-                        {getFormErrorMessage(field.name)}
-                      </>
-                    )}
-                  />
-                  <label htmlFor="isbn">ISBN</label>
-                </span>
+                <FormInputText
+                  name="isbn"
+                  label="ISBN"
+                  methods={methods}
+                  disabled={disabled}
+                />
               </div>
             </div>
             <div className="field col-12 p-2">
               <ContributorField
                 id={"contributors"}
-                disabled={isDisabled(user, loading)}
-                defValues={formData.contributions}
+                disabled={disabled}
               />
             </div>
 
             <div className="grid col-12 mt-3">
               <div className="field col-12 lg:col-4 p-2">
-                <span className="p-float-label">
-                  <Controller
-                    name="pages"
-                    control={methods.control}
-                    rules={{ min: 0 }}
-                    render={({ field, fieldState }) => (
-                      <>
-                        <InputNumber
-                          id={field.name}
-                          inputRef={field.ref}
-                          value={field.value}
-                          useGrouping={false}
-                          onBlur={field.onBlur}
-                          onValueChange={(e) => field.onChange(e.value)}
-                          className={classNames(
-                            { 'p-invalid': fieldState.error },
-                            "w-full")}
-                          disabled={isDisabled(user, loading)}
-                        />
-                        {getFormErrorMessage(field.name)}
-                      </>
-                    )}
-                  />
-                  <label htmlFor="pages">Sivuja</label>
-                </span>
+                <FormInputNumber
+                  name="pages"
+                  label="Sivuja"
+                  methods={methods}
+                  rules={{ min: 0 }}
+                  disabled={disabled}
+                />
               </div>
               <div className="field col-12 lg:col-4 p-2">
-                <span className="p-float-label">
-                  <Controller
-                    name="size"
-                    control={methods.control}
-                    render={({ field, fieldState }) => (
-                      <>
-                        <InputNumber
-                          id={field.name}
-                          inputRef={field.ref}
-                          value={field.value}
-                          useGrouping={false}
-                          onBlur={field.onBlur}
-                          onValueChange={(e) => field.onChange(e.value)}
-                          className={classNames(
-                            { 'p-invalid': fieldState.error },
-                            "w-full")}
-                          disabled={isDisabled(user, loading)}
-                        />
-                        {getFormErrorMessage(field.name)}
-                      </>
-                    )}
-                  />
-                  <label htmlFor="size">Korkeus cm</label>
-                </span>
+                <FormInputNumber
+                  name="size"
+                  label="Korkeus cm"
+                  methods={methods}
+                  rules={{ min: 0 }}
+                  disabled={disabled}
+                />
               </div>
               <div className="field col-12 lg:col-4 p-2">
-                <span className="p-float-label">
-                  <div key="binding" className="flex align-items-center">
-                    <Controller
-                      name={"binding"}
-                      control={methods.control}
-                      render={({ field, fieldState }) => (
-                        <>
-                          <Dropdown
-                            {...field}
-                            optionLabel="name"
-                            options={bindings}
-                            className={classNames(
-                              { "p-invalid": fieldState.error },
-                              "w-full"
-                            )}
-                            placeholder="Sidonta"
-                            tooltip="Sidonta"
-                            disabled={isDisabled(user, loading)}
-                          />
-                          {getFormErrorMessage(field.name)}
-                        </>
-                      )}
-                    />
-                    <label htmlFor="binding">Sidonta</label>
-                  </div>
-                </span>
+                <FormDropdown
+                  name="binding"
+                  label="Sidonta"
+                  methods={methods}
+                  disabled={disabled}
+                />
               </div>
             </div>
             <div className="grid col-12 mt-3">
               <div className='field col-2 p-2'>
-                <Controller
+                <FormTriStateCheckbox
                   name="dustcover"
-                  control={methods.control}
-                  render={({ field, fieldState }) => (
-                    <>
-                      <TriStateCheckbox
-                        {...field}
-                        id={field.name}
-                        value={field.value}
-                        tooltip="Kansipaperi"
-                        onChange={field.onChange}
-                        className={classNames({ 'p-invalid': fieldState.error })}
-                        disabled={isDisabled(user, loading)}
-                      />
-                      {getFormErrorMessage(field.name)}
-                    </>
-                  )}
+                  label="Kansipaperi"
+                  methods={methods}
+                  disabled={disabled}
                 />
-                <label htmlFor="binding">Kansipaperi</label>
               </div>
               <div className='field col-2 p-2'>
-                <Controller
+                <FormTriStateCheckbox
                   name="coverimage"
-                  control={methods.control}
-                  render={({ field, fieldState }) => (
-                    <>
-                      <TriStateCheckbox
-                        {...field}
-                        id={field.name}
-                        value={field.value}
-                        tooltip="Ylivetokannet"
-                        onChange={field.onChange}
-                        className={classNames({ 'p-invalid': fieldState.error })}
-                        disabled={isDisabled(user, loading)}
-                      />
-                      {getFormErrorMessage(field.name)}
-                    </>
-                  )}
+                  label="Ylivetokannet"
+                  methods={methods}
+                  disabled={disabled}
                 />
-                <label htmlFor="binding">Ylivetokannet</label>
               </div>
-
             </div>
             <div className="field col-12 p-2">
-              <span className="p-float-label">
-                <Controller
-                  name="misc"
-                  control={methods.control}
-                  render={({ field, fieldState }) => (
-                    <>
-                      <InputText id="misc"
-                        {...field}
-                        {...methods.register("misc")}
-                        value={field.value ? field.value : ""}
-                        className={classNames(
-                          { 'p-invalid': fieldState.error },
-                          "w-full")}
-                        disabled={isDisabled(user, loading)}
-                      />
-                      {getFormErrorMessage(field.name)}
-                    </>
-                  )}
-                />
-                <label htmlFor="misc">Muuta</label>
-              </span>
+              <FormInputText
+                name="misc"
+                label="Muuta"
+                methods={methods}
+                disabled={disabled}
+              />
             </div>
             <div className="field col-12 p-2">
-              <span className="p-float-label">
-                <Controller
-                  name="imported_string"
-                  control={methods.control}
-                  render={({ field, fieldState }) => (
-                    <>
-                      <InputText id="imported_string"
-                        {...field}
-                        {...methods.register("imported_string")}
-                        value={field.value ? field.value : ""}
-                        className={classNames(
-                          { 'p-invalid': fieldState.error },
-                          "w-full")}
-                        disabled={isDisabled(user, loading)}
-                      />
-                    </>
-                  )}
-                />
-                <label htmlFor="imported_string">Lähde</label>
-              </span>
+              <FormInputText
+                name="imported_string"
+                label="Lähde"
+                methods={methods}
+                disabled={disabled}
+              />
             </div>
-            <Button type="submit" className="w-full justify-content-center">
+            <Button type="submit" disabled={disabled} className="w-full justify-content-center">
               Tallenna
             </Button>
           </div>
@@ -611,5 +395,6 @@ export const EditionForm = (props: EditionFormProps) => {
       </FormProvider>
 
     </div>
+
   )
 }

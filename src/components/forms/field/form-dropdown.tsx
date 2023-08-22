@@ -6,7 +6,7 @@ import { SelectItemOptionsType } from "primereact/selectitem"
 
 interface FormDropdownProps extends DropdownProps {
   name: string,
-  methods: UseFormReturn,
+  methods: UseFormReturn<any, any>,
   label: string,
   rules?: RegisterOptions,
   labelClass?: string

@@ -6,12 +6,13 @@ import { formErrorMessage } from "../form-error-message"
 
 interface FormInputTextProps extends InputTextProps {
   name: string,
-  methods: UseFormReturn,
+  methods: UseFormReturn<any, any>,
   rules?: RegisterOptions,
   label: string,
+  labelClass?: string
 }
 
-export const FormInputText = ({ name, methods, rules, label, ...rest }: FormInputTextProps) => {
+export const FormInputText = ({ name, methods, rules, label, labelClass, ...rest }: FormInputTextProps) => {
   return (
     <span className="p-float-label">
       <Controller
@@ -30,7 +31,7 @@ export const FormInputText = ({ name, methods, rules, label, ...rest }: FormInpu
           </>
         )}
       />
-      <label htmlFor={name}>{label}</label>
-    </span>
+      <label htmlFor={name} className={labelClass ? labelClass : ""}> {label}</label>
+    </span >
   )
 }

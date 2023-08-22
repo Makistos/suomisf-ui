@@ -9,9 +9,10 @@ interface FormCheckboxProps extends CheckboxProps {
   methods: UseFormReturn,
   rules?: RegisterOptions,
   label: string,
+  labelClass?: string
 }
 
-export const FormCheckbox = ({ name, methods, label, ...rest }: FormCheckboxProps) => {
+export const FormCheckbox = ({ name, methods, label, labelClass, ...rest }: FormCheckboxProps) => {
   /**
    *
    * Note: checked needs to be defined in FormCheckbox as it's a required field
@@ -24,19 +25,22 @@ export const FormCheckbox = ({ name, methods, label, ...rest }: FormCheckboxProp
         name={name}
         control={methods.control}
         render={({ field, fieldState }) => (
-          <Checkbox
-            {...field}
-            inputId={field.name}
-            inputRef={field.ref}
-            onChange={(e) => field.onChange(e.checked)}
-            tooltip={label}
-            className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
-            {...rest}
-            checked={field.value}
-          />
+          <>
+            <Checkbox
+              {...field}
+              inputId={field.name}
+              inputRef={field.ref}
+              onChange={(e) => field.onChange(e.checked)}
+              tooltip={label}
+              className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+              {...rest}
+              checked={field.value}
+            />
+            {formErrorMessage(field.name, methods.formState.errors)}
+          </>
         )}
       />
-      <label htmlFor={name}>{label}</label>
+      <label htmlFor={name} className={labelClass ? labelClass : ""}>{label}</label>
     </span>
 
   )

@@ -1,14 +1,16 @@
 import { Controller, UseFormReturn } from "react-hook-form"
 import { AutoComplete, AutoCompleteProps } from "primereact/autocomplete"
 import { classNames } from 'primereact/utils'
+import { formErrorMessage } from "../form-error-message"
 
 interface FormAutoCompleteProps extends AutoCompleteProps {
   name: string,
-  methods: UseFormReturn,
+  methods: UseFormReturn<any, any>,
   label: string,
+  labelClass?: string
 }
 
-export const FormAutoComplete = ({ name, methods, label, ...rest }: FormAutoCompleteProps) => {
+export const FormAutoComplete = ({ name, methods, label, labelClass, ...rest }: FormAutoCompleteProps) => {
 
   return (
     <span className="p-float-label">
@@ -27,10 +29,11 @@ export const FormAutoComplete = ({ name, methods, label, ...rest }: FormAutoComp
               inputClassName="w-full"
               {...rest}
             />
+            {formErrorMessage(field.name, methods.formState.errors)}
           </>
         )}
       />
-      <label htmlFor={name}>{label}</label>
+      <label htmlFor={name} className={labelClass ? labelClass : ""}>{label}</label>
     </span>
   )
 }

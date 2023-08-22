@@ -107,7 +107,7 @@ export const BookseriesForm = (props: FormProperties<Bookseries>) => {
   })
 
   return (
-    <div>
+    <>
       <Toast ref={toastRef} />
       {data ? (
         <FormObject
@@ -118,7 +118,7 @@ export const BookseriesForm = (props: FormProperties<Bookseries>) => {
         :
         <ProgressBar />
       }
-    </div>
+    </>
   )
 }
 

@@ -8,7 +8,6 @@ import { AwardPanel } from "../../award";
 import { LinkPanel } from "../../../components/link-panel";
 import { WorkProps } from "../routes";
 
-
 export const WorkDetails = ({ work }: WorkProps) => {
     //console.log(work.contributions)
 

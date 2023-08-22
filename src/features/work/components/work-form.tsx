@@ -185,6 +185,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
   const [filteredTags, setFilteredTags] = useState([]);
   const [filteredBookseries, setFilteredBookseries] = useState([]);
   const errors = methods.formState.errors;
+  const disabled = isDisabled(user, loading);
 
   useEffect(() => {
     async function getGenres() {
@@ -230,7 +231,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 label="Nimeke"
                 rules={required_rule}
                 autoFocus
-                disabled={isDisabled(user, loading)}
+                disabled={disabled}
               />
             </div>
             <div className="field col-12">
@@ -238,7 +239,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 name="subtitle"
                 methods={methods}
                 label="Alaotsikko"
-                disabled={isDisabled(user, loading)}
+                disabled={disabled}
               />
             </div>
             <div className="field col-12">
@@ -246,7 +247,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 name="orig_title"
                 methods={methods}
                 label="Alkuperäinen nimeke"
-                disabled={isDisabled(user, loading)}
+                disabled={disabled}
               />
             </div>
             <div className="field col-4">
@@ -255,7 +256,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 methods={methods}
                 label="Julkaisuvuosi"
                 rules={required_rule}
-                disabled={isDisabled(user, loading)}
+                disabled={disabled}
                 labelClass='required-field'
               />
             </div>
@@ -267,7 +268,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 completeMethod={filterLanguages}
                 suggestions={filteredLanguages}
                 placeholder='Kieli'
-                disabled={isDisabled(user, loading)}
+                disabled={disabled}
               />
             </div>
             <div className="field col-6">
@@ -278,7 +279,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 completeMethod={filterBookseries}
                 suggestions={filteredBookseries}
                 placeholder='Kirjasarja'
-                disabled={isDisabled(user, loading)}
+                disabled={disabled}
               />
             </div>
             <div className="field col-3">
@@ -286,7 +287,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 name="bookseriesnum"
                 methods={methods}
                 label="Kirjasarjan numero"
-                disabled={isDisabled(user, loading)}
+                disabled={disabled}
               />
             </div>
             <div className="field col-3">
@@ -294,7 +295,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 name="bookseriesorder"
                 methods={methods}
                 label="Kirjasarjan järjestys"
-                disabled={isDisabled(user, loading)}
+                disabled={disabled}
               />
             </div>
             <div className="field col-12">
@@ -305,14 +306,14 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 label="Tyyppi"
                 rules={required_rule}
                 labelClass='required-field'
-                disabled={isDisabled(user, loading)}
+                disabled={disabled}
                 checked={false}
               />
             </div>
             <div className="field col-12">
               <ContributorField
                 id={"contributions"}
-                disabled={isDisabled(user, loading)}
+                disabled={disabled}
               />
             </div>
             <div className="field col-12">
@@ -321,7 +322,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 methods={methods}
                 label="Genret"
                 options={genres}
-                disabled={isDisabled(user, loading)}
+                disabled={disabled}
               />
             </div>
             <div className="field col-12">
@@ -333,13 +334,13 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 suggestions={filteredTags}
                 multiple
                 placeholder='Asiasanat'
-                disabled={isDisabled(user, loading)}
+                disabled={disabled}
               />
             </div>
             <div className="field col-12">
               <LinksField
                 id={"links"}
-                disabled={isDisabled(user, loading)}
+                disabled={disabled}
               />
             </div>
 
@@ -349,7 +350,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 name="description"
                 methods={methods}
                 style={editor_style}
-                disabled={isDisabled(user, loading)}
+                disabled={disabled}
               />
             </div>
             <div className="field col-12">
@@ -357,7 +358,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 name="descr_attrs"
                 methods={methods}
                 label="Kuvauksen lähde"
-                disabled={isDisabled(user, loading)}
+                disabled={disabled}
               />
             </div>
             <div className="field col-12">
@@ -365,10 +366,10 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 name="misc"
                 methods={methods}
                 label="Muuta"
-                disabled={isDisabled(user, loading)}
+                disabled={disabled}
               />
             </div>
-            <Button type="submit" className="w-full justify-content-center">Tallenna</Button>
+            <Button type="submit" disabled={disabled} className="w-full justify-content-center">Tallenna</Button>
           </div>
         </form>
         <DevTool control={methods.control} />

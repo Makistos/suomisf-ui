@@ -24,8 +24,9 @@ export const LinksField = ({ id, disabled }: LinksFieldProps) => {
   });
 
   const LinksRow = ({ index }: { index: number }) => {
-    const keyName = `{links.${index}}`;
+    const keyName = `{links-field.${index}}`;
 
+    console.log(keyName);
     const emptyLink: LinkType = {
       link: "",
       description: ""
@@ -41,7 +42,7 @@ export const LinksField = ({ id, disabled }: LinksFieldProps) => {
 
     return (
       <div key={keyName} className="grid gap-1">
-        <div className="field sm:col-12 lg:col-3" key={`links.${index}.link`}>
+        <div className="field sm:col-12 lg:col-3" key={`${keyName}.link`}>
           <Controller
             name={`links.${index}.link` as const}
             control={control}
@@ -56,7 +57,7 @@ export const LinksField = ({ id, disabled }: LinksFieldProps) => {
             )}
           />
         </div>
-        <div className="field sm:col-12 lg:col-3" key={`links.${index}.description`}>
+        <div className="field sm:col-12 lg:col-3" key={`${keyName}.description`}>
           <Controller
             name={`links.${index}.description` as const}
             control={control}

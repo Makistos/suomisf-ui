@@ -139,6 +139,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                                 minLength={3}
                                 placeholder="Henkilö"
                                 tooltip="Henkilö"
+                                forceSelection={false}
                                 delay={800}
                                 className={classNames(
                                     { "p-invalid": fieldState.error },

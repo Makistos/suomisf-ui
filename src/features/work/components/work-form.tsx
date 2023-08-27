@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, KeyboardEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useForm, Controller, SubmitHandler, FieldValues, FormProvider, RegisterOptions } from 'react-hook-form';
@@ -9,7 +9,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Editor } from 'primereact/editor';
 import { MultiSelect } from "primereact/multiselect";
 import { Button } from 'primereact/button';
-import { AutoComplete } from 'primereact/autocomplete';
+import { AutoComplete, AutoCompleteChangeEvent } from 'primereact/autocomplete';
 import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ProgressBar } from 'primereact/progressbar';
 
@@ -210,6 +210,19 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
     setFilteredTags(response.data);
   }
 
+  // const tagChange = (e: AutoCompleteChangeEvent) => {
+  //   console.log("tagChange");
+  //   console.log(e.value);
+  //   console.log(e.value)
+  // }
+
+  const tagKeyPress = (e: KeyboardEvent) => {
+    console.log(e.code);
+    if (e.code == "Comma") {
+
+    }
+  }
+
   async function filterBookseries(event: any) {
     const url = "filter/bookseries/" + event.query;
     const response = await getApiContent(url, user);
@@ -218,6 +231,10 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
 
   const required_rule: RegisterOptions = { required: "Pakollinen kenttä" };
   const editor_style: React.CSSProperties = { height: '320px' };
+
+  const addNewTag = (data: any) => {
+    console.log(data);
+  }
 
   return (
     <div className="card mt-3">
@@ -267,6 +284,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 label="Kieli"
                 completeMethod={filterLanguages}
                 suggestions={filteredLanguages}
+                forceSelection={false}
                 placeholder='Kieli'
                 disabled={disabled}
               />
@@ -278,6 +296,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 label="Kirjasarja"
                 completeMethod={filterBookseries}
                 suggestions={filteredBookseries}
+                forceSelection={false}
                 placeholder='Kirjasarja'
                 disabled={disabled}
               />
@@ -332,6 +351,11 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 label="Asiassanat"
                 completeMethod={filterTags}
                 suggestions={filteredTags}
+                forceSelection={false}
+                tagFunction={addNewTag}
+                // onChange={tagChange}
+                // onSelect={(e) => console.log(e.value)}
+                // onKeyPress={tagKeyPress}
                 multiple
                 placeholder='Asiasanat'
                 disabled={disabled}

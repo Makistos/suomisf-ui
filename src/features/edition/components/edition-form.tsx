@@ -36,6 +36,7 @@ interface EditionFormProps {
 interface FormObjectProps {
   onSubmit: any,
   methods: UseFormReturn<EditionFormData, any>,
+  bindings: Binding[],
   disabled: boolean
 }
 
@@ -43,8 +44,6 @@ export const EditionForm = (props: EditionFormProps) => {
   const user = useMemo(() => { return getCurrenUser() }, []);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [filteredPublishers, setFilteredPublishers] = useState<any>([]);
-  const [filteredPubseries, setFilteredPubseries] = useState<any>([]);
   const [bindings, setBindings] = useState<Binding[]>([]);
 
   //console.log("EditionForm: ", props.edition);
@@ -52,6 +51,14 @@ export const EditionForm = (props: EditionFormProps) => {
   const navigate = useNavigate();
 
   const queryClient = useQueryClient()
+
+  useEffect(() => {
+    async function fetchBindings() {
+      const bindings = await getApiContent('bindings', user);
+      setBindings(bindings.data);
+    }
+    fetchBindings();
+  }, [user]);
 
   let contributors: Contribution[] = [];
   if (props.edition) {
@@ -181,6 +188,7 @@ export const EditionForm = (props: EditionFormProps) => {
       {formData ?
         <FormObject onSubmit={mutate}
           methods={methods}
+          bindings={bindings}
           disabled={isDisabled(user, loading)} />
         :
         <ProgressBar />
@@ -190,22 +198,13 @@ export const EditionForm = (props: EditionFormProps) => {
 
 }
 
-const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
+const FormObject = ({ onSubmit, methods, disabled, bindings }: FormObjectProps) => {
   const user = useMemo(() => { return getCurrenUser() }, []);
   const [filteredPublishers, setFilteredPublishers] = useState<any>([]);
   const [filteredPubseries, setFilteredPubseries] = useState<any>([]);
   const required_rule = { required: true };
-  const [bindings, setBindings] = useState<Binding[]>([]);
-
-  useEffect(() => {
-    async function fetchBindings() {
-      const bindings = await getApiContent('bindings', user);
-      setBindings(bindings.data);
-    }
-    fetchBindings();
-  }, [user]);
-
   async function filterPublishers(event: any) {
+
     const url = "filter/publishers/" + event.query;
     const response = await getApiContent(url, user);
     setFilteredPublishers(response.data);
@@ -297,6 +296,7 @@ const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
                 label="Kustantajan sarja"
                 completeMethod={filterPubseries}
                 suggestions={filteredPubseries}
+                forceSelection={false}
                 disabled={disabled}
               />
             </div>
@@ -348,6 +348,7 @@ const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
                 <FormDropdown
                   name="binding"
                   label="Sidonta"
+                  options={bindings}
                   methods={methods}
                   disabled={disabled}
                 />

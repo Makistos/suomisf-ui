@@ -3,23 +3,34 @@ import { Link } from 'react-router-dom';
 
 const SEPARATOR = ", ";
 
-export type LinkItem = { id: number; name: string };
+export type LinkItem = { id: number; name: string, description?: string };
 
 interface LinkListProps {
     path: string,
     items: LinkItem[],
+    showDescription?: boolean,
     separator?: string,
 }
 
-export const LinkList = ({ path, items, separator = SEPARATOR }: LinkListProps) => {
+const description = (item: LinkItem, show: boolean) => {
+    if (show && item.description) {
+        return " (" + item.description + ")";
+    }
+    return "";
+}
+
+export const LinkList = ({ path, items, showDescription, separator = SEPARATOR }: LinkListProps) => {
     if (items.length === 0) {
         return <></>
     }
     const linkList = items
-        .map<React.ReactNode>(({ id, name }, index) => (
-            <Link key={id.toString() + "_" + index.toString()} to={`/${path}/${id}`}>
-                {name}
-            </Link>
+        .map<React.ReactNode>((item, index) => (
+            <>
+                <Link key={item.id.toString() + "_" + index.toString()} to={`/${path}/${item.id}`}>
+                    {item.name}
+                </Link>
+                {showDescription && description(item, showDescription)}
+            </>
         ))
         .reduce((prev, curr) => [prev, separator, curr]);
 

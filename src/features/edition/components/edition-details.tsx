@@ -14,6 +14,29 @@ import { EditionVersion } from "../utils/edition-version";
 import { EditionForm } from './edition-form';
 import { deleteApiContent } from '../../../services/user-service';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { Contribution } from '../../../types/contribution';
+
+const contributorList = (contributions: Contribution[], role: number, description: String) => {
+    const contributors = contributions.filter(person => person.role.id === role);
+
+    return (
+        <>
+            {contributors && contributors.length > 0 &&
+                (
+                    <><br /><>{description} </>
+                        <LinkList path="people" showDescription
+                            separator=" &amp; "
+                            items={contributors.map((item) => ({
+                                id: item.person['id'],
+                                name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name'],
+                                description: (item.description === null || item.description === "") ? item.role.name.toLocaleLowerCase() : item.description?.toLocaleLowerCase()
+                            }))} />.
+                    </>
+                )
+            }
+        </>
+    )
+}
 
 export const EditionDetails = ({ edition, work, card }: EditionProps) => {
     const [isEditVisible, setEditVisible] = useState(false);
@@ -65,6 +88,7 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
             //console.log("reject");
         })
     }
+    console.log(edition.contributions)
 
     return (
         <div>
@@ -119,7 +143,10 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                     {
                         edition.coverimage === 3 &&
                         <span><br />Ylivetokannet.</span>
-                    }<br />
+                    }
+                    {contributorList(edition.contributions, 5, "Kuvitus")}
+                    {contributorList(edition.contributions, 4, "Ulkoasu")}
+                    <br />
                     <div>
                         <Button icon="pi pi-pencil" tooltip="Muokkaa" className="p-button-text" onClick={() => onDialogShow()} />
                         <Button icon="pi pi-trash" tooltip="Poista" className="p-button-text"

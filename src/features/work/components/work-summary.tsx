@@ -11,7 +11,7 @@ import { WorkDetails } from "./work-details";
 
 
 export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
-    console.log(work)
+    // console.log(work)
 
     return (
 

@@ -32,6 +32,7 @@ export interface Edition {
     subtitle: string;
     title: string;
     translators: Person[];
+    verified: Boolean;
     version: number;
     work: Work[];
 
@@ -72,5 +73,6 @@ export interface EditionFormData {
     pubseries?: Pubseries | null,
     pubseriesnum?: number | null,
     publisher: Publisher | null,
+    verified: Boolean | null
 
 }

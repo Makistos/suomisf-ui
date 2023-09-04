@@ -6,7 +6,7 @@ import { formErrorMessage } from "../form-error-message"
 
 interface FormCheckboxProps extends CheckboxProps {
   name: string,
-  methods: UseFormReturn,
+  methods: UseFormReturn<any, any>,
   rules?: RegisterOptions,
   label: string,
   labelClass?: string

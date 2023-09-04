@@ -26,6 +26,7 @@ import { FormAutoComplete } from '../../../components/forms/field/form-auto-comp
 import { FormInputNumber } from '../../../components/forms/field/form-input-number';
 import { FormDropdown } from '../../../components/forms/field/form-dropdown';
 import { FormTriStateCheckbox } from '../../../components/forms/field/form-tri-state-checkbox';
+import { FormCheckbox } from '../../../components/forms/field/form-checkbox';
 
 interface EditionFormProps {
   edition: Edition | null;
@@ -92,6 +93,7 @@ export const EditionForm = (props: EditionFormProps) => {
       format: data.format,
       binding: data.binding,
       coverimage: data.coverimage === null || data.coverimage === 1 ? null : data.coverimage === 2 ? false : true,
+      verified: data.verified,
     }
   }
 
@@ -117,6 +119,7 @@ export const EditionForm = (props: EditionFormProps) => {
     format: null,
     binding: bindings[0],
     coverimage: null,
+    verified: false,
   }
 
   const formData = props.edition ? convToFormData(props.edition) : defaultValues;
@@ -386,6 +389,15 @@ const FormObject = ({ onSubmit, methods, disabled, bindings }: FormObjectProps) 
                 label="Lähde"
                 methods={methods}
                 disabled={disabled}
+              />
+            </div>
+            <div className="field col-12 p-2">
+              <FormCheckbox
+                name="verified"
+                methods={methods}
+                label="Tarkastettu"
+                disabled={disabled}
+                checked={false}
               />
             </div>
             <Button type="submit" disabled={disabled} className="w-full justify-content-center">

@@ -57,8 +57,8 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
         const aName = a[0];
         const bName = b[0];
         if (personName) {
-            if (aName.localeCompare(personName) === 0) return -1;
-            else if (bName.localeCompare(personName) === 0) return 1;
+            if (aName.localeCompare(personName) === 0) return 1;
+            else if (bName.localeCompare(personName) === 0) return -1;
         }
         if (collaborationsLast) {
             if (aName.includes('&')) return 1;

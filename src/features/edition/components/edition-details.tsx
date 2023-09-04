@@ -16,7 +16,7 @@ import { deleteApiContent } from '../../../services/user-service';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Contribution } from '../../../types/contribution';
 
-const contributorList = (contributions: Contribution[], role: number, description: String) => {
+const contributorList = (contributions: Contribution[], role: number, description: String, showDescription: boolean) => {
     const contributors = contributions.filter(person => person.role.id === role);
 
     return (
@@ -24,7 +24,7 @@ const contributorList = (contributions: Contribution[], role: number, descriptio
             {contributors && contributors.length > 0 &&
                 (
                     <><br /><>{description} </>
-                        <LinkList path="people" showDescription
+                        <LinkList path="people" showDescription={showDescription}
                             separator=" &amp; "
                             items={contributors.map((item) => ({
                                 id: item.person['id'],
@@ -85,10 +85,8 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                     summary: 'Painosta ei poistettu'
                 });
             }
-            //console.log("reject");
         })
     }
-    console.log(edition.contributions)
 
     return (
         <div>
@@ -111,7 +109,8 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                     {edition.publisher && (
                         <><br /><Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link> </>)}
                     {edition.pubyear + "."}
-                    {edition.contributions && edition.contributions.length > 0 &&
+                    {contributorList(edition.contributions, 2, "Suom.", false)}
+                    {/* {edition.contributions && edition.contributions.length > 0 &&
                         edition.contributions.filter(person => person.role.id === 2).length > 0 &&
                         (
                             <><br /><>Suom. </>
@@ -123,7 +122,7 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                                             name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
                                         }))} />.
                             </>
-                        )}
+                        )} */}
                     {edition.pubseries && (<>
                         <br /><Link to={`/pubseries/${edition.pubseries.id}`}>{edition.pubseries.name}</Link>
                         {edition.pubseriesnum && (<> {edition.pubseriesnum}</>)}
@@ -144,8 +143,8 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                         edition.coverimage === 3 &&
                         <span><br />Ylivetokannet.</span>
                     }
-                    {contributorList(edition.contributions, 5, "Kuvitus")}
-                    {contributorList(edition.contributions, 4, "Ulkoasu")}
+                    {contributorList(edition.contributions, 5, "Kuvitus", true)}
+                    {contributorList(edition.contributions, 4, "Ulkoasu", true)}
                     <br />
                     <div>
                         <Button icon="pi pi-pencil" tooltip="Muokkaa" className="p-button-text" onClick={() => onDialogShow()} />

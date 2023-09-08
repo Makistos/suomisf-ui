@@ -39,8 +39,8 @@ export interface PersonFormData {
     alt_name: string;
     fullname: string;
     other_names: string;
-    dob: string;
-    dod: string;
+    dob: number | null;
+    dod: number | null;
     bio: string;
     links: LinkType[];
     nationality: Nationality | null;

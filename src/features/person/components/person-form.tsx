@@ -1,24 +1,39 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+    FieldValues, FormProvider, SubmitHandler, Controller, useForm,
+    RegisterOptions
+} from 'react-hook-form';
 
-import { FieldValues, FormProvider, SubmitHandler, Controller, useForm } from 'react-hook-form';
 import { Editor } from 'primereact/editor';
 import { AutoComplete } from 'primereact/autocomplete';
 import { Button } from 'primereact/button';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { ProgressBar } from 'primereact/progressbar';
+import { InputText } from 'primereact/inputtext';
+import { classNames } from 'primereact/utils';
 
 import { Person, PersonFormData } from '../types';
 import { getCurrenUser } from '../../../services/auth-service';
-import { InputText } from 'primereact/inputtext';
-import { classNames } from 'primereact/utils';
 import { isDisabled } from '../../../components/forms/forms';
-import { getApiContent } from '../../../services/user-service';
-import { QueryClient } from '@tanstack/react-query';
+import { HttpStatusResponse, getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
 import { FormProperties } from '../../../types/form-properties'
+import { LinksField } from '../../../components/forms/links-field';
+import { FormInputText } from '../../../components/forms/field/form-input-text';
+import { FormInputNumber } from '../../../components/forms/field/form-input-number';
+import { FormAutoComplete } from '../../../components/forms/field/form-auto-complete';
+import { FormEditor } from '../../../components/forms/field/form-editor';
+
+type FormObjectProps = {
+    onSubmit: any,
+    methods: any,
+}
 
 export const PersonForm = (props: FormProperties<Person>) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [loading, setLoading] = useState(false);
-    const [filteredCountries, setFilteredCountries] = useState([]);
+
+    const navigate = useNavigate();
 
     const convToForm = (person: Person): PersonFormData => ({
         id: person.id,
@@ -27,8 +42,8 @@ export const PersonForm = (props: FormProperties<Person>) => {
         alt_name: person.alt_name,
         fullname: person.fullname,
         other_names: person.other_names,
-        dob: person.dob ? person.dob.toString() : '',
-        dod: person.dod ? person.dod.toString() : '',
+        dob: person.dob,
+        dod: person.dod,
         bio: person.bio,
         links: person.links,
         nationality: person.nationality
@@ -41,8 +56,8 @@ export const PersonForm = (props: FormProperties<Person>) => {
         alt_name: '',
         fullname: '',
         other_names: '',
-        dob: '',
-        dod: '',
+        dob: null,
+        dod: null,
         bio: '',
         links: [],
         nationality: null
@@ -52,11 +67,38 @@ export const PersonForm = (props: FormProperties<Person>) => {
     const methods = useForm<PersonFormData>({ defaultValues: formData });
     const queryClient = useQueryClient()
 
-    async function filterCountries(event: any) {
-        const url = "filter/countries/" + event.query;
-        const response = await getApiContent(url, user);
-        setFilteredCountries(response.data);
+    const updatePerson = (data: PersonFormData) => {
+        const saveData = { data: data };
+        if (data.id != null) {
+            return putApiContent('people', saveData, user);
+        } else {
+            return postApiContent('people', saveData, user);
+        }
     }
+
+    const { mutate } = useMutation({
+        mutationFn: (values: PersonFormData) => updatePerson(values),
+        onSuccess: (data: HttpStatusResponse, variables) => {
+            props.onSubmitCallback();
+            if (variables.id === null) {
+                navigate('/people' + data.response, { replace: false })
+            } else if (data.status === 200) {
+
+            } else {
+                console.log(data.response);
+                if (JSON.parse(data.response).data["msg"] !== undefined) {
+                    const errMsg = JSON.parse(data.response).data["msg"];
+                    //toast('error', 'Tallentaminen epäonnistui', errMsg);
+                    console.log(errMsg);
+                } else {
+                    //toast('error', 'Tallentaminen epäonnistui', "Tuntematon virhe");
+                }
+            }
+        },
+        onError: (error: any) => {
+            console.log(error.message);
+        }
+    })
 
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         const retval = { data, changed: methods.formState.dirtyFields }
@@ -69,142 +111,117 @@ export const PersonForm = (props: FormProperties<Person>) => {
         props.onSubmitCallback();
     }
 
+    return <>
+        {formData ? (
+            <FormObject
+                onSubmit={mutate}
+                methods={methods}
+            />
+        ) :
+            <ProgressBar />
+        }
+    </>
+}
+
+const FormObject = ({ onSubmit, methods }: FormObjectProps) => {
+    const user = useMemo(() => { return getCurrenUser() }, []);
+    const [loading, setLoading] = useState(false);
+    const disabled = isDisabled(user, loading);
+    const [filteredCountries, setFilteredCountries] = useState([]);
+
+    async function filterCountries(event: any) {
+        const url = "filter/countries/" + event.query;
+        const response = await getApiContent(url, user);
+        setFilteredCountries(response.data);
+    }
+
+    const required_rule: RegisterOptions = { required: "Pakollinen kenttä" };
+    const editor_style: React.CSSProperties = { height: '320px' };
+
     return (
         <div className="card mt-3">
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                     <div className="formgrid grid">
                         <div className="field col-12 lg:col-6">
-                            <span className="p-float-label">
-                                <Controller name="name" control={methods.control}
-                                    render={({ field, fieldState }) => (
-                                        <InputText
-                                            {...field}
-                                            autoFocus
-                                            {...methods.register("name")}
-                                            className={classNames({ "p-invalid": fieldState.error }, "w-full")}
-                                            disabled={isDisabled(user, loading)}
-                                        />
-                                    )}
-                                />
-                                <label htmlFor="name">Nimi<sup>*</sup></label>
-                                <small id="name-help">Kuten esiintyy kirjoissa (sukunimi, etunimi)</small>
-                            </span>
+                            <FormInputText
+                                name="name"
+                                methods={methods}
+                                label="Nimi (sukunimi, etunimi)"
+                                rules={required_rule}
+                                autoFocus
+                                disabled={disabled}
+                                labelClass='required-field'
+                            />
                         </div>
                         <div className="field col-12 lg:col-6">
-                            <span className="p-float-label">
-                                <Controller name="alt_name" control={methods.control}
-                                    render={({ field, fieldState }) => (
-                                        <InputText
-                                            {...field}
-                                            autoFocus
-                                            {...methods.register("alt_name")}
-                                            className={classNames({ "p-invalid": fieldState.error }, "w-full")}
-                                            disabled={isDisabled(user, loading)}
-                                        />
-                                    )}
-                                />
-                                <label htmlFor="alt_name">Vaihtoehtoinen nimi</label>
-                                <small id="alt_name-help">Vaihtoehtoinen muoto (etunimi sukunimi)</small>
-                            </span>
+                            <FormInputText
+                                name="alt_name"
+                                methods={methods}
+                                label="Vaihtoehtoinen nimi (etunimi sukunimi)"
+                                rules={required_rule}
+                                disabled={disabled}
+                                labelClass='required-field'
+                            />
                         </div>
                         <div className="field col-12 lg:col-6">
-                            <span className="p-float-label">
-                                <Controller name="fullname" control={methods.control}
-                                    render={({ field, fieldState }) => (
-                                        <InputText
-                                            {...field}
-                                            autoFocus
-                                            {...methods.register("fullname")}
-                                            className={classNames({ "p-invalid": fieldState.error }, "w-full")}
-                                            disabled={isDisabled(user, loading)}
-                                        />
-                                    )}
-                                />
-                                <label htmlFor="fullname">Koko nimi</label>
-                            </span>
+                            <FormInputText
+                                name="fullname"
+                                methods={methods}
+                                label="Koko nimi (etunimet sukunimet)"
+                                disabled={disabled}
+                            />
                         </div>
                         <div className="field col-12 lg:col-6">
-                            <span className="p-float-label">
-                                <Controller name="other_names" control={methods.control}
-                                    render={({ field, fieldState }) => (
-                                        <InputText
-                                            {...field}
-                                            autoFocus
-                                            {...methods.register("other_names")}
-                                            className={classNames({ "p-invalid": fieldState.error }, "w-full")}
-                                            disabled={isDisabled(user, loading)}
-                                        />
-                                    )}
-                                />
-                                <label htmlFor="name">Muita käytettyjä nimen muotoja</label>
-                            </span>
+                            <FormInputText
+                                name="other_names"
+                                methods={methods}
+                                label="Muita käytettyjä nimen muotoja"
+                                disabled={disabled}
+                            />
                         </div>
-                        <div className="field col-6 lg:col-3">
-                            <span className="p-float-label">
-                                <Controller name="dob" control={methods.control}
-                                    render={({ field, fieldState }) => (
-                                        <InputText
-                                            {...field}
-                                            autoFocus
-                                            {...methods.register("dob")}
-                                            className={classNames({ "p-invalid": fieldState.error }, "w-full")}
-                                            disabled={isDisabled(user, loading)}
-                                        />
-                                    )}
-                                />
-                                <label htmlFor="name">Syntymävuosi</label>
-                            </span>
+                        <div className="field col-3">
+                            <FormInputNumber
+                                name="dob"
+                                methods={methods}
+                                label="Syntymävuosi"
+                                disabled={disabled}
+                            />
                         </div>
-                        <div className="field col-6 lg:col-3">
-                            <span className="p-float-label">
-                                <Controller name="dod" control={methods.control}
-                                    render={({ field, fieldState }) => (
-                                        <InputText
-                                            {...field}
-                                            autoFocus
-                                            {...methods.register("dod")}
-                                            className={classNames({ "p-invalid": fieldState.error }, "w-full")}
-                                            disabled={isDisabled(user, loading)}
-                                        />
-                                    )}
-                                />
-                                <label htmlFor="name">Kuolinvuosi</label>
-                            </span>
+                        <div className="field col-3">
+                            <FormInputNumber
+                                name="dod"
+                                methods={methods}
+                                label="Kuolinvuosi"
+                                disabled={disabled}
+                            />
                         </div>
                         <div className="field col-12 lg:col-6">
-                            <span className="p-float-label">
-                                <Controller name="nationality" control={methods.control}
-                                    render={({ field, fieldState }) => (
-                                        <AutoComplete
-                                            {...field}
-                                            field="name"
-                                            completeMethod={filterCountries}
-                                            suggestions={filteredCountries}
-                                            placeholder="Kansallisuus"
-                                            emptyMessage='Ei tuloksia'
-                                            delay={300}
-                                            minLength={2}
-                                            className={classNames(
-                                                { "p-invalid": fieldState.error },
-                                                "w-full"
-                                            )}
-                                            inputClassName="w-full"
-                                            disabled={isDisabled(user, loading)}
-                                        />
-                                    )}
-                                />
-                                <label htmlFor="nationality">Kansallisuus</label>
-                            </span>
+                            <FormAutoComplete
+                                name="nationality"
+                                methods={methods}
+                                label="Kansallisuus"
+                                completeMethod={filterCountries}
+                                suggestions={filteredCountries}
+                                forceSelection={false}
+                                placeholder='Kansallisuus'
+                                disabled={disabled}
+                            />
+                        </div>
+                        <div className="field col-12">
+                            <LinksField
+                                id={"links"}
+                                disabled={disabled}
+                            />
                         </div>
 
                         <div className="field col-12">
-                            Kuvaus
-                            <Controller name="bio" control={methods.control}
-                                render={({ field, fieldState }) => (
-                                    <Editor {...field}
-                                        style={{ 'height': '360px' }} />
-                                )}
+                            <b>Kuvaus</b>
+                            <FormEditor
+                                name="bio"
+                                methods={methods}
+                                style={editor_style}
+                                disabled={disabled}
                             />
                         </div>
                         <Button type="submit" className="w-full justify-content-center">Tallenna</Button>

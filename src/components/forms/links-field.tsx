@@ -25,7 +25,6 @@ export const LinksField = ({ id, disabled }: LinksFieldProps) => {
 
   const LinksRow = ({ index }: { index: number }) => {
     const keyName = `{links-field.${index}}`;
-
     const emptyLink: LinkType = {
       link: "",
       description: ""
@@ -93,8 +92,8 @@ export const LinksField = ({ id, disabled }: LinksFieldProps) => {
   return (
     <>
       <span>
-        <label htmlFor={id} className="form-field-header">Linkit</label>
-        <div id={id} className="py-0" key={id}>
+        <label htmlFor={id} className="form-field-header font-bold">Linkit</label>
+        <div id={id} className="py-0" key={`$(id)-form`}>
           {fields && fields.map((_, index) =>
             <LinksRow index={index} />
           )}

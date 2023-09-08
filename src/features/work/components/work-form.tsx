@@ -1,31 +1,20 @@
 import React, { useMemo, useState, useEffect, KeyboardEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useForm, Controller, SubmitHandler, FieldValues, FormProvider, RegisterOptions } from 'react-hook-form';
+import { useForm, FormProvider, RegisterOptions } from 'react-hook-form';
 import { DevTool } from '@hookform/devtools';
-import { classNames } from 'primereact/utils';
-import { InputText } from 'primereact/inputtext';
-import { InputNumber } from 'primereact/inputnumber';
-import { Editor } from 'primereact/editor';
-import { MultiSelect } from "primereact/multiselect";
 import { Button } from 'primereact/button';
-import { AutoComplete, AutoCompleteChangeEvent } from 'primereact/autocomplete';
-import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ProgressBar } from 'primereact/progressbar';
 
 import { Work } from '../types';
 import { getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { WorkFormData, WorkType } from '../types';
-//import { makeBriefContributor } from '../../../components/forms/makeBriefContributor';
-import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
+import { isDisabled } from '../../../components/forms/forms';
 import { ContributorField, emptyContributor } from '../../../components/forms/contributor-field';
 import { Contribution } from '../../../types/contribution';
-//import { workCreators } from '../../../components/forms/work-creators';
 import { LinksField } from '../../../components/forms/links-field';
-import { Dropdown } from 'primereact/dropdown';
-import { formErrorMessage } from '../../../components/forms/form-error-message';
-import { User } from '../../user';
 import { HttpStatusResponse } from "../../../services/user-service"
 import { FormInputText } from '../../../components/forms/field/form-input-text';
 import { FormInputNumber } from '../../../components/forms/field/form-input-number';
@@ -33,13 +22,12 @@ import { FormMultiSelect } from '../../../components/forms/field/form-multi-sele
 import { FormDropdown } from '../../../components/forms/field/form-dropdown';
 import { FormAutoComplete } from '../../../components/forms/field/form-auto-complete';
 import { FormEditor } from '../../../components/forms/field/form-editor';
-import { logDOM } from '@testing-library/react';
 
 interface FormProps<T> {
   data: T | null,
   onSubmitCallback: (() => void)
 }
-export interface FormObjectProps {
+type FormObjectProps = {
   onSubmit: any;
   methods: any;
   data: WorkFormData;
@@ -369,7 +357,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
             </div>
 
             <div className="field col-12">
-              Kuvaus
+              <b>Kuvaus</b>
               <FormEditor
                 name="description"
                 methods={methods}

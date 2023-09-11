@@ -77,7 +77,7 @@ export const Changes = () => {
               groupRowsBy="object_name"
               sortMode="single"
               sortField="date"
-              sortOrder={1}
+              sortOrder={-1}
               expandableRowGroups
               expandedRows={expandedRows}
               onRowToggle={(e: DataTableRowToggleEvent) => setExpandedRows(e.data)}

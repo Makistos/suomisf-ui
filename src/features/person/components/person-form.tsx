@@ -45,7 +45,7 @@ export const PersonForm = (props: FormProperties<Person>) => {
         dob: person.dob,
         dod: person.dod,
         bio: person.bio,
-        links: person.links,
+        links: person.links.length > 0 ? person.links : [{ 'link': '', description: '' }],
         nationality: person.nationality
     });
 
@@ -59,7 +59,7 @@ export const PersonForm = (props: FormProperties<Person>) => {
         dob: null,
         dod: null,
         bio: '',
-        links: [],
+        links: [{ link: '', description: '' }],
         nationality: null
     }
 

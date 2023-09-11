@@ -1,14 +1,16 @@
 import { Link } from "react-router-dom";
 
-import { DataTable } from "primereact/datatable";
+import { DataTable, DataTableExpandedRows, DataTableRowToggleEvent, DataTableValueArray } from "primereact/datatable";
 import { useQuery } from '@tanstack/react-query';
 import { Column } from "primereact/column";
 import { ProgressSpinner } from "primereact/progressspinner";
 
 import { LogItem } from "../types";
 import { getApiContent } from "../../../services/user-service";
+import { useState } from "react";
 
 export const Changes = () => {
+  const [expandedRows, setExpandedRows] = useState<DataTableExpandedRows | LogItem[]>([]);
 
   const fetchData = async (): Promise<LogItem[]> => {
     let changesList: LogItem[] = [];
@@ -49,6 +51,16 @@ export const Changes = () => {
     }
   }
 
+  const headerTemplate = (data: LogItem) => {
+    return (
+      <>
+        <span className="vertical-align-middle ml-2 font-bold line-height-3">
+          {data.object_name} ({data.table_name})
+        </span>
+      </>
+    )
+  }
+
   return (
     <main className="all-content">
       <div>
@@ -59,8 +71,21 @@ export const Changes = () => {
           </div>
           :
           <>
-            <DataTable value={data} paginator rows={10} rowsPerPageOptions={[10, 20, 50]} >
-              <Column field="object_name" header="Nimi" body={linkTemplate}></Column>
+            <DataTable
+              value={data}
+              rowGroupMode="subheader"
+              groupRowsBy="object_name"
+              sortMode="single"
+              sortField="date"
+              sortOrder={1}
+              expandableRowGroups
+              expandedRows={expandedRows}
+              onRowToggle={(e: DataTableRowToggleEvent) => setExpandedRows(e.data)}
+              rowGroupHeaderTemplate={headerTemplate}
+              paginator rows={100} rowsPerPageOptions={[10, 20, 50]} >
+              <Column field="object_name" header="Nimi" body={linkTemplate}
+                filter filterField="object_name"
+              ></Column>
               <Column field="table_name" header="Taulu" ></Column>
               <Column field="field_name" header="Tietue"></Column>
               {/*

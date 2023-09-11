@@ -11,7 +11,7 @@ import { WorkDetails } from "./work-details";
 
 
 export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
-    // console.log(work)
+    console.log(work)
 
     return (
 
@@ -41,13 +41,14 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                     .</>
             )}
 
-            {(work.orig_title !== work.title) && (
+            {(work.orig_title !== work.title && work.orig_title !== '' && work.orig_title !== null) && (
                 <> ({work.orig_title !== work.title && work.orig_title}
                     {/* Add comma only if both original title and pubyear are
-                         shown. */}
-                    {work.orig_title !== work.title && work.pubyear && (
-                        <>, </>
-                    )}
+                         shown and orig_title has a value. */}
+                    {work.orig_title !== work.title && work.orig_title !== ''
+                        && work.orig_title !== null && work.pubyear && (
+                            <>, </>
+                        )}
                     {work.pubyear && <>{work.pubyear}</>}
                     )
                 </>

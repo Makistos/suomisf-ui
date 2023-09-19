@@ -1,13 +1,15 @@
-import React, { useMemo } from "react"
+import React, { useMemo, useState } from "react"
 
 import { Controller, useFieldArray } from "react-hook-form"
 import { Button } from "primereact/button";
+import { AutoComplete } from "primereact/autocomplete";
+import { InputText } from "primereact/inputtext"
+import { classNames } from "primereact/utils"
 
 import { getCurrenUser } from "../../services/auth-service"
 import { useFormContext } from "react-hook-form"
 import { LinkType } from "../../types/link"
-import { InputText } from "primereact/inputtext"
-import { classNames } from "primereact/utils"
+import { getApiContent } from "../../services/user-service";
 
 interface LinksFieldProps {
   id: string,
@@ -16,12 +18,20 @@ interface LinksFieldProps {
 
 export const LinksField = ({ id, disabled }: LinksFieldProps) => {
   const user = useMemo(() => { return getCurrenUser() }, [])
-
+  // const [filteredLinkNames, setFilteredLinkNames] = useState<any>([]);
   const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'links',
   });
+
+  // async function filterLinkNames(event: any) {
+  //   const url = "filter/linknames/" + event.query;
+  //   const response = await getApiContent(url, user);
+  //   const ln = response.data;
+  //   setFilteredLinkNames(ln);
+  //   return ln;
+  // }
 
   const LinksRow = ({ index }: { index: number }) => {
     const keyName = `{links-field.${index}}`;
@@ -37,6 +47,7 @@ export const LinksField = ({ id, disabled }: LinksFieldProps) => {
     const removeLink = (index: number) => {
       remove(index)
     }
+
 
     return (
       <div key={keyName} className="grid gap-1">
@@ -60,6 +71,23 @@ export const LinksField = ({ id, disabled }: LinksFieldProps) => {
             name={`links.${index}.description` as const}
             control={control}
             render={({ field, fieldState }) => (
+              // <AutoComplete
+              //   {...field}
+              //   field="description"
+              //   completeMethod={filterLinkNames}
+              //   suggestions={filteredLinkNames}
+              //   placeholder="Kuvaus"
+              //   tooltip="Kuvaus"
+              //   forceSelection={false}
+              //   delay={300}
+              //   className={classNames(
+              //     { "p-invalid": fieldState.error },
+              //     "w-full"
+              //   )}
+              //   inputClassName="w-full"
+              //   disabled={disabled}
+              //   inputRef={field.ref}
+              // />
               <InputText
                 {...field}
                 tooltip="Kuvaus"

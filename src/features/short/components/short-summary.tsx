@@ -93,7 +93,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
         if (translators.length === 0) return (<></>)
         return (
             <>
-                Suom {translators.map(tr => tr.person.name).join(', ')}
+                Suom {translators.map(tr => tr.person.alt_name).join(', ')}
                 . </>
         )
     }

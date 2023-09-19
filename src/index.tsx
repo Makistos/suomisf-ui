@@ -27,7 +27,7 @@ import { SFTags } from './features/tag/routes/sftags-page';
 import { Awards } from './features/award/routes/awards-page'
 import { Changes } from './features/changes/routes/changes-page';
 
-console.log(process.env)
+// console.log(process.env)
 
 const container = document.getElementById('root')!;
 

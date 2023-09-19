@@ -100,11 +100,9 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
         async function filterPeople(event: any) {
             const url =
                 "filter/people/" + event.query;
-            console.log("Person search url:" + url);
+            // console.log("Person search url:" + url);
             const response = await getApiContent(url, user);
             const p = response.data;
-            //console.log(p);
-
             setFilteredPeople(p);
             return p;
         }
@@ -120,7 +118,6 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
         const removeContributor = (index: number) => {
             remove(index)
         }
-
 
         return (
             <div key={keyValue}
@@ -140,7 +137,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                                 placeholder="Henkilö"
                                 tooltip="Henkilö"
                                 forceSelection={false}
-                                delay={800}
+                                delay={300}
                                 className={classNames(
                                     { "p-invalid": fieldState.error },
                                     "w-full"

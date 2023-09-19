@@ -1,22 +1,30 @@
 import { useEffect, useState, useMemo } from 'react';
 
-import { useForm, Controller, SubmitHandler, FieldValues, useFieldArray, FormProvider } from 'react-hook-form';
+import { useForm, Controller, SubmitHandler, FieldValues, RegisterOptions, FormProvider } from 'react-hook-form';
 import { Dropdown } from 'primereact/dropdown';
 import { MultiSelect } from "primereact/multiselect";
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { AutoComplete } from 'primereact/autocomplete';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { DevTool } from "@hookform/devtools";
 
 import { Short } from "../types";
 import { ShortContributorField } from '../../../components/forms/short-contributor-field';
-import { getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
+import { HttpStatusResponse, getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { ShortForm } from '../types';
 import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
 import { makeBriefContributor } from '../../../components/forms/makeBriefContributor';
+import { FormInputNumber } from '../../../components/forms/field/form-input-number';
+import { FormInputText } from '../../../components/forms/field/form-input-text';
+import { FormDropdown } from '../../../components/forms/field/form-dropdown';
+import { FormAutoComplete } from '../../../components/forms/field/form-auto-complete';
+import { FormMultiSelect } from '../../../components/forms/field/form-multi-select';
+import { ContributorField } from '../../../components/forms/contributor-field';
+import { ProgressBar } from 'primereact/progressbar';
+
 // import { shortIsSf } from '../utils';
 
 // type ShortFormType = Pick<Short, "id">
@@ -24,6 +32,11 @@ import { makeBriefContributor } from '../../../components/forms/makeBriefContrib
 interface ShortFormProps {
     short: Short,
     onSubmitCallback: ((state: boolean) => void)
+}
+
+type FormObjectProps = {
+    onSubmit: any;
+    methods: any;
 }
 
 export const ShortsForm = (props: ShortFormProps) => {
@@ -63,12 +76,74 @@ export const ShortsForm = (props: ShortFormProps) => {
     // const { register, control, handleSubmit,
     //     formState: { isDirty, dirtyFields } } =
     //     useForm<ShortForm>({ mode: "onChange", defaultValues: formData });
+    const [message, setMessage] = useState("");
+
+    // const contributorArray = useFieldArray({
+    //     control,
+    //     name: "contributors"
+    // })
+
+    // const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    //     const retval = { data, changed: methods.formState.dirtyFields }
+    //     setMessage("");
+
+    //     // console.log(data);
+    //     console.log(retval)
+    //     if (data.id !== null) {
+    //         putApiContent('shorts/', retval, user);
+    //     } else {
+    //         postApiContent('shorts/', retval, user);
+    //     }
+    //     queryClient.invalidateQueries(
+    //         //queryKey: ['searchShorts']
+    //     )
+    //     // Close modal
+    //     props.onSubmitCallback(false);
+    // }
+
+    const updateShort = (data: ShortForm) => {
+        const saveData = { data: data };
+        if (data.id != null) {
+            return putApiContent('shorts', saveData, user);
+        } else {
+            return postApiContent('shorts', saveData, user)
+        }
+    }
+
+    const { mutate, error } = useMutation({
+        mutationFn: (values: ShortForm) => updateShort(values),
+        onSuccess: (data: HttpStatusResponse, variables) => {
+            props.onSubmitCallback(false);
+
+        },
+        onError: (error: any) => {
+            console.log(error.message);
+        }
+    })
+
+    return (
+        <>
+            {formData ? (
+                <FormObject
+                    onSubmit={mutate}
+                    methods={methods}
+                />
+            ) : <ProgressBar />
+            }
+        </>
+    )
+}
+
+const FormObject = ({ onSubmit, methods }: FormObjectProps) => {
+    const user = useMemo(() => { return getCurrenUser() }, []);
     const [typeList, setTypeList] = useState([]);
     const [genres, setGenres] = useState([]);
-    const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(false);
     const [filteredLanguages, setFilteredLanguages] = useState([]);
     const [filteredTags, setFilteredTags] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const required_rule: RegisterOptions = { required: "Pakollinen kenttä" };
+
+    const disabled = isDisabled(user, loading);
 
     useEffect(() => {
         async function getTypes() {
@@ -87,30 +162,6 @@ export const ShortsForm = (props: ShortFormProps) => {
         setLoading(false);
     }, [user])
 
-    // const contributorArray = useFieldArray({
-    //     control,
-    //     name: "contributors"
-    // })
-
-    const onSubmit: SubmitHandler<FieldValues> = (data) => {
-        const retval = { data, changed: methods.formState.dirtyFields }
-        setMessage("");
-        setLoading(true);
-
-        // console.log(data);
-        console.log(retval)
-        if (data.id !== null) {
-            putApiContent('shorts/', retval, user);
-        } else {
-            postApiContent('shorts/', retval, user);
-        }
-        setLoading(false);
-        queryClient.invalidateQueries(
-            //queryKey: ['searchShorts']
-        )
-        // Close modal
-        props.onSubmitCallback(false);
-    }
     async function filterLanguages(event: any) {
         const url = "filter/languages/" + event.query;
         const response = await getApiContent(url, user);
@@ -123,164 +174,89 @@ export const ShortsForm = (props: ShortFormProps) => {
         setFilteredTags(response.data);
     }
 
+
     return (
         <div className="card mt-3">
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                     <div className="formgrid grid">
                         <div className="field col-12">
-                            <span className="p-float-label">
-                                <Controller name="title" control={methods.control}
-                                    render={({ field, fieldState }) => (
-                                        <InputText
-                                            {...field}
-                                            autoFocus
-                                            {...methods.register("title")}
-                                            className={classNames({ 'p-invalid': fieldState.error },
-                                                "w-full")}
-                                            disabled={isDisabled(user, loading)}
-                                        />
-                                    )}
-                                />
-                                <label htmlFor="title">Nimi</label>
-                            </span>
+                            <FormInputText
+                                name="title"
+                                autoFocus
+                                methods={methods}
+                                label="Nimi"
+                                rules={required_rule}
+                                disabled={disabled}
+                                labelClass='required-field'
+                            />
                         </div>
                         <div className="field col-12">
-                            <span className="p-float-label">
-                                <Controller name="orig_title" control={methods.control}
-                                    render={({ field, fieldState }) => (
-                                        <InputText
-                                            {...field}
-                                            {...methods.register("orig_title")}
-                                            className={classNames({ 'p-invalid': fieldState.error },
-                                                "w-full")}
-                                            disabled={isDisabled(user, loading)}
-                                        />
-                                    )}
-                                />
-                                <label htmlFor="orig_title">Alkuperäinen nimi</label>
-                            </span>
+                            <FormInputText
+                                name="orig_title"
+                                methods={methods}
+                                label="Alkuperäinen nimi"
+                                disabled={disabled}
+                            />
                         </div>
                         <div className="field col-12">
-                            <span className="p-float-label">
-                                <Controller name="pubyear" control={methods.control}
-                                    render={({ field, fieldState }) => (
-                                        <InputText
-                                            {...field}
-                                            {...methods.register("pubyear")}
-                                            className={classNames(
-                                                { "p-invalid": fieldState.error },
-                                                "w-full"
-                                            )}
-                                            disabled={isDisabled(user, loading)}
-                                        />
-                                    )}
-                                />
-                                <label htmlFor="pubyear">Alkuperäinen julkaisuvuosi</label>
-                            </span>
+                            <FormInputNumber
+                                name="pubyear"
+                                methods={methods}
+                                label="Alkuperäinen julkaisuvuosi"
+                                disabled={disabled}
+                            />
                         </div>
                         <div className="field col-6">
-                            <span className="p-float-label">
-                                <Controller
-                                    name="type"
-                                    control={methods.control}
-                                    render={({ field, fieldState }) => (
-                                        <Dropdown
-                                            {...field}
-                                            optionLabel="name"
-                                            options={typeList}
-                                            className={classNames(
-                                                { "p-invalid": fieldState.error }, "w-full"
-                                            )}
-                                            placeholder="Tyyppi"
-                                            tooltip="Tyyppi"
-                                            disabled={isDisabled(user, loading)}
-                                        />
-                                    )}
-                                />
-                                <label htmlFor="type">Tyyppi</label>
-                            </span>
+                            <FormDropdown
+                                name="type"
+                                methods={methods}
+                                options={typeList}
+                                label="Tyyppi"
+                                rules={required_rule}
+                                labelClass='required-field'
+                                disabled={disabled}
+                                checked={false}
+                            />
                         </div>
                         <div className="field col-6">
-                            <span className="p-float-label">
-                                <Controller name="lang" control={methods.control}
-                                    render={({ field, fieldState }) => (
-                                        <AutoComplete
-                                            {...field}
-                                            field="name"
-                                            completeMethod={filterLanguages}
-                                            suggestions={filteredLanguages}
-                                            placeholder="Kieli"
-                                            tooltip="Kieli"
-                                            delay={300}
-                                            minLength={2}
-                                            removeIcon
-                                            className={classNames(
-                                                { "p-invalid": fieldState.error },
-                                                "w-full"
-                                            )}
-                                            inputClassName="w-full"
-                                            disabled={isDisabled(user, loading)}
-                                        />
-                                    )}
-                                />
-                                <label htmlFor="language">Kieli</label>
-                            </span>
+                            <FormAutoComplete
+                                name="lang"
+                                methods={methods}
+                                label="Kieli"
+                                completeMethod={filterLanguages}
+                                suggestions={filteredLanguages}
+                                forceSelection={false}
+                                placeholder='Kieli'
+                                disabled={disabled}
+                            />
                         </div>
                         <div className="field col-12">
-                            <span className="p-float-label">
-                                <Controller name="genres" control={methods.control}
-                                    render={({ field, fieldState }) => (
-                                        <MultiSelect
-                                            {...field}
-                                            options={genres}
-                                            optionLabel="name"
-                                            display="chip"
-                                            scrollHeight="400px"
-                                            className={classNames(
-                                                { "p-invalid": fieldState.error },
-                                                "w-full"
-                                            )}
-                                            showClear
-                                            showSelectAll={false}
-                                            disabled={isDisabled(user, loading)}
-                                        />
-                                    )}
-                                />
-                                <label htmlFor="genres">Genret</label>
-                            </span>
+                            <FormMultiSelect
+                                name="genres"
+                                methods={methods}
+                                label="Genret"
+                                options={genres}
+                                disabled={disabled}
+                            />
                         </div>
                         <div className="field col-12">
-                            <span className="p-float-label">
-                                <Controller name="tags" control={methods.control}
-                                    render={({ field, fieldState }) => (
-                                        <AutoComplete
-                                            {...field}
-                                            field="name"
-                                            multiple
-                                            completeMethod={filterTags}
-                                            suggestions={filteredTags}
-                                            placeholder="Asiasanat"
-                                            tooltip="Asiasanat"
-                                            delay={300}
-                                            minLength={2}
-                                            className={classNames(
-                                                { "p-invalid": fieldState.error },
-                                                "w-full"
-                                            )}
-                                            inputClassName="w-full"
-                                            disabled={isDisabled(user, loading)}
-                                        />
-                                    )}
-                                />
-                                <label htmlFor="tags">Asiasanat</label>
-                            </span>
+                            <FormAutoComplete
+                                name="tags"
+                                methods={methods}
+                                label="Asiasanat"
+                                completeMethod={filterTags}
+                                suggestions={filteredTags}
+                                forceSelection={false}
+                                multiple
+                                placeholder='Asiasanat'
+                                disabled={disabled}
+                            />
                         </div>
                         <div className="field col-12 py-0">
-                            <ShortContributorField
-                                id={"authors"}
-                                disabled={isDisabled(user, loading)}
-                                defValues={formData.contributors}
+                            <ContributorField
+                                id={"contributors"}
+                                disabled={disabled}
                             />
                         </div>
                         <Button type="submit" className="w-full justify-content-center">Tallenna</Button>

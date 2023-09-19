@@ -330,3 +330,7 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 div.three-column {
   column-count: 3;
 }
+
+.editor-readonly {
+  border: none;
+}

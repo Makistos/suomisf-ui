@@ -18,7 +18,7 @@ export const Changes = () => {
       return response.data
     })
       .catch((error) => console.log(error));
-    console.log("Response: " + changesList);
+    // console.log("Response: " + changesList);
     return changesList;
   }
 
@@ -55,8 +55,9 @@ export const Changes = () => {
     return (
       <>
         <span className="vertical-align-middle ml-2 font-bold line-height-3">
-          {data.object_name} ({data.table_name})
+          {data.object_name}&nbsp;
         </span>
+        ({data.table_name})
       </>
     )
   }
@@ -82,18 +83,21 @@ export const Changes = () => {
               expandedRows={expandedRows}
               onRowToggle={(e: DataTableRowToggleEvent) => setExpandedRows(e.data)}
               rowGroupHeaderTemplate={headerTemplate}
-              paginator rows={100} rowsPerPageOptions={[10, 20, 50]} >
+            >
               <Column field="object_name" header="Nimi" body={linkTemplate}
                 filter filterField="object_name"
               ></Column>
-              <Column field="table_name" header="Taulu" ></Column>
+              <Column field="table_name" header="Taulu"
+                filter filterField="table_name"></Column>
               <Column field="field_name" header="Tietue"></Column>
               {/*
             <Column field="old_value" header="Vanha arvo"></Column>
             <Column field="new_value" header="Uusi arvo"></Column>
   */}
               <Column field="date" header="Muutettu"></Column>
-              <Column field="action" header="Toiminto"></Column>
+              <Column field="action" header="Toiminto"
+                filter filterField="action"
+              ></Column>
             </DataTable>
           </>
         }

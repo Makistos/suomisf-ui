@@ -41,7 +41,7 @@ export const Home = () => {
 
   return (
     <div className="grid mt-4 p-4">
-      <div className="col-12 xl:col-8">
+      <div className="col-12 lg:col-8">
         <div className="front-text-block">
           <h1 className="frontpage mb-8">Tervetuloa suomenkielisen spekulatiivisen fiktion bibliografiaan!</h1>
           <p className="frontpage mt-4">
@@ -121,7 +121,7 @@ export const Home = () => {
           </div>
         </div>
       </div>
-      <div className="col-12 xl:col-4 mt-4">
+      <div className="lg:col-4 mt-4">
         <img alt="Image from a library" className="front-page-image" src="pexels-gunnar-ridderström-4318441.jpg"></img>
       </div>
     </div>

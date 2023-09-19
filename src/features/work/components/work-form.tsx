@@ -341,9 +341,6 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 suggestions={filteredTags}
                 forceSelection={false}
                 tagFunction={addNewTag}
-                // onChange={tagChange}
-                // onSelect={(e) => console.log(e.value)}
-                // onKeyPress={tagKeyPress}
                 multiple
                 placeholder='Asiasanat'
                 disabled={disabled}

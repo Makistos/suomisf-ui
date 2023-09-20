@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { LinkList } from "../../../components/link-list";
 import { EditionProps } from "../types";
 import { EditionString } from "../utils/edition-string";
-
+import { Edition } from '../types';
+import { LinkItem } from '../../../components/link-list';
 
 export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
     const isFirstVersion = (version: number | undefined) => {
@@ -13,6 +14,16 @@ export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
             return version === 1;
         }
     };
+
+    const translators = (edition: Edition): LinkItem[] => {
+        return edition.contributions.filter(contrib => contrib.role.id === 3)
+            .map(contrib => {
+                return {
+                    id: contrib.person.id, name: contrib.person.alt_name, description: contrib.description
+                }
+            });
+    }
+
     return (
         (details !== "brief" &&
             (showFirst || edition.editionnum !== 1 || (!isFirstVersion(edition.version)))) ? (
@@ -22,11 +33,11 @@ export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
                     <><i> {edition.title}. </i></>
                 )}
                 {edition.version > 1 && edition.editionnum === 1 &&
-                    edition.translators.length > 0 &&
+                    translators(edition).length > 0 &&
                     <>
                         <> Suom. </>
                         <LinkList path="people"
-                            items={edition.translators} />
+                            items={translators(edition)} />
                         . </>}
                 <> {edition.publisher && edition.publisher.name} </>
                 <>{edition.pubyear}.</>

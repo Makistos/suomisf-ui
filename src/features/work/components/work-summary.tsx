@@ -61,7 +61,13 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                         <LinkList path="people"
                             items={work.editions[0].contributions
                                 .filter(contrib => contrib.role.id === 2)
-                                .map(person => person.person)}
+                                .map(contrib => {
+                                    return {
+                                        id: contrib.person.id,
+                                        name: contrib.person.alt_name,
+                                        description: contrib.description
+                                    }
+                                })}
                         />.
                     </>
                 )}

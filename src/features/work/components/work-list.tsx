@@ -54,17 +54,22 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
     const compareAuthors = (a: [string, Work[]], b: [string, Work[]]) => {
         // Special compare needed because we want the works by the person (if given)
         // to come first.
-        const aName = a[0];
-        const bName = b[0];
+        const aName = a[0].replace(' (toim.)', '');
+        const bName = b[0].replace(' (toim.)', '');
+        // Always place books written with real name first
+        if (aName === personName) return -1;
+        if (bName === personName) return 1;
         if (personName) {
-            if (aName.localeCompare(personName) === 0) return 1;
-            else if (bName.localeCompare(personName) === 0) return -1;
+            if (aName.localeCompare(personName, "fi") === 0) return 1;
+            if (bName.localeCompare(personName, "fi") === 0) return -1;
         }
         if (collaborationsLast) {
+            if (aName.includes('&') && bName.includes('&'))
+                return aName.localeCompare(bName, "fi");
             if (aName.includes('&')) return 1;
             if (bName.includes('&')) return -1;
         }
-        return aName.localeCompare(bName) ? 1 : -1;
+        return aName.localeCompare(bName, "fi");
     }
 
     const compareWorks = (a: Work, b: Work) => {

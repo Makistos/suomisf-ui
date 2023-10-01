@@ -15,10 +15,10 @@ interface EditionListProps {
     sort?: string
 }
 
-export const EditionList = ({ editions, person, sort }: EditionListProps) => {
+export const EditionList = ({ editions, person, sort = "year" }: EditionListProps) => {
     const [groupedEditions, setGroupedEditions]: [Record<string, Edition[]>,
         (editions: Record<string, Edition[]>) => void] = useState({});
-    const [sorting, setSorting] = useState<string>("year");
+    const [sorting, setSorting] = useState<string>(sort);
     const [editionView, setEditionView] = useState("Lista");
 
     const sortOptions = [

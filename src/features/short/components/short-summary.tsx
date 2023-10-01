@@ -119,9 +119,9 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
         }
         setEditVisible(false);
     }
-    if (short !== undefined) {
-        console.log(short)
-    }
+    // if (short !== undefined) {
+    //     console.log(short)
+    // }
 
     return (
         <div>

@@ -5,6 +5,7 @@ import { Short } from "../../short/types";
 import { LinkType } from '../../../types/link';
 import { Awarded } from '../../award';
 import { Nationality } from "../../../types/nationality";
+import { Contribution } from "../../../types/contribution";
 
 export type PersonBrief = Pick<Person, "id" | "name" | "alt_name" | "fullname">
 export interface Person {
@@ -29,6 +30,7 @@ export interface Person {
     stories: Short[];
     magazine_stories: Short[];
     awarded: Awarded[];
+    editions: Edition[];
 }
 
 export interface PersonFormData {

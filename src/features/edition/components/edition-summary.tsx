@@ -4,17 +4,15 @@ import { Link } from "react-router-dom";
 import { GenreList } from "../../genre";
 import { Edition, EditionProps } from "../types";
 import { EditionString } from "../utils/edition-string";
-import { Contribution } from '../../../types/contribution';
-
 
 
 export const EditionSummary = ({ edition, person, showPerson, showVersion }: EditionProps) => {
     const notFirstEdition = (edition: Edition) => {
         return !(edition.editionnum === 1 && (edition.version || edition.version === null || edition.version === 1))
     }
-    if (edition !== undefined) {
-        console.log(edition)
-    }
+    // if (edition !== undefined) {
+    //     console.log(edition)
+    // }
     const uniquePeople = (value: string, index: number, array: string[]) => {
         return array.indexOf(value) === index;
     }

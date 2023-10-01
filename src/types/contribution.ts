@@ -23,3 +23,11 @@ export interface ContributionSimple extends FieldValues {
     role: RoleBrief,
     description?: string
 }
+
+export const ContributionType = {
+    Kirjoittaja: 1, // Work contributor
+    Kääntäjä: 2,
+    Toimittaja: 3,  // Work contributor
+    Kansikuva: 4,
+    Kuvittaja: 5
+}

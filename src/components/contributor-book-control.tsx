@@ -11,12 +11,15 @@ import { BookSeriesList } from "../features/bookseries";
 import { Work } from "../features/work";
 import { Genre } from "../features/genre";
 import { Edition } from "../features/edition";
+import { Contribution, ContributionType } from "../types/contribution";
 
 interface CBCProps {
     person: Person,
     viewNonSf: boolean,
     collaborationsLast?: boolean
 }
+
+
 
 export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast = false }: CBCProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
@@ -25,6 +28,12 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
     const [edits, setEdits]: [Edition[], (sfEdits: Edition[]) => void] = useState<Edition[]>([]);
     const [translations, setTranslations]: [Edition[], (sfTranslations: Edition[]) => void]
         = useState<Edition[]>([]);
+    const [covers, setCovers] = useState<Edition[]>([]);
+    const [illustrations, setIllustrations] = useState<Edition[]>([]);
+
+    // Create list that contains all alias ids as well
+    const person_ids = person.aliases.map(alias => alias.id);
+    person_ids.push(person.id);
 
     /**
      * Given list of genres, determines if they match a non-SF list.
@@ -56,10 +65,13 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
      * @param translations - Books translated by person.
      * @returns Tab number (0-2)
      */
-    const calcActiveIndex = (works: Work[], edits: Edition[], translations: Edition[]) => {
+    const calcActiveIndex = (works: Work[], edits: Edition[], translations: Edition[], illustrations: Edition[], covers: Edition[]) => {
+        console.log(edits.length)
         if (works.length > 0) return 0;
         if (edits.length > 0) return 1;
         if (translations.length > 0) return 2;
+        if (illustrations.length > 0) return 3;
+        if (covers.length > 0) return 4;
         return 0;
 
     }
@@ -78,39 +90,34 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
         return retval;
     }
 
-    useEffect(() => {
-        let newWorks: Work[] = [];
-        let newEdits: Edition[] = [];
-        let newTranslations: Edition[] = [];
+    const contributions = (contributions: Contribution[], contributionTypes: number[]) => {
+        // console.log(contributionType)
+        // console.log(contributions)
+        if (contributions.length === 0) return [];
+        return contributions.filter(contrib => (contributionTypes.includes(contrib.role.id) && person_ids.includes(contrib.person.id)))
+    }
 
-        if (viewNonSf) {
-            newWorks = person.works.filter(work => isNonSf(work.genres));
-            newEdits = person.edits.filter(edition =>
-                isNonSf(edition.work.map(work => work.genres).flat()));
-            newTranslations = person.translations.filter(edition =>
-                isNonSf(edition.work.map(work => work.genres).flat()));
-        } else {
-            newWorks = person.works.filter(work => !isNonSf(work.genres));
-            newEdits = person.edits.filter(edition =>
-                !isNonSf(edition.work.map(work => work.genres).flat()));
-            newTranslations = person.translations.filter(edition =>
-                !isNonSf(edition.work.map(work => work.genres).flat()));
-        }
-        newTranslations = removeDuplicateWorks(newTranslations);
-        newEdits = removeDuplicateWorks(newEdits);
-        setWorks(newWorks);
-        setEdits(newEdits);
-        setTranslations(newTranslations);
-        const initialIndex = calcActiveIndex(newWorks, newEdits, newTranslations);
+    const edition_contributions = (editions: Edition[]) => {
+        return editions.filter(edition => contributions(edition.contributions, [2, 4, 5]).length > 0);
+    }
+
+    useEffect(() => {
+        setWorks(person.works);
+        const editions = edition_contributions(person.editions)
+
+        const newTr = editions.filter(editions => contributions(editions.contributions, [2]).length > 0);
+        setTranslations(newTr);
+        setEdits(person.edits);
+        const newCovers = editions.filter(editions => contributions(editions.contributions, [4]).length > 0);
+        setCovers(newCovers);
+        const newIllustrations = editions.filter(editions => contributions(editions.contributions, [5]).length > 0);
+        setIllustrations(newIllustrations);
+        const initialIndex = calcActiveIndex(person.works, person.edits, newTr, newIllustrations, newCovers);
         setActiveIndex(initialIndex);
-    }, [person.works, person.edits, person.translations, viewNonSf]);
+    }, [person.works, person.edits, person.editions, viewNonSf]);
 
     const headerText = (staticText: string, count: number) => {
         return staticText + " (" + count + ")";
-    }
-
-    const hasWorks = () => {
-        return (works.length > 0);
     }
 
     const hasSeries = () => {
@@ -118,37 +125,69 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
         return retval;
     }
 
-    /**
-     *
-     * @param type If "edits" check edits variable, otherwise check translations.
-     * @returns
-     */
-    const hasEditions = (type: string) => {
-        if (type === "edits")
-            return (edits.length > 0);
-        return translations.length > 0;
+    const onlyFirstEdition = (works: Work[]) => {
+        return works.filter((work, index) => {
+            return index === works.findIndex(w => work.id === w.id);
+        })
     }
+
+    const removeDuplicateWorkContributions = (work: Work) => {
+
+        return work.contributions.filter((contrib, index) => {
+            return index === work.contributions.findIndex(
+                c => (c.person.id === contrib.person.id && c.role.id === contrib.role.id))
+        })
+    }
+
+    const removeDuplicateEditionContributions = (edition: Edition) => {
+        if (!edition) return [];
+        // console.log(edition)
+        const retval = edition.contributions.filter((contrib, index) => {
+            return index === edition.contributions.findIndex(
+                c => (c.person.id === contrib.person.id && c.role.id === contrib.role.id))
+        })
+        // console.log(retval)
+        return retval
+    }
+
+    //console.log(person)
+
+    const authorContributions = contributions(works.map(work => removeDuplicateWorkContributions(work)).flat(1), [1]).length;
+    const editContributions = contributions(edits.map(edition => edition.work).flat(1).map(work => removeDuplicateWorkContributions(work)).flat(1), [3]).length;
+    const translationContributions = contributions(translations.map(tr => removeDuplicateEditionContributions(tr)).flat(1), [2]).length;
+    const coverContributions = contributions(covers.map(tr => removeDuplicateEditionContributions(tr)).flat(1), [4]).length;
+    const illustrationContributions = contributions(illustrations.map(tr => removeDuplicateEditionContributions(tr)).flat(1), [5]).length;
 
     return (
         <Fieldset legend={"Kirjat"} toggleable>
             <TabView key={viewNonSf ? "nonSF" : "SF"} activeIndex={activeIndex}
                 onTabChange={(e) => setActiveIndex(e.index)} className="w-full"
             >
-                <TabPanel key="Kirjoittanut" header={headerText("Kirjoittanut", works.length)}
-                    disabled={!hasWorks()}
-                >
+                <TabPanel key="Kirjoittanut"
+                    header={headerText("Kirjoittanut", authorContributions)}
+                    disabled={authorContributions === 0}>
                     <WorkList works={works} personName={person.name}
                         collaborationsLast={collaborationsLast} />
                 </TabPanel>
-                <TabPanel key="Toimittanut" header={headerText("Toimittanut", edits.length)}
-                    disabled={!hasEditions("edits")}
-                >
-                    <EditionList editions={edits} person={person} />
+                <TabPanel key="Toimittanut"
+                    header={headerText("Toimittanut", editContributions)}
+                    disabled={editContributions === 0}>
+                    <EditionList editions={edits} person={person} sort="author" />
                 </TabPanel>
-                <TabPanel key="Kääntänyt" header={headerText("Kääntänyt", translations.length)}
-                    disabled={!hasEditions("translations")}
-                >
-                    <EditionList editions={translations} person={person} />
+                <TabPanel key="Kääntänyt"
+                    header={headerText("Kääntänyt", translationContributions)}
+                    disabled={translationContributions === 0}>
+                    <EditionList editions={translations} person={person} sort="author" />
+                </TabPanel>
+                <TabPanel key="Kansikuva"
+                    header={headerText("Kansi", coverContributions)}
+                    disabled={coverContributions === 0}>
+                    <EditionList editions={covers} person={person} sort="author" />
+                </TabPanel>
+                <TabPanel key="Kuvittaja"
+                    header={headerText("Kuvitus", illustrationContributions)}
+                    disabled={illustrationContributions === 0}>
+                    <EditionList editions={illustrations} person={person} sort="author" />
                 </TabPanel>
                 {viewNonSf === false &&
                     <TabPanel key="Sarjat" header="Sarjat" disabled={!hasSeries()}>

@@ -66,12 +66,11 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
      * @returns Tab number (0-2)
      */
     const calcActiveIndex = (works: Work[], edits: Edition[], translations: Edition[], illustrations: Edition[], covers: Edition[]) => {
-        console.log(edits.length)
         if (works.length > 0) return 0;
         if (edits.length > 0) return 1;
         if (translations.length > 0) return 2;
-        if (illustrations.length > 0) return 3;
-        if (covers.length > 0) return 4;
+        if (covers.length > 0) return 3;
+        if (illustrations.length > 0) return 4;
         return 0;
 
     }

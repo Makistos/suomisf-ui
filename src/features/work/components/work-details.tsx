@@ -50,7 +50,7 @@ export const WorkDetails = ({ work }: WorkProps) => {
             </div>
             <div className="grid col-12 justify-content-center">
                 {work.contributions &&
-                    work.contributions.filter(person => person.role.id === 1).length == 0 &&
+                    work.contributions.filter(person => person.role.id === 1).length !== 0 &&
                     work.contributions.filter(person => person.role.id === 3).length > 0
                     && (
                         <div className="grid col-12 justify-content-center">

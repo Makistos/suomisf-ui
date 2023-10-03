@@ -6,7 +6,16 @@ export const groupEditions = (editions: Edition[]) => {
         return array.indexOf(value) === index;
     }
     const authorStr = (edition: Edition) => {
-        return edition.work[0].contributions.map(
+        // Always use authors only if available
+        const authors = edition.work[0].contributions.filter(
+            contrib => contrib.role.id === 1);
+        if (authors.length > 0) {
+            return authors.map(author => author.person.name).filter(uniquePeople).join(' &');
+        }
+        // Only use editor if book has no authors
+        const editors = edition.work[0].contributions.filter(
+            contrib => contrib.role.id === 3);
+        return editors.map(
             contrib => contrib.person.name).filter(uniquePeople).join(' & ');
     }
 

@@ -41,6 +41,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [editPerson, setEditPerson] = useState(true);
     const [formData, setFormData]: [Person | null, (formData: Person | null) => void] = useState<Person | null>(null);
+    const [showNonSf, setShowNonSf] = useState(false);
 
     try {
         thisId = selectId(params, id);
@@ -155,7 +156,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
 
     const combineNames = (aliases: PersonBrief[], other_names: string) => {
         //let retval = aliases.map(alias => alias.alt_name ? alias.alt_name : alias.name);
-        let retval = aliases.map(alias => alias.name);
+        let retval = aliases.map(alias => alias.alt_name);
         if (other_names) retval.push(other_names);
         return retval.join(', ');
     }
@@ -255,7 +256,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                 </div>
                                 <div className="col-12">
                                     {hasBooks(data) && (
-                                        <ContributorBookControl viewNonSf={false} person={data}
+                                        <ContributorBookControl viewNonSf={showNonSf} person={data}
                                             collaborationsLast={true}></ContributorBookControl>
                                     )}
                                     {(data.stories.length > 0 || data.magazine_stories.length > 0) &&

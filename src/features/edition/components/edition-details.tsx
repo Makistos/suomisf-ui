@@ -145,6 +145,11 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                     }
                     {contributorList(edition.contributions, 5, "Kuvitus", true)}
                     {contributorList(edition.contributions, 4, "Ulkoasu", true)}
+                    {edition.verified &&
+                        <>
+                            <br /><b>Tarkastettu.</b>
+                        </>
+                    }
                     <br />
                     <div>
                         <Button icon="pi pi-pencil" tooltip="Muokkaa" className="p-button-text" onClick={() => onDialogShow()} />

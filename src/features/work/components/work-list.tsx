@@ -139,10 +139,12 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
                                         <div>
                                             {workView === 'Lista' ? (
                                                 ws.sort(compareWorks).map((work) => (
+                                                    work.editions.length > 0 &&
                                                     <WorkSummary work={work} key={work.editions[0].id}
                                                         detailLevel={detailLevel}
                                                         orderField={orderField} />
-                                                ))
+                                                )
+                                                )
                                             ) : (
                                                 <CoverImageList key={group} works={ws} />
                                             )}

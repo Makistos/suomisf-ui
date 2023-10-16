@@ -23,6 +23,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
     const [detailLevel, setDetailLevel] = useState("condensed");
     const [orderField, setOrderField] = useState("Title");
     const [workView, setWorkView] = useState("Lista");
+    const [showNonSf, setShowNonSf] = useState<boolean>(false);
 
     useEffect(() => {
         if (works !== null && works.length > 0) {
@@ -101,6 +102,9 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
                         onChange={(e) => setWorkView(e.value)}
                     />
                 </div>
+                {/* <div className="grid col-1 justify-content-start">
+                    <InputSwitch checked={showNonSf} onChange={(e: InputSwitchChangeEvent) => setShowNonSf(e.value)} />
+                </div> */}
                 <div className="grid col-4 justify-content-center">
                     <WorkStatsPanel works={works} />
                 </div>
@@ -134,7 +138,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
                                         </div>
                                         <div>
                                             {workView === 'Lista' ? (
-                                                ws.sort(compareWorks).map((work: Work) => (
+                                                ws.sort(compareWorks).map((work) => (
                                                     <WorkSummary work={work} key={work.editions[0].id}
                                                         detailLevel={detailLevel}
                                                         orderField={orderField} />

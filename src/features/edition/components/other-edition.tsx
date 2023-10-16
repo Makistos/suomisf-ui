@@ -16,6 +16,7 @@ export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
     };
 
     const translators = (edition: Edition): LinkItem[] => {
+        if (edition.contributions === undefined) return [];
         return edition.contributions.filter(contrib => contrib.role.id === 2)
             .map(contrib => {
                 return {

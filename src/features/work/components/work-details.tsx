@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import _ from "lodash"
 
 import { GenreGroup } from "../../genre";
 import { TagGroup } from "../../tag";
@@ -7,9 +8,22 @@ import { LinkList } from "../../../components/link-list";
 import { AwardPanel } from "../../award";
 import { LinkPanel } from "../../../components/link-panel";
 import { WorkProps } from "../routes";
+import { Contribution, ContributorRole } from '../../../types/contribution';
 
 export const WorkDetails = ({ work }: WorkProps) => {
-    //console.log(work.contributions)
+
+    const compareContribs = (a: Contribution, b: Contribution) => {
+        if (a.person.id !== b.person.id) return false;
+        if (a.role.id !== b.role.id) return false;
+        return true;
+    }
+    const authors = (contributions: Contribution[]) => {
+        const uniques = _.uniqWith(contributions, compareContribs);
+        return uniques.filter(person => person.role.id === 1).map((item) => ({
+            id: item.person['id'],
+            name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
+        }))
+    }
 
     return (
         <div className="grid align-items-center justify-content-center">
@@ -18,10 +32,7 @@ export const WorkDetails = ({ work }: WorkProps) => {
                     <h2 className="mb-0 font-semibold">
                         <LinkList path="people"
                             separator=" &amp; "
-                            items={work.contributions.filter(person => person.role.id === 1).map((item) => ({
-                                id: item.person['id'],
-                                name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
-                            }))} />
+                            items={authors(work.contributions)} />
                     </h2>
                 </div>
             )}

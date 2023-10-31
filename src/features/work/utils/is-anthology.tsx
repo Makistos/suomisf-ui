@@ -1,28 +1,27 @@
 import { Work } from "../types";
 
 
+/**
+ * Checks if a work is an anthology.
+ *
+ * @param work - The work to be checked.
+ * @return {boolean} Returns true if the work is an anthology, otherwise false.
+ */
 export const isAnthology = (work: Work) => {
-    // Check if work is a collection with multiple
-    // authors. This is the definition of anthology.
+    // Check if work is a collection with multiple authors
+    // This is the definition of an anthology
     if (work.stories.length === 0) {
-        // Not even a collection
-        return false;
+        return false; // Not even a collection
     }
-    // Create a dictionary with the authors' names
-    // as key. If our dictionary has more than one
-    // value it's an anthology.
-    let authors: Record<string, any> = {};
-    work.stories.map(story => {
-        const author_name: string = story.contributors.filter(contribution => contribution.role.name === 'author')
-            .sort((a, b) => a.person.name > b.person.name ? -1 : 1)
-            .map(author => author.person.name).toString();
-        if (!(author_name in authors)) {
-            authors[author_name] = author_name;
-        }
-        return true;
-    });
-    if (Object.keys(authors).length > 1) {
-        return true;
-    }
-    return false;
+
+    // Create a set of author names from the stories
+    const authors = new Set(
+        work.stories
+            .map(story =>
+                story.contributors
+                    .filter(contribution => contribution.role.name === 'Kirjoittaja')
+            )
+    );
+
+    return authors.size > 1; // If there are more than one author, it's an anthology
 };

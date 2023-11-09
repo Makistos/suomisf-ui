@@ -139,7 +139,7 @@ export const PeoplePage = () => {
         <div>
             <h1 className='title'>Henkilöluettelo</h1>
             <p>Henkilöitä yhteensä {totalRecords}.</p>
-            {people !== null && people !== undefined ? (
+            {people !== null && people !== undefined && people.length > 0 ? (
                 <DataTable value={people}
                     first={lazyParams.first}
                     rows={lazyParams.rows}
@@ -155,7 +155,6 @@ export const PeoplePage = () => {
                     filters={lazyParams.filters}
                     size="small"
                     globalFilterFields={["name", "dob", "dod", "nationalityname", "workcount", "storycount", "roles"]}
-                    responsiveLayout="scroll"
                     dataKey="id"
                     filterDisplay="row"
                     emptyMessage="Henkilöitä ei löytynyt"
@@ -178,12 +177,14 @@ export const PeoplePage = () => {
                         dataType="numeric"
                         sortable>
                     </Column>
-                    <Column field="nationality" header="Kansallisuus"
+                    <Column field="nationality.name" header="Kansallisuus"
                         filter
                         filterPlaceholder="Kansallisuus"
                         filterElement={nationalityFilterTemplate}
+                        filterField='nationality'
                         sortable>
                         showFilterMatchModes={false}
+
                     </Column>
                     <Column field="workcount" header="Teoksia"
                         dataType="numeric"

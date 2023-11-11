@@ -6,13 +6,24 @@ import { EditionString } from "../utils/edition-string";
 import { Edition } from '../types';
 import { LinkItem } from '../../../components/link-list';
 
+/**
+ * Generates a JSX component for displaying an edition of a book.
+ *
+ * @param {EditionProps} edition - The edition to display.
+ * @param {boolean} showFirst - Whether to show the first edition.
+ * @param {string} details - The level of detail to display.
+ * @return {JSX.Element} The JSX component for displaying the edition.
+ */
 export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
-    const isFirstVersion = (version: number | undefined) => {
-        if (version === undefined || version === null) {
-            return true;
-        } else {
-            return version === 1;
-        }
+    /**
+     * Checks if the given version is the first version.
+     *
+     * @param {number | undefined} version - The version to check.
+     * @return {boolean} Returns true if the version is undefined, null, or 1.
+     *                   Otherwise, returns false.
+     */
+    const isFirstVersion = (version: number | undefined): boolean => {
+        return version === undefined || version === null || version === 1;
     };
 
     const translators = (edition: Edition): LinkItem[] => {
@@ -31,7 +42,7 @@ export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
             <div className="edition-oneliner">
                 <>{EditionString(edition) + ":"}</>
                 {edition.work && edition.title !== edition.work[0].title && (
-                    <><i> {edition.title}. </i></>
+                    <><b> {edition.title}. </b></>
                 )}
                 {edition.version > 1 && edition.editionnum === 1 &&
                     translators(edition).length > 0 &&

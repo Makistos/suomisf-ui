@@ -75,8 +75,8 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
 
     const compareWorks = (a: Work, b: Work) => {
         if (orderField === 'Title') {
-            if (a.title < b.title) return -1;
-            if (a.title > b.title) return 1;
+            if (a.title.toUpperCase() < b.title.toUpperCase()) return -1;
+            if (a.title.toUpperCase() > b.title.toUpperCase()) return 1;
         } else if (orderField === 'Year') {
             if (a.pubyear < b.pubyear) return -1;
             if (a.pubyear > b.pubyear) return 1;

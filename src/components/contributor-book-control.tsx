@@ -89,6 +89,13 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
         return retval;
     }
 
+    /**
+     * Filter contributions based on contribution types.
+     *
+     * @param {Contribution[]} contributions - The list of contributions to filter.
+     * @param {number[]} contributionTypes - The list of contribution types to include.
+     * @return {Contribution[]} The filtered list of contributions.
+     */
     const contributions = (contributions: Contribution[], contributionTypes: number[]) => {
         // console.log(contributionType)
         // console.log(contributions)
@@ -97,23 +104,30 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
     }
 
     const edition_contributions = (editions: Edition[]) => {
-        return editions.filter(edition => contributions(edition.contributions, [2, 4, 5]).length > 0);
+        return editions.filter(edition =>
+            contributions(edition.contributions, [2, 4, 5]).length > 0);
     }
 
     useEffect(() => {
         setWorks(person.works);
         const editions = edition_contributions(person.editions)
 
-        const newTr = editions.filter(editions => contributions(editions.contributions, [2]).length > 0);
+        const newTr = editions.filter(edition =>
+            contributions(edition.contributions, [2]).length > 0);
         setTranslations(newTr);
         setEdits(person.edits);
-        const newCovers = editions.filter(editions => contributions(editions.contributions, [4]).length > 0);
+        const newCovers = editions.filter(edition =>
+            contributions(edition.contributions, [4]).length > 0);
         setCovers(newCovers);
-        const newIllustrations = editions.filter(editions => contributions(editions.contributions, [5]).length > 0);
+        const newIllustrations = editions.filter(edition =>
+            contributions(edition.contributions, [5]).length > 0);
         setIllustrations(newIllustrations);
-        const initialIndex = calcActiveIndex(person.works, person.edits, newTr, newIllustrations, newCovers);
+    }, [person.works, person.editions, viewNonSf]);
+
+    useEffect(() => {
+        const initialIndex = calcActiveIndex(works, edits, translations, illustrations, covers);
         setActiveIndex(initialIndex);
-    }, [person.works, person.edits, person.editions, viewNonSf]);
+    }, [works, edits, translations, illustrations, covers])
 
     const headerText = (staticText: string, count: number) => {
         return staticText + " (" + count + ")";
@@ -149,13 +163,25 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
         return retval
     }
 
-    //console.log(person)
+    console.log(person)
 
-    const authorContributions = contributions(works.map(work => removeDuplicateWorkContributions(work)).flat(1), [1]).length;
-    const editContributions = contributions(edits.map(edition => edition.work).flat(1).map(work => removeDuplicateWorkContributions(work)).flat(1), [3]).length;
-    const translationContributions = contributions(translations.map(tr => removeDuplicateEditionContributions(tr)).flat(1), [2]).length;
-    const coverContributions = contributions(covers.map(tr => removeDuplicateEditionContributions(tr)).flat(1), [4]).length;
-    const illustrationContributions = contributions(illustrations.map(tr => removeDuplicateEditionContributions(tr)).flat(1), [5]).length;
+    // Find contributions for different types
+    const authorContributions =
+        contributions(works.map(work =>
+            removeDuplicateWorkContributions(work)).flat(1), [1]).length;
+    const editContributions =
+        contributions(edits.map(edition =>
+            edition.work).flat(1).map(work =>
+                removeDuplicateWorkContributions(work)).flat(1), [3]).length;
+    const translationContributions =
+        contributions(translations.map(tr =>
+            removeDuplicateEditionContributions(tr)).flat(1), [2]).length;
+    const coverContributions =
+        contributions(covers.map(tr =>
+            removeDuplicateEditionContributions(tr)).flat(1), [4]).length;
+    const illustrationContributions =
+        contributions(illustrations.map(tr =>
+            removeDuplicateEditionContributions(tr)).flat(1), [5]).length;
 
     return (
         <Fieldset legend={"Kirjat"} toggleable>

@@ -55,7 +55,7 @@ export const refreshAccessTokenFn = async () => {
     try {
         const response = await axios.post(baseURL + "refresh", data, { headers: header });
         localStorage.setItem("user", JSON.stringify(response.data));
-        console.log("token refreshed");
+        // console.log("token refreshed");
         return response;
     } catch (error) {
         console.log("error refreshing token: " + JSON.stringify(error, null, 2));
@@ -73,11 +73,11 @@ axios.interceptors.response.use(
         const originalConfig = error?.config;
         if (!originalConfig) return Promise.reject(error);
         if (error?.response?.status === 401 && error?.response?.data['msg'].includes("Token has expired")) {
-            console.log("token expired");
+            // console.log("token expired");
             const res = await refreshAccessTokenFn()
                 .then((response) => {
                     //localStorage.setItem("user", JSON.stringify(response.data));
-                    console.log("token refreshed");
+                    // console.log("token refreshed");
                     //delete originalConfig.headers.Authorization;
                     //originalConfig.headers.Authorization = "Bearer " + authHeader();
                     const auth = authHeader();

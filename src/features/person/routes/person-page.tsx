@@ -151,7 +151,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     }
 
     const hasBooks = (data: Person) => {
-        return (data.works.length > 0 || data.editions.length > 0 || data.edits.length > 0);
+        return (data.works.length > 0 || data.editions.length > 0 || data.edits.length > 0 || data.translations.length > 0);
     }
 
     const combineNames = (aliases: PersonBrief[], other_names: string) => {
@@ -174,9 +174,9 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         setEditVisible(false);
     }
 
-    // if (data !== undefined) {
-    //     console.log(data)
-    // }
+    if (data !== undefined) {
+        console.log(data)
+    }
 
     return (
         <main className="all-content" id="person-page">

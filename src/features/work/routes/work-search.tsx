@@ -121,7 +121,7 @@ export const WorkSearchPage = () => {
                 const response = await getApiContent(url, user);
                 setWorks(response.data);
             } catch (e) {
-                console.error(e);
+                console.log(e);
             }
             setLoading(false);
         }

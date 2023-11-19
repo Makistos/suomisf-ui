@@ -139,6 +139,7 @@ export const EditionForm = (props: EditionFormProps) => {
     }
     const retval: FormSubmitObject =
       { data: updatedData, changed: methods.formState.dirtyFields }
+    console.log(retval)
     setMessage("");
     setLoading(true);
     if (data.id != null) {

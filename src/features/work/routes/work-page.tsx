@@ -31,6 +31,7 @@ import { User } from "../../user";
 import { isDisabled } from '../../../components/forms/forms';
 import authHeader from "../../../services/auth-header";
 import { HttpStatusResponse } from "../../../services/user-service"
+import { WorkShortsPicker } from "../../short/components/shorts-picker";
 
 export interface WorkProps {
     work: Work,
@@ -50,6 +51,12 @@ interface ImageViewProps {
     edition: Edition
 }
 
+/**
+ * Renders an image view component.
+ *
+ * @param {ImageViewProps} edition - The edition object containing image data.
+ * @return {JSX.Element} The rendered image view component.
+ */
 const ImageView = ({ edition }: ImageViewProps) => {
     const editionId = edition.id;
     const imageUploadUrl = `editions/${editionId}/images/${edition.images[0].id}`;
@@ -83,6 +90,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     const [documentTitle, setDocumentTitle] = useDocumentTitle("");
     const [isEditVisible, setEditVisible] = useState(false);
     const [queryEnabled, setQueryEnabled] = useState(true);
+    const [isShortsFormVisible, setIsShortsFormVisible] = useState(false);
     const [formData, setFormData] = useState<Work | null>(null);
     const [editWork, setEditWork] = useState(true);
     const [isEditionFormVisible, setEditionFormVisible] = useState(false);
@@ -176,9 +184,9 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             label: 'Muokkaa novelleja',
             icon: 'fa-solid fa-list-ul',
             disabled: !(data !== undefined && data !== null &&
-                data.stories !== null &&
-                data.stories.length > 0),
+                data.work_type.id === 2),
             command: () => {
+                setIsShortsFormVisible(true);
 
             }
         },
@@ -303,6 +311,12 @@ export const WorkPage = ({ id }: WorkPageProps) => {
 
     const header = renderHeader();
 
+    /**
+     * Generates the panel template based on the given options.
+     *
+     * @param {any} options - The options for generating the panel template.
+     * @return {JSX.Element} - The panel template as a JSX element.
+     */
     const panelTemplate = (options: any) => {
         const toggleIcon = options.collapsed ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
         const className = `${options.className} justify-content-start`;
@@ -343,6 +357,14 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         setEditionFormVisible(false);
     }
 
+    const onShortsFormShow = () => {
+        setIsShortsFormVisible(true);
+    }
+
+    const onShortsFormHide = () => {
+        setIsShortsFormVisible(false);
+    }
+
     if (!data) return null;
 
     const anthology = isAnthology(data);
@@ -380,6 +402,15 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                     onHide={() => onEditionDialogHide()}
                 >
                     <EditionForm edition={null} work={data} onSubmitCallback={onEditionDialogHide} />
+                </Dialog>
+                <Dialog maximizable blockScroll
+                    className="w-full xl:x-6"
+                    header="Novellit" visible={isShortsFormVisible}
+                    onShow={() => onShortsFormShow()}
+                    onHide={() => onShortsFormHide()}
+                    closeOnEscape
+                >
+                    <WorkShortsPicker id={workId} onClose={() => setIsShortsFormVisible(false)} />
                 </Dialog>
                 {
                     isLoading ?

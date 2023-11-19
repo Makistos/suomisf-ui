@@ -15,7 +15,17 @@ import { EditionForm } from './edition-form';
 import { deleteApiContent } from '../../../services/user-service';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Contribution } from '../../../types/contribution';
+import { EditionShortsPicker } from '../../short/components/shorts-picker';
 
+/**
+ * Generates a list of contributors based on their contributions and role.
+ *
+ * @param contributions - An array of contributions.
+ * @param role - The role ID of the contributors to filter.
+ * @param description - The description to display before the contributor list.
+ * @param showDescription - Flag to indicate whether to show the description or not.
+ * @return The generated list of contributors.
+ */
 const contributorList = (contributions: Contribution[], role: number, description: String, showDescription: boolean) => {
     const contributors = contributions.filter(person => person.role.id === role);
 
@@ -39,7 +49,9 @@ const contributorList = (contributions: Contribution[], role: number, descriptio
 }
 
 export const EditionDetails = ({ edition, work, card }: EditionProps) => {
-    const [isEditVisible, setEditVisible] = useState(false);
+    const [editVisible, setEditVisible] = useState(false);
+    const [shortsFormVisible, setShortsFormVisible] = useState(false);
+
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [loading, setLoading] = useState(false);
     const toast = useRef<Toast>(null);
@@ -56,6 +68,16 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
         //setQueryEnabled(true);
         setLoading(false);
         setEditVisible(false);
+    }
+
+    const onShortsShow = () => {
+        setShortsFormVisible(true);
+        setQueryEnabled(false)
+    }
+
+    const onShortsHide = () => {
+        setShortsFormVisible(false);
+        setQueryEnabled(true)
     }
 
     const deleteEdition = async (id: number) => {
@@ -91,11 +113,18 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
     return (
         <div>
             <Dialog maximizable blockScroll className="w-full xl:w-6"
-                header="Painoksen muokkaus" visible={isEditVisible}
+                header="Painoksen muokkaus" visible={editVisible}
                 onShow={() => onDialogShow()}
                 onHide={() => onDialogHide()}
             >
                 <EditionForm edition={edition} work={work} onSubmitCallback={onDialogHide} />
+            </Dialog>
+            <Dialog maximizable blockScroll className='w-full xl:w-9'
+                header="Novellien muokkaus" visible={shortsFormVisible}
+                onShow={() => onShortsShow()}
+                onHide={() => onShortsHide()}
+            >
+                <EditionShortsPicker id={edition.id.toString()} onClose={() => setShortsFormVisible(false)} />
             </Dialog>
             {loading ?
                 <div className="progressbar"><ProgressSpinner /></div>
@@ -156,7 +185,10 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                         <Button icon="pi pi-trash" tooltip="Poista" className="p-button-text"
                             onClick={confirmDelete} />
                         {work && work.stories && work.stories.length > 0 && (
-                            <Button icon="fa fa-list-ul" tooltip="Novellit" className='p-button-text' />
+                            <Button icon="fa fa-list-ul" tooltip="Novellit"
+                                className='p-button-text'
+                                onClick={() => onShortsShow()}
+                            />
                         )}
                     </div>
                 </>

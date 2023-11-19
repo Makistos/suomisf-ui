@@ -33,12 +33,21 @@ interface ShortsListProps {
     enableQueries?: (state: boolean) => void
 }
 
+/**
+ * A component for showing a list of shorts. Shorts include short stories,
+ * articles etc.
+ *
+ * @param shorts - The list of shorts to display.
+ * @param person - The person associated with the shorts.
+ * @param groupAuthors - Whether to group the shorts by authors.
+ * @param listPublications - Whether to list the publications.
+ * @param anthology - Whether the shorts are part of an anthology.
+ * @param enableQueries - Whether to enable queries.
+ * @return {JSX.Element} The rendered component.
+ */
 export const ShortsList = ({ shorts, person, groupAuthors, listPublications,
-    anthology, enableQueries }: ShortsListProps) => {
-    /**
-     * A component for showing a list of shorts. Shorts include short stories,
-     * articles etc.
-     */
+    anthology, enableQueries }: ShortsListProps): JSX.Element => {
+
     const [orderField, setOrderField] = useState("Year");
     const [groupedShorts, setGroupedShorts]: [Record<string, Short[]>,
         (groupedShorts: Record<string, Short[]>) => void] = useState({});
@@ -51,7 +60,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications,
     const sortGroups = (a: [string, Short[]], b: [string, Short[]]) => {
         if (person) {
             if (a[0].localeCompare(person.name) === 0) return -1;
-            if (a[0].localeCompare(person.name) === 0) return 1;
+            if (b[0].localeCompare(person.name) === 0) return 1;
         }
         return (a[0].localeCompare(b[0]));
     }
@@ -95,7 +104,15 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications,
                 </div>
             </div>
             <div className="col">
-                {Object.entries(groupedShorts)
+                {shorts.map((short: Short) => (
+                    <ShortSummary short={short} key={short.id}
+                        skipAuthors={skipAuthors}
+                        {...(listPublications ? { listPublications } : {})}
+                        enableQueries={enableQueries}
+                    />
+                ))
+                }
+                {/* {Object.entries(groupedShorts)
                     .sort(sortGroups)
                     .map(([group, shortList]) => {
                         return (
@@ -116,7 +133,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications,
                             </div>
                         );
                     })
-                }
+                } */}
             </div>
         </div>
     )

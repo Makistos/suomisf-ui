@@ -9,5 +9,10 @@ export const makeBriefContributor = (contributions: Contribution[]): Contributio
       'description': contribution.description || '',
     };
   };
+  if (contributions.length === 0) return [{
+    'person': { id: 0, name: '', alt_name: '', fullname: '' },
+    'role': { id: 0, name: '' },
+    'description': ''
+  }];
   return contributions.map(simplifyContribution);
 };

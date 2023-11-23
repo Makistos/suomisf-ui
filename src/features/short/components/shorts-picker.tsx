@@ -17,10 +17,12 @@ import { indexOf } from "lodash";
 import { useAsyncError } from "react-router-dom";
 import { isAbsolute } from "path";
 import { isAdmin } from "../../user";
+import { ShortsForm } from "./shorts-form";
+import { useQueryClient } from "@tanstack/react-query";
 
 type PickerProps = {
   id: string,
-  onClose: () => void
+  onClose: () => void,
 }
 
 export const EditionShortsPicker = ({ id }: PickerProps) => {
@@ -35,7 +37,7 @@ export const EditionShortsPicker = ({ id }: PickerProps) => {
     if (id) {
       getEditionShorts();
     }
-  }, [id])
+  }, [])
 
   const saveShortsToEdition = (shorts: Short[]): number => {
     return 200
@@ -52,22 +54,24 @@ export const EditionShortsPicker = ({ id }: PickerProps) => {
 export const WorkShortsPicker = ({ id, onClose }: PickerProps) => {
   const user = getCurrenUser();
   const [shorts, setShorts] = useState<Short[]>([]);
+  const isDirty = false;
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const getWorkShorts = async () => {
       const response = await getApiContent('works/shorts/' + id.toString(), user);
       setShorts(response.data);
     }
-    if (id) {
+    if (id && !isDirty) {
       getWorkShorts();
     }
-  }, [id])
+  }, [])
 
   const saveShortsToWork = (shorts: Short[]): number => {
     const ids = shorts.map(short => short.id)
     const data = { work_id: id, shorts: ids }
     const response = putApiContent('works/shorts', data, user);
-    console.log(response)
+    // console.log(response)
     onClose();
     return 200
   }
@@ -102,6 +106,7 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
   // People matching search query
   const [filteredPeople, filterPeople] = useFilterPeople();
   const [hasChanged, setHasChanged] = useState(false);
+  const [isShortFormVisible, setIsShortFormVisible] = useState(false);
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
@@ -159,16 +164,16 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
         <div className="flex-1 flex-column">
           <b>{item.title}</b>
         </div>
-        {item.orig_title && item.orig_title != item.title &&
-          <div className="flex-1 flex-column">
-            {item.orig_title}
-          </div>
-        }
-        {item.pubyear &&
-          <div className="flex-1 flex-column">
-            {item.pubyear}
-          </div>
-        }
+        <div className="flex-1 flex-column">
+          {item.orig_title && item.orig_title != item.title &&
+            item.orig_title
+          }
+        </div>
+        <div className="flex-1 flex-column">
+          {item.pubyear &&
+            item.pubyear
+          }
+        </div>
         <div className="flex-1 flex-column">
           <Button type="button" icon="pi pi-times"
             onClick={() => removeFromSelected(item.id)}>
@@ -220,17 +225,31 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
 
   }
 
+  const onNewShort = async (id: string, visible: boolean) => {
+    const response: Short = await getApiContent('shorts/' + id, user).then(response =>
+      response.data)
+    // const short = JSON.parse(response);
+    const newShorts: Short[] = selectedItemShorts;
+    newShorts.push(response);
+    setSelectedItemShorts(newShorts);
+    setHasChanged(true);
+    setIsShortFormVisible(visible);
+  }
+
   const onSave = (shorts: Short[]) => {
     saveCallback(shorts);
   }
+
+  console.log(selectedItemShorts)
 
   return (
     <div className="card mt-3">
       <Dialog maximizable blockScroll
         onShow={() => onShortDialogShow()}
         onHide={() => onShortDialogHide()}
+        visible={isShortFormVisible}
       >
-
+        <ShortsForm short={null} onSubmitCallback={onNewShort} />
       </Dialog>
       <div className="grid">
         <div className="flex flex-stretch field col-12 align-items-center justify-content-center">
@@ -271,7 +290,7 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
             </span>
           </div>
           <div className="grid col-2 align-items-center justify-content-end">
-            <Button>
+            <Button onClick={() => setIsShortFormVisible(true)}>
               Uusi
             </Button>
           </div>

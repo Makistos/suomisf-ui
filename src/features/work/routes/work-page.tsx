@@ -363,6 +363,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
 
     const onShortsFormHide = () => {
         setIsShortsFormVisible(false);
+        queryClient.invalidateQueries({ queryKey: ["work"] });
     }
 
     if (!data) return null;
@@ -410,7 +411,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                     onHide={() => onShortsFormHide()}
                     closeOnEscape
                 >
-                    <WorkShortsPicker id={workId} onClose={() => setIsShortsFormVisible(false)} />
+                    <WorkShortsPicker id={workId} onClose={() => onShortsFormHide()} />
                 </Dialog>
                 {
                     isLoading ?

@@ -94,7 +94,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications,
 
     return (
         <div className="grid">
-            <div className="grid col-12 justify-content-end">
+            {/* <div className="grid col-12 justify-content-end">
                 <div className="grid p-1">
                     <Dropdown value={orderField} options={sortOptions}
                         onChange={(e) => setOrderField(e.value)}
@@ -102,7 +102,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications,
                         className="small"
                     />
                 </div>
-            </div>
+            </div> */}
             <div className="col">
                 {shorts.map((short: Short) => (
                     <ShortSummary short={short} key={short.id}

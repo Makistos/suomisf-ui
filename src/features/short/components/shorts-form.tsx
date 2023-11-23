@@ -30,8 +30,8 @@ import { ProgressBar } from 'primereact/progressbar';
 // type ShortFormType = Pick<Short, "id">
 
 interface ShortFormProps {
-    short: Short,
-    onSubmitCallback: ((state: boolean) => void)
+    short: Short | null,
+    onSubmitCallback: ((id: string, state: boolean) => void)
 }
 
 type FormObjectProps = {
@@ -61,7 +61,10 @@ export const ShortsForm = (props: ShortFormProps) => {
         pubyear: "",
         type: null,
         genres: [],
-        contributors: [],
+        contributors: [{
+            'person': { 'id': 0, 'name': '', 'alt_name': '', 'fullname': '' },
+            'role': { 'id': 0, 'name': '' }
+        }],
         tags: []
     }
     const formData = props.short ? convToForm(props.short) : defaultValues;
@@ -113,7 +116,8 @@ export const ShortsForm = (props: ShortFormProps) => {
     const { mutate, error } = useMutation({
         mutationFn: (values: ShortForm) => updateShort(values),
         onSuccess: (data: HttpStatusResponse, variables) => {
-            props.onSubmitCallback(false);
+            const id = data.response;
+            props.onSubmitCallback(id, false);
 
         },
         onError: (error: any) => {

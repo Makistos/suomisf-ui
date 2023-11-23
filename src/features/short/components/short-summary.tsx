@@ -123,13 +123,16 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
     //     console.log(short)
     // }
 
+    const saveShort = (id: string, visible: boolean) => {
+        setEditVisible(visible);
+    }
     return (
         <div>
             <Dialog maximizable blockScroll
                 header="Novellin muokkaus" visible={isEditVisible}
                 onShow={() => onDialogShow()}
                 onHide={() => onDialogHide()} >
-                <ShortsForm short={orderContributions(short)} onSubmitCallback={setEditVisible} />
+                <ShortsForm short={orderContributions(short)} onSubmitCallback={saveShort} />
             </Dialog>
             {short ? (
                 <div key={short.id}>
@@ -143,7 +146,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                             </b>
                         }
                         <b>{short.title}</b>
-                        {short.orig_title !== short.title && (
+                        {short.orig_title && short.orig_title !== short.title && (
                             <> ({short.orig_title})</>
                         )}
                         {short.pubyear && (

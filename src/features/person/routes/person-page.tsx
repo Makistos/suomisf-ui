@@ -174,9 +174,9 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         setEditVisible(false);
     }
 
-    if (data !== undefined) {
-        console.log(data)
-    }
+    // if (data !== undefined) {
+    //     console.log(data)
+    // }
 
     return (
         <main className="all-content" id="person-page">

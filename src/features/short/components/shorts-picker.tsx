@@ -249,7 +249,10 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
         onHide={() => onShortDialogHide()}
         visible={isShortFormVisible}
       >
-        <ShortsForm short={null} onSubmitCallback={onNewShort} />
+        <ShortsForm short={null}
+          onSubmitCallback={onNewShort}
+          onClose={() => setIsShortFormVisible(false)}
+        />
       </Dialog>
       <div className="grid">
         <div className="flex flex-stretch field col-12 align-items-center justify-content-center">
@@ -315,15 +318,3 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
     </div>
   )
 }
-
-// const ShortsOrderList = ({ source }: ShortsPickerProps) => {
-//   const [shorts, setShorts] = useState<Short[]>([]);
-
-//   useEffect(() => {
-//     setShorts(source)
-//   }, [source])
-
-//   return (
-//     <OrderList value={source}
-//   )
-// }

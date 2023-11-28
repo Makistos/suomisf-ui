@@ -132,7 +132,10 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                 header="Novellin muokkaus" visible={isEditVisible}
                 onShow={() => onDialogShow()}
                 onHide={() => onDialogHide()} >
-                <ShortsForm short={orderContributions(short)} onSubmitCallback={saveShort} />
+                <ShortsForm short={orderContributions(short)}
+                    onSubmitCallback={saveShort}
+                    onClose={onDialogHide}
+                />
             </Dialog>
             {short ? (
                 <div key={short.id}>

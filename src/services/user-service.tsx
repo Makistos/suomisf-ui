@@ -145,7 +145,7 @@ export const deleteApiContent = async (url: string): Promise<HttpStatusResponse>
         }
     } catch (err: any) {
         if (err.response) {
-            error_msg = JSON.stringify(err.response, null, 2);
+            error_msg = err.response["data"]["msg"];
             status = err.response.status;
             console.log("server error: " + error_msg);
         } else if (err.request) {
@@ -158,11 +158,10 @@ export const deleteApiContent = async (url: string): Promise<HttpStatusResponse>
         }
     }
     return new Promise<HttpStatusResponse>((resolve, reject) => {
-        const retval: HttpStatusResponse = {
+        resolve({
             response: error_msg,
             status: status
-        }
-        reject(retval);
+        })
     })
 }
 

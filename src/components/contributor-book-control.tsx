@@ -163,8 +163,6 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
         return retval
     }
 
-    console.log(person)
-
     // Find contributions for different types
     const authorContributions =
         contributions(works.map(work =>

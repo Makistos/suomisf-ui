@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { Link } from "react-router-dom";
 
 import { Button } from 'primereact/button';
@@ -16,6 +16,8 @@ import { deleteApiContent } from '../../../services/user-service';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Contribution } from '../../../types/contribution';
 import { EditionShortsPicker } from '../../short/components/shorts-picker';
+import { isDisabled } from '../../../components/forms/forms';
+import { getCurrenUser } from '../../../services/auth-service';
 
 /**
  * Generates a list of contributors based on their contributions and role.
@@ -49,6 +51,7 @@ const contributorList = (contributions: Contribution[], role: number, descriptio
 }
 
 export const EditionDetails = ({ edition, work, card }: EditionProps) => {
+    const user = useMemo(() => { return getCurrenUser() }, []);
     const [editVisible, setEditVisible] = useState(false);
     const [shortsFormVisible, setShortsFormVisible] = useState(false);
 
@@ -82,14 +85,28 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
 
     const deleteEdition = async (id: number) => {
         setLoading(true);
-        //setQueryEnabled(false);
-        if (id != null) {
-            await deleteApiContent("editions/" + id);
+        if (id !== null) {
+            await deleteApiContent("editions/" + id).then(
+                result => {
+                    if (result.status === 200) {
+                        toast.current?.show(
+                            {
+                                severity: 'success',
+                                summary: 'Painos poistettu'
+                            });
+                        setLoading(false);
+                    } else {
+                        toast.current?.show(
+                            {
+                                severity: 'error',
+                                summary: 'Painosta ei poistettu',
+                                detail: result.response,
+                                sticky: true
+                            });
+                        setLoading(false);
+                    }
+                });
         }
-        queryClient.invalidateQueries();
-        //setQueryEnabled(true);
-        setLoading(false);
-        toast.current?.show({ severity: 'success', summary: 'Painos poistettu' });
     }
 
     const confirmDelete = (event: any) => {
@@ -100,6 +117,8 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
             acceptClassName: "p-button-danger",
             accept: () => {
                 deleteEdition(edition.id);
+                queryClient.invalidateQueries();
+                setLoading(false);
             },
             reject: () => {
                 toast.current?.show({
@@ -139,19 +158,6 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                         <><br /><Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link> </>)}
                     {edition.pubyear + "."}
                     {contributorList(edition.contributions, 2, "Suom.", false)}
-                    {/* {edition.contributions && edition.contributions.length > 0 &&
-                        edition.contributions.filter(person => person.role.id === 2).length > 0 &&
-                        (
-                            <><br /><>Suom. </>
-                                <LinkList path="people"
-                                    separator=" &amp; "
-                                    items={edition.contributions.filter(
-                                        contrib => contrib.role.id === 2).map((item) => ({
-                                            id: item.person['id'],
-                                            name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
-                                        }))} />.
-                            </>
-                        )} */}
                     {edition.pubseries && (<>
                         <br /><Link to={`/pubseries/${edition.pubseries.id}`}>{edition.pubseries.name}</Link>
                         {edition.pubseriesnum && (<> {edition.pubseriesnum}</>)}
@@ -183,7 +189,8 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                     <div>
                         <Button icon="pi pi-pencil" tooltip="Muokkaa" className="p-button-text" onClick={() => onDialogShow()} />
                         <Button icon="pi pi-trash" tooltip="Poista" className="p-button-text"
-                            onClick={confirmDelete} />
+                            onClick={confirmDelete}
+                            disabled={isDisabled(user, loading)} />
                         {work && work.stories && work.stories.length > 0 && (
                             <Button icon="fa fa-list-ul" tooltip="Novellit"
                                 className='p-button-text'

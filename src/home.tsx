@@ -39,6 +39,8 @@ export const Home = () => {
     getStats();
   }, [user])
 
+  console.log(stats)
+
   return (
     <div className="grid mt-4 p-4">
       <div className="col-12 lg:col-8">
@@ -65,26 +67,38 @@ export const Home = () => {
                 {stats && stats.latest && stats.latest.map((edition) => (
                   <div className="col-3 justify-content-between" key={edition.id}>
                     <div className="col-12" >
-                      {edition.images.length > 0 && (
-                        <div>
-                          <Tooltip target={".image-" + edition.id} position="top" mouseTrack mouseTrackLeft={10}>
-                            <div className="flex align-items-center">
-                              <ImageTooltip edition={edition} />
-                            </div>
-                          </Tooltip>
-                          <Link to={`/works/${edition.work[0].id}`}>
-                            <img alt={edition.title} className={"image-" + edition.id} src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src}
+                      {/* {edition.images.length > 0 && ( */}
+                      <div>
+                        <Tooltip target={".image-" + edition.id} position="top" mouseTrack mouseTrackLeft={10}>
+                          <div className="flex align-items-center">
+                            <ImageTooltip edition={edition} />
+                          </div>
+                        </Tooltip>
+
+                        <Link to={`/works/${edition.work[0].id}`}>
+                          {edition.images.length > 0 && edition.images[0].image_src !== undefined && edition.images[0].image_src !== null &&
+                            edition.images[0].image_src !== "" ?
+                            <><img alt={edition.title} className={"image-" + edition.id} src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src}
                               height={String(edition.size ? Number(edition.size) * 10 : 200)} />
-                          </Link>
-                        </div>
-                      )}
+                            </>
+                            :
+                            <div>
+                              {edition.work[0].author_str}:<br />
+                              {edition.title}
+                            </div>
+                          }
+                        </Link>
+                      </div>
+                      {/* )} */}
                     </div>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-          <div className="grid justify-content-end p-1">Lisää...</div>
+          <div className="grid justify-content-end p-1">
+            <Link to={`/latest`}>Lisää...</Link>
+          </div>
         </div>
         {stats && (
           <div className="stats">

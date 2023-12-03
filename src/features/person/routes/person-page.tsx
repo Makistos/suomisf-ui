@@ -151,7 +151,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     }
 
     const hasBooks = (data: Person) => {
-        return (data.works.length > 0 || data.editions.length > 0 || data.edits.length > 0 || data.translations.length > 0);
+        return (data.works.length > 0 || data.editions.length > 0);
     }
 
     const combineNames = (aliases: PersonBrief[], other_names: string) => {

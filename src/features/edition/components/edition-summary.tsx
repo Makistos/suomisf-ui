@@ -24,9 +24,9 @@ export const EditionSummary = ({ edition, person, showPerson, showVersion }: Edi
     return (
         <div>
             {edition.work[0] && (showPerson || (person && person === authorStr(edition))) && <b>{authorStr(edition)}: </b>}
-            <Link to={`/works/${edition.work[0].id}`}>
-                {edition.title}</Link>
-            {edition.work[0].title !== edition.work[0].orig_title && (
+            {edition.work[0] && <Link to={`/works/${edition.work[0].id}`}>
+                {edition.title}</Link>}
+            {edition.work[0] && edition.work[0].title !== edition.work[0].orig_title && (
                 <> ({edition.work[0].orig_title}, {edition.work[0].pubyear})</>
             )}
             {showVersion && notFirstEdition(edition) && (
@@ -39,7 +39,7 @@ export const EditionSummary = ({ edition, person, showPerson, showVersion }: Edi
                 <Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link>
             )}</>
             <> {edition.pubyear}. </>
-            <GenreList genres={edition.work[0].genres} />
+            {edition.work[0] && <GenreList genres={edition.work[0].genres} />}
         </div>
     )
 }

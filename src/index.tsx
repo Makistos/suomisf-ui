@@ -26,6 +26,7 @@ import { SFTag } from './features/tag/components/sftag';
 import { SFTags } from './features/tag/routes/sftags-page';
 import { Awards } from './features/award/routes/awards-page'
 import { Changes } from './features/changes/routes/changes-page';
+import { LatestAdditions } from './features/latest/routes/latest-additions';
 
 // console.log(process.env)
 
@@ -58,6 +59,7 @@ root.render(
         <Route path="tags/:tagid" element={<SFTag />} />
         <Route path="/login" element={<LoginView />} />
         <Route path="/changes" element={<Changes />} />
+        <Route path="/latest" element={<LatestAdditions />} />
         <Route path="*"
           element={
             <main style={{ padding: "3rem" }}>

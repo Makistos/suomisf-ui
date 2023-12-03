@@ -14,13 +14,16 @@ import { Work } from "../types";
 type WorksProp = {
     works: Work[],
     personName?: string,
-    collaborationsLast?: boolean
+    collaborationsLast?: boolean,
+    sort?: boolean,
+    details?: string
 }
 
-export const WorkList = ({ works, personName = "", collaborationsLast = false }: WorksProp) => {
+export const WorkList = ({ works, personName = "", collaborationsLast = false,
+    sort = true, details = "condensed" }: WorksProp) => {
     const [groupedWorks, setGroupedWorks]: [Record<string, Work[]>,
         (works: Record<string, Work[]>) => void] = useState({});
-    const [detailLevel, setDetailLevel] = useState("condensed");
+    const [detailLevel, setDetailLevel] = useState(details);
     const [orderField, setOrderField] = useState("Title");
     const [workView, setWorkView] = useState("Lista");
     const [showNonSf, setShowNonSf] = useState<boolean>(false);
@@ -55,6 +58,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
     const compareAuthors = (a: [string, Work[]], b: [string, Work[]]) => {
         // Special compare needed because we want the works by the person (if given)
         // to come first.
+        if (sort === false) return 1;
         const aName = a[0].replace(' (toim.)', '');
         const bName = b[0].replace(' (toim.)', '');
         // Always place books written with real name first
@@ -74,6 +78,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
     }
 
     const compareWorks = (a: Work, b: Work) => {
+        if (sort === false) return 1;
         if (orderField === 'Title') {
             if (a.title.toUpperCase() < b.title.toUpperCase()) return -1;
             if (a.title.toUpperCase() > b.title.toUpperCase()) return 1;
@@ -117,13 +122,13 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false }:
                             itemTemplate={detailTemplate}
                         />
                     </div>
-                    <div className="p-1">
+                    {/* <div className="p-1">
                         <Dropdown value={orderField} options={sortOptions}
                             onChange={(e) => setOrderField(e.value)}
                             optionLabel="name" optionValue="code"
                             className="small"
                         />
-                    </div>
+                    </div> */}
                 </div>
                 <div className="grid col">
                     {

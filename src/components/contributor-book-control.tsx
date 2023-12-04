@@ -109,7 +109,7 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
     }
 
     useEffect(() => {
-        setWorks(person.works);
+        setWorks(person.works.filter(work => isNonSf(work.genres)));
         const editions = edition_contributions(person.editions)
 
         const newTr = editions.filter(edition =>

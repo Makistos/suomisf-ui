@@ -87,9 +87,25 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
         return retval;
     }
 
+    const removeDuplicateContributions = (contributions: Contribution[]) => {
+        const uniqueIds: number[] = [];
+        const uniqueContributions = contributions
+            .sort((a, b) => a.role.id - b.role.id)
+            .filter(contrib => {
+                const isDuplicate = uniqueIds.includes(contrib.person.id);
+                if (!isDuplicate) {
+                    uniqueIds.push(contrib.person.id);
+                    return true;
+                }
+                return false;
+            })
+        return uniqueContributions
+    }
+
     const translators = (contributors: Contribution[]) => {
         if (!contributors) return (<></>)
-        const translators = contributors.filter(contributor => contributor.role.name === 'Kääntäjä');
+        const translators = removeDuplicateContributions(contributors.filter(
+            contributor => contributor.role.name === 'Kääntäjä'));
         if (translators.length === 0) return (<></>)
         return (
             <>
@@ -144,7 +160,10 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                             <b>
                                 <LinkList
                                     path="people"
-                                    items={PickLinks(short.contributors.filter(contributor => contributor.role.name === 'Kirjoittaja'))}
+                                    items={PickLinks(
+                                        removeDuplicateContributions(
+                                            short.contributors.filter(
+                                                contributor => contributor.role.name === 'Kirjoittaja')))}
                                 />:<> </>
                             </b>
                         }

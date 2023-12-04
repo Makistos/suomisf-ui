@@ -13,13 +13,24 @@ import { Genre } from "../features/genre";
 import { Edition } from "../features/edition";
 import { Contribution, ContributionType } from "../types/contribution";
 
+/**
+ * Represents the props for the ContributorBookControl component.
+ */
 interface CBCProps {
+    /**
+     * The person object representing the contributor.
+     */
     person: Person,
+    /**
+     * A boolean value indicating whether to view SF or non-SF works.
+     */
     viewNonSf: boolean,
+    /**
+     * An optional boolean value indicating whether collaborations should be
+     * displayed last.
+     */
     collaborationsLast?: boolean
 }
-
-
 
 export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast = false }: CBCProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
@@ -47,10 +58,8 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
      * @returns True - is non-SF, false - is SF.
      */
     const isNonSf = (genres: Genre[]) => {
-        let retval;
-        retval = (genres.length === 0 || genres.filter(genre =>
+        return (genres.length === 0 || genres.filter(genre =>
             (genre.abbr !== 'kok') && (genre.abbr !== 'eiSF')).length > 0) ? false : true;
-        return retval;
     }
 
     /**
@@ -109,7 +118,8 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
     }
 
     useEffect(() => {
-        setWorks(person.works.filter(work => isNonSf(work.genres)));
+        setWorks(person.works.filter(
+            work => viewNonSf ? isNonSf(work.genres) : !isNonSf(work.genres)));
         const editions = edition_contributions(person.editions)
 
         const newTr = editions.filter(edition =>

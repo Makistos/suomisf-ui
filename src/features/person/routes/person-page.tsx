@@ -256,7 +256,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                 </div>
                                 <div className="col-12">
                                     {hasBooks(data) && (
-                                        <ContributorBookControl viewNonSf={showNonSf} person={data}
+                                        <ContributorBookControl viewNonSf={false} person={data}
                                             collaborationsLast={true}></ContributorBookControl>
                                     )}
                                     {(data.stories.length > 0 || data.magazine_stories.length > 0) &&

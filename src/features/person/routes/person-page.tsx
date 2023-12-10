@@ -239,6 +239,15 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                             </h3>
                                         </div>
                                     }
+                                    {(data.real_names && data.real_names.length > 0) &&
+                                        <div className="grid col-12 mt-0 p-2 justify-content-center">
+                                            <h3 className="grid mb-5">
+                                                <>Oik.{' '}
+                                                    {data.real_names.map(name => name.alt_name).join(', ')}
+                                                    .</>
+                                            </h3>
+                                        </div>
+                                    }
                                 </div>
                                 <div className="col-12 mt-2">
                                     <GenreGroup genres={getGenres()} showOneCount></GenreGroup>

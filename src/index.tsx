@@ -25,6 +25,7 @@ import { WorkSearchPage } from './features/work/routes/work-search';
 import { SFTag } from './features/tag/components/sftag';
 import { SFTags } from './features/tag/routes/sftags-page';
 import { Awards } from './features/award/routes/awards-page'
+import { AwardPage } from './features/award/routes/award-page';
 import { Changes } from './features/changes/routes/changes-page';
 import { LatestAdditions } from './features/latest/routes/latest-additions';
 
@@ -40,6 +41,7 @@ root.render(
       <Route path="/" element={<App />}>
         <Route index element={<Home />} />
         <Route path="awards" element={<Awards />} />
+        <Route path="awards/:itemId" element={<AwardPage id={null} />} />
         <Route path="bookindex" element={<WorkSearchPage />} />
         <Route path="shortstoryindex" element={<ShortSearchPage />} />
         <Route path="people" element={<PeoplePage />} />

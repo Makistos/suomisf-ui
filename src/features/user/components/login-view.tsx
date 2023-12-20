@@ -4,9 +4,10 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { Toast } from "primereact/toast";
 import { classNames } from "primereact/utils";
 
-import { login } from "../../../services/auth-service";
+import { getCurrenUser, login } from "../../../services/auth-service";
 
 type FormData = {
     username: string,
@@ -24,7 +25,6 @@ export const LoginView = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
 
-
     const onSubmit: SubmitHandler<FormData> = (data) => {
 
         setMessage("");
@@ -32,17 +32,10 @@ export const LoginView = () => {
 
         login(data.username, data.password).then(
             () => {
-                //history.push("/profile");
                 window.location.reload();
             },
             (error) => {
-                const resMessage =
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-
+                const resMessage = error.response.data.msg;
                 setLoading(false);
                 setMessage(resMessage);
             }

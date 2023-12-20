@@ -1,7 +1,4 @@
-import React, { useRef } from "react";
-import axios, { AxiosError, AxiosResponse } from "axios";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-import { Toast } from "primereact/toast";
+import axios from "axios";
 
 import { User } from "../features/user/types";
 import authHeader, { refreshHeader } from "./auth-header";

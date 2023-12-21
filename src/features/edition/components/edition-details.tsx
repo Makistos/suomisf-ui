@@ -40,8 +40,10 @@ const contributorList = (contributions: Contribution[], role: number, descriptio
                             separator=" &amp; "
                             items={contributors.map((item) => ({
                                 id: item.person['id'],
-                                name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name'],
-                                description: (item.description === null || item.description === "") ? item.role.name.toLocaleLowerCase() : item.description?.toLocaleLowerCase()
+                                name: item.person['alt_name']
+                                    ? item.person['alt_name'] : item.person['name'],
+                                description: (item.description && item.description !== null)
+                                    ? item.description : ""
                             }))} />.
                     </>
                 )
@@ -157,7 +159,7 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                     {edition.publisher && (
                         <><br /><Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link> </>)}
                     {edition.pubyear + "."}
-                    {contributorList(edition.contributions, 2, "Suom.", false)}
+                    {contributorList(edition.contributions, 2, "Suom.", true)}
                     {edition.pubseries && (<>
                         <br /><Link to={`/pubseries/${edition.pubseries.id}`}>{edition.pubseries.name}</Link>
                         {edition.pubseriesnum && (<> {edition.pubseriesnum}</>)}

@@ -130,7 +130,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
                         />
                     </div> */}
                 </div>
-                <div className="grid col">
+                <div className="grid col-12">
                     {
                         Object.entries(groupedWorks)
                             .sort(compareAuthors)

@@ -13,6 +13,7 @@ export interface Person {
     id: number;
     name: string;
     aliases: PersonBrief[],
+    real_names: PersonBrief[],
     alt_name: string;
     fullname: string;
     other_names: string;

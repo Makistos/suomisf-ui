@@ -5,13 +5,13 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 
 import { LinkList } from "../../../components/link-list";
-import { Person } from "../../person";
 import { Edition } from "../../edition";
 import { Issue } from "../../issue";
 import { GenreList } from "../../genre";
 import { ShortsForm } from './shorts-form';
 import { Contribution } from '../../../types/contribution';
 import { Short } from '../types';
+import { removeDuplicateContributions } from '../../../utils';
 
 interface ShortProps {
     /**
@@ -85,21 +85,6 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
             </span>
         ))
         return retval;
-    }
-
-    const removeDuplicateContributions = (contributions: Contribution[]) => {
-        const uniqueIds: number[] = [];
-        const uniqueContributions = contributions
-            .sort((a, b) => a.role.id - b.role.id)
-            .filter(contrib => {
-                const isDuplicate = uniqueIds.includes(contrib.person.id);
-                if (!isDuplicate) {
-                    uniqueIds.push(contrib.person.id);
-                    return true;
-                }
-                return false;
-            })
-        return uniqueContributions
     }
 
     const translators = (contributors: Contribution[]) => {

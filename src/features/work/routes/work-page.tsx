@@ -346,6 +346,14 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         setEditVisible(false);
     }
 
+    const workFormCallback = (status: boolean, message: string) => {
+        onDialogHide();
+        if (status) {
+            toastRef.current?.show({ severity: 'success', summary: 'Tallentaminen onnistui', detail: 'Tietojen päivitys onnistui', life: 4000 });
+        } else {
+            toastRef.current?.show({ severity: 'error', summary: 'Tietojen tallentaminen epäonnistui', detail: message, life: 4000 });
+        }
+    }
     const onEditionDialogShow = () => {
         setEditionFormVisible(true);
         setQueryEnabled(false)
@@ -388,13 +396,14 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                     />
                 </div>
                 {/* ) */}
+                <Toast ref={toastRef} />
                 <Dialog maximizable blockScroll
                     className="w-full xl:w-6"
                     header="Teoksen muokkaus" visible={isEditVisible}
                     onShow={() => onDialogShow()}
                     onHide={() => onDialogHide()}
                 >
-                    <WorkForm data={!formData || !editWork ? null : formData} onSubmitCallback={onDialogHide} />
+                    <WorkForm data={!formData || !editWork ? null : formData} onSubmitCallback={workFormCallback} />
                 </Dialog>
                 <Dialog maximizable blockScroll
                     className="w-full xl:w-6"

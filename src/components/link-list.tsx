@@ -13,7 +13,7 @@ interface LinkListProps {
 }
 
 const description = (item: LinkItem, show: boolean) => {
-    if (show && item.description) {
+    if (show && item.description && item.description.length > 0) {
         return " (" + item.description + ")";
     }
     return "";

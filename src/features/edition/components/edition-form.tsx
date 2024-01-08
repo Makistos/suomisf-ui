@@ -326,6 +326,7 @@ const FormObject = ({ onSubmit, methods, disabled, bindings }: FormObjectProps) 
               <ContributorField
                 id={"contributors"}
                 disabled={disabled}
+                contributionTarget='edition'
               />
             </div>
 

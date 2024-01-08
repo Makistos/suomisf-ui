@@ -11,7 +11,7 @@ import { Contributor } from "../../types/contributor";
 import { getApiContent } from "../../services/user-service";
 import { getCurrenUser, register } from "../../services/auth-service";
 import { pickProperties } from "./forms";
-import { Contribution, ContributionSimple } from "../../types/contribution";
+import { Contribution, ContributionSimple, ContributionType } from "../../types/contribution";
 import { isAdmin } from '../../features/user';
 import { WorkFormData } from '../../features/work/types';
 import { Contributable } from "../../types/generic";
@@ -22,6 +22,7 @@ interface ContributorFieldProps {
     // control: Control<T>,
     // register: UseFormRegister<T>
     defValues?: Contribution[],
+    contributionTarget: string,
     disabled: boolean
 }
 // interface ContributorFieldProps {
@@ -51,7 +52,8 @@ export const emptyContributor: Contribution = {
     },
 }
 
-export const ContributorField = ({ id, defValues, disabled }: ContributorFieldProps) => {
+export const ContributorField = (
+    { id, defValues, disabled, contributionTarget = '' }: ContributorFieldProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
 
     const { control } = useFormContext();
@@ -70,8 +72,10 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
     // }
     interface ContributorRowProps {
         index: number,
+        key: string,
+        contributionTarget: string
     }
-    const ContributorRow = ({ index }: ContributorRowProps) => {
+    const ContributorRow = ({ index, contributionTarget }: ContributorRowProps) => {
         //const user = useMemo(() => { return getCurrenUser() }, []);
         const keyValue = `{contributors.${index}}`;
         const [filteredPeople, setFilteredPeople] = useState<any>([]);
@@ -82,7 +86,7 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
 
         useEffect(() => {
             async function getRoles() {
-                const url = "roles/";
+                const url = "roles/" + contributionTarget;
                 const response = await getApiContent(url, user);
                 setRoleList(response.data);
             }
@@ -241,7 +245,8 @@ export const ContributorField = ({ id, defValues, disabled }: ContributorFieldPr
                 <label htmlFor="contributors" className="form-field-header">Tekijät</label>
                 <div id={id} className="py-0" key={id}>
                     {fields && fields.map((_, index) =>
-                        <ContributorRow index={index} key={index} />
+                        <ContributorRow index={index} key={index.toString()}
+                            contributionTarget={contributionTarget} />
                     )}
                 </div>
             </span>

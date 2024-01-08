@@ -8,7 +8,7 @@ import { LinkList } from "../../../components/link-list";
 import { AwardPanel } from "../../award";
 import { LinkPanel } from "../../../components/link-panel";
 import { WorkProps } from "../routes";
-import { Contribution, ContributorRole } from '../../../types/contribution';
+import { Contribution } from '../../../types/contribution';
 
 export const WorkDetails = ({ work }: WorkProps) => {
 

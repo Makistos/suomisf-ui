@@ -1,6 +1,14 @@
+/**
+ * Control that allows user to pick shorts for an edition or work.
+ *
+ * Contains a control for picking author and a when selected, fills another
+ * with shorts written by that author.
+ *
+ * Main control shows the shorts for the selected edition or work. This list
+ * can be edited by adding or removing items and by reordering them.
+ */
 import { useEffect, useState } from "react";
 
-import { PickList } from 'primereact/picklist'
 import { AutoComplete } from "primereact/autocomplete";
 import { OrderList } from "primereact/orderlist"
 import { Dropdown } from "primereact/dropdown";
@@ -11,11 +19,7 @@ import { Person } from "../../person";
 import { Short } from "../types";
 import { useFilterPeople } from "../../../hooks/use-people-filter"
 import { getApiContent, putApiContent } from "../../../services/user-service";
-import { Work } from "../../work/types"
 import { Button } from "primereact/button";
-import { indexOf } from "lodash";
-import { useAsyncError } from "react-router-dom";
-import { isAbsolute } from "path";
 import { isAdmin } from "../../user";
 import { ShortsForm } from "./shorts-form";
 import { useQueryClient } from "@tanstack/react-query";
@@ -51,6 +55,7 @@ export const EditionShortsPicker = ({ id }: PickerProps) => {
     </>
   )
 }
+
 export const WorkShortsPicker = ({ id, onClose }: PickerProps) => {
   const user = getCurrenUser();
   const [shorts, setShorts] = useState<Short[]>([]);

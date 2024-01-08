@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import { ShortSummary } from "./short-summary";
+import { ShortSummary } from "./ShortSummary";
 
 import { singleShort } from "../../../testing";
 

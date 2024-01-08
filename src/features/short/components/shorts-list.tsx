@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 
 import { Person } from "../../person";
-import { ShortSummary } from "./short-summary";
+import { ShortSummary } from './short-summary';
 import { groupShorts } from "../utils";
 import { Short } from "../types";
 

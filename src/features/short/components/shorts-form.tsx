@@ -26,6 +26,9 @@ import { FormAutoComplete } from '../../../components/forms/field/form-auto-comp
 import { FormMultiSelect } from '../../../components/forms/field/form-multi-select';
 import { ContributorField } from '../../../components/forms/contributor-field';
 import { deleteApiContent } from '../../../services/user-service';
+import { Contribution } from '../../../types/contribution';
+import { emptyContributor } from '../../../components/forms/contributor-field';
+import { removeDuplicateContributions } from '../../../utils';
 
 // import { shortIsSf } from '../utils';
 
@@ -46,6 +49,13 @@ type FormObjectProps = {
 
 export const ShortsForm = (props: ShortFormProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
+    let contributors: Contribution[] = [];
+    if (props.short) {
+        contributors = removeDuplicateContributions(props.short.contributors);
+    }
+    if (contributors.length === 0) {
+        contributors = [emptyContributor];
+    }
     const convToForm = (short: Short): ShortForm => ({
         id: short.id,
         title: short.title,
@@ -54,7 +64,7 @@ export const ShortsForm = (props: ShortFormProps) => {
         pubyear: short.pubyear,
         type: short.type,
         genres: short.genres,
-        contributors: makeBriefContributor(short.contributors),
+        contributors: makeBriefContributor(contributors),
         tags: short.tags
     });
 
@@ -66,10 +76,7 @@ export const ShortsForm = (props: ShortFormProps) => {
         pubyear: "",
         type: null,
         genres: [],
-        contributors: [{
-            'person': { 'id': 0, 'name': '', 'alt_name': '', 'fullname': '' },
-            'role': { 'id': 0, 'name': '' }
-        }],
+        contributors: contributors,
         tags: []
     }
     const formData = props.short ? convToForm(props.short) : defaultValues;
@@ -290,6 +297,7 @@ const FormObject = ({ onSubmit, onClose, methods, id }: FormObjectProps) => {
                                 <ContributorField
                                     id={"contributors"}
                                     disabled={disabled}
+                                    contributionTarget="short"
                                 />
                             </div>
                             <div className="field col-10">

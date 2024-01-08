@@ -25,7 +25,7 @@ import { FormEditor } from '../../../components/forms/field/form-editor';
 
 interface FormProps<T> {
   data: T | null,
-  onSubmitCallback: (() => void)
+  onSubmitCallback: ((status: boolean, message: string) => void)
 }
 type FormObjectProps = {
   onSubmit: any;
@@ -122,7 +122,7 @@ export const WorkForm = (props: FormProps<Work>) => {
   const { mutate, error } = useMutation({
     mutationFn: (values: WorkFormData) => updateWork(values),
     onSuccess: (data: HttpStatusResponse, variables) => {
-      props.onSubmitCallback();
+      props.onSubmitCallback(true, "");
       if (variables.id === null) {
         navigate('/works/' + data.response, { replace: false })
       } else if (data.status === 200) {
@@ -131,7 +131,6 @@ export const WorkForm = (props: FormProps<Work>) => {
         console.log(data.response);
         if (JSON.parse(data.response).data["msg"] !== undefined) {
           const errMsg = JSON.parse(data.response).data["msg"];
-          //toast('error', 'Tallentaminen epäonnistui', errMsg);
           console.log(errMsg);
         } else {
           //toast('error', 'Tallentaminen epäonnistui', "Tuntematon virhe");
@@ -140,6 +139,7 @@ export const WorkForm = (props: FormProps<Work>) => {
     },
     onError: (error: any) => {
       console.log(error.message);
+      props.onSubmitCallback(false, error.message);
     }
   })
 
@@ -321,6 +321,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
               <ContributorField
                 id={"contributions"}
                 disabled={disabled}
+                contributionTarget='work'
               />
             </div>
             <div className="field col-12">

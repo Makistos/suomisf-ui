@@ -7,7 +7,7 @@ import { OtherEdition } from "../../edition";
 import { GenreList } from "../../genre";
 import { LinkList } from "../../../components/link-list";
 import { WorkProps } from "../routes";
-import { WorkDetails } from "./work-details";
+import { WorkTooltip } from "./work-tooltip";
 
 
 export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
@@ -18,7 +18,7 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
             <Tooltip position="right" autoHide={false} className="tooltip"
                 target={".work-link-" + work.id}
             >
-                <WorkDetails work={work} />
+                <WorkTooltip work={work} />
             </Tooltip>
             <b>
                 <Link className={"work-link-" + work.id}
@@ -58,7 +58,7 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                     .filter(person => person.role.id === 2).length > 0 && (
                     <>
                         <> Suom. </>
-                        <LinkList path="people"
+                        <LinkList path="people" key={`links-translators-${work.id}`}
                             items={work.editions[0].contributions
                                 .filter(contrib => contrib.role.id === 2)
                                 .map(contrib => {

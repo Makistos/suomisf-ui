@@ -227,7 +227,7 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
   }
 
   const onShortDialogHide = () => {
-
+    setIsShortFormVisible(false);
   }
 
   const onNewShort = async (id: string, visible: boolean) => {

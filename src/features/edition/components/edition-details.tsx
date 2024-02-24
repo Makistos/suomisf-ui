@@ -131,6 +131,23 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
         })
     }
 
+    /**
+     * A function that takes an ISBN and returns a link to National Library
+     * search pointing to this ISBN.
+     *
+     * @param {string} isbn - the ISBN input
+     * @return {string} the link
+     */
+    const nlLinkFromIsbn = (isbn: string): string => {
+        return ("https://kansalliskirjasto.finna.fi/Search/Results?"
+            + "limit=0&"
+            + "filter%5B%5D=~language%3A%22fin%22&"
+            + "filter%5B%5D=~format_ext_str_mv%3A%220%2FBook%2F%22&"
+            + "&filter%5B%5D=~collection%3A%22FEN%22&"
+            + "lookfor=" + encodeURIComponent(isbn))
+            + "&type=AllFields"
+    }
+
     return (
         <div>
             <Dialog maximizable blockScroll className="w-full xl:w-6"
@@ -169,7 +186,7 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                     {edition.size && edition.size + " cm."}
                     {edition.misc && (<><br />{edition.misc}</>)}
                     {(edition.isbn || edition.binding.id > 1) && <br />}
-                    {edition.isbn && (<>ISBN {edition.isbn}</>)}
+                    {edition.isbn && (<>ISBN <Link title='ISBN-haku Kansalliskirjastoon' to={nlLinkFromIsbn(edition.isbn)} target="_blank">{edition.isbn}</Link></>)}
                     {edition.binding && edition.binding.id > 1 && (<> {edition.binding.name}.</>)}
                     {
                         edition.dustcover === 3 && (

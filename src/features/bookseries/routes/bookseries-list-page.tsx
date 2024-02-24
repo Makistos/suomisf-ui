@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 
 import { DataTable } from "primereact/datatable";
-import { ProgressSpinner } from "primereact/progressspinner";
 import { Column } from "primereact/column";
 
 import { Bookseries } from "../types";

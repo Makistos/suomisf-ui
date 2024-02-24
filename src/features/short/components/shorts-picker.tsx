@@ -118,7 +118,7 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
     const getShorts = async () => {
       if (selectedPerson !== null && selectedPerson !== undefined &&
         typeof selectedPerson !== 'string') {
-        const response = await getApiContent('people/shorts/' + selectedPerson.id, user);
+        const response = await getApiContent('people/' + selectedPerson.id + '/shorts', user);
         const shorts = response.data.sort((a: Short, b: Short) => a.title.localeCompare(b.title));
         setPersonShorts(shorts);
       }

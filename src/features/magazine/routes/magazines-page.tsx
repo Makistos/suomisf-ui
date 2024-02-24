@@ -5,38 +5,39 @@ import axios from "axios";
 import { ProgressBar } from "primereact/progressbar";
 
 import { Magazine } from "../types";
+import { getCurrenUser } from '../../../services/auth-service';
+import { useQuery } from '@tanstack/react-query';
+import { getApiContent } from '../../../services/user-service';
+import { useDocumentTitle } from '../../../components/document-title';
 //import { API_URL } from "../../../systemProps";
 
-function MagazinesPage() {
-    const defaultMagazines: Magazine[] = [];
-    const [magazines, setMagazines]: [Magazine[], (magazines: Magazine[]) => void] = useState(defaultMagazines);
-    const [loading, setLoading] = useState(true);
-
-    const client = axios.create({
-        baseURL: process.env.REACT_APP_API_URL + 'magazines'
-    });
-
+export function MagazinesPage() {
+    const user = getCurrenUser();
+    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
 
     useEffect(() => {
-        async function getMagazines() {
-            try {
-                const response = await client.get("");
-                setMagazines(response.data);
-                setLoading(false);
-            }
-            catch (e) {
-                console.error(e);
-            }
-        }
-        getMagazines();
-    }, []);
+        setDocumentTitle("Lehdet");
+    })
 
-    if (!magazines) return null;
+    const fetchMagazines = async (): Promise<Magazine[]> => {
+        const url = 'magazines';
+        const data = await getApiContent(url, user).then(response => {
+            return response.data;
+        })
+        return data;
+    }
+
+    const { isLoading, data } = useQuery({
+        queryKey: ['magazines'],
+        queryFn: fetchMagazines
+    });
+
+    if (!data) return null;
 
     return (
         <main className="all-content">
             {
-                loading ?
+                isLoading ?
                     <div className="progressbar">
                         <ProgressBar mode="indeterminate" style={{ height: '6px' }} />
                     </div>
@@ -45,14 +46,14 @@ function MagazinesPage() {
                             <h1 className="title">Lehdet</h1>
                             <div className="three-column">
                                 {
-                                    magazines
+                                    data
                                         .sort((a, b) => a.name > b.name ? 1 : -1)
-                                        .map((magazine) => (
+                                        .map((data) => (
                                             <>
-                                                <Link to={`/magazines/${magazine.id}`}
-                                                    key={magazine.id}
+                                                <Link to={`/magazines/${data.id}`}
+                                                    key={data.id}
                                                 >
-                                                    {magazine.name}
+                                                    {data.name}
                                                 </Link><br></br>
                                             </>
                                         ))
@@ -64,5 +65,3 @@ function MagazinesPage() {
         </main>
     );
 }
-
-export default MagazinesPage;

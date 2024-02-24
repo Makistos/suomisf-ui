@@ -7,8 +7,8 @@ import 'primereact/resources/primereact.min.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Home from './home';
-import MagazinesPage from './features/magazine/routes/magazines-page';
-import MagazinePage from './features/magazine/routes/magazine-page';
+import { MagazinesPage } from './features/magazine/routes/magazines-page';
+import { MagazinePage } from './features/magazine/routes/magazine-page';
 import { ArticleView } from './features/article/routes/article-page';
 import { IssuePage } from './features/issue/routes/issue-page';
 import { PeoplePage, PersonPage } from './features/person';

@@ -9,7 +9,7 @@ import { useDocumentTitle } from '../../../components/document-title';
 
 const baseURL = "magazines/";
 
-const MagazinePage = () => {
+export const MagazinePage = () => {
 
     /*var issueSort = function (a: IIssue, b: IIssue): number {
         // Prioritize count, this is a running number
@@ -105,5 +105,3 @@ const MagazinePage = () => {
         </main >
     )
 }
-
-export default MagazinePage;

@@ -15,13 +15,13 @@ export const PubseriesList = ({ pubseriesList }: PubseriesListProps) => {
     }, [pubseriesList])
 
     return (
-        <div>
+        <div key="pubserieslist">
             {pubseries && (
-                pubseries.map(pubseries => {
-                    return (<>
-                        <Link to={`/pubseries/${pubseries.id}`}>{pubseries.name}</Link><br /></>)
-                })
-            )}
+                pubseries.map(pubseries =>
+                    <>
+                        <Link key={'pubseries-' + pubseries.id} to={`/pubseries/${pubseries.id}`}>{pubseries.name}</Link><br />
+                    </>
+                ))}
         </div>
     )
 }

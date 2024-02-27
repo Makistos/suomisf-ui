@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import { Dropdown } from "primereact/dropdown";
 import { SelectButton } from "primereact/selectbutton";
-
 import { EditionSummary } from "./edition-summary";
 import { groupEditions } from "../utils/group-editions";
 import { Edition } from "../types";
@@ -73,13 +72,13 @@ export const EditionList = ({ editions, person, sort = "year" }: EditionListProp
 
     return (
         <div className="grid w-full">
-            <div className="grid col-6 justify-content-start">
+            <div className="grid col-6 justify-content-start align-items-center">
                 <SelectButton value={editionView}
                     options={editionViewOptions}
                     onChange={(e) => setEditionView(e.value)}>
                 </SelectButton>
             </div>
-            <div className="grid col-6 justify-content-end">
+            <div className="grid col-6 justify-content-end align-items-center">
                 <Dropdown value={sorting} options={sortOptions}
                     onChange={(e) => setSorting(e.value)}
                     optionLabel="name" optionValue="code"

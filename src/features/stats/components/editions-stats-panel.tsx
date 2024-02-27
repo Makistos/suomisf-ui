@@ -22,7 +22,9 @@ export const EditionsStatsPanel = ({ editions }: EditionsProps) => {
                 icon="fa-solid fa-chart-line"
                 onClick={(e) => op.current?.toggle(e)}
                 aria-haspopup
-                aria-controls="editionsstats_panel" />
+                aria-controls="editionsstats_panel"
+                disabled={!editions || editions.length === 0}
+            />
             <OverlayPanel
                 ref={op}
                 id="editionsstats_panel">

@@ -1,6 +1,7 @@
 import { Edition } from "../../edition";
 import { Pubseries } from "../../pubseries/types";
 import { LinkType } from "../../../types/link";
+import { Magazine } from "../../magazine";
 
 
 export interface Publisher {
@@ -17,6 +18,7 @@ export interface Publisher {
     links?: LinkType[];
     name: string;
     series: Pubseries[];
+    magazines: Magazine[];
 }
 
 export type PublisherFormData = {

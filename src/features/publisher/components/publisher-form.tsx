@@ -78,7 +78,7 @@ export const PublisherForm = (props: FormProps<Publisher>) => {
           const errMsg = JSON.parse(data.response).data["msg"];
           console.log(errMsg);
         } else {
-          //toast('error', 'Tallentaminen epäonnistui', "Tuntematon virhe");
+          console.log("Failed to save publisher data")
         }
       }
     },

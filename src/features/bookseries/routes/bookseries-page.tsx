@@ -13,7 +13,7 @@ import { deleteApiContent, getApiContent } from "../../../services/user-service"
 import { WorkList } from "../../work";
 import { Bookseries } from "../types";
 import { selectId } from "../../../utils";
-import { User } from "../../user";
+import { User, isAdmin } from "../../user";
 import { useDocumentTitle } from '../../../components/document-title';
 import { BookseriesForm } from "../components/bookseries-form";
 
@@ -122,16 +122,20 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
     return (
         <main className="all-content">
             <div className="mt-5 speeddial style={{ position: 'relative', height: '500px' }}">
-                <div>
-                    <Tooltip position="left" target=".speeddial .speeddial-right .p-speeddial-action"
-                    />
-                </div>
-                <SpeedDial className="speeddial-right"
-                    model={dialItems}
-                    direction="left"
-                    type="semi-circle"
-                    radius={80}
-                />
+                {isAdmin(user) &&
+                    <>
+                        <div>
+                            <Tooltip position="left" target=".speeddial .speeddial-right .p-speeddial-action"
+                            />
+                        </div>
+                        <SpeedDial className="speeddial-right"
+                            model={dialItems}
+                            direction="left"
+                            type="semi-circle"
+                            radius={80}
+                        />
+                    </>
+                }
                 <Dialog maximizable blockScroll
                     className="w-full xl:w-6"
                     visible={isFormVisible}

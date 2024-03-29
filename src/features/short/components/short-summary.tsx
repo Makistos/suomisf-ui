@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Button } from 'primereact/button';
@@ -12,6 +12,8 @@ import { ShortsForm } from './shorts-form';
 import { Contribution } from '../../../types/contribution';
 import { Short } from '../types';
 import { removeDuplicateContributions } from '../../../utils';
+import { isAdmin } from '../../user';
+import { getCurrenUser } from '../../../services/auth-service';
 
 interface ShortProps {
     /**
@@ -35,7 +37,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
     //const user = getCurrenUser();
     //let [short, setShort]: [IShort | null, (story: IShort) => void] = React.useState<IShort | null>(null);
     const [isEditVisible, setEditVisible] = useState(false);
-
+    const user = useMemo(() => { return getCurrenUser() }, []);
 
     const PickLinks = (items: Contribution[]) => {
         const retval = items.map((item) => item.person);
@@ -166,11 +168,13 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                         {short.genres.length > 0 &&
                             <GenreList genres={short.genres} />
                         }
-                        <Button
-                            icon="fa-solid fa-pen-to-square"
-                            className="p-button-rounded p-button-info p-button-text"
-                            onClick={() => setEditVisible(true)}
-                        />
+                        {isAdmin(user) &&
+                            <Button
+                                icon="fa-solid fa-pen-to-square"
+                                className="p-button-rounded p-button-info p-button-text"
+                                onClick={() => setEditVisible(true)}
+                            />
+                        }
 
                     </div>
                     {listPublications && short && short.editions &&

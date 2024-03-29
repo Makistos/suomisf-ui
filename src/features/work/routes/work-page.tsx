@@ -27,7 +27,7 @@ import { isAnthology } from "../utils/is-anthology";
 import { selectId } from "../../../utils";
 import { useDocumentTitle } from '../../../components/document-title';
 import { WorkForm } from "../components/work-form";
-import { User } from "../../user";
+import { User, isAdmin } from "../../user";
 import { isDisabled } from '../../../components/forms/forms';
 import authHeader from "../../../services/auth-header";
 import { HttpStatusResponse } from "../../../services/user-service"
@@ -271,6 +271,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                             {edition.images.length > 0 ?
                                 <ImageView edition={edition} />
                                 :
+                                isAdmin(user) &&
                                 <FileUpload
                                     id={"editionimage_" + edition.id}
                                     mode="basic"
@@ -384,18 +385,19 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             <ConfirmDialog />
             <div className="mt-5 speeddial style={{ position: 'relative', height: '500px'}}">
                 {/* user !== null && user.is_admin && ( */}
-                <div>
-                    <Tooltip position="left" target=".speeddial .speeddial-right .p-speeddial-action">
+                {isAdmin(user) &&
+                    <div>
+                        <Tooltip position="left" target=".speeddial .speeddial-right .p-speeddial-action">
 
-                    </Tooltip>
-                    <SpeedDial className="speeddial-right"
-                        model={dialItems}
-                        direction="left"
-                        type="semi-circle"
-                        radius={80}
-                    />
-                </div>
-                {/* ) */}
+                        </Tooltip>
+                        <SpeedDial className="speeddial-right"
+                            model={dialItems}
+                            direction="left"
+                            type="semi-circle"
+                            radius={80}
+                        />
+                    </div>
+                }
                 <Toast ref={toastRef} />
                 <Dialog maximizable blockScroll
                     className="w-full xl:w-6"

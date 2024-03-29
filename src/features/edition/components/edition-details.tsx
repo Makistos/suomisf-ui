@@ -18,6 +18,7 @@ import { Contribution } from '../../../types/contribution';
 import { EditionShortsPicker } from '../../short/components/shorts-picker';
 import { isDisabled } from '../../../components/forms/forms';
 import { getCurrenUser } from '../../../services/auth-service';
+import { isAdmin } from '../../user';
 
 /**
  * Generates a list of contributors based on their contributions and role.
@@ -206,16 +207,20 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                     }
                     <br />
                     <div>
-                        <Button icon="pi pi-pencil" tooltip="Muokkaa" className="p-button-text" onClick={() => onDialogShow()} />
-                        <Button icon="pi pi-trash" tooltip="Poista" className="p-button-text"
-                            onClick={confirmDelete}
-                            disabled={isDisabled(user, loading)} />
-                        {work && work.stories && work.stories.length > 0 && (
-                            <Button icon="fa fa-list-ul" tooltip="Novellit"
-                                className='p-button-text'
-                                onClick={() => onShortsShow()}
-                            />
-                        )}
+                        {isAdmin(user) &&
+                            <>
+                                <Button icon="pi pi-pencil" tooltip="Muokkaa" className="p-button-text" onClick={() => onDialogShow()} />
+                                <Button icon="pi pi-trash" tooltip="Poista" className="p-button-text"
+                                    onClick={confirmDelete}
+                                    disabled={isDisabled(user, loading)} />
+                                {work && work.stories && work.stories.length > 0 && (
+                                    <Button icon="fa fa-list-ul" tooltip="Novellit"
+                                        className='p-button-text'
+                                        onClick={() => onShortsShow()}
+                                    />
+                                )}
+                            </>
+                        }
                     </div>
                 </>
             }

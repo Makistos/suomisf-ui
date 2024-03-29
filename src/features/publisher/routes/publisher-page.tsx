@@ -17,12 +17,13 @@ import { LinkPanel } from "../../../components/link-panel";
 import { PubseriesList } from "../../pubseries";
 import { Publisher } from "../types";
 import { selectId } from "../../../utils";
-import { User } from "../../user";
+import { User, isAdmin } from "../../user";
 import { useDocumentTitle } from '../../../components/document-title';
 import { PublisherForm } from "../components/publisher-form";
 import { isDisabled } from "../../../components/forms/forms";
 import { Tooltip } from "primereact/tooltip";
 import { MagazineList } from "../../magazine/components";
+import { isAbsolute } from "path";
 
 const baseURL = 'publishers/';
 
@@ -165,17 +166,19 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
             <ConfirmDialog />
             <div className="mt-5 speeddial style={{ position: 'relative', height: '500px'}}">
                 <Toast ref={toastRef} />
-                <div>
-                    <Tooltip position="left" target=".speeddial .speeddial-right .p-speeddial-action">
+                {isAdmin(user) &&
+                    <div>
+                        <Tooltip position="left" target=".speeddial .speeddial-right .p-speeddial-action">
 
-                    </Tooltip>
-                    <SpeedDial className="speeddial-right"
-                        model={dialItems}
-                        direction="left"
-                        type="semi-circle"
-                        radius={80}
-                    />
-                </div>
+                        </Tooltip>
+                        <SpeedDial className="speeddial-right"
+                            model={dialItems}
+                            direction="left"
+                            type="semi-circle"
+                            radius={80}
+                        />
+                    </div>
+                }
                 {
                     isLoading ? (
                         <div className="progressbar">
@@ -236,7 +239,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
                         )
                 }
             </div>
-        </main>
+        </main >
     )
 }
 

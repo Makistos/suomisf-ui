@@ -9,7 +9,7 @@ import { getApiContent } from "../../../services/user-service";
 import { selectId } from "../../../utils";
 import { EditionList } from "../../edition";
 import { Pubseries } from "../types";
-import { User } from "../../user";
+import { User, isAdmin } from "../../user";
 import { useDocumentTitle } from '../../../components/document-title';
 import { PubseriesForm } from "../components/pubseries-form";
 import { Dialog } from "primereact/dialog";
@@ -95,13 +95,14 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
 
                 ) : (
                     <>
-                        <SpeedDial className="speeddial-right"
-                            model={dialItems}
-                            direction="left"
-                            type="semi-circle"
-                            radius={80}
-                        />
-
+                        {isAdmin(user) &&
+                            <SpeedDial className="speeddial-right"
+                                model={dialItems}
+                                direction="left"
+                                type="semi-circle"
+                                radius={80}
+                            />
+                        }
                         <Dialog maximizable blockScroll
                             className="w-full lg:w-6"
                             header="Kustantajan sarjan muokkaus"

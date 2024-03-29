@@ -22,7 +22,7 @@ import { AwardPanel, Awarded } from '../../award';
 import { Person, PersonBrief } from '../types';
 import { PersonForm } from '../components/person-form';
 import { selectId } from '../../../utils';
-import { User } from "../../user";
+import { User, isAdmin } from "../../user";
 import { useDocumentTitle } from '../../../components/document-title';
 
 const baseURL = "people/";
@@ -181,16 +181,18 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     return (
         <main className="all-content" id="person-page">
             <div className="mt-5 speeddial style={{ position: 'relative', height: 500px'}}">
-                <div>
-                    <Tooltip position="left" target=".speeddial .speeddial-right .p-speeddial-action">
-                    </Tooltip>
-                    <SpeedDial className="speeddial-right"
-                        model={dialItems}
-                        direction="left"
-                        type="semi-circle"
-                        radius={80}
-                    />
-                </div >
+                {isAdmin(user) &&
+                    <div>
+                        <Tooltip position="left" target=".speeddial .speeddial-right .p-speeddial-action">
+                        </Tooltip>
+                        <SpeedDial className="speeddial-right"
+                            model={dialItems}
+                            direction="left"
+                            type="semi-circle"
+                            radius={80}
+                        />
+                    </div >
+                }
                 <Dialog maximizable blockScroll
                     className="w-full lg:w-6"
                     header="Henkilön tietojen muokkaus" visible={isEditVisible}

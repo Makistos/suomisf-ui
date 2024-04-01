@@ -190,6 +190,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
     const url = "filter/languages/" + event.query;
     const response = await getApiContent(url, user);
     setFilteredLanguages(response.data);
+    console.log(response.data);
   }
 
   async function filterTags(event: any) {
@@ -272,9 +273,8 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 label="Kieli"
                 completeMethod={filterLanguages}
                 suggestions={filteredLanguages}
-                forceSelection={false}
+                // forceSelection={false}
                 placeholder='Kieli'
-                disabled={disabled}
               />
             </div>
             <div className="field col-6">

@@ -72,7 +72,7 @@ export const ShortsForm = (props: ShortFormProps) => {
         id: null,
         title: '',
         orig_title: '',
-        lang: '',
+        lang: null,
         pubyear: "",
         type: null,
         genres: [],
@@ -80,6 +80,7 @@ export const ShortsForm = (props: ShortFormProps) => {
         tags: []
     }
     const formData = props.short ? convToForm(props.short) : defaultValues;
+    console.log(formData)
     const queryClient = useQueryClient()
 
     const methods = useForm<ShortForm>({ defaultValues: formData });
@@ -87,6 +88,7 @@ export const ShortsForm = (props: ShortFormProps) => {
 
     const updateShort = (data: ShortForm) => {
         const saveData = { data: data };
+        console.log(data)
         if (data.id != null) {
             return putApiContent('shorts', saveData, user);
         } else {
@@ -266,9 +268,8 @@ const FormObject = ({ onSubmit, onClose, methods, id }: FormObjectProps) => {
                                     label="Kieli"
                                     completeMethod={filterLanguages}
                                     suggestions={filteredLanguages}
-                                    forceSelection={false}
+                                    // forceSelection={false}
                                     placeholder='Kieli'
-                                    disabled={disabled}
                                 />
                             </div>
                             <div className="field col-12">

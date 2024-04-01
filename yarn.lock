@@ -8427,19 +8427,19 @@ pretty-format@^29.5.0:
     react-is "^18.0.0"
 
 primeflex@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.npmjs.org/primeflex/-/primeflex-3.3.0.tgz"
-  integrity sha512-4hvyIO7lERN5bnyURn67Qpozghins8Jq/GSXO6tymc3oa2ADHWuiYBti8ZptPwHu+uD/HTEisS26NEmeIGfPZQ==
+  version "3.3.1"
+  resolved "https://registry.npmjs.org/primeflex/-/primeflex-3.3.1.tgz"
+  integrity sha512-zaOq3YvcOYytbAmKv3zYc+0VNS9Wg5d37dfxZnveKBFPr7vEIwfV5ydrpiouTft8MVW6qNjfkaQphHSnvgQbpQ==
 
-"primeicons@^5.0.0 || ^6.0.0", primeicons@6.0.1:
+primeicons@6.0.1:
   version "6.0.1"
   resolved "https://registry.npmjs.org/primeicons/-/primeicons-6.0.1.tgz"
   integrity sha512-KDeO94CbWI4pKsPnYpA1FPjo79EsY9I+M8ywoPBSf9XMXoe/0crjbUK7jcQEDHuc0ZMRIZsxH3TYLv4TUtHmAA==
 
-primereact@9.2.2:
-  version "9.2.2"
-  resolved "https://registry.npmjs.org/primereact/-/primereact-9.2.2.tgz"
-  integrity sha512-GGkxLHOdQot5DYW9Z7vTPPaDwzjvnderzLWAXda220teNScAJNtXCIqR3QESi4c9OaNbGD4IlBlhXr++z8fjsw==
+primereact@10.6.2:
+  version "10.6.2"
+  resolved "https://registry.npmjs.org/primereact/-/primereact-10.6.2.tgz"
+  integrity sha512-Ml+xeYz0Djbr7KXieBdmnqfFsBPGmmuLy1wUYrmsBQzhrDSI79BKFKkgCcWKvEi0M1RNa58ZmKJcX4yXhCdtBw==
   dependencies:
     "@types/react-transition-group" "^4.4.1"
     react-transition-group "^4.4.1"

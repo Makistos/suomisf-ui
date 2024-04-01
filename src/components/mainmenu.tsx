@@ -32,31 +32,65 @@ export default function MainMenu() {
 
     const not_logged_items = [
         {
-            label: 'Kirjaudu',
-            command: () => {
-                loginScreen();
-            }
+            label: 'Kirjat',
+            url: '/bookindex'
         },
         {
-            label: 'Rekisteröidy',
-            url: ''
+            label: 'Lehdet',
+            url: '/magazines'
+        },
+        {
+            label: 'Novellit',
+            url: '/shortstoryindex'
+        },
+        {
+            label: 'Hakemistot',
+            items: [
+                {
+                    label: 'Henkilöt',
+                    url: '/people'
+                },
+                {
+                    label: 'Kustantajat',
+                    url: '/publishers'
+                },
+                {
+                    label: 'Kirjasarjat',
+                    url: '/bookseries'
+                },
+                {
+                    label: 'Kustantajan sarjat',
+                    url: '/pubseries'
+                },
+                {
+                    label: 'Asiasanat',
+                    url: '/tags'
+                },
+                {
+                    label: 'Palkinnot',
+                    url: '/awards'
+                },
+            ]
+        },
+        {
+            label: userName(),
+            icon: 'fa-solid fa-circle-user',
+            items: [
+                {
+                    label: 'Kirjaudu',
+                    command: () => {
+                        loginScreen();
+                    }
+                },
+                {
+                    label: 'Rekisteröidy',
+                    url: ''
+                }
+            ]
         }
     ]
 
     const logged_items = [
-        {
-            label: 'Lista'
-        },
-        {
-            label: 'Omat tiedot'
-        },
-        {
-            label: 'Kirjaudu ulos',
-            command: () => { logout(); }
-        }
-    ]
-
-    const common_items = [
         {
             label: 'Kirjat',
             url: '/bookindex'
@@ -101,23 +135,25 @@ export default function MainMenu() {
         {
             label: userName(),
             icon: 'fa-solid fa-circle-user',
-            command: (event: MenuItemCommandEvent) => {
-                if (user === null) {
-                    event.item.items = not_logged_items;
-                } else {
-                    event.item.items = logged_items;
+            items: [
+                {
+                    label: 'Lista'
+                },
+                {
+                    label: 'Omat tiedot'
+                },
+                {
+                    label: 'Kirjaudu ulos',
+                    command: () => { logout(); }
                 }
 
-            }
+            ]
         }
     ]
 
-
-    let items = common_items;
-
-    useEffect(() => {
-        setCurrentUser(user);
-    }, [])
+    // useEffect(() => {
+    //     setCurrentUser(user);
+    // }, [])
 
     const start = <span><a href="/" > <b>SuomiSF </b></a > </span>
     const End = () => {
@@ -192,7 +228,7 @@ export default function MainMenu() {
                 <LoginView />
             </Dialog>
 
-            <Menubar className="navbar-dark" model={items} start={start} end={End} />
+            <Menubar className="navbar-dark" model={user === null ? not_logged_items : logged_items} start={start} end={End} />
         </div>
     );
 }

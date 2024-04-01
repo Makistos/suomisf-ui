@@ -63,14 +63,23 @@ export const FormAutoComplete = ({ name, methods, label, labelClass, tagFunction
               <AutoComplete
                 {...field}
                 field={rest.field ? rest.field : "name"}
+                // value={rest.value ? rest.value : 'name'}
                 delay={rest.delay ? rest.delay : 300}
                 minLength={rest.minLength ? rest.minLength : 2}
-                removeIcon
+                // removeIcon
                 className={classNames({ 'p-invalid': fieldState.error },)}
+                // inputId={field.name}
+                // value={field.value}
                 // inputClassName="w-full"
+                // inputId={field.value ? field.value.id : 0}
+                // value={field.value ? field.value.name : ''}
+                // onChange={field.onChange}
+                // inputRef={field.ref}
                 {...rest}
               />
               {formErrorMessage(field.name, methods.formState.errors)}
+              {/* {field.value.id} */}
+              {/* {field.value} */}
             </>
           )}
         />

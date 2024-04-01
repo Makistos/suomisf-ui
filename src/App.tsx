@@ -9,6 +9,7 @@ import "primeflex/primeflex.css";
 import "@fortawesome/fontawesome-free/css/all.css";
 
 import './App.css';
+
 import MainMenu from './components/mainmenu';
 //import { useDocumentTitle } from './components/document-title';
 
@@ -47,7 +48,7 @@ function App() {
     monthNamesShort: ['Tam', 'Hel', 'Maa', 'Huh', 'Tou', 'Kes', 'Hei', 'Elo', 'Syy', 'Lok', 'Mar', 'Jou'],
     today: 'Tänään',
     weekHeader: 'Vko',
-    firstDayofWeek: 1,
+    //firstDayofWeek: 1,
     dateFormat: 'dd/mm/yy',
     weak: 'Heikko',
     medium: 'Keskiverto',

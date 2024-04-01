@@ -33,6 +33,7 @@ export const EditionShortsPicker = ({ id }: PickerProps) => {
   const user = getCurrenUser();
   const [shorts, setShorts] = useState<Short[]>([]);
 
+  console.log("foo")
   useEffect(() => {
     const getEditionShorts = async () => {
       const response = await getApiContent('editions/' + id.toString() + '/shorts', user);
@@ -44,6 +45,10 @@ export const EditionShortsPicker = ({ id }: PickerProps) => {
   }, [])
 
   const saveShortsToEdition = (shorts: Short[]): number => {
+    const ids = shorts.map(short => short.id);
+    const data = { edition_id: id, shorts: ids }
+    const response = putApiContent('editions/shorts', data, user);
+    // console.log(response)
     return 200
   }
 
@@ -62,10 +67,12 @@ export const WorkShortsPicker = ({ id, onClose }: PickerProps) => {
   const isDirty = false;
   const queryClient = useQueryClient();
 
+  console.log("foo")
   useEffect(() => {
     const getWorkShorts = async () => {
       const response = await getApiContent('works/shorts/' + id.toString(), user);
       setShorts(response.data);
+      console.log(response.data)
     }
     if (id && !isDirty) {
       getWorkShorts();
@@ -305,7 +312,7 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
         </div>
         <div className="field col-12">
           {selectedItemShorts &&
-            <OrderList value={selectedItemShorts}
+            <OrderList dataKey="id" value={selectedItemShorts}
               onChange={(e) => setSelectedItemShorts(e.value)}
               itemTemplate={itemTemplate}
               dragdrop
@@ -316,7 +323,6 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
           <Button
             className="w-full justify-content-center"
             onClick={() => onSave(selectedItemShorts)}
-            disabled={!isAdmin(user) && !hasChanged}
           >Tallenna</Button>
         </div>
       </div>

@@ -9,6 +9,7 @@ import { AwardPanel } from "../../award";
 import { LinkPanel } from "../../../components/link-panel";
 import { WorkProps } from "../routes";
 import { Contribution } from '../../../types/contribution';
+import WorkBookseriesBrowser from './work-bookseries-browser';
 
 export const WorkDetails = ({ work }: WorkProps) => {
 
@@ -100,12 +101,7 @@ export const WorkDetails = ({ work }: WorkProps) => {
                 </div>
                 {work.bookseries && (
                     <div className="col-12">
-                        <Link to={`/bookseries/${work.bookseries.id}`}>
-                            <b>{work.bookseries.name}</b>
-                        </Link>
-                        {work.bookseriesnum && (
-                            ", numero " + work.bookseriesnum
-                        )}
+                        <WorkBookseriesBrowser workId={work.id} bookseriesId={work.bookseries.id} />
                     </div>
                 )}
                 <div className="col-12">

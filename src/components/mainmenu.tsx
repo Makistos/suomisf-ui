@@ -1,20 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useMemo } from 'react';
 
 import { Menubar } from 'primereact/menubar';
 import { AutoComplete } from 'primereact/autocomplete';
-import { MenuItemCommandEvent } from 'primereact/menuitem';
 import { Dialog } from 'primereact/dialog';
 
 import { getCurrenUser } from '../services/auth-service';
 import { logout } from '../services/auth-service';
 import { getApiContent } from '../services/user-service';
-//import { SITE_URL } from '../systemProps';
 import { LoginView, User } from '../features/user';
 
 export default function MainMenu() {
-    //const [user, setUser]: [User | null, (user: User | null) => void] = useState<User | null>(null);
-    const user = getCurrenUser();
-    const [currentUser, setCurrentUser] = useState<User | null>(user);
+    const user = useMemo(() => { return getCurrenUser() }, []);
+    //const [currentUser, setCurrentUser] = useState<User | null>(user);
     const [selectedItem, setSelectedItem] = useState<any>(null);
     const [filteredItems, setFilteredItems] = useState<any>(null);
     const [loginVisible, setLoginVisible] = useState(false);
@@ -27,7 +24,8 @@ export default function MainMenu() {
     }
 
     const userName = (): string => {
-        return currentUser !== null ? currentUser.user : "";
+        //return currentUser !== null ? currentUser.user : "";
+        return user !== null ? user.user : "";
     }
 
     const not_logged_items = [
@@ -150,10 +148,6 @@ export default function MainMenu() {
             ]
         }
     ]
-
-    // useEffect(() => {
-    //     setCurrentUser(user);
-    // }, [])
 
     const start = <span><a href="/" > <b>SuomiSF </b></a > </span>
     const End = () => {

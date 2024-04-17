@@ -34,8 +34,6 @@ interface ShortProps {
 
 export const ShortSummary = ({ short, skipAuthors, listPublications,
     enableQueries }: ShortProps) => {
-    //const user = getCurrenUser();
-    //let [short, setShort]: [IShort | null, (story: IShort) => void] = React.useState<IShort | null>(null);
     const [isEditVisible, setEditVisible] = useState(false);
     const user = useMemo(() => { return getCurrenUser() }, []);
 
@@ -122,9 +120,6 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
         }
         setEditVisible(false);
     }
-    // if (short !== undefined) {
-    //     console.log(short)
-    // }
 
     const saveShort = (id: string, visible: boolean) => {
         setEditVisible(visible);

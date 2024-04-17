@@ -1,17 +1,13 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-    FieldValues, FormProvider, SubmitHandler, Controller, useForm,
+    FieldValues, FormProvider, SubmitHandler, useForm,
     RegisterOptions
 } from 'react-hook-form';
 
-import { Editor } from 'primereact/editor';
-import { AutoComplete } from 'primereact/autocomplete';
 import { Button } from 'primereact/button';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { ProgressBar } from 'primereact/progressbar';
-import { InputText } from 'primereact/inputtext';
-import { classNames } from 'primereact/utils';
 
 import { Person, PersonFormData } from '../types';
 import { getCurrenUser } from '../../../services/auth-service';
@@ -103,8 +99,6 @@ export const PersonForm = (props: FormProperties<Person>) => {
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         const retval = { data, changed: methods.formState.dirtyFields }
         setLoading(true);
-
-        console.log(retval);
 
         setLoading(false);
         queryClient.invalidateQueries();

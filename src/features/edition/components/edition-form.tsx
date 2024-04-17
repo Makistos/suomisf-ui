@@ -1,15 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useForm, Controller, SubmitHandler, FieldValues, FormProvider, UseFormReturn } from 'react-hook-form';
-import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
-import { classNames } from 'primereact/utils';
-import { InputText } from 'primereact/inputtext';
-import { AutoComplete } from 'primereact/autocomplete';
-import { TriStateCheckbox } from 'primereact/tristatecheckbox';
+import { useForm, SubmitHandler, FieldValues, FormProvider, UseFormReturn } from 'react-hook-form';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from 'primereact/button';
-import { InputNumber } from 'primereact/inputnumber';
-import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 
 import { getCurrenUser } from '../../../services/auth-service';
 import { Edition } from '../types';
@@ -46,8 +40,6 @@ export const EditionForm = (props: EditionFormProps) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [bindings, setBindings] = useState<Binding[]>([]);
-
-  //console.log("EditionForm: ", props.edition);
 
   const navigate = useNavigate();
 
@@ -123,10 +115,7 @@ export const EditionForm = (props: EditionFormProps) => {
   }
 
   const formData = props.edition ? convToFormData(props.edition) : defaultValues;
-  //console.log("formData: ", formData);
   const methods = useForm<EditionFormData>({ defaultValues: formData });
-  // const register = methods.register;
-  // const control = methods.control;
   const errors = methods.formState.errors;
 
   const onSubmit: SubmitHandler<FieldValues> = data => {
@@ -148,7 +137,6 @@ export const EditionForm = (props: EditionFormProps) => {
       postApiContent('editions', retval, user)
     }
     setLoading(false);
-    // queryClient.invalidateQueries({ queryKey: ["work", props.work.id] });
     props.onSubmitCallback();
   };
 

@@ -33,7 +33,6 @@ export const EditionShortsPicker = ({ id }: PickerProps) => {
   const user = getCurrenUser();
   const [shorts, setShorts] = useState<Short[]>([]);
 
-  console.log("foo")
   useEffect(() => {
     const getEditionShorts = async () => {
       const response = await getApiContent('editions/' + id.toString() + '/shorts', user);
@@ -48,7 +47,6 @@ export const EditionShortsPicker = ({ id }: PickerProps) => {
     const ids = shorts.map(short => short.id);
     const data = { edition_id: id, shorts: ids }
     const response = putApiContent('editions/shorts', data, user);
-    // console.log(response)
     return 200
   }
 
@@ -67,12 +65,10 @@ export const WorkShortsPicker = ({ id, onClose }: PickerProps) => {
   const isDirty = false;
   const queryClient = useQueryClient();
 
-  console.log("foo")
   useEffect(() => {
     const getWorkShorts = async () => {
       const response = await getApiContent('works/shorts/' + id.toString(), user);
       setShorts(response.data);
-      console.log(response.data)
     }
     if (id && !isDirty) {
       getWorkShorts();
@@ -83,12 +79,9 @@ export const WorkShortsPicker = ({ id, onClose }: PickerProps) => {
     const ids = shorts.map(short => short.id)
     const data = { work_id: id, shorts: ids }
     const response = putApiContent('works/shorts', data, user);
-    // console.log(response)
     onClose();
     return 200
   }
-
-  // console.log(shorts)
 
   return (
     <>
@@ -240,7 +233,6 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
   const onNewShort = async (id: string, visible: boolean) => {
     const response: Short = await getApiContent('shorts/' + id, user).then(response =>
       response.data)
-    // const short = JSON.parse(response);
     const newShorts: Short[] = selectedItemShorts;
     newShorts.push(response);
     setSelectedItemShorts(newShorts);

@@ -85,8 +85,6 @@ const ImageView = ({ edition }: ImageViewProps) => {
 export const WorkPage = ({ id }: WorkPageProps) => {
     const params = useParams();
     const user = useMemo(() => { return getCurrenUser() }, []);
-    //const [work, setWork]: [Work | null, (work: Work) => void] = useState<Work | null>(null);
-    //const [layout, setLayout]: [DataViewLayoutType, (layout: DataViewLayoutType) => void] = useState<DataViewLayoutType>('list');
     const [documentTitle, setDocumentTitle] = useDocumentTitle("");
     const [isEditVisible, setEditVisible] = useState(false);
     const [queryEnabled, setQueryEnabled] = useState(true);
@@ -109,7 +107,6 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             response.data
         )
             .catch((error) => console.log(error));
-        //console.log(data)
         return data;
     }
 
@@ -130,7 +127,6 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         mutationFn: (values: number) => deleteWork(values),
         onSuccess: (data: HttpStatusResponse) => {
             const msg = data.response;
-            //console.log(msg);
             if (data.status === 200) {
                 navigate(-1);
                 toastRef.current?.show({ severity: 'success', summary: 'Teos poistettu' })
@@ -177,7 +173,6 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             icon: 'fa-solid fa-file-circle-plus',
             command: () => {
                 setEditionFormVisible(true);
-                //ConfirmNewEdition();
             }
         },
         {
@@ -217,18 +212,6 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             }
         }
     ]
-    // useEffect(() => {
-    //     async function getWork() {
-    //         let url = baseURL + workId;
-    //         try {
-    //             const response = await getApiContent(url, user);
-    //             setWork(response.data);
-    //         } catch (e) {
-    //             console.error(e);
-    //         }
-    //     }
-    //     getWork();
-    // }, [params.workId, user])
 
     const queryClient = useQueryClient();
     useEffect(() => {
@@ -243,7 +226,6 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             return null;
         }
         const editionIdx: number = eIdx;
-        //console.log(imageUploadUrl);
         const customSave = async (event: FileUploadHandlerEvent) => {
             const form = new FormData();
             form.append('file', event.files[0], event.files[0].name);

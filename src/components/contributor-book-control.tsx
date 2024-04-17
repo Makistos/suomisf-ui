@@ -11,7 +11,7 @@ import { BookSeriesList } from "../features/bookseries";
 import { Work } from "../features/work";
 import { Genre } from "../features/genre";
 import { Edition } from "../features/edition";
-import { Contribution, ContributionType } from "../types/contribution";
+import { Contribution } from "../types/contribution";
 
 /**
  * Represents the props for the ContributorBookControl component.

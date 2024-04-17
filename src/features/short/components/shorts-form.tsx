@@ -1,12 +1,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 
-import { useForm, Controller, SubmitHandler, FieldValues, RegisterOptions, FormProvider } from 'react-hook-form';
-import { Dropdown } from 'primereact/dropdown';
-import { MultiSelect } from "primereact/multiselect";
+import { useForm, RegisterOptions, FormProvider } from 'react-hook-form';
 import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
-import { classNames } from 'primereact/utils';
-import { AutoComplete } from 'primereact/autocomplete';
 import { confirmPopup, ConfirmPopup } from 'primereact/confirmpopup';
 import { Toast } from 'primereact/toast';
 import { ProgressBar } from 'primereact/progressbar';
@@ -17,7 +12,7 @@ import { Short } from "../types";
 import { HttpStatusResponse, getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { ShortForm } from '../types';
-import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
+import { isDisabled } from '../../../components/forms/forms';
 import { makeBriefContributor } from '../../../components/forms/makeBriefContributor';
 import { FormInputNumber } from '../../../components/forms/field/form-input-number';
 import { FormInputText } from '../../../components/forms/field/form-input-text';
@@ -80,15 +75,11 @@ export const ShortsForm = (props: ShortFormProps) => {
         tags: []
     }
     const formData = props.short ? convToForm(props.short) : defaultValues;
-    console.log(formData)
-    const queryClient = useQueryClient()
 
     const methods = useForm<ShortForm>({ defaultValues: formData });
-    const [message, setMessage] = useState("");
 
     const updateShort = (data: ShortForm) => {
         const saveData = { data: data };
-        console.log(data)
         if (data.id != null) {
             return putApiContent('shorts', saveData, user);
         } else {

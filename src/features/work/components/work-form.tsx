@@ -146,7 +146,6 @@ export const WorkForm = (props: FormProps<Work>) => {
   if (formData === null) {
     return <div>loading...</div>
   }
-  //console.log(formData);
 
   return (
     <>
@@ -198,12 +197,6 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
     const response = await getApiContent(url, user);
     setFilteredTags(response.data);
   }
-
-  // const tagChange = (e: AutoCompleteChangeEvent) => {
-  //   console.log("tagChange");
-  //   console.log(e.value);
-  //   console.log(e.value)
-  // }
 
   const tagKeyPress = (e: KeyboardEvent) => {
     console.log(e.code);
@@ -286,7 +279,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 suggestions={filteredBookseries}
                 forceSelection={false}
                 placeholder='Kirjasarja'
-                disabled={disabled}
+              //disabled={disabled}
               />
             </div>
             <div className="field col-3">

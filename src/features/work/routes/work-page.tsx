@@ -75,7 +75,7 @@ const ImageView = ({ edition }: ImageViewProps) => {
     return (
         <>
             <ContextMenu model={imageItems} ref={cm} />
-            <Image className="pt-2" preview width="100px" src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src}
+            <Image className="pt-2" preview width="100px" src={import.meta.env.VITE_IMAGE_URL + edition.images[0].image_src}
                 onContextMenu={(e) => cm.current?.show(e)}
             />
         </>
@@ -233,7 +233,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             const request = { file: file, filename: file.name };
             const headers = authHeader();
 
-            const response = await axios.post(process.env.REACT_APP_API_URL + imageUploadUrl,
+            const response = await axios.post(import.meta.env.VITE_API_URL + imageUploadUrl,
                 form, {
                 headers: headers
             });

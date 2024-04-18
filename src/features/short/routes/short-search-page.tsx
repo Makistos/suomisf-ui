@@ -53,7 +53,7 @@ export const ShortSearchPage = () => {
             _.pickBy(searchParams, function (param) { return searchParams[param].length > 0 }).length === 0) {
             return null;
         }
-        const response = await axios.post(process.env.REACT_APP_API_URL + 'searchshorts', searchParams)
+        const response = await axios.post(import.meta.env.VITE_API_URL + 'searchshorts', searchParams)
             .then(resp => resp.data);
         // console.log(response)
         return response;

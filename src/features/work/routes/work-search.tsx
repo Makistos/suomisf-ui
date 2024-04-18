@@ -61,7 +61,7 @@ export const WorkSearchPage = () => {
             }
             setLoading(true);
             try {
-                axios.post(process.env.REACT_APP_API_URL + 'searchworks', data)
+                axios.post(import.meta.env.VITE_API_URL + 'searchworks', data)
                     .then(response => setWorks(response.data));
             } catch (e) {
                 console.error(e);

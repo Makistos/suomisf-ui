@@ -15,7 +15,7 @@ export const CoversList = ({ covers }: CoversListProps) => {
       {covers.map(cover => (
         <div key={cover.id}>
           <Link to={`/works/${cover.edition.work[0].id}`}>
-            <Image preview className={"p-1 image-" + cover.id} src={process.env.REACT_APP_IMAGE_URL + cover.image_src}
+            <Image preview className={"p-1 image-" + cover.id} src={import.meta.env.VITE_IMAGE_URL + cover.image_src}
               alt={cover.edition.title}
               height={"200"}
               key={"image-" + cover.id}

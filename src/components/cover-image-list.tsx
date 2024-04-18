@@ -144,7 +144,7 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
                             </Tooltip>
                             <Image preview className={"p-1 image-" + image.id}
                                 height={imageHeight(image.edition_id, image.size)}
-                                src={process.env.REACT_APP_IMAGE_URL + image.image_src}
+                                src={import.meta.env.VITE_IMAGE_URL + image.image_src}
                                 key={"image-" + image.id}
                             />
                         </span>

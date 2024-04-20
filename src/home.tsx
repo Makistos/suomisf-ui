@@ -78,7 +78,7 @@ export const Home = () => {
                         <Link to={`/works/${edition.work[0].id}`}>
                           {edition.images.length > 0 && edition.images[0].image_src !== undefined && edition.images[0].image_src !== null &&
                             edition.images[0].image_src !== "" ?
-                            <><img alt={edition.title} className={"image-" + edition.id} src={process.env.REACT_APP_IMAGE_URL + edition.images[0].image_src}
+                            <><img alt={edition.title} className={"image-" + edition.id} src={import.meta.env.VITE_IMAGE_URL + edition.images[0].image_src}
                               height={String(edition.size ? Number(edition.size) * 10 : 200)} />
                             </>
                             :

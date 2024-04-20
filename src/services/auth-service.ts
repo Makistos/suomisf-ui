@@ -4,7 +4,7 @@ import { User } from "../features/user/types";
 import authHeader, { refreshHeader } from "./auth-header";
 
 
-const baseURL = process.env.REACT_APP_API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 
 export const register = (username: string, email: string, password: string) => {
 

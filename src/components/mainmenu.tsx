@@ -182,7 +182,7 @@ export default function MainMenu() {
         }
 
         const selectItem = (item: any) => {
-            let target = process.env.REACT_APP_SITE_URL;
+            let target = import.meta.env.VITE_SITE_URL;
             switch (item.type) {
                 case 'work':
                     target = target + 'works/';

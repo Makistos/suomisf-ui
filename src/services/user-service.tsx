@@ -3,7 +3,7 @@ import axios from "axios";
 import { User } from "../features/user/types";
 import authHeader, { refreshHeader } from "./auth-header";
 
-const baseURL = process.env.REACT_APP_API_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 
 const handleError = (error: any): string => {
     let message = "";
@@ -34,6 +34,7 @@ export interface HttpStatusResponse {
 }
 
 export const getPublicContent = (url: string) => {
+    console.log(baseURL + url);
     return axios.get(baseURL + url);
 };
 
@@ -50,7 +51,7 @@ export const getApiContent = (url: string, user: User | null) => {
 }
 
 const postContent = async (url: string, dataOut: any, callback: cbType | null, user: User | null): Promise<HttpStatusResponse> => {
-    const addr = process.env.REACT_APP_API_URL + url;
+    const addr = import.meta.env.VITE_API_URL + url;
     let error_msg = "";
     let status = 0;
     try {
@@ -88,7 +89,7 @@ const postContent = async (url: string, dataOut: any, callback: cbType | null, u
 }
 
 export const putContent = async (url: string, data: any, user: User | null): Promise<HttpStatusResponse> => {
-    const addr = process.env.REACT_APP_API_URL + url;
+    const addr = import.meta.env.VITE_API_URL + url;
     let error_msg = "";
     let status = 0;
     try {
@@ -126,7 +127,7 @@ export const putContent = async (url: string, data: any, user: User | null): Pro
 }
 
 export const deleteApiContent = async (url: string): Promise<HttpStatusResponse> => {
-    const addr = process.env.REACT_APP_API_URL + url;
+    const addr = import.meta.env.VITE_API_URL + url;
     let error_msg = "";
     let status = 0;
     try {

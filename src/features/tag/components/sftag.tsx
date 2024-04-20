@@ -113,7 +113,7 @@ export const SFTag = ({ id }: SfTagProps) => {
                         'name': data.name,
                         'type': tag.type
                     };
-                    await axios.put(process.env.REACT_APP_API_URL + 'tags', p, { headers: authHeader() })
+                    await axios.put(import.meta.env.VITE_API_URL + 'tags', p, { headers: authHeader() })
                         .then(response => {
                             console.log(response.data);
                             setTag(response.data)

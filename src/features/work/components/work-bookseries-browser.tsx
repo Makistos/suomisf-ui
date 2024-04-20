@@ -17,8 +17,8 @@ export default function WorkBookseriesBrowser({ workId, bookseriesId }: WorkBook
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [bookseries, setBookSeries] = useState<Bookseries | null>(null);
     let workIndex = -1;
-    let prevId = -1;
-    let nextId = -1;
+    let prev = null;
+    let next = null;
 
     useEffect(() => {
         getBookseries(bookseriesId, user).then(data => setBookSeries(data));
@@ -28,10 +28,10 @@ export default function WorkBookseriesBrowser({ workId, bookseriesId }: WorkBook
         for (let i = 0; i < bookseries?.works.length; i++) {
             if (bookseries.works[i].id === workId) {
                 if (i > 0) {
-                    prevId = bookseries.works[i - 1].id;
+                    prev = bookseries.works[i - 1];
                 }
                 if (i < bookseries.works.length - 1) {
-                    nextId = bookseries.works[i + 1].id;
+                    next = bookseries.works[i + 1];
                 }
                 workIndex = i;
 
@@ -55,14 +55,14 @@ export default function WorkBookseriesBrowser({ workId, bookseriesId }: WorkBook
                             )}
                         {
                             workIndex > 0 &&
-                            <Link to={`/works/${prevId}`}>
-                                <i className="pi pi-angle-left"></i>
+                            <Link to={`/works/${prev?.id}`}>
+                                <i title={`${prev?.title}`} className="pi pi-caret-left"></i>
                             </Link>
                         }
                         {
                             workIndex < bookseries.works.length - 1 &&
-                            <Link to={`/works/${nextId}`}>
-                                <i className="pi pi-angle-right"></i>
+                            <Link to={`/works/${next?.id}`}>
+                                <i title={`${next?.title}`} className="pi pi-caret-right"></i>
                             </Link>
                         }
                     </>

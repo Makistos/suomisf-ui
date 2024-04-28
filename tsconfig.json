@@ -15,7 +15,18 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["vite/client", "@types/jest", "node"]
+    "types": ["vite/client", "@types/jest", "node"],
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["__dirname", "../"],
+      "@api/*": ["api/*"],
+      "@components/*": ["components"],
+      "@features/*": ["features/*"],
+      "@hooks/*": ["hooks/*"],
+      "@services/*": ["./services/*"],
+      "@types/*": ["types/*"],
+      "@utils/*": ["utils/*"]
+    }
   },
   "include": ["src"]
 }

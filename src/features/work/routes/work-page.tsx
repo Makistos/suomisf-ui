@@ -32,6 +32,8 @@ import { isDisabled } from '../../../components/forms/forms';
 import authHeader from "../../../services/auth-header";
 import { HttpStatusResponse } from "../../../services/user-service"
 import { WorkShortsPicker } from "../../short/components/shorts-picker";
+import { WorkChanges } from "../../changes/components/work-changes";
+import { Divider } from "primereact/divider";
 
 export interface WorkProps {
     work: Work,
@@ -431,6 +433,10 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                         <DataView value={data.editions}
                                             header={header} itemTemplate={itemTemplate} />
                                     </div>
+                                </div>
+                                <Divider />
+                                <div className="mt-5 mb-0">
+                                    <WorkChanges workId={data.id} />
                                 </div>
                             </>
                         ))}

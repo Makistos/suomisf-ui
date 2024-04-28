@@ -2,8 +2,6 @@ import { Link } from "react-router-dom"
 import { getBookseries } from "../../../api/bookseries/get-bookseries"
 import { Skeleton } from "primereact/skeleton";
 import { Bookseries } from "../../bookseries";
-import { Work } from "../types";
-import { getWork } from "../../../api/work/get-work";
 import { useEffect, useMemo, useState } from "react";
 import { getCurrenUser } from "../../../services/auth-service";
 

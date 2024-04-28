@@ -51,7 +51,7 @@ export const refreshAccessTokenFn = async () => {
     }
     if (!user) return Promise.reject("No user found");
     const header = refreshHeader();
-    const data = { 'username': user.user };
+    const data = { 'username': user.name };
     try {
         const response = await axios.post(baseURL + "refresh", data, { headers: header });
         localStorage.setItem("user", JSON.stringify(response.data));

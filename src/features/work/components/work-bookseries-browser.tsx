@@ -20,7 +20,7 @@ export default function WorkBookseriesBrowser({ workId, bookseriesId }: WorkBook
 
     useEffect(() => {
         getBookseries(bookseriesId, user).then(data => setBookSeries(data));
-    }, [])
+    }, [user])
 
     if (bookseries) {
         for (let i = 0; i < bookseries?.works.length; i++) {

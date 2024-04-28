@@ -36,9 +36,10 @@ const contributorList = (contributions: Contribution[], role: number, descriptio
         <>
             {contributors && contributors.length > 0 &&
                 (
-                    <><br /><>{description} </>
+                    <><br />
                         <LinkList path="people" showDescription={showDescription}
-                            separator=" &amp; "
+                            separator=", "
+                            contributionClass={description}
                             items={contributors.map((item) => ({
                                 id: item.person['id'],
                                 name: item.person['alt_name']
@@ -199,7 +200,7 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
                         <span><br />Ylivetokannet.</span>
                     }
                     {contributorList(edition.contributions, 5, "Kuvitus", true)}
-                    {contributorList(edition.contributions, 4, "Ulkoasu", true)}
+                    {contributorList(edition.contributions, 4, "Kansikuva", true)}
                     {edition.verified &&
                         <>
                             <br /><b>Tarkastettu.</b>

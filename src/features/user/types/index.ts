@@ -1,6 +1,6 @@
 export interface User {
     id: number;
-    user: string;
+    name: string;
     role: string;
     access_token: string;
     refresh_token: string;

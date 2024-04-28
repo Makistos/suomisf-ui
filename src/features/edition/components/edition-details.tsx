@@ -29,7 +29,7 @@ import { isAdmin } from '../../user';
  * @param showDescription - Flag to indicate whether to show the description or not.
  * @return The generated list of contributors.
  */
-const contributorList = (contributions: Contribution[], role: number, description: String, showDescription: boolean) => {
+const contributorList = (contributions: Contribution[], role: number, description: string, showDescription: boolean) => {
     const contributors = contributions.filter(person => person.role.id === role);
 
     return (
@@ -39,7 +39,7 @@ const contributorList = (contributions: Contribution[], role: number, descriptio
                     <><br />
                         <LinkList path="people" showDescription={showDescription}
                             separator=", "
-                            contributionClass={description}
+                            defaultName={description}
                             items={contributors.map((item) => ({
                                 id: item.person['id'],
                                 name: item.person['alt_name']

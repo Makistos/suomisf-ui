@@ -123,7 +123,7 @@ export const LinksField = ({ id, disabled }: LinksFieldProps) => {
         <label htmlFor={id} className="form-field-header font-bold">Linkit</label>
         <div id={id} className="py-0" key={`$(id)-form`}>
           {fields && fields.map((_, index) =>
-            <LinksRow index={index} />
+            <LinksRow index={index} key={`$(id)-form-${index}`} />
           )}
         </div>
       </span>

@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { confirmPopup, ConfirmPopup } from 'primereact/confirmpopup';
-import { ConfirmDialog, confirmDialog, ConfirmDialogProps } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 

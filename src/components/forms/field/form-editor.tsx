@@ -20,7 +20,7 @@ export const FormEditor = ({ name, methods, style, disabled, ...rest }: FormEdit
           {...field}
           style={style}
           readOnly={disabled}
-          onTextChange={(e) => field.onChange(e.htmlValue)}
+          //onTextChange={(e) => field.onChange(e.htmlValue)}
           {...rest}
           value={field.value}
           name={name}

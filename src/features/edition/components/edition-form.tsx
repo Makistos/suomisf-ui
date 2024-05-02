@@ -51,7 +51,7 @@ export const EditionForm = (props: EditionFormProps) => {
       setBindings(bindings.data);
     }
     fetchBindings();
-  }, [user]);
+  }, []);
 
   let contributors: Contribution[] = [];
   if (props.edition) {

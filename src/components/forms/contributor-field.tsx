@@ -98,8 +98,7 @@ export const ContributorField = (
             //         //console.log("People response:" + filteredPeople);
             //     }
             //     getPeople();
-            getRoles();
-        }, [user])
+        }, [])
 
         async function filterPeople(event: any) {
             const url =

@@ -375,7 +375,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
             <Button type="submit" disabled={disabled} className="w-full justify-content-center">Tallenna</Button>
           </div>
         </form>
-        <DevTool control={methods.control} />
+        {/* <DevTool control={methods.control} /> */}
       </FormProvider>
     </div>
   )

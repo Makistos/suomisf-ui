@@ -28,7 +28,7 @@ export const WorkDetails = ({ work }: WorkProps) => {
 
     return (
         <div className="grid align-items-center justify-content-center">
-            {work.contributions.filter(person => person.role.id === 1).length > 0 && (
+            {work.contributions !== undefined && work.contributions.filter((person) => person.role.id === 1).length > 0 && (
                 <div className="grid col-12 justify-content-center">
                     <h2 className="mb-0 font-semibold">
                         <LinkList path="people"
@@ -99,11 +99,11 @@ export const WorkDetails = ({ work }: WorkProps) => {
                         <LinkPanel links={work.links} />
                     </div>
                 </div>
-                {work.bookseries && (
+                {/* {work.bookseries && work.id && (
                     <div className="col-12">
                         <WorkBookseriesBrowser workId={work.id} bookseriesId={work.bookseries.id} />
                     </div>
-                )}
+                )} */}
                 <div className="col-12">
                     {work.misc}
                 </div>

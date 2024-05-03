@@ -83,8 +83,8 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
             if (a.title.toUpperCase() < b.title.toUpperCase()) return -1;
             if (a.title.toUpperCase() > b.title.toUpperCase()) return 1;
         } else if (orderField === 'Year') {
-            if (a.pubyear < b.pubyear) return -1;
-            if (a.pubyear > b.pubyear) return 1;
+            if ((a.pubyear ? a.pubyear : 0) < (b.pubyear ? b.pubyear : 0)) return -1;
+            if ((a.pubyear ? a.pubyear : 0) > (b.pubyear ? b.pubyear : 0)) return 1;
         } else if (orderField === 'Pubyear') {
             const oldestA = a.editions.sort((a, b) => a.pubyear > b.pubyear ? 1 : -1)[0]
             const oldestB = b.editions.sort((a, b) => a.pubyear > b.pubyear ? 1 : -1)[0]

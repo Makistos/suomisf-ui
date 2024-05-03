@@ -10,7 +10,7 @@ import { Work } from "../types";
 export const isAnthology = (work: Work) => {
     // Check if work is a collection with multiple authors
     // This is the definition of an anthology
-    if (work.stories.length === 0) {
+    if (!work || !work.stories && work.stories === undefined || work.stories.length === 0) {
         return false; // Not even a collection
     }
 

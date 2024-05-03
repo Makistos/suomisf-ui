@@ -1,10 +1,10 @@
-import React, { useMemo, useState, useEffect, KeyboardEvent } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useForm, FormProvider, RegisterOptions } from 'react-hook-form';
 import { DevTool } from '@hookform/devtools';
 import { Button } from 'primereact/button';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ProgressBar } from 'primereact/progressbar';
 
 import { Work } from '../types';
@@ -22,48 +22,24 @@ import { FormMultiSelect } from '../../../components/forms/field/form-multi-sele
 import { FormDropdown } from '../../../components/forms/field/form-dropdown';
 import { FormAutoComplete } from '../../../components/forms/field/form-auto-complete';
 import { FormEditor } from '../../../components/forms/field/form-editor';
+import { getWorkFormData } from '@api/work/get-workform-data';
 
 interface FormProps<T> {
-  data: T | null,
+  // data: T | null,
+  workId: number | null,
   onSubmitCallback: ((status: boolean, message: string) => void)
 }
 type FormObjectProps = {
   onSubmit: any;
-  methods: any;
   data: WorkFormData;
   types: WorkType[];
 }
 
+const convToForm = (work: Work): WorkFormData => {
+  const contributors = work.contributions.filter(
+    (contribution: Contribution, index: number, arr: Contribution[]) => arr.indexOf(contribution) === index);
 
-export const WorkForm = (props: FormProps<Work>) => {
-  const user = useMemo(() => { return getCurrenUser() }, []);
-  const [message, setMessage] = useState("");
-  const [types, setTypes] = useState<WorkType[]>([]);
-  const [loading, setLoading] = useState(false)
-
-  //console.log(props.work);
-
-  const navigate = useNavigate();
-
-  const queryClient = useQueryClient()
-
-  useEffect(() => {
-    async function getTypes() {
-      const url = "worktypes";
-      const response = await getApiContent(url, user);
-      setTypes(response.data);
-    }
-    getTypes();
-  }, [user])
-
-  let contributors: Contribution[] = [];
-  if (props.data) {
-    contributors = props.data.contributions.filter((contribution: Contribution, index: number, arr: Contribution[]) => arr.indexOf(contribution) === index);
-  }
-  if (contributors.length === 0) {
-    contributors = [emptyContributor];
-  }
-  const convToForm = (work: Work): WorkFormData => ({
+  return {
     id: work.id,
     title: work.title,
     subtitle: work.subtitle ? work.subtitle : '',
@@ -81,10 +57,14 @@ export const WorkForm = (props: FormProps<Work>) => {
     contributions: contributors,
     work_type: work.work_type,
     links: work.links.length > 0 ? work.links : [{ link: '', description: '' }]
-  });
+  }
+};
 
-  const defaultValues: WorkFormData = {
+
+const defaultValues = (types: WorkType[]): Work => {
+  return {
     id: null,
+    author_str: '',
     title: '',
     subtitle: '',
     orig_title: '',
@@ -100,15 +80,46 @@ export const WorkForm = (props: FormProps<Work>) => {
     bookseriesorder: null,
     contributions: [emptyContributor],
     work_type: types[0],
-    links: [{ link: '', description: '' }]
+    links: [{ link: '', description: '' }],
+    editions: [],
+    awards: [],
+    stories: [],
+    translators: [],
+    imported_string: '',
+    authors: [],
+    language_name: null,
+    pubseries: null
+  }
+}
+export const WorkForm = ({ workId, onSubmitCallback }: FormProps<Work>) => {
+  const user = useMemo(() => { return getCurrenUser() }, []);
+  const [types, setTypes] = useState<WorkType[]>([]);
+
+  const navigate = useNavigate();
+
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    async function getTypes() {
+      const url = "worktypes";
+      const response = await getApiContent(url, user);
+      setTypes(response.data);
+    }
+    getTypes();
+  }, [])
+
+  const getFormData = (id: number | null) => {
+    if (id === null) {
+      return defaultValues(types);
+    } else {
+      return getWorkFormData(id, user);
+    }
   }
 
-  const formData = props.data ? convToForm(props.data) : defaultValues;
-
-  const methods = useForm<WorkFormData>({ defaultValues: formData });
-  const register = methods.register;
-  const control = methods.control;
-  const errors = methods.formState.errors;
+  const { isLoading, data } = useQuery({
+    queryKey: ['work', workId, "form"], //, props.workId if props.workId else ],
+    queryFn: () => getFormData(workId)
+  })
 
   const updateWork = (data: WorkFormData) => {
     const saveData = { data: data };
@@ -122,7 +133,7 @@ export const WorkForm = (props: FormProps<Work>) => {
   const { mutate, error } = useMutation({
     mutationFn: (values: WorkFormData) => updateWork(values),
     onSuccess: (data: HttpStatusResponse, variables) => {
-      props.onSubmitCallback(true, "");
+      onSubmitCallback(true, "");
       if (variables.id === null) {
         navigate('/works/' + data.response, { replace: false })
       } else if (data.status === 200) {
@@ -139,21 +150,20 @@ export const WorkForm = (props: FormProps<Work>) => {
     },
     onError: (error: any) => {
       console.log(error.message);
-      props.onSubmitCallback(false, error.message);
+      onSubmitCallback(false, error.message);
     }
   })
 
-  if (formData === null) {
+  if (data === null) {
     return <div>loading...</div>
   }
 
   return (
     <>
-      {formData ? (
+      {(!isLoading && data) ? (
         <FormObject
           onSubmit={mutate}
-          methods={methods}
-          data={formData}
+          data={convToForm(data)}
           types={types}
         />
       )
@@ -164,15 +174,18 @@ export const WorkForm = (props: FormProps<Work>) => {
   )
 }
 
-const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
+const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
   const user = useMemo(() => { return getCurrenUser() }, []);
   const [genres, setGenres] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filteredLanguages, setFilteredLanguages] = useState([]);
   const [filteredTags, setFilteredTags] = useState([]);
   const [filteredBookseries, setFilteredBookseries] = useState([]);
-  const errors = methods.formState.errors;
   const disabled = isDisabled(user, loading);
+
+  const methods = useForm<WorkFormData>({ defaultValues: data });
+
+  const errors = methods.formState.errors;
 
   useEffect(() => {
     async function getGenres() {
@@ -180,10 +193,9 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
       const response = await getApiContent(url, user);
       setGenres(response.data);
     }
-    setLoading(true);
     getGenres();
     setLoading(false);
-  }, [user])
+  }, [])
 
   async function filterLanguages(event: any) {
     const url = "filter/languages/" + event.query;
@@ -198,13 +210,6 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
     setFilteredTags(response.data);
   }
 
-  const tagKeyPress = (e: KeyboardEvent) => {
-    console.log(e.code);
-    if (e.code == "Comma") {
-
-    }
-  }
-
   async function filterBookseries(event: any) {
     const url = "filter/bookseries/" + event.query;
     const response = await getApiContent(url, user);
@@ -213,10 +218,6 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
 
   const required_rule: RegisterOptions = { required: "Pakollinen kenttä" };
   const editor_style: React.CSSProperties = { height: '320px' };
-
-  const addNewTag = (data: any) => {
-    console.log(data);
-  }
 
   return (
     <div className="card mt-3">
@@ -229,8 +230,8 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 methods={methods}
                 label="Nimeke"
                 rules={required_rule}
+                autoComplete='off'
                 autoFocus
-                disabled={disabled}
               />
             </div>
             <div className="field col-12">
@@ -238,7 +239,6 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 name="subtitle"
                 methods={methods}
                 label="Alaotsikko"
-                disabled={disabled}
               />
             </div>
             <div className="field col-12">
@@ -334,7 +334,7 @@ const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
                 completeMethod={filterTags}
                 suggestions={filteredTags}
                 forceSelection={false}
-                tagFunction={addNewTag}
+                //tagFunction={addNewTag}
                 multiple
                 placeholder='Asiasanat'
                 disabled={disabled}

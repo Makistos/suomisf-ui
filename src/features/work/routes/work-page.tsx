@@ -105,7 +105,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
 
     const fetchWork = async (id: string, user: User | null): Promise<Work> => {
         let url = baseURL + workId;
-        const data = await getApiContent(url, user).then(response =>
+        const data: Work = await getApiContent(url, user).then(response =>
             response.data
         )
             .catch((error) => console.log(error));
@@ -113,7 +113,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     }
 
     const { isLoading, data } = useQuery({
-        queryKey: ["work", workId],
+        queryKey: ["work"],
         queryFn: () => fetchWork(workId, user),
         enabled: queryEnabled
     })
@@ -142,12 +142,6 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             toastRef.current?.show({ severity: 'error', summary: 'Teoksen poistaminen ei onnistunut', detail: errMsg })
         }
     })
-
-    useEffect(() => {
-        if (data !== undefined && data !== null) {
-            setDocumentTitle(data.title);
-        }
-    }, [data]);
 
     const dialItems = [
         {
@@ -180,8 +174,8 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         {
             label: 'Muokkaa novelleja',
             icon: 'fa-solid fa-list-ul',
-            disabled: !(data !== undefined && data !== null &&
-                data.work_type.id === 2),
+            // disabled: !(data !== undefined && data !== null &&
+            //     data.work_type.id === 2),
             command: () => {
                 setIsShortsFormVisible(true);
 
@@ -199,7 +193,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                     icon: 'pi pi-exclamation-triangle',
                     acceptClassName: 'p-button-danger',
                     accept: () => {
-                        if (data) {
+                        if (data && data.id !== null) {
                             mutate(data.id);
                         }
                     },
@@ -389,7 +383,8 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                     onShow={() => onDialogShow()}
                     onHide={() => onDialogHide()}
                 >
-                    <WorkForm data={!formData || !editWork ? null : formData} onSubmitCallback={workFormCallback} />
+                    {/* <WorkForm data={!formData || !editWork ? null : formData} onSubmitCallback={workFormCallback} /> */}
+                    <WorkForm workId={!formData || !editWork ? null : formData.id} onSubmitCallback={workFormCallback} />
                 </Dialog>
                 <Dialog maximizable blockScroll
                     className="w-full xl:w-6"
@@ -416,7 +411,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                         : (data && (
                             <>
                                 <WorkDetails work={data} />
-                                {data.stories.length > 0 && (
+                                {data.stories !== undefined && data.stories.length > 0 && (
                                     <div className="mb-3">
                                         <Panel header="Novellit"
                                             headerTemplate={panelTemplate}
@@ -436,7 +431,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                 </div>
                                 <Divider />
                                 <div className="mt-5 mb-0">
-                                    <WorkChanges workId={data.id} />
+                                    <WorkChanges workId={data.id ? data.id : 0} />
                                 </div>
                             </>
                         ))}

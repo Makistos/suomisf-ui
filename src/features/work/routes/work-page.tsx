@@ -326,7 +326,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     }
 
     const onDialogHide = () => {
-        //queryClient.invalidateQueries({ queryKey: ["work", workId] });
+        queryClient.invalidateQueries({ queryKey: ["work", workId] });
         setQueryEnabled(true);
         setEditVisible(false);
     }

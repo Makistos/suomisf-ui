@@ -39,6 +39,7 @@ export const WorkForm = (props: FormProps) => {
   const user = useMemo(() => { return getCurrenUser() }, []);
   const [message, setMessage] = useState("");
   const [types, setTypes] = useState<WorkType[]>([]);
+  const [queryEnabled, setQueryEnabled] = useState(true);
 
   //console.log(props.work);
 
@@ -58,8 +59,9 @@ export const WorkForm = (props: FormProps) => {
   // const formData = props.data ? convToForm(props.data) : defaultValues;
 
   const { isLoading, data } = useQuery({
-    queryKey: ['works', props.workId, "form"],
-    queryFn: () => getWorkFormData(props.workId, user)
+    queryKey: ['work', props.workId, "form"],
+    queryFn: () => getWorkFormData(props.workId, user),
+    enabled: queryEnabled
   })
 
   if (data && data.types === null && types) {
@@ -67,17 +69,20 @@ export const WorkForm = (props: FormProps) => {
   }
 
   const updateWork = (data: WorkFormData) => {
+    let retval = null;
     const saveData = { data: data };
     if (data.id != null) {
-      return putApiContent('works', saveData, user);
+      retval = putApiContent('works', saveData, user);
     } else {
-      return postApiContent('works', saveData, user)
+      retval = postApiContent('works', saveData, user)
     }
+    return retval;
   }
 
   const { mutate, error } = useMutation({
     mutationFn: (values: WorkFormData) => updateWork(values),
     onSuccess: (data: HttpStatusResponse, variables) => {
+      // queryClient.invalidateQueries(['work', props.workId]);
       props.onSubmitCallback(true, "");
       if (variables.id === null) {
         navigate('/works/' + data.response, { replace: false })
@@ -178,7 +183,9 @@ const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
   return (
     <div className="card mt-3">
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onSubmit)}>
+        <form onSubmit={
+          methods.handleSubmit(
+            (values) => onSubmit(values, { onSuccess: () => methods.reset() }))}>
           <div className="formgrid grid">
             <div className="field col-12">
               <FormInputText

@@ -25,7 +25,7 @@ import { FormCheckbox } from '../../../components/forms/field/form-checkbox';
 interface EditionFormProps {
   edition: Edition | null;
   work: Work;
-  onSubmitCallback: () => void;
+  onSubmitCallback: ((status: boolean, message: string) => void);
 }
 
 interface FormObjectProps {
@@ -118,27 +118,27 @@ export const EditionForm = (props: EditionFormProps) => {
   const methods = useForm<EditionFormData>({ defaultValues: formData });
   const errors = methods.formState.errors;
 
-  const onSubmit: SubmitHandler<FieldValues> = data => {
-    // Convert values back to API format
-    let updatedData: FieldValues = JSON.parse(JSON.stringify(data));
-    updatedData.dustcover = data.dustcover === null ? 1 : data.dustcover === false ? 2 : 3;
-    updatedData.coverimage = data.coverimage === null ? 1 : data.coverimage === false ? 2 : 3;
-    if (updatedData.work_id === undefined) {
-      updatedData.work_id = props.work.id;
-    }
-    const retval: FormSubmitObject =
-      { data: updatedData, changed: methods.formState.dirtyFields }
-    console.log(retval)
-    setMessage("");
-    setLoading(true);
-    if (data.id != null) {
-      putApiContent('editions', retval, user)
-    } else {
-      postApiContent('editions', retval, user)
-    }
-    setLoading(false);
-    props.onSubmitCallback();
-  };
+  // const onSubmit: SubmitHandler<FieldValues> = data => {
+  //   // Convert values back to API format
+  //   let updatedData: FieldValues = JSON.parse(JSON.stringify(data));
+  //   updatedData.dustcover = data.dustcover === null ? 1 : data.dustcover === false ? 2 : 3;
+  //   updatedData.coverimage = data.coverimage === null ? 1 : data.coverimage === false ? 2 : 3;
+  //   if (updatedData.work_id === undefined) {
+  //     updatedData.work_id = props.work.id;
+  //   }
+  //   const retval: FormSubmitObject =
+  //     { data: updatedData, changed: methods.formState.dirtyFields }
+  //   console.log(retval)
+  //   setMessage("");
+  //   setLoading(true);
+  //   if (data.id != null) {
+  //     putApiContent('editions', retval, user)
+  //   } else {
+  //     postApiContent('editions', retval, user)
+  //   }
+  //   setLoading(false);
+  //   props.onSubmitCallback();
+  // };
 
   const updateEdition = (data: EditionFormData) => {
     let updatedData: FieldValues = JSON.parse(JSON.stringify(data));
@@ -158,7 +158,7 @@ export const EditionForm = (props: EditionFormProps) => {
   const { mutate } = useMutation({
     mutationFn: (values: EditionFormData) => updateEdition(values),
     onSuccess: (data: HttpStatusResponse, variables) => {
-      props.onSubmitCallback();
+      props.onSubmitCallback(true, "");
       if (data.status !== 200 && data.status !== 201) {
         console.log(data.response);
         if (JSON.parse(data.response).data["msg"] !== undefined) {
@@ -171,7 +171,12 @@ export const EditionForm = (props: EditionFormProps) => {
       }
     },
     onError: (error: any) => {
-      console.log(error.message);
+      let errMsg = JSON.parse(error.response).data["msg"];
+      if (errMsg === undefined) {
+        errMsg = JSON.parse(error.response).data;
+      }
+      console.log(errMsg);
+      props.onSubmitCallback(false, errMsg);
     }
   })
 

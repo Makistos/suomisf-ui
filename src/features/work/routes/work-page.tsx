@@ -249,7 +249,8 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                 <div className="col-12">
                     <div className="grid">
                         <div className="col-8" >
-                            <EditionDetails edition={edition} card work={work} />
+                            <EditionDetails edition={edition} card work={work}
+                                onSubmitCallback={editionFormCallback} />
                         </div>
                         <div className="flex col-4 justify-content-end align-content-center">
                             {edition.images.length > 0 ?
@@ -336,7 +337,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         if (status) {
             toastRef.current?.show({ severity: 'success', summary: 'Tallentaminen onnistui', detail: 'Tietojen päivitys onnistui', life: 4000 });
         } else {
-            toastRef.current?.show({ severity: 'error', summary: 'Tietojen tallentaminen epäonnistui', detail: message, life: 4000 });
+            toastRef.current?.show({ severity: 'error', summary: 'Tietojen tallentaminen epäonnistui', detail: message, life: 6000 });
         }
     }
     const onEditionDialogShow = () => {
@@ -348,6 +349,15 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         queryClient.invalidateQueries({ queryKey: ["work", workId] });
         setQueryEnabled(true);
         setEditionFormVisible(false);
+    }
+
+    const editionFormCallback = (status: boolean, message: string) => {
+        onEditionDialogHide();
+        if (status) {
+            toastRef.current?.show({ severity: 'success', summary: 'Tallentaminen onnistui', detail: 'Tietojen päivitys onnistui', life: 4000 });
+        } else {
+            toastRef.current?.show({ severity: 'error', summary: 'Tietojen tallentaminen epäonnistui', detail: message, life: 6000 });
+        }
     }
 
     const onShortsFormShow = () => {
@@ -397,7 +407,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                     onShow={() => onEditionDialogShow()}
                     onHide={() => onEditionDialogHide()}
                 >
-                    <EditionForm edition={null} work={data} onSubmitCallback={onEditionDialogHide} />
+                    <EditionForm edition={null} work={data} onSubmitCallback={editionFormCallback} />
                 </Dialog>
                 <Dialog maximizable blockScroll
                     className="w-full xl:x-6"

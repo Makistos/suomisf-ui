@@ -19,6 +19,8 @@ import { isDisabled } from '../../../components/forms/forms';
 import { getCurrenUser } from '../../../services/auth-service';
 import { isAdmin } from '../../user';
 
+type Props = EditionProps & { onSubmitCallback: ((status: boolean, message: string) => void) };
+
 /**
  * Generates a list of contributors based on their contributions and role.
  *
@@ -53,7 +55,7 @@ const contributorList = (contributions: Contribution[], role: number, descriptio
     )
 }
 
-export const EditionDetails = ({ edition, work, card }: EditionProps) => {
+export const EditionDetails = ({ edition, work, card, onSubmitCallback }: Props) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [editVisible, setEditVisible] = useState(false);
     const [shortsFormVisible, setShortsFormVisible] = useState(false);
@@ -68,11 +70,13 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
     }
 
     const queryClient = useQueryClient();
-    const onDialogHide = () => {
+    const onDialogHide = (status: boolean, message: string) => {
         setLoading(true);
-        queryClient.invalidateQueries({ queryKey: ["work", work?.id] });
+        //queryClient.invalidateQueries({ queryKey: ["work", work.id] });
+
         //setQueryEnabled(true);
         setLoading(false);
+        onSubmitCallback(status, message);
         setEditVisible(false);
     }
 
@@ -154,7 +158,7 @@ export const EditionDetails = ({ edition, work, card }: EditionProps) => {
             <Dialog maximizable blockScroll className="w-full xl:w-6"
                 header="Painoksen muokkaus" visible={editVisible}
                 onShow={() => onDialogShow()}
-                onHide={() => onDialogHide()}
+                onHide={() => () => onDialogHide}
             >
                 <EditionForm edition={edition} work={work} onSubmitCallback={onDialogHide} />
             </Dialog>

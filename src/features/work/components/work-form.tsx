@@ -37,9 +37,7 @@ type FormObjectProps = {
 
 export const WorkForm = (props: FormProps) => {
   const user = useMemo(() => { return getCurrenUser() }, []);
-  const [message, setMessage] = useState("");
   const [types, setTypes] = useState<WorkType[]>([]);
-  const [queryEnabled, setQueryEnabled] = useState(true);
 
   //console.log(props.work);
 
@@ -60,8 +58,7 @@ export const WorkForm = (props: FormProps) => {
 
   const { isLoading, data } = useQuery({
     queryKey: ['work', props.workId, "form"],
-    queryFn: () => getWorkFormData(props.workId, user),
-    enabled: queryEnabled
+    queryFn: () => getWorkFormData(props.workId, user)
   })
 
   if (data && data.types === null && types) {

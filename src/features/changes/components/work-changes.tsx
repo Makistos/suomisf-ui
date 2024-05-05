@@ -32,7 +32,6 @@ type SubChanges = {
 
 export const WorkChanges = ({ workId }: WorkChangesProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
-    const [changes, setChanges] = useState<CombinedChanges[]>([]);
     const [expandedRows, setExpandedRows] = useState<DataTableExpandedRows | LogItem[]>([]);
 
     const formatDate = (date: string) => {
@@ -47,14 +46,9 @@ export const WorkChanges = ({ workId }: WorkChangesProps) => {
     }
 
     const { isLoading, data } = useQuery({
-        queryKey: ["work", workId],
-        queryFn: () => getWorkChanges(workId, user).then(data => setChanges(groupedChanges(data))),
-
+        queryKey: ["work", workId, "changes"],
+        queryFn: () => getWorkChanges(workId, user).then(d => groupedChanges(d)),
     })
-
-    // useEffect(() => {§
-    //     getWorkChanges(workId, user).then(data => setChanges(groupedChanges(data)));
-    // }, []);
 
     const groupedChanges = (data: LogItem[]): CombinedChanges[] => {
         let retval: CombinedChanges[] = [];
@@ -101,26 +95,22 @@ export const WorkChanges = ({ workId }: WorkChangesProps) => {
     const { mutate } = useMutation({
         mutationFn: (id: number) => deleteLogItem(id),
         onSuccess: (data: HttpStatusResponse) => {
-            // if (data.status === 200) {
-            //     queryClient.invalidateQueries({ queryKey: ['work', workId] });
-            // }
+            if (data.status === 200) {
+                queryClient.invalidateQueries({ queryKey: ['changes', workId] });
+            }
         },
         onError: (error: any) => {
             console.log(error.message);
         }
 
     })
-    // const deleteItem(id: number) {
-    //     deleteLogItem(id);
-
-    // }
-
     const deleteItem = (id: number) => {
+        if (data === undefined) return;
         mutate(id);
-        for (let idx = 0; idx < changes.length; idx++) {
-            for (let idx2 = 0; idx2 < changes[idx].rows.length; idx2++) {
-                if (changes[idx].rows[idx2].id === id) {
-                    changes[idx].rows.splice(idx2, 1);
+        for (let idx = 0; idx < data.length; idx++) {
+            for (let idx2 = 0; idx2 < data[idx].rows.length; idx2++) {
+                if (data[idx].rows[idx2].id === id) {
+                    data[idx].rows.splice(idx2, 1);
                 }
             }
         }
@@ -145,7 +135,7 @@ export const WorkChanges = ({ workId }: WorkChangesProps) => {
                     :
                     <Fieldset legend="Muutokset" toggleable
                         collapsed={true}>
-                        <DataTable value={changes} emptyMessage="Ei muutoksia"
+                        <DataTable value={data} emptyMessage="Ei muutoksia"
                             size="small"
                             rowExpansionTemplate={rowExpansionTemplate}
                             expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)}>

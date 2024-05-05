@@ -4,7 +4,7 @@ import { classNames } from 'primereact/utils'
 
 interface FormEditorProps extends EditorProps {
   name: string,
-  methods: UseFormReturn,
+  methods: UseFormReturn<any, any>,
   style?: React.CSSProperties,
   disabled: boolean
 }
@@ -16,11 +16,10 @@ export const FormEditor = ({ name, methods, style, disabled, ...rest }: FormEdit
       control={methods.control}
       render={({ field, fieldState }) => (
         <Editor
-          id={field.name}
           {...field}
           style={style}
           readOnly={disabled}
-          //onTextChange={(e) => field.onChange(e.htmlValue)}
+          onTextChange={(e) => field.onChange(e.htmlValue)}
           {...rest}
           value={field.value}
           name={name}

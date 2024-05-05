@@ -326,7 +326,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     }
 
     const onDialogHide = () => {
-        queryClient.invalidateQueries({ queryKey: ["work", workId] });
+        //queryClient.invalidateQueries({ queryKey: ["work", workId] });
         setQueryEnabled(true);
         setEditVisible(false);
     }
@@ -389,7 +389,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                     onShow={() => onDialogShow()}
                     onHide={() => onDialogHide()}
                 >
-                    <WorkForm data={!formData || !editWork ? null : formData} onSubmitCallback={workFormCallback} />
+                    <WorkForm workId={!formData || !editWork ? null : workId} onSubmitCallback={workFormCallback} />
                 </Dialog>
                 <Dialog maximizable blockScroll
                     className="w-full xl:w-6"

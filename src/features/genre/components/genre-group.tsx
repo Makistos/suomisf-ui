@@ -19,6 +19,7 @@ export const GenreGroup = ({ genres, showOneCount }: GenresProps) => {
             }, {} as Record<string, number>);
             return retval;
         };
+        if (genres === undefined) return;
         let counts = Object.entries(countGenres())
             .sort((a, b) => a[1] > b[1] ? -1 : 1)
             .map(genre => genre);

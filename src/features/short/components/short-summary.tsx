@@ -52,9 +52,9 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
         const uniqueEditions = editions
             .sort((a, b) => a.pubyear > b.pubyear ? -1 : 1)
             .filter(edition => {
-                const isDuplicate = uniqueIds.includes(edition.work[0].id);
+                const isDuplicate = uniqueIds.includes(edition.work[0].id ? edition.work[0].id : 0);
                 if (!isDuplicate) {
-                    uniqueIds.push(edition.work[0].id);
+                    uniqueIds.push(edition.work[0].id ? edition.work[0].id : 0);
                     return true;
                 }
                 return false;

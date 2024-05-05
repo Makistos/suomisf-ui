@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm, FormProvider, RegisterOptions } from 'react-hook-form';
 import { DevTool } from '@hookform/devtools';
 import { Button } from 'primereact/button';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ProgressBar } from 'primereact/progressbar';
 
 import { Work } from '../types';
@@ -22,24 +22,23 @@ import { FormMultiSelect } from '../../../components/forms/field/form-multi-sele
 import { FormDropdown } from '../../../components/forms/field/form-dropdown';
 import { FormAutoComplete } from '../../../components/forms/field/form-auto-complete';
 import { FormEditor } from '../../../components/forms/field/form-editor';
+import { getWorkFormData } from '@api/work/get-workform-data';
 
-interface FormProps<T> {
-  data: T | null,
+interface FormProps {
+  workId: string | null,
   onSubmitCallback: ((status: boolean, message: string) => void)
 }
 type FormObjectProps = {
   onSubmit: any;
-  methods: any;
   data: WorkFormData;
   types: WorkType[];
 }
 
 
-export const WorkForm = (props: FormProps<Work>) => {
+export const WorkForm = (props: FormProps) => {
   const user = useMemo(() => { return getCurrenUser() }, []);
   const [message, setMessage] = useState("");
   const [types, setTypes] = useState<WorkType[]>([]);
-  const [loading, setLoading] = useState(false)
 
   //console.log(props.work);
 
@@ -56,59 +55,16 @@ export const WorkForm = (props: FormProps<Work>) => {
     getTypes();
   }, [user])
 
-  let contributors: Contribution[] = [];
-  if (props.data) {
-    contributors = props.data.contributions.filter((contribution: Contribution, index: number, arr: Contribution[]) => arr.indexOf(contribution) === index);
-  }
-  if (contributors.length === 0) {
-    contributors = [emptyContributor];
-  }
-  const convToForm = (work: Work): WorkFormData => ({
-    id: work.id,
-    title: work.title,
-    subtitle: work.subtitle ? work.subtitle : '',
-    orig_title: work.orig_title ? work.orig_title : '',
-    pubyear: work.pubyear,
-    language: work.language_name,
-    genres: work.genres,
-    tags: work.tags,
-    description: work.description ? work.description : '',
-    descr_attr: work.descr_attr,
-    misc: work.misc ? work.misc : '',
-    bookseries: work.bookseries,
-    bookseriesnum: work.bookseriesnum,
-    bookseriesorder: work.bookseriesorder,
-    contributions: contributors,
-    work_type: work.work_type,
-    links: work.links.length > 0 ? work.links : [{ link: '', description: '' }]
-  });
+  // const formData = props.data ? convToForm(props.data) : defaultValues;
 
-  const defaultValues: WorkFormData = {
-    id: null,
-    title: '',
-    subtitle: '',
-    orig_title: '',
-    pubyear: null,
-    language: null,
-    genres: [],
-    tags: [],
-    description: '',
-    descr_attr: '',
-    misc: '',
-    bookseries: null,
-    bookseriesnum: '',
-    bookseriesorder: null,
-    contributions: [emptyContributor],
-    work_type: types[0],
-    links: [{ link: '', description: '' }]
+  const { isLoading, data } = useQuery({
+    queryKey: ['works', props.workId, "form"],
+    queryFn: () => getWorkFormData(props.workId, user)
+  })
+
+  if (data && data.types === null && types) {
+    data.types = types;
   }
-
-  const formData = props.data ? convToForm(props.data) : defaultValues;
-
-  const methods = useForm<WorkFormData>({ defaultValues: formData });
-  const register = methods.register;
-  const control = methods.control;
-  const errors = methods.formState.errors;
 
   const updateWork = (data: WorkFormData) => {
     const saveData = { data: data };
@@ -133,7 +89,6 @@ export const WorkForm = (props: FormProps<Work>) => {
           const errMsg = JSON.parse(data.response).data["msg"];
           console.log(errMsg);
         } else {
-          //toast('error', 'Tallentaminen epäonnistui', "Tuntematon virhe");
         }
       }
     },
@@ -143,17 +98,17 @@ export const WorkForm = (props: FormProps<Work>) => {
     }
   })
 
-  if (formData === null) {
+  if (isLoading || (data?.id === null && props.workId !== null)) {
     return <div>loading...</div>
   }
+  console.log(data);
 
   return (
     <>
-      {formData ? (
+      {data ? (
         <FormObject
           onSubmit={mutate}
-          methods={methods}
-          data={formData}
+          data={data}
           types={types}
         />
       )
@@ -164,15 +119,17 @@ export const WorkForm = (props: FormProps<Work>) => {
   )
 }
 
-const FormObject = ({ onSubmit, methods, types }: FormObjectProps) => {
+const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
   const user = useMemo(() => { return getCurrenUser() }, []);
   const [genres, setGenres] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filteredLanguages, setFilteredLanguages] = useState([]);
   const [filteredTags, setFilteredTags] = useState([]);
   const [filteredBookseries, setFilteredBookseries] = useState([]);
-  const errors = methods.formState.errors;
   const disabled = isDisabled(user, loading);
+
+  const methods = useForm<WorkFormData>({ defaultValues: data });
+  const errors = methods.formState.errors;
 
   useEffect(() => {
     async function getGenres() {

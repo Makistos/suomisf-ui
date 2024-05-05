@@ -22,7 +22,6 @@ export const FormInputText = ({ name, methods, rules, label, labelClass, ...rest
           <>
             <InputText
               {...field}
-              {...methods.register(name, rules)}
               value={field.value ? field.value : ''}
               className={classNames({ "p-invalid": fieldState.error }, "w-full")}
               {...rest}

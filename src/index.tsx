@@ -28,6 +28,7 @@ import { Awards } from './features/award/routes/awards-page'
 import { AwardPage } from './features/award/routes/award-page';
 import { Changes } from './features/changes/routes/changes-page';
 import { LatestAdditions } from './features/latest/routes/latest-additions';
+import { FAQ } from 'faq';
 
 // console.log(process.env)
 
@@ -43,6 +44,7 @@ root.render(
         <Route path="awards" element={<Awards />} />
         <Route path="awards/:itemId" element={<AwardPage id={null} />} />
         <Route path="bookindex" element={<WorkSearchPage />} />
+        <Route path="faq" element={<FAQ />} />
         <Route path="shortstoryindex" element={<ShortSearchPage />} />
         <Route path="people" element={<PeoplePage />} />
         <Route path="people/:itemId" element={<PersonPage id={null} />} />

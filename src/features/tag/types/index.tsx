@@ -19,6 +19,6 @@ export interface TagType {
 
 export interface SfTagProps {
     id?: number | null,
-    tag?: string,
+    tag?: TagType,
     count?: number | null
 }

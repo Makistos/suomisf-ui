@@ -100,7 +100,7 @@ export const SFTag = ({ id }: SfTagProps) => {
         getTag();
     }, [params.tagid, user])
 
-    const ChangeNameDialog = () => {
+    const EditTagDialog = () => {
         type IName = {
             name: string
         }
@@ -256,7 +256,7 @@ export const SFTag = ({ id }: SfTagProps) => {
     return (
         <main>
             <Dialog header="Nimeä uudelleen" visible={displayChangeName} onHide={() => onHide('displayChangeName')}>
-                <ChangeNameDialog />
+                <EditTagDialog />
             </Dialog>
 
             <Dialog header="Asiasanan yhdistäminen" visible={displayMerge} onHide={() => onHide('displayMerge')}>

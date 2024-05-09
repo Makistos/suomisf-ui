@@ -4,6 +4,7 @@ import { Tag } from 'primereact/tag';
 import { Button } from 'primereact/button';
 
 import { TagType, SfTagProps } from "../types";
+import { Link } from 'react-router-dom';
 
 interface TagsProps {
     tags: TagType[],
@@ -11,39 +12,41 @@ interface TagsProps {
     showOneCount: boolean
 }
 
+type TagCount = TagType & { count: number };
+
 
 export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
-    const [groupedTags, setGroupedTags] = useState<[string, number][]>([]);
+    const [groupedTags, setGroupedTags] = useState<TagCount[]>([]);
     const [showAll, setShowAll] = useState(false);
-    const [subgenres, setSubgenres] = useState<string[]>([]);
-    const [styles, setStyles] = useState<string[]>([]);
+    const [subgenres, setSubgenres] = useState<TagType[]>([]);
+    const [styles, setStyles] = useState<TagType[]>([]);
 
     const filterTypes = (tags: TagType[], type: string) => {
         return tags.filter(tag => tag.type === type)
-            .map(tag => tag.name)
+            .map(tag => tag)
     }
 
     useEffect(() => {
         const countTags = () => {
             let retval = tags.reduce((acc, currentValue: TagType) => {
-                const tagName: string = currentValue.name;
+                const tagName = currentValue.name;
                 if (!acc[tagName]) {
-                    acc[tagName] = 1;
+                    acc[tagName] = { ...currentValue, count: 1 };
                 } else {
-                    acc[tagName]++;
+                    acc[tagName].count++;
                 }
                 return acc;
-            }, {} as Record<string, number>)
+            }, {} as Record<string, TagCount>)
             return retval;
         }
         if (tags) {
             if (showOneCount) {
                 setGroupedTags(Object.entries(countTags())
-                    .sort((a, b) => a[1] > b[1] ? -1 : 1)
-                    .map(tag => tag));
+                    .sort((a, b) => a[1].count > b[1].count ? -1 : 1)
+                    .map(tag => tag[1]));
             } else {
                 setGroupedTags(Object.entries(countTags())
-                    .map(tag => tag));
+                    .map(tag => tag[1]));
             }
             setSubgenres(filterTypes(tags, 'subgenre'))
             setStyles(filterTypes(tags, 'style'))
@@ -74,9 +77,9 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
         }
 
         return (
-            <Tag value={headerText(tag === undefined ? "" : tag, count === undefined ? 0 : count)}
+            <Tag value={headerText(tag?.name === undefined ? "" : tag.name, count === undefined ? 0 : count)}
                 className="p-overlay-badge"
-                severity={TypeToSeverity(tag === undefined ? "" : tag)}
+                severity={TypeToSeverity(tag?.type === undefined ? "" : tag.type)}
             />
         )
     }
@@ -84,10 +87,13 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
         <div className="flex justify-content-center flex-wrap m-0 p-0">
             {groupedTags.map((tag, idx) => {
                 return (overflow === undefined || idx < overflow || showAll) &&
-                    <span key={tag[0]} className="mr-1 mb-1">
-                        <TagCount tag={tag[0]}
-                            count={showOneCount && tag[1] !== 1 ? tag[1] : null} />
+                    <span key={tag.name} className="mr-1 mb-1">
+                        <Link to={`/tags/${tag.id}`} className="mr-1 mb-1">
+                            <TagCount tag={tag}
+                                count={showOneCount && tag.count !== 1 ? tag.count : null} />
+                        </Link>
                     </span>
+
             })}
             {(overflow !== undefined
                 && groupedTags.length > overflow

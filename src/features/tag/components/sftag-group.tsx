@@ -15,11 +15,23 @@ interface TagsProps {
 type TagCount = TagType & { count: number };
 
 
+/**
+ * Renders a group of tags with optional overflow and tag counts.
+ *
+ * @param {TagsProps} props - The props object containing the tags, overflow, and showOneCount.
+ * @param {TagType[]} props.tags - The array of tags to render.
+ * @param {number} props.overflow - The maximum number of tags to display before showing an overflow button.
+ * @param {boolean} props.showOneCount - Whether to show the count of each tag when there are multiple occurrences.
+ * @return {JSX.Element} The rendered tag group component.
+ */
 export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
     const [groupedTags, setGroupedTags] = useState<TagCount[]>([]);
     const [showAll, setShowAll] = useState(false);
     const [subgenres, setSubgenres] = useState<TagType[]>([]);
     const [styles, setStyles] = useState<TagType[]>([]);
+    const [locations, setLocations] = useState<TagType[]>([]);
+    const [actors, setActors] = useState<TagType[]>([]);
+    const [eras, setEras] = useState<TagType[]>([]);
 
     const filterTypes = (tags: TagType[], type: string) => {
         return tags.filter(tag => tag.type === type)
@@ -27,6 +39,11 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
     }
 
     useEffect(() => {
+        /**
+         * Calculates the count of each unique tag in the provided array.
+         *
+         * @return {Record<string, TagCount>} An object containing the count of each unique tag.
+         */
         const countTags = () => {
             let retval = tags.reduce((acc, currentValue: TagType) => {
                 const tagName = currentValue.name;
@@ -50,24 +67,43 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
             }
             setSubgenres(filterTypes(tags, 'subgenre'))
             setStyles(filterTypes(tags, 'style'))
+            setLocations(filterTypes(tags, 'location'))
+            setActors(filterTypes(tags, 'actor'))
+            setEras(filterTypes(tags, 'era'))
         }
     }, [tags])
 
 
+    /**
+     * Renders a tag count component with the given tag and count.
+     *
+     * @param {SfTagProps} props - The props object containing the tag and count.
+     * @param {TagType} props.tag - The tag to render.
+     * @param {number | null} props.count - The count of the tag.
+     * @return {JSX.Element} The rendered tag count component.
+     */
     const TagCount = ({ tag, count }: SfTagProps) => {
         const TypeToSeverity = (type: string) => {
             if (tag === undefined) return undefined;
             if (type !== null) {
-                if (subgenres.includes(tag)) {
+                if (subgenres.find((genre) => genre.id === tag.id)) {
                     return "success";
                 }
-                if (styles.includes(tag)) {
+                if (styles.find((style) => style.id === tag.id)) {
                     return "warning";
                 }
             }
             return undefined;
         }
 
+        /**
+         * Returns a string that concatenates the name with the count if count is not null,
+         * otherwise returns just the name.
+         *
+         * @param {string} name - The name to be concatenated with the count.
+         * @param {number | null} count - The count to be concatenated with the name.
+         * @return {string} The concatenated string.
+         */
         const headerText = (name: string, count: number | null) => {
             if (count !== null) {
                 return name + " x " + count;

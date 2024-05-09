@@ -155,27 +155,34 @@ export const EditionForm = (props: EditionFormProps) => {
     }
   }
 
+  const replyMessage = (msg: any) => {
+    let errMsg = JSON.parse(msg.response).data["msg"];
+    if (errMsg === undefined) {
+      errMsg = JSON.parse(msg.response).data;
+    }
+    console.log(errMsg);
+    return errMsg;
+  }
+
   const { mutate } = useMutation({
     mutationFn: (values: EditionFormData) => updateEdition(values),
     onSuccess: (data: HttpStatusResponse, variables) => {
-      props.onSubmitCallback(true, "");
-      if (data.status !== 200 && data.status !== 201) {
-        console.log(data.response);
-        if (JSON.parse(data.response).data["msg"] !== undefined) {
-          const errMsg = JSON.parse(data.response).data["msg"];
-          //toast('error', 'Tallentaminen epäonnistui', errMsg);
-          console.log(errMsg);
-        } else {
-          //toast('error', 'Tallentaminen epäonnistui', "Tuntematon virhe");
-        }
+      if (data.status === 200 || data.status === 201) {
+        props.onSubmitCallback(true, "");
+        //console.log(data.response);
+        // if (JSON.parse(data.response).data["msg"] !== undefined) {
+        //   const errMsg = JSON.parse(data.response).data["msg"];
+        //   console.log(errMsg);
+        // } else {
+        // }
+      } else {
+        const errMsg = replyMessage(data);
+        props.onSubmitCallback(false, errMsg);
+
       }
     },
     onError: (error: any) => {
-      let errMsg = JSON.parse(error.response).data["msg"];
-      if (errMsg === undefined) {
-        errMsg = JSON.parse(error.response).data;
-      }
-      console.log(errMsg);
+      const errMsg = replyMessage(error);
       props.onSubmitCallback(false, errMsg);
     }
   })

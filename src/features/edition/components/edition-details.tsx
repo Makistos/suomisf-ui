@@ -70,14 +70,13 @@ export const EditionDetails = ({ edition, work, card, onSubmitCallback }: Props)
     }
 
     const queryClient = useQueryClient();
-    const onDialogHide = (status: boolean, message: string) => {
-        setLoading(true);
-        //queryClient.invalidateQueries({ queryKey: ["work", work.id] });
-
-        //setQueryEnabled(true);
-        setLoading(false);
-        onSubmitCallback(status, message);
+    const onDialogHide = () => {
         setEditVisible(false);
+    }
+
+    const onFormSubmit = (status: boolean, message: string) => {
+        onSubmitCallback(status, message);
+        onDialogHide();
     }
 
     const onShortsShow = () => {
@@ -156,14 +155,16 @@ export const EditionDetails = ({ edition, work, card, onSubmitCallback }: Props)
     return (
         <div>
             <Dialog maximizable blockScroll className="w-full xl:w-6"
-                header="Painoksen muokkaus" visible={editVisible}
+                header="Painoksen muokkaus"
+                visible={editVisible}
                 onShow={() => onDialogShow()}
-                onHide={() => () => onDialogHide}
+                onHide={() => onDialogHide()}
             >
-                <EditionForm edition={edition} work={work} onSubmitCallback={onDialogHide} />
+                <EditionForm edition={edition} work={work} onSubmitCallback={onFormSubmit} />
             </Dialog>
             <Dialog maximizable blockScroll className='w-full xl:w-9'
-                header="Novellien muokkaus" visible={shortsFormVisible}
+                header="Novellien muokkaus"
+                visible={shortsFormVisible}
                 onShow={() => onShortsShow()}
                 onHide={() => onShortsHide()}
             >

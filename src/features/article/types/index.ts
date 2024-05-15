@@ -1,5 +1,5 @@
 import { Person } from "../../person";
-import { TagType } from "../../tag";
+import { SfTag } from "../../tag";
 import { Issue } from "../../issue/types";
 
 
@@ -10,5 +10,5 @@ export interface Article {
     excerpt: string;
     author_rel: Person[];
     issue: Issue;
-    tags: TagType[];
+    tags: SfTag[];
 }

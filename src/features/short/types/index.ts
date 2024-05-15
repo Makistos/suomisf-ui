@@ -3,7 +3,7 @@ import { Edition } from "../../edition/types";
 import { Issue } from "../../issue/types";
 import { Genre } from "../../genre/types";
 import { Contribution, ContributionSimple } from '../../../types/contribution';
-import { TagType } from "../../tag";
+import { SfTag } from "../../tag";
 import { Language } from "../../../types/language";
 
 
@@ -22,7 +22,7 @@ export interface Short {
     issues: Issue[];
     genres: Genre[];
     contributors: Contribution[];
-    tags: TagType[];
+    tags: SfTag[];
 }
 
 export interface ShortForm {
@@ -34,5 +34,5 @@ export interface ShortForm {
     type: ShortType | null,
     genres: Genre[],
     contributors: Contribution[],
-    tags: Pick<TagType, "id" | "name" | "type">[]
+    tags: Pick<SfTag, "id" | "name" | "type">[]
 }

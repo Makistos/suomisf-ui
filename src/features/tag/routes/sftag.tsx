@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useParams } from "react-router-dom";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
@@ -14,32 +14,40 @@ import { AutoComplete } from 'primereact/autocomplete';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import axios from 'axios';
 
-import { getApiContent, deleteApiContent } from '../../../services/user-service';
-import { getCurrenUser } from '../../../services/auth-service';
-import { WorkList } from '../../work';
-import { ShortsList } from '../../short';
-import { ArticleList } from '../../article';
-//import { API_URL } from '../../../systemProps';
-import authHeader from '../../../services/auth-header';
-import { TagType, SfTagProps } from '../types';
-
+import { getApiContent, deleteApiContent } from '@services/user-service';
+import { getCurrenUser } from '@services/auth-service';
+import { WorkList } from '@features/work';
+import { ShortsList } from '@features/short';
+import { ArticleList } from '@features/article';
+import authHeader from '@services/auth-header';
+import { SfTag, SfTagProps } from '../types';
+import { SfTagForm } from '../components/sftag-form';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Toast } from 'primereact/toast';
+import { getTag } from '@api/tag/get-tag';
+import { mergeTags } from '@api/tag/merge-tags';
+import { Tag } from 'primereact/tag';
+import { tagTypeToSeverity } from '../components/tag-type-to-severity';
 
 
 export const SFTag = ({ id }: SfTagProps) => {
     const params = useParams();
-    const [tag, setTag]: [TagType | null, (tag: TagType) => void] = useState<TagType | null>(null);
+    // const [tag, setTag]: [SfTag | null, (tag: SfTag) => void] = useState<SfTag | null>(null);
     const [displayChangeName, setDisplayChangeName] = useState(false);
     const [displayMerge, setDisplayMerge] = useState(false);
     const [displayDelete, setDisplayDelete] = useState(false);
     const [loading, setLoading] = useState(false);
     const user = useMemo(() => { return getCurrenUser() }, []);
     const navigate = useNavigate();
+    const toastRef = useRef<Toast>(null);
 
     const dialogFuncMap: Record<string, React.Dispatch<React.SetStateAction<boolean>>> = {
         'displayChangeName': setDisplayChangeName,
         'displayMerge': setDisplayMerge,
         'displayDelete': setDisplayDelete
     }
+
+    const queryClient = useQueryClient();
 
     // const tagHasContent = (tag: TagType | null) => {
     //     if (tag === undefined || tag === null) return false;
@@ -62,7 +70,7 @@ export const SFTag = ({ id }: SfTagProps) => {
 
     const dialItems = [
         {
-            label: 'Nimeä uudelleen',
+            label: 'Muokkaa',
             icon: 'fa-solid fa-pen-to-square',
             command: () => {
                 onSpeeddialClick('displayChangeName');
@@ -85,93 +93,30 @@ export const SFTag = ({ id }: SfTagProps) => {
         }
     ]
 
-    useEffect(() => {
-        async function getTag() {
-            let url = 'tags/' + params.tagid?.toString();
-            try {
-                setLoading(true);
-                const response = await getApiContent(url, user);
-                setTag(response.data);
-                setLoading(false);
-            } catch (e) {
-                console.log(e);
-            }
-        }
-        getTag();
-    }, [params.tagid, user])
-
-    const EditTagDialog = () => {
-        type IName = {
-            name: string
-        }
-        const form = useForm<IName>();
-        const changeName: SubmitHandler<IName> = (data) => {
-            async function rename() {
-                if (tag) {
-                    let p: TagType = {
-                        'id': tag.id,
-                        'name': data.name,
-                        'type': tag.type
-                    };
-                    await axios.put(import.meta.env.VITE_API_URL + 'tags', p, { headers: authHeader() })
-                        .then(response => {
-                            console.log(response.data);
-                            setTag(response.data)
-                        }).catch(err => {
-                            if (err.response) {
-                                console.log("Server error: " + JSON.stringify(err.response, null, 2));
-                            } else if (err.request) {
-                                console.log("No response: " + JSON.stringify(err.request, null, 2));
-                            } else {
-                                console.log("Other error: " + JSON.stringify(err.toString, null, 2));
-                            }
-                        })
-                }
-            }
-            console.log(data);
-            rename();
-            setDisplayChangeName(false);
-        }
-        return (
-            <div className="grid col justify-content-center">
-                <form onSubmit={form.handleSubmit(changeName)}>
-                    <div className="grid mt-3 col">
-                        <span className="grid col">
-                            <label htmlFor="name">Uusi nimi</label>
-                            <Controller name="name" control={form.control}
-                                render={({ field, fieldState }) => (
-                                    <InputText
-                                        id={field.name} {...field} autoFocus
-                                        className={classNames({ 'p-invalid': fieldState.error }, 'w-full')} />
-                                )} />
-                        </span>
-                    </div>
-                    <div className="grid col">
-                        <Button type="submit" className="w-full justify-content-center">
-                            Vaihda
-                        </Button>
-                    </div>
-
-                </form>
-            </div>
-        )
-    }
+    const { isLoading, data } = useQuery({
+        queryKey: ['tags', params.tagid],
+        queryFn: () => getTag(Number(params.tagid), user)
+    })
 
     const MergeTagsDialog = () => {
         type TagTypeInfo = {
             id: number,
             name: string
         }
-        const { control, handleSubmit } = useForm<TagTypeInfo>();
+        const { control, handleSubmit } = useForm<Record<string, TagTypeInfo>>();
         const [filteredTags, setFilteredTags] = useState<any>(null);
         const [selectedTag, setSelectedTag] = useState<any>(null);
-        const mergeTags: SubmitHandler<TagTypeInfo> = (data) => {
-            console.log(data);
+        const mergeTagsSubmit: SubmitHandler<Record<string, TagTypeInfo>> = (data) => {
+            const source = Number(data.name.id);
+            if (source && params.tagid) {
+                mergeTags(Number(params.tagid), source, user);
+            }
+            onHide('displayMerge');
         }
 
         async function getTags(query: string) {
             try {
-                const response = await getApiContent("tagSearch/" + query, user);
+                const response = await getApiContent("filter/tags/" + query, user);
                 // console.log(response.data);
                 setFilteredTags(response.data);
             } catch (e) {
@@ -205,7 +150,7 @@ export const SFTag = ({ id }: SfTagProps) => {
         }
         return (
             <div className="grid col justify-content-center">
-                <form onSubmit={handleSubmit(mergeTags)}>
+                <form onSubmit={handleSubmit(mergeTagsSubmit)}>
                     <div className="grid col mt-3">
                         <span className="grid col">
                             <label htmlFor="name" >Yhdistettävä asiasana</label>
@@ -244,28 +189,37 @@ export const SFTag = ({ id }: SfTagProps) => {
 
     const deleteTag = () => {
         const deleteTagFromDb = () => {
-            if (tag) {
-                deleteApiContent("tags/" + tag.id.toString());
+            if (data) {
+                deleteApiContent("tags/" + data.id.toString());
             }
         }
 
         deleteTagFromDb();
-        navigate('/tags', { replace: true });
+        navigate(-1);
+    }
+
+    const onTagSubmit = (status: boolean, message: string) => {
+        queryClient.invalidateQueries({ queryKey: ["tags"] });
+        if (status) {
+            toastRef.current?.show({ severity: 'success', summary: 'Tallentaminen onnistui', detail: 'Tietojen päivitys onnistui', life: 4000 });
+        } else {
+            toastRef.current?.show({ severity: 'error', summary: 'Tietojen tallentaminen epäonnistui', detail: message, life: 6000 });
+        }
+        onHide('displayChangeName');
     }
 
     return (
-        <main>
-            <Dialog header="Nimeä uudelleen" visible={displayChangeName} onHide={() => onHide('displayChangeName')}>
-                <EditTagDialog />
+        <main className="all-content">
+            <Toast ref={toastRef} />
+            <Dialog header="Muokkaa" visible={displayChangeName} onHide={() => onHide('displayChangeName')}>
+                <SfTagForm tagId={(data && data.id) ? data.id : null}
+                    onSubmitCallback={onTagSubmit} />
             </Dialog>
 
             <Dialog header="Asiasanan yhdistäminen" visible={displayMerge} onHide={() => onHide('displayMerge')}>
                 <MergeTagsDialog />
             </Dialog>
 
-            {/* <Dialog header="Poista" visible={displayDelete} onHide={() => onHide('displayDelete')}>
-                <DeleteDialog />
-            </Dialog> */}
             <ConfirmDialog visible={displayDelete}
                 onHide={() => setDisplayDelete(false)}
                 message="Oletko varma että haluat poistaa asiasanan?"
@@ -274,6 +228,7 @@ export const SFTag = ({ id }: SfTagProps) => {
                 accept={deleteTag}
                 reject={() => setDisplayDelete(false)}
             />
+
             <div className="mt-5 speeddial style={{position: 'relative', height: '500px}}">
                 {user && user.role === "admin" &&
                     <div>
@@ -296,24 +251,29 @@ export const SFTag = ({ id }: SfTagProps) => {
                         (
                             <div className="grid justify-content-center min-w-full">
                                 <div className="grid justify-content-center col-12 mt-5 mb-5 min-w-full">
-                                    <h1 className="maintitle min-w-full justify-content-center">{tag?.name}</h1>
+                                    <h1 className="maintitle min-w-full justify-content-center">{data?.name}</h1>
                                 </div>
-                                {tag?.works && tag.works.length > 0 &&
+                                <div className="grid col-12">
+                                    <Tag value={data?.type?.name}
+                                        severity={data ? tagTypeToSeverity(data) : undefined}
+                                    />
+                                </div>
+                                {data?.works && data.works.length > 0 &&
                                     <div className="grid col-12 mt-5">
                                         <h2 className="mb-5">Teokset</h2>
-                                        <WorkList works={tag?.works} />
+                                        <WorkList works={data?.works} />
                                     </div>
                                 }
-                                {tag?.shorts && tag.shorts.length > 0 &&
+                                {data?.stories && data.stories.length > 0 &&
                                     <div className="grid col-12 mt-5">
                                         <h2 className="mb-5">Novellit</h2>
-                                        <ShortsList shorts={tag?.shorts} />
+                                        <ShortsList shorts={data?.stories} />
                                     </div>
                                 }
-                                {tag?.articles && tag.articles.length > 0 &&
+                                {data?.articles && data.articles.length > 0 &&
                                     <div className="col-12 mt-5">
                                         <h2 className="mb-5">Artikkelit</h2>
-                                        <ArticleList articles={tag.articles} />
+                                        <ArticleList articles={data.articles} />
                                     </div>
                                 }
                             </div>

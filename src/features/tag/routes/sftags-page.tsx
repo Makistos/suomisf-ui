@@ -1,53 +1,65 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import { ProgressSpinner } from 'primereact/progressspinner';
 
-import { getApiContent } from '../../../services/user-service';
-import { getCurrenUser } from '../../../services/auth-service';
-import { TagType, SfTagProps } from "../types";
-import { useDocumentTitle } from '../../../components/document-title';
+import { getCurrenUser } from '@services/auth-service';
+import { SfTag } from "@features/tag/types";
+import { useDocumentTitle } from '@components/document-title';
+import { getTags } from '@api/tag/get-tags';
+import { useQuery } from '@tanstack/react-query';
 
-export const SFTags = ({ id }: SfTagProps) => {
-    const [genreTags, setGenreTags]: [TagType[], (tag: TagType[]) => void] = useState<TagType[]>([]);
-    const [styleTags, setStyleTags]: [TagType[], (tag: TagType[]) => void] = useState<TagType[]>([]);
-    const [otherTags, setOtherTags]: [TagType[], (tag: TagType[]) => void] = useState<TagType[]>([]);
+export const SFTags = () => {
     const [documentTitle, setDocumentTitle] = useDocumentTitle("");
     useEffect(() => {
         setDocumentTitle("Asiasanat");
-    })
+    }, [])
 
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
     const user = useMemo(() => { return getCurrenUser() }, []);
 
-    useEffect(() => {
-        async function getTags() {
-            setLoading(true);
-            let url = 'tags';
-            try {
-                const response = await getApiContent(url, user);
-                const tags: TagType[] = response.data;
-                setGenreTags(tags.filter(tag => tag.type === 'subgenre'));
-                setStyleTags(tags.filter(tag => tag.type === 'style'));
-                setOtherTags(tags.filter(tag => tag.type === null));
-            } catch (e) {
-                console.log(e);
-            }
-            setLoading(false);
-        }
-        getTags();
-    }, [id, user])
+    const { isLoading, data } = useQuery({
+        queryKey: ['tags'],
+        queryFn: () => getTags(user)
+    })
 
-    const renderTags = (tags: TagType[]) => {
-        return tags.map((tag: TagType) => {
-            return <><Link to={`/tags/${tag.id}`} key={tag.id}>{tag.name}</Link><br /></>
+    if (isLoading) {
+        return <ProgressSpinner />
+    }
+
+    const tagCount = (tag: SfTag) => {
+        if (tag.id === 1) {
+            console.log("foo")
+        }
+        let count = 0;
+        if (tag.articles) {
+            count += tag.articles.length;
+        }
+        if (tag.stories) {
+            count += tag.stories.length;
+        }
+        if (tag.works) {
+            count += tag.works.length;
+        }
+        return count;
+    }
+
+    const renderTags = (tags: SfTag[]) => {
+        return tags.map((tag: SfTag) => {
+            return (
+                <>
+                    <Link to={`/tags/${tag.id}`} key={tag.id}>{tag.name}</Link>&nbsp;
+                    ({tagCount(tag)})
+                    < br />
+                </>
+            )
         })
     }
 
     return (
         <main>
             {
-                loading ? (
+                (data === null || data === undefined) || isLoading ? (
                     <div className="progressbar">
                         <ProgressSpinner />
                     </div>
@@ -58,30 +70,42 @@ export const SFTags = ({ id }: SfTagProps) => {
                             <div className="grid col-12 justify-content-center">
                                 <h1 className="maintitle">Asiasanat</h1>
                             </div>
-                            {genreTags !== null && genreTags !== undefined && genreTags.length > 0 && (
-                                <div className="grid col-12 mb-3">
-                                    <h2>Alagenret</h2>
-                                    <div className="three-column">
-                                        {renderTags(genreTags)}
-                                    </div>
+                            <div className="grid col-12 mb-3">
+                                <h2>Alagenret</h2>
+                                <div className="three-column">
+                                    {renderTags(data.filter(tag => tag.type?.name === 'Alagenre'))}
                                 </div>
-                            )}
-                            {styleTags !== null && styleTags !== undefined && styleTags.length > 0 && (
-                                <div className="grid col-12 mb-3">
-                                    <h2>Tyylit</h2>
-                                    <div className="three-column">
-                                        {renderTags(styleTags)}
-                                    </div>
+                            </div>
+                            <div className="grid col-12 mb-3">
+                                <h2>Tyylit</h2>
+                                <div className="three-column">
+                                    {renderTags(data.filter(tag => tag.type?.name === 'Tyyli'))}
                                 </div>
-                            )}
-                            {otherTags !== null && otherTags !== undefined && otherTags.length > 0 && (
-                                <div className="grid col-12 mb-3">
-                                    <h2>Muut asiasanat</h2>
-                                    <div className="three-column">
-                                        {renderTags(otherTags)}
-                                    </div>
+                            </div>
+                            <div className="grid col-12 mb-3">
+                                <h2>Paikat</h2>
+                                <div className="three-column">
+                                    {renderTags(data.filter(tag => tag.type?.name === 'Paikka'))}
                                 </div>
-                            )}
+                            </div>
+                            <div className="grid col-12 mb-3">
+                                <h2>Toimijat</h2>
+                                <div className="three-column">
+                                    {renderTags(data.filter(tag => tag.type?.name === 'Toimija'))}
+                                </div>
+                            </div>
+                            <div className="grid col-12 mb-3">
+                                <h2>Tapahtuma-aika</h2>
+                                <div className="three-column">
+                                    {renderTags(data.filter(tag => tag.type?.name === 'Aika'))}
+                                </div>
+                            </div>
+                            <div className="grid col-12 mb-3">
+                                <h2>Aihe</h2>
+                                <div className="three-column">
+                                    {renderTags(data.filter(tag => tag.type === null || tag.type?.name === 'Aihe'))}
+                                </div>
+                            </div>
                         </div>
                     )
             }

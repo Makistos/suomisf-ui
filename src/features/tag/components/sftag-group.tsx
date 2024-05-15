@@ -3,23 +3,27 @@ import React, { useEffect, useState } from 'react';
 import { Tag } from 'primereact/tag';
 import { Button } from 'primereact/button';
 
-import { TagType, SfTagProps } from "../types";
+import { SfTag, SfTagProps } from "../types";
 import { Link } from 'react-router-dom';
+import { tagTypeToSeverity } from '@features/tag/components/tag-type-to-severity';
 
 interface TagsProps {
-    tags: TagType[],
+    tags: SfTag[],
     overflow: number,
     showOneCount: boolean
 }
 
-type TagCount = TagType & { count: number };
+type TagCount = SfTag & { count: number };
 
+interface TagCountCompProps {
+    tag: TagCount
+}
 
 /**
  * Renders a group of tags with optional overflow and tag counts.
  *
  * @param {TagsProps} props - The props object containing the tags, overflow, and showOneCount.
- * @param {TagType[]} props.tags - The array of tags to render.
+ * @param {SfTag[]} props.tags - The array of tags to render.
  * @param {number} props.overflow - The maximum number of tags to display before showing an overflow button.
  * @param {boolean} props.showOneCount - Whether to show the count of each tag when there are multiple occurrences.
  * @return {JSX.Element} The rendered tag group component.
@@ -27,14 +31,14 @@ type TagCount = TagType & { count: number };
 export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
     const [groupedTags, setGroupedTags] = useState<TagCount[]>([]);
     const [showAll, setShowAll] = useState(false);
-    const [subgenres, setSubgenres] = useState<TagType[]>([]);
-    const [styles, setStyles] = useState<TagType[]>([]);
-    const [locations, setLocations] = useState<TagType[]>([]);
-    const [actors, setActors] = useState<TagType[]>([]);
-    const [eras, setEras] = useState<TagType[]>([]);
+    const [subgenres, setSubgenres] = useState<SfTag[]>([]);
+    const [styles, setStyles] = useState<SfTag[]>([]);
+    const [locations, setLocations] = useState<SfTag[]>([]);
+    const [actors, setActors] = useState<SfTag[]>([]);
+    const [eras, setEras] = useState<SfTag[]>([]);
 
-    const filterTypes = (tags: TagType[], type: string) => {
-        return tags.filter(tag => tag.type === type)
+    const filterTypes = (tags: SfTag[], type: string) => {
+        return tags.filter(tag => tag.type?.name === type)
             .map(tag => tag)
     }
 
@@ -45,7 +49,7 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
          * @return {Record<string, TagCount>} An object containing the count of each unique tag.
          */
         const countTags = () => {
-            let retval = tags.reduce((acc, currentValue: TagType) => {
+            let retval = tags.reduce((acc, currentValue: SfTag) => {
                 const tagName = currentValue.name;
                 if (!acc[tagName]) {
                     acc[tagName] = { ...currentValue, count: 1 };
@@ -78,23 +82,23 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
      * Renders a tag count component with the given tag and count.
      *
      * @param {SfTagProps} props - The props object containing the tag and count.
-     * @param {TagType} props.tag - The tag to render.
+     * @param {SfTag} props.tag - The tag to render.
      * @param {number | null} props.count - The count of the tag.
      * @return {JSX.Element} The rendered tag count component.
      */
-    const TagCount = ({ tag, count }: SfTagProps) => {
-        const TypeToSeverity = (type: string) => {
-            if (tag === undefined) return undefined;
-            if (type !== null) {
-                if (subgenres.find((genre) => genre.id === tag.id)) {
-                    return "success";
-                }
-                if (styles.find((style) => style.id === tag.id)) {
-                    return "warning";
-                }
-            }
-            return undefined;
-        }
+    const TagCountComp = ({ tag }: TagCountCompProps) => {
+        // const TypeToSeverity = (type: string) => {
+        //     if (tag === undefined) return undefined;
+        //     if (type !== null) {
+        //         if (subgenres.find((genre) => genre.id === tag.id)) {
+        //             return "success";
+        //         }
+        //         if (styles.find((style) => style.id === tag.id)) {
+        //             return "warning";
+        //         }
+        //     }
+        //     return undefined;
+        // }
 
         /**
          * Returns a string that concatenates the name with the count if count is not null,
@@ -105,7 +109,7 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
          * @return {string} The concatenated string.
          */
         const headerText = (name: string, count: number | null) => {
-            if (count !== null) {
+            if (count !== 0) {
                 return name + " x " + count;
             } else {
                 return name;
@@ -113,9 +117,10 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
         }
 
         return (
-            <Tag value={headerText(tag?.name === undefined ? "" : tag.name, count === undefined ? 0 : count)}
+            <Tag value={headerText(tag?.name === undefined ? "" : tag.name,
+                showOneCount && tag.count !== undefined && tag.count !== 1 ? tag.count : 0)}
                 className="p-overlay-badge"
-                severity={TypeToSeverity(tag?.type === undefined ? "" : tag.type)}
+                severity={tagTypeToSeverity(tag)}
             />
         )
     }
@@ -125,8 +130,7 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
                 return (overflow === undefined || idx < overflow || showAll) &&
                     <span key={tag.name} className="mr-1 mb-1">
                         <Link to={`/tags/${tag.id}`} className="mr-1 mb-1">
-                            <TagCount tag={tag}
-                                count={showOneCount && tag.count !== 1 ? tag.count : null} />
+                            <TagCountComp tag={{ ...tag, count: tag.count }} />
                         </Link>
                     </span>
 

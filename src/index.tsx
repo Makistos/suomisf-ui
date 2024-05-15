@@ -22,7 +22,7 @@ import { BookseriesListPage } from './features/bookseries/routes/bookseries-list
 import { PubseriesListPage } from './features/pubseries/routes/pubseries-list-page';
 import { ShortSearchPage } from './features/short/routes/short-search-page';
 import { WorkSearchPage } from './features/work/routes/work-search';
-import { SFTag } from './features/tag/components/sftag';
+import { SFTag } from './features/tag/routes/sftag';
 import { SFTags } from './features/tag/routes/sftags-page';
 import { Awards } from './features/award/routes/awards-page'
 import { AwardPage } from './features/award/routes/award-page';
@@ -60,7 +60,7 @@ root.render(
         <Route path="publishers/:itemId" element={<PublisherPage id={null} />} />
         <Route path="publishers" element={<PublisherListPage />} />
         <Route path="tags" element={<SFTags />} />
-        <Route path="tags/:tagid" element={<SFTag />} />
+        <Route path="tags/:tagid" element={<SFTag id={null} />} />
         <Route path="/login" element={<LoginView />} />
         <Route path="/changes" element={<Changes />} />
         <Route path="/latest" element={<LatestAdditions />} />

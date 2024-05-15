@@ -8,9 +8,15 @@ import { Issue } from "../../issue/types";
 export interface TagType {
     id: number;
     name: string;
-    type: string;
+}
+
+export interface SfTag {
+    id: number;
+    name: string;
+    type_id: number;
+    type?: TagType;
     works?: Work[];
-    shorts?: Short[];
+    stories?: Short[];
     articles?: Article[];
     //magazines?: Magazine[];
     //people?: Person[];
@@ -18,7 +24,13 @@ export interface TagType {
 }
 
 export interface SfTagProps {
-    id?: number | null,
-    tag?: TagType,
+    id: number | null,
+    tag?: SfTag,
     count?: number | null
+}
+
+export interface TagFormData {
+    id: number | null,
+    name: string,
+    type: TagType | null
 }

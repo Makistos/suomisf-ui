@@ -20,11 +20,11 @@
     "paths": {
       "@/*": ["__dirname", "../"],
       "@api/*": ["api/*"],
-      "@components/*": ["components"],
+      "@components/*": ["./components/*"],
       "@features/*": ["features/*"],
       "@hooks/*": ["hooks/*"],
       "@services/*": ["./services/*"],
-      "@types/*": ["types/*"],
+      "@types/*": ["./types/*"],
       "@utils/*": ["utils/*"]
     }
   },

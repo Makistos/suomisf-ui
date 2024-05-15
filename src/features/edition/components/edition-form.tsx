@@ -21,6 +21,7 @@ import { FormInputNumber } from '../../../components/forms/field/form-input-numb
 import { FormDropdown } from '../../../components/forms/field/form-dropdown';
 import { FormTriStateCheckbox } from '../../../components/forms/field/form-tri-state-checkbox';
 import { FormCheckbox } from '../../../components/forms/field/form-checkbox';
+import { replyMessage } from '@components/forms/reply-message';
 
 interface EditionFormProps {
   edition: Edition | null;
@@ -153,15 +154,6 @@ export const EditionForm = (props: EditionFormProps) => {
     } else {
       return postApiContent('editions', saveData, user);
     }
-  }
-
-  const replyMessage = (msg: any) => {
-    let errMsg = JSON.parse(msg.response).data["msg"];
-    if (errMsg === undefined) {
-      errMsg = JSON.parse(msg.response).data;
-    }
-    console.log(errMsg);
-    return errMsg;
   }
 
   const { mutate } = useMutation({

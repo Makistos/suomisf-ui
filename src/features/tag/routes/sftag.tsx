@@ -29,6 +29,7 @@ import { mergeTags } from '@api/tag/merge-tags';
 import { Tag } from 'primereact/tag';
 import { tagTypeToSeverity } from '../components/tag-type-to-severity';
 import { deleteTag } from '@api/tag/delete-tag';
+import { filterTags } from '@api/tag/filter-tags';
 
 
 export const SFTag = ({ id }: SfTagProps) => {
@@ -117,9 +118,9 @@ export const SFTag = ({ id }: SfTagProps) => {
 
         async function getTags(query: string) {
             try {
-                const response = await getApiContent("filter/tags/" + query, user);
+                const response = await filterTags(query, user);
                 // console.log(response.data);
-                setFilteredTags(response.data);
+                setFilteredTags(response);
             } catch (e) {
                 console.error(e);
             }

@@ -28,6 +28,7 @@ import { getTag } from '@api/tag/get-tag';
 import { mergeTags } from '@api/tag/merge-tags';
 import { Tag } from 'primereact/tag';
 import { tagTypeToSeverity } from '../components/tag-type-to-severity';
+import { deleteTag } from '@api/tag/delete-tag';
 
 
 export const SFTag = ({ id }: SfTagProps) => {
@@ -187,15 +188,12 @@ export const SFTag = ({ id }: SfTagProps) => {
         )
     }
 
-    const deleteTag = () => {
-        const deleteTagFromDb = () => {
-            if (data) {
-                deleteApiContent("tags/" + data.id.toString());
-            }
+    const deleteTagFunc = () => {
+        if (data) {
+            deleteTag(data.id);
+            queryClient.invalidateQueries({ queryKey: ['tags'] });
+            navigate(-1);
         }
-
-        deleteTagFromDb();
-        navigate(-1);
     }
 
     const onTagSubmit = (status: boolean, message: string) => {
@@ -225,7 +223,7 @@ export const SFTag = ({ id }: SfTagProps) => {
                 message="Oletko varma että haluat poistaa asiasanan?"
                 header="Asiasanan poistaminen"
                 icon="pi pi-excalamation-triangle"
-                accept={deleteTag}
+                accept={deleteTagFunc}
                 reject={() => setDisplayDelete(false)}
             />
 

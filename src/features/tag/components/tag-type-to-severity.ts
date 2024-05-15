@@ -1,5 +1,14 @@
 import { SfTag } from "../types";
 
+/**
+ * Determines the severity based on the tag type ID.
+ *
+ * This will set the severity of the tag based on the tag type which in turn
+ * sets the color of the tag.
+ *
+ * @param {SfTag} tag - The tag to evaluate.
+ * @return {string} The severity level based on the tag type.
+ */
 export const tagTypeToSeverity = (tag: SfTag) => {
     if (tag.type?.id === 2) {
         // Subgenre

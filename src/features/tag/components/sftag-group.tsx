@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Tag } from 'primereact/tag';
 import { Button } from 'primereact/button';
 
-import { SfTag, SfTagProps } from "../types";
+import { SfTag } from "../types";
 import { Link } from 'react-router-dom';
 import { tagTypeToSeverity } from '@features/tag/components/tag-type-to-severity';
 
@@ -87,19 +87,6 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
      * @return {JSX.Element} The rendered tag count component.
      */
     const TagCountComp = ({ tag }: TagCountCompProps) => {
-        // const TypeToSeverity = (type: string) => {
-        //     if (tag === undefined) return undefined;
-        //     if (type !== null) {
-        //         if (subgenres.find((genre) => genre.id === tag.id)) {
-        //             return "success";
-        //         }
-        //         if (styles.find((style) => style.id === tag.id)) {
-        //             return "warning";
-        //         }
-        //     }
-        //     return undefined;
-        // }
-
         /**
          * Returns a string that concatenates the name with the count if count is not null,
          * otherwise returns just the name.

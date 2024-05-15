@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import React, { useEffect, useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { useParams } from "react-router-dom";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
@@ -8,19 +8,15 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { SpeedDial } from 'primereact/speeddial';
 import { Tooltip } from "primereact/tooltip";
 import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
 import { classNames } from "primereact/utils";
 import { AutoComplete } from 'primereact/autocomplete';
 import { ConfirmDialog } from 'primereact/confirmdialog';
-import axios from 'axios';
 
-import { getApiContent, deleteApiContent } from '@services/user-service';
 import { getCurrenUser } from '@services/auth-service';
 import { WorkList } from '@features/work';
 import { ShortsList } from '@features/short';
 import { ArticleList } from '@features/article';
-import authHeader from '@services/auth-header';
-import { SfTag, SfTagProps } from '../types';
+import { SfTagProps } from '../types';
 import { SfTagForm } from '../components/sftag-form';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Toast } from 'primereact/toast';
@@ -34,7 +30,6 @@ import { filterTags } from '@api/tag/filter-tags';
 
 export const SFTag = ({ id }: SfTagProps) => {
     const params = useParams();
-    // const [tag, setTag]: [SfTag | null, (tag: SfTag) => void] = useState<SfTag | null>(null);
     const [displayChangeName, setDisplayChangeName] = useState(false);
     const [displayMerge, setDisplayMerge] = useState(false);
     const [displayDelete, setDisplayDelete] = useState(false);
@@ -50,17 +45,6 @@ export const SFTag = ({ id }: SfTagProps) => {
     }
 
     const queryClient = useQueryClient();
-
-    // const tagHasContent = (tag: TagType | null) => {
-    //     if (tag === undefined || tag === null) return false;
-    //     if (tag?.articles && tag.articles.length > 0) return true;
-    //     if (tag?.issues && tag.issues.length > 0) return true;
-    //     if (tag?.magazines && tag.magazines.length > 0) return true;
-    //     if (tag?.people && tag.people.length > 0) return true;
-    //     if (tag?.shorts && tag.shorts.length > 0) return true;
-    //     if (tag?.works && tag.works.length > 0) return true;
-    //     return false;
-    // }
 
     const onSpeeddialClick = (name: string) => {
         dialogFuncMap[`${name}`](true);
@@ -119,7 +103,6 @@ export const SFTag = ({ id }: SfTagProps) => {
         async function getTags(query: string) {
             try {
                 const response = await filterTags(query, user);
-                // console.log(response.data);
                 setFilteredTags(response);
             } catch (e) {
                 console.error(e);
@@ -180,12 +163,6 @@ export const SFTag = ({ id }: SfTagProps) => {
                     </div>
                 </form>
             </div>
-        )
-    }
-
-    const DeleteDialog = () => {
-        return (
-            <div></div>
         )
     }
 

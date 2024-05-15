@@ -1,9 +1,6 @@
 import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
-import { classNames } from 'primereact/utils';
-import { Controller, FormProvider, useForm } from "react-hook-form";
-import { Dropdown } from 'primereact/dropdown';
-import { TagFormData, SfTag, TagType } from '../types';
+import { FormProvider, useForm } from "react-hook-form";
+import { TagFormData, TagType } from '../types';
 import { useEffect, useMemo, useState } from 'react';
 import { getCurrenUser } from '@services/auth-service';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -105,28 +102,6 @@ const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
                             label="Tyyppi"
                             options={types}
                         />
-                        {/* <span className="grid col">
-                            <label htmlFor="name">Uusi nimi</label>
-                            <Controller name="name" control={methods.control}
-                                render={({ field, fieldState }) => (
-                                    <InputText
-                                        id={field.name} {...field} autoFocus
-                                        className={classNames({ 'p-invalid': fieldState.error }, 'w-full')} />
-                                )} />
-                        </span> */}
-                        {/* <span className="grid col">
-                            <label htmlFor="type">Tyyppi</label>
-                            <Controller name="type" control={methods.control}
-                                render={({ field, fieldState }) => (
-                                    <Dropdown
-                                        id={field.name} {...field}
-                                        value={ }
-                                        className={classNames({ 'p-invalid': fieldState.error }, 'w-full')} />
-
-
-                                )}
-                            />
-                        </span> */}
                     </div>
                     <div className="grid col">
                         <Button type="submit" className="w-full justify-content-center">

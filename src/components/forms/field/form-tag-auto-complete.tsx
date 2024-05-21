@@ -33,28 +33,37 @@ export const FormTagAutoComplete = ({ name, methods, label, labelClass, tagFunct
   const onNewItemShow = () => {
     setAddNewItemVisible(true);
   }
-  const onNewItemHide = () => {
-    if (tagName && tagName != "") {
-      append({ id: 0, name: tagName });
+
+  const onNewItemHide = (tag: string) => {
+    if (tag != "") {
+      append({ id: 0, name: tag });
       setAddNewItemVisible(false);
       setTagName("");
     }
     setAddNewItemVisible(false);
   }
 
-  const NewItem = ({ submitFunction }: NewItemProps) => {
+  const NewItem = () => {
+    const [tag, setTag] = useState("");
     return (
-      <div className="grid mt-3">
-        <div className="grid col mr-1">
+      <div className="card mt-3">
+        <div className="grid col">
           <InputText
-            value={tagName} id="item"
-            onChange={(e) => setTagName(e.target.value)}></InputText>
+            autoFocus
+            value={tag} id="item"
+            onChange={(e) => setTag(e.target.value)}></InputText>
         </div>
         <div className="grid col">
           <Button type="button"
             icon="pi pi-save"
             size="large"
-            onClick={onNewItemHide} label="Tallenna"></Button>
+            onClick={() => onNewItemHide(tag)} label="Tallenna"></Button>
+        </div>
+        <div className="grid col">
+          <Button type="button"
+            icon="pi pi-times"
+            size="large"
+            onClick={() => onNewItemHide("")} label="Peruuta"></Button>
         </div>
       </div>
     )
@@ -66,9 +75,13 @@ export const FormTagAutoComplete = ({ name, methods, label, labelClass, tagFunct
         {tagFunction &&
           <Dialog header="Lisää tietue"
             visible={addNewItemVisible}
+            modal
+            closable
+            closeOnEscape
+            dismissableMask={true}
             // onShow={() => onNewItemShow}
             onHide={() => onNewItemHide}>
-            <NewItem submitFunction={tagFunction} />
+            <NewItem />
           </Dialog>
         }
         <Controller

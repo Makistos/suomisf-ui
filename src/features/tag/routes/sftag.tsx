@@ -185,6 +185,7 @@ export const SFTag = ({ id }: SfTagProps) => {
     }
 
     return (
+
         <main className="all-content">
             <Toast ref={toastRef} />
             <Dialog header="Muokkaa" visible={displayChangeName} onHide={() => onHide('displayChangeName')}>
@@ -218,7 +219,7 @@ export const SFTag = ({ id }: SfTagProps) => {
                     </div>
                 }
                 {
-                    loading ? (
+                    isLoading ? (
                         <div className="progressbar">
                             <ProgressSpinner />
                         </div>

@@ -39,8 +39,6 @@ export const Home = () => {
     getStats();
   }, [user])
 
-  console.log(stats)
-
   return (
     <div className="grid mt-4 p-4">
       <div className="col-12 lg:col-8">

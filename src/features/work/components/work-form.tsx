@@ -7,13 +7,11 @@ import { Button } from 'primereact/button';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ProgressBar } from 'primereact/progressbar';
 
-import { Work } from '../types';
 import { getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { WorkFormData, WorkType } from '../types';
 import { isDisabled } from '../../../components/forms/forms';
-import { ContributorField, emptyContributor } from '../../../components/forms/contributor-field';
-import { Contribution } from '../../../types/contribution';
+import { ContributorField } from '../../../components/forms/contributor-field';
 import { LinksField } from '../../../components/forms/links-field';
 import { HttpStatusResponse } from "../../../services/user-service"
 import { FormInputText } from '../../../components/forms/field/form-input-text';
@@ -23,6 +21,7 @@ import { FormDropdown } from '../../../components/forms/field/form-dropdown';
 import { FormAutoComplete } from '../../../components/forms/field/form-auto-complete';
 import { FormEditor } from '../../../components/forms/field/form-editor';
 import { getWorkFormData } from '@api/work/get-workform-data';
+import { FormTagAutoComplete } from '@components/forms/field/form-tag-auto-complete';
 
 interface FormProps {
   workId: string | null,
@@ -95,7 +94,6 @@ export const WorkForm = (props: FormProps) => {
       }
     },
     onError: (error: any) => {
-      console.log(error.message);
       props.onSubmitCallback(false, error.message);
     }
   })
@@ -103,7 +101,6 @@ export const WorkForm = (props: FormProps) => {
   if (isLoading || (data?.id === null && props.workId !== null)) {
     return <div>loading...</div>
   }
-  console.log(data);
 
   return (
     <>
@@ -288,7 +285,7 @@ const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
               />
             </div>
             <div className="field col-12">
-              <FormAutoComplete
+              <FormTagAutoComplete
                 name="tags"
                 methods={methods}
                 label="Asiassanat"

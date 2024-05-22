@@ -237,19 +237,19 @@ export const SFTag = ({ id }: SfTagProps) => {
                                 </div>
                                 {data?.works && data.works.length > 0 &&
                                     <div className="grid col-12 mt-5">
-                                        <h2 className="mb-5">Teokset</h2>
+                                        <h2 className="mb-5">Teokset ({data?.works.length})</h2>
                                         <WorkList works={data?.works} />
                                     </div>
                                 }
                                 {data?.stories && data.stories.length > 0 &&
                                     <div className="grid col-12 mt-5">
-                                        <h2 className="mb-5">Novellit</h2>
+                                        <h2 className="mb-5">Novellit ({data?.stories.length})</h2>
                                         <ShortsList shorts={data?.stories} />
                                     </div>
                                 }
                                 {data?.articles && data.articles.length > 0 &&
                                     <div className="col-12 mt-5">
-                                        <h2 className="mb-5">Artikkelit</h2>
+                                        <h2 className="mb-5">Artikkelit ({data?.articles.length})</h2>
                                         <ArticleList articles={data.articles} />
                                     </div>
                                 }

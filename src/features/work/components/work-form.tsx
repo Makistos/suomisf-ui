@@ -316,7 +316,7 @@ const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
             </div>
             <div className="field col-12">
               <FormInputText
-                name="descr_attrs"
+                name="descr_attr"
                 methods={methods}
                 label="Kuvauksen lähde"
                 disabled={disabled}

@@ -6,6 +6,7 @@ import { formErrorMessage } from "../form-error-message"
 import { Dialog } from "primereact/dialog"
 import { FormEventHandler, useState } from "react"
 import { InputText } from "primereact/inputtext"
+import { FloatLabel } from "primereact/floatlabel"
 
 interface FormAutoCompleteProps extends AutoCompleteProps {
   name: string,
@@ -46,23 +47,29 @@ export const FormTagAutoComplete = ({ name, methods, label, labelClass, tagFunct
   const NewItem = () => {
     const [tag, setTag] = useState("");
     return (
-      <div className="card mt-3">
-        <div className="grid col">
-          <InputText
-            autoFocus
-            value={tag} id="item"
-            onChange={(e) => setTag(e.target.value)}></InputText>
+      <div className="card grid mt-3 mb-0">
+        <div className="col-12 mb-0">
+          <FloatLabel>
+            <InputText
+              autoFocus
+              value={tag} id="item"
+              className="min-w-full"
+              onChange={(e) => setTag(e.target.value)}></InputText>
+            <label htmlFor="item">Uusi asiasana</label>
+          </FloatLabel>
         </div>
-        <div className="grid col">
+        <div className="col-12 mt-0 mb-0">
           <Button type="button"
             icon="pi pi-save"
             size="large"
+            className="min-w-full"
             onClick={() => onNewItemHide(tag)} label="Tallenna"></Button>
         </div>
-        <div className="grid col">
+        <div className="col-12 mt-0 pt-0" >
           <Button type="button"
             icon="pi pi-times"
             size="large"
+            className="min-w-full"
             onClick={() => onNewItemHide("")} label="Peruuta"></Button>
         </div>
       </div>
@@ -76,9 +83,7 @@ export const FormTagAutoComplete = ({ name, methods, label, labelClass, tagFunct
           <Dialog header="Lisää tietue"
             visible={addNewItemVisible}
             modal
-            closable
-            closeOnEscape
-            dismissableMask={true}
+            closable={false}
             // onShow={() => onNewItemShow}
             onHide={() => onNewItemHide}>
             <NewItem />

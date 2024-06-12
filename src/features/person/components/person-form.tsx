@@ -77,7 +77,7 @@ export const PersonForm = (props: FormProperties<Person>) => {
         onSuccess: (data: HttpStatusResponse, variables) => {
             props.onSubmitCallback();
             if (variables.id === null) {
-                navigate('/people' + data.response, { replace: false })
+                navigate('/people/' + data.response, { replace: false })
             } else if (data.status === 200) {
 
             } else {

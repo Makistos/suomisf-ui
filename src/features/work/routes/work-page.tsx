@@ -221,6 +221,11 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             setDocumentTitle(data.title);
     }, [data])
 
+    const onUpload = () => {
+        toastRef.current?.show({ severity: 'info', summary: 'Success', detail: 'Kuva tallennettu' });
+        queryClient.invalidateQueries({ queryKey: ["work", workId] });
+    }
+
     const renderListItem = (edition: Edition, work?: Work) => {
         const imageUploadUrl = `editions/${edition.id}/images`;
         const eIdx = work?.editions.findIndex(e => e.id === edition.id);
@@ -241,9 +246,6 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             });
         }
 
-        const onUpload = () => {
-            toastRef.current?.show({ severity: 'info', summary: 'Success', detail: 'Kuva tallennettu' });
-        }
         return (
             (work &&
                 <div className="col-12">

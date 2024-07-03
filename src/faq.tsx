@@ -16,7 +16,7 @@ export const FAQ = () => {
                     <Link to={`https://kansalliskirjasto.finna.fi/`}> Kansalliskirjastoa</Link> (perustiedot kuten ISBN), <Link to={`https://www.risingshadow.fi/`}>Risingshadow</Link> (teosten kuvaukset) ja&nbsp;
                     <Link to={`https://www.kirjasampo.fi/fi`}>Kirjasampo</Link> (asiasanat). Näiden lisäksi lukuisia muita lähteitä on käytetty tarpeen mukaan.</p>
                 <p>Kansikuvat löytyvät pääasiassa eri sivustoilta, kuten Antikvaarista, Kansalliskirjastosta
-                    (uudempien kirjojen osalta) ja Risingshadow'sta.
+                    (uudempien kirjojen osalta) ja Risingshadow'sta. Runsaasti kuvia on myös skannattu itse omista kirjoista.
                 </p>
 
             </div>

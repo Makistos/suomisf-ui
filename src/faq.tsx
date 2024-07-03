@@ -13,7 +13,7 @@ export const FAQ = () => {
                 <h2>Mistä sivuston tiedot tulevat?</h2>
                 <p>Suurin osa kirjoista tulee alkuperäisestä kirjaluettelosta. Sen tietoja on laajennettu
                     ja uudet kirjat lisätty käyttäen hyväksi omia kokoelmia sekä erityisesti
-                    <Link to={`https://kansalliskirjasto.finna.fi/`}>Kansalliskirjastoa</Link> (perustiedot kuten ISBN), <Link to={`https://www.risingshadow.fi/`}>Risingshadow</Link> (teosten kuvaukset) ja&nbsp;
+                    <Link to={`https://kansalliskirjasto.finna.fi/`}> Kansalliskirjastoa</Link> (perustiedot kuten ISBN), <Link to={`https://www.risingshadow.fi/`}>Risingshadow</Link> (teosten kuvaukset) ja&nbsp;
                     <Link to={`https://www.kirjasampo.fi/fi`}>Kirjasampo</Link> (asiasanat). Näiden lisäksi lukuisia muita lähteitä on käytetty tarpeen mukaan.</p>
                 <p>Kansikuvat löytyvät pääasiassa eri sivustoilta, kuten Antikvaarista, Kansalliskirjastosta
                     (uudempien kirjojen osalta) ja Risingshadow'sta.
@@ -27,6 +27,9 @@ export const FAQ = () => {
                     Kansalliskirjaston tiedoissa on virheitä (muista lähteistä puhumattakaan) ja sieltä
                     puuttuu runsaasti painoksia. Kansikuvien osalta voimme skannata omat teoksemme, muuten olemme
                     internetin tarjoamien kuvien varassa.
+                </p>
+                <p>Sekä sivuston toiminnallisista että sisällöllisistä virheistä voi ilmoittaa sähköpostilla
+                    osoitteeseen yp (at) sf-bibliografia.fi.
                 </p>
 
             </div>
@@ -74,6 +77,10 @@ export const FAQ = () => {
                 <p>Ikonit ovat <Link to={`https://www.iconarchive.com/`}>IconArchive</Link>-palvelusta.</p>
                 <p>Etusivun kuva on <Link to={`https://www.pexels.com`}>Pexels</Link>-palvelusta. Kuvan ottaja on Gunnar Ridderström.&nbsp;
                     <Link to={`https://www.pexels.com/photo/public-library-with-collection-of-multicolored-books-4318441/`}>Alkuperäinen kuva.</Link> </p>
+                <p>Kaikki koodi on vapaata. Käyttöliittymäkoodi löytyy osoitteesta
+                    <Link to={`https://github.com/Makistos/suomisf-ui`}>https://github.com/Makistos/suomisf-ui</Link> ja
+                    taustajärjestelmä osoitteesta <Link to={`https://github.com/Makistos/suomisf`}>https://github.com/Makistos/suomisf</Link>.
+                </p>
             </div>
         </div >
     );

@@ -64,6 +64,7 @@ root.render(
         <Route path="/login" element={<LoginView />} />
         <Route path="/changes" element={<Changes />} />
         <Route path="/latest" element={<LatestAdditions />} />
+        <Route path="/faq" element={<FAQ />} />
         <Route path="*"
           element={
             <main style={{ padding: "3rem" }}>

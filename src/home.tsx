@@ -121,7 +121,7 @@ export const Home = () => {
         <div className="grid col-12 mt-8">
           <hr />
           <div className="flex gap-3 flex-grow-1 flex-shrink-1 flex-wrap justify-content-center">
-            <span><a href="#">Tietoja</a></span>
+            <span><Link to={`/faq`}>Tietoja</Link></span>
             <span><a href="#">Tilastot</a></span>
             <span><a href="/changes">Muutokset</a></span>
           </div>

@@ -105,13 +105,25 @@ a {
   color: #61dafb;
 }
 
-div.three-column {
-  column-count: 3;
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
+@media only screen and (max-width: 960px) {
+  div.three-column {
+    column-count: 1;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+@media only screen and (min-width: 961px) {
+  div.three-column {
+    column-count: 3;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+  }
 }
 
 /* PrimeReact */
@@ -327,9 +339,9 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
   min-width: 2rem;
 }
 
-div.three-column {
+/* div.three-column {
   column-count: 3;
-}
+} */
 
 .editor-readonly {
   border: none;

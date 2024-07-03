@@ -15,7 +15,7 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
     return (
 
         <div className="work-oneliner">
-            <Tooltip position="right" autoHide={false} className="tooltip"
+            <Tooltip position="right" mouseTrack mouseTrackLeft={10}
                 target={".work-link-" + work.id}
             >
                 <WorkTooltip work={work} />

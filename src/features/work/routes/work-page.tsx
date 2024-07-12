@@ -70,6 +70,14 @@ const ImageView = ({ edition }: ImageViewProps) => {
             command: () => {
                 //console.log(imageUploadUrl);
                 deleteApiContent(imageUploadUrl);
+            },
+            visible: isAdmin(getCurrenUser())
+        },
+        {
+            label: 'Kopioi osoite',
+            icon: 'pi pi-copy',
+            command: () => {
+                navigator.clipboard.writeText(import.meta.env.VITE_IMAGE_URL + edition.images[0].image_src);
             }
         }
     ];

@@ -10,6 +10,7 @@ import { CoverImageList } from "../../../components/cover-image-list";
 import { WorkStatsPanel } from "../../stats";
 
 import { Work } from "../types";
+import { Toolbar } from "primereact/toolbar";
 
 type WorksProp = {
     works: Work[],
@@ -98,37 +99,33 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
         return <i className={option.icon}></i>
     }
 
+    const startContent = (
+        <SelectButton value={workView}
+            options={workViewOptions}
+            onChange={(e) => setWorkView(e.value)}
+        />
+    );
+
+    const centerContent = (
+        <WorkStatsPanel works={works} />
+    );
+
+    const endContent = (
+        <div className="lg:justify-content-end">
+            <SelectButton value={detailLevel} options={detailOptions}
+                optionLabel="icon"
+                id="details"
+                onChange={(e) => setDetailLevel(e.value)}
+                itemTemplate={detailTemplate}
+            />
+        </div>
+    );
+
     return (
         works && works.length > 0 ? (
             <div className="grid w-full">
-                <div className="grid col-4 justify-content-start">
-                    <SelectButton value={workView}
-                        options={workViewOptions}
-                        onChange={(e) => setWorkView(e.value)}
-                    />
-                </div>
-                {/* <div className="grid col-1 justify-content-start">
-                    <InputSwitch checked={showNonSf} onChange={(e: InputSwitchChangeEvent) => setShowNonSf(e.value)} />
-                </div> */}
-                <div className="grid col-4 justify-content-center">
-                    <WorkStatsPanel works={works} />
-                </div>
-                <div className="grid col-4 justify-content-end">
-                    <div className="p-1">
-                        <SelectButton value={detailLevel} options={detailOptions}
-                            optionLabel="icon"
-                            id="details"
-                            onChange={(e) => setDetailLevel(e.value)}
-                            itemTemplate={detailTemplate}
-                        />
-                    </div>
-                    {/* <div className="p-1">
-                        <Dropdown value={orderField} options={sortOptions}
-                            onChange={(e) => setOrderField(e.value)}
-                            optionLabel="name" optionValue="code"
-                            className="small"
-                        />
-                    </div> */}
+                <div className="w-full">
+                    <Toolbar start={startContent} center={centerContent} end={endContent} />
                 </div>
                 <div className="grid col-12">
                     {

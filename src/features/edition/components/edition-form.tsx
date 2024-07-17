@@ -271,8 +271,6 @@ const FormObject = ({ onSubmit, methods, disabled, bindings }: FormObjectProps) 
                   name="editionnum"
                   label="Painos"
                   methods={methods}
-                  rules={required_rule}
-                  labelClass='required-field'
                   disabled={disabled}
                 />
               </div>

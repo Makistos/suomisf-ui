@@ -18,7 +18,7 @@ export const EditionString = (edition: Edition) => {
             retval = retval + edition.editionnum + ".painos";
         }
     } else {
-        retval = retval + " ?. painos";
+        retval = "";
     }
     return retval;
 };

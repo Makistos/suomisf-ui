@@ -29,7 +29,7 @@ export const EditionSummary = ({ edition, person, showPerson, showVersion }: Edi
             {edition.work[0] && edition.work[0].title !== edition.work[0].orig_title && (
                 <> ({edition.work[0].orig_title}, {edition.work[0].pubyear})</>
             )}
-            {showVersion && notFirstEdition(edition) && (
+            {showVersion && notFirstEdition(edition) && edition.editionnum !== null && (
                 <>. <b>{EditionString(edition)}</b></>
             )}
             {/*{!"!?.".includes(edition.title.slice(-1)) &&

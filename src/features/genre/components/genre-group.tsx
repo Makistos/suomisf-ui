@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Genre, GenresProps } from "../types";
+import { Genre } from "../types";
 import { GenreCount } from "./genre-count";
 
+interface GenresProps {
+    genres: Genre[],
+    showOneCount?: boolean
+}
 
 export const GenreGroup = ({ genres, showOneCount }: GenresProps) => {
     const [groupedGenres, setGroupedGenres] = useState<[string, number][]>([]);

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 import { SelectButton } from "primereact/selectbutton";
 import { EditionSummary } from "./edition-summary";
-import { groupEditions } from "../utils/group-editions";
+import { groupEditionsByAuthor } from "../utils/group-editions-by-author";
 import { Edition } from "../types";
 import { Person } from "../../person/types";
 import { CoverImageList } from "../../../components/cover-image-list";
@@ -32,7 +32,7 @@ export const EditionList = ({ editions, person, sort = "year" }: EditionListProp
 
     useEffect(() => {
         if (sorting === "author") {
-            setGroupedEditions(groupEditions(editions));
+            setGroupedEditions(groupEditionsByAuthor(editions));
         }
         else {
             setGroupedEditions({ None: editions });

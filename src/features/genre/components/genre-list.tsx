@@ -1,8 +1,11 @@
 import React, { } from "react";
-import { GenresProps } from "../types";
+import { Genre } from "../types";
 
+interface GenreListProps {
+    genres: Genre[]
+}
 
-export const GenreList = ({ genres }: GenresProps) => {
+export const GenreList = ({ genres }: GenreListProps) => {
     return (
         genres ? (
             <>

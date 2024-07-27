@@ -10,7 +10,10 @@ import { tagTypeToSeverity } from '@features/tag/components/tag-type-to-severity
 interface TagsProps {
     tags: SfTag[],
     overflow: number,
-    showOneCount: boolean
+    showOneCount: boolean,
+    filter?: string[],
+    reverseFilter?: boolean,
+    maxCount?: number
 }
 
 type TagCount = SfTag & { count: number };
@@ -28,7 +31,8 @@ interface TagCountCompProps {
  * @param {boolean} props.showOneCount - Whether to show the count of each tag when there are multiple occurrences.
  * @return {JSX.Element} The rendered tag group component.
  */
-export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
+export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseFilter,
+    maxCount }: TagsProps) => {
     const [groupedTags, setGroupedTags] = useState<TagCount[]>([]);
     const [showAll, setShowAll] = useState(false);
     const [subgenres, setSubgenres] = useState<SfTag[]>([]);
@@ -42,6 +46,12 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
             .map(tag => tag)
     }
 
+    const filterTags = (tag: SfTag) => {
+        if (reverseFilter) {
+            return types ? tag.type ? !types.includes(tag.type.name) : true : true;
+        }
+        return types ? tag.type ? types.includes(tag.type.name) : true : true
+    }
     useEffect(() => {
         /**
          * Calculates the count of each unique tag in the provided array.
@@ -49,26 +59,33 @@ export const TagGroup = ({ tags, overflow, showOneCount }: TagsProps) => {
          * @return {Record<string, TagCount>} An object containing the count of each unique tag.
          */
         const countTags = () => {
-            let retval = tags.reduce((acc, currentValue: SfTag) => {
-                const tagName = currentValue.name;
-                if (!acc[tagName]) {
-                    acc[tagName] = { ...currentValue, count: 1 };
-                } else {
-                    acc[tagName].count++;
-                }
-                return acc;
-            }, {} as Record<string, TagCount>)
+            let retval = tags.filter(
+                tag => filterTags(tag))
+                .reduce((acc, currentValue: SfTag) => {
+                    const tagName = currentValue.name;
+                    if (!acc[tagName]) {
+                        acc[tagName] = { ...currentValue, count: 1 };
+                    } else {
+                        acc[tagName].count++;
+                    }
+                    return acc;
+                }, {} as Record<string, TagCount>)
             return retval;
         }
         if (tags) {
+            let groupedTags = [];
             if (showOneCount) {
-                setGroupedTags(Object.entries(countTags())
+                groupedTags = Object.entries(countTags())
                     .sort((a, b) => a[1].count > b[1].count ? -1 : 1)
-                    .map(tag => tag[1]));
+                    .map(tag => tag[1]);
             } else {
-                setGroupedTags(Object.entries(countTags())
-                    .map(tag => tag[1]));
+                groupedTags = Object.entries(countTags())
+                    .map(tag => tag[1]);
             }
+            if (maxCount) {
+                groupedTags = groupedTags.slice(0, maxCount)
+            }
+            setGroupedTags(groupedTags);
             setSubgenres(filterTypes(tags, 'subgenre'))
             setStyles(filterTypes(tags, 'style'))
             setLocations(filterTypes(tags, 'location'))

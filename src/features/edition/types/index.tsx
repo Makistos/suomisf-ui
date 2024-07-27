@@ -7,6 +7,10 @@ import { Binding } from "../../../types/binding";
 import { Pubseries } from "../../pubseries/types";
 import { Contribution } from "../../../types/contribution";
 
+export interface ISBN {
+    isbn: string;
+    binding: Binding;
+}
 
 export interface Edition {
     binding: Binding;
@@ -14,7 +18,37 @@ export interface Edition {
     contributions: Contribution[];
     coverimage: number;
     dustcover: number;
-    editionnum: number;
+    editionnum: number | string;
+    editors: Person[];
+    format: EditionFormat;
+    id: number;
+    images: ImageType[];
+    imported_string: string;
+    isbn: string | ISBN[];
+    misc: string;
+    pages?: number;
+    printedin?: string;
+    publisher: Publisher;
+    pubseries: Pubseries | null;
+    pubseriesnum?: number;
+    pubyear: number | string;
+    size?: number;
+    subtitle: string;
+    title: string;
+    translators: Person[];
+    verified: Boolean;
+    version: number;
+    work: Work[];
+    combined: boolean;
+}
+
+export interface CombinedEdition {
+    binding: Binding;
+    coll_info: string;
+    contributions: Contribution[];
+    coverimage: number;
+    dustcover: number;
+    editionnum: number | string;
     editors: Person[];
     format: EditionFormat;
     id: number;
@@ -27,7 +61,7 @@ export interface Edition {
     publisher: Publisher;
     pubseries: Pubseries;
     pubseriesnum?: number;
-    pubyear: number;
+    pubyear: number | string;
     size?: number;
     subtitle: string;
     title: string;
@@ -35,11 +69,11 @@ export interface Edition {
     verified: Boolean;
     version: number;
     work: Work[];
-
+    combined: boolean;
 }
 
 export interface EditionProps {
-    edition: Edition,
+    edition: Edition | CombinedEdition,
     showFirst?: boolean,
     details?: string,
     person?: string,
@@ -48,6 +82,7 @@ export interface EditionProps {
     card?: boolean,
     showVersion?: boolean
     contributions?: Contribution[],
+    detailDepth?: number
 }
 
 export interface EditionFormData {

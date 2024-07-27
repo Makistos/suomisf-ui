@@ -346,3 +346,38 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 .editor-readonly {
   border: none;
 }
+
+.coverbox {
+  position: relative;
+  display: inline-block;
+}
+
+.coverbox .p-image {
+  display: block;
+  height: auto;
+  width: 150px;
+}
+
+.coverbtn {
+  position: absolute;
+  border: none;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 5px 2px;
+  background-color: rgba(0,0,0,0.3);
+  color:white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.coverbtn:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.btnleft {
+  left: 0px;
+}
+
+.btnright {
+  right: 0px;
+}

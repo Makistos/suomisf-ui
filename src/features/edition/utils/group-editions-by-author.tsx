@@ -1,7 +1,12 @@
 import { Edition } from "../types";
 
 
-export const groupEditions = (editions: Edition[]) => {
+/** Groups editions by authors or editors
+ *
+ * @param editions: Edition[] List of editions to group
+ * @returns {Record<string, Edition[]>} The grouped editions
+ */
+export const groupEditionsByAuthor = (editions: Edition[]) => {
     const uniquePeople = (value: string, index: number, array: string[]) => {
         return array.indexOf(value) === index;
     }

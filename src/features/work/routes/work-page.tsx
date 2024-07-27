@@ -14,26 +14,31 @@ import { Dialog } from "primereact/dialog";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { ContextMenu } from "primereact/contextmenu";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { SelectButton } from 'primereact/selectbutton';
 import axios from "axios";
+import { Divider } from "primereact/divider";
+import { Toolbar } from "primereact/toolbar";
+import { Button } from "primereact/button";
 
-import { Edition, EditionDetails } from "../../edition";
-import { getCurrenUser } from "../../../services/auth-service";
-import { getApiContent, deleteApiContent } from "../../../services/user-service";
-import { ShortsList } from "../../short";
+import { Edition, EditionDetails } from "@features/edition";
+import { getCurrenUser } from "@services/auth-service";
+import { getApiContent, deleteApiContent } from "@services/user-service";
+import { ShortsList } from "@features/short";
 import { Work } from "../types";
 import { WorkDetails } from "../components/work-details";
-import { EditionForm } from "../../edition/components/edition-form";
+import { EditionForm } from "@features/edition/components/edition-form";
 import { isAnthology } from "../utils/is-anthology";
 import { selectId } from "../../../utils";
-import { useDocumentTitle } from '../../../components/document-title';
+import { useDocumentTitle } from '@components/document-title';
 import { WorkForm } from "../components/work-form";
-import { User, isAdmin } from "../../user";
-import { isDisabled } from '../../../components/forms/forms';
-import authHeader from "../../../services/auth-header";
-import { HttpStatusResponse } from "../../../services/user-service"
-import { WorkShortsPicker } from "../../short/components/shorts-picker";
-import { WorkChanges } from "../../changes/components/work-changes";
-import { Divider } from "primereact/divider";
+import { User, isAdmin } from "@features/user";
+import { isDisabled } from '@components/forms/forms';
+import authHeader from "@services/auth-header";
+import { HttpStatusResponse } from "@services/user-service"
+import { WorkShortsPicker } from "@features/short/components/shorts-picker";
+import { WorkChanges } from "@features/changes/components/work-changes";
+import { groupSimilarEditions } from "@features/edition/utils/group-similar-editions";
+import { combineEditions } from "@features/edition/utils/combine-editions";
 
 export interface WorkProps {
     work: Work,
@@ -50,7 +55,9 @@ interface WorkPageProps {
 let workId = "";
 
 interface ImageViewProps {
-    edition: Edition
+    idx: number,
+    edition: Edition,
+    idxCb: (idx: number) => void
 }
 
 /**
@@ -59,9 +66,20 @@ interface ImageViewProps {
  * @param {ImageViewProps} edition - The edition object containing image data.
  * @return {JSX.Element} The rendered image view component.
  */
-const ImageView = ({ edition }: ImageViewProps) => {
-    const editionId = edition.id;
-    const imageUploadUrl = `editions/${editionId}/images/${edition.images[0].id}`;
+const ImageView = ({ idx, edition, idxCb }: ImageViewProps) => {
+
+    if (idx > edition.images.length - 1) {
+        idxCb(0);
+        idx = 0;
+    }
+    if (!edition.images || edition.images.length === 0) {
+        return null;
+    }
+    let imageUploadUrl = "";
+
+    if (edition.images) {
+        //const imageUploadUrl = `editions/${edition.id}/images/${edition.images[idx].id}`;
+    }
     const cm = useRef<ContextMenu>(null);
     const imageItems = [
         {
@@ -71,27 +89,94 @@ const ImageView = ({ edition }: ImageViewProps) => {
                 //console.log(imageUploadUrl);
                 deleteApiContent(imageUploadUrl);
             },
-            visible: isAdmin(getCurrenUser())
+            visible: isAdmin(getCurrenUser()) && edition.images.length === 1
         },
         {
             label: 'Kopioi osoite',
             icon: 'pi pi-copy',
             command: () => {
-                navigator.clipboard.writeText(import.meta.env.VITE_IMAGE_URL + edition.images[0].image_src);
+                navigator.clipboard.writeText(import.meta.env.VITE_IMAGE_URL + edition.images[idx].image_src);
             }
         }
     ];
 
+    // console.log(edition)
+    // console.log(idx)
     return (
-        <>
+        <div className="coverbox">
             <ContextMenu model={imageItems} ref={cm} />
-            <Image className="pt-2" preview width="100px" src={import.meta.env.VITE_IMAGE_URL + edition.images[0].image_src}
+            <Image className="pt-2" preview width="150px" src={import.meta.env.VITE_IMAGE_URL + edition.images[idx].image_src}
                 onContextMenu={(e) => cm.current?.show(e)}
             />
-        </>
+            {idx > 0 && idx <= edition.images.length - 1 &&
+                <Button className="coverbtn btnleft" icon="pi pi-chevron-left"
+                    onClick={() => idxCb(idx - 1)}
+                ></Button>
+            }
+            {idx < edition.images.length - 1 &&
+                <Button className="coverbtn btnright" icon="pi pi-chevron-right"
+                    onClick={() => idxCb(idx + 1)}
+                ></Button>
+            }
+        </div>
     )
 }
 
+const renderListItem = (cb: any, onUpload: any, editions: Edition[],
+    work?: Work) => {
+    const user = useMemo(() => { return getCurrenUser() }, []);
+    const [currIdx, setCurrIdx] = useState(0);
+    let imageUploadUrl = '';
+    if (editions.length === 1) {
+        imageUploadUrl = `editions/${editions[0].id}/images`;
+    } else {
+    }
+    const customSave = async (event: FileUploadHandlerEvent) => {
+        const form = new FormData();
+        form.append('file', event.files[0], event.files[0].name);
+        const file = event.files[0];
+        const request = { file: file, filename: file.name };
+        const headers = authHeader();
+
+        const response = await axios.post(import.meta.env.VITE_API_URL + imageUploadUrl,
+            form, {
+            headers: headers
+        });
+    }
+    const edition = combineEditions(editions);
+
+    return (
+        (work && edition &&
+            <div className="col-12">
+                <div className="grid">
+                    <div className="col-8" >
+                        <EditionDetails edition={edition} card work={work}
+                            onSubmitCallback={cb} />
+                    </div>
+                    <div className="flex col-4 justify-content-end align-content-center">
+                        {edition.images.length > 0 ?
+                            <ImageView idx={currIdx} edition={edition} idxCb={setCurrIdx} />
+
+
+                            : isAdmin(user) &&
+                            <FileUpload
+                                id={"editionimage_" + edition.id}
+                                mode="basic"
+                                accept="image/*"
+                                name="image"
+                                uploadLabel="Lisää kuva"
+                                auto
+                                customUpload
+                                uploadHandler={customSave}
+                                onUpload={onUpload}
+                            />
+                        }
+                    </div>
+                </div>
+            </div>
+        )
+    )
+}
 export const WorkPage = ({ id }: WorkPageProps) => {
     const params = useParams();
     const user = useMemo(() => { return getCurrenUser() }, []);
@@ -104,11 +189,23 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     const [isEditionFormVisible, setEditionFormVisible] = useState(false);
     const toastRef = useRef<Toast>(null);
     const navigate = useNavigate();
+    const [detailLevel, setDetailLevel] = useState("condensed");
 
     try {
         workId = selectId(params, id);
     } catch (e) {
         console.log(`${e} work`);
+    }
+
+    const detailOptions = [
+        { icon: 'pi pi-minus', value: 'brief' },
+        { icon: 'pi pi-bars', value: 'condensed' },
+        { icon: 'pi pi-align-justify', value: 'all' }
+    ];
+
+    type detailOptionType = {
+        icon: string,
+        value: string
     }
 
     const fetchWork = async (id: string, user: User | null): Promise<Work> => {
@@ -234,64 +331,13 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         queryClient.invalidateQueries({ queryKey: ["work", workId] });
     }
 
-    const renderListItem = (edition: Edition, work?: Work) => {
-        const imageUploadUrl = `editions/${edition.id}/images`;
-        const eIdx = work?.editions.findIndex(e => e.id === edition.id);
-        if (eIdx === undefined || eIdx === null || eIdx == -1) {
-            return null;
-        }
-        const editionIdx: number = eIdx;
-        const customSave = async (event: FileUploadHandlerEvent) => {
-            const form = new FormData();
-            form.append('file', event.files[0], event.files[0].name);
-            const file = event.files[0];
-            const request = { file: file, filename: file.name };
-            const headers = authHeader();
 
-            const response = await axios.post(import.meta.env.VITE_API_URL + imageUploadUrl,
-                form, {
-                headers: headers
-            });
-        }
-
-        return (
-            (work &&
-                <div className="col-12">
-                    <div className="grid">
-                        <div className="col-8" >
-                            <EditionDetails edition={edition} card work={work}
-                                onSubmitCallback={editionFormCallback} />
-                        </div>
-                        <div className="flex col-4 justify-content-end align-content-center">
-                            {edition.images.length > 0 ?
-                                <ImageView edition={edition} />
-                                :
-                                isAdmin(user) &&
-                                <FileUpload
-                                    id={"editionimage_" + edition.id}
-                                    mode="basic"
-                                    accept="image/*"
-                                    name="image"
-                                    uploadLabel="Lisää kuva"
-                                    auto
-                                    customUpload
-                                    uploadHandler={customSave}
-                                    onUpload={onUpload}
-                                    disabled={isDisabled(user, isLoading)}
-                                />
-                            }
-                        </div>
-                    </div>
-                </div>
-            )
-        )
-    }
-
-    const itemTemplate = (edition: Edition) => {
-        if (!edition) {
+    const itemTemplate = (editions: Edition[]) => {
+        if (!editions) {
             return;
         }
-        return renderListItem(edition, data);
+        return renderListItem(editionFormCallback, onUpload, editions,
+            data);
     }
 
     const renderHeader = () => {
@@ -379,10 +425,45 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         queryClient.invalidateQueries({ queryKey: ["work"] });
     }
 
+    const detailTemplate = (option: detailOptionType) => {
+        return <i className={option.icon}></i>
+    }
+
     if (!data) return null;
 
     const anthology = isAnthology(data);
 
+    const startContent = () => {
+        // console.log(detailLevel)
+        if (detailLevel === "all") {
+            return (
+                <h2>Painokset</h2>
+            )
+        }
+        if (detailLevel === "condensed") {
+            return (
+                <h2>Painokset tiivistettynä</h2>
+            )
+        }
+        if (detailLevel === "brief") {
+            return (
+                <h2>Laitokset</h2>
+            )
+        }
+    }
+
+    const changeDetailLevel = (level: string) => {
+        setDetailLevel(level);
+    }
+
+    const endContent = (
+        <SelectButton value={detailLevel} options={detailOptions}
+            optionLabel="icon"
+            id="details"
+            onChange={(e) => changeDetailLevel(e.value)}
+            itemTemplate={detailTemplate}
+        />
+    )
 
     return (
         <main className="all-content">
@@ -417,7 +498,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                     onShow={() => onEditionDialogShow()}
                     onHide={() => onEditionDialogHide()}
                 >
-                    <EditionForm edition={null} work={data} onSubmitCallback={editionFormCallback} />
+                    <EditionForm editionid={null} work={data} onSubmitCallback={editionFormCallback} />
                 </Dialog>
                 <Dialog maximizable blockScroll
                     className="w-full xl:x-6"
@@ -448,9 +529,9 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                     </div>
                                 )}
                                 <div className="mt-5 mb-0">
-                                    <h2 className="mb-0">Painokset</h2>
+                                    <Toolbar start={startContent} end={endContent} />
                                     <div className="mt-0">
-                                        <DataView value={data.editions}
+                                        <DataView value={groupSimilarEditions(data.editions, detailLevel).sort((a, b) => a[0].pubyear > b[0].pubyear ? 1 : -1)}
                                             header={header} itemTemplate={itemTemplate} />
                                     </div>
                                 </div>

@@ -18,8 +18,12 @@ import { EditionShortsPicker } from '../../short/components/shorts-picker';
 import { isDisabled } from '../../../components/forms/forms';
 import { getCurrenUser } from '../../../services/auth-service';
 import { isAdmin } from '../../user';
+import { ISBN } from '../types';
+import { Binding } from '../../../types/binding';
 
-type Props = EditionProps & { onSubmitCallback: ((status: boolean, message: string) => void) };
+type Props = EditionProps &
+{ onSubmitCallback: ((status: boolean, message: string) => void) };
+
 
 /**
  * Generates a list of contributors based on their contributions and role.
@@ -37,7 +41,7 @@ const contributorList = (contributions: Contribution[], role: number, descriptio
         <>
             {contributors && contributors.length > 0 &&
                 (
-                    <><br />
+                    <>
                         <LinkList path="people" showDescription={showDescription}
                             separator=", "
                             defaultName={description}
@@ -55,7 +59,54 @@ const contributorList = (contributions: Contribution[], role: number, descriptio
     )
 }
 
-export const EditionDetails = ({ edition, work, card, onSubmitCallback }: Props) => {
+/**
+ * A function that takes an ISBN and returns a link to National Library
+ * search pointing to this ISBN.
+ *
+ * @param {string} isbn - the ISBN input
+ * @return {string} the link
+ */
+const nlLinkFromIsbn = (isbn: string): string => {
+    return ("https://kansalliskirjasto.finna.fi/Search/Results?"
+        + "limit=0&"
+        + "filter%5B%5D=~language%3A%22fin%22&"
+        + "filter%5B%5D=~format_ext_str_mv%3A%220%2FBook%2F%22&"
+        + "&filter%5B%5D=~collection%3A%22FEN%22&"
+        + "lookfor=" + encodeURIComponent(isbn))
+        + "&type=AllFields"
+}
+
+interface IsbnStringProps {
+    isbn: string | ISBN[];
+    binding: Binding | undefined | null;
+}
+
+const IsbnString = ({ isbn, binding }: IsbnStringProps) => {
+    const makeISBN = (isbnStr: string, binding: Binding | undefined | null) => {
+        return "ISBN" + " " + isbnStr + " " + ((binding && binding.id > 1) ? binding?.name : "")
+    }
+
+    return (
+        <>
+            {typeof (isbn) === "string" ? (
+                <>
+                    ISBN <Link to={`nlLinkFromIsbn(isbn)}`}>{isbn}</Link> {(binding && binding.id > 1) ? binding?.name : ""}
+                </>
+            )
+                :
+                isbn.map((i) => (
+                    (i.isbn || i.binding) &&
+                    <>
+                        ISBN <Link to={`nlLinkFromIsbn(i.isbn)`}>{i.isbn}</Link> {(i.binding && i.binding.id > 1) ? i.binding.name : ""}
+                        <br />
+                    </>
+                ))
+            }
+        </>
+    )
+}
+
+export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallback }: Props) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [editVisible, setEditVisible] = useState(false);
     const [shortsFormVisible, setShortsFormVisible] = useState(false);
@@ -135,22 +186,7 @@ export const EditionDetails = ({ edition, work, card, onSubmitCallback }: Props)
         })
     }
 
-    /**
-     * A function that takes an ISBN and returns a link to National Library
-     * search pointing to this ISBN.
-     *
-     * @param {string} isbn - the ISBN input
-     * @return {string} the link
-     */
-    const nlLinkFromIsbn = (isbn: string): string => {
-        return ("https://kansalliskirjasto.finna.fi/Search/Results?"
-            + "limit=0&"
-            + "filter%5B%5D=~language%3A%22fin%22&"
-            + "filter%5B%5D=~format_ext_str_mv%3A%220%2FBook%2F%22&"
-            + "&filter%5B%5D=~collection%3A%22FEN%22&"
-            + "lookfor=" + encodeURIComponent(isbn))
-            + "&type=AllFields"
-    }
+
 
     return (
         <div>
@@ -192,16 +228,17 @@ export const EditionDetails = ({ edition, work, card, onSubmitCallback }: Props)
                     {edition.size && edition.size + " cm."}
                     {edition.misc && (<><br />{edition.misc}</>)}
                     {(edition.isbn || edition.binding.id > 1) && <br />}
-                    {edition.isbn && (<>ISBN <Link title='ISBN-haku Kansalliskirjastoon' to={nlLinkFromIsbn(edition.isbn)} target="_blank">{edition.isbn}</Link></>)}
-                    {edition.binding && edition.binding.id > 1 && (<> {edition.binding.name}.</>)}
+                    {edition.isbn && (
+                        <IsbnString isbn={edition.isbn} binding={edition.binding} />
+                    )}
                     {
                         edition.dustcover === 3 && (
-                            <span><br />Kansipaperi.</span>
+                            <span>Kansipaperi.</span>
                         )
                     }
                     {
                         edition.coverimage === 3 &&
-                        <span><br />Ylivetokannet.</span>
+                        <span>Ylivetokannet.</span>
                     }
                     {contributorList(edition.contributions, 5, "Kuvitus", true)}
                     {contributorList(edition.contributions, 4, "Kansikuva", true)}
@@ -210,7 +247,6 @@ export const EditionDetails = ({ edition, work, card, onSubmitCallback }: Props)
                             <br /><b>Tarkastettu.</b>
                         </>
                     }
-                    <br />
                     <div>
                         {isAdmin(user) &&
                             <>

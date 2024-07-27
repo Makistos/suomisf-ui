@@ -6,6 +6,7 @@ import _ from "lodash";
 
 import { getGenreColors } from "../../genre/utils/genre-colors";
 import { WorksProps } from "../types";
+import { TagGroup } from "@features/tag";
 
 
 export const WorkStats = ({ works }: WorksProps) => {
@@ -41,11 +42,15 @@ export const WorkStats = ({ works }: WorksProps) => {
     return (
         <div className="grid justify-content-center">
             <div className="grid col-12 justify-content-center">
-                <Chart type="doughnut"
-                    data={genres} />
+                <span><b>Yhteensä</b>: {works.length}</span>
+            </div>
+            <div className="grid col-12 justify-content-center mt-4">
+                <TagGroup tags={works.map(work => work.tags).flat()}
+                    maxCount={10} overflow={10} showOneCount={true} />
             </div>
             <div className="grid col-12 justify-content-center">
-                <span><b>Yhteensä</b>: {works.length}</span>
+                <Chart type="doughnut"
+                    data={genres} />
             </div>
         </div>
     );

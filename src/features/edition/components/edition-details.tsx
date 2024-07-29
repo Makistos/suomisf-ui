@@ -40,19 +40,18 @@ const contributorList = (contributions: Contribution[], role: number, descriptio
     return (
         <>
             {contributors && contributors.length > 0 &&
-                (
-                    <>
-                        <LinkList path="people" showDescription={showDescription}
-                            separator=", "
-                            defaultName={description}
-                            items={contributors.map((item) => ({
-                                id: item.person['id'],
-                                name: item.person['alt_name']
-                                    ? item.person['alt_name'] : item.person['name'],
-                                description: (item.description && item.description !== null)
-                                    ? item.description : ""
-                            }))} />.
-                    </>
+                (<div>
+                    <LinkList path="people" showDescription={showDescription}
+                        separator=", "
+                        defaultName={description}
+                        items={contributors.map((item) => ({
+                            id: item.person['id'],
+                            name: item.person['alt_name']
+                                ? item.person['alt_name'] : item.person['name'],
+                            description: (item.description && item.description !== null)
+                                ? item.description : ""
+                        }))} />.
+                </div>
                 )
             }
         </>
@@ -82,29 +81,34 @@ interface IsbnStringProps {
 }
 
 const IsbnString = ({ isbn, binding }: IsbnStringProps) => {
-    const makeISBN = (isbnStr: string, binding: Binding | undefined | null) => {
-        return "ISBN" + " " + isbnStr + " " + ((binding && binding.id > 1) ? binding?.name : "")
+    const makeISBN = (isbnStr: string, binding: Binding | undefined | null, idx: number) => {
+        //return "ISBN" + " " + isbnStr + " " + ((binding && binding.id > 1) ? binding?.name : "")
+        return (
+            <>ISBN <Link to={`nlLinkFromIsbn(isbnStr)`}>{isbnStr}</Link> {(binding && binding.id > 1) ? binding.name : ""}
+            </>
+        )
     }
 
     return (
         <>
             {typeof (isbn) === "string" ? (
                 <>
-                    ISBN <Link to={`nlLinkFromIsbn(isbn)}`}>{isbn}</Link> {(binding && binding.id > 1) ? binding?.name : ""}
+                    {makeISBN(isbn, binding, 0)}
                 </>
             )
                 :
-                isbn.map((i) => (
+
+                isbn.map((i, idx) => (
                     (i.isbn || i.binding) &&
-                    <>
-                        ISBN <Link to={`nlLinkFromIsbn(i.isbn)`}>{i.isbn}</Link> {(i.binding && i.binding.id > 1) ? i.binding.name : ""}
-                        <br />
-                    </>
+                    <div key={i.isbn + idx}>
+                        {makeISBN(i.isbn, i.binding, idx)}
+                    </div>
                 ))
             }
         </>
     )
 }
+//ISBN <Link to={`nlLinkFromIsbn(i.isbn)`}>{i.isbn}</Link> {(i.binding && i.binding.id > 1) ? i.binding.name : ""}
 
 export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallback }: Props) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
@@ -186,7 +190,19 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
         })
     }
 
-
+    const editionSize = (pages: number | undefined, size: number | undefined) => {
+        if (!pages && !size) {
+            return <></>
+        }
+        let str = "";
+        if (pages) {
+            str += pages + " sivua."
+        }
+        if (size) {
+            str += " " + size + " cm."
+        }
+        return (<div>{str}</div>)
+    }
 
     return (
         <div>
@@ -196,7 +212,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                 onShow={() => onDialogShow()}
                 onHide={() => onDialogHide()}
             >
-                <EditionForm edition={edition} work={work} onSubmitCallback={onFormSubmit} />
+                <EditionForm editionid={edition.id} work={work} onSubmitCallback={onFormSubmit} />
             </Dialog>
             <Dialog maximizable blockScroll className='w-full xl:w-9'
                 header="Novellien muokkaus"
@@ -219,36 +235,34 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                         <><br /><Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link> </>)}
                     {edition.pubyear + "."}
                     {contributorList(edition.contributions, 2, "Suom.", true)}
-                    {edition.pubseries && (<>
-                        <br /><Link to={`/pubseries/${edition.pubseries.id}`}>{edition.pubseries.name}</Link>
+                    {edition.pubseries && (<div>
+                        <Link to={`/pubseries/${edition.pubseries.id}`}>{edition.pubseries.name}</Link>
                         {edition.pubseriesnum && (<> {edition.pubseriesnum}</>)}
-                        .</>
+                        .</div>
                     )}
-                    {edition.pages && (<><br />{edition.pages} sivua. </>)}
-                    {edition.size && edition.size + " cm."}
-                    {edition.misc && (<><br />{edition.misc}</>)}
-                    {(edition.isbn || edition.binding.id > 1) && <br />}
+                    {editionSize(edition.pages, edition.size)}
+                    {edition.misc && (<div>{edition.misc}</div>)}
                     {edition.isbn && (
                         <IsbnString isbn={edition.isbn} binding={edition.binding} />
                     )}
                     {
                         edition.dustcover === 3 && (
-                            <span>Kansipaperi.</span>
+                            <div>Kansipaperi.</div>
                         )
                     }
                     {
                         edition.coverimage === 3 &&
-                        <span>Ylivetokannet.</span>
+                        <div>Ylivetokannet.</div>
                     }
                     {contributorList(edition.contributions, 5, "Kuvitus", true)}
                     {contributorList(edition.contributions, 4, "Kansikuva", true)}
                     {edition.verified &&
                         <>
-                            <br /><b>Tarkastettu.</b>
+                            <div><b>Tarkastettu.</b></div>
                         </>
                     }
                     <div>
-                        {isAdmin(user) &&
+                        {isAdmin(user) && edition.combined === false &&
                             <>
                                 <Button icon="pi pi-pencil" tooltip="Muokkaa" className="p-button-text" onClick={() => onDialogShow()} />
                                 <Button icon="pi pi-trash" tooltip="Poista" className="p-button-text"

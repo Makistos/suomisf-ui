@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useForm, SubmitHandler, FieldValues, FormProvider, UseFormReturn } from 'react-hook-form';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from 'primereact/button';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { getCurrenUser } from '../../../services/auth-service';
 import { Edition } from '../types';
@@ -22,25 +22,29 @@ import { FormDropdown } from '../../../components/forms/field/form-dropdown';
 import { FormTriStateCheckbox } from '../../../components/forms/field/form-tri-state-checkbox';
 import { FormCheckbox } from '../../../components/forms/field/form-checkbox';
 import { replyMessage } from '@components/forms/reply-message';
+import { getEdition } from '@api/edition/get-edition';
 
 interface EditionFormProps {
-  edition: Edition | null;
+  //edition: Edition | null;
+  editionid: number | null;
   work: Work;
   onSubmitCallback: ((status: boolean, message: string) => void);
 }
 
 interface FormObjectProps {
   onSubmit: any,
-  methods: UseFormReturn<EditionFormData, any>,
+  data: Edition | null | undefined,
+  work: Work,
   bindings: Binding[],
   disabled: boolean
 }
 
 export const EditionForm = (props: EditionFormProps) => {
   const user = useMemo(() => { return getCurrenUser() }, []);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
   const [bindings, setBindings] = useState<Binding[]>([]);
+  const [queryEnabled, setQueryEnabled] = useState(true);
+
+  let edition: Edition | null = null;
 
   const navigate = useNavigate();
 
@@ -54,92 +58,12 @@ export const EditionForm = (props: EditionFormProps) => {
     fetchBindings();
   }, []);
 
-  let contributors: Contribution[] = [];
-  if (props.edition) {
-    contributors = props.edition.contributions.filter((contribution: Contribution,
-      index: number, arr: Contribution[]) => arr.indexOf(contribution) === index);
-  }
-  if (contributors.length === 0) {
-    contributors = [emptyContributor];
-  }
+  const { isLoading, data } = useQuery({
+    queryKey: ['work', props.editionid, "form"],
+    queryFn: () => getEdition(props.editionid, user),
+    enabled: queryEnabled
+  })
 
-  const convToFormData = (data: Edition): EditionFormData => {
-    return {
-      id: data.id,
-      title: data.title,
-      subtitle: data.subtitle,
-      editionnum: data.editionnum,
-      version: data.version,
-      pubyear: data.pubyear,
-      pages: data.pages,
-      size: data.size,
-      misc: data.misc,
-      imported_string: data.imported_string,
-      isbn: data.isbn,
-      printedin: data.printedin,
-      coll_info: data.coll_info,
-      dustcover: data.dustcover === null || data.dustcover === 1 ? null : data.dustcover === 2 ? false : true,
-      publisher: data.publisher,
-      pubseries: data.pubseries,
-      pubseriesnum: data.pubseriesnum,
-      contributors: contributors,
-      format: data.format,
-      binding: data.binding,
-      coverimage: data.coverimage === null || data.coverimage === 1 ? null : data.coverimage === 2 ? false : true,
-      verified: data.verified,
-    }
-  }
-
-  const defaultValues: EditionFormData = {
-    id: null,
-    title: props.work.title,
-    subtitle: props.work.subtitle,
-    editionnum: null,
-    version: null,
-    pubyear: props.work.pubyear,
-    pages: null,
-    size: null,
-    misc: "",
-    imported_string: "",
-    isbn: "",
-    printedin: "",
-    coll_info: "",
-    dustcover: null,
-    publisher: null,
-    pubseries: null,
-    pubseriesnum: null,
-    contributors: [emptyContributor],
-    format: null,
-    binding: bindings[0],
-    coverimage: null,
-    verified: false,
-  }
-
-  const formData = props.edition ? convToFormData(props.edition) : defaultValues;
-  const methods = useForm<EditionFormData>({ defaultValues: formData });
-  const errors = methods.formState.errors;
-
-  // const onSubmit: SubmitHandler<FieldValues> = data => {
-  //   // Convert values back to API format
-  //   let updatedData: FieldValues = JSON.parse(JSON.stringify(data));
-  //   updatedData.dustcover = data.dustcover === null ? 1 : data.dustcover === false ? 2 : 3;
-  //   updatedData.coverimage = data.coverimage === null ? 1 : data.coverimage === false ? 2 : 3;
-  //   if (updatedData.work_id === undefined) {
-  //     updatedData.work_id = props.work.id;
-  //   }
-  //   const retval: FormSubmitObject =
-  //     { data: updatedData, changed: methods.formState.dirtyFields }
-  //   console.log(retval)
-  //   setMessage("");
-  //   setLoading(true);
-  //   if (data.id != null) {
-  //     putApiContent('editions', retval, user)
-  //   } else {
-  //     postApiContent('editions', retval, user)
-  //   }
-  //   setLoading(false);
-  //   props.onSubmitCallback();
-  // };
 
   const updateEdition = (data: EditionFormData) => {
     let updatedData: FieldValues = JSON.parse(JSON.stringify(data));
@@ -161,6 +85,8 @@ export const EditionForm = (props: EditionFormProps) => {
     onSuccess: (data: HttpStatusResponse, variables) => {
       if (data.status === 200 || data.status === 201) {
         props.onSubmitCallback(true, "");
+        queryClient.invalidateQueries({ queryKey: ['work', props.editionid, "form"] });
+        queryClient.invalidateQueries({ queryKey: ['work', props.work.id, "form"] });
         //console.log(data.response);
         // if (JSON.parse(data.response).data["msg"] !== undefined) {
         //   const errMsg = JSON.parse(data.response).data["msg"];
@@ -181,11 +107,12 @@ export const EditionForm = (props: EditionFormProps) => {
 
   return (
     <>
-      {formData ?
+      {(!isLoading) ?
         <FormObject onSubmit={mutate}
-          methods={methods}
+          data={data}
+          work={props.work}
           bindings={bindings}
-          disabled={isDisabled(user, loading)} />
+          disabled={isDisabled(user, isLoading)} />
         :
         <ProgressBar />
       }
@@ -194,7 +121,7 @@ export const EditionForm = (props: EditionFormProps) => {
 
 }
 
-const FormObject = ({ onSubmit, methods, disabled, bindings }: FormObjectProps) => {
+const FormObject = ({ onSubmit, data, work, disabled, bindings }: FormObjectProps) => {
   const user = useMemo(() => { return getCurrenUser() }, []);
   const [filteredPublishers, setFilteredPublishers] = useState<any>([]);
   const [filteredPubseries, setFilteredPubseries] = useState<any>([]);
@@ -211,6 +138,71 @@ const FormObject = ({ onSubmit, methods, disabled, bindings }: FormObjectProps) 
     const response = await getApiContent(url, user);
     setFilteredPubseries(response.data);
   }
+
+  let contributors: Contribution[] = [];
+  if (data) {
+    contributors = data.contributions.filter((contribution: Contribution,
+      index: number, arr: Contribution[]) => arr.indexOf(contribution) === index);
+  }
+  if (contributors.length === 0) {
+    contributors = [emptyContributor];
+  }
+
+  const convToFormData = (data: Edition): EditionFormData => {
+    return {
+      id: data.id,
+      title: data.title,
+      subtitle: data.subtitle ? data.subtitle : "",
+      editionnum: Number(data.editionnum) ? Number(data.editionnum) : null,
+      version: data.version ? data.version : null,
+      pubyear: Number(data.pubyear),
+      pages: data.pages ? data.pages : null,
+      size: data.size ? data.size : null,
+      misc: data.misc ? data.misc : "",
+      imported_string: data.imported_string,
+      isbn: typeof (data.isbn) === 'string' ? (data.isbn ? data.isbn : "") : (data.isbn[0].isbn ? data.isbn[0].isbn : ""),
+      printedin: data.printedin ? data.printedin : "",
+      coll_info: data.coll_info ? data.coll_info : "",
+      dustcover: data.dustcover === null || data.dustcover === 1 ? null : data.dustcover === 2 ? false : true,
+      publisher: data.publisher,
+      pubseries: data.pubseries,
+      pubseriesnum: data.pubseriesnum,
+      contributors: contributors,
+      format: data.format,
+      binding: data.binding,
+      coverimage: data.coverimage === null || data.coverimage === 1 ? null : data.coverimage === 2 ? false : true,
+      verified: data.verified,
+    }
+  }
+
+  const defaultValues: EditionFormData = {
+    id: null,
+    title: work.title,
+    subtitle: work.subtitle ? work.subtitle : "",
+    editionnum: null,
+    version: null,
+    pubyear: work.pubyear,
+    pages: null,
+    size: null,
+    misc: "",
+    imported_string: "",
+    isbn: "",
+    printedin: "",
+    coll_info: "",
+    dustcover: null,
+    publisher: null,
+    pubseries: null,
+    pubseriesnum: null,
+    contributors: [emptyContributor],
+    format: null,
+    binding: bindings[0],
+    coverimage: null,
+    verified: false,
+  }
+
+  const formData = data ? convToFormData(data) : defaultValues;
+  const methods = useForm<EditionFormData>({ defaultValues: formData });
+  const errors = methods.formState.errors;
 
   return (
     <div className='card mt-3'>

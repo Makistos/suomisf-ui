@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams, useNavigate } from "react-router-dom";
+
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { ProgressSpinner } from "primereact/progressspinner";
-
-import { getCurrenUser } from "../../../services/auth-service";
-import { getApiContent } from "../../../services/user-service";
-import { selectId } from "../../../utils";
-import { EditionList } from "../../edition";
-import { Pubseries } from "../types";
-import { User, isAdmin } from "../../user";
-import { useDocumentTitle } from '../../../components/document-title';
-import { PubseriesForm } from "../components/pubseries-form";
 import { Dialog } from "primereact/dialog";
 import { SpeedDial } from "primereact/speeddial";
+
+import { getCurrenUser } from "@services/auth-service";
+import { getApiContent, HttpStatusResponse } from "@services/user-service";
+import { selectId } from "../../../utils";
+import { EditionList } from "@features/edition";
+import { Pubseries } from "../types";
+import { User, isAdmin } from "@features/user";
+import { useDocumentTitle } from '@components/document-title';
+import { PubseriesForm } from "../components/pubseries-form";
+import { deletePubseries } from "@api/pubseries/delete-pubseries";
 
 const baseURL = 'pubseries/';
 
@@ -30,6 +32,7 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
     const [editSeries, setEditSeries] = useState(true);
     const [isEditVisible, setEditVisible] = useState(false);
     const [formData, setFormData]: [Pubseries | null, (formData: Pubseries | null) => void] = useState<Pubseries | null>(null);
+    const navigate = useNavigate();
 
     try {
         thisId = selectId(params, id);
@@ -53,6 +56,9 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
             label: 'Poista',
             icon: 'pi pi-fw pi-trash',
             command: () => {
+                if (data) {
+                    mutate(data.id);
+                }
             }
         }
     ]
@@ -77,6 +83,20 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
 
     const queryClient = useQueryClient();
 
+    const { mutate } = useMutation({
+        mutationFn: (values: number) => deletePubseries(values),
+        onSuccess: (data: HttpStatusResponse) => {
+            const msg = data.response;
+            if (data.status === 200) {
+                navigate(-1);
+
+            }
+        },
+        onError: (error: any) => {
+            const errMsg = JSON.parse(error.response).data["msg"];
+            console.log(errMsg);
+        }
+    })
     const onDialogShow = () => {
         setEditVisible(true);
     }

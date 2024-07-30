@@ -233,7 +233,8 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                         <><br /><i className="font-medium">{edition.title}</i></>}
                     {edition.publisher && (
                         <><br /><Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link> </>)}
-                    {edition.pubyear + "."}
+                    {edition.pubyear}
+                    {edition.printedin ? " (" + edition.printedin + ")." : "."}
                     {contributorList(edition.contributions, 2, "Suom.", true)}
                     {edition.pubseries && (<div>
                         <Link to={`/pubseries/${edition.pubseries.id}`}>{edition.pubseries.name}</Link>

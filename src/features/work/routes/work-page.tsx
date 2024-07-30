@@ -68,6 +68,8 @@ interface ImageViewProps {
  */
 const ImageView = ({ idx, edition, idxCb }: ImageViewProps) => {
 
+    const queryClient = useQueryClient();
+
     if (idx > edition.images.length - 1) {
         idxCb(0);
         idx = 0;
@@ -75,10 +77,12 @@ const ImageView = ({ idx, edition, idxCb }: ImageViewProps) => {
     if (!edition.images || edition.images.length === 0) {
         return null;
     }
-    let imageUploadUrl = "";
 
-    if (edition.images) {
-        //const imageUploadUrl = `editions/${edition.id}/images/${edition.images[idx].id}`;
+    const imageUploadUrl = () => {
+        if (edition.images) {
+            return `editions/${edition.id}/images/${edition.images[idx].id}`;
+        }
+        return "";
     }
     const cm = useRef<ContextMenu>(null);
     const imageItems = [
@@ -87,7 +91,9 @@ const ImageView = ({ idx, edition, idxCb }: ImageViewProps) => {
             icon: 'pi pi-trash',
             command: () => {
                 //console.log(imageUploadUrl);
-                deleteApiContent(imageUploadUrl);
+                deleteApiContent(imageUploadUrl());
+                queryClient.invalidateQueries({ queryKey: ["works", workId] });
+                queryClient.invalidateQueries({ queryKey: ["editions", edition.id] });
             },
             visible: isAdmin(getCurrenUser()) && edition.images.length === 1
         },

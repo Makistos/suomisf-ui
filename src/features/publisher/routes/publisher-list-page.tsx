@@ -39,12 +39,12 @@ export const PublisherListPage = () => {
                     = publisher.editions.reduce(function (prev, curr, index, array) {
                         return (curr.pubyear < prev.pubyear ? curr : prev);
                     });
-                publisher.edition_oldest = oldest.pubyear;
+                publisher.edition_oldest = Number(oldest.pubyear);
                 const newest
                     = publisher.editions.reduce(function (prev, curr, index, array) {
                         return (curr.pubyear > prev.pubyear ? curr : prev);
                     });
-                publisher.edition_newest = newest.pubyear;
+                publisher.edition_newest = Number(newest.pubyear);
                 // let images: Edition[] = [];
                 // if (publisher.editions) {
                 //     images = publisher.editions.filter(edition => edition.images && edition.images.length > 0)

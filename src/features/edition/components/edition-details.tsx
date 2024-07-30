@@ -84,7 +84,7 @@ const IsbnString = ({ isbn, binding }: IsbnStringProps) => {
     const makeISBN = (isbnStr: string, binding: Binding | undefined | null, idx: number) => {
         //return "ISBN" + " " + isbnStr + " " + ((binding && binding.id > 1) ? binding?.name : "")
         return (
-            <>ISBN <Link to={`nlLinkFromIsbn(isbnStr)`}>{isbnStr}</Link> {(binding && binding.id > 1) ? binding.name : ""}
+            <>ISBN <Link to={nlLinkFromIsbn(isbnStr)}>{isbnStr}</Link> {(binding && binding.id > 1) ? binding.name : ""}
             </>
         )
     }

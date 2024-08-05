@@ -160,7 +160,10 @@ const FormObject = ({ onSubmit, data, work, disabled, bindings }: FormObjectProp
       size: data.size ? data.size : null,
       misc: data.misc ? data.misc : "",
       imported_string: data.imported_string,
-      isbn: typeof (data.isbn) === 'string' ? (data.isbn ? data.isbn : "") : (data.isbn[0].isbn ? data.isbn[0].isbn : ""),
+      isbn: data.isbn ?
+        typeof (data.isbn) === 'string' ? data.isbn :
+          (data.isbn[0].isbn ? data.isbn[0].isbn : "")
+        : "",  // ISBN can be null, a string or an ISBN object
       printedin: data.printedin ? data.printedin : "",
       coll_info: data.coll_info ? data.coll_info : "",
       dustcover: data.dustcover === null || data.dustcover === 1 ? null : data.dustcover === 2 ? false : true,

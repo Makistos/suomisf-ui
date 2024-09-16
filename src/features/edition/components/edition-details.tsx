@@ -20,6 +20,7 @@ import { getCurrenUser } from '../../../services/auth-service';
 import { isAdmin } from '../../user';
 import { ISBN } from '../types';
 import { Binding } from '../../../types/binding';
+import { EditionOwnership } from './edition-ownership';
 
 type Props = EditionProps &
 { onSubmitCallback: ((status: boolean, message: string) => void) };
@@ -276,6 +277,9 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                                     />
                                 )}
                             </>
+                        }
+                        {user && edition.combined === false &&
+                            <EditionOwnership editionId={edition.id} />
                         }
                     </div>
                 </>

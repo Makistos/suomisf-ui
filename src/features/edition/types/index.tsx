@@ -111,3 +111,18 @@ export interface EditionFormData {
     verified: Boolean | null
 
 }
+
+export interface EditionCondition {
+    [index: string]: any,
+    id: number,
+    name: string,
+    value: number
+}
+
+export interface EditionOwnershipStatus {
+    [index: string]: any,
+    edition_id: number,
+    user_id: number | null,
+    condition: EditionCondition | null | undefined,
+    description: string | null
+}

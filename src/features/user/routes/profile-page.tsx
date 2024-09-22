@@ -2,24 +2,22 @@ import React, { useMemo, useState } from 'react';
 
 import { getCurrenUser } from "../../../services/auth-service";
 import { OwnedBooks } from '../components/owned-books';
+import { useParams } from 'react-router-dom';
+import { selectId } from '@utils/select-id';
 
 interface UserPageProps {
-    id?: string | null;
+    id: string | null;
 }
 
 const ProfilePage = ({ id }: UserPageProps) => {
+    const params = useParams();
     const currentUser = useMemo(() => { return getCurrenUser() }, []);
-    //const [profileId, setProfileId] = useState<string | null>(null);
-    let profileId = id ? id : (currentUser ? currentUser.id.toString() : null);
-
-
-    // If id is not provided, use the current user. So opening this page
-    // without id will show the profile of the current user.
-    // if (!id) {
-    //     setProfileId(currentUser ? currentUser.id.toString() : null);
-    // } else {
-    //     setProfileId(id);
-    // }
+    let profileId = "";
+    try {
+        profileId = selectId(params, id);
+    } catch (e) {
+        console.log(`${e} profile`);
+    }
 
     if (!profileId) {
         return null;

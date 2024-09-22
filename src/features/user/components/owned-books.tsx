@@ -3,7 +3,7 @@ import { Column } from "primereact/column"
 import { OwnedBook } from "@features/edition"
 import { getApiContent } from "@services/user-service"
 import { useQuery } from "@tanstack/react-query"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { FilterMatchMode } from "primereact/api"
 import { useRef, useState } from "react"
 import { InputText } from 'primereact/inputtext';
@@ -25,6 +25,7 @@ interface Col {
 }
 
 export const OwnedBooks = ({ userId }: OwnedBooksProps) => {
+    // @ts-ignore
     const dt = useRef<DataTable>(null);
     const [renderedItems, setRenderedItems] = useState<OwnedBook[]>([])
     const [cols, setCols] = useState<Col[]>([
@@ -64,6 +65,7 @@ export const OwnedBooks = ({ userId }: OwnedBooksProps) => {
             import('jspdf-autotable').then((x) => {
 
                 const doc = new jsPDF.default('l', 'pt', 'a4');
+                // @ts-ignore
                 doc.autoTable(exportColumns, renderedItems.length > 0 ? renderedItems : data);
                 doc.save('editions.pdf');
             })
@@ -105,15 +107,16 @@ export const OwnedBooks = ({ userId }: OwnedBooksProps) => {
                     </IconField>
                 </div>
                 <div className="grid">
-                    {/* <div className="grid col-6 justify-content-start gap-2 mt-3">
-                        <MultiSelect value={selectedColumns}
+                    <div className="grid col-6 justify-content-start gap-2 mt-3">
+                        <b>Kirjoja: </b> {renderedItems.length > 0 ? renderedItems.length : data?.length}
+                        {/* <MultiSelect value={selectedColumns}
                             onChange={(e) => onColumnSelect(e)}
                             options={cols}
                             optionLabel="header"
                             optionValue="field"
-                        />
-                    </div> */}
-                    <div className="grid col-12 justify-content-end gap-2 mt-3">
+                        /> */}
+                    </div>
+                    <div className="grid col-6 justify-content-end gap-2 mt-3">
                         <Button type="button" icon="pi pi-file" rounded tooltip="CSV" data-pr-tooltip="CSV"
                             onClick={() => exportCSV(false)} />
                         {/* <Button type="button" icon="pi pi-file-excel" rounded tooltip="XLS" data-pr-tooltip="XLS" /> */}
@@ -166,7 +169,7 @@ export const OwnedBooks = ({ userId }: OwnedBooksProps) => {
     // console.log(cols)
     // console.log(selectedColumns)
     //console.log(data)
-    console.log(renderedItems);
+    //console.log(renderedItems);
     return (
         <div>
             <DataTable value={data}

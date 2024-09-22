@@ -138,7 +138,8 @@ export default function MainMenu() {
                     label: 'Lista'
                 },
                 {
-                    label: 'Omat tiedot'
+                    label: 'Omat tiedot',
+                    url: '/user/' + user?.id
                 },
                 {
                     label: 'Kirjaudu ulos',

@@ -29,6 +29,7 @@ import { AwardPage } from './features/award/routes/award-page';
 import { Changes } from './features/changes/routes/changes-page';
 import { LatestAdditions } from './features/latest/routes/latest-additions';
 import { FAQ } from 'faq';
+import ProfilePage from '@features/user/routes/profile-page';
 
 // console.log(process.env)
 
@@ -65,6 +66,8 @@ root.render(
         <Route path="/changes" element={<Changes />} />
         <Route path="/latest" element={<LatestAdditions />} />
         <Route path="/faq" element={<FAQ />} />
+        <Route path="/user" element={<ProfilePage />} />
+        <Route path="/user/:userId" element={<ProfilePage id={null} />} />
         <Route path="*"
           element={
             <main style={{ padding: "3rem" }}>

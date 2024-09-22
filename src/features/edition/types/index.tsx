@@ -6,6 +6,7 @@ import { EditionFormat } from "../../../types/edition-format";
 import { Binding } from "../../../types/binding";
 import { Pubseries } from "../../pubseries/types";
 import { Contribution } from "../../../types/contribution";
+import { User } from "@features/user";
 
 export interface ISBN {
     isbn: string;
@@ -125,4 +126,11 @@ export interface EditionOwnershipStatus {
     user_id: number | null,
     condition: EditionCondition | null | undefined,
     description: string | null
+}
+
+export interface OwnedBook {
+    [index: string]: any,
+    book: Edition,
+    user: User,
+    condition: EditionOwnershipStatus
 }

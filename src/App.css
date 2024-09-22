@@ -381,3 +381,12 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 .btnright {
   right: 0px;
 }
+
+.p-rating .p-rating-item {
+  border-radius: 50%;
+   gap: 0rem;
+   width: unset;
+   height: unset;
+   justify-content: center;
+  ;
+}

@@ -139,7 +139,7 @@ export default function MainMenu() {
                 },
                 {
                     label: 'Omat tiedot',
-                    url: '/user/' + user?.id
+                    url: '/users/' + user?.id
                 },
                 {
                     label: 'Kirjaudu ulos',

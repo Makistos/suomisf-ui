@@ -66,8 +66,7 @@ root.render(
         <Route path="/changes" element={<Changes />} />
         <Route path="/latest" element={<LatestAdditions />} />
         <Route path="/faq" element={<FAQ />} />
-        <Route path="/user" element={<ProfilePage />} />
-        <Route path="/user/:userId" element={<ProfilePage id={null} />} />
+        <Route path="/users/:itemId" element={<ProfilePage id={null} />} />
         <Route path="*"
           element={
             <main style={{ padding: "3rem" }}>

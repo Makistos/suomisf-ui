@@ -153,6 +153,7 @@ export const PeoplePage = () => {
                     sortField={lazyParams.sortField}
                     onFilter={onFilter}
                     filters={lazyParams.filters}
+                    filterDelay={500}
                     size="small"
                     globalFilterFields={["name", "dob", "dod", "nationalityname", "workcount", "storycount", "roles"]}
                     dataKey="id"

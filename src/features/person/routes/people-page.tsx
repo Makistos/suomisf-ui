@@ -139,71 +139,66 @@ export const PeoplePage = () => {
         <div>
             <h1 className='title'>Henkilöluettelo</h1>
             <p>Henkilöitä yhteensä {totalRecords}.</p>
-            {people !== null && people !== undefined && people.length > 0 ? (
-                <DataTable value={people}
-                    first={lazyParams.first}
-                    rows={lazyParams.rows}
-                    totalRecords={totalRecords}
-                    paginator
-                    pageLinkSize={10}
-                    lazy
-                    onPage={onPage}
-                    onSort={onSort}
-                    sortOrder={1}
-                    sortField={lazyParams.sortField}
-                    onFilter={onFilter}
-                    filters={lazyParams.filters}
-                    filterDelay={500}
-                    size="small"
-                    globalFilterFields={["name", "dob", "dod", "nationalityname", "workcount", "storycount", "roles"]}
-                    dataKey="id"
-                    filterDisplay="row"
-                    emptyMessage="Henkilöitä ei löytynyt"
-                    loading={loading}
-                >
-                    <Column field="name" header="Nimi" body={nameTemplate}
-                        filter
-                        filterPlaceholder="Etsi nimellä"
-                        sortable>
-                    </Column>
-                    <Column field="dob" header="Synt"
-                        filter
-                        filterPlaceholder="Vuosi"
-                        dataType="numeric"
-                        sortable>
-                    </Column>
-                    <Column field="dod" header="Kuoli"
-                        filter
-                        filterPlaceholder="Vuosi"
-                        dataType="numeric"
-                        sortable>
-                    </Column>
-                    <Column field="nationality.name" header="Kansallisuus"
-                        filter
-                        filterPlaceholder="Kansallisuus"
-                        filterElement={nationalityFilterTemplate}
-                        filterField='nationality'
-                        sortable>
-                        showFilterMatchModes={false}
+            <DataTable value={people}
+                first={lazyParams.first}
+                rows={lazyParams.rows}
+                totalRecords={totalRecords}
+                paginator
+                pageLinkSize={10}
+                lazy
+                onPage={onPage}
+                onSort={onSort}
+                sortOrder={1}
+                sortField={lazyParams.sortField}
+                onFilter={onFilter}
+                filters={lazyParams.filters}
+                filterDelay={500}
+                size="small"
+                globalFilterFields={["name", "dob", "dod", "nationalityname", "workcount", "storycount", "roles"]}
+                dataKey="id"
+                filterDisplay="row"
+                emptyMessage="Henkilöitä ei löytynyt"
+                loading={loading}
+            >
+                <Column field="name" header="Nimi" body={nameTemplate}
+                    filter
+                    filterPlaceholder="Etsi nimellä"
+                    sortable>
+                </Column>
+                <Column field="dob" header="Synt"
+                    filter
+                    filterPlaceholder="Vuosi"
+                    dataType="numeric"
+                    sortable>
+                </Column>
+                <Column field="dod" header="Kuoli"
+                    filter
+                    filterPlaceholder="Vuosi"
+                    dataType="numeric"
+                    sortable>
+                </Column>
+                <Column field="nationality.name" header="Kansallisuus"
+                    filter
+                    filterPlaceholder="Kansallisuus"
+                    filterElement={nationalityFilterTemplate}
+                    filterField='nationality'
+                    sortable>
+                    showFilterMatchModes={false}
 
-                    </Column>
-                    <Column field="workcount" header="Teoksia"
-                        dataType="numeric"
-                        sortable
-                    >
-                    </Column>
-                    <Column field="storycount" header="Novelleja"
-                        dataType="numeric"
-                    >
-                    </Column>
-                    <Column field="roles" header="Roolit" body={roleTemplate}
-                    >
-                    </Column>
-                </DataTable>
-            ) : (
-                <p>Haetaan tietoja...</p>
-            )
-            }
+                </Column>
+                <Column field="workcount" header="Teoksia"
+                    dataType="numeric"
+                    sortable
+                >
+                </Column>
+                <Column field="storycount" header="Novelleja"
+                    dataType="numeric"
+                >
+                </Column>
+                <Column field="roles" header="Roolit" body={roleTemplate}
+                >
+                </Column>
+            </DataTable>
         </div>
     )
 }

@@ -84,12 +84,22 @@ interface IsbnStringProps {
 const IsbnString = ({ isbn, binding }: IsbnStringProps) => {
     const makeISBN = (isbnStr: string, binding: Binding | undefined | null, idx: number) => {
         //return "ISBN" + " " + isbnStr + " " + ((binding && binding.id > 1) ? binding?.name : "")
-        return (
-            <>ISBN <Link to={nlLinkFromIsbn(isbnStr)}>{isbnStr}</Link> {(binding && binding.id > 1) ? binding.name : ""}
-            </>
-        )
+        if (isbnStr.length > 0) {
+            return (
+                <>ISBN <Link to={nlLinkFromIsbn(isbnStr)}>{isbnStr}</Link> {(binding && binding.id > 1) ? binding.name : ""}
+                </>
+            )
+        } else if (binding && binding.id > 1) {
+            return (
+                <>{(binding && binding.id > 1) ? binding.name : ""}
+                </>
+            )
+        } else {
+            return <></>
+        }
     }
 
+    console.log(binding)
     return (
         <>
             {typeof (isbn) === "string" ? (
@@ -205,6 +215,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
         return (<div>{str}</div>)
     }
 
+    console.log(edition)
     return (
         <div>
             <Dialog maximizable blockScroll className="w-full xl:w-6"
@@ -244,9 +255,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                     )}
                     {editionSize(edition.pages, edition.size)}
                     {edition.misc && (<div>{edition.misc}</div>)}
-                    {edition.isbn && (
-                        <IsbnString isbn={edition.isbn} binding={edition.binding} />
-                    )}
+                    {<IsbnString isbn={edition.isbn} binding={edition.binding} />}
                     {
                         edition.dustcover === 3 && (
                             <div>Kansipaperi.</div>

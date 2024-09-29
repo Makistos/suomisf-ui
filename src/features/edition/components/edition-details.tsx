@@ -99,7 +99,6 @@ const IsbnString = ({ isbn, binding }: IsbnStringProps) => {
         }
     }
 
-    console.log(binding)
     return (
         <>
             {typeof (isbn) === "string" ? (
@@ -215,7 +214,6 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
         return (<div>{str}</div>)
     }
 
-    console.log(edition)
     return (
         <div>
             <Dialog maximizable blockScroll className="w-full xl:w-6"

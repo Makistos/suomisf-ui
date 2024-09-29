@@ -231,8 +231,6 @@ export const EditionOwnership = ({ editionId }: EditionOwnershipProps) => {
         setCondition(data);
     }
 
-    console.log(condition);
-
     return (
         <>
             <Dialog blockScroll

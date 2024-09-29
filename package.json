@@ -12,7 +12,7 @@
     "@testing-library/user-event": "14.4.3",
     "@types/chart.js": "^2.9.37",
     "@types/jest": "^29.5.12",
-    "axios": "1.6.0",
+    "axios": "1.7.4",
     "axios-retry": "^3.5.1",
     "babel": "^6.23.0",
     "chart.js": "4.2.1",

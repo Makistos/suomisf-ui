@@ -470,6 +470,14 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         />
     )
 
+    const sortEditions = (a: Edition[], b: Edition[]): number => {
+        const first = a[0];
+        const second = b[0];
+        if (first.pubyear !== second.pubyear) return (first.pubyear < second.pubyear ? -1 : 1);
+        if (first.version !== second.version) return (first.version < second.version ? -1 : 1);
+        return (first.editionnum < second.editionnum ? -1 : 1);
+    }
+
     return (
         <main className="all-content">
             <ConfirmDialog />
@@ -536,7 +544,9 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                 <div className="mt-5 mb-0">
                                     <Toolbar start={startContent} end={endContent} />
                                     <div className="mt-0">
-                                        <DataView value={groupSimilarEditions(data.editions, detailLevel).sort((a, b) => a[0].pubyear > b[0].pubyear ? 1 : -1)}
+                                        <DataView value={groupSimilarEditions(data.editions, detailLevel)
+                                            .sort(sortEditions)}
+                                            // .sort((a, b) => a[0].pubyear < b[0].pubyear ? -1 : -1)}
                                             header={header} itemTemplate={itemTemplate} />
                                     </div>
                                 </div>

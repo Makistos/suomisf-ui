@@ -58,7 +58,10 @@ export const combineEditions = (editions: Edition[]): Edition | undefined => {
     }
     let isbns: tmpObj[] = [];
     for (const edition of editions) {
-        isbns.push({ isbn: typeof (edition.isbn) == "string" ? edition.isbn : edition.isbn[0].isbn, binding: edition.binding });
+        isbns.push({
+            isbn: edition.isbn === null ? "" : typeof (edition.isbn) == "string" ? edition.isbn : edition.isbn[0].isbn,
+            binding: edition.binding
+        });
     }
 
     // Remove duplicates

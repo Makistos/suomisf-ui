@@ -118,7 +118,6 @@ const IsbnString = ({ isbn, binding }: IsbnStringProps) => {
         </>
     )
 }
-//ISBN <Link to={`nlLinkFromIsbn(i.isbn)`}>{i.isbn}</Link> {(i.binding && i.binding.id > 1) ? i.binding.name : ""}
 
 export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallback }: Props) => {
     const user = useMemo(() => { return getCurrenUser() }, []);

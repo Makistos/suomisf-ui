@@ -1,10 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
 import { useParams } from "react-router-dom";
 import { IssuePage } from '../../issue';
 import { Magazine } from '../types';
 import { useDocumentTitle } from '../../../components/document-title';
+import { Toast } from 'primereact/toast';
+import { IssueForm } from '@features/issue/components/issue-form';
+import { Dialog } from 'primereact/dialog';
+import { isAdmin } from '@features/user';
+import { Tooltip } from 'primereact/tooltip';
+import { SpeedDial } from 'primereact/speeddial';
+import { set } from 'lodash';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { getMagazine } from '@api/magazine/get-magazine';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 
 const baseURL = "magazines/";
@@ -35,73 +45,106 @@ export const MagazinePage = () => {
     }*/
 
     let params = useParams();
-    const user = getCurrenUser();
+    const magazineId = params.magazineId;
+    const user = useMemo(() => { return getCurrenUser() }, []);
     const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+    const [queryEnabled, setQueryEnabled] = useState(true);
 
-    const [magazine, setMagazine]: [Magazine | null, (magazine: Magazine) => void] = React.useState<Magazine | null>(null);
-    //const [issues, setIssue]: [string[], (issue: string[]) => void] = React.useState<string[]>([]);
-    //const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
-    //const [error, setError]: [string, (error: string) => void] = React.useState("");
+    const [isIssueFormVisible, setIssueFormVisible] = React.useState(false);
+    const toastRef = useRef<Toast>(null);
+    const queryClient = useQueryClient();
 
-    React.useEffect(() => {
-        async function getMagazine() {
-            let url = baseURL + params.magazineId?.toString();
-            try {
-                const response = await getApiContent(url, user);
-                setMagazine(response.data);
-                //setLoading(false);
-            }
-            catch (e) {
-                console.error(e);
-            }
-        }
-        getMagazine();
-    }, [params.magazineId, user]) // eslint disable
+    const { isLoading, data } = useQuery({
+        queryKey: ['magazine', magazineId],
+        queryFn: () => getMagazine(magazineId !== undefined ? magazineId : null, user),
+        enabled: queryEnabled
+    })
 
-    /*const getIssueHeader = (index: number) =>
-        (issues.length >= index) ? issues[index] : '';
-
-    const issueNumber = (coverNumber: string, index: number) => {
-        let newArray = [...issues];
-        newArray[index] = coverNumber;
-        setIssue(newArray);
-    }
-    */
     useEffect(() => {
-        if (magazine !== undefined && magazine !== null)
-            setDocumentTitle(magazine.name);
-    }, [magazine])
+        if (data !== undefined && data !== null)
+            setDocumentTitle(data.name);
+    }, [data])
 
-    if (!magazine) return null;
+    const dialItems = [
+        {
+            label: 'Uusi numero',
+            icon: 'fa-solid fa-circle-plus',
+            command: () => { setIssueFormVisible(true) }
+        },
+        {
+            label: 'Muokkaa',
+            icon: 'fa-solid fa-pen-to-square',
+            command: () => { }
+        }
+    ]
+
+    const onIssueFormHide = () => {
+        setIssueFormVisible(false);
+        queryClient.invalidateQueries({ queryKey: ['magazine', magazineId] });
+    }
+
+    if (!data) return null;
 
     return (
-
         <main className="all-content">
-            <h1 className="title">{magazine.name}</h1>
-            {magazine !== undefined ? (
-                <div>
-                    {magazine.issues.length > 0 ? (
-                        <div className="card">
-                            {
-                                magazine.issues
-                                    .map((issue, index) => (
-                                        <div className="card" key={issue}>
-                                            <IssuePage
-                                                id={issue}
-                                                index={index}
-                                            />
-                                        </div>
-                                    ))
+            <div className="mt-5 speeddial style={{ position: 'relative', height: '500px'}}">
+                {isAdmin(user) &&
+                    <div>
+                        <Tooltip position="left" target=".speeddial .speeddial-right .p-speeddial-action">
+
+                        </Tooltip>
+                        <SpeedDial className="speeddial-right"
+                            model={dialItems}
+                            direction='left'
+                            type="semi-circle"
+                            radius={80}
+                        />
+                    </div>
+                }
+                <Toast ref={toastRef} />
+                <Dialog maximizable blockScroll
+                    className="w-full xl:w-6"
+                    header="Uusi numero"
+                    visible={isIssueFormVisible}
+                    onHide={() => setIssueFormVisible(false)}
+                    onShow={() => setIssueFormVisible(true)}>
+                    <IssueForm
+                        issueid={null}
+                        magazineid={data.id}
+                        onSubmitCallback={onIssueFormHide}
+                    />
+                </Dialog>
+
+                <h1 className="title">{data.name}</h1>
+                <p>{data.issues.length} numeroa.</p>
+                {isLoading ? (
+                    <div className="progressbar">
+                        <ProgressSpinner />
+                    </div>
+                )
+                    : (
+                        <div>
+                            {data.issues.length > 0 &&
+                                <div className="card">
+                                    {
+                                        data.issues
+                                            .map((issue, index) => (
+                                                <div className="card" key={issue}>
+                                                    <IssuePage
+                                                        id={issue}
+                                                        magazine_id={data.id}
+                                                        index={index}
+                                                        onSubmitCallback={onIssueFormHide}
+                                                        toast={toastRef}
+                                                    />
+                                                </div>
+                                            ))
+                                    }
+                                </div>
                             }
                         </div>
-                    ) : (
-                        <p></p>
                     )}
-                </div>
-            ) : (
-                <p>Haetaan tietoja...</p>
-            )
-            }
+            </div>
         </main >
     )
 }

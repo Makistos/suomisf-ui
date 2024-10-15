@@ -1,5 +1,4 @@
 import { Person } from "../../person/types";
-import { PublicationSize } from '../../../types/publication-size';
 import { Short } from "../../short/types";
 import { Article } from "../../article";
 import { Magazine } from "../../magazine/types";
@@ -24,4 +23,30 @@ export interface Issue {
     articles: Article[];
     stories: Short[];
     magazine: Magazine;
+    magazine_id: number;
+}
+
+export interface IssueFormData {
+    id: number | null;
+    type: number | null;
+    number: number | null;
+    number_extra: string | null;
+    count: number | null;
+    year: number | null;
+    cover_number: string | null;
+    publisher_id: number | null;
+    pages: number | null;
+    size: PublicationSize | null;
+    link: string | null;
+    notes: string | null;
+    title: string | null;
+    editors: Person[] | null;
+    magazine_id: number;
+}
+
+export interface PublicationSize {
+    id: number;
+    name: string;
+    mm_width?: number;
+    mm_height: number;
 }

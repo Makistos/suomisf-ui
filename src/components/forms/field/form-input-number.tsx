@@ -7,7 +7,7 @@ interface FormInputNumberProps extends InputNumberProps {
   name: string,
   methods: UseFormReturn<any, any>,
   rules?: RegisterOptions,
-  label: string,
+  label?: string,
   labelClass?: string
 }
 

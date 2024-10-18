@@ -13,8 +13,13 @@ export const EditionString = (edition: Edition) => {
     if (edition.version && edition.version !== 1) {
         retval = edition.version + ".laitos ";
     }
+    let ednum = Number(edition.editionnum);
+    if (isNaN(ednum)) {
+        ednum = 0;
+    }
     if (edition.editionnum !== null) {
-        if ((edition.version === null || edition.version === 1) || (edition.version > 1 && Number(edition.editionnum) > 1)) {
+        if ((edition.version === null || edition.version === 1) ||
+            (edition.version > 1 && ednum !== 1)) {
             retval = retval + edition.editionnum + ".painos";
         }
     } else {

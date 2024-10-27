@@ -1,10 +1,7 @@
-import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react';
+import React, { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
 
-import { Image } from 'primereact/image';
-
 import { getCurrenUser } from '../../../services/auth-service';
-import { getApiContent } from '../../../services/user-service';
 import { Person } from "../../person/types";
 import { LinkList } from '../../../components/link-list';
 import { ShortSummary } from '../../short';
@@ -16,11 +13,16 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { isAdmin } from '@features/user';
 import { Button } from 'primereact/button';
 import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
-import { SpeedDial } from 'primereact/speeddial';
 import { IssueForm } from '../components/issue-form';
 import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
 import { deleteIssue } from '@api/issue/delete-issue';
+import { ImageView } from '@utils/image-view';
+import { ImageType } from "../../../types/image";
+import { deleteIssueCover } from '@api/issue/delete-issue-cover';
+import { saveIssueCover } from '@api/issue/save-issue-cover';
+import { FileUpload, FileUploadHandlerEvent } from 'primereact/fileupload';
+import { on } from 'events';
 
 const baseURL = 'issues/';
 
@@ -32,40 +34,103 @@ export type IssueProps = {
     toast?: RefObject<Toast>
 };
 
+const PickLinks = (items: Person[]) => {
+    return items.map((item) => ({ id: item['id'], name: item['alt_name'] ? item['alt_name'] : item['name'] }))
+}
+
+type IssueInfoProps = {
+    issue: Issue
+}
+
+const IssueInfo = ({ issue }: IssueInfoProps) => {
+    return (
+        <div className="p-col-12 p-md-8">
+            <h2>{issue.magazine.name} {issue.cover_number}
+            </h2>
+            {issue.title &&
+                <h3>{issue.title}</h3>
+            }
+            <div>
+                {issue.editors && issue.editors.length && (
+                    <LinkList
+                        path="people"
+                        separator=" &amp; "
+                        items={PickLinks(issue.editors)}
+                    />)}
+                {issue.editors.length && " (päätoimittaja)"}
+
+            </div>
+            {issue.pages && issue.pages > 0 ? issue.pages + " sivua." : ""}
+            {issue.size ? " " + issue.size.name + "." : ""}
+            {issue.link && issue.link !== "" && (
+                <>
+                    <br /><Link to={issue.link} target="_blank">Kotisivu</Link>.
+                </>
+            )}
+            {issue.notes && issue.notes !== "" && (
+                <div dangerouslySetInnerHTML={{ __html: issue.notes }} />
+            )}
+            {issue.articles.length > 0 && (
+                <div className="p-pt-2"><b>Artikkelit</b>
+                    <div className="p-ml-3">
+                        <ArticleList articles={issue.articles} />
+                    </div>
+                </div>
+            )
+            }
+            {issue.stories.length > 0 && (
+                <div className="p-pt-2"><b>Novellit</b>
+                    <div className="p-ml-3">
+                        {
+                            issue.stories
+                                .map((story) => (
+                                    <ShortSummary key={story.id}
+                                        short={story}
+                                    />
+                                ))
+                        }
+                    </div>
+                </div>
+            )
+            }
+        </div>
+
+    )
+}
+
 export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: IssueProps) => {
     const user = useMemo(() => getCurrenUser(), []);
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [issueFormVisible, setIssueFormVisible] = useState(false);
     //const toast = useRef<Toast>(null);
     const queryClient = useQueryClient();
-    if (toast === undefined) {
-        toast = useRef<Toast>(null);
-    }
+    // if (toast === undefined) {
+    //     toast = useRef<Toast>(null);
+    // }
     const { isLoading, data } = useQuery({
-        queryKey: ['magazine', id],
+        queryKey: ['issue', id],
         queryFn: () => getIssue(id !== undefined ? id : null, user),
         enabled: queryEnabled
     })
 
-    const PickLinks = (items: Person[]) => {
-        return items.map((item) => ({ id: item['id'], name: item['alt_name'] ? item['alt_name'] : item['name'] }))
-    }
 
     const delIssue = async (id: number | null) => {
         await deleteIssue(id).then(response => {
             if (response?.status === 200) {
-                toast.current?.show({
-                    severity: 'info',
-                    summary: 'Numero poistettu onnistuneesti'
-                });
-                onSubmitCallback(true, 'Numero poistettu onnistuneesti');
+                onUpload('success', 'Numero poistettu onnistuneesti');
+                // toast.current?.show({
+                //     severity: 'info',
+                //     summary: 'Numero poistettu onnistuneesti'
+                // });
+                // onSubmitCallback(true, 'Numero poistettu onnistuneesti');
             } else {
-                toast.current?.show({
-                    severity: 'error',
-                    summary: 'Numeroa ei poistettu',
-                    detail: response?.response,
-                    sticky: true
-                });
+                onUpload('error', 'Numeroa ei poistettu');
+                // toast.current?.show({
+                //     severity: 'error',
+                //     summary: 'Numeroa ei poistettu',
+                //     detail: response?.response,
+                //     sticky: true
+                // });
             }
         });
     }
@@ -80,10 +145,11 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
                 delIssue(id);
             },
             reject: () => {
-                toast.current?.show({
-                    severity: 'info',
-                    summary: 'Numeroa ei poistettu'
-                });
+                onUpload('error', 'Numeroa ei poistettu');
+                // toast.current?.show({
+                //     severity: 'info',
+                //     summary: 'Numeroa ei poistettu'
+                // });
             }
         })
     }
@@ -106,6 +172,53 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
         setIssueFormVisible(false);
         setQueryEnabled(true);
     }
+
+    // imageId is not needed here but required in saveImage so it is just
+    // set to 0
+    const strToImageType = (str: string) => {
+        if (str) {
+            return [{
+                id: 0,
+                image_src: str,
+                image_attr: "",
+                size: null
+            }] as ImageType[];
+        }
+        return [];
+    }
+
+    const saveImage = useCallback(async (event: FileUploadHandlerEvent) => {
+        if (data) {
+            saveIssueCover(data.id, event.files[0], event.files[0].name, user).then(response => {
+                if (response?.status === 200) {
+                    onUpload('success', 'Kansi lisätty onnistuneesti');
+                } else {
+                    onUpload('error', 'Virhe kantta lisätäessä');
+                }
+            });
+        }
+    }, [data, user]);
+
+    const deleteImage = (objectId: number, imageId: number) => {
+        if (data) {
+            const response = deleteIssueCover(data.id).then(response => {
+                if (response?.status === 200) {
+                    onUpload('success', 'Kansi poistettu onnistuneesti');
+                } else {
+                    onUpload('error', 'Virhe kantta poistettaessa');
+                }
+            });
+        }
+    }
+
+    const onUpload = useCallback((severity: "success" | "info" | "warn" | "error", message: string) => {
+        toast?.current?.show({
+            severity: severity,
+            summary: '',
+            detail: message
+        })
+        queryClient.invalidateQueries({ queryKey: ['issue', id] });
+    }, [id])
 
     if (!data) return null;
 
@@ -132,65 +245,37 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
                         />
                     </Dialog>
                     <div className="p-grid">
-                        <div className="p-col-12 p-md-8">
-                            <h2>{data.magazine.name} {data.cover_number}
-                                {data.year && " / " + data.year}
-                            </h2>
-                            {data.title &&
-                                <h3>{data.title}</h3>
-                            }
-                            <div>
-                                {data.editors && data.editors.length && (
-                                    <LinkList
-                                        path="people"
-                                        separator=" &amp; "
-                                        items={PickLinks(data.editors)}
-                                    />)}
-                                {data.editors.length && " (päätoimittaja)"}
-
-                            </div>
-                            {data.pages && data.pages > 0 ? data.pages + " sivua." : ""}
-                            {data.size ? " " + data.size.name + "." : ""}
-                            {data.link && data.link !== "" && (
-                                <>
-                                    <br /><Link to={data.link} target="_blank">Kotisivu</Link>.
-                                </>
-                            )}
-                            {data.notes && data.notes !== "" && (
-                                <div dangerouslySetInnerHTML={{ __html: data.notes }} />
-                            )}
-                            {data.articles.length > 0 && (
-                                <div className="p-pt-2"><b>Artikkelit</b>
-                                    <div className="p-ml-3">
-                                        <ArticleList articles={data.articles} />
-                                    </div>
-                                </div>
-                            )
-                            }
-                            {data.stories.length > 0 && (
-                                <div className="p-pt-2"><b>Novellit</b>
-                                    <div className="p-ml-3">
-                                        {
-                                            data.stories
-                                                .map((story) => (
-                                                    <ShortSummary key={story.id}
-                                                        short={story}
-                                                    />
-                                                ))
-                                        }
-                                    </div>
-                                </div>
-                            )
-                            }
-                        </div>
+                        <IssueInfo issue={data} />
                         <div className="p-col-12 p-md-4">
-                            {data.image_src ? (
-                                <>
-                                    <Image src={data.image_src} width="250px" preview
-                                        alt={`${data.cover_number} kansikuva`}
-                                    />
-                                </>
-                            ) : ("")
+                            {(data.image_src && id) ? (
+                                <ImageView
+                                    itemId={id}
+                                    images={strToImageType(data.image_src)}
+                                    idx={0}
+                                    deleteFunc={deleteImage}
+                                    idxCb={
+                                        (idx: number) => {
+
+                                        }
+                                    }
+                                />
+                                // <>
+                                //     <Image src={data.image_src} width="250px" preview
+                                //         alt={`${data.cover_number} kansikuva`}
+                                //     />
+                                // </>
+                            ) : isAdmin(user) &&
+                            <FileUpload
+                                id={"issue-image-" + id}
+                                mode="basic"
+                                accept='image/*'
+                                name="image"
+                                uploadLabel='Lisää kuva'
+                                auto
+                                customUpload
+                                uploadHandler={saveImage}
+                            //onUpload={onUpload}
+                            />
                             }
                         </div>
                         <div>

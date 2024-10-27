@@ -49,13 +49,13 @@ export function MagazinesPage() {
                                     data
                                         .sort((a, b) => a.name > b.name ? 1 : -1)
                                         .map((data) => (
-                                            <>
+                                            <div key={data.id}>
                                                 <Link to={`/magazines/${data.id}`}
                                                     key={data.id}
                                                 >
                                                     {data.name}
-                                                </Link><br></br>
-                                            </>
+                                                </Link><br />
+                                            </div>
                                         ))
                                 }
                             </div>

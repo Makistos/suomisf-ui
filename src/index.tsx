@@ -51,7 +51,6 @@ root.render(
         <Route path="people/:itemId" element={<PersonPage id={null} />} />
         <Route path="magazines" element={<MagazinesPage />} />
         <Route path="magazines/:magazineId" element={<MagazinePage />} />
-        <Route path="issues/:issueId" element={<IssuePage id={null} />} />
         <Route path="articles/:articleId" element={<ArticleView id={null} />} />
         <Route path="works/:itemId" element={<WorkPage id={null} />} />
         <Route path="bookseries" element={<BookseriesListPage />} />

@@ -28,14 +28,14 @@ export const LinkList = ({ path, items, defaultName, showDescription, separator 
     }
     const linkList = items
         .map<React.ReactNode>((item, index) => (
-            <>
+            <span key={path + item.id.toString() + "_" + index.toString()}>
                 {showDescription && description(item, defaultName, showDescription)}
                 {" "}
-                <Link key={item.id.toString() + "_" + index.toString()} to={`/${path}/${item.id}`}>
+                <Link key={path + item.id.toString() + "_" + index.toString()} to={`/${path}/${item.id}`}>
                     {item.name}
                 </Link>
                 {/* {showDescription && description(item, showDescription)} */}
-            </>
+            </span>
         ))
         .reduce((prev, curr) => [prev, separator, curr]);
 

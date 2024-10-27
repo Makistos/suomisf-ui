@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useMemo, useRef } from "react";
+import React, { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { Image } from "primereact/image";
 import { DataView } from "primereact/dataview";
 import { Panel } from "primereact/panel";
 import { Ripple } from "primereact/ripple";
@@ -12,13 +11,11 @@ import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 import { FileUpload, FileUploadHandlerEvent } from "primereact/fileupload";
 import { Dialog } from "primereact/dialog";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { ContextMenu } from "primereact/contextmenu";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SelectButton } from 'primereact/selectbutton';
 import axios from "axios";
 import { Divider } from "primereact/divider";
 import { Toolbar } from "primereact/toolbar";
-import { Button } from "primereact/button";
 
 import { Edition, EditionDetails } from "@features/edition";
 import { getCurrenUser } from "@services/auth-service";
@@ -38,6 +35,8 @@ import { WorkShortsPicker } from "@features/short/components/shorts-picker";
 import { WorkChanges } from "@features/changes/components/work-changes";
 import { groupSimilarEditions } from "@features/edition/utils/group-similar-editions";
 import { combineEditions } from "@features/edition/utils/combine-editions";
+import { deleteEditionImage } from "@api/edition/delete-edition-image";
+import { ImageView } from "@utils/image-view";
 
 export interface WorkProps {
     work: Work,
@@ -53,79 +52,6 @@ interface WorkPageProps {
 
 let workId = "";
 
-interface ImageViewProps {
-    idx: number,
-    edition: Edition,
-    idxCb: (idx: number) => void
-}
-
-/**
- * Renders an image view component.
- *
- * @param {ImageViewProps} edition - The edition object containing image data.
- * @return {JSX.Element} The rendered image view component.
- */
-const ImageView = ({ idx, edition, idxCb }: ImageViewProps) => {
-
-    const queryClient = useQueryClient();
-
-    if (idx > edition.images.length - 1) {
-        idxCb(0);
-        idx = 0;
-    }
-    if (!edition.images || edition.images.length === 0) {
-        return null;
-    }
-
-    const imageUploadUrl = () => {
-        if (edition.images) {
-            return `editions/${edition.id}/images/${edition.images[idx].id}`;
-        }
-        return "";
-    }
-    const cm = useRef<ContextMenu>(null);
-    const imageItems = [
-        {
-            label: 'Poista kuva',
-            icon: 'pi pi-trash',
-            command: () => {
-                //console.log(imageUploadUrl);
-                deleteApiContent(imageUploadUrl());
-                queryClient.invalidateQueries({ queryKey: ["works", workId] });
-                queryClient.invalidateQueries({ queryKey: ["editions", edition.id] });
-            },
-            visible: isAdmin(getCurrenUser()) && edition.images.length === 1
-        },
-        {
-            label: 'Kopioi osoite',
-            icon: 'pi pi-copy',
-            command: () => {
-                navigator.clipboard.writeText(import.meta.env.VITE_IMAGE_URL + edition.images[idx].image_src);
-            }
-        }
-    ];
-
-    // console.log(edition)
-    // console.log(idx)
-    return (
-        <div className="coverbox">
-            <ContextMenu model={imageItems} ref={cm} />
-            <Image className="pt-2" preview width="150px" src={import.meta.env.VITE_IMAGE_URL + edition.images[idx].image_src}
-                onContextMenu={(e) => cm.current?.show(e)}
-            />
-            {idx > 0 && idx <= edition.images.length - 1 &&
-                <Button className="coverbtn btnleft" icon="pi pi-chevron-left"
-                    onClick={() => idxCb(idx - 1)}
-                ></Button>
-            }
-            {idx < edition.images.length - 1 &&
-                <Button className="coverbtn btnright" icon="pi pi-chevron-right"
-                    onClick={() => idxCb(idx + 1)}
-                ></Button>
-            }
-        </div>
-    )
-}
 
 const renderListItem = (cb: any, onUpload: any, editions: Edition[],
     work?: Work) => {
@@ -136,7 +62,7 @@ const renderListItem = (cb: any, onUpload: any, editions: Edition[],
         imageUploadUrl = `editions/${editions[0].id}/images`;
     } else {
     }
-    const customSave = async (event: FileUploadHandlerEvent) => {
+    const customSave = useCallback(async (event: FileUploadHandlerEvent) => {
         const form = new FormData();
         form.append('file', event.files[0], event.files[0].name);
         const file = event.files[0];
@@ -147,8 +73,15 @@ const renderListItem = (cb: any, onUpload: any, editions: Edition[],
             form, {
             headers: headers
         });
-    }
+        onUpload();
+    }, [onUpload]);
+
     const edition = combineEditions(editions);
+
+    const deleteImage = useCallback((itemId: number, imageId: number) => {
+        deleteEditionImage(itemId, imageId);
+        onUpload();
+    }, [onUpload]);
 
     return (
         (work && edition &&
@@ -160,9 +93,12 @@ const renderListItem = (cb: any, onUpload: any, editions: Edition[],
                     </div>
                     <div className="flex col-4 justify-content-end align-content-center">
                         {edition.images.length > 0 ?
-                            <ImageView idx={currIdx} edition={edition} idxCb={setCurrIdx} />
-
-
+                            <ImageView
+                                itemId={edition.id}
+                                images={edition.images}
+                                idx={currIdx}
+                                deleteFunc={deleteImage}
+                                idxCb={setCurrIdx} />
                             : isAdmin(user) &&
                             <FileUpload
                                 id={"editionimage_" + edition.id}
@@ -182,6 +118,7 @@ const renderListItem = (cb: any, onUpload: any, editions: Edition[],
         )
     )
 }
+
 export const WorkPage = ({ id }: WorkPageProps) => {
     const params = useParams();
     const user = useMemo(() => { return getCurrenUser() }, []);
@@ -331,11 +268,10 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             setDocumentTitle(data.title);
     }, [data])
 
-    const onUpload = () => {
+    const onUpload = useCallback(() => {
         toastRef.current?.show({ severity: 'info', summary: 'Success', detail: 'Kuva tallennettu' });
         queryClient.invalidateQueries({ queryKey: ["work", workId] });
-    }
-
+    }, [workId]);
 
     const itemTemplate = (editions: Edition[]) => {
         if (!editions) {
@@ -473,9 +409,9 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     const sortEditions = (a: Edition[], b: Edition[]): number => {
         const first = a[0];
         const second = b[0];
-        if (first.pubyear !== second.pubyear) return (first.pubyear < second.pubyear ? -1 : 1);
+        if (first.pubyear !== second.pubyear) return (Number(first.pubyear) < Number(second.pubyear) ? -1 : 1);
         if (first.version !== second.version) return (first.version < second.version ? -1 : 1);
-        return (first.editionnum < second.editionnum ? -1 : 1);
+        return (Number(first.editionnum) < Number(second.editionnum) ? -1 : 1);
     }
 
     return (
@@ -546,7 +482,6 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                     <div className="mt-0">
                                         <DataView value={groupSimilarEditions(data.editions, detailLevel)
                                             .sort(sortEditions)}
-                                            // .sort((a, b) => a[0].pubyear < b[0].pubyear ? -1 : -1)}
                                             header={header} itemTemplate={itemTemplate} />
                                     </div>
                                 </div>

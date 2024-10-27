@@ -48,7 +48,7 @@ export const combineEditions = (editions: Edition[]): Edition | undefined => {
     } else {
         retval.pubyear = pubyears[0] + " - " + pubyears[pubyears.length - 1];
     }
-    const ednums = editions.map(edition => edition.editionnum).sort();
+    const ednums = editions.map(edition => edition.editionnum).sort((a, b) => Number(a) - Number(b));
     if (ednums[0] === ednums[editions.length - 1]) {
         retval.editionnum = ednums[0];
     } else {

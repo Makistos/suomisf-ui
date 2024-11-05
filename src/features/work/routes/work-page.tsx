@@ -74,7 +74,7 @@ const renderListItem = (cb: any, onUpload: any, editions: Edition[],
             headers: headers
         });
         onUpload();
-    }, [onUpload]);
+    }, [onUpload, imageUploadUrl]);
 
     const edition = combineEditions(editions);
 

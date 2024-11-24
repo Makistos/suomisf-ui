@@ -133,7 +133,8 @@ export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseF
             {groupedTags.map((tag, idx) => {
                 return (overflow === undefined || idx < overflow || showAll) &&
                     <span key={tag.name} className="mr-1 mb-1">
-                        <Link to={`/tags/${tag.id}`} className="mr-1 mb-1">
+                        <Link to={`/tags/${tag.id}`} className="mr-1 mb-1"
+                            title={tag.type?.name}>
                             <TagCountComp tag={{ ...tag, count: tag.count }} />
                         </Link>
                     </span>

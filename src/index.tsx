@@ -30,6 +30,7 @@ import { Changes } from './features/changes/routes/changes-page';
 import { LatestAdditions } from './features/latest/routes/latest-additions';
 import { FAQ } from 'faq';
 import ProfilePage from '@features/user/routes/profile-page';
+import { ShortPage } from '@features/short/routes/short-page';
 
 // console.log(process.env)
 
@@ -59,6 +60,7 @@ root.render(
         <Route path="pubseries/:itemId" element={<PubseriesPage id={null} />} />
         <Route path="publishers/:itemId" element={<PublisherPage id={null} />} />
         <Route path="publishers" element={<PublisherListPage />} />
+        <Route path="shorts/:itemId" element={<ShortPage id={null} />} />
         <Route path="tags" element={<SFTags />} />
         <Route path="tags/:tagid" element={<SFTag id={null} />} />
         <Route path="/login" element={<LoginView />} />

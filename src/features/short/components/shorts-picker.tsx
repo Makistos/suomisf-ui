@@ -7,22 +7,23 @@
  * Main control shows the shorts for the selected edition or work. This list
  * can be edited by adding or removing items and by reordering them.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { AutoComplete } from "primereact/autocomplete";
 import { OrderList } from "primereact/orderlist"
 import { Dropdown } from "primereact/dropdown";
 import { Dialog } from "primereact/dialog";
-
-import { getCurrenUser } from "../../../services/auth-service";
-import { Person } from "../../person";
-import { Short } from "../types";
-import { useFilterPeople } from "../../../hooks/use-people-filter"
-import { getApiContent, putApiContent } from "../../../services/user-service";
 import { Button } from "primereact/button";
-import { isAdmin } from "../../user";
-import { ShortsForm } from "./shorts-form";
 import { useQueryClient } from "@tanstack/react-query";
+
+import { getCurrenUser } from "@services/auth-service";
+import { Person } from "@features/person";
+import { Short } from "../types";
+import { useFilterPeople } from "@hooks/use-people-filter"
+import { getApiContent, putApiContent } from "@services/user-service";
+import { ShortsForm } from "./shorts-form";
+import { saveIssueShorts } from "@api/issue/save-issue-shorts";
+import { getIssueShorts } from "@api/issue/get-issue-shorts";
 
 type PickerProps = {
   id: string,
@@ -30,7 +31,7 @@ type PickerProps = {
 }
 
 export const EditionShortsPicker = ({ id }: PickerProps) => {
-  const user = getCurrenUser();
+  const user = useMemo(() => getCurrenUser(), []);
   const [shorts, setShorts] = useState<Short[]>([]);
 
   useEffect(() => {
@@ -60,7 +61,7 @@ export const EditionShortsPicker = ({ id }: PickerProps) => {
 }
 
 export const WorkShortsPicker = ({ id, onClose }: PickerProps) => {
-  const user = getCurrenUser();
+  const user = useMemo(() => getCurrenUser(), []);
   const [shorts, setShorts] = useState<Short[]>([]);
   const isDirty = false;
   const queryClient = useQueryClient();
@@ -87,6 +88,41 @@ export const WorkShortsPicker = ({ id, onClose }: PickerProps) => {
     <>
       <ShortsPicker source={shorts}
         saveCallback={saveShortsToWork}
+      />
+    </>
+  )
+}
+
+export const IssueShortsPicker = ({ id, onClose }: PickerProps) => {
+  const user = useMemo(() => getCurrenUser(), []);
+  const [shorts, setShorts] = useState<Short[]>([]);
+
+  useEffect(() => {
+    const getShorts = async () => {
+      const response = await getIssueShorts(id, user);
+      setShorts(response);
+    }
+    if (id) {
+      getShorts();
+    }
+  }, [])
+
+  const saveShortsToIssue = (shorts: Short[]): number => {
+    const ids = shorts.map(short => short.id)
+    const data = { issue_id: id, shorts: ids }
+    const response = saveIssueShorts(data, user).then(
+      (response) => {
+        onClose();
+        return response.status;
+      }
+    );
+    return 200;
+  }
+
+  return (
+    <>
+      <ShortsPicker source={shorts}
+        saveCallback={saveShortsToIssue}
       />
     </>
   )
@@ -134,13 +170,13 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
     if (selectedShort === null) {
       return;
     }
-    const newShorts = [...selectedItemShorts, selectedShort];
+    const newShorts = [...selectedItemShorts, selectedShort] as Short[];
     setSelectedItemShorts(newShorts);
     setHasChanged(true);
   }
 
   const removeFromSelected = (id: number) => {
-    const newShorts = selectedItemShorts.filter(short => short.id !== id);
+    const newShorts = selectedItemShorts.filter(short => short.id !== id) as (Short[]);
     setSelectedItemShorts(newShorts);
     setHasChanged(true);
   }
@@ -256,6 +292,7 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
         <ShortsForm short={null}
           onSubmitCallback={onNewShort}
           onClose={() => setIsShortFormVisible(false)}
+          onDelete={() => setIsShortFormVisible(false)}
         />
       </Dialog>
       <div className="grid">

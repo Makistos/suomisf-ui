@@ -24,6 +24,7 @@ import { deleteApiContent } from '../../../services/user-service';
 import { Contribution } from '../../../types/contribution';
 import { emptyContributor } from '../../../components/forms/contributor-field';
 import { removeDuplicateContributions } from '../../../utils';
+import { useNavigate } from 'react-router-dom';
 
 // import { shortIsSf } from '../utils';
 
@@ -32,12 +33,14 @@ import { removeDuplicateContributions } from '../../../utils';
 interface ShortFormProps {
     short: Short | null,
     onSubmitCallback: ((id: string, state: boolean) => void),
-    onClose: () => void
+    onClose: () => void,
+    onDelete: () => void
 }
 
 type FormObjectProps = {
     onSubmit: any;
     onClose: any;
+    onDelete: any;
     methods: any;
     id: number | null | undefined;
 }
@@ -45,6 +48,7 @@ type FormObjectProps = {
 export const ShortsForm = (props: ShortFormProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     let contributors: Contribution[] = [];
+
     if (props.short) {
         contributors = removeDuplicateContributions(props.short.contributors);
     }
@@ -105,6 +109,7 @@ export const ShortsForm = (props: ShortFormProps) => {
                 <FormObject
                     onSubmit={mutate}
                     onClose={props.onClose}
+                    onDelete={props.onDelete}
                     methods={methods}
                     id={props.short?.id}
                 />
@@ -114,7 +119,7 @@ export const ShortsForm = (props: ShortFormProps) => {
     )
 }
 
-const FormObject = ({ onSubmit, onClose, methods, id }: FormObjectProps) => {
+const FormObject = ({ onSubmit, onClose, onDelete, methods, id }: FormObjectProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [typeList, setTypeList] = useState([]);
     const [genres, setGenres] = useState([]);
@@ -123,9 +128,7 @@ const FormObject = ({ onSubmit, onClose, methods, id }: FormObjectProps) => {
     const [loading, setLoading] = useState(false);
     const required_rule: RegisterOptions = { required: "Pakollinen kenttä" };
     const toast = useRef<Toast>(null);
-
     const disabled = isDisabled(user, loading);
-    const queryClient = useQueryClient();
 
     useEffect(() => {
         async function getTypes() {
@@ -189,9 +192,8 @@ const FormObject = ({ onSubmit, onClose, methods, id }: FormObjectProps) => {
             accept: () => {
                 if (id) {
                     deleteShort(id);
-                    queryClient.invalidateQueries();
                     setLoading(false);
-                    onClose();
+                    onDelete();
                 }
             },
             reject: () => {

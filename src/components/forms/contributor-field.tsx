@@ -91,13 +91,6 @@ export const ContributorField = (
                 setRoleList(response.data);
             }
             getRoles();
-            //     async function getPeople() {
-            //         const url = "people/";
-            //         const response = await getApiContent(url, user);
-            //         setFilteredPeople(response.data);
-            //         //console.log("People response:" + filteredPeople);
-            //     }
-            //     getPeople();
         }, [])
 
         async function filterPeople(event: any) {

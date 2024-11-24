@@ -1,10 +1,10 @@
-import React, { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Fragment, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
 
 import { getCurrenUser } from '../../../services/auth-service';
 import { Person } from "../../person/types";
 import { LinkList } from '../../../components/link-list';
-import { ShortSummary } from '../../short';
+import { Short, ShortSummary } from '../../short';
 import { ArticleList } from '../../article';
 import { Issue } from '../types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -22,7 +22,9 @@ import { ImageType } from "../../../types/image";
 import { deleteIssueCover } from '@api/issue/delete-issue-cover';
 import { saveIssueCover } from '@api/issue/save-issue-cover';
 import { FileUpload, FileUploadHandlerEvent } from 'primereact/fileupload';
-import { on } from 'events';
+import { IssueShortsPicker } from '@features/short/components/shorts-picker';
+import { IssueArticlesPicker } from '@features/short/components/articles-picker';
+import _ from 'lodash';
 
 const baseURL = 'issues/';
 
@@ -40,6 +42,13 @@ const PickLinks = (items: Person[]) => {
 
 type IssueInfoProps = {
     issue: Issue
+}
+
+const getShortTypes = (shorts: Short[]) => {
+    const typeList = shorts.map(short => short.type);
+    const types = _.uniqBy(typeList, 'id').sort((a, b) => a.id < b.id ? -1 : 1);
+    return types;
+
 }
 
 const IssueInfo = ({ issue }: IssueInfoProps) => {
@@ -70,24 +79,30 @@ const IssueInfo = ({ issue }: IssueInfoProps) => {
             {issue.notes && issue.notes !== "" && (
                 <div dangerouslySetInnerHTML={{ __html: issue.notes }} />
             )}
-            {issue.articles.length > 0 && (
+            {/* {issue.articles.length > 0 && (
                 <div className="p-pt-2"><b>Artikkelit</b>
                     <div className="p-ml-3">
                         <ArticleList articles={issue.articles} />
                     </div>
                 </div>
             )
-            }
+            } */}
             {issue.stories.length > 0 && (
-                <div className="p-pt-2"><b>Novellit</b>
+                <div className="p-pt-2"><h3>Sisältö</h3>
                     <div className="p-ml-3">
                         {
-                            issue.stories
-                                .map((story) => (
-                                    <ShortSummary key={story.id}
-                                        short={story}
-                                    />
-                                ))
+                            getShortTypes(issue.stories).map((storytype) => (
+                                <Fragment key={storytype.id + issue.id}>
+                                    <h4 key={storytype.name + issue.id}>{storytype.name}</h4>
+                                    {issue.stories.filter((story) => story.type.id === storytype.id)
+                                        .map((story) => (
+                                            <ShortSummary key={story.id}
+                                                short={story}
+                                            />
+                                        ))}
+                                </Fragment>
+                            )
+                            )
                         }
                     </div>
                 </div>
@@ -102,6 +117,8 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
     const user = useMemo(() => getCurrenUser(), []);
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [issueFormVisible, setIssueFormVisible] = useState(false);
+    const [shortsFormVisible, setShortsFormVisible] = useState(false);
+    const [articleFormVisible, setArticleFormVisible] = useState(false);
     //const toast = useRef<Toast>(null);
     const queryClient = useQueryClient();
     // if (toast === undefined) {
@@ -138,7 +155,7 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
     const confirmDelete = (event: any) => {
         confirmPopup({
             target: event.currentTarget,
-            message: "Haluatko varmasti poistaa painoksen?",
+            message: "Haluatko varmasti poistaa numeron?",
             icon: "pi pi-exclamation-triangle",
             acceptClassName: "p-button-danger",
             accept: () => {
@@ -154,14 +171,14 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
         })
     }
 
-    const onFormSubmit = (success: boolean, message: string) => {
+    const onFormSubmit = useCallback((success: boolean, message: string) => {
         if (!success) {
             console.log(message);
         }
         onDialogHide();
         setQueryEnabled(true);
         onSubmitCallback(success, message);
-    }
+    }, [data, user]);
 
     const onDialogShow = () => {
         setIssueFormVisible(true);
@@ -199,7 +216,7 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
         }
     }, [data, user]);
 
-    const deleteImage = (objectId: number, imageId: number) => {
+    const deleteImage = useCallback((objectId: number, imageId: number) => {
         if (data) {
             const response = deleteIssueCover(data.id).then(response => {
                 if (response?.status === 200) {
@@ -209,7 +226,7 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
                 }
             });
         }
-    }
+    }, [id, user]);
 
     const onUpload = useCallback((severity: "success" | "info" | "warn" | "error", message: string) => {
         toast?.current?.show({
@@ -218,7 +235,25 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
             detail: message
         })
         queryClient.invalidateQueries({ queryKey: ['issue', id] });
-    }, [id])
+    }, [id, user])
+
+    const onShortsShow = () => {
+        setShortsFormVisible(true);
+    }
+
+    const onShortsHide = () => {
+        setShortsFormVisible(false);
+        queryClient.invalidateQueries({ queryKey: ['issue', id] });
+    }
+
+    const onArticlesShow = () => {
+        setArticleFormVisible(true);
+    }
+
+    const onArticlesHide = () => {
+        setArticleFormVisible(false);
+        queryClient.invalidateQueries({ queryKey: ['issue', id] });
+    }
 
     if (!data) return null;
 
@@ -242,6 +277,28 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
                             issueid={id}
                             magazineid={magazine_id}
                             onSubmitCallback={onFormSubmit}
+                        />
+                    </Dialog>
+                    <Dialog maximizable blockScroll className="w-full xl:w-9"
+                        header="Novellien muokkaus"
+                        visible={shortsFormVisible}
+                        //onShow={() => onShortsShow()}
+                        onHide={() => onShortsHide()}
+                    >
+                        <IssueShortsPicker
+                            id={data.id?.toString()}
+                            onClose={() => onShortsHide()}
+                        />
+                    </Dialog>
+                    <Dialog maximizable blockScroll className="w-full xl:w-9"
+                        header="Artikkelien muokkaus"
+                        visible={articleFormVisible}
+                        //onShow={() => onArticlesShow()}
+                        onHide={() => onArticlesHide()}
+                    >
+                        <IssueArticlesPicker
+                            id={data.id?.toString()}
+                            onClose={() => onArticlesHide()}
                         />
                     </Dialog>
                     <div className="p-grid">
@@ -284,6 +341,10 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
                                     <Button icon="pi pi-pencil" tooltip="Muokkaa" className="p-button-text" onClick={() => onDialogShow()} />
                                     <Button icon="pi pi-trash" tooltip="Poista" className="p-button-text"
                                         onClick={confirmDelete}
+                                    />
+                                    <Button icon="fa fa-list-ul" tooltip="Artikkelit ja novellit"
+                                        className='p-button-text'
+                                        onClick={() => onShortsShow()}
                                     />
                                 </>
                             }

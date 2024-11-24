@@ -121,6 +121,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
         setEditVisible(false);
     }
 
+
     const saveShort = (id: string, visible: boolean) => {
         setEditVisible(visible);
     }
@@ -133,6 +134,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                 <ShortsForm short={orderContributions(short)}
                     onSubmitCallback={saveShort}
                     onClose={onDialogHide}
+                    onDelete={() => { }}
                 />
             </Dialog>
             {short ? (
@@ -149,7 +151,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                                 />:<> </>
                             </b>
                         }
-                        <b>{short.title}</b>
+                        <b><Link to={`/shorts/${short.id}`}>{short.title}</Link></b>
                         {short.orig_title && short.orig_title !== short.title && (
                             <> ({short.orig_title})</>
                         )}
@@ -163,13 +165,13 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                         {short.genres.length > 0 &&
                             <GenreList genres={short.genres} />
                         }
-                        {isAdmin(user) &&
+                        {/* {isAdmin(user) &&
                             <Button
                                 icon="fa-solid fa-pen-to-square"
                                 className="p-button-rounded p-button-info p-button-text"
                                 onClick={() => setEditVisible(true)}
                             />
-                        }
+                        } */}
 
                     </div>
                     {listPublications && short && short.editions &&

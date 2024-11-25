@@ -154,6 +154,10 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         return (data.works.length > 0 || data.editions.length > 0);
     }
 
+    const hasShorts = (data: Person) => {
+        return (data.stories.length > 0 || data.magazine_stories.length > 0);
+    }
+
     const combineNames = (aliases: PersonBrief[], other_names: string) => {
         //let retval = aliases.map(alias => alias.alt_name ? alias.alt_name : alias.name);
         let retval = aliases.map(alias => alias.alt_name);
@@ -270,7 +274,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                         <ContributorBookControl viewNonSf={false} person={data}
                                             collaborationsLast={true}></ContributorBookControl>
                                     )}
-                                    {(data.stories.length > 0 || data.magazine_stories.length > 0) &&
+                                    {hasShorts(data) &&
                                         <ShortsControl key={"sfshorts"} person={data} listPublications what={"sf"}></ShortsControl>
                                     }
                                     {hasNonSf("all") && <Fieldset legend="Ei-SF/Mainstream" toggleable collapsed>

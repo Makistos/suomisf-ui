@@ -75,6 +75,7 @@ export const ShortsControl = ({ person, listPublications, what }: ShortsProps) =
                             shorts.filter((s) => s.type.id === shortType.id).length)}>
                             <ShortsList shorts={shorts.filter((s) => s.type.id === shortType.id).sort((a, b) => a.title.localeCompare(b.title))}
                                 person={person} key={person.id}
+                                groupRoles
                                 {...(listPublications ? { listPublications } : {})}
                             />
                         </TabPanel>

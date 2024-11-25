@@ -22,6 +22,10 @@ interface ShortsListProps {
      */
     groupAuthors?: boolean,
     /**
+     * Whether to group by author role. This and groupAuthors can't both be true.
+     */
+    groupRoles?: boolean,
+    /**
      * Whether to show where shorts were published (books and magazines).
      */
     listPublications?: boolean,
@@ -45,13 +49,13 @@ interface ShortsListProps {
  * @param enableQueries - Whether to enable queries.
  * @return {JSX.Element} The rendered component.
  */
-export const ShortsList = ({ shorts, person, groupAuthors, listPublications,
+export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPublications,
     anthology, enableQueries }: ShortsListProps): JSX.Element => {
 
-    const [orderField, setOrderField] = useState("Year");
+    const [orderField, setOrderField] = useState("Title");
     const [groupedShorts, setGroupedShorts]: [Record<string, Short[]>,
         (groupedShorts: Record<string, Short[]>) => void] = useState({});
-
+    const grouping = groupAuthors ? "person" : groupRoles ? "role" : "";
     const sortOptions = [
         { name: 'Nimi', code: 'Title' },
         { name: 'Julkaisuvuosi', code: 'Year' }
@@ -81,17 +85,29 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications,
     }
 
     useEffect(() => {
-        if (groupAuthors) {
-            setGroupedShorts(groupShorts(shorts));
+        if (groupAuthors || groupRoles) {
+            const grouped = groupShorts(shorts, grouping, person?.name);
+            setGroupedShorts(grouped);
         } else {
             let grouped: Record<any, Short[]> = {};
             grouped["null"] = shorts;
             setGroupedShorts(grouped);
         }
-    }, [shorts, groupAuthors])
+        console.log(groupedShorts);
+    }, [shorts, groupAuthors, groupRoles])
 
     const skipAuthors = !anthology ? true : false;
 
+    const groupHeader = (group: string) => {
+        if (group === "null") {
+            return <></>;
+        } else if (grouping === "person" && person && group !== person.name) {
+            return <h3>{person.name}</h3>;
+        } else if (grouping === "role") {
+            return <h3>{group}</h3>;
+        }
+        return <></>;
+    }
     return (
         <div className="grid">
             {/* <div className="grid col-12 justify-content-end">
@@ -104,23 +120,20 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications,
                 </div>
             </div> */}
             <div className="col">
-                {shorts.map((short: Short) => (
+                {/* {shorts.map((short: Short) => (
                     <ShortSummary short={short} key={short.id}
                         skipAuthors={skipAuthors}
                         {...(listPublications ? { listPublications } : {})}
                         enableQueries={enableQueries}
                     />
                 ))
-                }
-                {/* {Object.entries(groupedShorts)
+                } */}
+                {Object.entries(groupedShorts)
                     .sort(sortGroups)
                     .map(([group, shortList]) => {
                         return (
                             <div key={group}>
-                                {person && group !== person.name && group !== "null" ? (
-                                    <h3>{person.name}</h3>
-                                ) : (<></>)
-                                }
+                                {groupHeader(group)}
                                 {
                                     shortList.sort(shortsCmp).map((short: Short) => (
                                         <ShortSummary short={short} key={short.id}
@@ -133,7 +146,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, listPublications,
                             </div>
                         );
                     })
-                } */}
+                }
             </div>
         </div>
     )

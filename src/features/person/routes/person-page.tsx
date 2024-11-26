@@ -275,7 +275,12 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                             collaborationsLast={true}></ContributorBookControl>
                                     )}
                                     {hasShorts(data) &&
-                                        <ShortsControl key={"sfshorts"} person={data} listPublications what={"sf"}></ShortsControl>
+                                        <ShortsControl key={"sfshorts"}
+                                            person={data}
+                                            listPublications
+                                            showAuthors
+                                            sort={"Author"}
+                                            what={"sf"}></ShortsControl>
                                     }
                                     {hasNonSf("all") && <Fieldset legend="Ei-SF/Mainstream" toggleable collapsed>
                                         {hasNonSf("works") &&
@@ -283,7 +288,12 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                                 collaborationsLast={true}></ContributorBookControl>
                                         }
                                         {hasNonSf("stories") &&
-                                            <ShortsControl key={"nonsfshorts"} person={data} listPublications what={"nonsf"}></ShortsControl>
+                                            <ShortsControl key={"nonsfshorts"}
+                                                person={data}
+                                                listPublications
+                                                showAuthors
+                                                sort={"Author"}
+                                                what={"nonsf"}></ShortsControl>
                                         }
                                     </Fieldset>
                                     }

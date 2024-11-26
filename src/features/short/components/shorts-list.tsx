@@ -34,6 +34,7 @@ interface ShortsListProps {
      * show the authors in front of each row.
      */
     anthology?: boolean,
+    sort?: string,
     enableQueries?: (state: boolean) => void
 }
 
@@ -46,19 +47,21 @@ interface ShortsListProps {
  * @param groupAuthors - Whether to group the shorts by authors.
  * @param listPublications - Whether to list the publications.
  * @param anthology - Whether the shorts are part of an anthology.
+ * @param sort - The field to sort by.
  * @param enableQueries - Whether to enable queries.
  * @return {JSX.Element} The rendered component.
  */
 export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPublications,
-    anthology, enableQueries }: ShortsListProps): JSX.Element => {
+    anthology, sort, enableQueries }: ShortsListProps): JSX.Element => {
 
-    const [orderField, setOrderField] = useState("Title");
+    const [orderField, setOrderField] = useState(sort || "");
     const [groupedShorts, setGroupedShorts]: [Record<string, Short[]>,
         (groupedShorts: Record<string, Short[]>) => void] = useState({});
     const grouping = groupAuthors ? "person" : groupRoles ? "role" : "";
     const sortOptions = [
         { name: 'Nimi', code: 'Title' },
-        { name: 'Julkaisuvuosi', code: 'Year' }
+        { name: 'Julkaisuvuosi', code: 'Year' },
+        { name: 'Kirjoittaja', code: 'Author' }
     ]
 
     const sortGroups = (a: [string, Short[]], b: [string, Short[]]) => {
@@ -72,6 +75,11 @@ export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPubli
     const shortsCmp = (a: Short, b: Short) => {
         if (orderField === "Title") {
             return a.title < b.title ? -1 : 1;
+        } else if (orderField === "Author") {
+            const aAuthor = a.contributors.filter(c => c.role.id === 1).map(name => name.person.name).join(", ");
+            const bAuthor = b.contributors.filter(c => c.role.id === 1).map(name => name.person.name).join(", ");
+            if (aAuthor === bAuthor) return a.title < b.title ? -1 : 1;
+            return aAuthor < bAuthor ? -1 : 1;
         }
         // a first if both are are null. Otherwise if one is null,
         // that goes first.
@@ -86,7 +94,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPubli
 
     useEffect(() => {
         if (groupAuthors || groupRoles) {
-            const grouped = groupShorts(shorts, grouping, person?.name);
+            const grouped = groupShorts(shorts, grouping, person);
             setGroupedShorts(grouped);
         } else {
             let grouped: Record<any, Short[]> = {};

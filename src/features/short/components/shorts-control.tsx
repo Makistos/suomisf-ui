@@ -19,6 +19,8 @@ interface ShortsProps {
      * Whether to show where shorts were published (books and magazines).
      */
     listPublications?: boolean,
+    showAuthors?: boolean,
+    sort?: string,
     /**
      * What to show. Possible values = "all", "sf", "nonsf". Defaults to
      * "all", which is also used if invalid value is given.
@@ -26,7 +28,7 @@ interface ShortsProps {
     what?: string
 }
 
-export const ShortsControl = ({ person, listPublications, what }: ShortsProps) => {
+export const ShortsControl = ({ person, listPublications, showAuthors, sort, what }: ShortsProps) => {
     const [shorts, setShorts]: [Short[], (shorts: Short[]) => void] = useState<Short[]>([]);
     const [shortTypes, setShortTypes]: [ShortType[], (shortTypes: ShortType[]) => void] = useState<ShortType[]>([]);
     useEffect(() => {
@@ -76,6 +78,8 @@ export const ShortsControl = ({ person, listPublications, what }: ShortsProps) =
                             <ShortsList shorts={shorts.filter((s) => s.type.id === shortType.id).sort((a, b) => a.title.localeCompare(b.title))}
                                 person={person} key={person.id}
                                 groupRoles
+                                anthology={showAuthors}  // This. Is. Hack.
+                                sort={sort}
                                 {...(listPublications ? { listPublications } : {})}
                             />
                         </TabPanel>

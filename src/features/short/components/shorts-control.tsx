@@ -8,6 +8,7 @@ import { Person } from "../../person";
 import { ShortsList } from "./shorts-list";
 import { Short, ShortType } from "../types";
 import { listIsSf } from "../../genre";
+import { getShortTypes } from "../utils/get-short-types";
 
 interface ShortsProps {
     /**
@@ -50,9 +51,10 @@ export const ShortsControl = ({ person, listPublications, showAuthors, sort, wha
             });
             return aList;
         }
-        const newShorts = joinShortsLists(
-            person.stories.filter(filterShorts),
-            person.magazine_stories.filter(filterShorts));
+        const newShorts = person.stories.filter(filterShorts);
+        // const newShorts = joinShortsLists(
+        //     person.stories.filter(filterShorts),
+        //     person.magazine_stories.filter(filterShorts));
         setShorts(newShorts);
         setShortTypes(getShortTypes(newShorts));
     }, [person, listPublications, what])
@@ -62,11 +64,11 @@ export const ShortsControl = ({ person, listPublications, showAuthors, sort, wha
     }
 
     /** Return a list of unique short types ordered by their id. */
-    const getShortTypes = (shorts: Short[]) => {
-        const typeList = shorts.map(short => short.type);
-        const types = _.uniqBy(typeList, 'id').sort((a, b) => a.id < b.id ? -1 : 1);
-        return types;
-    }
+    // const getShortTypes = (shorts: Short[]) => {
+    //     const typeList = shorts.map(short => short.type);
+    //     const types = _.uniqBy(typeList, 'id').sort((a, b) => a.id < b.id ? -1 : 1);
+    //     return types;
+    // }
 
     return (
         <Fieldset legend="Lyhyet" toggleable>

@@ -14,7 +14,7 @@ import { ConfirmDialog } from 'primereact/confirmdialog';
 
 import { getCurrenUser } from '@services/auth-service';
 import { WorkList } from '@features/work';
-import { ShortsList } from '@features/short';
+import { Short, ShortsList, ShortType } from '@features/short';
 import { ArticleList } from '@features/article';
 import { SfTagProps } from '../types';
 import { SfTagForm } from '../components/sftag-form';
@@ -26,6 +26,8 @@ import { Tag } from 'primereact/tag';
 import { tagTypeToSeverity } from '../components/tag-type-to-severity';
 import { deleteTag } from '@api/tag/delete-tag';
 import { filterTags } from '@api/tag/filter-tags';
+import _ from 'lodash';
+import { getShortTypes } from '@features/short/utils/get-short-types';
 
 
 export const SFTag = ({ id }: SfTagProps) => {
@@ -37,6 +39,7 @@ export const SFTag = ({ id }: SfTagProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const navigate = useNavigate();
     const toastRef = useRef<Toast>(null);
+    const [shortTypes, setShortTypes]: [ShortType[], (shortTypes: ShortType[]) => void] = useState<ShortType[]>([]);
 
     const dialogFuncMap: Record<string, React.Dispatch<React.SetStateAction<boolean>>> = {
         'displayChangeName': setDisplayChangeName,
@@ -226,33 +229,38 @@ export const SFTag = ({ id }: SfTagProps) => {
                     )
                         :
                         (
-                            <div className="grid justify-content-center min-w-full">
+                            <div>
                                 <div className="grid justify-content-center col-12 mt-5 mb-5 min-w-full">
                                     <h1 className="maintitle min-w-full justify-content-center">{data?.name}</h1>
                                 </div>
-                                <div className="grid col-12">
+                                <div className="mb-5">
                                     <Tag value={data?.type?.name}
                                         severity={data ? tagTypeToSeverity(data) : undefined}
                                     />
                                 </div>
                                 {data?.works && data.works.length > 0 &&
-                                    <div className="grid col-12 mt-5">
+                                    <div>
                                         <h2 className="mb-5">Teokset ({data?.works.length})</h2>
                                         <WorkList works={data?.works} />
                                     </div>
                                 }
                                 {data?.stories && data.stories.length > 0 &&
-                                    <div className="grid col-12 mt-5">
-                                        <h2 className="mb-5">Novellit ({data?.stories.length})</h2>
-                                        <ShortsList shorts={data?.stories} />
-                                    </div>
-                                }
-                                {data?.articles && data.articles.length > 0 &&
+                                    getShortTypes(data.stories).map((shortType) => {
+                                        if (data.stories && data.stories?.filter(short => short.type.id === shortType.id).length > 0) {
+                                            return (
+                                                <div>
+                                                    <h2 className="mb-5">{shortType.name} ({data.stories ? data?.stories.filter(short => short.type.id === shortType.id).length : 0})</h2>
+                                                    <ShortsList shorts={data?.stories.filter(short => short.type.id === shortType.id)} />
+                                                </div>
+                                            )
+                                        }
+                                    })}
+                                {/* {data?.articles && data.articles.length > 0 &&
                                     <div className="col-12 mt-5">
                                         <h2 className="mb-5">Artikkelit ({data?.articles.length})</h2>
                                         <ArticleList articles={data.articles} />
                                     </div>
-                                }
+                                } */}
                             </div>
                         )
                 }

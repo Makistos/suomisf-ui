@@ -28,13 +28,13 @@ export const SFTags = () => {
     }
 
     const tagCount = (tag: SfTag) => {
-        if (tag.id === 1) {
-            console.log("foo")
-        }
+        // if (tag.id === 1) {
+        //     console.log("foo")
+        // }
         let count = 0;
-        if (tag.articles) {
-            count += tag.articles.length;
-        }
+        // if (tag.articles) {
+        //     count += tag.articles.length;
+        // }
         if (tag.stories) {
             count += tag.stories.length;
         }

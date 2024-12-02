@@ -144,8 +144,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         }
         if (what === "all" || what === "stories") {
             all_genres = _.concat(all_genres,
-                ...data.stories.map(story => story.genres),
-                ...data.magazine_stories.map(story => story.genres));
+                ...data.stories.map(story => story.genres));
         }
         return _.flatten(all_genres).some(genre => genre.abbr === 'eiSF');
     }

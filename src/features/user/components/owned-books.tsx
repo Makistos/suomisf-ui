@@ -15,7 +15,8 @@ import jsPDF from "jspdf"
 import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect"
 
 interface OwnedBooksProps {
-    userId: string
+    userId: string,
+    listType: string
 }
 
 interface Col {
@@ -24,7 +25,7 @@ interface Col {
     show: boolean
 }
 
-export const OwnedBooks = ({ userId }: OwnedBooksProps) => {
+export const OwnedBooks = ({ userId, listType }: OwnedBooksProps) => {
     // @ts-ignore
     const dt = useRef<DataTable>(null);
     const [renderedItems, setRenderedItems] = useState<OwnedBook[]>([])
@@ -40,16 +41,18 @@ export const OwnedBooks = ({ userId }: OwnedBooksProps) => {
     ])
     const [selectedColumns, setSelectedColumns] = useState(cols.filter(col => col.show === true).map(col => col));
 
+    console.log("Type:", listType)
     //console.log(selectedColumns)
 
     const exportColumns = cols.filter(col => col.show === true)
         .map(col => ({ title: col.header, dataKey: col.field }))
 
     const getOwnedBooks = async (userId: string): Promise<OwnedBook[]> => {
-        const response = await getApiContent(`/editions/owned/${userId}`, null).then(response => response.data);
-        return response;
+        if (listType === "owned") {
+            return await getApiContent(`editions/owned/${userId}`, null).then(response => response.data);
+        }
+        return await getApiContent(`editions/wishlist/${userId}`, null).then(response => response.data);
     }
-
     const { isLoading, data } = useQuery({
         queryKey: ['ownedBooks', userId],
         queryFn: () => getOwnedBooks(userId),

@@ -244,7 +244,8 @@ export const EditionOwnership = ({ editionId }: EditionOwnershipProps) => {
             </Dialog>
             <Rating value={ratingValue(data.condition)}
                 stars={5}
-                onChange={(e: RatingChangeEvent) => conditionChange(e.value)} />
+                onChange={(e: RatingChangeEvent) => conditionChange(e.value)}
+            />
         </>
     )
 }

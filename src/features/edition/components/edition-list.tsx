@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { Dropdown } from "primereact/dropdown";
 import { SelectButton } from "primereact/selectbutton";
 import { EditionSummary } from "./edition-summary";
 import { groupEditionsByAuthor } from "../utils/group-editions-by-author";
-import { Edition } from "../types";
+import { CombinedEdition, Edition } from "../types";
 import { Person } from "../../person/types";
 import { CoverImageList } from "../../../components/cover-image-list";
+import { User } from "@features/user";
+import { getCurrenUser } from "@services/auth-service";
+import { editionIsOwned } from "../utils/edition-is-owned";
+import { editionIsWishlisted } from "../utils/edition-is-wishlisted";
 
 interface EditionListProps {
     editions: Edition[],
@@ -19,6 +23,7 @@ export const EditionList = ({ editions, person, sort = "year" }: EditionListProp
         (editions: Record<string, Edition[]>) => void] = useState({});
     const [sorting, setSorting] = useState<string>(sort);
     const [editionView, setEditionView] = useState("Lista");
+    const user = useMemo(() => { return getCurrenUser() }, []);
 
     const sortOptions = [
         { name: "Tekijä", code: "author" },
@@ -70,6 +75,7 @@ export const EditionList = ({ editions, person, sort = "year" }: EditionListProp
         return 1;
     }
 
+
     return (
         <div className="grid w-full">
             <div className="grid col-6 justify-content-start align-items-center">
@@ -104,6 +110,8 @@ export const EditionList = ({ editions, person, sort = "year" }: EditionListProp
                                             <div className="grid col-12" key={edition.id}>
                                                 <EditionSummary edition={edition} showVersion={true} work={edition.work[0]}
                                                     key={edition.id} showPerson={sorting !== "author"}
+                                                    isOwned={editionIsOwned(edition, user)}
+                                                    isWishlisted={editionIsWishlisted(edition, user)}
                                                 />
                                             </div>
                                         ))

@@ -41,6 +41,8 @@ export interface Edition {
     version: number;
     work: Work[];
     combined: boolean;
+    owners: User[];
+    wishlisted: User[];
 }
 
 export interface CombinedEdition {
@@ -70,6 +72,8 @@ export interface CombinedEdition {
     verified: Boolean;
     version: number;
     work: Work[];
+    owners: User[]
+    wishlisted: User[];
     combined: boolean;
 }
 
@@ -83,7 +87,9 @@ export interface EditionProps {
     card?: boolean,
     showVersion?: boolean
     contributions?: Contribution[],
-    detailDepth?: number
+    detailDepth?: number,
+    isOwned?: boolean,
+    isWishlisted?: boolean
 }
 
 export interface EditionFormData {
@@ -133,4 +139,9 @@ export interface OwnedBook {
     book: Edition,
     user: User,
     condition: EditionOwnershipStatus
+}
+
+export interface EditionWishlistStatus {
+    edition_id: number,
+    user_id: number
 }

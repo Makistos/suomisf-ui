@@ -55,3 +55,16 @@ code {
 p-radiobutton-label {
   margin-right: 5rem;
 }
+
+.owned::before {
+    content: '⭐';
+    position: absolute;
+    /* margin-right: 8px; */
+    left: 0;
+    width: 1.5em;
+    text-align: center;
+}
+
+.not-owned::before {
+  content: '';
+}

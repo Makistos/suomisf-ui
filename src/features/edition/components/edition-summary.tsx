@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 
 import { GenreList } from "../../genre";
 import { Edition, EditionProps } from "../types";
 import { EditionString } from "../utils/edition-string";
+import { getCurrenUser } from '@services/auth-service';
 
 
-export const EditionSummary = ({ edition, person, showPerson, showVersion }: EditionProps) => {
+export const EditionSummary = ({ edition, person, showPerson, showVersion, isOwned, isWishlisted }: EditionProps) => {
+    const user = useMemo(() => getCurrenUser(), [])
     const notFirstEdition = (edition: Edition) => {
         return !(edition.editionnum === 1 && (edition.version || edition.version === null || edition.version === 1))
     }
@@ -22,12 +24,12 @@ export const EditionSummary = ({ edition, person, showPerson, showVersion }: Edi
     }
 
     return (
-        <div>
-            {edition.work[0] && (showPerson || (person && person === authorStr(edition))) && <b>{authorStr(edition)}: </b>}
+        <div className={isOwned ? "book owned" : isWishlisted ? "book wishlist" : "book not-owned"}>
+            {edition.work[0] && (showPerson || (person && person === authorStr(edition))) && <b>{authorStr(edition)}:&nbsp;</b>}
             {edition.work[0] && <Link to={`/works/${edition.work[0].id}`}>
                 {edition.title}</Link>}
             {edition.work[0] && edition.work[0].title !== edition.work[0].orig_title && (
-                <> ({edition.work[0].orig_title}, {edition.work[0].pubyear})</>
+                <>&nbsp;({edition.work[0].orig_title}, {edition.work[0].pubyear})</>
             )}
             {showVersion && notFirstEdition(edition) && edition.editionnum !== null && (
                 <>. <b>{EditionString(edition)}</b></>
@@ -35,10 +37,10 @@ export const EditionSummary = ({ edition, person, showPerson, showVersion }: Edi
             {/*{!"!?.".includes(edition.title.slice(-1)) &&
                 <>.</>
             } */}
-            <>. {edition.publisher && (
+            <>.&nbsp;{edition.publisher && (
                 <Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link>
             )}</>
-            <> {edition.pubyear}. </>
+            <>&nbsp;{edition.pubyear}.&nbsp;</>
             {edition.work[0] && <GenreList genres={edition.work[0].genres} />}
         </div>
     )

@@ -1,11 +1,10 @@
-import React, { Fragment, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useParams } from "react-router-dom";
+import React, { Fragment, RefObject, useCallback, useMemo, useState } from 'react';
+import { Link } from "react-router-dom";
 
 import { getCurrenUser } from '../../../services/auth-service';
 import { Person } from "../../person/types";
 import { LinkList } from '../../../components/link-list';
 import { Short, ShortSummary } from '../../short';
-import { ArticleList } from '../../article';
 import { Issue } from '../types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getIssue } from '@api/issue/get-issue';
@@ -23,7 +22,6 @@ import { deleteIssueCover } from '@api/issue/delete-issue-cover';
 import { saveIssueCover } from '@api/issue/save-issue-cover';
 import { FileUpload, FileUploadHandlerEvent } from 'primereact/fileupload';
 import { IssueShortsPicker } from '@features/short/components/shorts-picker';
-import { IssueArticlesPicker } from '@features/short/components/articles-picker';
 import _ from 'lodash';
 
 const baseURL = 'issues/';
@@ -296,10 +294,6 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
                         //onShow={() => onArticlesShow()}
                         onHide={() => onArticlesHide()}
                     >
-                        <IssueArticlesPicker
-                            id={data.id?.toString()}
-                            onClose={() => onArticlesHide()}
-                        />
                     </Dialog>
                     <div className="p-grid">
                         <IssueInfo issue={data} />

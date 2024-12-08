@@ -390,3 +390,40 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
    justify-content: center;
   ;
 }
+
+/* .owned::before {
+    content: '⭐';
+    margin-right: 8px;
+} */
+
+.book {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 1.2em;
+  /* margin: 0.5em 0; */
+}
+
+.owned::before {
+    content: '⭐';
+    position: absolute;
+    left: 0;
+    /* width: 1.5em; */
+    width: 12px;
+    text-align: center;
+}
+
+.not-owned::before {
+  content: '';
+}
+
+.wishlist::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 12px;
+  height: 16px;
+  background: black;
+  text-align: center;
+  clip-path: polygon(0% 0%, 0% 100%, 50% 75%, 100% 100%, 100% 0%);
+}

@@ -21,6 +21,7 @@ import { isAdmin } from '../../user';
 import { ISBN } from '../types';
 import { Binding } from '../../../types/binding';
 import { EditionOwnership } from './edition-ownership';
+import { EditionWishlist } from './edition-wishlist';
 
 type Props = EditionProps &
 { onSubmitCallback: ((status: boolean, message: string) => void) };
@@ -238,6 +239,12 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                     <Toast ref={toast} />
                     <ConfirmPopup />
                     {card && <b><EditionVersion edition={edition} work={work} /></b>}
+                    {user && edition.combined === false &&
+                        <span className="pl-2">
+                            <EditionWishlist editionId={edition.id}
+                                initial={edition.wishlisted?.some(owner => owner.id === user.id)} />
+                        </span>
+                    }
                     {work !== undefined && edition.title !== work.title &&
                         <><br /><i className="font-medium">{edition.title}</i></>}
                     {edition.publisher && (

@@ -66,7 +66,6 @@ export const ImageView = ({ itemId, idx, images, deleteFunc, idxCb }: ImageViewP
         }
     ];
 
-    console.log(images[idx]);
     return (
         <div className="coverbox">
             <ContextMenu model={imageItems} ref={cm} />

@@ -4,9 +4,8 @@ import { LinkList } from "@components/link-list"
 import { GenreGroup } from "@features/genre"
 import { TagGroup } from "@features/tag"
 import { getCurrenUser } from "@services/auth-service"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { selectId } from "@utils/select-id"
-import { on } from "events"
 import { ProgressSpinner } from "primereact/progressspinner"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
@@ -15,7 +14,7 @@ import { Dialog } from "primereact/dialog"
 import { Toast } from "primereact/toast"
 import { SpeedDial } from "primereact/speeddial"
 import { isAdmin } from "@features/user"
-import { EditionDetails, EditionList, EditionSummary, OtherEdition } from "@features/edition"
+import { EditionSummary } from "@features/edition"
 import { removeDuplicateContributions } from "@utils/remove-duplicate-contributions"
 
 interface ShortPageProps {
@@ -189,7 +188,8 @@ export const ShortPage = (props: ShortPageProps) => {
                                         <EditionSummary edition={edition}
                                             showPerson={true}
                                             showVersion={true}
-                                            work={edition.work[0]} />
+                                            work={edition.work[0]}
+                                            isOwned={true} />
                                     </span>
                                 ))}
                             </div>

@@ -154,7 +154,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     }
 
     const hasShorts = (data: Person) => {
-        return (data.stories.length > 0 || data.magazine_stories.length > 0);
+        return (data.stories.length > 0);
     }
 
     const combineNames = (aliases: PersonBrief[], other_names: string) => {

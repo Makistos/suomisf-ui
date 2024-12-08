@@ -28,7 +28,7 @@
     "npm-lifecycle": "^1.0.3",
     "package.json": "^0.0.0",
     "primeflex": "^3.3.0",
-    "primeicons": "6.0.1",
+    "primeicons": "^7.0.0",
     "primereact": "^10.6.4",
     "quill": "^2.0.0",
     "react": "^18.3.0",

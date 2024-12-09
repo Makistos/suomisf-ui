@@ -72,6 +72,7 @@ export const EditionWishlist = ({ editionId, initial }: EditionWishlistProps) =>
         <>
             <i onClick={() => changeStatus(!data.wishlisted)}
                 className={data.wishlisted ? 'pi pi-bookmark-fill' : 'pi pi-bookmark'}
+                title={data.wishlisted ? 'Poista muistilistalta' : 'Lisää muistilistalle'}
                 style={{ cursor: 'pointer' }}></i>
         </>
     )

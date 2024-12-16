@@ -10,6 +10,7 @@ import { LinkPanel } from "../../../components/link-panel";
 import { WorkProps } from "../routes";
 import { Contribution } from '../../../types/contribution';
 import WorkBookseriesBrowser from './work-bookseries-browser';
+import { isForeign } from '../utils/is-foreign';
 
 export const WorkDetails = ({ work }: WorkProps) => {
 
@@ -80,10 +81,7 @@ export const WorkDetails = ({ work }: WorkProps) => {
                             </div>
                         )}
                     <p className="mt-1">
-                        {work.orig_title && work.orig_title !== work.title && work.orig_title + ", "}
-
-                        {work.pubyear}
-                        {work.language_name && " (" + work.language_name.name + ")"}
+                        {isForeign(work) && <>({work.orig_title}, {work.pubyear})</>}
                     </p>
 
                     <div className="col-12">

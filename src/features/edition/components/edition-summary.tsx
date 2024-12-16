@@ -5,6 +5,7 @@ import { GenreList } from "../../genre";
 import { Edition, EditionProps } from "../types";
 import { EditionString } from "../utils/edition-string";
 import { getCurrenUser } from '@services/auth-service';
+import { isForeign } from '@features/work/utils/is-foreign';
 
 
 export const EditionSummary = ({ edition, person, showPerson, showVersion, isOwned, isWishlisted }: EditionProps) => {
@@ -28,9 +29,10 @@ export const EditionSummary = ({ edition, person, showPerson, showVersion, isOwn
             {edition.work[0] && (showPerson || (person && person === authorStr(edition))) && <b>{authorStr(edition)}:&nbsp;</b>}
             {edition.work[0] && <Link to={`/works/${edition.work[0].id}`}>
                 {edition.title}</Link>}
-            {edition.work[0] && edition.work[0].title !== edition.work[0].orig_title && (
-                <>&nbsp;({edition.work[0].orig_title}, {edition.work[0].pubyear})</>
-            )}
+            {edition.work[0]
+                && isForeign(edition.work[0]) && (
+                    <>&nbsp;({edition.work[0].orig_title}, {edition.work[0].pubyear})</>
+                )}
             {showVersion && notFirstEdition(edition) && edition.editionnum !== null && (
                 <>. <b>{EditionString(edition)}</b></>
             )}

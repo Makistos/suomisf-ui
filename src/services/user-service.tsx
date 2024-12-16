@@ -34,7 +34,6 @@ export interface HttpStatusResponse {
 }
 
 export const getPublicContent = (url: string) => {
-    console.log(baseURL + url);
     return axios.get(baseURL + url);
 };
 

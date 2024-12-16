@@ -8,6 +8,7 @@ import { GenreList } from "../../genre";
 import { LinkList } from "../../../components/link-list";
 import { WorkProps } from "../routes";
 import { WorkTooltip } from "./work-tooltip";
+import { isForeign } from '../utils/is-foreign';
 
 
 export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
@@ -40,17 +41,8 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                     .</>
             )}
 
-            {(work.orig_title !== work.title && work.orig_title !== '' && work.orig_title !== null) && (
-                <> ({work.orig_title !== work.title && work.orig_title}
-                    {/* Add comma only if both original title and pubyear are
-                         shown and orig_title has a value. */}
-                    {work.orig_title !== work.title && work.orig_title !== ''
-                        && work.orig_title !== null && work.pubyear && (
-                            <>, </>
-                        )}
-                    {work.pubyear && <>{work.pubyear}</>}
-                    )
-                </>
+            {isForeign(work) && (
+                <>({work.orig_title}, {work.pubyear})</>
             )}
             {work.editions && work.editions.length > 0 &&
                 work.editions[0].contributions &&

@@ -243,7 +243,7 @@ export const EditionOwnership = ({ editionId }: EditionOwnershipProps) => {
                 />
             </Dialog>
             <Rating value={ratingValue(data.condition)}
-                title="Lisää omistettuihin kirjoihin"
+                title="Lisää omistettuihin kirjoihin&#013;*****: Uusi&#013;****: Erinomainen&#013;***: Hyvä&#013;**: Tyydyttävä&#013;*Kehno"
                 stars={5}
                 onChange={(e: RatingChangeEvent) => conditionChange(e.value)}
             />

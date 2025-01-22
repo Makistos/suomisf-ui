@@ -27,7 +27,6 @@ export const PublisherSelector = ({ name, methods, labelClass, tagFunction, ...r
             methods={methods}
             label="Kustantaja"
             labelClass={labelClass}
-            tagFunction={tagFunction}
             completeMethod={completeMethod}
             suggestions={filteredPublishers}
             forceSelection={false}

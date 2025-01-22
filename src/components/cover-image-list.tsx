@@ -145,7 +145,7 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
                             <Image preview className={"p-1 image-" + image.id}
                                 height={imageHeight(image.edition_id, image.size)}
                                 src={import.meta.env.VITE_IMAGE_URL + image.image_src}
-                                key={"image-" + image.id}
+                                key={"image-" + image.edition_id + "-" + image.id}
                             />
                         </span>
                     )

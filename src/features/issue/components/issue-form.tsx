@@ -34,46 +34,46 @@ interface FormObjectProps {
     data: IssueFormData
 }
 
-const convToForm = (issue: Issue): IssueFormData => ({
-    id: issue.id,
-    type: issue.type,
-    number: issue.number,
-    number_extra: issue.number_extra,
-    count: issue.count,
-    year: issue.year,
-    cover_number: issue.cover_number,
-    publisher_id: issue.publisher_id,
-    pages: issue.pages,
-    size: issue.size,
-    link: issue.link,
-    notes: issue.notes,
-    title: issue.title,
-    editors: issue.editors,
-    magazine_id: issue.magazine_id
-})
-
 export const IssueForm = (props: IssueFormProps) => {
     const user = useMemo(() => getCurrenUser(), []);
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [sizes, setSizes] = useState<PublicationSize[]>([]);
 
-    const defaultValues: IssueFormData = {
-        id: null,
-        type: 1,
-        number: 0,
-        number_extra: "",
-        count: 0,
-        year: 0,
-        cover_number: "",
-        publisher_id: 0,
-        pages: 0,
-        size: null,
-        link: '',
-        notes: '',
-        title: '',
-        editors: [],
-        magazine_id: props.magazineid
-    }
+    const convToForm = (issue: Issue | null): IssueFormData => ({
+        id: issue?.id ?? null,
+        type: issue?.type ?? 1,
+        number: issue?.number ?? 0,
+        number_extra: issue?.number_extra ?? "",
+        count: issue?.count ?? 0,
+        year: issue?.year ?? 0,
+        cover_number: issue?.cover_number ?? "",
+        publisher_id: issue?.publisher_id ?? null,
+        pages: issue?.pages ?? 0,
+        size: issue?.size ?? null,
+        link: issue?.link ?? "",
+        notes: issue?.notes ?? "",
+        title: issue?.title ?? "",
+        editors: issue?.editors ?? [],
+        magazine_id: issue?.magazine_id ?? props.magazineid
+    })
+
+    // const defaultValues: IssueFormData = {
+    //     id: null,
+    //     type: 1,
+    //     number: 0,
+    //     number_extra: "",
+    //     count: 0,
+    //     year: 0,
+    //     cover_number: "",
+    //     publisher_id: 0,
+    //     pages: 0,
+    //     size: null,
+    //     link: '',
+    //     notes: '',
+    //     title: '',
+    //     editors: [],
+    //     magazine_id: props.magazineid
+    // }
 
     useEffect(() => {
         async function getSizes() {
@@ -85,7 +85,7 @@ export const IssueForm = (props: IssueFormProps) => {
 
     const fetchIssue = async (id: number | null) => {
         if (id === null) {
-            return defaultValues;
+            return convToForm(null);
         }
         const issue = await getIssue(id, user);
         return convToForm(issue);

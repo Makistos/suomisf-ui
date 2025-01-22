@@ -65,8 +65,9 @@ export const combineEditions = (editions: Edition[]): Edition | undefined => {
     }
 
     // Remove duplicates
-    isbns = [...new Set(isbns)];
-    retval.isbn = isbns;
+    retval.isbn = isbns.filter((value, idx, self) =>
+        idx === self.findIndex(t =>
+            (t.isbn === value.isbn && t.binding.id === value.binding.id)));
 
     // Images are combined into a list
     let images = [] as ImageType[];

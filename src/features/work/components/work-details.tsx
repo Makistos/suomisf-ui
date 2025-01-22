@@ -11,6 +11,7 @@ import { WorkProps } from "../routes";
 import { Contribution } from '../../../types/contribution';
 import WorkBookseriesBrowser from './work-bookseries-browser';
 import { isForeign } from '../utils/is-foreign';
+import { Work } from '../types';
 
 export const WorkDetails = ({ work }: WorkProps) => {
 
@@ -27,6 +28,17 @@ export const WorkDetails = ({ work }: WorkProps) => {
         }))
     }
 
+    const original = (work: Work) => {
+        let retval = '';
+        if (isForeign(work)) {
+            retval = work.orig_title + ", "
+        }
+        retval += work.pubyear
+        if (work.language_name) {
+            retval += " (" + work.language_name.name + ")"
+        }
+        return retval
+    }
     return (
         <>
             <div className="grid align-items-center justify-content-center">
@@ -81,7 +93,7 @@ export const WorkDetails = ({ work }: WorkProps) => {
                             </div>
                         )}
                     <p className="mt-1">
-                        {isForeign(work) && <>({work.orig_title}, {work.pubyear})</>}
+                        {original(work)}
                     </p>
 
                     <div className="col-12">

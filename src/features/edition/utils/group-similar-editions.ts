@@ -49,7 +49,8 @@ const addToGroup = (edition: Edition, groups: Edition[][], mode: string) => {
         // Group editions by version
         for (const group of groups) {
             const ed = group[0];
-            if (unknownIsEqualToOne(ed.version, edition.version)) {
+            if (ed.work[0].id === edition.work[0].id &&
+                unknownIsEqualToOne(ed.version, edition.version)) {
                 group.push(edition);
                 return
             }

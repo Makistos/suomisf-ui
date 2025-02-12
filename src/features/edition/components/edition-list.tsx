@@ -11,11 +11,19 @@ import { User } from "@features/user";
 import { getCurrenUser } from "@services/auth-service";
 import { editionIsOwned } from "../utils/edition-is-owned";
 import { editionIsWishlisted } from "../utils/edition-is-wishlisted";
+import { Toolbar } from "primereact/toolbar";
+import { combineEditions } from "../utils/combine-editions";
+import { groupSimilarEditions } from "../utils/group-similar-editions";
 
 interface EditionListProps {
     editions: Edition[],
     person?: Person,
     sort?: string
+}
+
+type detailOptionType = {
+    icon: string,
+    value: string
 }
 
 export const EditionList = ({ editions, person, sort = "year" }: EditionListProps) => {
@@ -24,6 +32,7 @@ export const EditionList = ({ editions, person, sort = "year" }: EditionListProp
     const [sorting, setSorting] = useState<string>(sort);
     const [editionView, setEditionView] = useState("Lista");
     const user = useMemo(() => { return getCurrenUser() }, []);
+    const [detailLevel, setDetailLevel] = useState("brief");
 
     const sortOptions = [
         { name: "Tekijä", code: "author" },
@@ -31,23 +40,40 @@ export const EditionList = ({ editions, person, sort = "year" }: EditionListProp
         { name: "Nimi", code: "title" }
     ]
 
+    const detailOptions = [
+        { icon: 'pi pi-minus', value: 'brief' },
+        // { icon: 'pi pi-bars', value: 'condensed' },
+        { icon: 'pi pi-align-justify', value: 'all' }
+    ];
+
     const editionViewOptions = [
         'Lista', 'Kannet'
     ];
-
+    // useEffect(() => {
+    //     if (sorting === "author") {
+    //         setGroupedEditions(groupEditionsByAuthor(editions));
+    //     }
+    //     else {
+    //         setGroupedEditions({ None: editions });
+    //     }
+    // }, [editions, sorting])
     useEffect(() => {
+        const groups = groupSimilarEditions(editions, detailLevel);
+        const combined = groups.map(group => combineEditions(group, user));
         if (sorting === "author") {
-            setGroupedEditions(groupEditionsByAuthor(editions));
+            // setGroupedEditions(groupEditionsByAuthor(groupSimilarEditions(editions, detailLevel));
+            setGroupedEditions(groupEditionsByAuthor(combined.filter((ed): ed is CombinedEdition => ed !== undefined)));
         }
         else {
-            setGroupedEditions({ None: editions });
+            setGroupedEditions(
+                { None: combined.filter((ed): ed is CombinedEdition => ed !== undefined) });
         }
-    }, [editions, sorting])
+    }, [editions, sorting, detailLevel])
 
     const editionListCmp = (a: [string, Edition[]], b: [string, Edition[]]) => {
+        const aFirst = a[1][0];
+        const bFirst = b[1][0];
         if (sorting === "author") {
-            const aFirst = a[1][0];
-            const bFirst = b[1][0];
             const aEditorName = a[0].replace(" (toim.)", "");
             const bEditorName = b[0].replace(" (toim.)", "");
             if (person) {
@@ -61,7 +87,7 @@ export const EditionList = ({ editions, person, sort = "year" }: EditionListProp
             return -1;
         }
         else if (sorting === "year") {
-            return -1;
+            return aFirst.pubyear >= bFirst.pubyear ? 1 : -1;
         }
         return -1;
     }
@@ -69,29 +95,49 @@ export const EditionList = ({ editions, person, sort = "year" }: EditionListProp
     const cmpEditions = (a: Edition, b: Edition) => {
         if (sorting === "year") {
             return a.pubyear >= b.pubyear ? 1 : -1;
-        } else if (sorting === "title") {
-            return a.title.localeCompare(b.title, "fi") > 0 ? 1 : -1;
         }
-        return 1;
+        return a.title.localeCompare(b.title, "fi") > 0 ? 1 : -1;
     }
 
+    const detailTemplate = (option: detailOptionType) => {
+        return <i className={option.icon}></i>
+    }
+
+    const startContent = () => {
+        return (
+            <SelectButton value={editionView}
+                options={editionViewOptions}
+                onChange={(e) => setEditionView(e.value)}>
+            </SelectButton>
+        )
+    }
+
+    const centerContent = () => {
+        return (
+            <SelectButton value={detailLevel} options={detailOptions}
+                optionLabel="icon"
+                id="details"
+                onChange={(e) => setDetailLevel(e.value)}
+                itemTemplate={detailTemplate}
+            />
+        )
+    }
+
+    const endContent = () => {
+        return (
+            <Dropdown value={sorting} options={sortOptions}
+                onChange={(e) => setSorting(e.value)}
+                optionLabel="name" optionValue="code"
+                className="small"
+            />
+        )
+    }
 
     return (
         <div className="grid w-full">
-            <div className="grid col-6 justify-content-start align-items-center">
-                <SelectButton value={editionView}
-                    options={editionViewOptions}
-                    onChange={(e) => setEditionView(e.value)}>
-                </SelectButton>
-            </div>
-            <div className="grid col-6 justify-content-end align-items-center">
-                <Dropdown value={sorting} options={sortOptions}
-                    onChange={(e) => setSorting(e.value)}
-                    optionLabel="name" optionValue="code"
-                    className="small"
-                />
-            </div>
             <div className="grid col-12">
+                <Toolbar start={startContent} center={centerContent} end={endContent}
+                    className="w-full" />
                 {
                     Object.entries(groupedEditions)
                         .sort(editionListCmp)

@@ -76,7 +76,7 @@ const renderListItem = (cb: any, onUpload: any, editions: Edition[],
         onUpload();
     }, [onUpload, imageUploadUrl]);
 
-    const edition = combineEditions(editions);
+    const edition = combineEditions(editions, user);
 
     const deleteImage = useCallback((itemId: number, imageId: number) => {
         deleteEditionImage(itemId, imageId);

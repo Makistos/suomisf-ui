@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 
 import { Tooltip } from "primereact/tooltip";
@@ -9,13 +9,21 @@ import { LinkList } from "../../../components/link-list";
 import { WorkProps } from "../routes";
 import { WorkTooltip } from "./work-tooltip";
 import { isForeign } from '../utils/is-foreign';
-
+import { editionIsOwned } from '@features/edition/utils/edition-is-owned';
+import { editionIsWishlisted } from '@features/edition/utils/edition-is-wishlisted';
+import { getCurrenUser } from '@services/auth-service';
 
 export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
-
+    const user = useMemo(() => getCurrenUser(), [])
+    // let clsName = editionIsOwned(work.editions[0], user) ?
+    //     "book owned" : editionIsWishlisted(work.editions[0], user) ? "book wishlist" : "book not-owned";
+    // clsName += " work-oneliner";
+    const clsName = "work-oneliner";
     return (
 
-        <div className="work-oneliner">
+        // <div className={editionIsOwned(work.editions[0], user) ?
+        //     "book owned" : editionIsWishlisted(work.editions[0], user) ? "book wishlist" : "book not-owned"}>
+        <div className={clsName}>
             <Tooltip position="right" mouseTrack mouseTrackLeft={10}
                 target={".work-link-" + work.id}
             >

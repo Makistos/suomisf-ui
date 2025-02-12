@@ -1,13 +1,17 @@
 import { Edition } from "@features/edition";
 import { Binding } from "../../../types/binding";
 import { ImageType } from "../../../types/image";
+import { getCurrenUser } from "@services/auth-service";
+import { useMemo } from "react";
+import { User } from "@features/user";
 
 type tmpObj = {
     isbn: string,
     binding: Binding,
 }
 
-export const combineEditions = (editions: Edition[]): Edition | undefined => {
+export const combineEditions = (editions: Edition[], user: User | null): Edition | undefined => {
+    // const user = useMemo(() => { return getCurrenUser() }, []);
     let retval = {} as Edition;
     if (editions.length === 0) {
         return undefined;
@@ -40,6 +44,7 @@ export const combineEditions = (editions: Edition[]): Edition | undefined => {
     retval.pubseries = editions.every(ed => ed.pubseries === editions[0].pubseries) ? editions[0].pubseries : null;
     retval.pubseriesnum = editions.every(ed => ed.pubseriesnum === editions[0].pubseriesnum) ? editions[0].pubseriesnum : undefined;
     retval.size = editions.every(ed => ed.size === editions[0].size) ? editions[0].size : undefined;
+
     // These values are combined into one string
 
     const pubyears = editions.map(edition => edition.pubyear).sort();
@@ -67,7 +72,7 @@ export const combineEditions = (editions: Edition[]): Edition | undefined => {
     // Remove duplicates
     retval.isbn = isbns.filter((value, idx, self) =>
         idx === self.findIndex(t =>
-            (t.isbn === value.isbn && t.binding.id === value.binding.id)));
+            (t.isbn === value.isbn && t.binding?.id === value.binding?.id)));
 
     // Images are combined into a list
     let images = [] as ImageType[];
@@ -87,6 +92,20 @@ export const combineEditions = (editions: Edition[]): Edition | undefined => {
             retval.images.push(image);
             already_added.push(image.image_src);
         }
+    }
+
+    // Check if user own any of the editions
+    const owners = editions.flatMap(edition => edition.owners);
+    if (owners.some(owner => owner.id === user?.id)) {
+        retval.owners = owners;
+    } else {
+        retval.owners = [];
+    }
+    const wishlisted = editions.flatMap(edition => edition.wishlisted);
+    if (wishlisted.some(wl => wl.id === user?.id)) {
+        retval.wishlisted = wishlisted;
+    } else {
+        retval.wishlisted = [];
     }
     return retval;
 }

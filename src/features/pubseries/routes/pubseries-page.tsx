@@ -10,7 +10,7 @@ import { SpeedDial } from "primereact/speeddial";
 import { getCurrenUser } from "@services/auth-service";
 import { getApiContent, HttpStatusResponse } from "@services/user-service";
 import { selectId } from "../../../utils";
-import { EditionList } from "@features/edition";
+import { Edition, EditionList } from "@features/edition";
 import { Pubseries } from "../types";
 import { User, isAdmin } from "@features/user";
 import { useDocumentTitle } from '@components/document-title';
@@ -147,7 +147,7 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
                         <div className="grid col-12 p-0 mt-5 justify-content-center">
                             {data?.editions && (
                                 <EditionList
-                                    editions={data.editions.map(edition => edition)}
+                                    editions={data.editions}
                                     sort="author"
                                 />
                             )}

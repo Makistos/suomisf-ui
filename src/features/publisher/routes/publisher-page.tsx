@@ -220,7 +220,9 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
                                     <TabView className="w-full" activeIndex={getActiveIndex()}>
                                         {data.editions && data.editions.length > 0 &&
                                             <TabPanel header="Painokset">
-                                                <EditionList editions={data.editions} />
+                                                <EditionList
+                                                    editions={data.editions.filter(ed => ed.publisher.id === Number(thisId))}
+                                                />
                                             </TabPanel>
                                         }
                                         {data.series && data.series.length > 0 &&

@@ -18,6 +18,9 @@ export interface SfTag {
     works?: Work[];
     stories?: Short[];
     articles?: Article[];
+    workcount?: number;
+    storycount?: number;
+    articlecount?: number;
     //magazines?: Magazine[];
     //people?: Person[];
     //issues?: Issue[];

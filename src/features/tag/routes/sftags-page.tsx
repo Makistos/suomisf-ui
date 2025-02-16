@@ -32,14 +32,14 @@ export const SFTags = () => {
         //     console.log("foo")
         // }
         let count = 0;
-        // if (tag.articles) {
-        //     count += tag.articles.length;
-        // }
-        if (tag.stories) {
-            count += tag.stories.length;
+        if (tag.articlecount) {
+            count += tag.articlecount;
         }
-        if (tag.works) {
-            count += tag.works.length;
+        if (tag.storycount) {
+            count += tag.storycount;
+        }
+        if (tag.workcount) {
+            count += tag.workcount
         }
         return count;
     }

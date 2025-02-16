@@ -15,73 +15,76 @@ import { getCurrenUser } from '@services/auth-service';
 
 export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
     const user = useMemo(() => getCurrenUser(), [])
-    // let clsName = editionIsOwned(work.editions[0], user) ?
-    //     "book owned" : editionIsWishlisted(work.editions[0], user) ? "book wishlist" : "book not-owned";
-    // clsName += " work-oneliner";
-    const clsName = "work-oneliner";
+    const isOwned = detailLevel == "brief" ? work.editions.some(edition => editionIsOwned(edition, user)) : editionIsOwned(work.editions[0], user);
+    let clsName = isOwned ?
+        "book owned" : editionIsWishlisted(work.editions[0], user) ? "book wishlist" : "book not-owned";
+    clsName += " work-oneliner";
+    // const clsName = "work-oneliner";
     return (
 
         // <div className={editionIsOwned(work.editions[0], user) ?
         //     "book owned" : editionIsWishlisted(work.editions[0], user) ? "book wishlist" : "book not-owned"}>
-        <div className={clsName}>
-            <Tooltip position="right" mouseTrack mouseTrackLeft={10}
-                target={".work-link-" + work.id}
-            >
-                <WorkTooltip work={work} />
-            </Tooltip>
-            <b>
-                <Link className={"work-link-" + work.id}
-                    to={`/works/${work.id}`}
-                    key={work.id}
+        <div>
+            <div className={clsName}>
+                <Tooltip position="right" mouseTrack mouseTrackLeft={10}
+                    target={".work-link-" + work.id}
                 >
-                    {work.title}
-                </Link>
-            </b>
-            <>. </>
-
-            {work.bookseries && (
-                <><Link to={`/bookseries/${work.bookseries.id}`}>
-                    {work.bookseries.name}
-                </Link>
-                    {work.bookseriesnum && (
-                        <> {work.bookseriesnum}</>
-                    )}
-                    .</>
-            )}
-
-            {isForeign(work) && (
-                <>({work.orig_title}, {work.pubyear})</>
-            )}
-            {work.editions && work.editions.length > 0 &&
-                work.editions[0].contributions &&
-                work.editions[0].contributions
-                    .filter(person => person.role.id === 2).length > 0 && (
-                    <>
-                        <> Suom. </>
-                        <LinkList path="people" key={`links-translators-${work.id}`}
-                            items={work.editions[0].contributions
-                                .filter(contrib => contrib.role.id === 2)
-                                .map(contrib => {
-                                    return {
-                                        id: contrib.person.id,
-                                        name: contrib.person.alt_name,
-                                        description: contrib.description
-                                    }
-                                })}
-                        />.
-                    </>
-                )}
-            {work.editions && work.editions.length > 0 &&
-                work.editions[0].publisher &&
-                <Link to={`/publishers/${work.editions[0].publisher.id}`}> {work.editions[0].publisher.name}</Link>}
-            <> {work.editions[0].pubyear && work.editions[0].pubyear}. </>
-            {work.editions && work.editions.length > 0 &&
-                work.editions[0].pubseries && (
-                    <Link to={`/pubseries/${work.editions[0].pubseries.id}`}>
-                        {work.editions[0].pubseries.name}.<> </>
+                    <WorkTooltip work={work} />
+                </Tooltip>
+                <b>
+                    <Link className={"work-link-" + work.id}
+                        to={`/works/${work.id}`}
+                        key={work.id}
+                    >
+                        {work.title}
                     </Link>
+                </b>
+                <>.</>
+
+                {isForeign(work) && (
+                    <>({work.orig_title}, {work.pubyear}).&nbsp;</>
                 )}
-            <GenreList genres={work.genres} />
+                {work.bookseries && (
+                    <><Link to={`/bookseries/${work.bookseries.id}`}>
+                        {work.bookseries.name}
+                    </Link>
+                        {work.bookseriesnum && (
+                            <>&nbsp;{work.bookseriesnum}</>
+                        )}
+                        .&nbsp;</>
+                )}
+
+                {work.editions && work.editions.length > 0 &&
+                    work.editions[0].contributions &&
+                    work.editions[0].contributions
+                        .filter(person => person.role.id === 2).length > 0 && (
+                        <>
+                            <>Suom.&nbsp;</>
+                            <LinkList path="people" key={`links-translators-${work.id}`}
+                                items={work.editions[0].contributions
+                                    .filter(contrib => contrib.role.id === 2)
+                                    .map(contrib => {
+                                        return {
+                                            id: contrib.person.id,
+                                            name: contrib.person.alt_name,
+                                            description: contrib.description
+                                        }
+                                    })}
+                            />.&nbsp;
+                        </>
+                    )}
+                {work.editions && work.editions.length > 0 &&
+                    work.editions[0].publisher &&
+                    <Link to={`/publishers/${work.editions[0].publisher.id}`}>{work.editions[0].publisher.name}</Link>}&nbsp;
+                <>{work.editions[0].pubyear && work.editions[0].pubyear}.&nbsp;</>
+                {work.editions && work.editions.length > 0 &&
+                    work.editions[0].pubseries && (
+                        <Link to={`/pubseries/${work.editions[0].pubseries.id}`}>
+                            {work.editions[0].pubseries.name}.&nbsp;
+                        </Link>
+                    )}
+                <GenreList genres={work.genres} />
+            </div>
             {work.editions && work.editions.length > 0 &&
                 work.editions.map((edition) => (
                     <OtherEdition key={edition.id} work={work} edition={edition} details={detailLevel} />

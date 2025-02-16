@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import { LinkList } from "../../../components/link-list";
 import { EditionProps } from "../types";
 import { EditionString } from "../utils/edition-string";
 import { Edition } from '../types';
 import { LinkItem } from '../../../components/link-list';
+import { editionIsOwned } from '../utils/edition-is-owned';
+import { editionIsWishlisted } from '../utils/edition-is-wishlisted';
+import { getCurrenUser } from '@services/auth-service';
 
 /**
  * Generates a JSX component for displaying an edition of a book.
@@ -15,6 +18,11 @@ import { LinkItem } from '../../../components/link-list';
  * @return {JSX.Element} The JSX component for displaying the edition.
  */
 export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
+    const user = useMemo(() => getCurrenUser(), [])
+    const isOwned = editionIsOwned(edition, user);
+    let clsName = isOwned ?
+        "book owned" : editionIsWishlisted(edition, user) ? "book wishlist" : "book not-owned";
+    clsName += " edition-oneliner";
     /**
      * Checks if the given version is the first version.
      *
@@ -39,7 +47,7 @@ export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
     return (
         (details !== "brief" &&
             (showFirst || edition.editionnum !== 1 || (!isFirstVersion(edition.version)))) ? (
-            <div className="edition-oneliner">
+            <div className={clsName}>
                 <>{EditionString(edition) + ":"}</>
                 {edition.work && edition.title !== edition.work[0].title && (
                     <><b> {edition.title}. </b></>

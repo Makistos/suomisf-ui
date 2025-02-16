@@ -21,7 +21,7 @@ type WorksProp = {
 }
 
 export const WorkList = ({ works, personName = "", collaborationsLast = false,
-    sort = true, details = "condensed" }: WorksProp) => {
+    sort = true, details = "brief" }: WorksProp) => {
     const [groupedWorks, setGroupedWorks]: [Record<string, Work[]>,
         (works: Record<string, Work[]>) => void] = useState({});
     const [detailLevel, setDetailLevel] = useState(details);
@@ -136,7 +136,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
                                     <div className="grid col-12" key={group}>
                                         <div className="grid col-12">
                                             {group !== personName &&
-                                                <h3>{group}</h3>}
+                                                <h3 className="">{group}</h3>}
                                         </div>
                                         <div>
                                             {workView === 'Lista' ? (

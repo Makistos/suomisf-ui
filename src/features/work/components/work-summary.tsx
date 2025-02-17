@@ -19,13 +19,13 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
     let clsName = isOwned ?
         "book owned" : editionIsWishlisted(work.editions[0], user) ? "book wishlist" : "book not-owned";
     clsName += " work-oneliner";
-    // const clsName = "work-oneliner";
+    //const clsName = "work-oneliner";
     return (
 
         // <div className={editionIsOwned(work.editions[0], user) ?
         //     "book owned" : editionIsWishlisted(work.editions[0], user) ? "book wishlist" : "book not-owned"}>
-        <div>
-            <div className={clsName}>
+        <>
+            <p className={clsName}>
                 <Tooltip position="right" mouseTrack mouseTrackLeft={10}
                     target={".work-link-" + work.id}
                 >
@@ -34,7 +34,6 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                 <b>
                     <Link className={"work-link-" + work.id}
                         to={`/works/${work.id}`}
-                        key={work.id}
                     >
                         {work.title}
                     </Link>
@@ -42,7 +41,7 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                 <>.</>
 
                 {isForeign(work) && (
-                    <>({work.orig_title}, {work.pubyear}).&nbsp;</>
+                    <>&#32;({work.orig_title}, {work.pubyear}).&#32;</>
                 )}
                 {work.bookseries && (
                     <><Link to={`/bookseries/${work.bookseries.id}`}>
@@ -51,7 +50,7 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                         {work.bookseriesnum && (
                             <>&nbsp;{work.bookseriesnum}</>
                         )}
-                        .&nbsp;</>
+                        .&#32;</>
                 )}
 
                 {work.editions && work.editions.length > 0 &&
@@ -59,8 +58,9 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                     work.editions[0].contributions
                         .filter(person => person.role.id === 2).length > 0 && (
                         <>
-                            <>Suom.&nbsp;</>
+                            Suom.&nbsp;
                             <LinkList path="people" key={`links-translators-${work.id}`}
+                                uniquePart='`work-${work.id}-translator'
                                 items={work.editions[0].contributions
                                     .filter(contrib => contrib.role.id === 2)
                                     .map(contrib => {
@@ -73,22 +73,27 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                             />.&nbsp;
                         </>
                     )}
+
                 {work.editions && work.editions.length > 0 &&
                     work.editions[0].publisher &&
                     <Link to={`/publishers/${work.editions[0].publisher.id}`}>{work.editions[0].publisher.name}</Link>}&nbsp;
-                <>{work.editions[0].pubyear && work.editions[0].pubyear}.&nbsp;</>
+                <>{work.editions[0].pubyear && work.editions[0].pubyear}.&#32;</>
                 {work.editions && work.editions.length > 0 &&
                     work.editions[0].pubseries && (
                         <Link to={`/pubseries/${work.editions[0].pubseries.id}`}>
-                            {work.editions[0].pubseries.name}.&nbsp;
+                            {work.editions[0].pubseries.name}.&#32;
                         </Link>
                     )}
                 <GenreList genres={work.genres} />
+            </p>
+            <div>
+                {work.editions && work.editions.length > 0 &&
+                    work.editions.map((edition) => (
+                        <>
+                            <OtherEdition key={`edition-${edition.id}`} work={work} edition={edition} details={detailLevel} />
+                        </>
+                    ))}
             </div>
-            {work.editions && work.editions.length > 0 &&
-                work.editions.map((edition) => (
-                    <OtherEdition key={edition.id} work={work} edition={edition} details={detailLevel} />
-                ))}
-        </div>
+        </>
     );
 };

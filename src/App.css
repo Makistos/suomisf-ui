@@ -397,7 +397,7 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 } */
 
 .book {
-  display: flex;
+  /* display: flex; */
   align-items: center;
   position: relative;
   padding-left: 1.2em;

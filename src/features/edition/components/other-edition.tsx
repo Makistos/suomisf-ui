@@ -57,7 +57,8 @@ export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
                     <>
                         <> Suom. </>
                         <LinkList path="people"
-                            items={translators(edition)} />
+                            items={translators(edition)}
+                            uniquePart='`edition-${edition.id}-translators' />
                         . </>}
                 <> {edition.publisher && edition.publisher.name} </>
                 <>{edition.pubyear}.</>

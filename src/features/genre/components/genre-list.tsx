@@ -9,9 +9,9 @@ export const GenreList = ({ genres }: GenreListProps) => {
     return (
         genres ? (
             <>
-                <>[</>
+                [
                 {genres.map((a) => a.abbr).join(", ")}
-                <>]</>
+                ]
             </>
         ) : (
             <></>

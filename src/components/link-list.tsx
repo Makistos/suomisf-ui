@@ -11,6 +11,7 @@ interface LinkListProps {
     defaultName?: string,
     showDescription?: boolean,
     separator?: string,
+    uniquePart?: string
 }
 
 const description = (item: LinkItem, defaultName: string | undefined, show: boolean) => {
@@ -22,16 +23,19 @@ const description = (item: LinkItem, defaultName: string | undefined, show: bool
     return "";
 }
 
-export const LinkList = ({ path, items, defaultName, showDescription, separator = SEPARATOR }: LinkListProps) => {
+export const LinkList = ({ path, items, defaultName, showDescription, separator = SEPARATOR, uniquePart = "" }: LinkListProps) => {
     if (items.length === 0) {
         return <></>
     }
     const linkList = items
         .map<React.ReactNode>((item, index) => (
-            <span key={path + item.id.toString() + "_" + index.toString()}>
+            <span key={path + item.id.toString() + "_" + index.toString() + "_" + uniquePart}>
                 {showDescription && description(item, defaultName, showDescription)}
                 {" "}
-                <Link key={path + item.id.toString() + "_" + index.toString()} to={`/${path}/${item.id}`}>
+                <Link
+                    // key={path + item.id.toString() + "_" + index.toString()}
+                    to={`/${path}/${item.id}`}
+                >
                     {item.name}
                 </Link>
                 {/* {showDescription && description(item, showDescription)} */}

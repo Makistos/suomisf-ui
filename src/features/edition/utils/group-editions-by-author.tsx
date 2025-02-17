@@ -24,7 +24,7 @@ export const groupEditionsByAuthor = (editions: Edition[] | CombinedEdition[]) =
             contrib => contrib.person.name).filter(uniquePeople).join(' & ');
     }
 
-    let grouped: Record<string, Edition[]> = editions.reduce((acc: { [index: string]: any; }, currentValue) => {
+    let grouped: Record<string, Edition[]> = (editions as Edition[]).reduce((acc: { [index: string]: Edition[] }, currentValue: Edition) => {
         const groupKey = authorStr(currentValue); //.work[0]["author_str"];
         if (!acc[groupKey]) {
             acc[groupKey] = [];

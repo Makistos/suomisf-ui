@@ -62,13 +62,15 @@ export const WorkSearchPage = () => {
             setLoading(true);
             try {
                 axios.post(import.meta.env.VITE_API_URL + 'searchworks', data)
-                    .then(response => setWorks(response.data));
+                    .then((response) => {
+                        setWorks(response.data)
+                        setLoading(false);
+                    });
             } catch (e) {
                 console.error(e);
             }
-            setLoading(false);
         }
-        console.log(data);
+        // console.log(data);
         search();
         setInitial("");
     }
@@ -268,9 +270,7 @@ export const WorkSearchPage = () => {
                     <ProgressSpinner />
                 </div>
                 :
-                <div className="mt-5 inline-flex align-items-center">
-                    <WorkList works={works} />
-                </div>
+                <WorkList works={works} />
             }
         </main>
     )

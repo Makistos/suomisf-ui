@@ -116,8 +116,12 @@ export const WorkDetails = ({ work }: WorkProps) => {
                         {work.misc}
                     </div>
                     {work.description && (
-                        <div className="col-12">
+                        <div className="col-12 pb-0 mb-0">
                             <div dangerouslySetInnerHTML={{ __html: work.description }} />
+                            {work.descr_attr && (
+                                <div className="book-attribution"
+                                    dangerouslySetInnerHTML={{ __html: work.descr_attr }} />
+                            )}
                         </div>
                     )}
                     <div className="grid col-12 justify-content-start">

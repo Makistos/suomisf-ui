@@ -427,3 +427,13 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
   text-align: center;
   clip-path: polygon(0% 0%, 0% 100%, 50% 75%, 100% 100%, 100% 0%);
 }
+
+.book-attribution {
+  font-size: 0.8em;
+  color: #666;
+  font-style: italic;
+  margin-top: 0em;
+  padding-top: 0em;
+  margin-bottom: 1em;
+  justify-items: end;
+}

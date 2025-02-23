@@ -6,15 +6,6 @@ import authHeader, { refreshHeader } from "./auth-header";
 
 const baseURL = import.meta.env.VITE_API_URL;
 
-export const register = (username: string, email: string, password: string) => {
-
-    return axios.post(baseURL + "register", {
-        username,
-        email,
-        password,
-    });
-};
-
 export async function login(username: string, password: string) {
     return await axios.post(baseURL + "login",
         {
@@ -23,6 +14,22 @@ export async function login(username: string, password: string) {
         })
         .then((response) => {
             console.log("Login response: " + JSON.stringify(response, null, 2));
+            if (response.data.access_token) {
+                //console.log("access_token");
+                localStorage.setItem("user", JSON.stringify(response.data));
+            }
+            return response.data;
+        });
+};
+
+export const register = async (username: string, password: string) => {
+    return await axios.post(baseURL + "register",
+        {
+            'username': username,
+            'password': password
+        })
+        .then((response) => {
+            console.log("Register response: " + JSON.stringify(response, null, 2));
             if (response.data.access_token) {
                 //console.log("access_token");
                 localStorage.setItem("user", JSON.stringify(response.data));

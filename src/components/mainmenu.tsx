@@ -8,6 +8,7 @@ import { getCurrenUser } from '../services/auth-service';
 import { logout } from '../services/auth-service';
 import { getApiContent } from '../services/user-service';
 import { LoginView, User } from '../features/user';
+import { RegisterView } from '@features/user/components/register-view';
 
 export default function MainMenu() {
     const user = useMemo(() => { return getCurrenUser() }, []);
@@ -15,6 +16,7 @@ export default function MainMenu() {
     const [selectedItem, setSelectedItem] = useState<any>(null);
     const [filteredItems, setFilteredItems] = useState<any>(null);
     const [loginVisible, setLoginVisible] = useState(false);
+    const [registerVisible, setRegisterVisible] = useState(false);
 
     const onHide = () => {
         setLoginVisible(false);
@@ -82,7 +84,9 @@ export default function MainMenu() {
                 },
                 {
                     label: 'Rekisteröidy',
-                    url: ''
+                    command: () => {
+                        setRegisterVisible(true);
+                    }
                 }
             ]
         }
@@ -221,6 +225,11 @@ export default function MainMenu() {
                 breakpoints={{ '960px': '75vw', '640px': '100vw' }} style={{ width: '50vw' }}
             >
                 <LoginView />
+            </Dialog>
+            <Dialog visible={registerVisible} onHide={() => onHide()}
+                breakpoints={{ '960px': '75vw', '640px': '100vw' }} style={{ width: '50vw' }}
+            >
+                <RegisterView />
             </Dialog>
 
             <Menubar className="navbar-dark" model={user === null ? not_logged_items : logged_items} start={start} end={End} />

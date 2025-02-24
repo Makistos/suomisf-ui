@@ -5,7 +5,6 @@ import { FormProvider, RegisterOptions, useForm } from "react-hook-form";
 import { FormInputText } from "@components/forms/field/form-input-text";
 import { PublisherSelector } from "@features/publisher/components/publisher-selector";
 import { FormEditor } from "@components/forms/field/form-editor";
-import { FormRadioButton } from "@components/forms/field/form-radiobutton";
 import { SelectButton } from "primereact/selectbutton";
 import { FormDropdown } from "@components/forms/field/form-dropdown";
 import { FormTagAutoComplete } from "@components/forms/field/form-tag-auto-complete";

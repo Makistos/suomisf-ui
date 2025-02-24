@@ -432,8 +432,9 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
   font-size: 0.8em;
   color: #666;
   font-style: italic;
-  margin-top: 0em;
+  margin-top: -1.5em;
   padding-top: 0em;
-  margin-bottom: 1em;
+  margin-bottom: 2em;
   justify-items: end;
+  float: right;
 }

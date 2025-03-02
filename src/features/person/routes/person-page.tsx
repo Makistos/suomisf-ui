@@ -278,7 +278,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                             person={data}
                                             listPublications
                                             showAuthors
-                                            sort={"Author"}
+                                            sort={"Title"}
                                             what={"sf"}></ShortsControl>
                                     }
                                     {hasNonSf("all") && <Fieldset legend="Ei-SF/Mainstream" toggleable collapsed>

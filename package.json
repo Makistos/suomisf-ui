@@ -6,6 +6,7 @@
   "dependencies": {
     "@babel/preset-typescript": "^7.18.6",
     "@fortawesome/fontawesome-free": "^6.4.0",
+    "@tanstack/react-form": "^1.0.5",
     "@tanstack/react-query": "^4.28.0",
     "@tanstack/react-query-devtools": "^4.16.1",
     "@testing-library/react": "13.4.0",
@@ -36,7 +37,7 @@
     "react-hook-form": "^7.43.9",
     "react-router-dom": "6.8.1",
     "react-transition-group": "4.4.2",
-    "typescript": "^4.6.2",
+    "typescript": "^5.8.2",
     "vite-tsconfig-paths": "^4.3.2",
     "web-vitals": "^3.1.1",
     "yup": "^0.32.11"

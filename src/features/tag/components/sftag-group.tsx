@@ -129,7 +129,7 @@ export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseF
         )
     }
     return (
-        <div className="flex justify-content-center flex-wrap m-0 p-0">
+        <div className="flex flex-wrap m-0 p-0">
             {groupedTags.map((tag, idx) => {
                 return (overflow === undefined || idx < overflow || showAll) &&
                     <span key={tag.name} className="mr-1 mb-1">

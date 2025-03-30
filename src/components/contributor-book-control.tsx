@@ -12,6 +12,7 @@ import { Work } from "../features/work";
 import { Genre } from "../features/genre";
 import { Edition } from "../features/edition";
 import { Contribution } from "../types/contribution";
+import { SfTag, TagGroup } from "@features/tag";
 
 /**
  * Represents the props for the ContributorBookControl component.
@@ -29,10 +30,14 @@ interface CBCProps {
      * An optional boolean value indicating whether collaborations should be
      * displayed last.
      */
-    collaborationsLast?: boolean
+    collaborationsLast?: boolean,
+    /**
+     * An optional array of tags associated with the contributor.
+     */
+    tags?: SfTag[]  // Add this line
 }
 
-export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast = false }: CBCProps) => {
+export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast = false, tags }: CBCProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [works, setWorks]: [Work[], (sfWorks: Work[]) => void]
         = useState<Work[]>([]);
@@ -192,42 +197,47 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
             removeDuplicateEditionContributions(tr)).flat(1), [5]).length;
 
     return (
-        <Fieldset legend={"Kirjat"} toggleable>
-            <TabView key={viewNonSf ? "nonSF" : "SF"} activeIndex={activeIndex}
-                onTabChange={(e) => setActiveIndex(e.index)} className="w-full"
-            >
-                <TabPanel key="Kirjoittanut"
-                    header={headerText("Kirjoittanut", authorContributions)}
-                    disabled={authorContributions === 0}>
-                    <WorkList works={works} personName={person.name}
-                        collaborationsLast={collaborationsLast} />
-                </TabPanel>
-                <TabPanel key="Toimittanut"
-                    header={headerText("Toimittanut", editContributions)}
-                    disabled={editContributions === 0}>
-                    <EditionList editions={edits} person={person} sort="author" />
-                </TabPanel>
-                <TabPanel key="Kääntänyt"
-                    header={headerText("Kääntänyt", translationContributions)}
-                    disabled={translationContributions === 0}>
-                    <EditionList editions={translations} person={person} sort="author" />
-                </TabPanel>
-                <TabPanel key="Kansikuva"
-                    header={headerText("Kansi", coverContributions)}
-                    disabled={coverContributions === 0}>
-                    <EditionList editions={covers} person={person} sort="author" />
-                </TabPanel>
-                <TabPanel key="Kuvittaja"
-                    header={headerText("Kuvitus", illustrationContributions)}
-                    disabled={illustrationContributions === 0}>
-                    <EditionList editions={illustrations} person={person} sort="author" />
-                </TabPanel>
-                {viewNonSf === false &&
-                    <TabPanel key="Sarjat" header="Sarjat" disabled={!hasSeries()}>
-                        <BookSeriesList works={person.works} seriesType='bookseries' />
-                    </TabPanel>
-                }
-            </TabView>
-        </Fieldset>
+        <TabView key={viewNonSf ? "nonSF" : "SF"} activeIndex={activeIndex}
+            onTabChange={(e) => setActiveIndex(e.index)} className="w-full"
+        >
+            <TabPanel key="Kirjoittanut"
+                header={headerText("Kirjoittanut", authorContributions)}
+                disabled={authorContributions === 0}>
+                {/* Tags section */}
+                {tags && tags.length > 0 && (
+                    <div className="surface-ground p-3 border-round mb-3">
+                        <div className="flex align-items-center gap-3">
+                            <i className="pi pi-tags text-600"></i>
+                            <TagGroup tags={tags} overflow={5} showOneCount />
+                        </div>
+                    </div>
+                )}
+                <WorkList
+                    works={works}
+                    personName={person.name}
+                    collaborationsLast={collaborationsLast}
+                />
+            </TabPanel>
+            <TabPanel key="Toimittanut"
+                header={headerText("Toimittanut", editContributions)}
+                disabled={editContributions === 0}>
+                <EditionList editions={edits} person={person} sort="author" />
+            </TabPanel>
+            <TabPanel key="Kääntänyt"
+                header={headerText("Kääntänyt", translationContributions)}
+                disabled={translationContributions === 0}>
+                <EditionList editions={translations} person={person} sort="author" />
+            </TabPanel>
+            <TabPanel key="Kansikuva"
+                header={headerText("Kansi", coverContributions)}
+                disabled={coverContributions === 0}>
+                <EditionList editions={covers} person={person} sort="author" />
+            </TabPanel>
+            <TabPanel key="Kuvittaja"
+                header={headerText("Kuvitus", illustrationContributions)}
+                disabled={illustrationContributions === 0}>
+                <EditionList editions={illustrations} person={person} sort="author" />
+            </TabPanel>
+        </TabView>
     )
 }

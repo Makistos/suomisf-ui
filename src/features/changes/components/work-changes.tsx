@@ -133,19 +133,16 @@ export const WorkChanges = ({ workId }: WorkChangesProps) => {
                 isLoading ?
                     <Skeleton />
                     :
-                    <Fieldset legend="Muutokset" toggleable
-                        collapsed={true}>
-                        <DataTable value={data} emptyMessage="Ei muutoksia"
-                            size="small"
-                            rowExpansionTemplate={rowExpansionTemplate}
-                            expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)}>
-                            <Column expander={allowExpansion} style={{ width: '5rem' }} />
-                            <Column field="target" header="Kohde" />
-                            <Column field="date" header="Pvm" />
-                            <Column field="action" header="Muutos" />
-                            <Column field="author" header="Muokkaaja" />
-                        </DataTable>
-                    </Fieldset>
+                    <DataTable value={data} emptyMessage="Ei muutoksia"
+                        size="small"
+                        rowExpansionTemplate={rowExpansionTemplate}
+                        expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)}>
+                        <Column expander={allowExpansion} style={{ width: '5rem' }} />
+                        <Column field="target" header="Kohde" />
+                        <Column field="date" header="Pvm" />
+                        <Column field="action" header="Muutos" />
+                        <Column field="author" header="Muokkaaja" />
+                    </DataTable>
             }
         </>
     )

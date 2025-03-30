@@ -38,7 +38,6 @@ export const AwardList = ({ awards }: AwardedProps) => {
         <div>
             {awards && awards.length > 0 && (
                 <DataTable value={awards}
-                    header="Palkinnot"
                     responsiveLayout="stack"
                     className="trophy-table"
                 >

@@ -38,6 +38,11 @@ import { combineEditions } from "@features/edition/utils/combine-editions";
 import { deleteEditionImage } from "@api/edition/delete-edition-image";
 import { ImageView } from "@utils/image-view";
 
+import { Card } from "primereact/card";
+import { TabView, TabPanel } from "primereact/tabview";
+import { TagGroup } from "@features/tag";
+import { GenreGroup } from "@features/genre";
+import { AwardList, AwardPanel } from "@features/award";
 export interface WorkProps {
     work: Work,
     detailLevel?: string,
@@ -413,85 +418,152 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         if (first.version !== second.version) return (first.version < second.version ? -1 : 1);
         return (Number(first.editionnum) < Number(second.editionnum) ? -1 : 1);
     }
-
     return (
-        <main className="all-content">
-            <ConfirmDialog />
-            <div className="mt-5 speeddial style={{ position: 'relative', height: '500px'}}">
-                {/* user !== null && user.is_admin && ( */}
-                {isAdmin(user) &&
-                    <div>
-                        <Tooltip position="left" target=".speeddial .speeddial-right .p-speeddial-action">
+        <main className="work-page">
+            <Toast ref={toastRef} />
 
-                        </Tooltip>
-                        <SpeedDial className="speeddial-right"
-                            model={dialItems}
-                            direction="left"
-                            type="semi-circle"
-                            radius={80}
-                        />
-                    </div>
-                }
-                <Toast ref={toastRef} />
-                <Dialog maximizable blockScroll
-                    className="w-full xl:w-6"
-                    header="Teoksen muokkaus" visible={isEditVisible}
-                    onShow={() => onDialogShow()}
-                    onHide={() => onDialogHide()}
-                >
-                    <WorkForm workId={!formData || !editWork ? null : workId} onSubmitCallback={workFormCallback} />
-                </Dialog>
-                <Dialog maximizable blockScroll
-                    className="w-full xl:w-6"
-                    header="Uusi painos" visible={isEditionFormVisible}
-                    onShow={() => onEditionDialogShow()}
-                    onHide={() => onEditionDialogHide()}
-                >
-                    <EditionForm editionid={null} work={data} onSubmitCallback={editionFormCallback} />
-                </Dialog>
-                <Dialog maximizable blockScroll
-                    className="w-full xl:x-6"
-                    header="Novellit" visible={isShortsFormVisible}
-                    onShow={() => onShortsFormShow()}
-                    onHide={() => onShortsFormHide()}
-                    closeOnEscape
-                >
-                    <WorkShortsPicker id={workId} onClose={() => onShortsFormHide()} />
-                </Dialog>
-                {
-                    isLoading ?
-                        <div className="progressbar">
-                            <ProgressSpinner />
-                        </div>
-                        : (data && (
-                            <>
-                                <WorkDetails work={data} />
-                                {data.stories.length > 0 && (
-                                    <div className="mb-3">
-                                        <Panel header="Novellit"
-                                            headerTemplate={panelTemplate}
-                                            toggleable collapsed>
-                                            <ShortsList shorts={data.stories} person={data.authors[0]}
-                                                anthology={anthology}
-                                            />
-                                        </Panel>
+            {/* Add SpeedDial */}
+            {isAdmin(user) && (
+                <SpeedDial
+                    model={dialItems}
+                    direction="up"
+                    className="fixed-dial"
+                    showIcon="pi pi-plus"
+                    hideIcon="pi pi-times"
+                    buttonClassName="p-button-primary"
+                />
+            )}
+
+            {isLoading ? (
+                <div className="flex justify-content-center">
+                    <ProgressSpinner />
+                </div>
+            ) : (
+                data && (
+                    <div className="grid">
+                        {/* Header Section */}
+                        <div className="col-12">
+                            <Card className="shadow-3">
+                                <div className="grid pl-2 pr-2 pt-0">
+                                    <div className="col-12 lg:col-9">
+                                        <div className="flex-column">
+
+                                            <div>
+                                                <WorkDetails work={data} />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Genres and tags on right side */}
+                                    <div className="col-12 lg:col-3">
+                                        <div className="flex flex-column gap-4">
+                                            <div className="flex flex-column gap-2">
+                                                <h3 className="text-sm uppercase text-600 m-0">Genret</h3>
+                                                <GenreGroup
+                                                    genres={data.genres}
+                                                    showOneCount
+                                                    className="flex-wrap"
+                                                />
+                                            </div>
+
+                                            {data.tags && data.tags.length > 0 && (
+                                                <div className="flex flex-column gap-2">
+                                                    <h3 className="text-sm uppercase text-600 m-0">Asiasanat</h3>
+                                                    <TagGroup
+                                                        tags={data.tags}
+                                                        overflow={5}
+                                                        showOneCount
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* Links section */}
+                                {data.links && data.links.length > 0 && (
+                                    <div className="mt-4 pt-3 border-top-1 surface-border">
+                                        <div className="flex flex-wrap gap-3">
+                                            {data.links.map((link, index) => (
+                                                <a
+                                                    key={index}
+                                                    href={link.link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="no-underline text-primary hover:text-primary-700 flex align-items-center gap-2"
+                                                >
+                                                    <span>{link.description}</span>
+                                                </a>
+                                            ))}
+                                        </div>
                                     </div>
                                 )}
-                                <div className="mt-5 mb-0">
-                                    <Toolbar start={startContent} end={endContent} />
-                                    <div className="mt-0">
-                                        <DataView value={groupSimilarEditions(data.editions, detailLevel)
-                                            .sort(sortEditions)}
-                                            header={header} itemTemplate={itemTemplate} />
+                            </Card>
+                        </div>
+
+                        {/* Main Content */}
+                        <div className="col-12">
+                            <TabView className="shadow-2">
+                                <TabPanel header="Painokset" leftIcon="pi pi-book">
+                                    <div className="card">
+                                        <div className="flex justify-content-between align-items-center mb-3">
+                                            <h2 className="m-0">Painokset</h2>
+                                            <SelectButton
+                                                value={detailLevel}
+                                                options={detailOptions}
+                                                optionLabel="icon"
+                                                onChange={(e) => changeDetailLevel(e.value)}
+                                                itemTemplate={detailTemplate}
+                                            />
+                                        </div>
+                                        <DataView
+                                            value={groupSimilarEditions(data.editions, detailLevel).sort(sortEditions)}
+                                            itemTemplate={itemTemplate}
+                                        />
                                     </div>
-                                </div>
-                                <Divider />
-                                <div className="mt-5 mb-0">
+                                </TabPanel>
+
+                                {/* Add new Awards tab */}
+                                {data.awards && data.awards.length > 0 && (
+                                    <TabPanel header="Palkinnot" leftIcon="pi pi-trophy">
+                                        <div className="card">
+                                            <AwardList awards={data.awards} />
+                                        </div>
+                                    </TabPanel>
+                                )}
+
+                                {data.stories.length > 0 && (
+                                    <TabPanel header="Novellit" leftIcon="pi pi-list">
+                                        <ShortsList
+                                            shorts={data.stories}
+                                            person={data.authors[0]}
+                                            anthology={anthology}
+                                        />
+                                    </TabPanel>
+                                )}
+
+                                <TabPanel header="Muutoshistoria" leftIcon="pi pi-history">
                                     <WorkChanges workId={data.id} />
-                                </div>
-                            </>
-                        ))}
-            </div>
+                                </TabPanel>
+                            </TabView>
+                        </div>
+
+                        {/* Dialogs */}
+                        <Dialog
+                            visible={isEditVisible}
+                            onHide={onDialogHide}
+                            header="Teoksen muokkaus"
+                            maximizable
+                            blockScroll
+                            className="w-full xl:w-6"
+                        >
+                            <WorkForm
+                                workId={!formData || !editWork ? null : workId}
+                                onSubmitCallback={workFormCallback}
+                            />
+                        </Dialog>
+                    </div>
+                )
+            )}
         </main>
-    )
+    );
 }

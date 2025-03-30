@@ -4,10 +4,11 @@ import { GenreCount } from "./genre-count";
 
 interface GenresProps {
     genres: Genre[],
-    showOneCount?: boolean
+    showOneCount?: boolean,
+    className?: string
 }
 
-export const GenreGroup = ({ genres, showOneCount }: GenresProps) => {
+export const GenreGroup = ({ genres, showOneCount, className }: GenresProps) => {
     const [groupedGenres, setGroupedGenres] = useState<[string, number][]>([]);
 
     useEffect(() => {
@@ -32,14 +33,15 @@ export const GenreGroup = ({ genres, showOneCount }: GenresProps) => {
 
     return (
         genres ? (
-            <div className="flex justify-content-center">
-                {groupedGenres.map(genre => {
-                    return (
-                        <span key={genre[0]} className="mr-1">
-                            <GenreCount genre={genre[0]} count={showOneCount && genre[1] !== 1 ? genre[1] : null} />
-                        </span>
-                    );
-                })}
+            <div className={`flex flex-wrap gap-2 ${className || ''}`}>
+                {groupedGenres.map(genre => (
+                    <span key={genre[0]}>
+                        <GenreCount
+                            genre={genre[0]}
+                            count={showOneCount && genre[1] !== 1 ? genre[1] : null}
+                        />
+                    </span>
+                ))}
             </div>
         ) : (
             <></>

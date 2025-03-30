@@ -71,23 +71,21 @@ export const ShortsControl = ({ person, listPublications, showAuthors, sort, wha
     // }
 
     return (
-        <Fieldset legend="Lyhyet" toggleable>
-            <TabView className="w-full">
-                {shortTypes.map((shortType) => {
-                    return (
-                        <TabPanel key={shortType.id} header={headerText(shortType.name,
-                            shorts.filter((s) => s.type.id === shortType.id).length)}>
-                            <ShortsList shorts={shorts.filter((s) => s.type.id === shortType.id).sort((a, b) => a.title.localeCompare(b.title))}
-                                person={person} key={person.id}
-                                groupRoles
-                                anthology={showAuthors}  // This. Is. Hack.
-                                sort={sort}
-                                {...(listPublications ? { listPublications } : {})}
-                            />
-                        </TabPanel>
-                    )
-                })}
-            </TabView>
-        </Fieldset>
+        <TabView className="w-full">
+            {shortTypes.map((shortType) => {
+                return (
+                    <TabPanel key={shortType.id} header={headerText(shortType.name,
+                        shorts.filter((s) => s.type.id === shortType.id).length)}>
+                        <ShortsList shorts={shorts.filter((s) => s.type.id === shortType.id).sort((a, b) => a.title.localeCompare(b.title))}
+                            person={person} key={person.id}
+                            groupRoles
+                            anthology={showAuthors}  // This. Is. Hack.
+                            sort={sort}
+                            {...(listPublications ? { listPublications } : {})}
+                        />
+                    </TabPanel>
+                )
+            })}
+        </TabView>
     )
 }

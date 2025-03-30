@@ -18,12 +18,18 @@ import { GenreGroup } from "../../genre";
 import { Genre } from "../../genre";
 import { TagGroup } from '../../tag';
 import { LinkPanel } from "../../../components/link-panel";
-import { AwardPanel, Awarded } from '../../award';
+import { AwardList, AwardPanel, Awarded } from '../../award';
 import { Person, PersonBrief } from '../types';
 import { PersonForm } from '../components/person-form';
 import { selectId } from '../../../utils';
 import { User, isAdmin } from "../../user";
 import { useDocumentTitle } from '../../../components/document-title';
+
+//import { AwardedForm } from '@features/award/components/awarded-form';
+import { Card } from 'primereact/card';
+import { TabView, TabPanel } from 'primereact/tabview';
+import { BookSeriesList } from '@features/bookseries';
+import { getCountryCode } from '../../../utils/country-utils';
 
 const baseURL = "people/";
 
@@ -42,6 +48,8 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     const [editPerson, setEditPerson] = useState(true);
     const [formData, setFormData]: [Person | null, (formData: Person | null) => void] = useState<Person | null>(null);
     const [showNonSf, setShowNonSf] = useState(false);
+    const [isAwardsVisible, setAwardsVisible] = useState(false);
+    const [workAwards, setWorkAwards]: [Awarded[], (workAwards: Awarded[]) => void] = useState<Awarded[]>([]);
 
     try {
         thisId = selectId(params, id);
@@ -89,6 +97,14 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                     setEditVisible(true);
                 }
             }
+        },
+        {
+            label: 'Palkinnot',
+            icon: 'fa-solid fa-trophy',
+            command: () => {
+                setAwardsVisible(true);
+
+            }
         }
     ]
 
@@ -122,16 +138,41 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         return data.works.map(work => work.tags).flat();
     }
 
-    const workAwards = () => {
+    const fetchWorkAwards = async (id: string, user: User | null): Promise<Awarded[]> => {
+        const url = baseURL + id + "/awards";
+        const response = await getApiContent(url, user).then(response =>
+            response.data
+        )
+            .catch((error) => console.log(error));
+        //console.log(response);
+        return response;
+    }
+
+    const getWorkAwards = async () => {
         // Return a list of all awards to works awarded to this person.
         // List is automatically sorted by year in ascending order.
-        if (!data) return [];
-        const retval = data.works
-            .filter(work => work.awards && work.awards.length > 0)
-            .map(work => work.awards).flat()
-            .sort((a: Awarded, b: Awarded) => a.year < b.year ? -1 : 1);
-        return retval;
+        // if (!data) return [];
+        // const retval = data.works
+        //     .filter(work => work.awards && work.awards.length > 0)
+        //     .map(work => work.awards).flat()
+        //     .sort((a: Awarded, b: Awarded) => a.year < b.year ? -1 : 1);
+        const sorted = fetchWorkAwards(thisId, user).then((response) => {
+            const sortedAwards = response.sort((a: Awarded, b: Awarded) => a.year < b.year ? -1 : 1);
+            return sortedAwards;
+        }, onError => {
+            console.log(onError);
+        });
+        return sorted;
     }
+
+    useQuery({
+        queryKey: ["workAwards", thisId],
+        queryFn: () => fetchWorkAwards(thisId, user),
+        enabled: queryEnabled,
+        onSuccess: (data) => {
+            setWorkAwards(data);
+        },
+    });
 
     const hasNonSf = (what: string) => {
         /**
@@ -164,12 +205,17 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         return retval.join(', ');
     }
 
+    const queryClient = useQueryClient();
+
     const onDialogShow = () => {
         setEditVisible(true);
         setQueryEnabled(false);
     }
 
-    const queryClient = useQueryClient();
+    const onAwardsShow = () => {
+        // sstory_updateetAwardsVisible(true);
+        // setQueryEnabled(false);
+    }
 
     const onDialogHide = () => {
         queryClient.invalidateQueries({ queryKey: ["person", data?.id] });
@@ -177,130 +223,231 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         setEditVisible(false);
     }
 
+    const onAwardsHide = () => {
+        queryClient.invalidateQueries({ queryKey: ["person", data?.id] });
+        // setQueryEnabled(true);
+        setAwardsVisible(false);
+    }
     // if (data !== undefined) {
     //     console.log(data)
     // }
 
+    const countGenres = (genres: Genre[]) => {
+        return genres.reduce((acc: { [key: string]: { name: string, count: number } }, genre) => {
+            if (!acc[genre.id]) {
+                acc[genre.id] = { name: genre.name, count: 0 };
+            }
+            acc[genre.id].count++;
+            return acc;
+        }, {});
+    };
+
+    const countTags = (tags: { id: number, name: string }[]) => {
+        return tags.reduce((acc: { [key: string]: { name: string, count: number } }, tag) => {
+            if (!acc[tag.id]) {
+                acc[tag.id] = { name: tag.name, count: 0 };
+            }
+            acc[tag.id].count++;
+            return acc;
+        }, {});
+    };
+
+    if (!data) {
+        return <ProgressSpinner />
+    }
+
     return (
-        <main className="all-content" id="person-page">
-            <div className="mt-5 speeddial style={{ position: 'relative', height: 500px'}}">
-                {isAdmin(user) &&
-                    <div>
-                        <Tooltip position="left" target=".speeddial .speeddial-right .p-speeddial-action">
-                        </Tooltip>
-                        <SpeedDial className="speeddial-right"
-                            model={dialItems}
-                            direction="left"
-                            type="semi-circle"
-                            radius={80}
-                        />
-                    </div >
-                }
-                <Dialog maximizable blockScroll
-                    className="w-full lg:w-6"
-                    header="Henkilön tietojen muokkaus" visible={isEditVisible}
-                    onShow={() => onDialogShow()}
-                    onHide={() => onDialogHide()}
-                >
-                    <PersonForm data={!formData || !editPerson ? null : formData} onSubmitCallback={onDialogHide} />
-                </Dialog>
-                {
-                    isLoading ?
-                        <div className="progressbar">
-                            < ProgressSpinner />
-                        </div >
-                        : (data && (
-                            <div>
-                                <div className="grid justify-content-center">
-                                    <div className="grid col-12 mt-5 mb-1">
-                                        {data.alt_name ? (
-                                            <div className="grid col-12 p-0 justify-content-center">
-                                                <div className="grid col-12 pb-0 pt-5 mb-0 justify-content-center">
-                                                    <h1 className="maintitle">{data.alt_name}</h1>
-                                                </div>
-                                                {data.fullname && (
-                                                    <div className="grid col-12 p-0 mt-0 mb-0 justify-content-center">
-                                                        <h2>({data.fullname})</h2>
-                                                    </div>
+        <main className="person-page">
+            {/* Add SpeedDial */}
+            {isAdmin(user) && (
+                <SpeedDial
+                    model={dialItems}
+                    direction="up"
+                    className="fixed-dial"
+                    showIcon="pi pi-plus"
+                    hideIcon="pi pi-times"
+                    buttonClassName="p-button-primary"
+                />
+            )}
+
+            {isLoading ? (
+                <div className="flex justify-content-center">
+                    <ProgressSpinner />
+                </div>
+            ) : (
+                data && (
+                    <div className="grid">
+                        {/* Header Section */}
+                        <div className="col-12">
+                            <Card className="shadow-3">
+                                <div className="grid">
+                                    <div className="col-12 lg:col-9">  {/* Full width on mobile, 9 cols on large screens */}
+                                        <div className="flex-column">
+                                            <h1 className="text-4xl font-bold m-0">{data.alt_name}</h1>
+                                            {data.fullname && (
+                                                <div className="text-xl text-600 mt-2">({data.fullname})</div>
+                                            )}
+
+                                            <div className="flex align-items-center gap-4 mt-3">
+                                                {data.nationality && (
+                                                    <span className="flex align-items-center gap-2">
+                                                        {getCountryCode(data.nationality.name) !== "UNKNOWN" ? (
+                                                            <img
+                                                                src={`https://hatscripts.github.io/circle-flags/flags/${getCountryCode(data.nationality.name).toLowerCase()}.svg`}
+                                                                width="24"
+                                                                height="24"
+                                                                alt={data.nationality.name}
+                                                                className="border-circle"
+                                                            />
+                                                        ) : (
+                                                            <i className="pi pi-globe text-600" style={{ fontSize: '1.25rem' }} />
+                                                        )}
+                                                        {data.nationality.name}
+                                                    </span>
+                                                )}
+                                                {(data.dob || data.dod) && (
+                                                    <span className="flex align-items-center gap-2">
+                                                        <i className="pi pi-calendar" />
+                                                        {data.dob || ''}{data.dob && data.dod ? '–' : ''}{data.dod || ''}
+                                                    </span>
                                                 )}
                                             </div>
-                                        ) : (
-                                            <div className="grid col-12 p-0 mt-0 mb-0 justify-content-center">
-                                                <h1 className="maintitle">{data.fullname}</h1>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="grid mt-0 col-12 mb-0 p-0 justify-content-center">
-                                        <h2 className="grid">
-                                            {personDetails(data.nationality, data.dob, data.dod)}
-                                        </h2>
-                                    </div>
-                                    {((data.aliases && data.aliases.length > 0) || (data.other_names && data.other_names.length > 0)) &&
-                                        <div className="grid col-12 mt-0 p-2 justify-content-center">
-                                            <h3 className="grid mb-5">
-                                                <>Myös{' '}
-                                                    {combineNames(data.aliases, data.other_names)}
-                                                    .</>
-                                            </h3>
-                                        </div>
-                                    }
-                                    {(data.real_names && data.real_names.length > 0) &&
-                                        <div className="grid col-12 mt-0 p-2 justify-content-center">
-                                            <h3 className="grid mb-5">
-                                                <>Oik.{' '}
+
+                                            {/* Aliases and real names */}
+                                            {((data.aliases && data.aliases.length > 0) || data.other_names) && (
+                                                <div className="mt-2 text-600">
+                                                    <span className="mr-2">Myös:</span>
+                                                    {combineNames(data.aliases || [], data.other_names || '')}
+                                                </div>
+                                            )}
+                                            {(data.real_names && data.real_names.length > 0) && (
+                                                <div className="mt-2 text-600">
+                                                    <span className="mr-2">Oik.:</span>
                                                     {data.real_names.map(name => name.alt_name).join(', ')}
-                                                    .</>
-                                            </h3>
+                                                </div>
+                                            )}
                                         </div>
-                                    }
-                                </div>
-                                <div className="col-12 mt-2">
-                                    <GenreGroup genres={getGenres()} showOneCount></GenreGroup>
-                                </div>
-                                <div className="col-12 mb-5">
-                                    <TagGroup tags={getTags()} overflow={5} showOneCount />
-                                </div>
-                                <div className="grid col-12 mb-5 justify-content-center">
-                                    <div className="grid col-6 pr-3 justify-content-end">
-                                        <AwardPanel awards={[...data.awarded, ...workAwards()]}></AwardPanel>
                                     </div>
-                                    <div className="grid col-6 pl-3 justify-content-start">
-                                        <LinkPanel links={data.links} />
+
+                                    {/* Genres moved to right side */}
+                                    <div className="col-12 lg:col-3">  {/* Full width on mobile, 3 cols on large screens */}
+                                        <div className="flex flex-column gap-2">
+                                            <h3 className="text-sm uppercase text-600 m-0">Genret</h3>
+                                            <GenreGroup
+                                                genres={getGenres()}
+                                                showOneCount
+                                                className="flex-wrap"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="col-12">
-                                    {hasBooks(data) && (
-                                        <ContributorBookControl viewNonSf={false} person={data}
-                                            collaborationsLast={true}></ContributorBookControl>
-                                    )}
-                                    {hasShorts(data) &&
+
+                                {/* Links section */}
+                                {data.links && data.links.length > 0 && (
+                                    <div className="mt-4 pt-3 border-top-1 surface-border">
+                                        <div className="flex flex-wrap gap-3">
+                                            {data.links.map((link, index) => (
+                                                <a
+                                                    key={index}
+                                                    href={link.link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="no-underline text-primary hover:text-primary-700 flex align-items-center gap-2"
+                                                >
+                                                    <span>{link.description}</span>
+                                                </a>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </Card>
+                        </div>
+
+                        {/* Main Content */}
+                        <div className="col-12">
+                            <TabView className="shadow-2">
+                                <TabPanel header="Teokset" leftIcon="pi pi-book">
+                                    <div className="card">
+                                        {/* Existing ContributorBookControl */}
+                                        <ContributorBookControl
+                                            viewNonSf={false}
+                                            person={data}
+                                            collaborationsLast={true}
+                                            tags={getTags()}  // Add this line
+                                        />
+                                    </div>
+                                </TabPanel>
+
+                                <TabPanel header="Novellit" leftIcon="pi pi-list">
+                                    <div className="card">
                                         <ShortsControl key={"sfshorts"}
                                             person={data}
                                             listPublications
                                             showAuthors
                                             sort={"Title"}
                                             what={"sf"}></ShortsControl>
-                                    }
-                                    {hasNonSf("all") && <Fieldset legend="Ei-SF/Mainstream" toggleable collapsed>
-                                        {hasNonSf("works") &&
-                                            <ContributorBookControl viewNonSf={true} person={data}
-                                                collaborationsLast={true}></ContributorBookControl>
-                                        }
-                                        {hasNonSf("stories") &&
-                                            <ShortsControl key={"nonsfshorts"}
-                                                person={data}
-                                                listPublications
-                                                showAuthors
-                                                sort={"Author"}
-                                                what={"nonsf"}></ShortsControl>
-                                        }
-                                    </Fieldset>
-                                    }
-                                </div>
-                            </div>
-                        ))
-                }
-            </div>
-        </main >
+                                    </div>
+                                </TabPanel>
+
+                                <TabPanel header="Sarjat" leftIcon="pi pi-sitemap">
+                                    <div className="card">
+                                        <BookSeriesList
+                                            works={data.works}
+                                            seriesType='bookseries'
+                                        />
+                                    </div>
+                                </TabPanel>
+
+                                <TabPanel header="Palkinnot" leftIcon="pi pi-trophy">
+                                    <AwardList awards={workAwards}></AwardList>
+                                </TabPanel>
+
+                                {hasNonSf("all") && (
+                                    <TabPanel header="Muu tuotanto" leftIcon="pi pi-folder">
+                                        <div className="card">
+                                            {hasNonSf("works") && (
+                                                <div className="mb-4">
+                                                    <h3 className="text-xl mb-3">Kirjat</h3>
+                                                    <ContributorBookControl
+                                                        viewNonSf={true}
+                                                        person={data}
+                                                        collaborationsLast={true}
+                                                    />
+                                                </div>
+                                            )}
+                                            {hasNonSf("stories") && (
+                                                <div>
+                                                    <h3 className="text-xl mb-3">Novellit</h3>
+                                                    <ShortsControl
+                                                        key={"nonsfshorts"}
+                                                        person={data}
+                                                        listPublications
+                                                        showAuthors
+                                                        sort={"Author"}
+                                                        what={"nonsf"}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                    </TabPanel>
+                                )}
+                            </TabView>
+                        </div>
+
+                        {/* Dialogs */}
+                        <Dialog
+                            visible={isEditVisible}
+                            onHide={onDialogHide}
+                            header="Henkilön muokkaus"
+                            maximizable
+                            blockScroll
+                            className="w-full xl:w-6"
+                        >
+                            <PersonForm data={!formData || !editPerson ? null : formData} onSubmitCallback={onDialogHide} />
+                        </Dialog>
+                    </div>
+                )
+            )}
+        </main>
     );
-}
+};

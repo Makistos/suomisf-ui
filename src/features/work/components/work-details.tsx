@@ -41,9 +41,9 @@ export const WorkDetails = ({ work }: WorkProps) => {
     }
     return (
         <>
-            <div className="grid align-items-center justify-content-center">
+            <div className="grid">
                 {work.contributions.filter(person => person.role.id === 1).length > 0 && (
-                    <div className="grid col-12 justify-content-center">
+                    <div className="grid col-12 mb-0 pb-0">
                         <h2 className="mb-0 font-semibold">
                             <LinkList path="people"
                                 separator=" &amp; "
@@ -54,8 +54,8 @@ export const WorkDetails = ({ work }: WorkProps) => {
                 {work.contributions &&
                     work.contributions.filter(person => person.role.id === 1).length === 0 &&
                     work.contributions.filter(person => person.role.id === 3).length > 0 && (
-                        <div className="grid col-12 justify-content-center">
-                            <h2 className="mb-0 mt-0">
+                        <div className="grid col-12">
+                            <h2 className="mb-0 mt-0 font-semibold">
                                 Toim.&nbsp;
                                 <LinkList path="people"
                                     separator=" &amp; "
@@ -68,55 +68,29 @@ export const WorkDetails = ({ work }: WorkProps) => {
                             </h2>
                         </div>
                     )}
-                <div className="grid col-12 justify-content-center">
-                    <h1 className="mt-1 mb-0">{work.title}</h1>
-                </div>
-                <div className="grid col-12 justify-content-center">
-                    <h2 className="mt-1 mb-0">{work.subtitle}</h2>
-                </div>
-                <div className="grid col-12 justify-content-center">
-                    {work.contributions &&
-                        work.contributions.filter(person => person.role.id === 1).length !== 0 &&
-                        work.contributions.filter(person => person.role.id === 3).length > 0
-                        && (
-                            <div className="grid col-12 justify-content-center">
-                                <h3 className="mb-0 mt-0">
-                                    Toim.&nbsp;
-                                    <LinkList path="people"
-                                        separator=" &amp; "
-                                        items={work.contributions.filter(contrib => contrib.role.id === 3).map((item) => ({
-                                            id: item.person['id'],
-                                            name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
-
-                                        }))} />
-                                </h3>
-                            </div>
+                <div className="grid col-12 pt-0 mt-3 mb-1 mb-0 pb-0 uppercase">
+                    <h1 className="mt-0 mb-0 text-4xl" style={{ lineHeight: '0.8' }}>
+                        <span className="mb-0 pb-0">{work.title}</span>
+                        {work.subtitle && (
+                            <span className="text-base ml-1">: {work.subtitle}</span>
                         )}
-                    <p className="mt-1">
+                    </h1>
+                </div>
+                <div className="grid col-12 mt-0 pt-0 p-2">
+                    <p className="font-medium text-sm mt-0">
                         {original(work)}
                     </p>
 
-                    <div className="col-12">
-                        <GenreGroup genres={work.genres} />
-                    </div>
-                    <div className="grid col-12 justify-content-center">
-                        <div className="grid col-6 p-3 justify-content-end">
-                            <AwardPanel awards={work.awards}></AwardPanel>
-                        </div>
-                        <div className="grid col-6 p-3 justify-content-start">
-                            <LinkPanel links={work.links} />
-                        </div>
-                    </div>
                     {work.bookseries && (
-                        <div className="col-12">
+                        <div className="col-12 p-0">
                             <WorkBookseriesBrowser workId={work.id} bookseriesId={work.bookseries.id} />
                         </div>
                     )}
-                    <div className="col-12">
+                    <div className="col-12 p-0">
                         {work.misc}
                     </div>
                     {work.description && (
-                        <div className="col-12 pb-0 mb-0">
+                        <div className="col-12 pb-0 mb-0 p-0">
                             <div dangerouslySetInnerHTML={{ __html: work.description }} />
                             {work.descr_attr && (
                                 <div className="book-attribution"
@@ -124,10 +98,6 @@ export const WorkDetails = ({ work }: WorkProps) => {
                             )}
                         </div>
                     )}
-                    <div className="grid col-12 justify-content-start">
-                        <TagGroup tags={work.tags} overflow={10} showOneCount={false}
-                        />
-                    </div>
                 </div>
             </div>
         </>

@@ -8,7 +8,7 @@ export interface Award {
     description: string;
     domestic: boolean;
     categories: AwardCategory[];
-    winners: Awarded[];
+    winners: Omit<Awarded, "award">[];
 }
 
 export interface AwardCategory {
@@ -20,9 +20,20 @@ export interface AwardCategory {
 export interface Awarded {
     id: number,
     year: number,
-    award: Award,
+    award: Omit<Award, 'winners'>,
+    person: Pick<Person, 'id' | 'name' | 'alt_name'>,
+    work: Pick<Work, 'id' | 'title' | 'author_str'>,
+    category: AwardCategory,
+    story: Pick<Short, 'id' | 'title'>
+}
+
+export interface AwardedFormData {
+    [index: string]: any,
+    id: number,
+    year: number,
+    award: Omit<Award, 'winners'>,
     person: Person,
     work: Work,
     category: AwardCategory,
-    story: Short
+    story: Pick<Short, 'id' | 'title'>
 }

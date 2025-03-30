@@ -438,3 +438,166 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
   justify-items: end;
   float: right;
 }
+
+.work-page {
+    padding: 2rem;
+    background: var(--surface-ground);
+}
+
+.work-page .p-card {
+    margin-bottom: 2rem;
+}
+
+.work-page .p-tabview .p-tabview-panels {
+    padding: 1.5rem;
+}
+
+.work-page h1 {
+    color: var(--primary-color);
+}
+
+.work-page .p-dataview .p-dataview-content {
+    background: transparent;
+}
+
+.work-page .edition-card {
+    background: var(--surface-card);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: box-shadow 0.2s;
+}
+
+.work-page .edition-card:hover {
+    box-shadow: 0 0 1rem rgba(0,0,0,0.1);
+}
+
+.work-page .fixed-dial {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+.work-page .text-sm {
+    font-size: 0.875rem;
+}
+
+.work-page .uppercase {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.person-page {
+    padding: 2rem;
+    background: var(--surface-ground);
+}
+
+.person-page .p-card {
+    margin-bottom: 2rem;
+}
+
+.person-page .p-tabview .p-tabview-panels {
+    padding: 1.5rem;
+}
+
+.person-page h1 {
+    color: var(--primary-color);
+}
+
+.person-page .p-dataview .p-dataview-content {
+    background: transparent;
+}
+
+.person-page .work-item,
+.person-page .short-item {
+    background: var(--surface-card);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: box-shadow 0.2s;
+}
+
+.person-page .work-item:hover,
+.person-page .short-item:hover {
+    box-shadow: 0 0 1rem rgba(0,0,0,0.1);
+}
+
+.person-page .award-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--surface-border);
+}
+
+.person-page .award-item:last-child {
+    border-bottom: none;
+}
+
+.person-page .text-xs {
+    font-size: 0.75rem;
+}
+
+.person-page .surface-200 .text-xs {
+    background: var(--surface-300);
+    border-radius: 1rem;
+    padding: 0 0.5rem;
+}
+
+.person-page .surface-100 .text-xs {
+    background: var(--surface-200);
+    border-radius: 1rem;
+    padding: 0 0.5rem;
+}
+
+/* SpeedDial positioning */
+.work-page .p-speeddial,
+.person-page .p-speeddial {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+.work-page .p-speeddial .p-speeddial-button,
+.person-page .p-speeddial .p-speeddial-button {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Optional: Add animation for smooth appearance */
+.work-page .p-speeddial-list,
+.person-page .p-speeddial-list {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Remove existing speeddial classes that might conflict */
+.speeddial .p-speeddial-circle,
+.speeddial .p-speeddial-semi-circle,
+.speeddial .p-speeddial-quarter-circle {
+    position: unset;
+    left: unset;
+    top: unset;
+}
+
+.person-page img.border-circle {
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px var(--surface-border);
+}
+
+.person-page .non-sf-tab .pi-book {
+    opacity: 0.6;
+}
+
+.person-page .fixed-dial {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+.person-page .p-speeddial-button {
+    width: 3rem;
+    height: 3rem;
+}

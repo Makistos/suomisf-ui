@@ -69,7 +69,12 @@ export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPubli
             if (a[0].localeCompare(person.name) === 0) return -1;
             if (b[0].localeCompare(person.name) === 0) return 1;
         }
-        return (a[0].localeCompare(b[0]));
+        //return (a[0].localeCompare(b[0]));
+        if (a[0] === "Kirjoittaja") return -1;
+        if (b[0] === "Kirjoittaja") return 1;
+        if (a[0] === "Esiintyy") return -1;
+        if (b[0] === "Esiintyy") return 1;
+        return a[0].localeCompare(b[0]);
     }
 
     const shortsCmp = (a: Short, b: Short) => {

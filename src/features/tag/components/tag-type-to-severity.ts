@@ -19,17 +19,43 @@ export const tagTypeToSeverity = (tag: SfTag) => {
         return "warning";
     }
     if (tag.type?.id === 4) {
-        // Location
+        // Actor
         return "success";
     }
     if (tag.type?.id === 5) {
-        // Actor
+        // Location
         return "info";
     }
     if (tag.type?.id === 6) {
         // Era - this looks exactly like primary but there are no more
         // different looking tags to choose from
-        return undefined;
+        return "contrast";
+    }
+
+    // For all other types
+    return undefined;
+}
+
+export const tagTypeIcon = (tag: SfTag) => {
+    if (tag.type?.id === 2) {
+        // Subgenre
+        return "";
+    }
+    if (tag.type?.id === 3) {
+        // Style
+        return "";
+    }
+    if (tag.type?.id === 4) {
+        // Actor
+        return "pi pi-user";
+    }
+    if (tag.type?.id === 5) {
+        // Location
+        return "pi pi-map";
+    }
+    if (tag.type?.id === 6) {
+        // Era
+        return "pi pi-clock";
     }
 
     // For all other types

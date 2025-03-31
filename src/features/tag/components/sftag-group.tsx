@@ -5,7 +5,7 @@ import { Button } from 'primereact/button';
 
 import { SfTag } from "../types";
 import { Link } from 'react-router-dom';
-import { tagTypeToSeverity } from '@features/tag/components/tag-type-to-severity';
+import { tagTypeIcon, tagTypeToSeverity } from '@features/tag/components/tag-type-to-severity';
 
 interface TagsProps {
     tags: SfTag[],
@@ -44,6 +44,14 @@ export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseF
     const filterTypes = (tags: SfTag[], type: string) => {
         return tags.filter(tag => tag.type?.name === type)
             .map(tag => tag)
+    }
+
+    const sortTags = (a: TagCount, b: TagCount) => {
+        if (a.type?.id === 2) return -1; // Subgenre
+        if (b.type?.id === 2) return 1; // Subgenre
+        if (a.type?.id === 3) return -1; // Style
+        if (b.type?.id === 3) return 1; // Style
+        return -1;
     }
 
     const filterTags = (tag: SfTag) => {
@@ -130,7 +138,7 @@ export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseF
     }
     return (
         <div className="flex flex-wrap m-0 p-0">
-            {groupedTags.map((tag, idx) => {
+            {groupedTags.sort(sortTags).map((tag, idx) => {
                 return (overflow === undefined || idx < overflow || showAll) &&
                     <span key={tag.name} className="mr-1 mb-1">
                         <Link to={`/tags/${tag.id}`} className="mr-1 mb-1"

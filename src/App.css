@@ -706,3 +706,36 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 .pubseries-page h1 {
     color: var(--primary-color);
 }
+
+.sftag-page {
+    padding: 2rem;
+    background: var(--surface-ground);
+}
+
+.sftag-page .fixed-dial {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+.sftag-page .p-card {
+    margin-bottom: 2rem;
+}
+
+.sftag-page .p-tabview .p-tabview-panels {
+    padding: 1.5rem;
+    overflow-x: hidden;
+}
+
+.sftag-page .p-tabview .p-tabview-nav {
+    width: 100%;
+}
+
+.sftag-page .p-tabview .p-tabview-nav li {
+    flex: none;
+}
+
+.sftag-page h1 {
+    color: var(--primary-color);
+}

@@ -28,6 +28,9 @@ import { deleteTag } from '@api/tag/delete-tag';
 import { filterTags } from '@api/tag/filter-tags';
 import _ from 'lodash';
 import { getShortTypes } from '@features/short/utils/get-short-types';
+import { TabPanel, TabView } from 'primereact/tabview';
+import { Card } from 'primereact/card';
+import { isAdmin } from '@features/user';
 
 
 export const SFTag = ({ id }: SfTagProps) => {
@@ -188,83 +191,99 @@ export const SFTag = ({ id }: SfTagProps) => {
     }
 
     return (
-
-        <main className="all-content">
+        <main className="sftag-page">
             <Toast ref={toastRef} />
-            <Dialog header="Muokkaa" visible={displayChangeName} onHide={() => onHide('displayChangeName')}>
-                <SfTagForm tagId={(data && data.id) ? data.id : null}
-                    onSubmitCallback={onTagSubmit} />
-            </Dialog>
 
-            <Dialog header="Asiasanan yhdistäminen" visible={displayMerge} onHide={() => onHide('displayMerge')}>
-                <MergeTagsDialog />
-            </Dialog>
+            {isAdmin(user) && (
+                <SpeedDial
+                    model={dialItems}
+                    direction="up"
+                    className="fixed-dial"
+                    showIcon="pi pi-plus"
+                    hideIcon="pi pi-times"
+                    buttonClassName="p-button-primary"
+                />
+            )}
 
-            <ConfirmDialog visible={displayDelete}
-                onHide={() => setDisplayDelete(false)}
-                message="Oletko varma että haluat poistaa asiasanan?"
-                header="Asiasanan poistaminen"
-                icon="pi pi-excalamation-triangle"
-                accept={deleteTagFunc}
-                reject={() => setDisplayDelete(false)}
-            />
+            {isLoading ? (
+                <div className="flex justify-content-center">
+                    <ProgressSpinner />
+                </div>
+            ) : (
+                data && (
+                    <div className="grid">
+                        {/* Header Section */}
+                        <div className="col-12">
+                            <Card className="shadow-3">
+                                <div className="grid">
+                                    <div className="col-12 lg:col-9">
+                                        <div className="flex-column">
+                                            <h1 className="text-4xl font-bold m-0">{data.name}</h1>
+                                            <Tag value={data?.type?.name}
+                                                severity={data ? tagTypeToSeverity(data) : undefined}
+                                            />
+                                        </div>
+                                    </div>
 
-            <div className="mt-5 speeddial style={{position: 'relative', height: '500px}}">
-                {user && user.role === "admin" &&
-                    <div>
-                        <Tooltip target=".speeddial .speeddial-right .p-speeddial-action" position="left" />
-                        <SpeedDial className="speeddial-right"
-                            model={dialItems}
-                            direction="left"
-                            type="semi-circle"
-                            radius={80}
-                        />
-                    </div>
-                }
-                {
-                    isLoading ? (
-                        <div className="progressbar">
-                            <ProgressSpinner />
+                                    {/* Stats on right side */}
+                                    <div className="col-12 lg:col-3">
+                                        <div className="flex flex-column gap-4">
+                                            <div className="flex flex-column gap-2">
+                                                <h3 className="text-sm uppercase text-600 m-0">Teoksia</h3>
+                                                <span className="text-xl">{data.works?.length}</span>
+                                            </div>
+                                            <div className="flex flex-column gap-2">
+                                                <h3 className="text-sm uppercase text-600 m-0">Novelleja</h3>
+                                                <span className="text-xl">{data.stories?.length}</span>
+                                            </div>
+                                            <div className="flex flex-column gap-2">
+                                                <h3 className="text-sm uppercase text-600 m-0">Artikkeleita</h3>
+                                                <span className="text-xl">{data.articles?.length}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Card>
                         </div>
-                    )
-                        :
-                        (
-                            <div>
-                                <div className="grid justify-content-center col-12 mt-5 mb-5 min-w-full">
-                                    <h1 className="maintitle min-w-full justify-content-center">{data?.name}</h1>
-                                </div>
-                                <div className="mb-5">
-                                    <Tag value={data?.type?.name}
-                                        severity={data ? tagTypeToSeverity(data) : undefined}
-                                    />
-                                </div>
-                                {data?.works && data.works.length > 0 &&
-                                    <div>
-                                        <h2 className="mb-5">Teokset ({data?.works.length})</h2>
-                                        <WorkList works={data?.works} />
-                                    </div>
-                                }
-                                {data?.stories && data.stories.length > 0 &&
-                                    getShortTypes(data.stories).map((shortType) => {
-                                        if (data.stories && data.stories?.filter(short => short.type.id === shortType.id).length > 0) {
-                                            return (
-                                                <div>
-                                                    <h2 className="mb-5">{shortType.name} ({data.stories ? data?.stories.filter(short => short.type.id === shortType.id).length : 0})</h2>
-                                                    <ShortsList shorts={data?.stories.filter(short => short.type.id === shortType.id)} />
-                                                </div>
-                                            )
+
+                        {/* Main Content */}
+                        <div className="col-12">
+                            <TabView className="shadow-2">
+                                <TabPanel header="Teokset" leftIcon="pi pi-book">
+                                    <div className="card min-w-full">
+                                        {data.works &&
+                                            <WorkList works={data?.works} />
                                         }
-                                    })}
-                                {/* {data?.articles && data.articles.length > 0 &&
-                                    <div className="col-12 mt-5">
-                                        <h2 className="mb-5">Artikkelit ({data?.articles.length})</h2>
-                                        <ArticleList articles={data.articles} />
                                     </div>
-                                } */}
-                            </div>
-                        )
-                }
-            </div>
+                                </TabPanel>
+                                <TabPanel header="Novellit" leftIcon="pi pi-file">
+                                    <div className="card min-w-full">
+                                        {data.stories &&
+                                            <ShortsList shorts={data?.stories} />
+                                        }
+                                    </div>
+                                </TabPanel>
+                                <TabPanel header="Artikkelit" leftIcon="pi pi-file">
+                                    <div className="card min-w-full">
+                                        {data.articles &&
+                                            <ArticleList articles={data?.articles} />
+                                        }
+                                    </div>
+                                </TabPanel>
+                            </TabView>
+                        </div>
+
+                        {/* Dialogs */}
+                        <Dialog
+                            header="Muokkaa" visible={displayChangeName} onHide={() => onHide('displayChangeName')}
+                            className="w-full xl:w-6"
+                        >
+                            <SfTagForm tagId={(data && data.id) ? data.id : null}
+                                onSubmitCallback={onTagSubmit} />
+                        </Dialog>
+                    </div>
+                )
+            )}
         </main>
-    )
-}
+    );
+};

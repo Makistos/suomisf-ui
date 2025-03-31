@@ -24,6 +24,7 @@ import { isDisabled } from "../../../components/forms/forms";
 import { Tooltip } from "primereact/tooltip";
 import { MagazineList } from "../../magazine/components";
 import { isAbsolute } from "path";
+import { Card } from "primereact/card";
 
 const baseURL = 'publishers/';
 
@@ -162,86 +163,98 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
     }
 
     return (
-        <main className="all-content" id="publisher-page">
-            <ConfirmDialog />
-            <div className="mt-5 speeddial style={{ position: 'relative', height: '500px'}}">
-                <Toast ref={toastRef} />
-                {isAdmin(user) &&
-                    <div>
-                        <Tooltip position="left" target=".speeddial .speeddial-right .p-speeddial-action">
+        <main className="publisher-page">
+            <Toast ref={toastRef} />
 
-                        </Tooltip>
-                        <SpeedDial className="speeddial-right"
-                            model={dialItems}
-                            direction="left"
-                            type="semi-circle"
-                            radius={80}
-                        />
-                    </div>
-                }
-                {
-                    isLoading ? (
-                        <div className="progressbar">
-                            <ProgressSpinner />
-                        </div>
-                    )
-                        : (data &&
-                            <div className="grid col-12">
-                                <Dialog maximizable blockScroll
-                                    header="Kustantajan muokkaus" visible={isEditVisible}
-                                    onShow={() => onDialogShow()}
-                                    onHide={() => onDialogHide()}
-                                >
-                                    <PublisherForm publisher={data}
-                                        onSubmitCallback={publisherFormCallback} />
-                                </Dialog>
+            {isAdmin(user) && (
+                <SpeedDial
+                    model={dialItems}
+                    direction="up"
+                    className="fixed-dial"
+                    showIcon="pi pi-plus"
+                    hideIcon="pi pi-times"
+                    buttonClassName="p-button-primary"
+                />
+            )}
 
-                                <div className="grid mb-5 col-12 justify-content-center">
-                                    <div className="grid justify-content-center">
-                                        <h1 className="maintitle">{data.fullname}</h1>
-                                    </div>
-                                    {data.name && data.name !== data.fullname &&
-                                        <div className="grid col-12 p-0 mt-0 justify-content-center">
-                                            <h2 data-testid="short-name">({data.name})</h2>
+            {isLoading ? (
+                <div className="flex justify-content-center">
+                    <ProgressSpinner />
+                </div>
+            ) : (
+                data && (
+                    <div className="grid">
+                        {/* Header Section */}
+                        <div className="col-12">
+                            <Card className="shadow-3">
+                                <div className="grid">
+                                    <div className="col-12 lg:col-9">
+                                        <div className="flex-column">
+                                            <h1 className="text-4xl font-bold m-0">{data.name}</h1>
+                                            {data.fullname && (
+                                                <div className="text-xl text-600 mt-2">{data.fullname}</div>
+                                            )}
                                         </div>
-                                    }
-                                </div>
-                                <div className="grid col-12 mb-5 justify-content-center">
-                                    <div className="grid col-6 mb-5 p-3 justify-content-end">
-                                        {data.editions && <EditionsStatsPanel editions={data.editions} />}
                                     </div>
-                                    <div className="grid col-6 mb-5 p-3 justify-content-start">
-                                        {data.links &&
-                                            <LinkPanel links={data.links} />
-                                        }
+
+                                    {/* Stats on right side */}
+                                    <div className="col-12 lg:col-3">
+                                        <div className="flex flex-column gap-4">
+                                            <div className="flex flex-column gap-2">
+                                                <h3 className="text-sm uppercase text-600 m-0">Julkaisuja</h3>
+                                                <span className="text-xl">{data.editions.length}</span>
+                                            </div>
+                                            {data.series && data.series.length > 0 && (
+                                                <div className="flex flex-column gap-2">
+                                                    <h3 className="text-sm uppercase text-600 m-0">Sarjoja</h3>
+                                                    <span className="text-xl">{data.series.length}</span>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="grid col-12 mt-0 justify-content-center w-full">
-                                    <TabView className="w-full" activeIndex={getActiveIndex()}>
-                                        {data.editions && data.editions.length > 0 &&
-                                            <TabPanel header="Painokset">
-                                                <EditionList
-                                                    editions={data.editions.filter(ed => ed.publisher.id === Number(thisId))}
-                                                />
-                                            </TabPanel>
-                                        }
-                                        {data.series && data.series.length > 0 &&
-                                            <TabPanel key="series" header="Sarjat">
-                                                <PubseriesList pubseriesList={data.series} />
-                                            </TabPanel>
-                                        }
-                                        {data.magazines && data.magazines.length > 0 &&
-                                            <TabPanel key="magazines" header="Lehdet">
-                                                <MagazineList magazineList={data.magazines} />
-                                            </TabPanel>
-                                        }
-                                    </TabView>
-                                </div>
-                            </div>
-                        )
-                }
-            </div>
-        </main >
-    )
-}
+                            </Card>
+                        </div>
+
+                        {/* Main Content */}
+                        <div className="col-12">
+                            <TabView className="shadow-2">
+                                <TabPanel header="Julkaisut" leftIcon="pi pi-book">
+                                    <div className="card min-w-full p-2">
+                                        <EditionList
+                                            editions={data.editions.filter(ed => ed.publisher.id === Number(thisId))}
+                                        />
+                                    </div>
+                                </TabPanel>
+
+                                {data.series && data.series.length > 0 && (
+                                    <TabPanel header="Sarjat" leftIcon="pi pi-list">
+                                        <div className="card min-w-full">
+                                            <PubseriesList
+                                                pubseriesList={data.series}
+                                            />
+                                        </div>
+                                    </TabPanel>
+                                )}
+
+                            </TabView>
+                        </div>
+
+                        {/* Dialogs */}
+                        <Dialog
+                            visible={isEditVisible}
+                            onHide={onDialogHide}
+                            header="Kustantajan muokkaus"
+                            maximizable
+                            blockScroll
+                            className="w-full xl:w-6"
+                        >
+                            <PublisherForm publisher={data} onSubmitCallback={onDialogHide} />
+                        </Dialog>
+                    </div>
+                )
+            )}
+        </main>
+    );
+};
 

@@ -625,3 +625,51 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 .bookseries-page h1 {
     color: var(--primary-color);
 }
+
+.publisher-page {
+    padding: 2rem;
+    background: var(--surface-ground);
+}
+
+.publisher-page .fixed-dial {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+.publisher-page .p-card {
+    margin-bottom: 2rem;
+}
+
+.publisher-page .p-tabview .p-tabview-panels {
+    padding: 1.5rem;
+}
+
+.publisher-page h1 {
+    color: var(--primary-color);
+}
+
+.publisher-page .p-tabview-panels {
+    overflow-x: hidden;
+}
+
+.publisher-page .p-tabview .p-tabview-nav {
+    width: 100%;
+}
+
+.publisher-page .p-tabview .p-tabview-nav li {
+    flex: none;
+}
+
+.p-tabview-panels {
+    overflow-x: hidden;
+}
+
+.p-tabview .p-tabview-nav {
+    width: 100%;
+}
+
+.p-tabview .p-tabview-nav li {
+    flex: none;
+}

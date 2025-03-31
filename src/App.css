@@ -673,3 +673,36 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 .p-tabview .p-tabview-nav li {
     flex: none;
 }
+
+.pubseries-page {
+    padding: 2rem;
+    background: var(--surface-ground);
+}
+
+.pubseries-page .fixed-dial {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+.pubseries-page .p-card {
+    margin-bottom: 2rem;
+}
+
+.pubseries-page .p-tabview .p-tabview-panels {
+    padding: 1.5rem;
+    overflow-x: hidden;
+}
+
+.pubseries-page .p-tabview .p-tabview-nav {
+    width: 100%;
+}
+
+.pubseries-page .p-tabview .p-tabview-nav li {
+    flex: none;
+}
+
+.pubseries-page h1 {
+    color: var(--primary-color);
+}

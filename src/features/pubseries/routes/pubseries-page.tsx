@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -6,6 +6,10 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Dialog } from "primereact/dialog";
 import { SpeedDial } from "primereact/speeddial";
+import { Toast } from "primereact/toast";
+import { Card } from "primereact/card";
+import { TabView, TabPanel } from "primereact/tabview";
+import { DataView } from "primereact/dataview";
 
 import { getCurrenUser } from "@services/auth-service";
 import { getApiContent, HttpStatusResponse } from "@services/user-service";
@@ -33,6 +37,7 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
     const [isEditVisible, setEditVisible] = useState(false);
     const [formData, setFormData]: [Pubseries | null, (formData: Pubseries | null) => void] = useState<Pubseries | null>(null);
     const navigate = useNavigate();
+    const toastRef = useRef<Toast>(null);
 
     try {
         thisId = selectId(params, id);
@@ -106,55 +111,86 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
     }
 
     return (
-        <main className="all-content">
-            <div className="mt-5 speeddial style={{ position: 'relative', height: 500px'}}">
-                {isLoading ? (
-                    <div className="progressbar">
-                        <ProgressSpinner />
-                    </div>
+        <main className="pubseries-page">
+            <Toast ref={toastRef} />
 
-                ) : (
-                    <>
-                        {isAdmin(user) &&
-                            <SpeedDial className="speeddial-right"
-                                model={dialItems}
-                                direction="left"
-                                type="semi-circle"
-                                radius={80}
-                            />
-                        }
-                        <Dialog maximizable blockScroll
-                            className="w-full lg:w-6"
-                            header="Kustantajan sarjan muokkaus"
+            {isAdmin(user) && (
+                <SpeedDial
+                    model={dialItems}
+                    direction="up"
+                    className="fixed-dial"
+                    showIcon="pi pi-plus"
+                    hideIcon="pi pi-times"
+                    buttonClassName="p-button-primary"
+                />
+            )}
+
+            {isLoading ? (
+                <div className="flex justify-content-center">
+                    <ProgressSpinner />
+                </div>
+            ) : (
+                data && (
+                    <div className="grid">
+                        {/* Header Section */}
+                        <div className="col-12">
+                            <Card className="shadow-3">
+                                <div className="grid">
+                                    <div className="col-12 lg:col-9">
+                                        <div className="flex-column">
+                                            <h1 className="text-4xl font-bold m-0">{data.name}</h1>
+                                            {data.important && (
+                                                <div className="flex align-items-center gap-2 mt-3">
+                                                    <i className="pi pi-star-fill text-yellow-500" />
+                                                    <span>Merkittävä sarja</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Publisher on right side */}
+                                    <div className="col-12 lg:col-3">
+                                        <div className="flex flex-column gap-4">
+                                            <div className="flex flex-column gap-2">
+                                                <h3 className="text-sm uppercase text-600 m-0">Kustantaja</h3>
+                                                <span className="text-xl">{data.publisher.name}</span>
+                                            </div>
+                                            <div className="flex flex-column gap-2">
+                                                <h3 className="text-sm uppercase text-600 m-0">Julkaisuja</h3>
+                                                <span className="text-xl">{data.editions?.length}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Card>
+                        </div>
+
+                        {/* Main Content */}
+                        <div className="col-12">
+                            <TabView className="shadow-2">
+                                <TabPanel header="Kirjat" leftIcon="pi pi-book">
+                                    <div className="card min-w-full">
+                                        <EditionList editions={data.editions}
+                                            sort="author" />
+                                    </div>
+                                </TabPanel>
+                            </TabView>
+                        </div>
+
+                        {/* Dialogs */}
+                        <Dialog
                             visible={isEditVisible}
-                            onShow={() => onDialogShow()}
-                            onHide={() => onDialogHide()}
+                            onHide={onDialogHide}
+                            header="Sarjan muokkaus"
+                            maximizable
+                            blockScroll
+                            className="w-full xl:w-6"
                         >
-                            <PubseriesForm
-                                pubseries={formData}
-                                onSubmitCallback={onDialogHide}
-                            />
-
+                            <PubseriesForm pubseries={formData} onSubmitCallback={onDialogHide} />
                         </Dialog>
-                        <div className="mb-5">
-                            <div className="grid col-12 pb-0 justify-content-center">
-                                <h1 className="maintitle">{data?.name}</h1>
-                            </div>
-                            <div className="grid col-12 justify-content-center">
-                                <h2>({data?.publisher.name})</h2>
-                            </div>
-                        </div>
-                        <div className="grid col-12 p-0 mt-5 justify-content-center">
-                            {data?.editions && (
-                                <EditionList
-                                    editions={data.editions}
-                                    sort="author"
-                                />
-                            )}
-                        </div>
-                    </>
-                )}
-            </div>
+                    </div>
+                )
+            )}
         </main>
-    )
-}
+    );
+};

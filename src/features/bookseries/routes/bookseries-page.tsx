@@ -16,6 +16,9 @@ import { selectId } from "../../../utils";
 import { User, isAdmin } from "../../user";
 import { useDocumentTitle } from '../../../components/document-title';
 import { BookseriesForm } from "../components/bookseries-form";
+import { Card } from "primereact/card";
+import { TabPanel, TabView } from "primereact/tabview";
+import { DataView, DataViewLayoutOptions } from "primereact/dataview";
 
 const baseURL = 'bookseries/';
 
@@ -120,56 +123,70 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
     }
 
     return (
-        <main className="all-content">
-            <div className="mt-5 speeddial style={{ position: 'relative', height: '500px' }}">
-                {isAdmin(user) &&
-                    <>
-                        <div>
-                            <Tooltip position="left" target=".speeddial .speeddial-right .p-speeddial-action"
-                            />
-                        </div>
-                        <SpeedDial className="speeddial-right"
-                            model={dialItems}
-                            direction="left"
-                            type="semi-circle"
-                            radius={80}
-                        />
-                    </>
-                }
-                <Dialog maximizable blockScroll
-                    className="w-full xl:w-6"
-                    visible={isFormVisible}
-                    onShow={() => onDialogShow()}
-                    onHide={() => onDialogHide()}
-                    header={formHeader}
-                >
-                    <BookseriesForm data={formData} onSubmitCallback={onDialogHide} />
-                </Dialog>
-                {isLoading ? (
-                    <div className="progressbar">
-                        <ProgressSpinner />
-                    </div>
+        <main className="bookseries-page">
+            <Toast ref={toast} />
 
-                ) : (
-                    <>
-                        <div className="mb-5">
-                            <div className="grid col-12 mb-1 justify-content-center">
-                                <h1 className="maintitle">{data?.name}</h1>
-                            </div>
-                            {data?.orig_name && (
-                                <div className="grid col-12 mt-0 justify-content-center">
-                                    <h2>({data?.orig_name})</h2>
+            {isAdmin(user) && (
+                <SpeedDial
+                    model={dialItems}
+                    direction="up"
+                    className="fixed-dial"
+                    showIcon="pi pi-plus"
+                    hideIcon="pi pi-times"
+                    buttonClassName="p-button-primary"
+                />
+            )}
+
+            {isLoading ? (
+                <div className="flex justify-content-center">
+                    <ProgressSpinner />
+                </div>
+            ) : (
+                data && (
+                    <div className="grid">
+                        {/* Header Section */}
+                        <div className="col-12">
+                            <Card className="shadow-3">
+                                <div className="grid">
+                                    <div className="col-12 lg:col-9">
+                                        <div className="flex-column">
+                                            <h1 className="text-4xl font-bold m-0">{data.name}</h1>
+                                            {data.important && (
+                                                <div className="flex align-items-center gap-2 mt-3">
+                                                    <i className="pi pi-star-fill text-yellow-500" />
+                                                    <span>Merkittävä sarja</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
                                 </div>
-                            )}
+                            </Card>
                         </div>
-                        {data &&
-                            <div className="mt-5">
-                                <WorkList works={data.works} />
-                            </div>
-                        }
-                    </>
-                )}
-            </div>
-        </main>
-    )
-}
+
+                        {/* Main Content */}
+                        <div className="col-12">
+                            <TabView className="shadow-2">
+                                <TabPanel header="Kirjat" leftIcon="pi pi-book">
+                                    <WorkList works={data.works} />
+                                </TabPanel>
+                            </TabView>
+                        </div>
+
+                        {/* Dialogs */}
+                        <Dialog
+                            visible={isFormVisible}
+                            onHide={onDialogHide}
+                            header="Sarjan muokkaus"
+                            maximizable
+                            blockScroll
+                            className="w-full xl:w-6"
+                        >
+                            <BookseriesForm data={data} onSubmitCallback={onDialogHide} />
+                        </Dialog>
+                    </div>
+                )
+            )}
+        </main >
+    );
+};

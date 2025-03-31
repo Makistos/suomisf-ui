@@ -601,3 +601,27 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     width: 3rem;
     height: 3rem;
 }
+
+.bookseries-page {
+    padding: 2rem;
+    background: var(--surface-ground);
+}
+
+.bookseries-page .fixed-dial {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+.bookseries-page .p-card {
+    margin-bottom: 2rem;
+}
+
+.bookseries-page .p-tabview .p-tabview-panels {
+    padding: 1.5rem;
+}
+
+.bookseries-page h1 {
+    color: var(--primary-color);
+}

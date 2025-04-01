@@ -106,7 +106,6 @@ export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPubli
             grouped["null"] = shorts;
             setGroupedShorts(grouped);
         }
-        console.log(groupedShorts);
     }, [shorts, groupAuthors, groupRoles])
 
     const skipAuthors = !anthology ? true : false;

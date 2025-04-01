@@ -326,6 +326,16 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                                     <span>{combineNames(data.aliases || [], data.other_names || '')}</span>
                                                 </div>
                                             )}
+                                            {data.description && (
+                                                <div className="col-12 pb-0 mb-0 p-0">
+                                                    <div dangerouslySetInnerHTML={{ __html: data.description }} />
+                                                    {data.descr_attr && (
+                                                        <div className="book-attribution"
+                                                            dangerouslySetInnerHTML={{ __html: data.descr_attr }} />
+                                                    )}
+                                                </div>
+                                            )}
+
                                         </div>
                                     </div>
 
@@ -341,6 +351,25 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                         </div>
                                     </div>
                                 </div>
+
+                                {/* Links section */}
+                                {data.links && data.links.length > 0 && (
+                                    <div className="mt-4 pt-3 border-top-1 surface-border">
+                                        <div className="flex flex-wrap gap-3">
+                                            {data.links.map((link, index) => (
+                                                <a
+                                                    key={index}
+                                                    href={link.link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="no-underline text-primary hover:text-primary-700 flex align-items-center gap-2"
+                                                >
+                                                    <span>{link.description}</span>
+                                                </a>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </Card>
                         </div>
 
@@ -369,9 +398,48 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                             what={"sf"}></ShortsControl>
                                     </div>
                                 </TabPanel>
+                                <TabPanel header="Sarjat" leftIcon="pi pi-sitemap">
+                                    <div className="card">
+                                        <BookSeriesList
+                                            works={data.works}
+                                            seriesType='bookseries'
+                                        />
+                                    </div>
+                                </TabPanel>
 
-                                {/* Other tabs */}
-                                {/* ... */}
+                                <TabPanel header="Palkinnot" leftIcon="pi pi-trophy">
+                                    <AwardList awards={workAwards}></AwardList>
+                                </TabPanel>
+
+                                {hasNonSf("all") && (
+                                    <TabPanel header="Muu tuotanto" leftIcon="pi pi-folder">
+                                        <div className="card">
+                                            {hasNonSf("works") && (
+                                                <div className="mb-4">
+                                                    <h3 className="text-xl mb-3">Kirjat</h3>
+                                                    <ContributorBookControl
+                                                        viewNonSf={true}
+                                                        person={data}
+                                                        collaborationsLast={true}
+                                                    />
+                                                </div>
+                                            )}
+                                            {hasNonSf("stories") && (
+                                                <div>
+                                                    <h3 className="text-xl mb-3">Novellit</h3>
+                                                    <ShortsControl
+                                                        key={"nonsfshorts"}
+                                                        person={data}
+                                                        listPublications
+                                                        showAuthors
+                                                        sort={"Author"}
+                                                        what={"nonsf"}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                    </TabPanel>
+                                )}
                             </TabView>
                         </div>
 

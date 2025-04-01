@@ -25,7 +25,8 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
         // <div className={editionIsOwned(work.editions[0], user) ?
         //     "book owned" : editionIsWishlisted(work.editions[0], user) ? "book wishlist" : "book not-owned"}>
         <>
-            <p className={clsName}>
+            {/* div className="work-summary p-0" key={`work-${work.id}-summary`}> */}
+            <p className={clsName} key={`work-${work.id}-editions`}>
                 <Tooltip position="right" mouseTrack mouseTrackLeft={10}
                     target={".work-link-" + work.id}
                 >
@@ -59,7 +60,7 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                         .filter(person => person.role.id === 2).length > 0 && (
                         <>
                             Suom.&nbsp;
-                            <LinkList path="people" key={`links-translators-${work.id}`}
+                            <LinkList path="people" key={`links-${work.id}-translator`}
                                 uniquePart='`work-${work.id}-translator'
                                 items={work.editions[0].contributions
                                     .filter(contrib => contrib.role.id === 2)
@@ -86,14 +87,12 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                     )}
                 <GenreList genres={work.genres} />
             </p>
-            <div>
-                {work.editions && work.editions.length > 0 &&
-                    work.editions.map((edition) => (
-                        <>
-                            <OtherEdition key={`edition-${edition.id}`} work={work} edition={edition} details={detailLevel} />
-                        </>
-                    ))}
-            </div>
+            {work.editions && work.editions.length > 0 &&
+                work.editions.map((edition, index) => (
+                    <>
+                        <OtherEdition key={`${work.id}-${edition.id}-${index}`} work={work} edition={edition} details={detailLevel} />
+                    </>
+                ))}
         </>
     );
 };

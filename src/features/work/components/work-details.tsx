@@ -68,11 +68,11 @@ export const WorkDetails = ({ work }: WorkProps) => {
                             </h2>
                         </div>
                     )}
-                <div className="grid col-12 pt-0 mt-3 mb-1 mb-0 pb-0 uppercase">
-                    <h1 className="mt-0 mb-0 text-4xl" style={{ lineHeight: '0.8' }}>
+                <div className="grid col-12 pt-0 mt-3 mb-1 mb-0 pb-0">
+                    <h1 className="mt-0 mb-0 text-2xl sm:text-3xl lg:text-4xl uppercase" style={{ lineHeight: '1.1' }}>
                         <span className="mb-0 pb-0">{work.title}</span>
                         {work.subtitle && (
-                            <span className="text-base ml-1">: {work.subtitle}</span>
+                            <span className="text-base sm:text-lg ml-1">; {work.subtitle}</span>
                         )}
                     </h1>
                 </div>

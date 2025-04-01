@@ -453,7 +453,6 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                 <div className="grid pl-2 pr-2 pt-0">
                                     <div className="col-12 lg:col-9">
                                         <div className="flex-column">
-
                                             <div>
                                                 <WorkDetails work={data} />
                                             </div>

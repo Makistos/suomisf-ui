@@ -376,6 +376,29 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                         </div>
 
                         {/* Dialogs */}
+                        {isAdmin(user) && (
+                            <>
+                                <Tooltip position="left" target=".fixed-dial .p-speeddial-action" />
+                                <SpeedDial
+                                    model={dialItems}
+                                    direction="up"
+                                    className="fixed-dial"
+                                    showIcon="pi pi-plus"
+                                    hideIcon="pi pi-times"
+                                    buttonClassName="p-button-primary"
+                                />
+                            </>
+                        )}
+
+                        <Dialog maximizable blockScroll
+                            className="w-full lg:w-6"
+                            header="Henkilön tietojen muokkaus" visible={isEditVisible}
+                            onShow={() => onDialogShow()}
+                            onHide={() => onDialogHide()}
+                        >
+                            <PersonForm data={!formData || !editPerson ? null : formData} onSubmitCallback={onDialogHide} />
+                        </Dialog>
+
                         {/* ... */}
                     </div>
                 )

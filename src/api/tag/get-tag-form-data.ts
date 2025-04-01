@@ -5,7 +5,8 @@ import { getApiContent } from "@services/user-service"
 const defaultValues: TagFormData = {
     id: null,
     name: '',
-    type: null
+    type: null,
+    description: ''
 }
 export const getTagFormData = async (id: number | null, user: User | null): Promise<TagFormData> => {
     if (id === null) {

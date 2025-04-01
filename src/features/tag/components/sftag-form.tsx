@@ -13,6 +13,7 @@ import { updateTag } from '@api/tag/update-tag';
 import { FormInputText } from '@components/forms/field/form-input-text';
 import { FormDropdown } from '@components/forms/field/form-dropdown';
 import { replyMessage } from '@components/forms/reply-message';
+import { FormEditor } from '@components/forms/field/form-editor';
 
 interface FormProps {
     tagId: number | null,
@@ -79,6 +80,7 @@ export const SfTagForm = (props: FormProps) => {
 
 const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
 
+    const editor_style: React.CSSProperties = { height: '320px' };
 
     const methods = useForm<TagFormData>({ defaultValues: data });
     return (
@@ -101,6 +103,15 @@ const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
                             methods={methods}
                             label="Tyyppi"
                             options={types}
+                        />
+                    </div>
+                    <div className="field col-12">
+                        <b>Kuvaus</b>
+                        <FormEditor
+                            name="description"
+                            methods={methods}
+                            style={editor_style}
+                            disabled={false}
                         />
                     </div>
                     <div className="grid col">

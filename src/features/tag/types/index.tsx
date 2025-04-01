@@ -15,6 +15,7 @@ export interface SfTag {
     name: string;
     type_id: number;
     type?: TagType;
+    description?: string;
     works?: Work[];
     stories?: Short[];
     articles?: Article[];
@@ -35,5 +36,6 @@ export interface SfTagProps {
 export interface TagFormData {
     id: number | null,
     name: string,
-    type: TagType | null
+    type: TagType | null,
+    description: string
 }

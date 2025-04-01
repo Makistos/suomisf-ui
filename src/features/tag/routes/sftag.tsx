@@ -222,6 +222,11 @@ export const SFTag = ({ id }: SfTagProps) => {
                                             <Tag value={data?.type?.name}
                                                 severity={data ? tagTypeToSeverity(data) : undefined}
                                             />
+                                            {data.description && (
+                                                <div className="mt-3 line-height-3"
+                                                    dangerouslySetInnerHTML={{ __html: data.description }}>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 

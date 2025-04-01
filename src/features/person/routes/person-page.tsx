@@ -64,7 +64,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
             response.data
         )
             .catch((error) => console.log(error));
-        //console.log(response);
+        // console.log(response);
         return response;
     }
 
@@ -326,12 +326,12 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                                     <span>{combineNames(data.aliases || [], data.other_names || '')}</span>
                                                 </div>
                                             )}
-                                            {data.description && (
+                                            {data.bio && (
                                                 <div className="col-12 pb-0 mb-0 p-0">
-                                                    <div dangerouslySetInnerHTML={{ __html: data.description }} />
-                                                    {data.descr_attr && (
+                                                    <div dangerouslySetInnerHTML={{ __html: data.bio }} />
+                                                    {data.bio_src && (
                                                         <div className="book-attribution"
-                                                            dangerouslySetInnerHTML={{ __html: data.descr_attr }} />
+                                                            dangerouslySetInnerHTML={{ __html: data.bio_src }} />
                                                     )}
                                                 </div>
                                             )}

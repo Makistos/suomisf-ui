@@ -12,5 +12,5 @@ export const getTagFormData = async (id: number | null, user: User | null): Prom
     if (id === null) {
         return defaultValues;
     }
-    return getApiContent('tags/' + id, user).then((response) => response.data);
+    return getApiContent('tags/form/' + id, user).then((response) => response.data);
 }

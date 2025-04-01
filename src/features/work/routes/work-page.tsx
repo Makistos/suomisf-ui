@@ -92,11 +92,14 @@ const renderListItem = (cb: any, onUpload: any, editions: Edition[],
         (work && edition &&
             <div className="col-12">
                 <div className="grid">
-                    <div className="col-8" >
+                    <div className="col-12 lg:col-8" > {/* Changed from fixed col-8 to col-12 on mobile, lg:col-8 on large screens */}
                         <EditionDetails edition={edition} card work={work}
                             onSubmitCallback={cb} />
                     </div>
-                    <div className="flex col-4 justify-content-end align-content-center">
+                    <div className="col-12 lg:col-4 flex justify-content-start lg:justify-content-end align-items-center mt-3 lg:mt-0">
+                        {/* Changed from col-4 to col-12 on mobile, lg:col-4 on large screens */}
+                        {/* Added center alignment on mobile, end alignment on desktop */}
+                        {/* Added margin top for mobile spacing */}
                         {edition.images.length > 0 ?
                             <ImageView
                                 itemId={edition.id}
@@ -551,22 +554,9 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                         </div>
 
                         {/* Dialogs */}
-                        <Dialog
-                            visible={isEditVisible}
-                            onHide={onDialogHide}
-                            header="Teoksen muokkaus"
-                            maximizable
-                            blockScroll
+                        <Dialog maximizable blockScroll
                             className="w-full xl:w-6"
-                        >
-                            <WorkForm
-                                workId={!formData || !editWork ? null : workId}
-                                onSubmitCallback={workFormCallback}
-                            />
-                        </Dialog>
-                        -                <Dialog maximizable blockScroll
-                            className="w-full xl:w-6"
-                            header="Teoksen muokkaus" visible={isEditVisible}
+                            header={!formData || !editWork ? "Uusi teos" : "Teoksen muokkaus"} visible={isEditVisible}
                             onShow={() => onDialogShow()}
                             onHide={() => onDialogHide()}
                         >

@@ -424,14 +424,17 @@ export const WorkPage = ({ id }: WorkPageProps) => {
 
             {/* Add SpeedDial */}
             {isAdmin(user) && (
-                <SpeedDial
-                    model={dialItems}
-                    direction="up"
-                    className="fixed-dial"
-                    showIcon="pi pi-plus"
-                    hideIcon="pi pi-times"
-                    buttonClassName="p-button-primary"
-                />
+                <>
+                    <Tooltip position="left" target=".fixed-dial .p-speeddial-action" />
+                    <SpeedDial
+                        model={dialItems}
+                        direction="up"
+                        className="fixed-dial"
+                        showIcon="pi pi-plus"
+                        hideIcon="pi pi-times"
+                        buttonClassName="p-button-primary"
+                    />
+                </>
             )}
 
             {isLoading ? (
@@ -561,6 +564,32 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                 onSubmitCallback={workFormCallback}
                             />
                         </Dialog>
+                        -                <Dialog maximizable blockScroll
+                            className="w-full xl:w-6"
+                            header="Teoksen muokkaus" visible={isEditVisible}
+                            onShow={() => onDialogShow()}
+                            onHide={() => onDialogHide()}
+                        >
+                            <WorkForm workId={!formData || !editWork ? null : workId} onSubmitCallback={workFormCallback} />
+                        </Dialog>
+                        <Dialog maximizable blockScroll
+                            className="w-full xl:w-6"
+                            header="Uusi painos" visible={isEditionFormVisible}
+                            onShow={() => onEditionDialogShow()}
+                            onHide={() => onEditionDialogHide()}
+                        >
+                            <EditionForm editionid={null} work={data} onSubmitCallback={editionFormCallback} />
+                        </Dialog>
+                        <Dialog maximizable blockScroll
+                            className="w-full xl:x-6"
+                            header="Novellit" visible={isShortsFormVisible}
+                            onShow={() => onShortsFormShow()}
+                            onHide={() => onShortsFormHide()}
+                            closeOnEscape
+                        >
+                            <WorkShortsPicker id={workId} onClose={() => onShortsFormHide()} />
+                        </Dialog>
+
                     </div>
                 )
             )}

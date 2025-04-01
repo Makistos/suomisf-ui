@@ -194,6 +194,29 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
                                             {data.fullname && (
                                                 <div className="text-xl text-600 mt-2">{data.fullname}</div>
                                             )}
+                                            {data.description && (
+                                                <div className="mt-3 line-height-3"
+                                                    dangerouslySetInnerHTML={{ __html: data.description }}>
+                                                </div>
+                                            )}
+                                            {/* Links section */}
+                                            {data.links && data.links.length > 0 && (
+                                                <div className="mt-4 pt-3 border-top-1 surface-border">
+                                                    <div className="flex flex-wrap gap-3">
+                                                        {data.links.map((link, index) => (
+                                                            <a
+                                                                key={index}
+                                                                href={link.link}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="no-underline text-primary hover:text-primary-700 flex align-items-center gap-2"
+                                                            >
+                                                                <span>{link.description}</span>
+                                                            </a>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 

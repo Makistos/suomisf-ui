@@ -280,8 +280,6 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
     saveCallback(shorts);
   }
 
-  console.log(selectedItemShorts)
-
   return (
     <div className="card mt-3">
       <Dialog maximizable blockScroll
@@ -307,7 +305,7 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
                 value={filter}
                 suggestions={filteredPeople}
                 completeMethod={filterPeople}
-                onChange={(e) => setFilter(e.value)}
+                onChange={(e) => setFilter(e.value.name)}
                 onSelect={(e) => setSelectedPerson(e.value)}
                 onClear={() => clearPerson()}
                 itemTemplate={personTemplate}

@@ -34,7 +34,7 @@ export const EditionWishlist = ({ editionId, initial }: EditionWishlistProps) =>
         mutationFn: (values: boolean) => updateStatus(values),
         onSuccess: (data: HttpStatusResponse, variables) => {
             if (data.status === 200 || data.status === 201) {
-                queryClient.invalidateQueries(['edition', editionId]);
+                queryClient.invalidateQueries({ queryKey: ['edition', editionId] });
             } else {
                 if (JSON.parse(data.response).data["msg"] !== undefined) {
                     const errMsg = JSON.parse(data.response).data["msg"];

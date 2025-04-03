@@ -141,14 +141,14 @@ export const ShortSearchPage = () => {
                             </span>
                         </div>
                         <Button type="submit" className="w-full justify-content-center"
-                            disabled={status === 'loading' && fetchStatus === 'fetching'}
+                            disabled={fetchStatus === 'fetching'}
                         >
                             Hae
                         </Button>
                     </form>
                 </div>
                 <div className="w-full">
-                    {status === 'loading' && fetchStatus === 'fetching' ? (
+                    {fetchStatus === 'fetching' ? (
                         <div className="progressbar">
                             <ProgressSpinner />
                         </div>

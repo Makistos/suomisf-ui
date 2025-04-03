@@ -2,7 +2,6 @@ import React, { useMemo, useState, useEffect, KeyboardEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useForm, FormProvider, RegisterOptions } from 'react-hook-form';
-import { DevTool } from '@hookform/devtools';
 import { Button } from 'primereact/button';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ProgressBar } from 'primereact/progressbar';

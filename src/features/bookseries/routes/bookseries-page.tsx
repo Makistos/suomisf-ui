@@ -94,7 +94,7 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
             command: () => {
                 if (data) {
                     deleteApiContent('bookseries/' + data.id);
-                    queryClient.invalidateQueries(['bookseries']);
+                    queryClient.invalidateQueries({ queryKey: ['bookseries'] });
                     navigate(-1);
                 }
             }
@@ -110,7 +110,7 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
         });
         setQueryEnabled(true);
         setIsFormVisible(false);
-        queryClient.invalidateQueries(['bookseries']);
+        queryClient.invalidateQueries({ queryKey: ['bookseries'] });
     }
 
     const onDialogShow = () => {

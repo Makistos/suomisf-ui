@@ -6,7 +6,6 @@ import { confirmPopup, ConfirmPopup } from 'primereact/confirmpopup';
 import { Toast } from 'primereact/toast';
 import { ProgressBar } from 'primereact/progressbar';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { DevTool } from "@hookform/devtools";
 
 import { Short } from "../types";
 import { HttpStatusResponse, getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
@@ -310,7 +309,7 @@ const FormObject = ({ onSubmit, onClose, onDelete, methods, id }: FormObjectProp
                             </div>
                         </div>
                     </form>
-                    <DevTool control={methods.control} />
+                    {/* <DevTool control={methods.control} /> */}
                 </FormProvider>
             }
         </div>

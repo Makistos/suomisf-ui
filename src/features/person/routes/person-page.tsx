@@ -50,7 +50,8 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     const [formData, setFormData]: [Person | null, (formData: Person | null) => void] = useState<Person | null>(null);
     const [showNonSf, setShowNonSf] = useState(false);
     const [isAwardsVisible, setAwardsVisible] = useState(false);
-    const [workAwards, setWorkAwards]: [Awarded[], (workAwards: Awarded[]) => void] = useState<Awarded[]>([]);
+    //const [workAwards, setWorkAwards]: [Awarded[], (workAwards: Awarded[]) => void] = useState<Awarded[]>([]);
+    //let workAwards: Awarded[] = [];
     const toastRef = useRef<Toast>(null);
 
     try {
@@ -167,13 +168,13 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         return sorted;
     }
 
-    useQuery({
+    const { data: workAwards } = useQuery({
         queryKey: ["workAwards", thisId],
         queryFn: () => fetchWorkAwards(thisId, user),
         enabled: queryEnabled,
-        onSuccess: (data) => {
-            setWorkAwards(data);
-        },
+        // onSuccess: (data: Awarded[]) => {
+        //     setWorkAwards(data);
+        // },
     });
 
     const hasNonSf = (what: string) => {

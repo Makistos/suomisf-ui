@@ -168,7 +168,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         return sorted;
     }
 
-    const { data: workAwards } = useQuery({
+    const { data: awards } = useQuery({
         queryKey: ["workAwards", thisId],
         queryFn: () => fetchWorkAwards(thisId, user),
         enabled: queryEnabled,
@@ -388,29 +388,33 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                         />
                                     </div>
                                 </TabPanel>
-
-                                <TabPanel header="Novellit" leftIcon="pi pi-list">
-                                    <div className="card">
-                                        <ShortsControl key={"sfshorts"}
-                                            person={data}
-                                            listPublications
-                                            showAuthors
-                                            sort={"Title"}
-                                            what={"sf"}></ShortsControl>
-                                    </div>
-                                </TabPanel>
-                                <TabPanel header="Sarjat" leftIcon="pi pi-sitemap">
-                                    <div className="card">
-                                        <BookSeriesList
-                                            works={data.works}
-                                            seriesType='bookseries'
-                                        />
-                                    </div>
-                                </TabPanel>
-
-                                <TabPanel header="Palkinnot" leftIcon="pi pi-trophy">
-                                    <AwardList awards={workAwards}></AwardList>
-                                </TabPanel>
+                                {data.stories && data.stories.length > 0 && (
+                                    <TabPanel header="Novellit" leftIcon="pi pi-list">
+                                        <div className="card">
+                                            <ShortsControl key={"sfshorts"}
+                                                person={data}
+                                                listPublications
+                                                showAuthors
+                                                sort={"Title"}
+                                                what={"sf"}></ShortsControl>
+                                        </div>
+                                    </TabPanel>
+                                )}
+                                {data.works && data.works.some(work => work.bookseries) && (
+                                    <TabPanel header="Sarjat" leftIcon="pi pi-sitemap">
+                                        <div className="card">
+                                            <BookSeriesList
+                                                works={data.works}
+                                                seriesType='bookseries'
+                                            />
+                                        </div>
+                                    </TabPanel>
+                                )}
+                                {awards && awards.length > 0 && (
+                                    <TabPanel header="Palkinnot" leftIcon="pi pi-trophy">
+                                        <AwardList awards={awards}></AwardList>
+                                    </TabPanel>
+                                )}
 
                                 {hasNonSf("all") && (
                                     <TabPanel header="Muu tuotanto" leftIcon="pi pi-folder">

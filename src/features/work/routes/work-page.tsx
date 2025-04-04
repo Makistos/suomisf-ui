@@ -32,7 +32,7 @@ import { User, isAdmin } from "@features/user";
 import authHeader from "@services/auth-header";
 import { HttpStatusResponse } from "@services/user-service"
 import { WorkShortsPicker } from "@features/short/components/shorts-picker";
-import { WorkChanges } from "@features/changes/components/work-changes";
+import { EntityChanges } from "@features/changes/components/entity-changes";
 import { groupSimilarEditions } from "@features/edition/utils/group-similar-editions";
 import { combineEditions } from "@features/edition/utils/combine-editions";
 import { deleteEditionImage } from "@api/edition/delete-edition-image";
@@ -175,6 +175,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
 
     const deleteWork = (id: number) => {
         setQueryEnabled(false);
+        console.log("deleting")
         const retval = deleteApiContent('works/' + id);
         setQueryEnabled(true);
         return retval;
@@ -371,7 +372,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
 
     const onShortsFormHide = () => {
         setIsShortsFormVisible(false);
-        queryClient.invalidateQueries({ queryKey: ["work"] });
+        queryClient.invalidateQueries({ queryKey: ["work", workId] });
     }
 
     const detailTemplate = (option: detailOptionType) => {
@@ -424,7 +425,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     return (
         <main className="work-page">
             <Toast ref={toastRef} />
-
+            <ConfirmDialog />
             {/* Add SpeedDial */}
             {isAdmin(user) && (
                 <>
@@ -547,7 +548,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                 )}
 
                                 <TabPanel header="Muutoshistoria" leftIcon="pi pi-history">
-                                    <WorkChanges workId={data.id} />
+                                    <EntityChanges entityId={data.id} entity="work" />
                                 </TabPanel>
                             </TabView>
                         </div>

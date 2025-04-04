@@ -257,20 +257,6 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         <main className="person-page">
             <Toast ref={toastRef} />
 
-            {isAdmin(user) && (
-                <>
-                    <Tooltip position="left" target=".fixed-dial .p-speeddial-action" />
-                    <SpeedDial
-                        model={dialItems}
-                        direction="up"
-                        className="fixed-dial"
-                        showIcon="pi pi-plus"
-                        hideIcon="pi pi-times"
-                        buttonClassName="p-button-primary"
-                    />
-                </>
-            )}
-
             {isLoading ? (
                 <div className="flex justify-content-center">
                     <ProgressSpinner />
@@ -325,7 +311,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
 
                         {/* Main Content */}
                         <div className="col-12">
-                            <TabView className="shadow-2">
+                            <TabView className="shadow-2" scrollable={true}>
                                 <TabPanel header="Teokset" leftIcon="pi pi-book">
                                     <div className="card">
                                         {/* Existing ContributorBookControl */}

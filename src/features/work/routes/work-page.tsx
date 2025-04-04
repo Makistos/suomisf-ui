@@ -508,7 +508,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
 
                         {/* Main Content */}
                         <div className="col-12">
-                            <TabView className="shadow-2">
+                            <TabView className="shadow-2" scrollable={true}>
                                 <TabPanel header="Painokset" leftIcon="pi pi-book">
                                     <div className="card">
                                         <div className="flex justify-content-between align-items-center mb-3">

@@ -68,7 +68,7 @@ export const WorkDetails = ({ work }: WorkProps) => {
                             </h2>
                         </div>
                     )}
-                <div className="grid col-12 pt-0 mt-3 mb-1 mb-0 pb-0">
+                <div className="grid col-12 pt-0 mt-3 mb-1 pb-0">
                     <h1 className="mt-0 mb-0 text-2xl sm:text-3xl lg:text-4xl uppercase" style={{ lineHeight: '1.1' }}>
                         <span className="mb-0 pb-0">{work.title}</span>
                         {work.subtitle && (
@@ -90,7 +90,7 @@ export const WorkDetails = ({ work }: WorkProps) => {
                         {work.misc}
                     </div>
                     {work.description && (
-                        <div className="col-12 pb-0 mb-0 p-0">
+                        <div className="grid flex-wrap col-12 pb-0 mb-0 p-0">
                             <div dangerouslySetInnerHTML={{ __html: work.description }} />
                             {work.descr_attr && (
                                 <div className="book-attribution"

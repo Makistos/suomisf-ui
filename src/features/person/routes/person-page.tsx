@@ -31,6 +31,7 @@ import { TabView, TabPanel } from 'primereact/tabview';
 import { BookSeriesList } from '@features/bookseries';
 import { getCountryCode } from '../../../utils/country-utils';
 import { Toast } from 'primereact/toast';
+import { PersonDetails } from '../components/person-details';
 
 const baseURL = "people/";
 
@@ -201,13 +202,6 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         return (data.stories.length > 0);
     }
 
-    const combineNames = (aliases: PersonBrief[], other_names: string) => {
-        //let retval = aliases.map(alias => alias.alt_name ? alias.alt_name : alias.name);
-        let retval = aliases.map(alias => alias.alt_name);
-        if (other_names) retval.push(other_names);
-        return retval.join(', ');
-    }
-
     const queryClient = useQueryClient();
 
     const onDialogShow = () => {
@@ -287,62 +281,16 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                         {/* Header Section */}
                         <div className="col-12">
                             <Card className="shadow-3">
-                                <div className="grid">
+                                <div className="grid pl-2 pr-2 pt-0">
                                     <div className="col-12 lg:col-9">
                                         <div className="flex-column">
-                                            <h1 className="text-2xl sm:text-3xl lg:text-4xl uppercase m-0">{data.alt_name}</h1>
-                                            {data.fullname && (
-                                                <div className="text-lg sm:text-xl text-600 mt-2">({data.fullname})</div>
-                                            )}
-
-                                            <div className="flex flex-wrap align-items-center gap-4 mt-3">
-                                                {data.nationality && (
-                                                    <span className="flex align-items-center gap-2">
-                                                        {getCountryCode(data.nationality.name) !== "UNKNOWN" ? (
-                                                            <img
-                                                                src={`https://hatscripts.github.io/circle-flags/flags/${getCountryCode(data.nationality.name).toLowerCase()}.svg`}
-                                                                width="24"
-                                                                height="24"
-                                                                alt={data.nationality.name}
-                                                                className="border-circle"
-                                                            />
-                                                        ) : (
-                                                            <i className="pi pi-globe text-600" style={{ fontSize: '1.25rem' }} />
-                                                        )}
-                                                        {data.nationality.name}
-                                                    </span>
-                                                )}
-                                                {(data.dob || data.dod) && (
-                                                    <span className="flex align-items-center gap-2">
-                                                        <i className="pi pi-calendar" />
-                                                        {data.dob || ''}{data.dob && data.dod ? '–' : ''}{data.dod || ''}
-                                                    </span>
-                                                )}
-                                            </div>
-
-                                            {/* Aliases and real names */}
-                                            {((data.aliases && data.aliases.length > 0) || data.other_names) && (
-                                                <div className="mt-2 text-600 flex flex-wrap">
-                                                    <span className="mr-2">Myös:</span>
-                                                    <span>{combineNames(data.aliases || [], data.other_names || '')}</span>
-                                                </div>
-                                            )}
-                                            {data.bio && (
-                                                <div className="col-12 pb-0 mb-0 p-0">
-                                                    <div dangerouslySetInnerHTML={{ __html: data.bio }} />
-                                                    {data.bio_src && (
-                                                        <div className="book-attribution"
-                                                            dangerouslySetInnerHTML={{ __html: data.bio_src }} />
-                                                    )}
-                                                </div>
-                                            )}
-
+                                            <PersonDetails person={data} />
                                         </div>
                                     </div>
 
                                     {/* Genres moved to right side */}
                                     <div className="col-12 lg:col-3">  {/* Full width on mobile, 3 cols on large screens */}
-                                        <div className="flex flex-column gap-2">
+                                        <div className="flex flex-column gap-4">
                                             <h3 className="text-sm uppercase text-600 m-0">Genret</h3>
                                             <GenreGroup
                                                 genres={getGenres()}
@@ -365,6 +313,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                                     rel="noopener noreferrer"
                                                     className="no-underline text-primary hover:text-primary-700 flex align-items-center gap-2"
                                                 >
+                                                    <i className="pi pi-external-link" />
                                                     <span>{link.description}</span>
                                                 </a>
                                             ))}

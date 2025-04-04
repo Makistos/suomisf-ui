@@ -489,8 +489,38 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 }
 
 .person-page {
-    padding: 2rem;
+    padding: 1rem;
     background: var(--surface-ground);
+}
+
+.person-page .fixed-dial {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 1000;
+}
+
+.person-page .p-card .p-card-content {
+    padding: 1.5rem;
+}
+
+.person-page .p-tabview .p-tabview-panels {
+    padding: 1.5rem;
+    overflow-x: hidden;
+}
+
+@media screen and (max-width: 768px) {
+    .person-page {
+        padding: 0.5rem;
+    }
+
+    .person-page .p-card .p-card-content {
+        padding: 1rem;
+    }
+
+    .person-page .p-tabview .p-tabview-panels {
+        padding: 1rem;
+    }
 }
 
 .person-page .p-card {

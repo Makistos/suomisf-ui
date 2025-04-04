@@ -177,6 +177,12 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                             />
                         } */}
 
+                        {short.type.id !== 1 &&
+                            <span>
+                                <i>({short.type.name})</i>
+                            </span>
+                        }
+
                     </div>
                     {listPublications && short && short.editions &&
                         short.editions.length > 0 && (

@@ -15,7 +15,10 @@ import { Toast } from "primereact/toast"
 import { SpeedDial } from "primereact/speeddial"
 import { isAdmin } from "@features/user"
 import { EditionSummary } from "@features/edition"
-import { removeDuplicateContributions } from "@utils/remove-duplicate-contributions"
+import { Tooltip } from "primereact/tooltip"
+import { Card } from "primereact/card"
+import { TabPanel, TabView } from "primereact/tabview"
+import { ShortDetails } from "../components/short-defails"
 
 interface ShortPageProps {
     id: string | null
@@ -86,133 +89,112 @@ export const ShortPage = (props: ShortPageProps) => {
 
     console.log(data);
     return (
-        <> {isLoading ?
-            <div className="progressbar">
-                <ProgressSpinner />
-            </div>
-            :
-            <div className="mt-5 speeddial style={{ position: 'relative', height: '500px'}}">
-                {isAdmin(user) &&
-                    <SpeedDial className="speeddial-right"
+        <main className="person-page">
+            <Toast ref={toastRef} />
+            {isAdmin(user) && (
+                <>
+                    <Tooltip position="left" target=".fixed-dial .p-speeddial-action" />
+                    <SpeedDial
                         model={dialItems}
-                        direction="left"
-                        type="semi-circle"
-                        radius={80}
+                        direction="up"
+                        className="fixed-dial"
+                        showIcon="pi pi-plus"
+                        hideIcon="pi pi-times"
+                        buttonClassName="p-button-primary"
                     />
-                }
-                <Dialog maximizable blockScroll
-                    className="w-full xl:w-6"
-                    visible={shortFormVisible}
-                    onShow={onShow}
-                    onHide={onHide}
-                    header="Muokkaa">
-                    <ShortsForm short={data}
-                        onSubmitCallback={onNewShort}
-                        onClose={() => setShortFormVisible(false)}
-                        onDelete={() => shortDeleted()}
-                    />
-                </Dialog>
-                <div className="grid align-items-center justify-content-center">
-                    {data.contributors.filter(person => person.role.id === 1).length > 0 && (
-                        <div className="grid col-12 justify-content-center">
-                            <h2 className="mb-0 font-semibold">
-                                <LinkList path="people"
-                                    separator=" &amp; "
-                                    items={removeDuplicateContributions(data.contributors).filter(person => person.role.id === 1).map((item) => ({
-                                        id: item.person['id'],
-                                        name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
-                                    }))} />
-                            </h2>
-                        </div>
-                    )}
-                    {data.contributors &&
-                        data.contributors.filter(person => person.role.id === 1).length === 0 &&
-                        data.contributors.filter(person => person.role.id === 3).length > 0 && (
-                            <div className="grid col-12 justify-content-center">
-                                <h2 className="mb-0 font-semibold">
-                                    <LinkList path="people"
-                                        separator=" &amp; "
-                                        items={removeDuplicateContributions(data.contributors).filter(person => person.role.id === 3).map((item) => ({
-                                            id: item.person['id'],
-                                            name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
-                                        }))} />
-                                </h2>
-                            </div>
-                        )}
-                    <div className="grid col-12 justify-content-center">
-                        <h1 className="mt-1 mb-0">{data.title}</h1>
-                    </div>
-                    <p className="mt-1">
-                        {data.orig_title && data.orig_title !== data.title &&
-                            data.orig_title
-                        }
-                        {data.orig_title && data.orig_title !== data.title && data.pubyear && ", "}
-                        {data.pubyear && data.pubyear}
-                        &nbsp;{data.lang && "(" + data.lang.name + ")"}
-                    </p>
-                    <div className="grid col-12 justify-content-center">
-                        <GenreGroup genres={data.genres} />
-                    </div>
-                    <div className="col-12 justify-content-start">
-                        {data.type.name}.<br />
-                        {data.contributors.filter(contrib => contrib.role.id === 2).length > 0 && (
-                            <>
-                                Suom.&nbsp;
-                                <LinkList path="people"
-                                    separator=" &amp; "
-                                    items={removeDuplicateContributions(data.contributors).filter(contrib => contrib.role.id === 2).map((item) => ({
-                                        id: item.person['id'],
-                                        name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
-                                    }))} />
-                            </>
-                        )}
-                        {data.contributors.filter(contrib => contrib.role.id === 6).length > 0 && (
-                            <>
-                                Henkilöt&nbsp;
-                                <LinkList path="people"
-                                    separator=" &amp; "
-                                    items={data.contributors.filter(contrib => contrib.role.id === 6).map((item) => ({
-                                        id: item.person['id'],
-                                        name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
-                                    }))} />
-                            </>
-                        )}
-                        <br /><TagGroup tags={data.tags} overflow={10} showOneCount={false} />
-                    </div>
-                    <div className="col-12 justify-content-start mt-3">
-                        {data.editions.length > 0 && (
-                            <div>
-                                <h3>Kirjoissa</h3>
-                                {data.editions.map(edition => (
-                                    <span key={edition.id}>
-                                        <EditionSummary edition={edition}
-                                            showPerson={true}
-                                            showVersion={true}
-                                            work={edition.work[0]}
-                                            isOwned={true} />
-                                    </span>
-                                ))}
-                            </div>
-                        )}
-                        {data.issues.length > 0 && (
-                            <div>
-                                <h3>Lehdissä</h3>
-                                {data.issues.map(issue => (
-                                    <span key={issue.id}>
-                                        <Link to={`/magazines/${issue.magazine.id}`}
-                                            key={issue.id}>
-                                            {issue.magazine.name} {issue.cover_number}.
-                                            <br />
-                                        </Link>
-                                    </span>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                </>
+            )}
+            {isLoading ? (
+                <div className="progressbar">
+                    <ProgressSpinner />
                 </div>
-            </div>
-        }
-        </>
-    )
+            ) : (
+                < div className="grid">
+                    {/* Header Section */}
+                    <div className="col-12">
+                        <Card className="shadow-3">
+                            <div className="grid pl-2 pr-2 pt-0">
+                                <div className="col-12 lg:col-9">
+                                    <div className="flex-column">
+                                        <ShortDetails short={data} />
+                                    </div>
+                                </div>
+                                <div className="col-12 lg:col-3">
+                                    <div className="flex flex-column gap-4">
+                                        <div className="flex flex-column gap-2">
+                                            <h3 className="text-sm uppercase text-600 m-0">Genret</h3>
+                                            <GenreGroup
+                                                genres={data.genres}
+                                                showOneCount
+                                                className="flex-wrap"
+                                            />
+                                        </div>
 
+                                        {data.tags && data.tags.length > 0 && (
+                                            <div className="flex flex-column gap-2">
+                                                <h3 className="text-sm uppercase text-600 m-0">Asiasanat</h3>
+                                                <TagGroup
+                                                    tags={data.tags}
+                                                    overflow={5}
+                                                    showOneCount
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </Card>
+                    </div>
+
+                    <div className="col-12">
+                        <TabView className="shadow-2" scrollable={true}>
+                            {data.editions.length > 0 && (
+                                <TabPanel header="Kirjoissa" leftIcon="pi pi-book">
+                                    <div className="card">
+                                        {data.editions.map(edition => (
+                                            <span key={edition.id}>
+                                                <EditionSummary edition={edition}
+                                                    showPerson={true}
+                                                    showVersion={true}
+                                                    work={edition.work[0]}
+                                                    isOwned={true} />
+                                            </span>
+                                        ))}
+                                    </div>
+                                </TabPanel>
+                            )}
+                            {data.issues.length > 0 && (
+                                <TabPanel header="Lehdissä" leftIcon="pi pi-magazine">
+                                    <div className="card">
+                                        {data.issues.map(issue => (
+                                            <span key={issue.id}>
+                                                <Link to={`/magazines/${issue.magazine.id}`}
+                                                    key={issue.id}>
+                                                    {issue.magazine.name} {issue.cover_number}.
+                                                    <br />
+                                                </Link>
+                                            </span>
+                                        ))}
+                                    </div>
+                                </TabPanel>
+                            )}
+                        </TabView>
+                    </div>
+                    <Dialog maximizable blockScroll
+                        className="w-full xl:w-6"
+                        visible={shortFormVisible}
+                        onShow={onShow}
+                        onHide={onHide}
+                        header="Muokkaa">
+                        <ShortsForm short={data}
+                            onSubmitCallback={onNewShort}
+                            onClose={() => setShortFormVisible(false)}
+                            onDelete={() => shortDeleted()}
+                        />
+                    </Dialog>
+
+                </div>
+            )}
+        </main>
+    )
 }

@@ -769,3 +769,32 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 .sftag-page h1 {
     color: var(--primary-color);
 }
+
+.short-page {
+    padding: 2rem;
+    background: var(--surface-ground);
+}
+
+.short-page .fixed-dial {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+.short-page .p-card {
+    margin-bottom: 2rem;
+}
+
+.short-page .p-tabview .p-tabview-panels {
+    padding: 1.5rem;
+    overflow-x: hidden;
+}
+
+.short-page .p-tabview .p-tabview-nav {
+    width: 100%;
+}
+
+.short-page .p-tabview .p-tabview-nav li {
+    flex: none;
+}

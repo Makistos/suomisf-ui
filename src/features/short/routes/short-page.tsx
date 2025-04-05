@@ -19,6 +19,7 @@ import { Tooltip } from "primereact/tooltip"
 import { Card } from "primereact/card"
 import { TabPanel, TabView } from "primereact/tabview"
 import { ShortDetails } from "../components/short-defails"
+import { on } from "stream"
 
 interface ShortPageProps {
     id: string | null
@@ -68,26 +69,26 @@ export const ShortPage = (props: ShortPageProps) => {
     ]
 
     const onShow = () => {
+        setQueryEnabled(false);
 
     }
 
     const onHide = () => {
-
+        setQueryEnabled(true);
     }
 
     const onNewShort = (id: string, visible: boolean) => {
-        queryClient.invalidateQueries({ queryKey: ['short', id] });
+        queryClient.invalidateQueries({ queryKey: ['short', shortId] });
         toastRef.current?.show({ severity: 'success', summary: 'Tallentaminen onnistui' });
         setShortFormVisible(false);
     }
 
     const shortDeleted = () => {
-        queryClient.invalidateQueries();
+        queryClient.invalidateQueries({ queryKey: ['short', shortId] });
         navigate(-1);
     }
     if (!data) return null;
 
-    console.log(data);
     return (
         <main className="person-page">
             <Toast ref={toastRef} />
@@ -148,36 +149,38 @@ export const ShortPage = (props: ShortPageProps) => {
 
                     <div className="col-12">
                         <TabView className="shadow-2" scrollable={true}>
-                            {data.editions.length > 0 && (
-                                <TabPanel header="Kirjoissa" leftIcon="pi pi-book">
-                                    <div className="card">
-                                        {data.editions.map(edition => (
-                                            <span key={edition.id}>
-                                                <EditionSummary edition={edition}
-                                                    showPerson={true}
-                                                    showVersion={true}
-                                                    work={edition.work[0]}
-                                                    isOwned={true} />
-                                            </span>
-                                        ))}
-                                    </div>
-                                </TabPanel>
-                            )}
-                            {data.issues.length > 0 && (
-                                <TabPanel header="Lehdissä" leftIcon="pi pi-magazine">
-                                    <div className="card">
-                                        {data.issues.map(issue => (
-                                            <span key={issue.id}>
-                                                <Link to={`/magazines/${issue.magazine.id}`}
-                                                    key={issue.id}>
-                                                    {issue.magazine.name} {issue.cover_number}.
-                                                    <br />
-                                                </Link>
-                                            </span>
-                                        ))}
-                                    </div>
-                                </TabPanel>
-                            )}
+                            <TabPanel header="Julkaisut" leftIcon="pi pi-book">
+                                <div className="card">
+                                    {data.editions.length > 0 && (
+                                        <div className="mb-3">
+                                            <h3 className="text-sm uppercase text-600 m-0 mb-1">Kirjat</h3>
+                                            {data.editions.map(edition => (
+                                                <span key={edition.id}>
+                                                    <EditionSummary edition={edition}
+                                                        showPerson={true}
+                                                        showVersion={true}
+                                                        work={edition.work[0]}
+                                                        isOwned={true} />
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
+                                    {data.issues.length > 0 && (
+                                        <div>
+                                            <h3 className="text-sm uppercase text-600 m-0 mb-1">Lehdet</h3>
+                                            {data.issues.map(issue => (
+                                                <span
+                                                    key={`issue-${issue.id}-link`}>
+                                                    <Link to={`/magazines/${issue.magazine.id}`}
+                                                        key={`issue-${issue.id}-link`}>
+                                                        {issue.magazine.name} {issue.cover_number}.
+                                                        <br />
+                                                    </Link>
+                                                </span>
+                                            ))}
+                                        </div>)}
+                                </div>
+                            </TabPanel>
                         </TabView>
                     </div>
                     <Dialog maximizable blockScroll
@@ -188,13 +191,14 @@ export const ShortPage = (props: ShortPageProps) => {
                         header="Muokkaa">
                         <ShortsForm short={data}
                             onSubmitCallback={onNewShort}
-                            onClose={() => setShortFormVisible(false)}
+                            onClose={() => onHide()}
                             onDelete={() => shortDeleted()}
                         />
                     </Dialog>
 
                 </div>
-            )}
-        </main>
+            )
+            }
+        </main >
     )
 }

@@ -20,6 +20,7 @@ import { Card } from "primereact/card"
 import { TabPanel, TabView } from "primereact/tabview"
 import { ShortDetails } from "../components/short-defails"
 import { on } from "stream"
+import { editionIsOwned } from "@features/edition/utils/edition-is-owned"
 
 interface ShortPageProps {
     id: string | null
@@ -160,7 +161,7 @@ export const ShortPage = (props: ShortPageProps) => {
                                                         showPerson={true}
                                                         showVersion={true}
                                                         work={edition.work[0]}
-                                                        isOwned={true} />
+                                                        isOwned={editionIsOwned(edition, user)} />
                                                 </span>
                                             ))}
                                         </div>

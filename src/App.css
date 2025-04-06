@@ -798,3 +798,19 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 .short-page .p-tabview .p-tabview-nav li {
     flex: none;
 }
+
+.issue-page .p-speeddial-button {
+    width: 3rem;
+    height: 3rem;
+}
+
+.issue-page .fixed-dial {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+.issue-page {
+    padding: 2rem;
+    background: var(--surface-ground);
+}

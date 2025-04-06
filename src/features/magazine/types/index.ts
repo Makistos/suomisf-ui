@@ -1,3 +1,4 @@
+import { Issue } from "@features/issue";
 import { Publisher } from "@features/publisher";
 import { SfTag } from "@features/tag";
 
@@ -15,7 +16,7 @@ export interface Magazine {
     issn: string;
     type: MagazineType;
     uri: string;
-    issues: number[];
+    issues: Issue[];
 }
 
 export interface MagazineFormData {

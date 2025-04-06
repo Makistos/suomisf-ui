@@ -1,5 +1,5 @@
-import React, { Fragment, RefObject, useCallback, useMemo, useState } from 'react';
-import { Link } from "react-router-dom";
+import React, { Fragment, RefObject, useCallback, useMemo, useRef, useState } from 'react';
+import { Link, useParams } from "react-router-dom";
 
 import { getCurrenUser } from '../../../services/auth-service';
 import { Person } from "../../person/types";
@@ -23,15 +23,16 @@ import { saveIssueCover } from '@api/issue/save-issue-cover';
 import { FileUpload, FileUploadHandlerEvent } from 'primereact/fileupload';
 import { IssueShortsPicker } from '@features/short/components/shorts-picker';
 import _ from 'lodash';
+import { Card } from 'primereact/card';
+import { TabPanel, TabView } from 'primereact/tabview';
+import { selectId } from '@utils/select-id';
+import { Tooltip } from 'primereact/tooltip';
+import { SpeedDial } from 'primereact/speeddial';
 
 const baseURL = 'issues/';
 
 export type IssueProps = {
-    id: number | null,
-    magazine_id: number
-    index?: number,
-    onSubmitCallback: ((status: boolean, message: string) => void),
-    toast?: RefObject<Toast>
+    id: string | null
 };
 
 const PickLinks = (items: Person[]) => {
@@ -51,85 +52,60 @@ const getShortTypes = (shorts: Short[]) => {
 
 const IssueInfo = ({ issue }: IssueInfoProps) => {
     return (
-        <div className="p-col-12 p-md-8">
-            <h2>{issue.magazine.name} {issue.cover_number}
-            </h2>
-            {issue.title &&
-                <h3>{issue.title}</h3>
-            }
-            <div>
-                {issue.editors && issue.editors.length && (
+        <div className="col-12 lg:col-9 mb-3">
+            <h1 className="mt-0 mb-3 text-2xl sm:text-3xl lg:text-4xl uppercase" style={{ lineHeight: '1.1' }}>
+                {issue.magazine.name} {issue.cover_number} {issue.title}
+            </h1>
+            {issue.editors && issue.editors.length && (
+                <div className="mb-2">
                     <LinkList
                         path="people"
                         separator=" &amp; "
                         items={PickLinks(issue.editors)}
-                    />)}
-                {issue.editors.length && " (päätoimittaja)"}
+                    />
+                    {issue.editors.length && " (päätoimittaja)"}
+                </div>
+            )}
 
+            <div>
+                {issue.pages && issue.pages > 0 ? issue.pages + " sivua." : ""}
+                {issue.size ? " " + issue.size.name + "." : ""}
             </div>
-            {issue.pages && issue.pages > 0 ? issue.pages + " sivua." : ""}
-            {issue.size ? " " + issue.size.name + "." : ""}
-            {issue.link && issue.link !== "" && (
-                <>
-                    <br /><Link to={issue.link} target="_blank">Kotisivu</Link>.
-                </>
-            )}
-            {issue.notes && issue.notes !== "" && (
-                <div dangerouslySetInnerHTML={{ __html: issue.notes }} />
-            )}
-            {/* {issue.articles.length > 0 && (
-                <div className="p-pt-2"><b>Artikkelit</b>
-                    <div className="p-ml-3">
-                        <ArticleList articles={issue.articles} />
-                    </div>
-                </div>
-            )
-            } */}
-            {issue.stories.length > 0 && (
-                <div className="p-pt-2"><h3>Sisältö</h3>
-                    <div className="p-ml-3">
-                        {
-                            getShortTypes(issue.stories).map((storytype) => (
-                                <Fragment key={storytype.id + issue.id}>
-                                    <h4 key={storytype.name + issue.id}>{storytype.name}</h4>
-                                    {issue.stories.filter((story) => story.type.id === storytype.id)
-                                        .map((story) => (
-                                            <ShortSummary key={story.id}
-                                                short={story}
-                                            />
-                                        ))}
-                                </Fragment>
-                            )
-                            )
-                        }
-                    </div>
-                </div>
-            )
-            }
+            <div className="mt-2">
+                {issue.notes && issue.notes !== "" && (
+                    <div dangerouslySetInnerHTML={{ __html: issue.notes }} />
+                )}
+            </div>
         </div>
-
     )
 }
 
-export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: IssueProps) => {
+export const IssuePage = ({ id: issue_id }: IssueProps) => {
     const user = useMemo(() => getCurrenUser(), []);
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [issueFormVisible, setIssueFormVisible] = useState(false);
     const [shortsFormVisible, setShortsFormVisible] = useState(false);
     const [articleFormVisible, setArticleFormVisible] = useState(false);
-    //const toast = useRef<Toast>(null);
+    const toast = useRef<Toast>(null);
     const queryClient = useQueryClient();
+    const params = useParams();
+    let issueId = "";
     // if (toast === undefined) {
     //     toast = useRef<Toast>(null);
     // }
+    try {
+        issueId = selectId(params, issue_id);
+    } catch (e) {
+        console.log(`${e} short`);
+    }
     const { isLoading, data } = useQuery({
-        queryKey: ['issue', id],
-        queryFn: () => getIssue(id !== undefined ? id : null, user),
+        queryKey: ['issue', issueId],
+        queryFn: () => getIssue(issueId !== undefined ? issueId : null, user),
         enabled: queryEnabled
     })
 
 
-    const delIssue = async (id: number | null) => {
+    const delIssue = async (id: string | null) => {
         await deleteIssue(id).then(response => {
             if (response?.status === 200) {
                 onUpload('success', 'Numero poistettu onnistuneesti');
@@ -157,7 +133,7 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
             icon: "pi pi-exclamation-triangle",
             acceptClassName: "p-button-danger",
             accept: () => {
-                delIssue(id);
+                delIssue(issueId);
             },
             reject: () => {
                 onUpload('error', 'Numeroa ei poistettu');
@@ -175,7 +151,6 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
         }
         onDialogHide();
         setQueryEnabled(true);
-        onSubmitCallback(success, message);
     }, [data, user]);
 
     const onDialogShow = () => {
@@ -185,6 +160,7 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
 
     const onDialogHide = () => {
         setIssueFormVisible(false);
+        queryClient.invalidateQueries({ queryKey: ['issue', issueId] });
         setQueryEnabled(true);
     }
 
@@ -203,28 +179,24 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
     }
 
     const saveImage = useCallback(async (event: FileUploadHandlerEvent) => {
-        if (data) {
-            saveIssueCover(data.id, event.files[0], event.files[0].name, user).then(response => {
-                if (response?.status === 200) {
-                    onUpload('success', 'Kansi lisätty onnistuneesti');
-                } else {
-                    onUpload('error', 'Virhe kantta lisätäessä');
-                }
-            });
-        }
-    }, [data, user]);
+        saveIssueCover(issueId, event.files[0], event.files[0].name, user).then(response => {
+            if (response?.status === 200) {
+                onUpload('success', 'Kansi lisätty onnistuneesti');
+            } else {
+                onUpload('error', 'Virhe kantta lisätäessä');
+            }
+        });
+    }, [issueId, user]);
 
-    const deleteImage = useCallback((objectId: number, imageId: number) => {
-        if (data) {
-            const response = deleteIssueCover(data.id).then(response => {
-                if (response?.status === 200) {
-                    onUpload('success', 'Kansi poistettu onnistuneesti');
-                } else {
-                    onUpload('error', 'Virhe kantta poistettaessa');
-                }
-            });
-        }
-    }, [id, user]);
+    const deleteImage = useCallback((objectId: number | string, imageId: number) => {
+        const response = deleteIssueCover(issueId).then(response => {
+            if (response?.status === 200) {
+                onUpload('success', 'Kansi poistettu onnistuneesti');
+            } else {
+                onUpload('error', 'Virhe kantta poistettaessa');
+            }
+        });
+    }, [issueId, user]);
 
     const onUpload = useCallback((severity: "success" | "info" | "warn" | "error", message: string) => {
         toast?.current?.show({
@@ -232,8 +204,8 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
             summary: '',
             detail: message
         })
-        queryClient.invalidateQueries({ queryKey: ['issue', id] });
-    }, [id, user])
+        queryClient.invalidateQueries({ queryKey: ['issue', issueId] });
+    }, [issueId, user])
 
     const onShortsShow = () => {
         setShortsFormVisible(true);
@@ -241,7 +213,7 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
 
     const onShortsHide = () => {
         setShortsFormVisible(false);
-        queryClient.invalidateQueries({ queryKey: ['issue', id] });
+        queryClient.invalidateQueries({ queryKey: ['issue', issueId] });
     }
 
     const onArticlesShow = () => {
@@ -250,13 +222,30 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
 
     const onArticlesHide = () => {
         setArticleFormVisible(false);
-        queryClient.invalidateQueries({ queryKey: ['issue', id] });
+        queryClient.invalidateQueries({ queryKey: ['issue', issueId] });
     }
 
+    const dialItems = [
+        {
+            label: 'Muokkaa',
+            icon: 'pi pi-pencil',
+            command: () => setIssueFormVisible(true)
+        },
+        {
+            label: 'Artikkelit ja novellit',
+            icon: 'pi pi-list',
+            command: () => onShortsShow()
+        },
+        {
+            label: 'Poista numero',
+            icon: 'pi pi-trash',
+            command: () => confirmDelete(issueId)
+        }
+    ];
     if (!data) return null;
 
     return (
-        <div className="p-m-3">
+        <div className="issue-page">
             {isLoading ?
                 <div className="progressbar">
                     <ProgressSpinner />
@@ -265,6 +254,19 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
                 <>
                     <Toast ref={toast} />
                     <ConfirmPopup />
+                    {isAdmin(user) && (
+                        <>
+                            <Tooltip position="left" target=".fixed-dial .p-speeddial-action" />
+                            <SpeedDial
+                                model={dialItems}
+                                direction="up"
+                                className="fixed-dial"
+                                showIcon="pi pi-plus"
+                                hideIcon="pi pi-times"
+                                buttonClassName="p-button-primary"
+                            />
+                        </>
+                    )}
                     <Dialog maximizable blockScroll
                         className="w-full xl:w-6"
                         visible={issueFormVisible}
@@ -272,8 +274,8 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
                         onHide={onDialogHide}
                         header="Muokkaa numeroa">
                         <IssueForm
-                            issueid={id}
-                            magazineid={magazine_id}
+                            issueid={issueId}
+                            magazineid={data.magazine.id}
                             onSubmitCallback={onFormSubmit}
                         />
                     </Dialog>
@@ -295,41 +297,62 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
                         onHide={() => onArticlesHide()}
                     >
                     </Dialog>
-                    <div className="p-grid">
-                        <IssueInfo issue={data} />
-                        <div className="p-col-12 p-md-4">
-                            {(data.image_src && id) ? (
-                                <ImageView
-                                    itemId={id}
-                                    images={strToImageType(data.image_src)}
-                                    idx={0}
-                                    deleteFunc={deleteImage}
-                                    idxCb={
-                                        (idx: number) => {
+                    <div className="grid">
+                        <div className="col-12">
+                            <Card className="shadow-3">
+                                <div className="grid pl2- pr-2 pt-0">
+                                    <div className="col-12 lg:col-9">
+                                        <div className="flex-column">
+                                            <IssueInfo issue={data} />
 
+                                        </div>
+                                    </div>
+                                    <div className="col-12 lg:col-3">
+                                        {(data.image_src && issueId) ? (
+                                            <ImageView
+                                                itemId={issueId}
+                                                images={strToImageType(data.image_src)}
+                                                idx={0}
+                                                deleteFunc={deleteImage}
+                                                idxCb={
+                                                    (idx: number) => {
+
+                                                    }
+                                                }
+                                            />
+                                        ) : isAdmin(user) &&
+                                        <FileUpload
+                                            id={"issue-image-" + issueId}
+                                            mode="basic"
+                                            accept='image/*'
+                                            name="image"
+                                            uploadLabel='Lisää kuva'
+                                            auto
+                                            customUpload
+                                            uploadHandler={saveImage}
+                                        />
                                         }
-                                    }
-                                />
-                                // <>
-                                //     <Image src={data.image_src} width="250px" preview
-                                //         alt={`${data.cover_number} kansikuva`}
-                                //     />
-                                // </>
-                            ) : isAdmin(user) &&
-                            <FileUpload
-                                id={"issue-image-" + id}
-                                mode="basic"
-                                accept='image/*'
-                                name="image"
-                                uploadLabel='Lisää kuva'
-                                auto
-                                customUpload
-                                uploadHandler={saveImage}
-                            //onUpload={onUpload}
-                            />
-                            }
+                                    </div>
+                                </div>
+                                {/* Links section */}
+                                {data.link && (
+                                    <div className="mt-4 pt-3 border-top-1 surface-border">
+                                        <div className="flex flex-wrap gap-3">
+                                            <a
+                                                href={data.link}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="no-underline text-primary hover:text-primary-700 flex align-items-center gap-2"
+                                            >
+                                                <span>{data.link}</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                )}
+
+                            </Card>
                         </div>
-                        <div>
+                        {/* <div>
                             {isAdmin(user) &&
                                 <>
                                     <Button icon="pi pi-pencil" tooltip="Muokkaa" className="p-button-text" onClick={() => onDialogShow()} />
@@ -342,6 +365,29 @@ export const IssuePage = ({ id, magazine_id, index, onSubmitCallback, toast }: I
                                     />
                                 </>
                             }
+                        </div> */}
+                        <div className="col-12">
+                            <TabView className="shadow-2" scrollable={true}>
+                                <TabPanel header="Sisältö" leftIcon="pi pi-book">
+                                    <div className="card">
+                                        {data.stories.length > 0 && (
+                                            <div className="p-ml-3">
+                                                {data.stories.map((story) => (
+                                                    <div key={story.id + data.id}>
+                                                        <ShortSummary key={story.id}
+                                                            short={story}
+                                                        />
+                                                    </div>
+                                                )
+                                                )
+                                                }
+                                            </div>
+                                        )
+                                        }
+
+                                    </div>
+                                </TabPanel>
+                            </TabView>
                         </div>
                     </div>
                 </>

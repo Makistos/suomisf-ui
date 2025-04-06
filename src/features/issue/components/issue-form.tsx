@@ -23,7 +23,7 @@ import { filterPeople } from "@api/people/filter-people"
 import { Toast } from "primereact/toast"
 
 interface IssueFormProps {
-    issueid: number | null,
+    issueid: string | null,
     magazineid: number,
     onSubmitCallback: ((status: boolean, message: string) => void)
 }
@@ -83,7 +83,7 @@ export const IssueForm = (props: IssueFormProps) => {
         getSizes();
     }, [])
 
-    const fetchIssue = async (id: number | null) => {
+    const fetchIssue = async (id: string | null) => {
         if (id === null) {
             return convToForm(null);
         }

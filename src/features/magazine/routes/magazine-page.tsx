@@ -223,17 +223,29 @@ export const MagazinePage = () => {
                             {data.issues?.length > 0 &&
                                 <div className="card">
                                     {
-                                        data.issues
-                                            .map((issue, index) => (
-                                                <div className="card" key={issue}>
-                                                    <IssuePage
-                                                        id={issue}
-                                                        magazine_id={data.id}
-                                                        index={index}
-                                                        onSubmitCallback={onIssueFormHide}
-                                                        toast={toastRef}
-                                                    />
+                                        data.issues.sort((a, b) => {
+                                            if (a.year !== b.year) {
+                                                return a.year - b.year;
+                                            }
+                                            if (a.number !== b.number) {
+                                                return a.number - b.number;
+                                            }
+                                            return 0;
+                                        })
+                                            .map((issue) => (
+                                                <div>
+                                                    <Link to={`/issues/${issue.id}`}>{issue.cover_number}</Link>
+                                                    {issue.title && <span>: {issue.title}</span>}
                                                 </div>
+                                                //     <div className="card" key={issue}>
+                                                //         <IssuePage
+                                                //             id={issue}
+                                                //             magazine_id={data.id}
+                                                //             index={index}
+                                                //             onSubmitCallback={onIssueFormHide}
+                                                //             toast={toastRef}
+                                                //         />
+                                                //     </div>
                                             ))
                                     }
                                 </div>

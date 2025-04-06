@@ -3,7 +3,7 @@ import authHeader from "@services/auth-header";
 import { putApiContent } from "@services/user-service"
 import axios from "axios";
 
-export const saveIssueCover = async (issueId: number, file: Blob, fileName: string, user: User | null) => {
+export const saveIssueCover = async (issueId: number | string, file: Blob, fileName: string, user: User | null) => {
     const form = new FormData();
     form.append('file', file, fileName);
     const headers = authHeader();

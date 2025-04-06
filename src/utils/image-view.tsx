@@ -9,11 +9,11 @@ import { Button } from "primereact/button";
 import { FileUpload, FileUploadHandlerEvent } from "primereact/fileupload";
 
 interface ImageViewProps {
-    itemId: number,
+    itemId: number | string,
     idx: number,
     //edition: Edition,
     images: ImageType[],
-    deleteFunc: (itemId: number, imageId: number) => void,
+    deleteFunc: (itemId: string | number, imageId: number) => void,
     idxCb: (idx: number) => void
 }
 

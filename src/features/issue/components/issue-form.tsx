@@ -6,7 +6,7 @@ import { HttpStatusResponse, putApiContent } from "@services/user-service"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { ProgressSpinner } from "primereact/progressspinner"
 import { RefObject, useEffect, useMemo, useState } from "react"
-import { FormProvider, useForm } from "react-hook-form"
+import { FormProvider, RegisterOptions, useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import { Issue, IssueFormData } from "../types"
 import { FormInputNumber } from "@components/forms/field/form-input-number"
@@ -147,11 +147,13 @@ const FormObject = ({ onSubmit, data, sizes }: FormObjectProps) => {
         const response = await filterPeople(event.query, user);
         setFilteredPeople(response);
     }
+    const required_rule: RegisterOptions = { required: "Pakollinen kenttä" };
 
     return (
         <div className="card mt-3">
             <FormProvider {...methods}>
-                <form onSubmit={methods.handleSubmit(onSubmit)}>
+                <form onSubmit={methods.handleSubmit(
+                    (value) => onSubmit({ onSuccess: () => methods.reset() }))}>
                     <div className="formgrid grid">
                         <div className="field col-12">
                             <FormInputText
@@ -160,40 +162,48 @@ const FormObject = ({ onSubmit, data, sizes }: FormObjectProps) => {
                                 label="Otsikko"
                             />
                         </div>
-                        <div className="field col-6 lg:col-2">
+                        <div className="field col-6">
                             <FormInputNumber
                                 name="number"
                                 methods={methods}
                                 label="Numero"
+                                rules={required_rule}
                                 autoFocus
+                                labelClass="required-field"
                             />
                         </div>
-                        <div className="field col-6 lg:col-2">
+                        <div className="field col-6">
                             <FormInputText
                                 name="number_extra"
                                 methods={methods}
                                 label="Numeron tarkenne"
                             />
                         </div>
-                        <div className="field col-6 lg:col-3">
+                        <div className="field col-6">
                             <FormInputText
                                 name="cover_number"
                                 methods={methods}
                                 label="Numero kannessa"
+                                rules={required_rule}
+                                labelClass="required-field"
                             />
                         </div>
-                        <div className="field col-6 lg:col-2">
+                        <div className="field col-6">
                             <FormInputNumber
                                 name="count"
                                 methods={methods}
                                 label="Juokseva numero"
+                                rules={required_rule}
+                                labelClass="required-field"
                             />
                         </div>
-                        <div className="field col-6 lg:col-3">
+                        <div className="field col-6">
                             <FormInputNumber
                                 name="year"
                                 methods={methods}
                                 label="Vuosi"
+                                rules={required_rule}
+                                labelClass="required-field"
                             />
                         </div>
                         <div className="field col-12">

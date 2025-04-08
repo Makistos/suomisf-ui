@@ -28,7 +28,8 @@ import { TabPanel, TabView } from 'primereact/tabview';
 import { selectId } from '@utils/select-id';
 import { Tooltip } from 'primereact/tooltip';
 import { SpeedDial } from 'primereact/speeddial';
-
+import { Image } from 'primereact/image';
+import { ContextMenu } from 'primereact/contextmenu';
 const baseURL = 'issues/';
 
 export type IssueProps = {
@@ -56,17 +57,16 @@ const IssueInfo = ({ issue }: IssueInfoProps) => {
             <h1 className="mt-0 mb-3 text-2xl sm:text-3xl lg:text-4xl uppercase" style={{ lineHeight: '1.1' }}>
                 {issue.magazine.name} {issue.cover_number} {issue.title}
             </h1>
-            {issue.editors && issue.editors.length && (
+            {issue.editors && issue.editors.length > 0 && (
                 <div className="mb-2">
                     <LinkList
                         path="people"
                         separator=" &amp; "
                         items={PickLinks(issue.editors)}
                     />
-                    {issue.editors.length && " (päätoimittaja)"}
+                    {issue.editors.length > 0 && " (päätoimittaja)"}
                 </div>
             )}
-
             <div>
                 {issue.pages && issue.pages > 0 ? issue.pages + " sivua." : ""}
                 {issue.size ? " " + issue.size.name + "." : ""}
@@ -90,6 +90,8 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
     const queryClient = useQueryClient();
     const params = useParams();
     let issueId = "";
+    const cm = useRef<ContextMenu>(null);
+
     // if (toast === undefined) {
     //     toast = useRef<Toast>(null);
     // }
@@ -170,7 +172,7 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
         if (str) {
             return [{
                 id: 0,
-                image_src: str,
+                image_src: str?.startsWith('http') ? str : import.meta.env.VITE_IMAGE_URL + str,
                 image_attr: "",
                 size: null
             }] as ImageType[];
@@ -188,7 +190,7 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
         });
     }, [issueId, user]);
 
-    const deleteImage = useCallback((objectId: number | string, imageId: number) => {
+    const deleteImage = useCallback(() => {
         const response = deleteIssueCover(issueId).then(response => {
             if (response?.status === 200) {
                 onUpload('success', 'Kansi poistettu onnistuneesti');
@@ -242,6 +244,31 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
             command: () => confirmDelete(issueId)
         }
     ];
+
+    const imageItems = [
+        {
+            label: 'Poista kuva',
+            icon: 'pi pi-trash',
+            command: () => {
+                deleteImage();
+                queryClient.invalidateQueries();
+            },
+            visible: isAdmin(getCurrenUser())
+        },
+        {
+            label: 'Kopioi osoite',
+            icon: 'pi pi-copy',
+            command: () => {
+                if (data?.image_src.startsWith("http") ||
+                    data?.image_src.startsWith("https")) {
+                    navigator.clipboard.writeText(data.image_src);
+                } else {
+                    navigator.clipboard.writeText(import.meta.env.VITE_IMAGE_URL + data?.image_src);
+                }
+            }
+        }
+    ];
+
     if (!data) return null;
 
     return (
@@ -309,17 +336,27 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
                                     </div>
                                     <div className="col-12 lg:col-3">
                                         {(data.image_src && issueId) ? (
-                                            <ImageView
-                                                itemId={issueId}
-                                                images={strToImageType(data.image_src)}
-                                                idx={0}
-                                                deleteFunc={deleteImage}
-                                                idxCb={
-                                                    (idx: number) => {
+                                            <>
+                                                <ContextMenu model={imageItems} ref={cm} />
+                                                <Image
+                                                    className="pt-2"
+                                                    preview
+                                                    width="150px"
+                                                    src={data.image_src?.startsWith('http') ? data.image_src : import.meta.env.VITE_IMAGE_URL + data.image_src}
+                                                    onContextMenu={(e) => cm.current?.show(e)}
+                                                />
+                                            </>
+                                            // <ImageView
+                                            //     itemId={issueId}
+                                            //     images={strToImageType(data.image_src)}
+                                            //     idx={0}
+                                            //     deleteFunc={deleteImage}
+                                            //     idxCb={
+                                            //         (idx: number) => {
 
-                                                    }
-                                                }
-                                            />
+                                            //         }
+                                            //     }
+                                            // />
                                         ) : isAdmin(user) &&
                                         <FileUpload
                                             id={"issue-image-" + issueId}

@@ -17,7 +17,9 @@ import { getMagazine } from '@api/magazine/get-magazine';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { MagazineForm } from '../components/magazine-form';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-
+import { TabPanel, TabView } from 'primereact/tabview';
+import { Card } from 'primereact/card';
+import { Image } from 'primereact/image';
 
 const baseURL = "magazines/";
 
@@ -150,80 +152,64 @@ export const MagazinePage = () => {
 
     if (!data) return null;
 
+    console.log("Magazine data", data);
     return (
-        <main className="all-content">
-            <div className="mt-5 speeddial style={{ position: 'relative', height: '500px'}}">
+        <main className="magazine-page">
+            <Toast ref={toastRef} />
+            <ConfirmDialog />
+            <div>
                 {isAdmin(user) &&
                     <div>
-                        <Tooltip position="left" target=".speeddial .speeddial-right .p-speeddial-action">
+                        <Tooltip position="left" target=".fixed-dial .p-speeddial-action">
 
                         </Tooltip>
-                        <SpeedDial className="speeddial-right"
+                        <SpeedDial
                             model={dialItems}
-                            direction='left'
-                            type="semi-circle"
-                            radius={80}
+                            direction='up'
+                            className="fixed-dial"
+                            showIcon="pi pi-plus"
+                            hideIcon="pi pi-times"
+                            buttonClassName='p-button-primary'
                         />
                     </div>
                 }
-                <ConfirmDialog />
-                <Toast ref={toastRef} />
-                <Dialog maximizable blockScroll
-                    className="w-full xl:w-6"
-                    header="Muokkaa"
-                    visible={isMagazineFormVisible}
-                    onHide={() => onMagazineFormHide()}
-                    onShow={() => onMagazineFormShow()}>
-                    <MagazineForm
-                        id={targetId}
-                        onSubmitCallback={onMagazineFormHide}
-                    />
-                </Dialog>
-                <Dialog maximizable blockScroll
-                    className="w-full xl:w-6"
-                    header="Uusi numero"
-                    visible={isIssueFormVisible}
-                    onHide={() => setIssueFormVisible(false)}
-                    onShow={() => setIssueFormVisible(true)}>
-                    <IssueForm
-                        issueid={null}
-                        magazineid={data.id}
-                        onSubmitCallback={onIssueFormHide}
-                    />
-                </Dialog>
-
-                {data.publisher && (
-                    <div className="grid col-12 justify-content-center mb-0">
-                        <h2 className='mb-0'>{data.publisher.name}</h2>
+                <div className="grid">
+                    <div className="col-12">
+                        <Card className="shadow-3">
+                            <div className="grid pl-2 pr-2 pt-0">
+                                {data.publisher && (
+                                    <div className="grid col-12 mb-0">
+                                        <h2 className='mb-0 font-semibold'>{data.publisher.name}</h2>
+                                    </div>
+                                )}
+                                <div className="grid col-12">
+                                    <h1 className="mt-1 mb-0">{data.name}</h1>
+                                </div>
+                                <div className="grid col-12">
+                                    <h2 className="mt-1 mb-0">
+                                        <Link to={data.link}>{data.link}</Link></h2>
+                                </div>
+                                <div className='col-12 p-0'>{data.type.name}</div>
+                                <div className='col-12 p-0'>
+                                    {data.issn && (
+                                        <>ISSN {data.issn}.</>)
+                                    }
+                                </div>
+                                <div className='col-12 p-0'>{data.issues?.length} numeroa.</div>
+                                <div className='col-12 p-0'>
+                                    {data.description &&
+                                        <div dangerouslySetInnerHTML={{ __html: data.description }}></div>
+                                    }
+                                </div>
+                            </div>
+                        </Card>
                     </div>
-                )}
-                <div className="grid col-12 justify-content-center">
-                    <h1 className="mt-1 mb-0">{data.name}</h1>
-                </div>
-                <div className="grid col-12 justify-content-center">
-                    <h2 className="mt-1 mb-0">
-                        <Link to={data.link}>{data.link}</Link></h2>
-                </div>
-                <p>{data.type.name}
-                    {data.issn && (
-                        <>, ISSN {data.issn}.</>)
-                    }
-                </p>
-                {data.description &&
-                    <div dangerouslySetInnerHTML={{ __html: data.description }}></div>
-                }
-                <p>{data.issues?.length} numeroa.</p>
-                {isLoading ? (
-                    <div className="progressbar">
-                        <ProgressSpinner />
-                    </div>
-                )
-                    : (
-                        <div>
-                            {data.issues?.length > 0 &&
-                                <div className="card">
-                                    {
-                                        data.issues.sort((a, b) => {
+                    {data.issues && data.issues.length > 0 && (
+                        <div className="col-12">
+                            <TabView className="shadow-2">
+                                <TabPanel header="Lehdet" leftIcon="pi pi-book">
+                                    <div className="card">
+                                        {data.issues.sort((a, b) => {
                                             if (a.year !== b.year) {
                                                 return a.year - b.year;
                                             }
@@ -237,21 +223,65 @@ export const MagazinePage = () => {
                                                     <Link to={`/issues/${issue.id}`}>{issue.cover_number}</Link>
                                                     {issue.title && <span>: {issue.title}</span>}
                                                 </div>
-                                                //     <div className="card" key={issue}>
-                                                //         <IssuePage
-                                                //             id={issue}
-                                                //             magazine_id={data.id}
-                                                //             index={index}
-                                                //             onSubmitCallback={onIssueFormHide}
-                                                //             toast={toastRef}
-                                                //         />
-                                                //     </div>
                                             ))
-                                    }
-                                </div>
-                            }
+                                        }
+                                    </div>
+                                </TabPanel>
+                                <TabPanel header="Kannet" leftIcon="pi pi-image">
+                                    <div className="card">
+                                        <div className="grid">
+                                            {data.issues.sort((a, b) => {
+                                                if (a.year !== b.year) {
+                                                    return a.year - b.year;
+                                                }
+                                                if (a.number !== b.number) {
+                                                    return a.number - b.number;
+                                                }
+                                                return 0;
+                                            }
+                                            )
+                                                .map((issue) => (
+                                                    <div className="p-1">
+                                                        {issue.image_src && issue.image_src.length > 0 && (
+                                                            <Image preview height="200px"
+                                                                src={issue.image_src?.startsWith('http') ?
+                                                                    issue.image_src :
+                                                                    import.meta.env.VITE_IMAGE_URL + issue?.image_src} alt={issue.cover_number} />
+                                                        )}
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+                                    </div>
+                                </TabPanel>
+                            </TabView>
                         </div>
                     )}
+                    <Dialog maximizable blockScroll
+                        className="w-full xl:w-6"
+                        header="Muokkaa"
+                        visible={isMagazineFormVisible}
+                        onHide={() => onMagazineFormHide()}
+                        onShow={() => onMagazineFormShow()}>
+                        <MagazineForm
+                            id={targetId}
+                            onSubmitCallback={onMagazineFormHide}
+                        />
+                    </Dialog>
+                    <Dialog maximizable blockScroll
+                        className="w-full xl:w-6"
+                        header="Uusi numero"
+                        visible={isIssueFormVisible}
+                        onHide={() => setIssueFormVisible(false)}
+                        onShow={() => setIssueFormVisible(true)}>
+                        <IssueForm
+                            issueid={null}
+                            magazineid={data.id}
+                            onSubmitCallback={onIssueFormHide}
+                        />
+                    </Dialog>
+
+                </div>
             </div>
         </main >
     )

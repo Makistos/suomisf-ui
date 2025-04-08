@@ -14,7 +14,7 @@ interface ImageViewProps {
     //edition: Edition,
     images: ImageType[],
     deleteFunc: (itemId: string | number, imageId: number) => void,
-    idxCb: (idx: number) => void
+    idxCb: (idx: number) => void,
 }
 
 /**
@@ -23,7 +23,7 @@ interface ImageViewProps {
  * @param {ImageViewProps} edition - The edition object containing image data.
  * @return {JSX.Element} The rendered image view component.
  */
-export const ImageView = ({ itemId, idx, images, deleteFunc, idxCb }: ImageViewProps) => {
+export const ImageView = ({ itemId, idx, images, deleteFunc, idxCb, ...rest }: ImageViewProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const queryClient = useQueryClient();
 

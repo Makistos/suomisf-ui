@@ -814,3 +814,20 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     padding: 2rem;
     background: var(--surface-ground);
 }
+
+.magazine-page .p-speeddial-button {
+    width: 3rem;
+    height: 3rem;
+}
+
+.magazine-page .fixed-dial {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+.magazine-page {
+    min-width: 50%;
+    padding: 2rem;
+    background: var(--surface-ground);
+}

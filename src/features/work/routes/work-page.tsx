@@ -14,8 +14,6 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SelectButton } from 'primereact/selectbutton';
 import axios from "axios";
-import { Divider } from "primereact/divider";
-import { Toolbar } from "primereact/toolbar";
 
 import { Edition, EditionDetails } from "@features/edition";
 import { getCurrenUser } from "@services/auth-service";
@@ -83,7 +81,7 @@ const renderListItem = (cb: any, onUpload: any, editions: Edition[],
 
     const edition = combineEditions(editions, user);
 
-    const deleteImage = useCallback((itemId: number, imageId: number) => {
+    const deleteImage = useCallback((itemId: number | string, imageId: number) => {
         deleteEditionImage(itemId, imageId);
         onUpload();
     }, [onUpload]);

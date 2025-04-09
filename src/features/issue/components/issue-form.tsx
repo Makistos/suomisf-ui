@@ -153,7 +153,7 @@ const FormObject = ({ onSubmit, data, sizes }: FormObjectProps) => {
         <div className="card mt-3">
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(
-                    (value) => onSubmit({ onSuccess: () => methods.reset() }))}>
+                    (values) => onSubmit(values, { onSuccess: () => methods.reset() }))}>
                     <div className="formgrid grid">
                         <div className="field col-12">
                             <FormInputText

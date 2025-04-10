@@ -387,23 +387,16 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
                                         </div>
                                     </div>
                                 )}
+                                <div className="mt-4 pt-3 border-top-1 surface-border">
+                                    <div className="flex flex-wrap gap-3">
+                                        <Link to={`/magazines/${data.magazine.id}`}
+                                            className="no-underline text-primary hover:text-primary-700 flex align-items-center gap-2"
+                                        >Takaisin</Link>
+                                    </div>
+                                </div>
 
                             </Card>
                         </div>
-                        {/* <div>
-                            {isAdmin(user) &&
-                                <>
-                                    <Button icon="pi pi-pencil" tooltip="Muokkaa" className="p-button-text" onClick={() => onDialogShow()} />
-                                    <Button icon="pi pi-trash" tooltip="Poista" className="p-button-text"
-                                        onClick={confirmDelete}
-                                    />
-                                    <Button icon="fa fa-list-ul" tooltip="Artikkelit ja novellit"
-                                        className='p-button-text'
-                                        onClick={() => onShortsShow()}
-                                    />
-                                </>
-                            }
-                        </div> */}
                         <div className="col-12">
                             <TabView className="shadow-2" scrollable={true}>
                                 <TabPanel header="Sisältö" leftIcon="pi pi-book">

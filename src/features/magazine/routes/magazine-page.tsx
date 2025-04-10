@@ -185,10 +185,6 @@ export const MagazinePage = () => {
                                 <div className="grid col-12">
                                     <h1 className="mt-1 mb-0">{data.name}</h1>
                                 </div>
-                                <div className="grid col-12">
-                                    <h2 className="mt-1 mb-0">
-                                        <Link to={data.link}>{data.link}</Link></h2>
-                                </div>
                                 <div className='col-12 p-0'>{data.type.name}</div>
                                 <div className='col-12 p-0'>
                                     {data.issn && (
@@ -202,6 +198,15 @@ export const MagazinePage = () => {
                                     }
                                 </div>
                             </div>
+                            {data.link && (
+                                <div className="mt-4 pt-3 border-top-1 surface-border">
+                                    <div className="flex flex-wrap gap-3">
+                                        <Link to={data.link}
+                                            className="no-underline text-primary hover:text-primary-700 flex align-items-center gap-2"
+                                        >{data.name}</Link>
+                                    </div>
+                                </div>
+                            )}
                         </Card>
                     </div>
                     {data.issues && data.issues.length > 0 && (

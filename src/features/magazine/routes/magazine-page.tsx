@@ -209,22 +209,36 @@ export const MagazinePage = () => {
                             <TabView className="shadow-2">
                                 <TabPanel header="Lehdet" leftIcon="pi pi-book">
                                     <div className="card">
-                                        {data.issues.sort((a, b) => {
-                                            if (a.year !== b.year) {
-                                                return a.year - b.year;
-                                            }
-                                            if (a.number !== b.number) {
-                                                return a.number - b.number;
-                                            }
-                                            return 0;
-                                        })
-                                            .map((issue) => (
+                                        {Object.entries(
+                                            data.issues
+                                                .sort((a, b) => {
+                                                    if (a.year !== b.year) {
+                                                        return a.year - b.year;
+                                                    }
+                                                    if (a.number !== b.number) {
+                                                        return a.number - b.number;
+                                                    }
+                                                    return 0;
+                                                })
+                                                .reduce((acc, issue) => {
+                                                    const year = issue.year.toString();
+                                                    if (!acc[year]) acc[year] = [];
+                                                    acc[year].push(issue);
+                                                    return acc;
+                                                }, {} as Record<string, typeof data.issues>)
+                                        ).map(([year, issues]) => (
+                                            <div key={year}>
                                                 <div>
-                                                    <Link to={`/issues/${issue.id}`}>{issue.cover_number}</Link>
-                                                    {issue.title && <span>: {issue.title}</span>}
+                                                    <b className="mr-2">{year} </b>
+                                                    {issues.map((issue) => (
+                                                        <span key={issue.id} style={{ marginRight: '1rem' }}>
+                                                            <Link to={`/issues/${issue.id}`}>{issue.cover_number}</Link>
+                                                            {issue.title && <span>: {issue.title}</span>}
+                                                        </span>
+                                                    ))}
                                                 </div>
-                                            ))
-                                        }
+                                            </div>
+                                        ))}
                                     </div>
                                 </TabPanel>
                                 <TabPanel header="Kannet" leftIcon="pi pi-image">

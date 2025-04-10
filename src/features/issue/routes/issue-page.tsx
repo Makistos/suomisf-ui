@@ -50,12 +50,14 @@ const getShortTypes = (shorts: Short[]) => {
     return types;
 
 }
-
 const IssueInfo = ({ issue }: IssueInfoProps) => {
+    console.log(issue)
     return (
         <div className="col-12 lg:col-9 mb-3">
-            <h1 className="mt-0 mb-3 text-2xl sm:text-3xl lg:text-4xl uppercase" style={{ lineHeight: '1.1' }}>
-                {issue.magazine.name} {issue.cover_number} {issue.title}
+            <h1 className="mt-0 text-2xl sm:text-3xl lg:text-4xl uppercase" style={{ lineHeight: '1.1' }}>
+                {issue.magazine.name} {issue.cover_number}
+                <br />
+                <div className="mt-0 text-base sm:txt-lg ml-1">{issue.title && issue.title}</div>
             </h1>
             {issue.editors && issue.editors.length > 0 && (
                 <div className="mb-2">
@@ -331,7 +333,6 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
                                     <div className="col-12 lg:col-9">
                                         <div className="flex-column">
                                             <IssueInfo issue={data} />
-
                                         </div>
                                     </div>
                                     <div className="col-12 lg:col-3">

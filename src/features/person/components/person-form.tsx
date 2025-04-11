@@ -131,8 +131,13 @@ const FormObject = ({ onSubmit, methods }: FormObjectProps) => {
         setFilteredCountries(response.data);
     }
 
+    const renderSourceHeader = () => {
+        return (<></>)
+    }
+    const sourceHeader = renderSourceHeader();
     const required_rule: RegisterOptions = { required: "Pakollinen kenttä" };
     const editor_style: React.CSSProperties = { height: '320px' };
+    const source_style: React.CSSProperties = { height: '100px' };
 
     return (
         <div className="card mt-3">
@@ -217,6 +222,14 @@ const FormObject = ({ onSubmit, methods }: FormObjectProps) => {
                                 name="bio"
                                 methods={methods}
                                 style={editor_style}
+                                disabled={disabled}
+                            />
+                        </div>
+                        <div className='field col-12'>
+                            <FormInputText
+                                name="bio_src"
+                                methods={methods}
+                                label="Lähde"
                                 disabled={disabled}
                             />
                         </div>

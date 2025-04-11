@@ -201,7 +201,7 @@ export const MagazinePage = () => {
                             {data.link && (
                                 <div className="mt-4 pt-3 border-top-1 surface-border">
                                     <div className="flex flex-wrap gap-3">
-                                        <Link to={data.link}
+                                        <Link target="_blank" to={data.link}
                                             className="no-underline text-primary hover:text-primary-700 flex align-items-center gap-2"
                                         >{data.name}</Link>
                                     </div>

@@ -51,7 +51,7 @@ export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseF
         if (b.type?.id === 2) return 1; // Subgenre
         if (a.type?.id === 3) return -1; // Style
         if (b.type?.id === 3) return 1; // Style
-        return -1;
+        return 1;
     }
 
     const filterTags = (tag: SfTag) => {

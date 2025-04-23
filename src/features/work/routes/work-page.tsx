@@ -41,6 +41,7 @@ import { TabView, TabPanel } from "primereact/tabview";
 import { TagGroup } from "@features/tag";
 import { GenreGroup } from "@features/genre";
 import { AwardList, AwardPanel } from "@features/award";
+import { AwardedForm } from "@features/award/components/awarded-form";
 export interface WorkProps {
     work: Work,
     detailLevel?: string,
@@ -138,6 +139,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     const toastRef = useRef<Toast>(null);
     const navigate = useNavigate();
     const [detailLevel, setDetailLevel] = useState("condensed");
+    const [isAwardsFormVisible, setAwardsFormVisible] = useState(false);
 
     try {
         workId = selectId(params, id);
@@ -225,23 +227,6 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             }
         },
         {
-            label: 'Uusi painos',
-            icon: 'fa-solid fa-file-circle-plus',
-            command: () => {
-                setEditionFormVisible(true);
-            }
-        },
-        {
-            label: 'Muokkaa novelleja',
-            icon: 'fa-solid fa-list-ul',
-            disabled: !(data !== undefined && data !== null &&
-                data.work_type.id === 2),
-            command: () => {
-                setIsShortsFormVisible(true);
-
-            }
-        },
-        {
             label: "Poista",
             icon: 'fa-solid fa-trash',
             disabled: !(data !== undefined && data !== null &&
@@ -264,6 +249,30 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                         })
                     }
                 })
+            }
+        },
+        {
+            label: 'Palkinnot',
+            icon: 'fa-solid fa-trophy',
+            command: () => {
+                setAwardsFormVisible(true);
+
+            }
+        },
+        {
+            label: 'Uusi painos',
+            icon: 'fa-solid fa-file-circle-plus',
+            command: () => {
+                setEditionFormVisible(true);
+            }
+        },
+        {
+            label: 'Muokkaa novelleja',
+            icon: 'fa-solid fa-list-ul',
+            disabled: !(data !== undefined && data !== null &&
+                data.work_type.id === 2),
+            command: () => {
+                setIsShortsFormVisible(true);
 
             }
         }
@@ -370,6 +379,14 @@ export const WorkPage = ({ id }: WorkPageProps) => {
 
     const onShortsFormHide = () => {
         setIsShortsFormVisible(false);
+        queryClient.invalidateQueries({ queryKey: ["work", workId] });
+    }
+
+    const onAwardsFormShow = () => {
+        setAwardsFormVisible(true);
+    }
+    const onAwardsFormHide = () => {
+        setAwardsFormVisible(false);
         queryClient.invalidateQueries({ queryKey: ["work", workId] });
     }
 
@@ -577,7 +594,17 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                         >
                             <WorkShortsPicker id={workId} onClose={() => onShortsFormHide()} />
                         </Dialog>
-
+                        <Dialog maximizable blockScroll
+                            className="w-full xl:w-6"
+                            header="Palkinnot" visible={isAwardsFormVisible}
+                            onShow={() => onAwardsFormShow()}
+                            onHide={() => onAwardsFormHide()}
+                            closeOnEscape
+                        >
+                            <AwardedForm
+                                workId={data.id.toString()}
+                            />
+                        </Dialog>
                     </div>
                 )
             )}

@@ -1,8 +1,8 @@
 import { useForm } from '@tanstack/react-form'
 import { useQuery } from '@tanstack/react-query'
 import { ProgressSpinner } from 'primereact/progressspinner';
-import { AwardCategory, Awarded, AwardedFormData } from '../types';
-import { getApiContent } from '@services/user-service';
+import { Award, AwardCategory, Awarded, AwardedFormData, AwardedRowData } from '../types';
+import { getApiContent, postApiContent } from '@services/user-service';
 import { useEffect, useMemo, useState } from 'react';
 import { User } from '@features/user';
 import { getCurrenUser } from '@services/auth-service';
@@ -16,25 +16,14 @@ import { FormInputNumber } from '@components/forms/field/form-input-number';
 interface AwardFormProps {
     workId?: string,
     personId?: string,
-    storyId?: string
+    shortId?: string
 }
-
-const defaultValues = {
-    id: 0,
-    award: { id: 0, name: "" },
-    year: 0,
-    category: { id: 0, name: "" },
-    work: { id: 0, title: "" },
-    person: { id: 0, name: "" },
-    story: { id: 0, title: "" }
-
-} as AwardedFormData;
 
 const fetchWorkAwarded = async (id: string | null, user: User): Promise<Awarded[]> => {
     if (id === null) {
         return [];
     }
-    const response = await getApiContent('work/' + id + '/awarded', user)
+    const response = await getApiContent('works/' + id + '/awarded', user)
         .then(response => response.data)
         .catch((error) =>
             console.error(error));
@@ -52,7 +41,18 @@ const fetchPersonAwarded = async (id: string | null, user: User): Promise<Awarde
     return response;
 }
 
-export const AwardedForm = ({ workId, personId, storyId }: AwardFormProps) => {
+const fetchShortAwarded = async (id: string | null, user: User): Promise<Awarded[]> => {
+    if (id === null) {
+        return [];
+    }
+    const response = await getApiContent('shorts/' + id + '/awarded', user)
+        .then(response => response.data)
+        .catch((error) =>
+            console.error(error));
+    return response;
+}
+
+export const AwardedForm = ({ workId, personId, shortId: storyId }: AwardFormProps) => {
     const user = useMemo(() => getCurrenUser(), []);
     const itemType = workId ? "work" : personId ? "person" : "story";
     const typeId = workId ? 1 : personId ? 0 : 2;
@@ -63,6 +63,16 @@ export const AwardedForm = ({ workId, personId, storyId }: AwardFormProps) => {
     if (!thisId || user === null) {
         return <div>Invalid ID</div>
     }
+
+    const defaultValues = {
+        id: 0,
+        award: { id: 0, name: "" },
+        year: 0,
+        category: { id: 0, name: "", type: 0 },
+        person: { id: itemType === "person" ? thisId : 0, name: "" },
+        work: { id: itemType === "work" ? thisId : 0, title: "" },
+        story: { id: itemType === "story" ? thisId : 0, title: "" }
+    } as AwardedRowData;
 
     useEffect(() => {
         const getCategories = async (user: User) => {
@@ -85,36 +95,48 @@ export const AwardedForm = ({ workId, personId, storyId }: AwardFormProps) => {
         queryKey: ['awarded', thisId],
         queryFn: async () => {
             return itemType == "work" ? (await fetchWorkAwarded(thisId, user)).filter((awarded: Awarded) => awarded.category.type === typeId) :
-                itemType == "person" ? (await fetchPersonAwarded(thisId, user)).filter((awarded: Awarded) => awarded.category.type === typeId) : [];
+                itemType == "person" ? (await fetchPersonAwarded(thisId, user)).filter((awarded: Awarded) => awarded.category.type === typeId) :
+                    itemType == "story" ? (await fetchShortAwarded(thisId, user)).filter((awarded: Awarded) => awarded.category.type === typeId) : [];
         }
     })
 
+    const findCatIndex = (id: number) => {
+        const index = categories?.findIndex((cat) => cat.id === id);
+        if (index === undefined || index === -1) {
+            return { id: 0, name: "" };
+        }
+        return index;
+    }
+
     const form = useForm({
         defaultValues: {
+            id: data ? thisId : 0,
+            type: typeId,
             awards:
                 data?.map((awarded: Awarded) => ({
-                    id: Number(awarded.id || 0),
+                    id: Number(awarded.id || 1),
                     year: Number(awarded.year || 0),
                     award: awarded.award,
-                    person: awarded.person,
-                    work: awarded.work,
                     category: awarded.category,
+                    person: awarded.person || { id: thisId, name: "" },
+                    work: awarded.work,
                     story: awarded.story
-                })) ??
+                })) as AwardedRowData[]
+                ??
                 [{
                     id: 0,
-                    year: 0,
-                    award: { id: 0, name: "", description: "", domestic: false, categories: [], winners: [] },
-                    person: { id: 0, name: "" },
-                    work: { id: 0, title: "" },
-                    category: { id: 0, name: "" },
-                    story: { id: 0, title: "" }
-
-                }],
+                    year: 1,
+                    award: { id: 0, name: "", description: "", domestic: false, categories: [] } as Pick<Award, 'id' | 'name' | 'description' | 'domestic'>,
+                    category: { id: 0, name: '', type: 0 } as Pick<AwardCategory, 'id' | 'name' | 'type'>,
+                    person: { id: itemType === "person" ? thisId : 0, name: "" },
+                    work: { id: itemType === "work" ? thisId : 0, title: "" },
+                    story: { id: itemType === "story" ? thisId : 0, title: "" }
+                }] as AwardedRowData[],
         },
         onSubmit: async ({ value }) => {
+            const response = await postApiContent('awarded', value, user);
             console.log(value);
-        },
+        }
     })
 
     const filterAwards = async (event: any) => {
@@ -128,6 +150,7 @@ export const AwardedForm = ({ workId, personId, storyId }: AwardFormProps) => {
     if (!data || isLoading) {
         return <ProgressSpinner />
     }
+    console.log(data);
     return (
         <div className="card mt-3">
             <form
@@ -137,11 +160,35 @@ export const AwardedForm = ({ workId, personId, storyId }: AwardFormProps) => {
                     form.handleSubmit();
                 }}
             >
+                <form.Field
+                    name="id"
+                    children={(field) => {
+                        return (
+                            <InputText
+                                value={thisId}
+                                name="id"
+                                type="hidden"
+                            />
+                        )
+                    }}
+                />
+                <form.Field
+                    name="type"
+                    children={(field) => {
+                        return (
+                            <InputText
+                                value={typeId.toString()}
+                                name="id"
+                                type="hidden"
+                            />
+                        )
+                    }}
+                />
                 <form.Field name="awards" mode="array">
                     {(field) => {
                         return (
                             <div className="mb-2">
-                                {field.state.value.map((_, i) => (
+                                {field.state.value?.map((_: any, i: number) => (
                                     <div key={`award-row-${i}`} className='grid gap-1'>
                                         <div className='col'>
                                             <form.Field key={`awardyear-${i}`} name={`awards[${i}].year`}>
@@ -163,17 +210,22 @@ export const AwardedForm = ({ workId, personId, storyId }: AwardFormProps) => {
                                             </form.Field>
                                         </div>
                                         <div className='col'>
-                                            <form.Field key={`award-${i}`} name={`awards[${i}].award`}>
+                                            <form.Field
+                                                key={`award-${i}`}
+                                                name={`awards[${i}].award`}>
                                                 {(subField) => {
                                                     return (
                                                         <span className="p-float-label">
                                                             <AutoComplete
-                                                                value={subField.state.value.name}
-                                                                id={subField.state.value.id.toString()}
+                                                                value={subField.state.value}
+                                                                id={subField.state.value.id?.toString()}
                                                                 field="name"
                                                                 completeMethod={filterAwards}
                                                                 suggestions={filteredAwards}
-                                                                onSelect={(e) => { subField.setValue(e.value) }}
+                                                                onSelect={(e) => { subField.handleChange(e.value) }}
+                                                                onChange={(e) => {
+                                                                    subField.handleChange(e.value);
+                                                                }}
                                                                 minLength={3}
                                                                 placeholder="Palkinto"
                                                                 tooltip="Palkinto"
@@ -188,19 +240,24 @@ export const AwardedForm = ({ workId, personId, storyId }: AwardFormProps) => {
                                             </form.Field>
                                         </div>
                                         <div className='col'>
-                                            <form.Field key={`category-${i}`} name={`awards[${i}].category`}>
+                                            <form.Field
+                                                key={`category-${i}`}
+                                                name={`awards[${i}].category`}>
                                                 {(subField) => {
                                                     return (
                                                         <span className='p-float-label'>
                                                             <Dropdown
-                                                                options={categories ?? []}
+                                                                options={categories}
                                                                 placeholder='Kategoria'
-                                                                id={subField.state.value.id.toString()}
-                                                                value={subField.state.value.id}
+                                                                // id={subField.state.value.id.toString()}
+                                                                id={subField.name}
+                                                                value={subField.state.value}
                                                                 optionLabel="name"
-                                                                optionValue="id"
-                                                                name="category"
+                                                                // optionValue="id"
+                                                                // name="category"
                                                                 className='w-full'
+                                                                onChange={(e) => subField.handleChange(e.value)}
+                                                                onBlur={subField.handleBlur}
                                                             />
                                                             <label htmlFor="category">Kategoria</label>
                                                         </span>
@@ -208,9 +265,11 @@ export const AwardedForm = ({ workId, personId, storyId }: AwardFormProps) => {
                                                 }}
                                             </form.Field>
                                         </div>
-                                        <Button onClick={() => field.removeValue(i)} type="button">
-                                            Poista
-                                        </Button>
+                                        <Button
+                                            onClick={() => field.removeValue(i)} type="button"
+                                            icon="pi pi-trash"
+                                            className='align-items-center mt-2 mb-2 h-3rem'
+                                        />
                                     </div>
                                 ))}
                                 <Button

@@ -5,6 +5,7 @@ import { Genre } from "../../genre/types";
 import { Contribution, ContributionSimple } from '../../../types/contribution';
 import { SfTag } from "../../tag";
 import { Language } from "../../../types/language";
+import { Awarded } from "@features/award";
 
 
 export interface ShortType {
@@ -23,6 +24,7 @@ export interface Short {
     genres: Genre[];
     contributors: Contribution[];
     tags: SfTag[];
+    awards: Awarded[];
 }
 
 export interface ShortForm {

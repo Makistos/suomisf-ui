@@ -27,13 +27,18 @@ export interface Awarded {
     story: Pick<Short, 'id' | 'title'>
 }
 
-export interface AwardedFormData {
+export interface AwardedRowData {
     [index: string]: any,
     id: number,
     year: number,
     award: Omit<Award, 'winners'>,
-    person: Person,
-    work: Work,
-    category: AwardCategory,
+    person: Pick<Person, 'id' | 'name' | 'alt_name'>,
+    work: Pick<Work, 'id' | 'title' | 'author_str'>,
+    category: Pick<AwardCategory, 'id' | 'name' | 'type'>,
     story: Pick<Short, 'id' | 'title'>
+}
+export interface AwardedFormData {
+    id: number,
+    type: number,
+    awarded: AwardedRowData[]
 }

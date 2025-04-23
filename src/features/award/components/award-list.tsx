@@ -7,7 +7,7 @@ import { classNames } from "primereact/utils";
 import { Awarded } from "../types";
 
 export interface AwardedProps {
-    awards: Awarded[];
+    awards: Awarded[] | undefined;
 }
 
 export const AwardList = ({ awards }: AwardedProps) => {

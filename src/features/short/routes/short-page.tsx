@@ -4,7 +4,7 @@ import { LinkList } from "@components/link-list"
 import { GenreGroup } from "@features/genre"
 import { TagGroup } from "@features/tag"
 import { getCurrenUser } from "@services/auth-service"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { selectId } from "@utils/select-id"
 import { ProgressSpinner } from "primereact/progressspinner"
 import { useEffect, useMemo, useRef, useState } from "react"
@@ -21,6 +21,11 @@ import { TabPanel, TabView } from "primereact/tabview"
 import { ShortDetails } from "../components/short-defails"
 import { on } from "stream"
 import { editionIsOwned } from "@features/edition/utils/edition-is-owned"
+import { confirmDialog } from "primereact/confirmdialog"
+import { deleteApiContent, HttpStatusResponse } from "@services/user-service"
+import { set } from "lodash"
+import { AwardedForm } from "@features/award/components/awarded-form"
+import { AwardList } from "@features/award"
 
 interface ShortPageProps {
     id: string | null
@@ -31,6 +36,7 @@ export const ShortPage = (props: ShortPageProps) => {
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [shortFormVisible, setShortFormVisible] = useState(false);
     const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+    const [isAwardsFormVisible, setAwardsFormVisible] = useState(false);
     const params = useParams();
     let shortId = "";
     const toastRef = useRef<Toast>(null);
@@ -61,12 +67,69 @@ export const ShortPage = (props: ShortPageProps) => {
         }
     }, [data])
 
+    const deleteShort = (id: number) => {
+        setQueryEnabled(false);
+        const retval = deleteApiContent('shorts/' + id);
+        setQueryEnabled(true);
+        return retval;
+    }
+
+    const { mutate } = useMutation({
+        mutationFn: (values: number) => deleteShort(values),
+        onSuccess: (data: HttpStatusResponse) => {
+            const msg = data.response;
+            if (data.status === 200) {
+                navigate(-1);
+                toastRef.current?.show({ severity: 'success', summary: 'Novelli poistettu' })
+            } else {
+                toastRef.current?.show({ severity: 'error', summary: 'Novellin poisto ei onnistunut', detail: msg })
+            }
+        },
+        onError: (error: any) => {
+            const errMsg = JSON.parse(error.response).data["msg"];
+            console.log(errMsg);
+            toastRef.current?.show({ severity: 'error', summary: 'Novellin poistaminen ei onnistunut', detail: errMsg })
+        }
+    })
     const dialItems = [
         {
             label: 'Muokkaa',
             icon: 'pi pi-pencil',
             command: () => setShortFormVisible(true)
         },
+        {
+            label: 'Palkinnot',
+            icon: 'fa-solid fa-trophy',
+            command: () => {
+                setAwardsFormVisible(true);
+
+            }
+        },
+        {
+            label: "Poista",
+            icon: 'fa-solid fa-trash',
+            disabled: !(data !== undefined && data !== null &&
+                data.editions !== null),
+            command: () => {
+                confirmDialog({
+                    message: 'Haluatko varmasti poistaa teoksen?',
+                    header: 'Varmistus',
+                    icon: 'pi pi-exclamation-triangle',
+                    acceptClassName: 'p-button-danger',
+                    accept: () => {
+                        if (data) {
+                            mutate(data.id);
+                        }
+                    },
+                    reject: () => {
+                        toastRef.current?.show({
+                            severity: 'info',
+                            summary: 'Teosta ei poistettu'
+                        })
+                    }
+                })
+            }
+        }
     ]
 
     const onShow = () => {
@@ -88,6 +151,15 @@ export const ShortPage = (props: ShortPageProps) => {
         queryClient.invalidateQueries({ queryKey: ['short', shortId] });
         navigate(-1);
     }
+
+    const onAwardsFormShow = () => {
+        setAwardsFormVisible(true);
+    }
+    const onAwardsFormHide = () => {
+        setAwardsFormVisible(false);
+        queryClient.invalidateQueries({ queryKey: ["short", shortId] });
+    }
+
     if (!data) return null;
 
     return (
@@ -182,6 +254,15 @@ export const ShortPage = (props: ShortPageProps) => {
                                         </div>)}
                                 </div>
                             </TabPanel>
+                            {/* Add new Awards tab */}
+                            {data.awards && data.awards.length > 0 && (
+                                <TabPanel header="Palkinnot" leftIcon="pi pi-trophy">
+                                    <div className="card">
+                                        <AwardList awards={data.awards} />
+                                    </div>
+                                </TabPanel>
+                            )}
+
                         </TabView>
                     </div>
                     <Dialog maximizable blockScroll
@@ -194,6 +275,17 @@ export const ShortPage = (props: ShortPageProps) => {
                             onSubmitCallback={onNewShort}
                             onClose={() => onHide()}
                             onDelete={() => shortDeleted()}
+                        />
+                    </Dialog>
+                    <Dialog maximizable blockScroll
+                        className="w-full xl:w-6"
+                        header="Palkinnot" visible={isAwardsFormVisible}
+                        onShow={() => onAwardsFormShow()}
+                        onHide={() => onAwardsFormHide()}
+                        closeOnEscape
+                    >
+                        <AwardedForm
+                            shortId={data.id.toString()}
                         />
                     </Dialog>
 

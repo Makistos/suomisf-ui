@@ -32,6 +32,7 @@ import { BookSeriesList } from '@features/bookseries';
 import { getCountryCode } from '../../../utils/country-utils';
 import { Toast } from 'primereact/toast';
 import { PersonDetails } from '../components/person-details';
+import { AwardedForm } from '@features/award/components/awarded-form';
 
 const baseURL = "people/";
 
@@ -142,14 +143,14 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         return data.works.map(work => work.tags).flat();
     }
 
-    const fetchWorkAwards = async (id: string, user: User | null): Promise<Awarded[]> => {
-        const url = baseURL + id + "/awards";
+    const fetchPersonAwards = async (id: string, user: User | null): Promise<Awarded[]> => {
+        const url = baseURL + id + "/awarded";
         const response = await getApiContent(url, user).then(response =>
             response.data
         )
             .catch((error) => console.log(error));
         //console.log(response);
-        return response;
+        return response == undefined ? [] : response;
     }
 
     const getWorkAwards = async () => {
@@ -160,7 +161,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         //     .filter(work => work.awards && work.awards.length > 0)
         //     .map(work => work.awards).flat()
         //     .sort((a: Awarded, b: Awarded) => a.year < b.year ? -1 : 1);
-        const sorted = fetchWorkAwards(thisId, user).then((response) => {
+        const sorted = fetchPersonAwards(thisId, user).then((response) => {
             const sortedAwards = response.sort((a: Awarded, b: Awarded) => a.year < b.year ? -1 : 1);
             return sortedAwards;
         }, onError => {
@@ -171,7 +172,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
 
     const { data: awards } = useQuery({
         queryKey: ["workAwards", thisId],
-        queryFn: () => fetchWorkAwards(thisId, user),
+        queryFn: () => fetchPersonAwards(thisId, user),
         enabled: queryEnabled,
         // onSuccess: (data: Awarded[]) => {
         //     setWorkAwards(data);
@@ -406,8 +407,17 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                         >
                             <PersonForm data={!formData || !editPerson ? null : formData} onSubmitCallback={onDialogHide} />
                         </Dialog>
-
-                        {/* ... */}
+                        <Dialog maximizable blockScroll
+                            className="w-full lg:w-6"
+                            header="Palkintojen muokkaus" visible={isAwardsVisible}
+                            onShow={() => onAwardsShow()}
+                            onHide={() => onAwardsHide()}
+                            closeOnEscape
+                        >
+                            <AwardedForm
+                                personId={data.id.toString()}
+                            />
+                        </Dialog>
                     </div>
                 )
             )}

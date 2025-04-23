@@ -10,7 +10,7 @@ export const AwardPanel = ({ awards }: AwardedProps) => {
     const op = useRef<OverlayPanel>(null);
 
     const buttonHeader = () => {
-        return "Palkinnot (" + awards.length.toString() + ")";
+        return "Palkinnot (" + awards?.length.toString() + ")";
     };
     if (!awards)
         return null;

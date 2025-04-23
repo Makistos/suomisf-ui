@@ -11,9 +11,12 @@ import { isAdmin } from "@features/user";
 import { HttpStatusResponse } from "@services/user-service";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "primereact/skeleton";
+import { ProgressSpinner } from "primereact/progressspinner";
+import { getPersonChanges } from "@api/people/get-person-changes";
 
 interface WorkChangesProps {
-    workId: number
+    entityId: number,
+    entity: "work" | "person"
 }
 
 type CombinedChanges = {
@@ -30,7 +33,7 @@ type SubChanges = {
     oldvalue: string,
 }
 
-export const WorkChanges = ({ workId }: WorkChangesProps) => {
+export const EntityChanges = ({ entityId, entity }: WorkChangesProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [expandedRows, setExpandedRows] = useState<DataTableExpandedRows | LogItem[]>([]);
 
@@ -46,8 +49,12 @@ export const WorkChanges = ({ workId }: WorkChangesProps) => {
     }
 
     const { isLoading, data } = useQuery({
-        queryKey: ["work", workId, "changes"],
-        queryFn: () => getWorkChanges(workId, user).then(d => groupedChanges(d)),
+        queryKey: ["changes", entity, entityId],
+        queryFn: () =>
+            entity === "work" ?
+                getWorkChanges(entityId, user).then(d => groupedChanges(d)) :
+                getPersonChanges(entityId, user).then(d => groupedChanges(d))
+
     })
 
     const groupedChanges = (data: LogItem[]): CombinedChanges[] => {
@@ -96,7 +103,7 @@ export const WorkChanges = ({ workId }: WorkChangesProps) => {
         mutationFn: (id: number) => deleteLogItem(id),
         onSuccess: (data: HttpStatusResponse) => {
             if (data.status === 200) {
-                queryClient.invalidateQueries({ queryKey: ['changes', workId] });
+                queryClient.invalidateQueries({ queryKey: ['changes', entity, entityId] });
             }
         },
         onError: (error: any) => {
@@ -127,6 +134,7 @@ export const WorkChanges = ({ workId }: WorkChangesProps) => {
         return data.action === "Päivitys";
     }
 
+    console.log(data)
     return (
         <>
             {

@@ -137,7 +137,8 @@ interface ShortsPickerProps {
 const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
   const user = getCurrenUser();
   // Person selected in the dropdown
-  const [selectedPerson, setSelectedPerson] = useState<Person | string | null>(null);
+  //const [selectedPerson, setSelectedPerson] = useState<Person | string | null>(null);
+  const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
   // Shorts written by selected person
   const [personShorts, setPersonShorts] = useState<Short[]>([]);
   // Shorts that have been selected for this item
@@ -145,7 +146,9 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
   // Short selected in the dropdown
   const [selectedShort, setSelectedShort] = useState<Short | null>(null);
   // People matching search query
-  const [filteredPeople, filterPeople] = useFilterPeople();
+  // const [filteredPeople, filterPeople] = useFilterPeople();
+  const [filteredPeople, setFilteredPeople] = useState<any>([]);
+
   const [hasChanged, setHasChanged] = useState(false);
   const [isShortFormVisible, setIsShortFormVisible] = useState(false);
   const [filter, setFilter] = useState('');
@@ -165,6 +168,16 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
   useEffect(() => {
     setSelectedItemShorts(source);
   }, [source])
+
+  async function filterPeople(event: any) {
+    const url =
+      "filter/people/" + event.query;
+    // console.log("Person search url:" + url);
+    const response = await getApiContent(url, user);
+    const p = response.data;
+    setFilteredPeople(p);
+    return p;
+  }
 
   const addToSelected = () => {
     if (selectedShort === null) {
@@ -299,13 +312,14 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
             <span className="p-float-label mr-3">
               <AutoComplete
                 field="name"
-                delay={300}
+                delay={500}
                 minLength={2}
                 name="people"
-                value={filter}
+                //value={filter}
+                value={selectedPerson?.name}
                 suggestions={filteredPeople}
                 completeMethod={filterPeople}
-                onChange={(e) => setFilter(e.value.name)}
+                //onChange={(e) => setFilter(e.value.name)}
                 onSelect={(e) => setSelectedPerson(e.value)}
                 onClear={() => clearPerson()}
                 itemTemplate={personTemplate}

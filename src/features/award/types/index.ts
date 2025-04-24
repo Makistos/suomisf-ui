@@ -22,9 +22,9 @@ export interface Awarded {
     year: number,
     award: Omit<Award, 'winners'>,
     person: Pick<Person, 'id' | 'name' | 'alt_name'>,
-    work: Pick<Work, 'id' | 'title' | 'author_str'>,
+    work: Pick<Work, 'id' | 'title' | 'orig_title' | 'author_str' | 'contributions'>,
     category: AwardCategory,
-    story: Pick<Short, 'id' | 'title'>
+    story: Pick<Short, 'id' | 'title' | 'contributors' | 'orig_title'>
 }
 
 export interface AwardedRowData {

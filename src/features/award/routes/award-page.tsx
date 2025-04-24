@@ -10,6 +10,7 @@ import { User } from "../../user";
 import { Award, Awarded } from "../types";
 import { selectId } from "../../../utils";
 import { Column } from 'primereact/column';
+import { LinkList } from '@components/link-list';
 
 interface AwardPageProps {
     id: string | null
@@ -92,10 +93,32 @@ export const AwardPage = ({ id }: AwardPageProps) => {
                             {awarded.work.author_str}
                         </b>
                         : <Link to={`/works/${awarded.work.id}`}>{awarded.work.title}</Link>
+                        {awarded.work.orig_title !== awarded.work.title ?
+                            <>&nbsp; ({awarded.work.orig_title})</> : ""}
                     </>
                 )}
                 {awarded.story !== null &&
-                    <>{awarded.story.title}</>}
+                    <>
+                        <b><LinkList path="people"
+                            separator=", "
+                            items={awarded.story.contributors
+                                .filter((c) => c.role.id === 1)
+                                .filter((c, index, self) =>
+                                    index === self.findIndex(t => t.person.id === c.person.id))
+                                .map((item) => ({
+                                    id: item.person['id'],
+                                    name: item.person['alt_name']
+                                        ? item.person['alt_name'] : item.person['name'],
+                                    description: (item.description && item.description !== null)
+                                        ? item.description : ""
+                                }))} /></b>:&nbsp;
+
+                        <Link to={`/shorts/${awarded.story.id}`}>{awarded.story.title}</Link>
+                        {awarded.story.orig_title !== awarded.story.title ?
+                            <>&nbsp; ({awarded.story.orig_title})</> : ""}
+                    </>
+                }
+
             </div>
         )
     }

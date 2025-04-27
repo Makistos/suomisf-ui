@@ -81,6 +81,7 @@ export const WorkShortsPicker = ({ id, onClose }: PickerProps) => {
     const data = { work_id: id, shorts: ids }
     const response = putApiContent('works/shorts', data, user);
     onClose();
+    queryClient.invalidateQueries({ queryKey: ['work', id] });
     return 200
   }
 

@@ -52,7 +52,7 @@ export const Home = () => {
             , <Link to={`/publishers`}>kustantajat</Link>
             , <Link to={`/bookseries`}>kirjasarjat</Link> ja <Link to={`/pubseries`}>kustantajien sarjat</Link>.
             Lisäksi täältä löytää listauksen merkittäviä SF-palkintoja
-            voittaneista teoksista, novelleista ja henkilöistä (palkintosivut tulossa) sekä <Link to={`/tags`}>asiasanalistauksen</Link>.
+            voittaneista teoksista, novelleista ja henkilöistä sekä <Link to={`/tags`}>asiasanalistauksen</Link>.
           </p>
         </div>
         <div className="latest-additions mt-8 mb-8">

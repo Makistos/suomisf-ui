@@ -232,7 +232,10 @@ a {
 }
 
 .searchItemHeader {
-  font-size: 1rem;
+  font-family: "Roboto", serif !important;
+  font-size: 1.2rem;
+  font-weight: bold;
+  line-height: 1.5rem;;
   margin-top: 0rem;
   margin-bottom: 0rem;
   padding-bottom: 0rem;
@@ -245,6 +248,7 @@ a {
   overflow-wrap: break-word;
   margin-top: 0rem;
   margin-bottom: 0rem;
+  padding-top: 0rem;
 }
 
 .p-autocomplete-panel .p-autocomplete-items .p-autocomplete-item {

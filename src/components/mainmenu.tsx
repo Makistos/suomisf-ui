@@ -173,14 +173,41 @@ export default function MainMenu() {
             tmp.innerHTML = str;
             return tmp.textContent || tmp.innerText || "";
         }
+        const itemClass = (itemType: string) => {
+            let retval = "searchItemHeader";
+            switch (itemType) {
+                case 'work':
+                    retval += " pi pi-book";
+                    break;
+                case 'person':
+                    retval += " pi pi-user";
+                    break;
+                case 'story':
+                    retval += " pi pi-script";
+                    break;
+            }
+            console.log(retval);
+            retval = "searchItemHeader ";
+            return retval;
+        }
+
         const itemTemplate = (item: any) => {
             return (
                 <div className="searchItem">
-                    <h1 className="searchItemHeader">{item.header}</h1>
+                    <span className={itemClass(item.type)}>{item.header}</span>
+                    {item.author && (
+                        <span className="searchItemAuthor">
+                            :&nbsp;{item.author}
+                        </span>
+                    )}
                     {item.description && (
-                        <p className="searchItemContents">
-                            {searchText(item.description)}
-                        </p>
+                        <>
+                            <div dangerouslySetInnerHTML={{ __html: item.description }} className="searchItemContents" >
+                                {/* <p className="searchItemContents">
+                                    {searchText(item.description)}
+                                </p> */}
+                            </div>
+                        </>
                     )}
                 </div >
             )
@@ -194,6 +221,9 @@ export default function MainMenu() {
                     break;
                 case 'person':
                     target = target + 'people/';
+                    break;
+                case 'story':
+                    target = target + 'shorts/';
                     break;
 
             }

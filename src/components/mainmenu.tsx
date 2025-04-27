@@ -9,6 +9,7 @@ import { logout } from '../services/auth-service';
 import { getApiContent } from '../services/user-service';
 import { LoginView, User } from '../features/user';
 import { RegisterView } from '@features/user/components/register-view';
+import { classNames } from 'primereact/utils';
 
 export default function MainMenu() {
     const user = useMemo(() => { return getCurrenUser() }, []);
@@ -173,32 +174,33 @@ export default function MainMenu() {
             tmp.innerHTML = str;
             return tmp.textContent || tmp.innerText || "";
         }
-        const itemClass = (itemType: string) => {
-            let retval = "searchItemHeader";
+        const itemIcon = (itemType: string) => {
+            let retval = "";
             switch (itemType) {
                 case 'work':
-                    retval += " pi pi-book";
-                    break;
+                    // return <i>(Teos)</i>
+                    return <i className={classNames('fa', 'fa-book')}></i>
                 case 'person':
-                    retval += " pi pi-user";
-                    break;
+                    // return <i>(Henkilö)</i>
+                    return <i className={classNames('fa', 'fa-user')}></i>
                 case 'story':
-                    retval += " pi pi-script";
-                    break;
+                    // return <i>(Novelli)</i>
+                    return <i className={classNames('fa', 'fa-scroll')}></i>
             }
-            console.log(retval);
-            retval = "searchItemHeader ";
             return retval;
         }
 
         const itemTemplate = (item: any) => {
             return (
                 <div className="searchItem">
-                    <span className={itemClass(item.type)}>{item.header}</span>
+                    {itemIcon(item.type)}&nbsp;
+                    <span className="searchItemHeader">{item.header}</span>
                     {item.author && (
-                        <span className="searchItemAuthor">
-                            :&nbsp;{item.author}
-                        </span>
+                        <>
+                            <span className="searchItemAuthor">
+                                :&nbsp;{item.author}
+                            </span>
+                        </>
                     )}
                     {item.description && (
                         <>

@@ -603,6 +603,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                         >
                             <AwardedForm
                                 workId={data.id.toString()}
+                                onClose={() => onAwardsFormHide()}
                             />
                         </Dialog>
                     </div>

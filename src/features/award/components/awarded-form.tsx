@@ -17,6 +17,7 @@ interface AwardFormProps {
     workId?: string,
     personId?: string,
     shortId?: string
+    onClose: () => void
 }
 
 const fetchWorkAwarded = async (id: string | null, user: User): Promise<Awarded[]> => {
@@ -52,7 +53,7 @@ const fetchShortAwarded = async (id: string | null, user: User): Promise<Awarded
     return response;
 }
 
-export const AwardedForm = ({ workId, personId, shortId: storyId }: AwardFormProps) => {
+export const AwardedForm = ({ workId, personId, shortId: storyId, onClose }: AwardFormProps) => {
     const user = useMemo(() => getCurrenUser(), []);
     const itemType = workId ? "work" : personId ? "person" : "story";
     const typeId = workId ? 1 : personId ? 0 : 2;
@@ -136,6 +137,7 @@ export const AwardedForm = ({ workId, personId, shortId: storyId }: AwardFormPro
         onSubmit: async ({ value }) => {
             const response = await postApiContent('awarded', value, user);
             console.log(value);
+            onClose();
         }
     })
 
@@ -285,10 +287,10 @@ export const AwardedForm = ({ workId, personId, shortId: storyId }: AwardFormPro
                 <form.Subscribe
                     selector={(state) => [state.canSubmit, state.isSubmitting]}
                     children={([canSubmit, isSubmitting]) => (
-                        <Button type="submit" disabled={!canSubmit}
+                        <Button type="submit"
+                            disabled={!canSubmit}
                             className='w-full justify-content-center'>
                             {isSubmitting ? '...' : 'Tallenna'}
-
                         </Button>
                     )}
                 />

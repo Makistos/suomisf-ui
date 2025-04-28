@@ -286,6 +286,7 @@ export const ShortPage = (props: ShortPageProps) => {
                     >
                         <AwardedForm
                             shortId={data.id.toString()}
+                            onClose={() => onAwardsFormHide()}
                         />
                     </Dialog>
 

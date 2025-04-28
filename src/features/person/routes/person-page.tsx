@@ -416,6 +416,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                         >
                             <AwardedForm
                                 personId={data.id.toString()}
+                                onClose={() => onAwardsHide()}
                             />
                         </Dialog>
                     </div>

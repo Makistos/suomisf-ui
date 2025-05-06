@@ -87,7 +87,7 @@ const IsbnString = ({ isbn, binding }: IsbnStringProps) => {
         //return "ISBN" + " " + isbnStr + " " + ((binding && binding.id > 1) ? binding?.name : "")
         if (isbnStr.length > 0) {
             return (
-                <>ISBN <Link to={nlLinkFromIsbn(isbnStr)}>{isbnStr}</Link> {(binding && binding.id > 1) ? binding.name : ""}
+                <>ISBN <Link target="_blank" to={nlLinkFromIsbn(isbnStr)}>{isbnStr}</Link> {(binding && binding.id > 1) ? binding.name : ""}
                 </>
             )
         } else if (binding && binding.id > 1) {

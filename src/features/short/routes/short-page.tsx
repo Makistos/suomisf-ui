@@ -244,7 +244,7 @@ export const ShortPage = (props: ShortPageProps) => {
                                             {data.issues.map(issue => (
                                                 <span
                                                     key={`issue-${issue.id}-link`}>
-                                                    <Link to={`/magazines/${issue.magazine.id}`}
+                                                    <Link to={`/issues/${issue.id}`}
                                                         key={`issue-${issue.id}-link`}>
                                                         {issue.magazine.name} {issue.cover_number}.
                                                         <br />

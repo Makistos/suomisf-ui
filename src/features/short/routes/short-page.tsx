@@ -13,7 +13,7 @@ import { ShortsForm } from "../components"
 import { Dialog } from "primereact/dialog"
 import { Toast } from "primereact/toast"
 import { SpeedDial } from "primereact/speeddial"
-import { isAdmin } from "@features/user"
+import { isAdmin, User } from "@features/user"
 import { EditionSummary } from "@features/edition"
 import { Tooltip } from "primereact/tooltip"
 import { Card } from "primereact/card"
@@ -38,26 +38,25 @@ export const ShortPage = (props: ShortPageProps) => {
     const [documentTitle, setDocumentTitle] = useDocumentTitle("");
     const [isAwardsFormVisible, setAwardsFormVisible] = useState(false);
     const params = useParams();
-    let shortId = "";
+    let thisId = "";
     const toastRef = useRef<Toast>(null);
     const navigate = useNavigate();
 
     const queryClient = useQueryClient();
 
     try {
-        shortId = selectId(params, props.id);
+        thisId = selectId(params, props.id);
     } catch (e) {
         console.log(`${e} short`);
     }
 
-    const fetchShort = async () => {
-        if (!shortId) { return null; }
-        const response = await getShort(shortId, user);
+    const fetchShort = async (id: string, user: User | null) => {
+        const response = await getShort(thisId, user);
         return response
     }
     const { isLoading, data } = useQuery({
-        queryKey: ['short', shortId],
-        queryFn: () => fetchShort(),
+        queryKey: ['short', thisId],
+        queryFn: () => fetchShort(thisId, user),
         enabled: queryEnabled
     })
 
@@ -138,17 +137,18 @@ export const ShortPage = (props: ShortPageProps) => {
     }
 
     const onHide = () => {
+        queryClient.invalidateQueries({ queryKey: ['short', data?.id] });
+        setShortFormVisible(false);
         setQueryEnabled(true);
     }
 
     const onNewShort = (id: string, visible: boolean) => {
-        queryClient.invalidateQueries({ queryKey: ['short', shortId] });
         toastRef.current?.show({ severity: 'success', summary: 'Tallentaminen onnistui' });
-        setShortFormVisible(false);
+        onHide();
     }
 
     const shortDeleted = () => {
-        queryClient.invalidateQueries({ queryKey: ['short', shortId] });
+        queryClient.invalidateQueries({ queryKey: ['short', thisId] });
         navigate(-1);
     }
 
@@ -157,7 +157,7 @@ export const ShortPage = (props: ShortPageProps) => {
     }
     const onAwardsFormHide = () => {
         setAwardsFormVisible(false);
-        queryClient.invalidateQueries({ queryKey: ["short", shortId] });
+        queryClient.invalidateQueries({ queryKey: ["short", thisId] });
     }
 
     if (!data) return null;

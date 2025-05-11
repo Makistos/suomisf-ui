@@ -237,8 +237,8 @@ export const MagazinePage = () => {
                                                     <b className="mr-2">{year} </b>
                                                     {issues.map((issue) => (
                                                         <span key={issue.id} style={{ marginRight: '1rem' }}>
-                                                            <Link to={`/issues/${issue.id}`}>{issue.cover_number}</Link>
-                                                            {issue.title && <span>: {issue.title}</span>}
+                                                            <Link to={`/issues/${issue.id}`}>{issue.cover_number}
+                                                                {issue.title && <span>: {issue.title}</span>}</Link>
                                                         </span>
                                                     ))}
                                                 </div>

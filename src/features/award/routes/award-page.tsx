@@ -122,6 +122,13 @@ export const AwardPage = ({ id }: AwardPageProps) => {
             </div>
         )
     }
+
+    const headerGroupTemplate = (data: Awarded) => {
+        return (
+            <span className="font-bold text-xl">{data.category.name}</span>
+        );
+    };
+
     if (!data) return <></>
 
     console.log(data)
@@ -145,14 +152,23 @@ export const AwardPage = ({ id }: AwardPageProps) => {
                         </p>
                     </div>
                     <div>
-                        <DataTable value={
-                            data.winners.sort((
-                                a, b) => a.year < b.year ? -1 : 1)}
+                        <DataTable
+                            value={data.winners.sort((a, b) =>
+                                a.category.type !== b.category.type ?
+                                    a.category.type > b.category.type ? 1 : -1 :
+                                    a.category.id !== b.category.id ?
+                                        a.category.id > b.category.id ? 1 : -1 :
+                                        a.year < b.year ? -1 : 1
+                            )}
+                            rowGroupMode="subheader"
+                            groupRowsBy="category.name"
+                            rowGroupHeaderTemplate={headerGroupTemplate}
+                            sortMode="single"
+                            responsiveLayout="scroll"
                         >
                             <Column field="year" header="Vuosi"></Column>
                             <Column field="winners" header="Voittaja"
                                 body={winnerTemplate}></Column>
-                            <Column field="category.name" header="Kategoria"></Column>
                         </DataTable>
                     </div>
                 </>

@@ -13,6 +13,8 @@ import { ShortsList } from '../components/shorts-list';
 //import { API_URL } from "../../../systemProps";
 import { Short } from "../types";
 import { useDocumentTitle } from '../../../components/document-title';
+import { Checkbox } from "primereact/checkbox";
+import { FormCheckbox } from "@components/forms/field/form-checkbox";
 
 type FormData = {
     [index: string]: any,
@@ -20,7 +22,8 @@ type FormData = {
     title?: string,
     orig_name?: string,
     pubyear_first?: string,
-    pubyear_last?: string
+    pubyear_last?: string,
+    awarded?: boolean
 };
 
 const defaultValues: FormData = {
@@ -32,9 +35,10 @@ const defaultValues: FormData = {
 }
 
 export const ShortSearchPage = () => {
-    const { control, handleSubmit, formState: { errors } } = useForm<FormData>(
+    const methods = useForm<FormData>(
         { defaultValues: defaultValues }
     );
+    const { control, handleSubmit, formState: { errors } } = methods;
     const [documentTitle, setDocumentTitle] = useDocumentTitle("");
     const [loading, setLoading] = useState(false);
     // const [shorts, setShorts]: [Short[], (shorts: Short[]) => void] = useState<Short[]>([]);
@@ -138,6 +142,21 @@ export const ShortSearchPage = () => {
                                     )} />
                                 <label htmlFor="title" className={classNames({ 'p-error': errors })}>Julkaistu viimeistään</label>
                             </span>
+                        </div>
+                        <div className="field">
+                            <div className="flex align-items-center">
+                                <Controller name="awarded" control={control}
+                                    render={({ field, fieldState }) => (
+                                        <FormCheckbox
+                                            name="awarded"
+                                            label=""
+                                            methods={methods}
+                                            disabled={false}
+                                            className="align-items-center justify-content-center"
+                                            checked={false} />
+                                    )} />
+                                <label htmlFor="title" className="ml-2">Vain palkitut</label>
+                            </div>
                         </div>
                         <Button type="submit" className="w-full justify-content-center"
                             disabled={fetchStatus === 'fetching'}

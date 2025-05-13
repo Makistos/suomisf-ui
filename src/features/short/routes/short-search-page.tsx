@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import React, { useState, useEffect, useMemo } from "react";
+import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 import axios from "axios";
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { Button } from 'primereact/button';
 import { ProgressSpinner } from "primereact/progressspinner";
-import _ from "lodash";
-import { useQuery } from "@tanstack/react-query";
+import _, { get } from "lodash";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { ShortsList } from '../components/shorts-list';
 //import { API_URL } from "../../../systemProps";
@@ -15,6 +15,11 @@ import { Short } from "../types";
 import { useDocumentTitle } from '../../../components/document-title';
 import { Checkbox } from "primereact/checkbox";
 import { FormCheckbox } from "@components/forms/field/form-checkbox";
+import { getApiContent } from "@services/user-service";
+import { getCurrenUser } from "@services/auth-service";
+import { FormDropdown } from "@components/forms/field/form-dropdown";
+import { getShortTypes } from "../utils/get-short-types";
+import { Dropdown } from "primereact/dropdown";
 
 type FormData = {
     [index: string]: any,
@@ -23,7 +28,9 @@ type FormData = {
     orig_name?: string,
     pubyear_first?: string,
     pubyear_last?: string,
-    awarded?: boolean
+    awarded?: boolean,
+    magazine?: number,
+    type?: number
 };
 
 const defaultValues: FormData = {
@@ -35,6 +42,7 @@ const defaultValues: FormData = {
 }
 
 export const ShortSearchPage = () => {
+    const user = useMemo(() => getCurrenUser(), []);
     const methods = useForm<FormData>(
         { defaultValues: defaultValues }
     );
@@ -44,6 +52,24 @@ export const ShortSearchPage = () => {
     // const [shorts, setShorts]: [Short[], (shorts: Short[]) => void] = useState<Short[]>([]);
     const [searchParams, setSearchParams]: [FormData | null, (params: FormData) => void] = useState<FormData | null>(null);
     const [queryEnabled, setQueryEnabled] = useState(false);
+    const [magazines, setMagazines]: [any[], (mags: any[]) => void] = useState<any[]>([]);
+    const [shortTypes, setShortTypes]: [any[], (types: any[]) => void] = useState<any[]>([]);
+
+    useEffect(() => {
+        const getMagazines = async () => {
+            const response = await getApiContent('magazines', user)
+                .then(resp => resp.data);
+            const sorted = _.sortBy(response, ['name']);
+            setMagazines(sorted);
+        }
+        const getTypes = async () => {
+            const response = await getApiContent('shorttypes', user)
+                .then(resp => resp.data);
+            setShortTypes(response);
+        }
+        getMagazines();
+        getTypes();
+    }, [])
 
     useEffect(() => {
         setDocumentTitle("Novellihaku");
@@ -88,9 +114,9 @@ export const ShortSearchPage = () => {
                 <div className="grid mb-4 mt-5 justify-content-center">
                     <h1 className="text-center">Novellitietokanta</h1>
                 </div>
-                <div className="flex justify-content-center mt-5 mb-5">
+                <div className="grid justify-content-center mt-5 mb-5">
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="field">
+                        <div className="field col mb-0">
                             <span className="p-float-label">
                                 <Controller name="author" control={control}
                                     render={({ field, fieldState }) => (
@@ -99,51 +125,88 @@ export const ShortSearchPage = () => {
                                             className={classNames({ 'p-invalid': fieldState.error })}
                                         />
                                     )} />
-                                <label htmlFor="author" className={classNames({ 'p-error': errors })}>Kirjoittaja</label>
+                                <label htmlFor="author" className={classNames({ 'p-error': errors })}>Henkilö</label>
                             </span>
                         </div>
-                        <div className="field">
+                        <div className="field col mb-0">
                             <span className="p-float-label">
                                 <Controller name="title" control={control}
                                     render={({ field, fieldState }) => (
                                         <InputText id={field.name} {...field}
-                                            className={classNames({ 'p-invalid': fieldState })} />
+                                        />
                                     )} />
                                 <label htmlFor="title" className={classNames({ 'p-error': errors })}>Nimi</label>
                             </span>
                         </div>
-                        <div className="field">
+                        <div className="field col mb-0">
                             <span className="p-float-label">
                                 <Controller name="orig_name" control={control}
                                     render={({ field, fieldState }) => (
                                         <InputText id={field.name} {...field}
-                                            className={classNames({ 'p-invalid': fieldState })} />
+                                        />
                                     )} />
                                 <label htmlFor="title" className={classNames({ 'p-error': errors })}>Alkukielinen nimi</label>
                             </span>
                         </div>
-                        <div className="field">
+                        <div className="field col mb-0">
+                            {/* <label htmlFor="title">Tyyppi</label> */}
+                            <Controller name="type" control={control}
+                                render={({ field, fieldState }) => (
+                                    <Dropdown
+                                        {...field}
+                                        name="type"
+                                        // methods={methods}
+                                        // label="Tyyppi"
+                                        options={shortTypes}
+                                        optionLabel="name"
+                                        optionValue="id"
+                                        placeholder="Tyyppi"
+                                        showClear
+                                        className="w-full"
+                                        tooltip="Valitse tyyppi"
+                                    />
+                                )} />
+                        </div>
+                        <div className="field col mb-0">
                             <span className="p-float-label">
                                 <Controller name="pubyear_first" control={control}
                                     render={({ field, fieldState }) => (
                                         <InputText id={field.name} {...field}
                                             keyfilter="pint"
-                                            className={classNames({ 'p-invalid': fieldState })} />
+                                        />
                                     )} />
-                                <label htmlFor="title" className={classNames({ 'p-error': errors })}>Julkaistu aikaisintaan</label>
+                                <label htmlFor="title" className="w-full">Julkaistu aikaisintaan</label>
                             </span>
                         </div>
-                        <div className="field">
+                        <div className="field col mb-0">
                             <span className="p-float-label">
                                 <Controller name="pubyear_last" control={control}
                                     render={({ field, fieldState }) => (
                                         <InputText id={field.name} {...field}
-                                            className={classNames({ 'p-invalid': fieldState })} />
+                                            className="w-full" />
                                     )} />
-                                <label htmlFor="title" className={classNames({ 'p-error': errors })}>Julkaistu viimeistään</label>
+                                <label htmlFor="title" >Julkaistu viimeistään</label>
                             </span>
                         </div>
-                        <div className="field">
+                        <div className="field col mb-0">
+                            <Controller name="magazine" control={control}
+                                render={({ field, fieldState }) => (
+                                    <Dropdown
+                                        {...field}
+                                        name="magazine"
+                                        // methods={methods}
+                                        // label="Lehti"
+                                        options={magazines}
+                                        optionLabel="name"
+                                        optionValue="id"
+                                        tooltip="Valitse lehti"
+                                        placeholder="Lehti"
+                                        showClear
+                                        className="w-full"
+                                    />
+                                )} />
+                        </div>
+                        <div className="field col mb-0">
                             <div className="flex align-items-center">
                                 <Controller name="awarded" control={control}
                                     render={({ field, fieldState }) => (

@@ -270,7 +270,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             label: 'Muokkaa novelleja',
             icon: 'fa-solid fa-list-ul',
             disabled: !(data !== undefined && data !== null &&
-                data.work_type.id === 2),
+                (data.work_type.id === 2 || data.work_type.id === 5)),
             command: () => {
                 setIsShortsFormVisible(true);
 

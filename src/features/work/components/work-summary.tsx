@@ -85,7 +85,9 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                             {work.editions[0].pubseries.name}.&#32;
                         </Link>
                     )}
-                <GenreList genres={work.genres} />
+                {work.genres.length > 0 &&
+                    <GenreList genres={work.genres} />
+                }
             </p>
             {work.editions && work.editions.length > 0 &&
                 work.editions.map((edition, index) => (

@@ -36,6 +36,7 @@ export interface Work {
     subtitle: string,
     title: string,
     translators: Person[],
+    type: number,
     work_type: WorkType,
     contributions: Contribution[],
 }

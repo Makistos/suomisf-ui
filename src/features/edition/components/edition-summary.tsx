@@ -23,6 +23,7 @@ export const EditionSummary = ({ edition, person, showPerson, showVersion, isOwn
         return edition.work[0].contributions.map(
             contrib => contrib.person.name).filter(uniquePeople).join(' & ');
     }
+    console.log(edition.work[0].language_name)
 
     return (
         <div className={isOwned ? "book owned" : isWishlisted ? "book wishlist" : "book not-owned"}>
@@ -43,7 +44,12 @@ export const EditionSummary = ({ edition, person, showPerson, showVersion, isOwn
                 <Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link>
             )}</>
             <>&nbsp;{edition.pubyear}.&nbsp;</>
-            {edition.work[0] && <GenreList genres={edition.work[0].genres} />}
+            {edition.work[0] &&
+                <GenreList
+                    genres={edition.work[0].genres}
+                    collection={edition.work[0].type === 2}
+                    booklet={edition.work[0].type === 5}
+                />}
         </div>
     )
 }

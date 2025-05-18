@@ -167,7 +167,9 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                         <>{translators(short.contributors)}</>
                         {/*{translators(short.contributors)} */}
                         {short.genres.length > 0 &&
-                            <GenreList genres={short.genres} />
+                            <GenreList
+                                genres={short.genres}
+                            />
                         }
                         {/* {isAdmin(user) &&
                             <Button

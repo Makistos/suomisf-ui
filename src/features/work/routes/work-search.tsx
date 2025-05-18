@@ -153,7 +153,8 @@ export const WorkSearchPage = () => {
                                         <Controller name="author" control={control}
                                             render={({ field, fieldState }) => (
                                                 <InputText id={field.name} {...field}
-                                                    className={classNames({ 'p-invalid': fieldState.error }, 'w-full')} />
+                                                    className={classNames('w-full')}
+                                                />
                                             )} />
                                         <label htmlFor="author" className={classNames({ 'p-error': errors })}>Kirjoittaja</label>
                                     </span>
@@ -163,7 +164,8 @@ export const WorkSearchPage = () => {
                                         <Controller name="title" control={control}
                                             render={({ field, fieldState }) => (
                                                 <InputText id={field.name} {...field}
-                                                    className={classNames({ 'p-invalid': fieldState }, 'w-full')} />
+                                                    className={classNames('w-full')}
+                                                />
                                             )} />
                                         <label htmlFor="title" className={classNames({ 'p-error': errors })}>Nimi</label>
                                     </span>
@@ -173,7 +175,8 @@ export const WorkSearchPage = () => {
                                         <Controller name="orig_name" control={control}
                                             render={({ field, fieldState }) => (
                                                 <InputText id={field.name} {...field}
-                                                    className={classNames({ 'p-invalid': fieldState }, 'w-full')} />
+                                                    className={classNames('w-full')}
+                                                />
                                             )} />
                                         <label htmlFor="title" className={classNames({ 'p-error': errors })}>Alkukielinen nimi</label>
                                     </span>
@@ -185,7 +188,8 @@ export const WorkSearchPage = () => {
                                         <Controller name="pubyear_first" control={control}
                                             render={({ field, fieldState }) => (
                                                 <InputText id={field.name} {...field}
-                                                    className={classNames({ 'p-invalid': fieldState }, 'w-full')} />
+                                                    className={classNames('w-full')}
+                                                />
                                             )} />
                                         <label htmlFor="title" className={classNames({ 'p-error': errors })}>Julkaistu aikaisintaan</label>
                                     </span>
@@ -195,7 +199,8 @@ export const WorkSearchPage = () => {
                                         <Controller name="pubyear_last" control={control}
                                             render={({ field, fieldState }) => (
                                                 <InputText id={field.name} {...field}
-                                                    className={classNames({ 'p-invalid': fieldState }, 'w-full')} />
+                                                    className={classNames('w-full')}
+                                                />
                                             )} />
                                         <label htmlFor="title" className={classNames({ 'p-error': errors })}>Julkaistu viimeistään</label>
                                     </span>
@@ -207,7 +212,8 @@ export const WorkSearchPage = () => {
                                         <Controller name="printyear_first" control={control}
                                             render={({ field, fieldState }) => (
                                                 <InputText id={field.name} {...field}
-                                                    className={classNames({ 'p-invalid': fieldState }, 'w-full')} />
+                                                    className={classNames('w-full')}
+                                                />
                                             )} />
                                         <label htmlFor="title" className={classNames({ 'p-error': errors })}>Painettu aikaisintaan</label>
                                     </span>
@@ -217,7 +223,7 @@ export const WorkSearchPage = () => {
                                         <Controller name="printyear_last" control={control}
                                             render={({ field, fieldState }) => (
                                                 <InputText id={field.name} {...field}
-                                                    className={classNames({ 'p-invalid': fieldState }, 'w-full')} />
+                                                    className={classNames('w-full')} />
                                             )} />
                                         <label htmlFor="title" className={classNames({ 'p-error': errors })}>Painettu viimeistään</label>
                                     </span>

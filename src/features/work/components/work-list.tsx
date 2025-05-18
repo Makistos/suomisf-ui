@@ -120,7 +120,6 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
             />
         </div>
     );
-
     return (
         works && works.length > 0 ? (
             <div className="grid w-full">
@@ -140,13 +139,16 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
                                         </div>
                                         <div>
                                             {workView === 'Lista' ? (
-                                                ws.sort(compareWorks).map((work) => (
-                                                    work.editions.length > 0 &&
-                                                    <WorkSummary work={work} key={`work-${work.id}-summary`}
-                                                        detailLevel={detailLevel}
-                                                        orderField={orderField} />
-                                                )
-                                                )
+                                                ws.filter(work => work.editions.length > 0)
+                                                    .sort(compareWorks)
+                                                    .map((work) => (
+                                                        <WorkSummary
+                                                            work={work}
+                                                            key={`work-${work.id}-summary`}
+                                                            detailLevel={detailLevel}
+                                                            orderField={orderField}
+                                                        />
+                                                    ))
                                             ) : (
                                                 <CoverImageList key={group} works={ws} />
                                             )}

@@ -19,7 +19,6 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
     let clsName = isOwned ?
         "book owned" : editionIsWishlisted(work.editions[0], user) ? "book wishlist" : "book not-owned";
     clsName += " work-oneliner";
-    //const clsName = "work-oneliner";
     return (
 
         // <div className={editionIsOwned(work.editions[0], user) ?
@@ -44,6 +43,7 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                 {isForeign(work) && (
                     <>&#32;({work.orig_title}, {work.pubyear}).&#32;</>
                 )}
+                &#32;
                 {work.bookseries && (
                     <><Link to={`/bookseries/${work.bookseries.id}`}>
                         {work.bookseries.name}
@@ -85,9 +85,11 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                             {work.editions[0].pubseries.name}.&#32;
                         </Link>
                     )}
-                {work.genres.length > 0 &&
-                    <GenreList genres={work.genres} />
-                }
+                <GenreList
+                    genres={work.genres}
+                    collection={work.type === 2}
+                    booklet={work.type === 5}
+                />
             </p>
             {work.editions && work.editions.length > 0 &&
                 work.editions.map((edition, index) => (

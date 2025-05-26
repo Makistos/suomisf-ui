@@ -22,6 +22,7 @@ import { BookType } from "../../../types/book-type";
 import { WorkList } from "../components/work-list";
 import { User } from "../../user";
 import { useDocumentTitle } from "../../../components/document-title";
+import { MultiSelect } from "primereact/multiselect";
 
 type FormData = {
     [index: string]: any,
@@ -233,12 +234,25 @@ export const WorkSearchPage = () => {
                                 <div className="field grid md:col-4 sm:col-12 pr-3">
                                     <Controller name="genre" control={control}
                                         render={({ field, fieldState }) => (
-                                            <Dropdown options={genres.data} placeholder="Genret" className="w-full"
-                                                id={field.name} {...field} value={field.value}
-                                                optionLabel="name" optionValue="id" filter showClear
+                                            <MultiSelect
+                                                {...field}
+                                                optionLabel="name"
+                                                optionValue="id"
+                                                options={genres.data}
+                                                placeholder="Genret"
+                                                className="w-full"
+                                                display="chip"
+                                                showClear
                                                 itemTemplate={genreOptionTemplate}
-                                                onChange={(e) => field.onChange(e.value)} />
-                                        )} />
+                                            />
+                                            // <Dropdown options={genres.data} placeholder="Genret" className="w-full"
+                                            //     id={field.name} {...field} value={field.value}
+                                            //     optionLabel="name" optionValue="id" filter showClear
+                                            //     itemTemplate={genreOptionTemplate}
+                                            //     multiple={true}
+                                            //     onChange={(e) => field.onChange(e.value)} />
+                                        )}
+                                    />
                                 </div>
                                 <div className="field grid md:col-4 sm:col-12 pr-3">
                                     <Controller name="nationality" control={control}

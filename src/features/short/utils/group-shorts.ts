@@ -1,12 +1,12 @@
-import { Person } from '@features/person';
+import { Person, PersonBrief } from '@features/person';
 import { Short } from '../types';
 import { Contribution } from '../../../types/contribution';
 
-export const groupShorts = (shorts: Short[], grouping: string, person: Person | null = null) => {
+export const groupShorts = (shorts: Short[], grouping: string, person: Person | PersonBrief | null = null) => {
     const personInvolved = (contributor: Contribution) => {
         if (!person) return true;
         if (contributor.person.id == person.id) return true;
-        if (person.aliases.some(alias => alias.id == contributor.person.id)) return true;
+        if (person.aliases?.some(alias => alias.id == contributor.person.id)) return true;
         return false;
     }
     let grouped: Record<string, Short[]> = shorts.reduce((acc: { [index: string]: any; }, currentValue) => {

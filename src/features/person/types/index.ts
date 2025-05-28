@@ -7,12 +7,19 @@ import { Awarded } from '../../award';
 import { Nationality } from "../../../types/nationality";
 import { Contribution } from "../../../types/contribution";
 
-export type PersonBrief = Pick<Person, "id" | "name" | "alt_name" | "fullname">
+// export type PersonBrief = Pick<Person, "id" | "name" | "alt_name" | "fullname">
+export type PersonBrief = {
+    id: number;
+    name: string;
+    alt_name: string;
+    fullname: string;
+    aliases?: Array<Pick<Person, "id">>;
+}
 export interface Person {
     [index: string]: any;
     id: number;
     name: string;
-    aliases: PersonBrief[],
+    aliases: Person[] | PersonBrief[],
     real_names: PersonBrief[],
     alt_name: string;
     fullname: string;

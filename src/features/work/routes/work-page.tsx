@@ -556,7 +556,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                     <TabPanel header="Novellit" leftIcon="pi pi-list">
                                         <ShortsList
                                             shorts={data.stories}
-                                            person={data.authors[0]}
+                                            person={data.contributions.filter(contrib => contrib.role.id === 1)[0].person}
                                             anthology={anthology}
                                         />
                                     </TabPanel>

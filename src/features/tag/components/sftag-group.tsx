@@ -41,6 +41,10 @@ export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseF
     const [actors, setActors] = useState<SfTag[]>([]);
     const [eras, setEras] = useState<SfTag[]>([]);
 
+    if (tags.length === 0) {
+        return <></>;
+    }
+
     const filterTypes = (tags: SfTag[], type: string) => {
         return tags.filter(tag => tag.type?.name === type)
             .map(tag => tag)
@@ -55,6 +59,7 @@ export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseF
     }
 
     const filterTags = (tag: SfTag) => {
+        tag === undefined ? false : true;
         if (reverseFilter) {
             return types ? tag.type ? !types.includes(tag.type.name) : true : true;
         }

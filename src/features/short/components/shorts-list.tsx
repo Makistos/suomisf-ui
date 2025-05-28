@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { Dropdown } from "primereact/dropdown";
 
-import { Person } from "../../person";
+import { Person, PersonBrief } from "../../person";
 import { ShortSummary } from './short-summary';
 import { groupShorts } from "../utils";
 import { Short } from "../types";
@@ -16,7 +16,7 @@ interface ShortsListProps {
      * This can be used to skip showing the name of a certain author. Used to
      * list shorts on a person's page where we don't want to repeat his name.
      */
-    person?: Person,
+    person?: Person | PersonBrief,
     /**
      * Whether to group the shorts by author.
      */

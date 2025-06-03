@@ -26,3 +26,4 @@ yarn-error.log*
 *.un~
 package-lock.json
 
+test-results

@@ -33,7 +33,7 @@ export const ArticleView = ({ id }: ArticleProps) => {
     //const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
     const [documentTitle, setDocumentTitle] = useDocumentTitle("");
     const PickLinks = (items: Person[]) => {
-        return items.map((item) => ({ id: item['id'], name: item['name'] }))
+        return items.map((item) => ({ id: item['id'], name: item['name'], alt_name: item['alt_name'] ? item['alt_name'] : item['name'] }))
     }
 
     React.useEffect(() => {

@@ -67,7 +67,9 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                                     .map(contrib => {
                                         return {
                                             id: contrib.person.id,
-                                            name: contrib.person.alt_name,
+                                            name: contrib.person.name,
+                                            alt_name: contrib.person.alt_name ?
+                                                contrib.person.alt_name : contrib.person.name,
                                             description: contrib.description
                                         }
                                     })}

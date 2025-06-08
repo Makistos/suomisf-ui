@@ -24,7 +24,8 @@ export const WorkDetails = ({ work }: WorkProps) => {
         const uniques = _.uniqWith(contributions, compareContribs);
         return uniques.filter(person => person.role.id === 1).map((item) => ({
             id: item.person['id'],
-            name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
+            name: item.person['name'],
+            alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
         }))
     }
 
@@ -62,8 +63,8 @@ export const WorkDetails = ({ work }: WorkProps) => {
                                     items={work.contributions.filter(
                                         contrib => contrib.role.id === 3).map((item) => ({
                                             id: item.person['id'],
-                                            name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
-
+                                            name: item.person['name'],
+                                            alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
                                         }))} />
                             </h2>
                         </div>

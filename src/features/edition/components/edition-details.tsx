@@ -48,8 +48,8 @@ const contributorList = (contributions: Contribution[], role: number, descriptio
                         defaultName={description}
                         items={contributors.map((item) => ({
                             id: item.person['id'],
-                            name: item.person['alt_name']
-                                ? item.person['alt_name'] : item.person['name'],
+                            name: item.person['name'],
+                            alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name'],
                             description: (item.description && item.description !== null)
                                 ? item.description : ""
                         }))} />.

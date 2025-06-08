@@ -39,7 +39,10 @@ export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
         return edition.contributions.filter(contrib => contrib.role.id === 2)
             .map(contrib => {
                 return {
-                    id: contrib.person.id, name: contrib.person.alt_name, description: contrib.description
+                    id: contrib.person.id,
+                    name: contrib.person.name,
+                    alt_name: contrib.person.alt_name ? contrib.person.alt_name : contrib.person.name,
+                    description: contrib.description
                 }
             });
     }

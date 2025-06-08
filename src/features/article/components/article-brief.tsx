@@ -15,7 +15,11 @@ export const ArticleBrief = ({ article }: ArticleProps) => {
     //const op = useRef<OverlayPanel>(null);
     //let [article, setArticle]: [IArticle | null, (article: IArticle) => void] = React.useState<IArticle | null>(null);
     const PickLinks = (items: Person[]) => {
-        return items.map((item) => ({ id: item['id'], name: item['alt_name'] ? item['alt_name'] : item['name'] }))
+        return items.map((item) => ({
+            id: item['id'],
+            name: item['name'],
+            alt_name: item['alt_name'] ? item['alt_name'] : item['name']
+        }))
     }
 
     return (

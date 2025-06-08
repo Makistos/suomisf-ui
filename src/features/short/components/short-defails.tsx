@@ -15,7 +15,8 @@ export const ShortDetails = ({ short: data }: ShortDetailsProps) => {
                             separator=" &amp; "
                             items={removeDuplicateContributions(data.contributors).filter(person => person.role.id === 1).map((item) => ({
                                 id: item.person['id'],
-                                name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
+                                name: item.person['name'],
+                                alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
                             }))} />
                     </h2>
                 </div>
@@ -29,7 +30,8 @@ export const ShortDetails = ({ short: data }: ShortDetailsProps) => {
                                 separator=" &amp; "
                                 items={removeDuplicateContributions(data.contributors).filter(person => person.role.id === 3).map((item) => ({
                                     id: item.person['id'],
-                                    name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
+                                    name: item.person['name'],
+                                    alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
                                 }))} />
                         </h2>
                     </div>
@@ -55,7 +57,8 @@ export const ShortDetails = ({ short: data }: ShortDetailsProps) => {
                                 separator=" &amp; "
                                 items={removeDuplicateContributions(data.contributors).filter(contrib => contrib.role.id === 2).map((item) => ({
                                     id: item.person['id'],
-                                    name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
+                                    name: item.person['name'],
+                                    alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
                                 }))} />
                         </>
                     )}
@@ -66,7 +69,8 @@ export const ShortDetails = ({ short: data }: ShortDetailsProps) => {
                                 separator=" &amp; "
                                 items={data.contributors.filter(contrib => contrib.role.id === 6).map((item) => ({
                                     id: item.person['id'],
-                                    name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
+                                    name: item.person['name'],
+                                    alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
                                 }))} />
                         </>
                     )}

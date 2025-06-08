@@ -37,7 +37,11 @@ export type IssueProps = {
 };
 
 const PickLinks = (items: Person[]) => {
-    return items.map((item) => ({ id: item['id'], name: item['alt_name'] ? item['alt_name'] : item['name'] }))
+    return items.map((item) => ({
+        id: item['id'],
+        name: item['name'],
+        alt_name: item['alt_name'] ? item['alt_name'] : item['name']
+    }))
 }
 
 type IssueInfoProps = {

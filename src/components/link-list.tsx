@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const SEPARATOR = ", ";
 
-export type LinkItem = { id: number; name: string, description?: string };
+export type LinkItem = { id: number; name: string, alt_name?: string, description?: string };
 
 interface LinkListProps {
     path: string,
@@ -36,7 +36,7 @@ export const LinkList = ({ path, items, defaultName, showDescription, separator 
                     // key={path + item.id.toString() + "_" + index.toString()}
                     to={`/${path}/${item.id}`}
                 >
-                    {item.name}
+                    {item.alt_name ? item.alt_name : item.name}
                 </Link>
                 {/* {showDescription && description(item, showDescription)} */}
             </span>

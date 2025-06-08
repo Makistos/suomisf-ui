@@ -1,6 +1,5 @@
 import { getShort } from "@api/short/get-short"
 import { useDocumentTitle } from "@components/document-title"
-import { LinkList } from "@components/link-list"
 import { GenreGroup } from "@features/genre"
 import { TagGroup } from "@features/tag"
 import { getCurrenUser } from "@services/auth-service"

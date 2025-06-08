@@ -437,6 +437,13 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         if (first.version !== second.version) return (first.version < second.version ? -1 : 1);
         return (Number(first.editionnum) < Number(second.editionnum) ? -1 : 1);
     }
+
+    const anthologyAuthor = () => {
+        const contribs = data.contributions.filter(contrib => contrib.role.id === 1);
+        if (contribs.length === 0) return undefined;
+        return contribs[0].person
+    }
+
     return (
         <main className="work-page">
             <Toast ref={toastRef} />
@@ -556,7 +563,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                     <TabPanel header="Novellit" leftIcon="pi pi-list">
                                         <ShortsList
                                             shorts={data.stories}
-                                            person={data.contributions.filter(contrib => contrib.role.id === 1)[0].person}
+                                            person={anthologyAuthor()}
                                             anthology={anthology}
                                         />
                                     </TabPanel>

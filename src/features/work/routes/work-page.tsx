@@ -92,7 +92,8 @@ function useEffectiveWorkId(
         return {
             workId: resolvedWorkId,
             isLoading: false,
-            error: null
+            error: null,
+            highlightEditionId: null
         };
     }
 
@@ -101,14 +102,16 @@ function useEffectiveWorkId(
         workId: fetchedWorkId,
         isLoading,
         error,
+        highlightEditionId: isEditionId ? itemId : null
     };
 }
 
-const EditionListItem = ({ editions, work, onSubmitCallback, onUpload }: {
+const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, highlightEditionId }: {
     editions: Edition[];
     work?: Work;
     onSubmitCallback: any;
     onUpload: any;
+    highlightEditionId?: string | null;
 }) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [currIdx, setCurrIdx] = useState(0);
@@ -131,6 +134,9 @@ const EditionListItem = ({ editions, work, onSubmitCallback, onUpload }: {
 
     const edition = combineEditions(editions, user);
 
+    // Check if this edition should be highlighted
+    const shouldHighlight = highlightEditionId && editions.some(e => e.id.toString() === highlightEditionId);
+
     const deleteImage = useCallback((itemId: number | string, imageId: number) => {
         deleteEditionImage(itemId, imageId);
         onUpload();
@@ -139,7 +145,7 @@ const EditionListItem = ({ editions, work, onSubmitCallback, onUpload }: {
     if (!work || !edition) return null;
 
     return (
-        <div className="col-12">
+        <div className={`col-12 ${shouldHighlight ? 'highlighted-edition' : ''}`}>
             <div className="grid">
                 <div className="col-12 lg:col-8">
                     <EditionDetails edition={edition} card work={work}
@@ -177,6 +183,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
         workId,
         isLoading: isResolvingWorkId,
         error: resolveError,
+        highlightEditionId,
     } = useEffectiveWorkId(id, editionId);
 
     const params = useParams();
@@ -342,6 +349,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
             work={workData}
             onSubmitCallback={editionFormCallback}
             onUpload={onUpload}
+            highlightEditionId={highlightEditionId}
         />;
     }
 

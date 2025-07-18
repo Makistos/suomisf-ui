@@ -835,3 +835,11 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     padding: 2rem;
     background: var(--surface-ground);
 }
+
+.highlighted-edition {
+    background-color: #fff3cd;
+    border: 2px solid #ffeaa7;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+}

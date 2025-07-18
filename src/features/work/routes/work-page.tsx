@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useRef, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 import { DataView } from "primereact/dataview";
 import { Panel } from "primereact/panel";
@@ -51,30 +51,79 @@ export interface WorkProps {
 const baseURL = "works/";
 
 interface WorkPageProps {
-    id: string | null;
+    id?: string | null;
+    editionId?: string | null;
 }
 
-let workId = "";
+function useEffectiveWorkId(
+    idFromProps?: string | null,
+    editionId?: string | null,
+) {
+    let isEditionId = false;
+    const location = useLocation();
+    if (location.pathname.includes('editions')) {
+        isEditionId = true;
+    }
 
+    const { itemId } = useParams<{ itemId?: string }>();
+    const resolvedWorkId = idFromProps ?? itemId;
 
-const renderListItem = (cb: any, onUpload: any, editions: Edition[],
-    work?: Work) => {
+    // Always call useQuery, but conditionally enable it
+    const {
+        data: fetchedWorkId,
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ['workIdFromEdition', resolvedWorkId],
+        queryFn: async (): Promise<string> => {
+            const editionIdToUse = isEditionId ? itemId : editionId;
+            if (!editionIdToUse) {
+                throw new Error('editionId is required to resolve workId');
+            }
+            const user = getCurrenUser();
+            const response = await getApiContent(`editions/${editionIdToUse}/work`, user);
+            return String(response.data);
+        },
+        enabled: isEditionId,
+    });
+
+    // If we have a resolved workId from props or params, return it immediately
+    if (resolvedWorkId && !isEditionId) {
+        return {
+            workId: resolvedWorkId,
+            isLoading: false,
+            error: null
+        };
+    }
+
+    // Otherwise return the fetched workId from edition
+    return {
+        workId: fetchedWorkId,
+        isLoading,
+        error,
+    };
+}
+
+const EditionListItem = ({ editions, work, onSubmitCallback, onUpload }: {
+    editions: Edition[];
+    work?: Work;
+    onSubmitCallback: any;
+    onUpload: any;
+}) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [currIdx, setCurrIdx] = useState(0);
+
     let imageUploadUrl = '';
     if (editions.length === 1) {
         imageUploadUrl = `editions/${editions[0].id}/images`;
-    } else {
     }
+
     const customSave = useCallback(async (event: FileUploadHandlerEvent) => {
         const form = new FormData();
         form.append('file', event.files[0], event.files[0].name);
-        const file = event.files[0];
-        const request = { file: file, filename: file.name };
         const headers = authHeader();
 
-        const response = await axios.post(import.meta.env.VITE_API_URL + imageUploadUrl,
-            form, {
+        await axios.post(import.meta.env.VITE_API_URL + imageUploadUrl, form, {
             headers: headers
         });
         onUpload();
@@ -87,49 +136,52 @@ const renderListItem = (cb: any, onUpload: any, editions: Edition[],
         onUpload();
     }, [onUpload]);
 
+    if (!work || !edition) return null;
+
     return (
-        (work && edition &&
-            <div className="col-12">
-                <div className="grid">
-                    <div className="col-12 lg:col-8" > {/* Changed from fixed col-8 to col-12 on mobile, lg:col-8 on large screens */}
-                        <EditionDetails edition={edition} card work={work}
-                            onSubmitCallback={cb} />
-                    </div>
-                    <div className="col-12 lg:col-4 flex justify-content-start lg:justify-content-end align-items-center mt-3 lg:mt-0">
-                        {/* Changed from col-4 to col-12 on mobile, lg:col-4 on large screens */}
-                        {/* Added center alignment on mobile, end alignment on desktop */}
-                        {/* Added margin top for mobile spacing */}
-                        {edition.images.length > 0 ?
-                            <ImageView
-                                itemId={edition.id}
-                                images={edition.images}
-                                idx={currIdx}
-                                deleteFunc={deleteImage}
-                                idxCb={setCurrIdx} />
-                            : isAdmin(user) &&
-                            <FileUpload
-                                id={"editionimage_" + edition.id}
-                                mode="basic"
-                                accept="image/*"
-                                name="image"
-                                uploadLabel="Lisää kuva"
-                                auto
-                                customUpload
-                                uploadHandler={customSave}
-                                onUpload={onUpload}
-                            />
-                        }
-                    </div>
+        <div className="col-12">
+            <div className="grid">
+                <div className="col-12 lg:col-8">
+                    <EditionDetails edition={edition} card work={work}
+                        onSubmitCallback={onSubmitCallback} />
+                </div>
+                <div className="col-12 lg:col-4 flex justify-content-start lg:justify-content-end align-items-center mt-3 lg:mt-0">
+                    {edition.images.length > 0 ?
+                        <ImageView
+                            itemId={edition.id}
+                            images={edition.images}
+                            idx={currIdx}
+                            deleteFunc={deleteImage}
+                            idxCb={setCurrIdx} />
+                        : isAdmin(user) &&
+                        <FileUpload
+                            id={"editionimage_" + edition.id}
+                            mode="basic"
+                            accept="image/*"
+                            name="image"
+                            uploadLabel="Lisää kuva"
+                            auto
+                            customUpload
+                            uploadHandler={customSave}
+                            onUpload={onUpload}
+                        />
+                    }
                 </div>
             </div>
-        )
-    )
-}
+        </div>
+    );
+};
 
-export const WorkPage = ({ id }: WorkPageProps) => {
+export function WorkPage({ id, editionId }: WorkPageProps) {
+    const {
+        workId,
+        isLoading: isResolvingWorkId,
+        error: resolveError,
+    } = useEffectiveWorkId(id, editionId);
+
     const params = useParams();
     const user = useMemo(() => { return getCurrenUser() }, []);
-    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+    // const [documentTitle, setDocumentTitle] = useDocumentTitle("");
     const [isEditVisible, setEditVisible] = useState(false);
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [isShortsFormVisible, setIsShortsFormVisible] = useState(false);
@@ -141,69 +193,22 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     const [detailLevel, setDetailLevel] = useState("condensed");
     const [isAwardsFormVisible, setAwardsFormVisible] = useState(false);
 
-    try {
-        workId = selectId(params, id);
-    } catch (e) {
-        console.log(`${e} work`);
-    }
 
-    const detailOptions = [
-        { icon: 'pi pi-minus', value: 'brief' },
-        { icon: 'pi pi-bars', value: 'condensed' },
-        { icon: 'pi pi-align-justify', value: 'all' }
-    ];
-
-    type detailOptionType = {
-        icon: string,
-        value: string
-    }
-
-    const fetchWork = async (id: string, user: User | null): Promise<Work> => {
-        let url = baseURL + workId;
-        const data = await getApiContent(url, user).then(response =>
-            response.data
-        )
-            .catch((error) => console.log(error));
-        return data;
-    }
-
-    const { isLoading, data } = useQuery({
-        queryKey: ["work", workId],
-        queryFn: () => fetchWork(workId, user),
-        enabled: queryEnabled
-    })
-
-    const deleteWork = (id: number) => {
-        setQueryEnabled(false);
-        console.log("deleting")
-        const retval = deleteApiContent('works/' + id);
-        setQueryEnabled(true);
-        return retval;
-    }
-
-    const { mutate } = useMutation({
-        mutationFn: (values: number) => deleteWork(values),
-        onSuccess: (data: HttpStatusResponse) => {
-            const msg = data.response;
-            if (data.status === 200) {
-                navigate(-1);
-                toastRef.current?.show({ severity: 'success', summary: 'Teos poistettu' })
-            } else {
-                toastRef.current?.show({ severity: 'error', summary: 'Teoksen poisto ei onnistunut', detail: msg })
-            }
+    // console.log("WorkPage props:", { id, editionId, workId });
+    const {
+        data: workData,
+        isLoading: isLoadingWorkData,
+        error: workDataError,
+    } = useQuery<Work>({
+        queryKey: ['work', workId],
+        queryFn: async () => {
+            if (!workId) throw new Error('workId is required');
+            const url = baseURL + workId;
+            const response = await getApiContent(url, user);
+            return response.data;
         },
-        onError: (error: any) => {
-            const errMsg = JSON.parse(error.response).data["msg"];
-            console.log(errMsg);
-            toastRef.current?.show({ severity: 'error', summary: 'Teoksen poistaminen ei onnistunut', detail: errMsg })
-        }
-    })
-
-    useEffect(() => {
-        if (data !== undefined && data !== null) {
-            setDocumentTitle(data.title);
-        }
-    }, [data]);
+        enabled: !!workId, // Add this to prevent the query from running when workId is undefined
+    });
 
     const dialItems = [
         {
@@ -219,9 +224,9 @@ export const WorkPage = ({ id }: WorkPageProps) => {
             label: 'Muokkaa',
             icon: 'fa-solid fa-pen-to-square',
             command: () => {
-                if (data) {
+                if (workData) {
                     setEditWork(true);
-                    setFormData(data);
+                    setFormData(workData);
                     setEditVisible(true);
                 }
             }
@@ -229,8 +234,8 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         {
             label: "Poista",
             icon: 'fa-solid fa-trash',
-            disabled: !(data !== undefined && data !== null &&
-                data.editions !== null),
+            disabled: !(workData !== undefined && workData !== null &&
+                workData.editions !== null),
             command: () => {
                 confirmDialog({
                     message: 'Haluatko varmasti poistaa teoksen?',
@@ -238,8 +243,8 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                     icon: 'pi pi-exclamation-triangle',
                     acceptClassName: 'p-button-danger',
                     accept: () => {
-                        if (data) {
-                            mutate(data.id);
+                        if (workData) {
+                            mutate(workData.id);
                         }
                     },
                     reject: () => {
@@ -269,8 +274,8 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         {
             label: 'Muokkaa novelleja',
             icon: 'fa-solid fa-list-ul',
-            disabled: !(data !== undefined && data !== null &&
-                (data.type === 2 || data.type === 5)),
+            disabled: !(workData !== undefined && workData !== null &&
+                (workData.type === 2 || workData.type === 5)),
             command: () => {
                 setIsShortsFormVisible(true);
 
@@ -278,11 +283,50 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         }
     ]
 
+    const detailOptions = [
+        { icon: 'pi pi-minus', value: 'brief' },
+        { icon: 'pi pi-bars', value: 'condensed' },
+        { icon: 'pi pi-align-justify', value: 'all' }
+    ];
+
+    type detailOptionType = {
+        icon: string,
+        value: string
+    }
+
+    const deleteWork = (id: number) => {
+        setQueryEnabled(false);
+        console.log("deleting")
+        const retval = deleteApiContent('works/' + id);
+        setQueryEnabled(true);
+        return retval;
+    }
+
+    const { mutate } = useMutation({
+        mutationFn: (values: number) => deleteWork(values),
+        onSuccess: (data: HttpStatusResponse) => {
+            const msg = data.response;
+            if (data.status === 200) {
+                navigate(-1);
+                toastRef.current?.show({ severity: 'success', summary: 'Teos poistettu' })
+            } else {
+                toastRef.current?.show({ severity: 'error', summary: 'Teoksen poisto ei onnistunut', detail: msg })
+            }
+        },
+        onError: (error: any) => {
+            const errMsg = JSON.parse(error.response).data["msg"];
+            console.log(errMsg);
+            toastRef.current?.show({ severity: 'error', summary: 'Teoksen poistaminen ei onnistunut', detail: errMsg })
+        }
+    })
+
     const queryClient = useQueryClient();
+
     useEffect(() => {
-        if (data !== undefined && data !== null)
-            setDocumentTitle(data.title);
-    }, [data])
+        if (workData !== undefined && workData !== null) {
+            document.title = workData.title;
+        }
+    }, [workData]);
 
     const onUpload = useCallback(() => {
         toastRef.current?.show({ severity: 'info', summary: 'Success', detail: 'Kuva tallennettu' });
@@ -291,10 +335,14 @@ export const WorkPage = ({ id }: WorkPageProps) => {
 
     const itemTemplate = (editions: Edition[]) => {
         if (!editions) {
-            return;
+            return null;
         }
-        return renderListItem(editionFormCallback, onUpload, editions,
-            data);
+        return <EditionListItem
+            editions={editions}
+            work={workData}
+            onSubmitCallback={editionFormCallback}
+            onUpload={onUpload}
+        />;
     }
 
     const renderHeader = () => {
@@ -394,9 +442,17 @@ export const WorkPage = ({ id }: WorkPageProps) => {
         return <i className={option.icon}></i>
     }
 
-    if (!data) return null;
+    if (isResolvingWorkId || isLoadingWorkData) {
+        return (<div>Ladataan teosta...</div>);
+    }
 
-    const anthology = isAnthology(data);
+    if (resolveError || workDataError) {
+        return <div>Teoksen lataaminen epäonnistui</div>;
+    }
+
+    if (!workData) return null;
+
+    const anthology = isAnthology(workData);
 
     const startContent = () => {
         // console.log(detailLevel)
@@ -439,7 +495,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
     }
 
     const anthologyAuthor = () => {
-        const contribs = data.contributions.filter(contrib => contrib.role.id === 1);
+        const contribs = workData.contributions.filter(contrib => contrib.role.id === 1);
         if (contribs.length === 0) return undefined;
         return contribs[0].person
     }
@@ -463,12 +519,12 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                 </>
             )}
 
-            {isLoading ? (
+            {isLoadingWorkData ? (
                 <div className="flex justify-content-center">
                     <ProgressSpinner />
                 </div>
             ) : (
-                data && (
+                workData && (
                     <div className="grid">
                         {/* Header Section */}
                         <div className="col-12">
@@ -477,7 +533,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                     <div className="col-12 lg:col-9">
                                         <div className="flex-column">
                                             <div>
-                                                <WorkDetails work={data} />
+                                                <WorkDetails work={workData} />
                                             </div>
                                         </div>
                                     </div>
@@ -488,17 +544,17 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                             <div className="flex flex-column gap-2">
                                                 <h3 className="text-sm uppercase text-600 m-0">Genret</h3>
                                                 <GenreGroup
-                                                    genres={data.genres}
+                                                    genres={workData.genres}
                                                     showOneCount
                                                     className="flex-wrap"
                                                 />
                                             </div>
 
-                                            {data.tags && data.tags.length > 0 && (
+                                            {workData.tags && workData.tags.length > 0 && (
                                                 <div className="flex flex-column gap-2">
                                                     <h3 className="text-sm uppercase text-600 m-0">Asiasanat</h3>
                                                     <TagGroup
-                                                        tags={data.tags}
+                                                        tags={workData.tags}
                                                         overflow={5}
                                                         showOneCount
                                                     />
@@ -508,10 +564,10 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                     </div>
                                 </div>
                                 {/* Links section */}
-                                {data.links && data.links.length > 0 && (
+                                {workData.links && workData.links.length > 0 && (
                                     <div className="mt-4 pt-3 border-top-1 surface-border">
                                         <div className="flex flex-wrap gap-3">
-                                            {data.links.map((link, index) => (
+                                            {workData.links.map((link, index) => (
                                                 <a
                                                     key={index}
                                                     href={link.link}
@@ -544,25 +600,25 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                             />
                                         </div>
                                         <DataView
-                                            value={groupSimilarEditions(data.editions, detailLevel).sort(sortEditions)}
+                                            value={groupSimilarEditions(workData.editions, detailLevel).sort(sortEditions)}
                                             itemTemplate={itemTemplate}
                                         />
                                     </div>
                                 </TabPanel>
 
                                 {/* Add new Awards tab */}
-                                {data.awards && data.awards.length > 0 && (
+                                {workData.awards && workData.awards.length > 0 && (
                                     <TabPanel header="Palkinnot" leftIcon="pi pi-trophy">
                                         <div className="card">
-                                            <AwardList awards={data.awards} />
+                                            <AwardList awards={workData.awards} />
                                         </div>
                                     </TabPanel>
                                 )}
 
-                                {data.stories.length > 0 && (
+                                {workData.stories.length > 0 && (
                                     <TabPanel header="Novellit" leftIcon="pi pi-list">
                                         <ShortsList
-                                            shorts={data.stories}
+                                            shorts={workData.stories}
                                             person={anthologyAuthor()}
                                             anthology={anthology}
                                         />
@@ -570,7 +626,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                                 )}
 
                                 <TabPanel header="Muutoshistoria" leftIcon="pi pi-history">
-                                    <EntityChanges entityId={data.id} entity="work" />
+                                    <EntityChanges entityId={workData.id} entity="work" />
                                 </TabPanel>
                             </TabView>
                         </div>
@@ -582,7 +638,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                             onShow={() => onDialogShow()}
                             onHide={() => onDialogHide()}
                         >
-                            <WorkForm workId={!formData || !editWork ? null : workId} onSubmitCallback={workFormCallback} />
+                            <WorkForm workId={!formData || !editWork ? null : (workId ?? null)} onSubmitCallback={workFormCallback} />
                         </Dialog>
                         <Dialog maximizable blockScroll
                             className="w-full xl:w-6"
@@ -590,7 +646,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                             onShow={() => onEditionDialogShow()}
                             onHide={() => onEditionDialogHide()}
                         >
-                            <EditionForm editionid={null} work={data} onSubmitCallback={editionFormCallback} />
+                            <EditionForm editionid={null} work={workData} onSubmitCallback={editionFormCallback} />
                         </Dialog>
                         <Dialog maximizable blockScroll
                             className="w-full xl:x-6"
@@ -599,7 +655,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                             onHide={() => onShortsFormHide()}
                             closeOnEscape
                         >
-                            <WorkShortsPicker id={workId} onClose={() => onShortsFormHide()} />
+                            <WorkShortsPicker id={workId ?? ""} onClose={() => onShortsFormHide()} />
                         </Dialog>
                         <Dialog maximizable blockScroll
                             className="w-full xl:w-6"
@@ -609,7 +665,7 @@ export const WorkPage = ({ id }: WorkPageProps) => {
                             closeOnEscape
                         >
                             <AwardedForm
-                                workId={data.id.toString()}
+                                workId={workData.id.toString()}
                                 onClose={() => onAwardsFormHide()}
                             />
                         </Dialog>

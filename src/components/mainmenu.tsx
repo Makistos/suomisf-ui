@@ -175,22 +175,40 @@ export default function MainMenu() {
             return tmp.textContent || tmp.innerText || "";
         }
         const itemIcon = (itemType: string) => {
-            let retval = "";
             switch (itemType) {
                 case 'work':
-                    // return <i>(Teos)</i>
                     return <i className={classNames('fa', 'fa-book')}></i>
+                case 'edition':
+                    return <i className={classNames('fa', 'fa-book-bookmark')}></i>
                 case 'person':
-                    // return <i>(Henkilö)</i>
                     return <i className={classNames('fa', 'fa-user')}></i>
-                case 'story':
-                    // return <i>(Novelli)</i>
+                case 'shortstory':
                     return <i className={classNames('fa', 'fa-scroll')}></i>
+                case 'award':
+                    return <i className={classNames('fa', 'fa-trophy')}></i>
+                case 'tag':
+                    return <i className={classNames('fa', 'fa-tag')}></i>
+                case 'magazine':
+                    return <i className={classNames('fa', 'fa-newspaper')}></i>
+                case 'issue':
+                    return <i className={classNames('fa', 'fa-file')}></i>
+                case 'publisher':
+                    return <i className={classNames('fa', 'fa-building')}></i>
+                case 'bookseries':
+                    return <i className={classNames('fa', 'fa-list')}></i>
+                case 'pubseries':
+                    return <i className={classNames('fa', 'fa-list-ol')}></i>
+                default:
+                    return <i className={classNames('fa', 'fa-question')}></i>
             }
-            return retval;
         }
 
         const itemTemplate = (item: any) => {
+            const truncateDescription = (desc: string) => {
+                const plainText = searchText(desc);
+                return plainText.length > 200 ? plainText.slice(0, 200) + '...' : plainText;
+            };
+
             return (
                 <div className="searchItem">
                     {itemIcon(item.type)}&nbsp;
@@ -204,7 +222,7 @@ export default function MainMenu() {
                     )}
                     {item.description && (
                         <>
-                            <div dangerouslySetInnerHTML={{ __html: item.description }} className="searchItemContents" >
+                            <div dangerouslySetInnerHTML={{ __html: truncateDescription(item.description) }} className="searchItemContents" >
                                 {/* <p className="searchItemContents">
                                     {searchText(item.description)}
                                 </p> */}
@@ -221,13 +239,36 @@ export default function MainMenu() {
                 case 'work':
                     target = target + 'works/';
                     break;
+                case 'edition':
+                    target = target + 'editions/';
+                    break;
                 case 'person':
                     target = target + 'people/';
                     break;
-                case 'story':
+                case 'shortstory':
                     target = target + 'shorts/';
                     break;
-
+                case 'award':
+                    target = target + 'awards/';
+                    break;
+                case 'tag':
+                    target = target + 'tags/';
+                    break;
+                case 'magazine':
+                    target = target + 'magazines/';
+                    break;
+                case 'issue':
+                    target = target + 'issues/';
+                    break;
+                case 'publisher':
+                    target = target + 'publishers/';
+                    break;
+                case 'bookseries':
+                    target = target + 'bookseries/';
+                    break;
+                case 'pubseries':
+                    target = target + 'pubseries/';
+                    break;
             }
             window.open(target + item.id, "_self");
             setSelectedItem(null);

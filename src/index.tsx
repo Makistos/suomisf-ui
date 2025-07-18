@@ -54,7 +54,8 @@ root.render(
         <Route path="magazines/:magazineId" element={<MagazinePage />} />
         <Route path="issues/:itemId" element={<IssuePage id={null} />} />
         <Route path="articles/:articleId" element={<ArticleView id={null} />} />
-        <Route path="works/:itemId" element={<WorkPage id={null} />} />
+        <Route path="works/:itemId" element={<WorkPage />} />
+        <Route path="editions/:itemId" element={<WorkPage />} />
         <Route path="bookseries" element={<BookseriesListPage />} />
         <Route path="bookseries/:itemId" element={<BookseriesPage id={null} />} />
         <Route path="pubseries" element={<PubseriesListPage />} />
@@ -72,7 +73,7 @@ root.render(
         <Route path="*"
           element={
             <main style={{ padding: "3rem" }}>
-              Työn alla...
+              Sivua ei löydy. Tarkista osoite tai palaa <a href="/">etusivulle</a>.
             </main>
           } />
       </Route>

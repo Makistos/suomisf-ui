@@ -2,6 +2,7 @@ import { Person } from "../../person/types";
 import { Short } from "../../short/types";
 import { Article } from "../../article";
 import { Magazine } from "../../magazine/types";
+import { Contribution } from "../../../types/contribution";
 
 
 export interface Issue {
@@ -19,7 +20,8 @@ export interface Issue {
     link: string;
     notes: string;
     title: string;
-    editors: Person[];
+    // editors: Person[];
+    contributors: Contribution[];
     articles: Article[];
     stories: Short[];
     magazine: Magazine;
@@ -40,7 +42,7 @@ export interface IssueFormData {
     link: string | null;
     notes: string | null;
     title: string | null;
-    editors: Person[] | null;
+    contributors: Contribution[] | null;
     magazine_id: number;
 }
 

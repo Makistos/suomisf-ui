@@ -10,17 +10,14 @@ import { FormProvider, RegisterOptions, useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import { Issue, IssueFormData } from "../types"
 import { FormInputNumber } from "@components/forms/field/form-input-number"
-import { FormMultiSelect } from "@components/forms/field/form-multi-select"
 import { FormInputText } from "@components/forms/field/form-input-text"
 import { FormEditor } from "@components/forms/field/form-editor"
 import { FormDropdown } from "@components/forms/field/form-dropdown"
-import { FormAutoComplete } from "@components/forms/field/form-auto-complete"
+import { ContributorField, emptyContributor } from "@components/forms/contributor-field"
 import { ProgressBar } from "primereact/progressbar"
 import { Button } from "primereact/button"
 import { getPublicationSizes } from "@api/issue/get-publication-sizes"
 import { PublicationSize } from "@features/issue"
-import { filterPeople } from "@api/people/filter-people"
-import { Toast } from "primereact/toast"
 
 interface IssueFormProps {
     issueid: string | null,
@@ -39,41 +36,32 @@ export const IssueForm = (props: IssueFormProps) => {
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [sizes, setSizes] = useState<PublicationSize[]>([]);
 
-    const convToForm = (issue: Issue | null): IssueFormData => ({
-        id: issue?.id ?? null,
-        type: issue?.type ?? 1,
-        number: issue?.number ?? 0,
-        number_extra: issue?.number_extra ?? "",
-        count: issue?.count ?? 0,
-        year: issue?.year ?? 0,
-        cover_number: issue?.cover_number ?? "",
-        publisher_id: issue?.publisher_id ?? null,
-        pages: issue?.pages ?? 0,
-        size: issue?.size ?? null,
-        link: issue?.link ?? "",
-        notes: issue?.notes ?? "",
-        title: issue?.title ?? "",
-        editors: issue?.editors ?? [],
-        magazine_id: issue?.magazine_id ?? props.magazineid
-    })
+    const convToForm = (issue: Issue | null): IssueFormData => {
+        let contributors = issue?.contributors ?? [];
+        if (contributors.length === 0) {
+            contributors = [emptyContributor];
+        }
 
-    // const defaultValues: IssueFormData = {
-    //     id: null,
-    //     type: 1,
-    //     number: 0,
-    //     number_extra: "",
-    //     count: 0,
-    //     year: 0,
-    //     cover_number: "",
-    //     publisher_id: 0,
-    //     pages: 0,
-    //     size: null,
-    //     link: '',
-    //     notes: '',
-    //     title: '',
-    //     editors: [],
-    //     magazine_id: props.magazineid
-    // }
+        return {
+            id: issue?.id ?? null,
+            type: issue?.type ?? 1,
+            number: issue?.number ?? 0,
+            number_extra: issue?.number_extra ?? "",
+            count: issue?.count ?? 0,
+            year: issue?.year ?? 0,
+            cover_number: issue?.cover_number ?? "",
+            publisher_id: issue?.publisher_id ?? null,
+            pages: issue?.pages ?? 0,
+            size: issue?.size ?? null,
+            link: issue?.link ?? "",
+            notes: issue?.notes ?? "",
+            title: issue?.title ?? "",
+            contributors: contributors,
+            magazine_id: issue?.magazine_id ?? props.magazineid
+        }
+    }
+
+
 
     useEffect(() => {
         async function getSizes() {
@@ -138,15 +126,10 @@ export const IssueForm = (props: IssueFormProps) => {
 
 const FormObject = ({ onSubmit, data, sizes }: FormObjectProps) => {
     const user = useMemo(() => getCurrenUser(), []);
-    const [filteredPeople, setFilteredPeople] = useState<any[]>([]);
     const editor_style: React.CSSProperties = { height: '320px' };
 
     const methods = useForm<IssueFormData>({ defaultValues: data });
 
-    const filter = async (event: any) => {
-        const response = await filterPeople(event.query, user);
-        setFilteredPeople(response);
-    }
     const required_rule: RegisterOptions = { required: "Pakollinen kenttä" };
 
     return (
@@ -207,13 +190,10 @@ const FormObject = ({ onSubmit, data, sizes }: FormObjectProps) => {
                             />
                         </div>
                         <div className="field col-12">
-                            <FormAutoComplete
-                                name="editors"
-                                methods={methods}
-                                multiple
-                                completeMethod={filter}
-                                suggestions={filteredPeople}
-                                label="Päätoimittajat"
+                            <ContributorField
+                                id="contributors"
+                                disabled={false}
+                                contributionTarget="issue"
                             />
                         </div>
                         <div className="field col-6">

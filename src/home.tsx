@@ -71,7 +71,7 @@ export const Home = () => {
                         </div>
                       </Tooltip>
 
-                      <Link to={`/works/${edition.work[0].id}`}>
+                      <Link to={`/editions/${edition.id}`}>
                         {edition.images.length > 0 && edition.images[0].image_src !== undefined && edition.images[0].image_src !== null &&
                           edition.images[0].image_src !== "" ?
                           <><img alt={edition.title} className={"image-" + edition.id} src={import.meta.env.VITE_IMAGE_URL + edition.images[0].image_src}

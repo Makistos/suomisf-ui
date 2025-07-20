@@ -2,8 +2,6 @@ import React, { Fragment, RefObject, useCallback, useMemo, useRef, useState } fr
 import { Link, useParams } from "react-router-dom";
 
 import { getCurrenUser } from '../../../services/auth-service';
-import { Person } from "../../person/types";
-import { LinkList } from '../../../components/link-list';
 import { Short, ShortSummary } from '../../short';
 import { Issue } from '../types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -30,19 +28,12 @@ import { Tooltip } from 'primereact/tooltip';
 import { SpeedDial } from 'primereact/speeddial';
 import { Image } from 'primereact/image';
 import { ContextMenu } from 'primereact/contextmenu';
+import { ContributionType } from '../../../types/contribution';
 const baseURL = 'issues/';
 
 export type IssueProps = {
     id: string | null
 };
-
-const PickLinks = (items: Person[]) => {
-    return items.map((item) => ({
-        id: item['id'],
-        name: item['name'],
-        alt_name: item['alt_name'] ? item['alt_name'] : item['name']
-    }))
-}
 
 type IssueInfoProps = {
     issue: Issue
@@ -56,6 +47,14 @@ const getShortTypes = (shorts: Short[]) => {
 }
 const IssueInfo = ({ issue }: IssueInfoProps) => {
     console.log(issue)
+
+    // Extract contributions by role
+    const editorContributions = issue.contributors
+        .filter(contrib => contrib.role.id === ContributionType.Päätoimittaja);
+
+    const coverArtistContributions = issue.contributors
+        .filter(contrib => contrib.role.id === ContributionType.Kansikuva);
+
     return (
         <div className="col-12 lg:col-9 mb-3">
             <h1 className="mt-0 text-2xl sm:text-3xl lg:text-4xl uppercase" style={{ lineHeight: '1.1' }}>
@@ -63,14 +62,38 @@ const IssueInfo = ({ issue }: IssueInfoProps) => {
                 <br />
                 <div className="mt-0 text-base sm:txt-lg ml-1">{issue.title && issue.title}</div>
             </h1>
-            {issue.editors && issue.editors.length > 0 && (
+            {editorContributions && editorContributions.length > 0 && (
                 <div className="mb-2">
-                    <LinkList
-                        path="people"
-                        separator=" &amp; "
-                        items={PickLinks(issue.editors)}
-                    />
-                    {issue.editors.length > 0 && " (päätoimittaja)"}
+                    {editorContributions.map((contrib, index) => (
+                        <span key={`editor-${contrib.person.id}-${index}`}>
+                            <Link
+                                to={`/people/${contrib.person.id}`}
+                                className="no-underline text-primary hover:text-primary-700"
+                            >
+                                {contrib.person.alt_name || contrib.person.name}
+                            </Link>
+                            {contrib.description && ` (${contrib.description})`}
+                            {!contrib.description && " (päätoimittaja)"}
+                            {index < editorContributions.length - 1 && " & "}
+                        </span>
+                    ))}
+                </div>
+            )}
+            {coverArtistContributions && coverArtistContributions.length > 0 && (
+                <div className="mb-2">
+                    {coverArtistContributions.map((contrib, index) => (
+                        <span key={`cover-artist-${contrib.person.id}-${index}`}>
+                            <Link
+                                to={`/people/${contrib.person.id}`}
+                                className="no-underline text-primary hover:text-primary-700"
+                            >
+                                {contrib.person.alt_name || contrib.person.name}
+                            </Link>
+                            {contrib.description && ` (${contrib.description})`}
+                            {!contrib.description && " (kansikuva)"}
+                            {index < coverArtistContributions.length - 1 && " & "}
+                        </span>
+                    ))}
                 </div>
             )}
             <div>

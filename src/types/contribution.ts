@@ -28,6 +28,8 @@ export const ContributionType = {
     Kirjoittaja: 1, // Work contributor
     Kääntäjä: 2,
     Toimittaja: 3,  // Work contributor
-    Kansikuva: 4,
-    Kuvittaja: 5
+    Kansikuva: 4, // Work and issue contributor
+    Kuvittaja: 5,
+    Esiintyy: 6, // Work contributor
+    Päätoimittaja: 7, // Issue contributor
 }

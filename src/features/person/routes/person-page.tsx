@@ -25,7 +25,6 @@ import { selectId } from '../../../utils';
 import { User, isAdmin } from "../../user";
 import { useDocumentTitle } from '../../../components/document-title';
 
-//import { AwardedForm } from '@features/award/components/awarded-form';
 import { Card } from 'primereact/card';
 import { TabView, TabPanel } from 'primereact/tabview';
 import { BookSeriesList } from '@features/bookseries';
@@ -33,6 +32,8 @@ import { getCountryCode } from '../../../utils/country-utils';
 import { Toast } from 'primereact/toast';
 import { PersonDetails } from '../components/person-details';
 import { AwardedForm } from '@features/award/components/awarded-form';
+import { ContributorMagazineControl } from '@components/contributor-magazine-control';
+import { Issue } from '@features/issue';
 
 const baseURL = "people/";
 
@@ -75,6 +76,19 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         queryKey: ["person", thisId],
         queryFn: () => fetchPerson(thisId, user),
         enabled: queryEnabled
+    });
+
+    const issueContributions = useQuery<Issue[]>({
+        queryKey: ["person", thisId, "magazineContributions"],
+        queryFn: async () => {
+            const url = baseURL + thisId + "/issue-contributions";
+            const response = await getApiContent(url, user).then(response =>
+                response.data
+            )
+                .catch((error) => console.log(error));
+            return response == undefined ? [] : response;
+        },
+        placeholderData: [],
     });
 
     useEffect(() => {
@@ -342,6 +356,16 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                             <BookSeriesList
                                                 works={data.works}
                                                 seriesType='bookseries'
+                                            />
+                                        </div>
+                                    </TabPanel>
+                                )}
+                                {issueContributions.data && issueContributions.data.length > 0 && (
+                                    <TabPanel header="Lehdet" leftIcon="pi pi-newspaper">
+                                        <div className="card">
+                                            <ContributorMagazineControl
+                                                issues={issueContributions.data}
+                                                person={data.id}
                                             />
                                         </div>
                                     </TabPanel>

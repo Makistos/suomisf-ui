@@ -33,3 +33,5 @@ export const ContributionType = {
     Esiintyy: 6, // Work contributor
     Päätoimittaja: 7, // Issue contributor
 }
+
+export type ContributionKey = keyof typeof ContributionType;

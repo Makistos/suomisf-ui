@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 
 import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
+import { Button } from "primereact/button";
 import _ from "lodash";
 
 import { Person } from "../features/person";
-import { WorkList } from "../features/work";
+import { ContributorWorkControl } from "./contributor-work-control";
 import { EditionList } from "../features/edition";
 import { BookSeriesList } from "../features/bookseries";
 import { Work } from "../features/work";
@@ -39,6 +40,7 @@ interface CBCProps {
 
 export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast = false, tags }: CBCProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
+    const [showTags, setShowTags] = useState(false);
     const [works, setWorks]: [Work[], (sfWorks: Work[]) => void]
         = useState<Work[]>([]);
     const [edits, setEdits]: [Edition[], (sfEdits: Edition[]) => void] = useState<Edition[]>([]);
@@ -205,15 +207,23 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
                 disabled={authorContributions === 0}>
                 {/* Tags section */}
                 {tags && tags.length > 0 && (
-                    <div className="surface-ground p-3 border-round mb-3">
-                        <div className="flex align-items-center gap-3">
-                            <i className="pi pi-tags text-600"></i>
-                            <TagGroup tags={tags} overflow={5} showOneCount />
-                        </div>
+                    <div className="mb-3">
+                        <Button
+                            icon={showTags ? "pi pi-chevron-up" : "pi pi-chevron-down"}
+                            label={`Asiasanat (${tags.length})`}
+                            className="p-button-text p-button-sm"
+                            onClick={() => setShowTags(!showTags)}
+                        />
+                        {showTags && (
+                            <div className="surface-ground p-3 border-round mt-2">
+                                <TagGroup tags={tags} overflow={100} showOneCount />
+                            </div>
+                        )}
                     </div>
                 )}
-                <WorkList
+                <ContributorWorkControl
                     works={works}
+                    person={person.id}
                     personName={person.name}
                     collaborationsLast={collaborationsLast}
                 />

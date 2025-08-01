@@ -1,5 +1,4 @@
 import { TabPanel, TabView } from "primereact/tabview";
-import { Image } from "primereact/image";
 import { Button } from "primereact/button";
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
@@ -7,6 +6,7 @@ import { Work } from "@features/work/types";
 import { Edition } from "@features/edition/types";
 import { GenreGroup } from "@features/genre";
 import { TagGroup } from "@features/tag";
+import { ImageGallery } from ".";
 
 interface ContributorWorkControlProps {
     /**
@@ -70,6 +70,36 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
         });
 
         return sortedEditions.find(edition => edition.images && edition.images.length > 0) || sortedEditions[0] || null;
+    };
+
+    // Get all images from all editions of a work
+    const getAllImagesFromWork = (work: Work): { url: string; version?: number; editionnum?: number }[] => {
+        if (!work.editions || work.editions.length === 0) return [];
+
+        const allImages: { url: string; version?: number; editionnum?: number }[] = [];
+        const seenUrls = new Set<string>();
+
+        work.editions.forEach(edition => {
+            if (edition.images && edition.images.length > 0) {
+                edition.images.forEach(img => {
+                    const imageUrl = img.image_src.startsWith('http')
+                        ? img.image_src
+                        : `${import.meta.env.VITE_IMAGE_URL}${img.image_src}`;
+
+                    // Only add if we haven't seen this URL before
+                    if (!seenUrls.has(imageUrl)) {
+                        seenUrls.add(imageUrl);
+                        allImages.push({
+                            url: imageUrl,
+                            version: edition.version,
+                            editionnum: typeof edition.editionnum === 'number' ? edition.editionnum : parseInt(String(edition.editionnum || 0))
+                        });
+                    }
+                });
+            }
+        });
+
+        return allImages;
     };
 
     // Format edition information
@@ -137,11 +167,12 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
                     <div className="work-list">
                         {group.works.map((work, index) => {
                             const firstEdition = getFirstEditionWithImage(work);
+                            const allImages = getAllImagesFromWork(work);
 
                             return (
                                 <div key={work.id} className="mb-3 p-3 surface-50 border-round">
-                                    <div className="flex align-items-start gap-3">
-                                        <div className="flex-1">
+                                    <div className="grid align-items-start gap-3">
+                                        <div className="col">
                                             {/* Title */}
                                             <div className="font-semibold mb-1">
                                                 <Link
@@ -227,18 +258,18 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
                                         </div>
 
                                         {/* Cover Image */}
-                                        {firstEdition && firstEdition.images && firstEdition.images.length > 0 && (
-                                            <div className="flex-shrink-0">
-                                                <Link to={`/editions/${firstEdition.id}`}>
-                                                    <Image
-                                                        src={firstEdition.images[0].image_src.startsWith('http') ? firstEdition.images[0].image_src : `${import.meta.env.VITE_IMAGE_URL}${firstEdition.images[0].image_src}`}
+                                        {allImages.length > 0 && (
+                                            <div className="col-fixed" style={{ width: '182px' }}>
+                                                <div className="flex justify-content-end" style={{ minHeight: '182px' }}>
+                                                    <ImageGallery
+                                                        imageData={allImages}
                                                         alt={`${work.title} kansi`}
                                                         height="150"
                                                         className="border-round shadow-2 hover:shadow-4 transition-all transition-duration-200"
                                                         imageClassName="object-fit-cover"
                                                         preview
                                                     />
-                                                </Link>
+                                                </div>
                                             </div>
                                         )}
                                     </div>

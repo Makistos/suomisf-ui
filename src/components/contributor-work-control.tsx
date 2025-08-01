@@ -9,6 +9,8 @@ import { Edition } from "@features/edition/types";
 import { GenreGroup } from "@features/genre";
 import { TagGroup } from "@features/tag";
 import { ImageGallery } from ".";
+import { getCurrenUser } from "../services/auth-service";
+import { editionIsOwned } from "@features/edition/utils/edition-is-owned";
 
 interface ContributorWorkControlProps {
     /**
@@ -25,6 +27,9 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
     const [expandedTags, setExpandedTags] = useState<Set<number>>(new Set());
     const [showAllImagesGallery, setShowAllImagesGallery] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(-1);
+
+    // Get current user for ownership checking
+    const currentUser = getCurrenUser();
 
     // Group works by author_str, with person's own works first
     const groupedWorks = useMemo(() => {
@@ -202,6 +207,11 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
     // Format edition information
     const formatEdition = (edition: Edition, workTitle: string): string => {
         let result = "";
+
+        // Add star if user owns this edition
+        if (currentUser && editionIsOwned(edition, currentUser)) {
+            result += "★ ";
+        }
 
         if (edition.version && edition.version > 1) {
             result += `${edition.version}. laitos `;

@@ -27,6 +27,7 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
     const [expandedTags, setExpandedTags] = useState<Set<number>>(new Set());
     const [showAllImagesGallery, setShowAllImagesGallery] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(-1);
+    const [currentWorkImages, setCurrentWorkImages] = useState<{ url: string; workTitle: string; version?: number; editionnum?: number }[]>([]);
 
     // Get current user for ownership checking
     const currentUser = getCurrenUser();
@@ -166,6 +167,23 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
         return result;
     };
 
+    // Format image info for individual work (without work title)
+    const formatWorkImageInfo = (imageData: { version?: number; editionnum?: number }): string => {
+        if (imageData.version || imageData.editionnum) {
+            const versionInfo = [];
+            if (imageData.version) {
+                versionInfo.push(`${imageData.version}. laitos`);
+            }
+            if (imageData.editionnum) {
+                versionInfo.push(`${imageData.editionnum}. painos`);
+            }
+            if (versionInfo.length > 0) {
+                return versionInfo.join(', ');
+            }
+        }
+        return "";
+    };
+
     // Create galleria items
     const galleryItems = useMemo(() => {
         return allWorksImages.map((item, index) => ({
@@ -175,6 +193,27 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
             title: formatImageInfo(item)
         }));
     }, [allWorksImages]);
+
+    // Create galleria items for current work
+    const currentWorkGalleryItems = useMemo(() => {
+        return currentWorkImages.map((item, index) => ({
+            itemImageSrc: item.url,
+            thumbnailImageSrc: item.url,
+            alt: `${item.workTitle} kansi`,
+            title: formatWorkImageInfo(item)
+        }));
+    }, [currentWorkImages]);
+
+    // Function to show gallery for a specific work
+    const showWorkGallery = (work: Work) => {
+        const workImages = getAllImagesFromWork(work).map(img => ({
+            ...img,
+            workTitle: work.title
+        }));
+        setCurrentWorkImages(workImages);
+        setCurrentImageIndex(-1); // Reset to show thumbnails first
+        setShowAllImagesGallery(true);
+    };
 
     // Galleria templates
     const itemTemplate = (item: any) => {
@@ -276,6 +315,7 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
                         label={`Näytä kaikki kuvat (${allWorksImages.length})`}
                         className="p-button-outlined p-button-sm"
                         onClick={() => {
+                            setCurrentWorkImages([]); // Clear current work images to show all
                             setCurrentImageIndex(-1); // Reset to show thumbnails first
                             setShowAllImagesGallery(true);
                         }}
@@ -390,7 +430,9 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
                                                             height="150"
                                                             className="border-round shadow-2 hover:shadow-4 transition-all transition-duration-200"
                                                             imageClassName="object-fit-cover"
-                                                            preview
+                                                            preview={allImages.length === 1}
+                                                            showGalleryButton={false}
+                                                            onClick={allImages.length > 1 ? () => showWorkGallery(work) : undefined}
                                                         />
                                                     </div>
                                                 </div>
@@ -406,23 +448,27 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
 
             {/* Image Gallery Dialog */}
             <Dialog
-                header={`Kaikki kuvat (${allWorksImages.length})`}
+                header={currentWorkImages.length > 0
+                    ? `${currentWorkImages[0]?.workTitle} - Kuvat (${currentWorkImages.length})`
+                    : `Kaikki kuvat (${allWorksImages.length})`
+                }
                 visible={showAllImagesGallery}
                 onHide={() => {
                     setShowAllImagesGallery(false);
                     setCurrentImageIndex(-1); // Reset to thumbnails when closing
+                    setCurrentWorkImages([]); // Clear current work images
                 }}
                 style={{ width: '90vw', maxWidth: '1200px' }}
                 contentStyle={{ padding: '1rem', overflow: 'auto' }}
                 modal
                 maximizable
             >
-                {galleryItems.length > 0 && (
+                {(currentWorkImages.length > 0 ? currentWorkGalleryItems : galleryItems).length > 0 && (
                     <>
                         {/* Show thumbnail grid initially */}
                         {currentImageIndex === -1 ? (
                             <div className="grid justify-content-center" style={{ width: '100%' }}>
-                                {galleryItems.map((item, index) => (
+                                {(currentWorkImages.length > 0 ? currentWorkGalleryItems : galleryItems).map((item, index) => (
                                     <div className="col-12 sm:col-6 md:col-4 lg:col-3 mb-3" key={index}>
                                         <div className="text-center cursor-pointer p-2" onClick={() => setCurrentImageIndex(index)}>
                                             <img
@@ -448,7 +494,7 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
                                     onClick={() => setCurrentImageIndex(-1)}
                                 />
                                 <Galleria
-                                    value={galleryItems}
+                                    value={currentWorkImages.length > 0 ? currentWorkGalleryItems : galleryItems}
                                     activeIndex={currentImageIndex}
                                     onItemChange={(e) => setCurrentImageIndex(e.index)}
                                     item={itemTemplate}

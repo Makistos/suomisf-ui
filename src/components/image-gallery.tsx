@@ -33,6 +33,14 @@ interface ImageGalleryProps {
      * Whether to show preview on click for single images
      */
     preview?: boolean;
+    /**
+     * Custom click handler for the image
+     */
+    onClick?: () => void;
+    /**
+     * Whether to show the gallery button for multiple images
+     */
+    showGalleryButton?: boolean;
 }
 
 export const ImageGallery = ({
@@ -42,7 +50,9 @@ export const ImageGallery = ({
     height = "150",
     className = "",
     imageClassName = "",
-    preview = true
+    preview = true,
+    onClick,
+    showGalleryButton = true
 }: ImageGalleryProps) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [galleryVisible, setGalleryVisible] = useState(false);
@@ -137,14 +147,19 @@ export const ImageGallery = ({
     return (
         <div className="relative text-right">
             <div className="relative inline-block">
-                <Image
-                    src={currentImage.url}
-                    alt={alt}
-                    height={height}
-                    className={className}
-                    imageClassName={imageClassName}
-                    preview={!hasMultipleImages && preview}
-                />
+                <div
+                    className={onClick ? "cursor-pointer" : ""}
+                    onClick={onClick}
+                >
+                    <Image
+                        src={currentImage.url}
+                        alt={alt}
+                        height={height}
+                        className={className}
+                        imageClassName={imageClassName}
+                        preview={!hasMultipleImages && preview && !onClick}
+                    />
+                </div>
 
                 {hasMultipleImages && (
                     <>
@@ -172,15 +187,17 @@ export const ImageGallery = ({
                             onClick={nextImage}
                         />
 
-                        <Button
-                            icon="pi pi-images"
-                            tooltip="Galleria"
-                            className="p-button-rounded p-button-sm bg-black-alpha-50 hover:bg-black-alpha-70 ml-2"
-                            onClick={() => {
-                                setCurrentIndex(-1); // Reset to show thumbnails first
-                                setGalleryVisible(true);
-                            }}
-                        />
+                        {showGalleryButton && (
+                            <Button
+                                icon="pi pi-images"
+                                tooltip="Galleria"
+                                className="p-button-rounded p-button-sm bg-black-alpha-50 hover:bg-black-alpha-70 ml-2"
+                                onClick={() => {
+                                    setCurrentIndex(-1); // Reset to show thumbnails first
+                                    setGalleryVisible(true);
+                                }}
+                            />
+                        )}
                     </>
                 )}
             </div>

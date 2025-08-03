@@ -13,8 +13,11 @@ interface ImageViewProps {
     idx: number,
     //edition: Edition,
     images: ImageType[],
+    saveFunc?: (event: FileUploadHandlerEvent) => void | Promise<void>
     deleteFunc: (itemId: string | number, imageId: number) => void,
+    onUpload: (event: FileUploadHandlerEvent) => void,
     idxCb: (idx: number) => void,
+    editionCount?: number, // Add this to know how many editions are being displayed
 }
 
 /**
@@ -23,7 +26,7 @@ interface ImageViewProps {
  * @param {ImageViewProps} edition - The edition object containing image data.
  * @return {JSX.Element} The rendered image view component.
  */
-export const ImageView = ({ itemId, idx, images, deleteFunc, idxCb, ...rest }: ImageViewProps) => {
+export const ImageView = ({ itemId, idx, images, saveFunc, deleteFunc, onUpload, idxCb, editionCount, ...rest }: ImageViewProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const queryClient = useQueryClient();
 
@@ -42,15 +45,62 @@ export const ImageView = ({ itemId, idx, images, deleteFunc, idxCb, ...rest }: I
     //     return "";
     // }
     const cm = useRef<ContextMenu>(null);
+
+    // Use the passed editionCount if available, otherwise fall back to unique edition IDs from images
+    const hasOnlyOneEdition = editionCount ? editionCount === 1 : (() => {
+        const uniqueEditionIds = [...new Set(images.map(img => img.edition_id))];
+        return uniqueEditionIds.length === 1;
+    })();
+
     const imageItems = [
+        {
+            label: 'Lisää kuva',
+            icon: 'pi pi-plus',
+            command: () => {
+                // Create a temporary file input
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = (e) => {
+                    const target = e.target as HTMLInputElement;
+                    if (target.files && target.files.length > 0) {
+                        const file = target.files[0];
+                        // Create a FileUploadFile object that matches PrimeReact's interface
+                        const fileUploadFile = Object.assign(file, {
+                            objectURL: URL.createObjectURL(file)
+                        });
+
+                        // Create a mock FileUploadHandlerEvent
+                        const mockEvent: FileUploadHandlerEvent = {
+                            files: [fileUploadFile],
+                            options: {
+                                clear: () => { },
+                                props: {}
+                            }
+                        };
+
+                        console.log("hasOnlyOneEdition", hasOnlyOneEdition);
+                        if (saveFunc) {
+                            saveFunc(mockEvent);
+                        } else if (onUpload) {
+                            onUpload(mockEvent);
+                        }
+                        queryClient.invalidateQueries();
+                    }
+                };
+                input.click();
+            },
+            visible: isAdmin(getCurrenUser()) && hasOnlyOneEdition
+        },
         {
             label: 'Poista kuva',
             icon: 'pi pi-trash',
             command: () => {
+                console.log("ImageView: delete image", images);
                 deleteFunc(itemId, images[idx].id);
                 queryClient.invalidateQueries();
             },
-            visible: isAdmin(getCurrenUser()) && images.length === 1
+            visible: isAdmin(getCurrenUser())
         },
         {
             label: 'Kopioi osoite',

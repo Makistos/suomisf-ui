@@ -81,7 +81,7 @@ export const combineEditions = (editions: Edition[], user: User | null): Edition
             // Following sets id for all images to the first image. This is done
             // to make removing duplicates possible. This id only matters when
             // there is just one image in the list.
-            image.id = editions[0].id;
+            image.id = image.id || 0;
             images.push(image);
         }
     }

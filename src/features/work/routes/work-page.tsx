@@ -115,24 +115,27 @@ const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, highlight
 }) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [currIdx, setCurrIdx] = useState(0);
-
-    let imageUploadUrl = '';
-    if (editions.length === 1) {
-        imageUploadUrl = `editions/${editions[0].id}/images`;
-    }
+    const edition = combineEditions(editions, user);
 
     const customSave = useCallback(async (event: FileUploadHandlerEvent) => {
+        console.log("ImageView: event", event);
+
+        // Get the edition ID from the currently displayed image
+        if (!edition) return;
+
+        //const currentImage = edition.images[currIdx];
+        //const targetEditionId = currentImage ? currentImage.edition_id : edition.id;
+        const uploadUrl = `editions/${edition.id}/images`;
+
         const form = new FormData();
         form.append('file', event.files[0], event.files[0].name);
         const headers = authHeader();
 
-        await axios.post(import.meta.env.VITE_API_URL + imageUploadUrl, form, {
+        await axios.post(import.meta.env.VITE_API_URL + uploadUrl, form, {
             headers: headers
         });
         onUpload();
-    }, [onUpload, imageUploadUrl]);
-
-    const edition = combineEditions(editions, user);
+    }, [onUpload, edition, currIdx]);
 
     // Check if this edition should be highlighted
     const shouldHighlight = highlightEditionId && editions.some(e => e.id.toString() === highlightEditionId);
@@ -155,10 +158,13 @@ const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, highlight
                     {edition.images.length > 0 ?
                         <ImageView
                             itemId={edition.id}
-                            images={edition.images}
+                            images={edition.images.sort((a, b) => a.id - b.id)}
                             idx={currIdx}
+                            saveFunc={customSave}
                             deleteFunc={deleteImage}
-                            idxCb={setCurrIdx} />
+                            onUpload={onUpload}
+                            idxCb={setCurrIdx}
+                            editionCount={editions.length} />
                         : isAdmin(user) &&
                         <FileUpload
                             id={"editionimage_" + edition.id}

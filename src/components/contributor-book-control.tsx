@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
 import { Button } from "primereact/button";
 import _ from "lodash";
 
 import { Person } from "../features/person";
 import { ContributorWorkControl } from "./contributor-work-control";
-import { EditionList } from "../features/edition";
-import { BookSeriesList } from "../features/bookseries";
+import { ContributorEditionControl } from "./contributor-edition-control";
 import { Work } from "../features/work";
 import { Genre } from "../features/genre";
 import { Edition } from "../features/edition";
@@ -231,22 +229,22 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
             <TabPanel key="Toimittanut"
                 header={headerText("Toimittanut", editContributions)}
                 disabled={editContributions === 0}>
-                <EditionList editions={edits} person={person} sort="author" />
+                <ContributorEditionControl editions={edits} person={person} sort="author" collaborationsLast={collaborationsLast} detailLevel="brief" />
             </TabPanel>
             <TabPanel key="Kääntänyt"
                 header={headerText("Kääntänyt", translationContributions)}
                 disabled={translationContributions === 0}>
-                <EditionList editions={translations} person={person} sort="author" />
+                <ContributorEditionControl editions={translations} person={person} sort="author" collaborationsLast={collaborationsLast} detailLevel="brief" />
             </TabPanel>
             <TabPanel key="Kansikuva"
                 header={headerText("Kansi", coverContributions)}
                 disabled={coverContributions === 0}>
-                <EditionList editions={covers} person={person} sort="author" />
+                <ContributorEditionControl editions={covers} person={person} sort="author" collaborationsLast={collaborationsLast} detailLevel="brief" />
             </TabPanel>
             <TabPanel key="Kuvittaja"
                 header={headerText("Kuvitus", illustrationContributions)}
                 disabled={illustrationContributions === 0}>
-                <EditionList editions={illustrations} person={person} sort="author" />
+                <ContributorEditionControl editions={illustrations} person={person} sort="author" collaborationsLast={collaborationsLast} detailLevel="brief" />
             </TabPanel>
         </TabView>
     )

@@ -1,4 +1,3 @@
-import { TabPanel, TabView } from "primereact/tabview";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Galleria } from "primereact/galleria";
@@ -23,7 +22,6 @@ interface ContributorWorkControlProps {
 }
 
 export const ContributorWorkControl = ({ works, person, personName = "", collaborationsLast = false }: ContributorWorkControlProps) => {
-    const [activeIndex, setActiveIndex] = useState(0);
     const [expandedTags, setExpandedTags] = useState<Set<number>>(new Set());
     const [showAllImagesGallery, setShowAllImagesGallery] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(-1);
@@ -323,10 +321,15 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
                 </div>
             )}
 
-            <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}
-                className="w-full">
+            <div className="w-full">
                 {groupedWorks.map((group, groupIndex) => (
-                    <TabPanel key={group.authorStr} header={`${group.authorStr} (${group.works.length})`}>
+                    <div key={group.authorStr} className="mb-4">
+                        {/* Group header */}
+                        {groupedWorks.length > 1 && group.authorStr !== personName && (
+                            <h3 className="text-xl font-semibold mb-3 text-700 pb-2 border-bottom-1 border-300">
+                                {group.authorStr} ({group.works.length})
+                            </h3>
+                        )}
                         <div className="work-list">
                             {group.works.map((work, index) => {
                                 const firstEdition = getFirstEditionWithImage(work);
@@ -442,9 +445,9 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
                                 );
                             })}
                         </div>
-                    </TabPanel>
+                    </div>
                 ))}
-            </TabView>
+            </div>
 
             {/* Image Gallery Dialog */}
             <Dialog

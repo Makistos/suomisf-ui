@@ -118,7 +118,6 @@ const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, highlight
     const edition = combineEditions(editions, user);
 
     const customSave = useCallback(async (event: FileUploadHandlerEvent) => {
-        console.log("ImageView: event", event);
 
         // Get the edition ID from the currently displayed image
         if (!edition) return;

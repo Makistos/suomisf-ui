@@ -79,7 +79,6 @@ export const ImageView = ({ itemId, idx, images, saveFunc, deleteFunc, onUpload,
                             }
                         };
 
-                        console.log("hasOnlyOneEdition", hasOnlyOneEdition);
                         if (saveFunc) {
                             saveFunc(mockEvent);
                         } else if (onUpload) {

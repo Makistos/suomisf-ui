@@ -97,7 +97,7 @@ export const ContributorEditionControl = ({
         const sortedKeys = Object.keys(grouped).sort((a, b) => {
             if (a === person.name) return -1;
             if (b === person.name) return 1;
-            return a.localeCompare(b);
+            return a.localeCompare(b, "fi");
         });
 
         // If collaborationsLast is true, move collaborative editions to end

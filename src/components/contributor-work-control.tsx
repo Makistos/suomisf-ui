@@ -51,7 +51,7 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
         const sortedKeys = Object.keys(grouped).sort((a, b) => {
             if (a === personName) return -1;
             if (b === personName) return 1;
-            return a.localeCompare(b);
+            return a.localeCompare(b, "fi");
         });
 
         // If collaborationsLast is true, move collaborative works to end
@@ -63,7 +63,11 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
             }
         }
 
-        return sortedKeys.map(key => grouped[key]);
+        // Sort works within each group by title using Finnish locale
+        return sortedKeys.map(key => ({
+            ...grouped[key],
+            works: grouped[key].works.sort((a, b) => a.title.localeCompare(b.title, "fi"))
+        }));
     }, [works, person, personName, collaborationsLast]);
 
     // Get the first edition with an image for a work

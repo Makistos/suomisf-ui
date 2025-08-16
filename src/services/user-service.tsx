@@ -2,8 +2,13 @@ import axios from "axios";
 
 import { User } from "../features/user/types";
 import authHeader, { refreshHeader } from "./auth-header";
+import { shouldUseNewApi, HttpMethod } from "../config/api-routing";
 
 const baseURL = import.meta.env.VITE_API_URL;
+const newBaseURL = import.meta.env.VITE_NEW_API_URL;
+
+// Re-export for convenience
+export { shouldUseNewApi };
 
 const handleError = (error: any): string => {
     let message = "";
@@ -33,24 +38,31 @@ export interface HttpStatusResponse {
     status: number
 }
 
-export const getPublicContent = (url: string) => {
-    return axios.get(baseURL + url);
+export const getPublicContent = (url: string, newApi = false) => {
+    const base = newApi ? newBaseURL : baseURL;
+    return axios.get(base + url);
 };
 
-export const getUserContent = (url: string) => {
-    return axios.get(baseURL + url, { headers: authHeader() });
+export const getUserContent = (url: string, newApi = false) => {
+    const base = newApi ? newBaseURL : baseURL;
+    return axios.get(base + url, { headers: authHeader() });
 }
 
-export const getApiContent = (url: string, user: User | null) => {
+export const getApiContent = (url: string, user: User | null, newApi?: boolean) => {
+    // If newApi is not explicitly specified, use the automatic routing logic
+    const useNewApi = newApi !== undefined ? newApi : shouldUseNewApi(url, 'GET');
+
     if (user === undefined || user === null) {
-        return getPublicContent(url);
+        return getPublicContent(url, useNewApi);
     } else {
-        return getUserContent(url);
+        return getUserContent(url, useNewApi);
     }
 }
 
-const postContent = async (url: string, dataOut: any, callback: cbType | null, user: User | null): Promise<HttpStatusResponse> => {
-    const addr = import.meta.env.VITE_API_URL + url;
+const postContent = async (url: string, dataOut: any, callback: cbType | null, user: User | null, newApi?: boolean): Promise<HttpStatusResponse> => {
+    // If newApi is not explicitly specified, use the automatic routing logic
+    const useNewApi = newApi !== undefined ? newApi : shouldUseNewApi(url, 'POST');
+    const addr = (useNewApi ? newBaseURL : baseURL) + url;
     let error_msg = "";
     let status = 0;
     try {
@@ -87,8 +99,10 @@ const postContent = async (url: string, dataOut: any, callback: cbType | null, u
     })
 }
 
-export const putContent = async (url: string, data: any, user: User | null): Promise<HttpStatusResponse> => {
-    const addr = import.meta.env.VITE_API_URL + url;
+export const putContent = async (url: string, data: any, user: User | null, newApi?: boolean): Promise<HttpStatusResponse> => {
+    // If newApi is not explicitly specified, use the automatic routing logic
+    const useNewApi = newApi !== undefined ? newApi : shouldUseNewApi(url, 'PUT');
+    const addr = (useNewApi ? newBaseURL : baseURL) + url;
     let error_msg = "";
     let status = 0;
     try {
@@ -125,8 +139,10 @@ export const putContent = async (url: string, data: any, user: User | null): Pro
     })
 }
 
-export const deleteApiContent = async (url: string): Promise<HttpStatusResponse> => {
-    const addr = import.meta.env.VITE_API_URL + url;
+export const deleteApiContent = async (url: string, newApi?: boolean): Promise<HttpStatusResponse> => {
+    // If newApi is not explicitly specified, use the automatic routing logic
+    const useNewApi = newApi !== undefined ? newApi : shouldUseNewApi(url, 'DELETE');
+    const addr = (useNewApi ? newBaseURL : baseURL) + url;
     let error_msg = "";
     let status = 0;
     try {
@@ -162,10 +178,10 @@ export const deleteApiContent = async (url: string): Promise<HttpStatusResponse>
     })
 }
 
-export const postApiContent = (url: string, data: any, user: User | null) => {
-    return postContent(url, data, null, user)
+export const postApiContent = (url: string, data: any, user: User | null, newApi?: boolean) => {
+    return postContent(url, data, null, user, newApi)
 }
 
-export const putApiContent = (url: string, data: any, user: User | null) => {
-    return putContent(url, data, user);
+export const putApiContent = (url: string, data: any, user: User | null, newApi?: boolean) => {
+    return putContent(url, data, user, newApi);
 }

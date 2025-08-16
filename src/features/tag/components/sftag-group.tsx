@@ -41,7 +41,7 @@ export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseF
     const [actors, setActors] = useState<SfTag[]>([]);
     const [eras, setEras] = useState<SfTag[]>([]);
 
-    if (tags.length === 0) {
+    if (tags == undefined || tags.length === 0) {
         return <></>;
     }
 

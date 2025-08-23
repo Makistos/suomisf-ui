@@ -628,7 +628,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                                     </TabPanel>
                                 )}
 
-                                {workData.stories.length > 0 && (
+                                {workData.stories && workData.stories.length > 0 && (
                                     <TabPanel header="Novellit" leftIcon="pi pi-list">
                                         <ShortsList
                                             shorts={workData.stories}

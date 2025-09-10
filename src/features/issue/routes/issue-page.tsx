@@ -46,8 +46,6 @@ const getShortTypes = (shorts: Short[]) => {
 
 }
 const IssueInfo = ({ issue }: IssueInfoProps) => {
-    console.log(issue)
-
     // Extract contributions by role
     const editorContributions = issue.contributors
         .filter(contrib => contrib.role.id === ContributionType.Päätoimittaja);

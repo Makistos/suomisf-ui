@@ -151,6 +151,7 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
                                     <div className="col-12 lg:col-9">
                                         <div className="flex-column">
                                             <h1 className="text-4xl font-bold m-0">{data.name}</h1>
+                                            {data.orig_name && data.orig_name !== ''} <h2>{data.orig_name}</h2>
                                             {data.important && (
                                                 <div className="flex align-items-center gap-2 mt-3">
                                                     <i className="pi pi-star-fill text-yellow-500" />

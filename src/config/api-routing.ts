@@ -15,29 +15,29 @@ export interface ApiEndpointConfig {
 
 const newApiEndpoints: Record<string, ApiEndpointConfig> = {
     // Tag-related endpoints
-    'tagsquick': {
-        supportedMethods: ['GET']
-    },
-    'tags': {
-        supportedMethods: ['GET']
-    },
-    'tags/:id': {
-        supportedMethods: ['GET'],
-        supportsParameters: true
-    },
+    // 'tagsquick': {
+    //     supportedMethods: ['GET']
+    // },
+    // 'tags': {
+    //     supportedMethods: ['GET']
+    // },
+    // 'tags/:id': {
+    //     supportedMethods: ['GET'],
+    //     supportsParameters: true
+    // },
 
     // Work-related endpoints
-    'works': {
-        supportedMethods: ['GET']
-    },
-    'works/:id': {
-        supportedMethods: ['GET'],
-        supportsParameters: true
-    },
-    'people/:id': {
-        supportedMethods: ['GET'],
-        supportsParameters: true
-    },
+    // 'works': {
+    //     supportedMethods: ['GET']
+    // },
+    // 'works/:id': {
+    //     supportedMethods: ['GET'],
+    //     supportsParameters: true
+    // },
+    // 'people/:id': {
+    //     supportedMethods: ['GET'],
+    //     supportsParameters: true
+    // },
 
     // Multi-level parameterized endpoints (can be enabled independently)
     // 'people/:id/awards': {

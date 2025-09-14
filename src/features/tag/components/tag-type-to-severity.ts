@@ -26,11 +26,6 @@ export const tagTypeToSeverity = (tag: SfTag) => {
         // Location
         return "info";
     }
-    if (tag.type?.id === 6) {
-        // Era - this looks exactly like primary but there are no more
-        // different looking tags to choose from
-        return "contrast";
-    }
 
     // For all other types
     return undefined;

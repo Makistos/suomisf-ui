@@ -281,7 +281,7 @@ const FormObject = ({ onSubmit, onClose, onDelete, methods, id }: FormObjectProp
                                     completeMethod={filterTags}
                                     suggestions={filteredTags}
                                     forceSelection={false}
-                                    multiple
+                                    multiple={true}
                                     placeholder='Asiasanat'
                                     disabled={disabled}
                                 />

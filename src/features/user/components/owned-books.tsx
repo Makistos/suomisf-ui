@@ -12,6 +12,7 @@ import { InputIcon } from 'primereact/inputicon';
 import { Rating } from "primereact/rating"
 import { Button } from "primereact/button"
 import jsPDF from "jspdf"
+import autoTable from "jspdf-autotable"
 import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect"
 
 interface OwnedBooksProps {
@@ -64,16 +65,32 @@ export const OwnedBooks = ({ userId, listType }: OwnedBooksProps) => {
 
     const exportPDF = () => {
         import('jspdf').then((jsPDF) => {
-
-            import('jspdf-autotable').then((x) => {
-
+            import('jspdf-autotable').then((autoTableModule) => {
                 const doc = new jsPDF.default('l', 'pt', 'a4');
-                // @ts-ignore
-                doc.autoTable(exportColumns, renderedItems.length > 0 ? renderedItems : data);
+
+                // Call the imported function, not doc.autoTable
+                autoTableModule.default(doc, {
+                    columns: exportColumns,
+                    body: renderedItems.length > 0 ? renderedItems : data,
+                });
+
                 doc.save('editions.pdf');
-            })
+            });
         });
-    }
+    };
+
+    // const exportPDF = () => {
+    //     import('jspdf').then((jsPDF) => {
+
+    //         import('jspdf-autotable').then((x) => {
+
+    //             const doc = new jsPDF.default('l', 'pt', 'a4');
+    //             // @ts-ignore
+    //             doc.autoTable(exportColumns, renderedItems.length > 0 ? renderedItems : data);
+    //             doc.save('editions.pdf');
+    //         })
+    //     });
+    // }
 
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },

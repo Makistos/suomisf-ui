@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { getCurrenUser } from "../../../services/auth-service"
 import { getApiContent } from "../../../services/user-service";
 import { Issue } from "../../issue";
-import { setLocale } from "yup";
 
 interface PersonMagazineProps {
   id: number

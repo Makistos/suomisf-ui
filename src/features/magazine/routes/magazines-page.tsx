@@ -9,7 +9,29 @@ import { getCurrenUser } from '../../../services/auth-service';
 import { useQuery } from '@tanstack/react-query';
 import { getApiContent } from '../../../services/user-service';
 import { useDocumentTitle } from '../../../components/document-title';
-//import { API_URL } from "../../../systemProps";
+
+const PublishInfo = ({ magazine }: { magazine: Magazine }) => {
+    let info = "";
+    if (magazine.issues.length === 0) {
+        return <></>;
+    }
+    const firstYear = Math.max(...magazine.issues.map(issue => issue.year));
+    const lastYear = Math.min(...magazine.issues.map(issue => issue.year));
+    if (firstYear === 0 || lastYear === 0) {
+        info = "";
+    } else {
+        if (firstYear === lastYear) {
+            info = `${firstYear}` + ": ";
+        } else {
+            info = `${lastYear} - ${firstYear}` + ": ";
+        }
+    }
+    const pubCount = magazine.issues.length;
+    info += pubCount + (pubCount === 1 ? " numero" : " numeroa");
+    return (
+        <><br />{info}<br /></>
+    )
+}
 
 export function MagazinesPage() {
     const user = getCurrenUser();
@@ -49,12 +71,13 @@ export function MagazinesPage() {
                                     data
                                         .sort((a, b) => a.name > b.name ? 1 : -1)
                                         .map((data) => (
-                                            <div key={data.id}>
+                                            <div key={data.id} className="mb-2">
                                                 <Link to={`/magazines/${data.id}`}
                                                     key={data.id}
                                                 >
-                                                    {data.name}
-                                                </Link><br />
+                                                    <b>{data.name}</b>
+                                                </Link>
+                                                <PublishInfo magazine={data} />
                                             </div>
                                         ))
                                 }

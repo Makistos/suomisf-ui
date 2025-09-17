@@ -198,6 +198,8 @@ export const PersonPage = ({ id }: PersonPageProps) => {
          * Check if person has any non-SF content in database (works, shorts).
          */
         if (!data) return false;
+        if (data.works === null || data.works.length === 0) return false;
+        if (data.stories === null || data.stories.length === 0) return false;
         let all_genres: Genre[] = [];
         if (what === "all" || what === "works") {
             all_genres = _.concat(all_genres, data.works.map(work => work.genres))
@@ -267,7 +269,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     if (!data) {
         return <ProgressSpinner />
     }
-
+    console.log(data)
     return (
         <main className="person-page">
             <Toast ref={toastRef} />

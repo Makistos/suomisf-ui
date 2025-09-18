@@ -21,6 +21,7 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
     const [activeIndex, setActiveIndex] = useState(0);
     const [showAllImagesGallery, setShowAllImagesGallery] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(-1);
+    const [currentGalleryImages, setCurrentGalleryImages] = useState<{ url: string; issueTitle: string; year?: number; magazineName: string }[]>([]);
 
     // Group contributions by type
     const contributionsByType = useMemo(() => {
@@ -50,6 +51,33 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
 
         return grouped;
     }, [issues, person]);
+
+    // Get images from issues for a specific contribution type
+    const getImagesForContributionType = (typeData: { role: string, contributions: Array<{ issue: Issue, contribution: Contribution }> }) => {
+        const typeImages: { url: string; issueTitle: string; year?: number; magazineName: string }[] = [];
+        const seenUrls = new Set<string>();
+
+        typeData.contributions.forEach(({ issue }) => {
+            if (issue.image_src) {
+                const imageUrl = issue.image_src.startsWith('http')
+                    ? issue.image_src
+                    : `${import.meta.env.VITE_IMAGE_URL}${issue.image_src}`;
+
+                // Only add if we haven't seen this URL before
+                if (!seenUrls.has(imageUrl)) {
+                    seenUrls.add(imageUrl);
+                    typeImages.push({
+                        url: imageUrl,
+                        issueTitle: issue.title || issue.cover_number,
+                        year: issue.year,
+                        magazineName: issue.magazine.name
+                    });
+                }
+            }
+        });
+
+        return typeImages;
+    };
 
     // Get all images from all issues for the gallery
     const getAllImagesFromAllIssues = () => {
@@ -99,15 +127,15 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
         return result;
     };
 
-    // Create galleria items
+    // Create galleria items from current gallery images
     const galleryItems = useMemo(() => {
-        return allIssueImages.map((item, index) => ({
+        return currentGalleryImages.map((item, index) => ({
             itemImageSrc: item.url,
             thumbnailImageSrc: item.url,
             alt: `${item.magazineName} ${item.issueTitle} kansi`,
             title: formatImageInfo(item)
         }));
-    }, [allIssueImages]);
+    }, [currentGalleryImages]);
 
     // Galleria templates
     const itemTemplate = (item: any) => {
@@ -146,27 +174,30 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
 
     return (
         <div>
-            {/* Header with "View All Images" button */}
-            {allIssueImages.length > 0 && (
-                <div className="mb-3 flex justify-content-end">
-                    <Button
-                        icon="pi pi-images"
-                        label={`Näytä kaikki kuvat (${allIssueImages.length})`}
-                        className="p-button-outlined p-button-sm"
-                        onClick={() => {
-                            setCurrentImageIndex(-1); // Reset to show thumbnails first
-                            setShowAllImagesGallery(true);
-                        }}
-                    />
-                </div>
-            )}
-
             <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}
                 className="w-full">
                 {availableTypes.map(typeId => {
                     const typeData = contributionsByType[typeId];
+                    const typeImages = getImagesForContributionType(typeData);
+
                     return (
                         <TabPanel key={typeId} header={typeData.role}>
+                            {/* Gallery button for this contribution type */}
+                            {typeImages.length > 0 && (
+                                <div className="mb-3 flex justify-content-end">
+                                    <Button
+                                        icon="pi pi-images"
+                                        label={`Näytä kuvat (${typeImages.length})`}
+                                        className="p-button-outlined p-button-sm"
+                                        onClick={() => {
+                                            setCurrentGalleryImages(typeImages);
+                                            setCurrentImageIndex(-1); // Reset to show thumbnails first
+                                            setShowAllImagesGallery(true);
+                                        }}
+                                    />
+                                </div>
+                            )}
+
                             <div className="contribution-list">
                                 {typeData.contributions.map(({ issue, contribution }, index) => (
                                     <div key={`${issue.id}-${contribution.person.id}-${index}`} className="mb-3 p-3 surface-50 border-round">
@@ -217,11 +248,12 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
 
             {/* Image Gallery Dialog */}
             <Dialog
-                header={`Kaikki kuvat (${allIssueImages.length})`}
+                header={currentGalleryImages.length > 0 ? `Kuvat (${currentGalleryImages.length})` : 'Kuvat'}
                 visible={showAllImagesGallery}
                 onHide={() => {
                     setShowAllImagesGallery(false);
                     setCurrentImageIndex(-1); // Reset to thumbnails when closing
+                    setCurrentGalleryImages([]); // Clear current gallery images
                 }}
                 style={{ width: '90vw', maxWidth: '1200px' }}
                 contentStyle={{ padding: '1rem', overflow: 'auto' }}

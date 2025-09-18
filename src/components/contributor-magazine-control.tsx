@@ -21,7 +21,7 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
     const [activeIndex, setActiveIndex] = useState(0);
     const [showAllImagesGallery, setShowAllImagesGallery] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(-1);
-    const [currentGalleryImages, setCurrentGalleryImages] = useState<{ url: string; issueTitle: string; year?: number; magazineName: string }[]>([]);
+    const [currentGalleryImages, setCurrentGalleryImages] = useState<{ url: string; issueTitle: string; year?: number; magazineName: string; coverNumber?: string }[]>([]);
 
     // Group contributions by type
     const contributionsByType = useMemo(() => {
@@ -54,10 +54,38 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
 
     // Get images from issues for a specific contribution type
     const getImagesForContributionType = (typeData: { role: string, contributions: Array<{ issue: Issue, contribution: Contribution }> }) => {
-        const typeImages: { url: string; issueTitle: string; year?: number; magazineName: string }[] = [];
+        const typeImages: { url: string; issueTitle: string; year?: number; magazineName: string; coverNumber?: string }[] = [];
         const seenUrls = new Set<string>();
 
-        typeData.contributions.forEach(({ issue }) => {
+        // Sort contributions first using the same logic as the display
+        const sortedContributions = [...typeData.contributions].sort((a, b) => {
+            // Sort by year first (descending - most recent first)
+            const yearA = a.issue.year || 0;
+            const yearB = b.issue.year || 0;
+            if (yearA !== yearB) {
+                return yearA - yearB;
+            }
+
+            if (a.issue.magazine.name !== b.issue.magazine.name) {
+                return a.issue.magazine.name.localeCompare(b.issue.magazine.name, "fi");
+            }
+            // Then sort by cover number (ascending)
+            const coverA = a.issue.cover_number || "";
+            const coverB = b.issue.cover_number || "";
+
+            // Try to parse as numbers first for proper numeric sorting
+            const numA = parseInt(coverA, 10);
+            const numB = parseInt(coverB, 10);
+
+            if (!isNaN(numA) && !isNaN(numB)) {
+                return numA - numB;
+            }
+
+            // Fallback to string comparison
+            return coverA.localeCompare(coverB, "fi");
+        });
+
+        sortedContributions.forEach(({ issue }) => {
             if (issue.image_src) {
                 const imageUrl = issue.image_src.startsWith('http')
                     ? issue.image_src
@@ -70,7 +98,8 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
                         url: imageUrl,
                         issueTitle: issue.title || issue.cover_number,
                         year: issue.year,
-                        magazineName: issue.magazine.name
+                        magazineName: issue.magazine.name,
+                        coverNumber: issue.cover_number
                     });
                 }
             }
@@ -117,7 +146,7 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
     const allIssueImages = useMemo(() => getAllImagesFromAllIssues(), [issues, person]);
 
     // Format image info for gallery
-    const formatImageInfo = (imageData: { issueTitle: string; year?: number; magazineName: string }): string => {
+    const formatImageInfo = (imageData: { issueTitle: string; year?: number; magazineName: string; coverNumber?: string }): string => {
         let result = `${imageData.magazineName} ${imageData.issueTitle}`;
 
         if (imageData.year) {
@@ -125,9 +154,7 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
         }
 
         return result;
-    };
-
-    // Create galleria items from current gallery images
+    };    // Create galleria items from current gallery images
     const galleryItems = useMemo(() => {
         return currentGalleryImages.map((item, index) => ({
             itemImageSrc: item.url,
@@ -199,47 +226,73 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
                             )}
 
                             <div className="contribution-list">
-                                {typeData.contributions.map(({ issue, contribution }, index) => (
-                                    <div key={`${issue.id}-${contribution.person.id}-${index}`} className="mb-3 p-3 surface-50 border-round">
-                                        <div className="flex align-items-start gap-3">
-                                            <div className="flex-1">
-                                                <div className="font-semibold mb-1">
-                                                    <Link
-                                                        to={`/issues/${issue.id}`}
-                                                        className="no-underline text-primary hover:text-primary-700"
-                                                    >
-                                                        {issue.magazine.name} {issue.cover_number}
-                                                    </Link>
-                                                    {issue.title && (
-                                                        <div className="text-sm text-600 mt-1">{issue.title}</div>
-                                                    )}
+                                {typeData.contributions
+                                    .sort((a, b) => {
+                                        // Sort by year first (descending - most recent first)
+                                        const yearA = a.issue.year || 0;
+                                        const yearB = b.issue.year || 0;
+                                        if (yearA !== yearB) {
+                                            return yearA - yearB;
+                                        }
+                                        if (a.issue.magazine.name !== b.issue.magazine.name) {
+                                            return a.issue.magazine.name.localeCompare(b.issue.magazine.name, "fi");
+                                        }
+                                        // Then sort by cover number (ascending)
+                                        const coverA = a.issue.cover_number || "";
+                                        const coverB = b.issue.cover_number || "";
+
+                                        // Try to parse as numbers first for proper numeric sorting
+                                        const numA = parseInt(coverA, 10);
+                                        const numB = parseInt(coverB, 10);
+
+                                        if (!isNaN(numA) && !isNaN(numB)) {
+                                            return numA - numB;
+                                        }
+
+                                        // Fallback to string comparison
+                                        return coverA.localeCompare(coverB, "fi");
+                                    })
+                                    .map(({ issue, contribution }, index) => (
+                                        <div key={`${issue.id}-${contribution.person.id}-${index}`} className="mb-3 p-3 surface-50 border-round">
+                                            <div className="flex align-items-start gap-3">
+                                                <div className="flex-1">
+                                                    <div className="font-semibold mb-1">
+                                                        <Link
+                                                            to={`/issues/${issue.id}`}
+                                                            className="no-underline text-primary hover:text-primary-700"
+                                                        >
+                                                            {issue.magazine.name} {issue.cover_number}
+                                                        </Link>
+                                                        {issue.title && (
+                                                            <div className="text-sm text-600 mt-1">{issue.title}</div>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="text-sm text-500 mt-1">
+                                                        {issue.year && `Vuosi: ${issue.year}`}
+                                                        {issue.pages && ` • ${issue.pages} sivua`}
+                                                    </div>
                                                 </div>
 
-                                                <div className="text-sm text-500 mt-1">
-                                                    {issue.year && `Vuosi: ${issue.year}`}
-                                                    {issue.pages && ` • ${issue.pages} sivua`}
-                                                </div>
+                                                {/* Cover Image */}
+                                                {issue.image_src && (
+                                                    <div className="flex-shrink-0">
+                                                        <Link to={`/issues/${issue.id}`}>
+                                                            <Image
+                                                                src={issue.image_src.startsWith('http') ? issue.image_src : `${import.meta.env.VITE_IMAGE_URL}${issue.image_src}`}
+                                                                alt={`${issue.magazine.name} ${issue.cover_number} kansi`}
+                                                                width="64"
+                                                                height="80"
+                                                                className="border-round shadow-2 hover:shadow-4 transition-all transition-duration-200"
+                                                                imageClassName="object-fit-cover"
+                                                                preview
+                                                            />
+                                                        </Link>
+                                                    </div>
+                                                )}
                                             </div>
-
-                                            {/* Cover Image */}
-                                            {issue.image_src && (
-                                                <div className="flex-shrink-0">
-                                                    <Link to={`/issues/${issue.id}`}>
-                                                        <Image
-                                                            src={issue.image_src.startsWith('http') ? issue.image_src : `${import.meta.env.VITE_IMAGE_URL}${issue.image_src}`}
-                                                            alt={`${issue.magazine.name} ${issue.cover_number} kansi`}
-                                                            width="64"
-                                                            height="80"
-                                                            className="border-round shadow-2 hover:shadow-4 transition-all transition-duration-200"
-                                                            imageClassName="object-fit-cover"
-                                                            preview
-                                                        />
-                                                    </Link>
-                                                </div>
-                                            )}
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
                             </div>
                         </TabPanel>
                     );

@@ -148,7 +148,7 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
                         <div className="col-12">
                             <Card className="shadow-3">
                                 <div className="grid">
-                                    <div className="col-12 lg:col-9">
+                                    <div className="col-12">
                                         <div className="flex-column">
                                             <h1 className="text-4xl font-bold m-0">{data.name}</h1>
                                             {data.orig_name && data.orig_name !== ''} <h2>{data.orig_name}</h2>
@@ -158,10 +158,39 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
                                                     <span>Merkittävä sarja</span>
                                                 </div>
                                             )}
+                                            
+                                            {/* Description */}
+                                            {data.description && (
+                                                <div className="mt-3">
+                                                    <div 
+                                                        className="text-base line-height-3"
+                                                        dangerouslySetInnerHTML={{ __html: data.description }} 
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
-
                                 </div>
+                                
+                                {/* Links section */}
+                                {data.links && data.links.length > 0 && (
+                                    <div className="mt-4 pt-3 border-top-1 surface-border">
+                                        <div className="flex flex-wrap gap-3">
+                                            {data.links.map((link, index) => (
+                                                <a
+                                                    key={index}
+                                                    href={link.link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="no-underline text-primary hover:text-primary-700 flex align-items-center gap-2"
+                                                >
+                                                    <i className="pi pi-external-link text-sm" />
+                                                    <span>{link.description}</span>
+                                                </a>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </Card>
                         </div>
 

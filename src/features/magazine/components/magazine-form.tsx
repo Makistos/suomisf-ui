@@ -5,9 +5,7 @@ import { FormProvider, RegisterOptions, useForm } from "react-hook-form";
 import { FormInputText } from "@components/forms/field/form-input-text";
 import { PublisherSelector } from "@features/publisher/components/publisher-selector";
 import { FormEditor } from "@components/forms/field/form-editor";
-import { SelectButton } from "primereact/selectbutton";
 import { FormDropdown } from "@components/forms/field/form-dropdown";
-import { FormTagAutoComplete } from "@components/forms/field/form-tag-auto-complete";
 import { getMagazine } from "@api/magazine/get-magazine";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ProgressSpinner } from "primereact/progressspinner";
@@ -35,7 +33,7 @@ const convToForm = (magazine: Magazine | null): MagazineFormData => ({
     link: magazine?.link ?? "",
     issn: magazine?.issn ?? "",
     type: magazine?.type ?? { id: 1, name: "Fanzine" },
-    tags: []
+    tags: [],
 })
 
 export const MagazineForm = ({ id, onSubmitCallback }: MagazineFormProps) => {
@@ -60,7 +58,7 @@ export const MagazineForm = ({ id, onSubmitCallback }: MagazineFormProps) => {
         link: '',
         issn: '',
         type: { id: 1, name: "Fanzine" },
-        tags: []
+        tags: [],
     }
 
     const updateMagazine = (data: MagazineFormData) => {

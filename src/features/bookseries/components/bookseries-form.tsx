@@ -2,9 +2,6 @@ import { useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { FieldValues, FormProvider, useForm, SubmitHandler, Controller } from 'react-hook-form'
-import { classNames } from 'primereact/utils'
-import { Checkbox } from 'primereact/checkbox'
-import { InputText } from 'primereact/inputtext'
 import { Button } from 'primereact/button'
 import { Toast } from 'primereact/toast'
 import { useQueryClient, useMutation } from "@tanstack/react-query"
@@ -15,11 +12,12 @@ import { getCurrenUser } from "../../../services/auth-service"
 import { postApiContent, putApiContent } from "../../../services/user-service"
 import { HttpStatusResponse } from "../../../services/user-service"
 import { isDisabled } from "../../../components/forms/forms"
-import { User } from "../../user"
 import { ProgressBar } from "primereact/progressbar"
-import { formErrorMessage } from '../../../components/forms/form-error-message';
 import { FormInputText } from '../../../components/forms/field/form-input-text';
 import { FormCheckbox } from '../../../components/forms/field/form-checkbox';
+import { LinkType } from '../../../types/link';
+import { LinksField } from '@components/forms/links-field';
+import { FormEditor } from '@components/forms/field/form-editor';
 
 export interface FormObjectProps {
   onSubmit: any;
@@ -37,14 +35,18 @@ export const BookseriesForm = (props: FormProperties<Bookseries>) => {
     id: bookseries.id,
     name: bookseries.name,
     orig_name: bookseries.orig_name,
-    important: bookseries.important
+    description: bookseries.description,
+    important: bookseries.important,
+    links: (bookseries.links && bookseries.links.length > 0) ? bookseries.links : [{ link: '', description: '' }]
   })
 
   const defaultValues: BookseriesFormData = {
     id: null,
     name: '',
     orig_name: '',
-    important: false
+    description: '',
+    important: false,
+    links: [{ link: '', description: '' }]
   }
 
   const data = props.data ? convToForm(props.data) : defaultValues;
@@ -126,6 +128,8 @@ const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
   const errors = methods.formState.errors;
   const rules = { required: true };
 
+  const editor_style: React.CSSProperties = { height: '320px' };
+
   return (
     <div className="card mt-3">
       <FormProvider {...methods}>
@@ -146,6 +150,21 @@ const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
                 name="orig_name"
                 methods={methods}
                 label="Alkukielinen nimi"
+                disabled={disabled}
+              />
+            </div>
+            <div className="field col-12">
+              <LinksField
+                id={"links"}
+                disabled={disabled}
+              />
+            </div>
+            <div className="field col-12">
+              <b>Kuvaus</b>
+              <FormEditor
+                name="description"
+                methods={methods}
+                style={editor_style}
                 disabled={disabled}
               />
             </div>

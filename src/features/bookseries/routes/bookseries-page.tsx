@@ -158,20 +158,20 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
                                                     <span>Merkittävä sarja</span>
                                                 </div>
                                             )}
-                                            
+
                                             {/* Description */}
                                             {data.description && (
                                                 <div className="mt-3">
-                                                    <div 
+                                                    <div
                                                         className="text-base line-height-3"
-                                                        dangerouslySetInnerHTML={{ __html: data.description }} 
+                                                        dangerouslySetInnerHTML={{ __html: data.description }}
                                                     />
                                                 </div>
                                             )}
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 {/* Links section */}
                                 {data.links && data.links.length > 0 && (
                                     <div className="mt-4 pt-3 border-top-1 surface-border">

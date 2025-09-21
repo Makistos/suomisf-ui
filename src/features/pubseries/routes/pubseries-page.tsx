@@ -136,7 +136,7 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
                         <div className="col-12">
                             <Card className="shadow-3">
                                 <div className="grid">
-                                    <div className="col-12 lg:col-9">
+                                    <div className="col-12">
                                         <div className="flex-column">
                                             <h1 className="text-4xl font-bold m-0">{data.name}</h1>
                                             {data.important && (
@@ -145,23 +145,55 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
                                                     <span>Merkittävä sarja</span>
                                                 </div>
                                             )}
-                                        </div>
-                                    </div>
 
-                                    {/* Publisher on right side */}
-                                    <div className="col-12 lg:col-3">
-                                        <div className="flex flex-column gap-4">
-                                            <div className="flex flex-column gap-2">
-                                                <h3 className="text-sm uppercase text-600 m-0">Kustantaja</h3>
-                                                <span className="text-xl">{data.publisher.name}</span>
-                                            </div>
-                                            <div className="flex flex-column gap-2">
-                                                <h3 className="text-sm uppercase text-600 m-0">Julkaisuja</h3>
-                                                <span className="text-xl">{data.editions?.length}</span>
+                                            {/* Description */}
+                                            {data.description && (
+                                                <div className="mt-3">
+                                                    <div
+                                                        className="text-base line-height-3"
+                                                        dangerouslySetInnerHTML={{ __html: data.description }}
+                                                    />
+                                                </div>
+                                            )}
+
+                                            {/* Publisher info moved here */}
+                                            <div className="grid mt-4">
+                                                <div className="col-12 sm:col-6">
+                                                    <div className="flex flex-column gap-2">
+                                                        <h3 className="text-sm uppercase text-600 m-0">Kustantaja</h3>
+                                                        <span className="text-xl">{data.publisher.name}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="col-12 sm:col-6">
+                                                    <div className="flex flex-column gap-2">
+                                                        <h3 className="text-sm uppercase text-600 m-0">Julkaisuja</h3>
+                                                        <span className="text-xl">{data.editions?.length}</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+                                {/* Links section */}
+                                {data.links && data.links.length > 0 && (
+                                    <div className="mt-4 pt-3 border-top-1 surface-border">
+                                        <div className="flex flex-wrap gap-3">
+                                            {data.links.map((link, index) => (
+                                                <a
+                                                    key={index}
+                                                    href={link.link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="no-underline text-primary hover:text-primary-700 flex align-items-center gap-2"
+                                                >
+                                                    <i className="pi pi-external-link text-sm" />
+                                                    <span>{link.description}</span>
+                                                </a>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </Card>
                         </div>
 

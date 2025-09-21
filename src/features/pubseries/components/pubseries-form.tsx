@@ -2,12 +2,15 @@ import { useMemo, useState } from "react";
 import { getCurrenUser } from "../../../services/auth-service";
 import { useNavigate } from "react-router-dom";
 import { FormProvider, RegisterOptions, useForm } from "react-hook-form";
+import { isDisabled } from "../../../components/forms/forms";
 import { Pubseries, PubseriesFormData } from "../types";
 import { HttpStatusResponse, postApiContent, putApiContent } from "../../../services/user-service";
 import { useMutation } from "@tanstack/react-query";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { FormInputText } from "../../../components/forms/field/form-input-text";
+import { FormEditor } from "../../../components/forms/field/form-editor";
 import { PublisherSelector } from "../../publisher/components/publisher-selector";
+import { LinksField } from "../../../components/forms/links-field";
 import { Button } from "primereact/button";
 
 interface FormProps<T> {
@@ -23,19 +26,23 @@ type FormObjectProps = {
 const convToForm = (pubseries: Pubseries): PubseriesFormData => ({
     id: pubseries.id,
     name: pubseries.name,
+    description: pubseries.description || '',
     image_attr: pubseries.image_attr,
     image_src: pubseries.image_src,
     important: pubseries.important,
-    publisher: pubseries.publisher
+    publisher: pubseries.publisher,
+    links: (pubseries.links && pubseries.links.length > 0) ? pubseries.links : [{ link: '', description: '' }]
 })
 
 const defaultValues: PubseriesFormData = {
     id: null,
     name: '',
+    description: '',
     image_attr: '',
     image_src: '',
     important: 0,
-    publisher: null
+    publisher: null,
+    links: [{ link: '', description: '' }]
 }
 
 export const PubseriesForm = (props: FormProps<Pubseries>) => {
@@ -111,6 +118,21 @@ const FormObject = ({ onSubmit, methods }: FormObjectProps) => {
                                 name="publisher"
                                 methods={methods}
                                 labelClass='required-field'
+                            />
+                        </div>
+                        <div className="field col-12">
+                            <LinksField
+                                id={"links"}
+                                disabled={false}
+                            />
+                        </div>
+                        <div className="field col-12">
+                            <b>Kuvaus</b>
+                            <FormEditor
+                                name="description"
+                                methods={methods}
+                                style={editor_style}
+                                disabled={false}
                             />
                         </div>
                         <Button type="submit" className="w-full justify-content-center">Tallenna</Button>

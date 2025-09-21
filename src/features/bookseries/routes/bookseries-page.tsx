@@ -19,6 +19,8 @@ import { BookseriesForm } from "../components/bookseries-form";
 import { Card } from "primereact/card";
 import { TabPanel, TabView } from "primereact/tabview";
 import { DataView, DataViewLayoutOptions } from "primereact/dataview";
+import { GenreGroup } from "../../genre";
+import { Genre } from "../../genre/types";
 
 const baseURL = 'bookseries/';
 
@@ -103,6 +105,11 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
 
     const queryClient = useQueryClient()
 
+    const getGenres = (): Genre[] => {
+        if (!data || !data.works) return [];
+        return data.works.flatMap(work => work.genres || []);
+    }
+
     const onDialogHide = () => {
         toast.current?.show({
             severity: 'success', summary: 'Tallentaminen onnistui',
@@ -147,8 +154,8 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
                         {/* Header Section */}
                         <div className="col-12">
                             <Card className="shadow-3">
-                                <div className="grid">
-                                    <div className="col-12">
+                                <div className="grid pl-2 pr-2 pt-0">
+                                    <div className="col-12 lg:col-9">
                                         <div className="flex-column">
                                             <h1 className="text-4xl font-bold m-0">{data.name}</h1>
                                             {data.orig_name && data.orig_name !== ''} <h2>{data.orig_name}</h2>
@@ -168,6 +175,18 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
                                                     />
                                                 </div>
                                             )}
+                                        </div>
+                                    </div>
+
+                                    {/* Genres on right side */}
+                                    <div className="col-12 lg:col-3">
+                                        <div className="flex flex-column gap-4">
+                                            <h3 className="text-sm uppercase text-600 m-0">Genret</h3>
+                                            <GenreGroup
+                                                genres={getGenres()}
+                                                showOneCount
+                                                className="flex-wrap"
+                                            />
                                         </div>
                                     </div>
                                 </div>

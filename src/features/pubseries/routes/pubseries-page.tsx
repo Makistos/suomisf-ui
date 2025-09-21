@@ -20,6 +20,8 @@ import { User, isAdmin } from "@features/user";
 import { useDocumentTitle } from '@components/document-title';
 import { PubseriesForm } from "../components/pubseries-form";
 import { deletePubseries } from "@api/pubseries/delete-pubseries";
+import { GenreGroup } from "@features/genre";
+import { Genre } from "@features/genre/types";
 
 const baseURL = 'pubseries/';
 
@@ -102,6 +104,14 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
             console.log(errMsg);
         }
     })
+
+    const getGenres = (): Genre[] => {
+        if (!data || !data.editions) return [];
+        return data.editions
+            .flatMap(edition => edition.work)
+            .flatMap(work => work.genres || []);
+    }
+
     const onDialogShow = () => {
         setEditVisible(true);
     }
@@ -135,8 +145,8 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
                         {/* Header Section */}
                         <div className="col-12">
                             <Card className="shadow-3">
-                                <div className="grid">
-                                    <div className="col-12">
+                                <div className="grid pl-2 pr-2 pt-0">
+                                    <div className="col-12 lg:col-9">
                                         <div className="flex-column">
                                             <h1 className="text-4xl font-bold m-0">{data.name}</h1>
                                             {data.important && (
@@ -171,6 +181,18 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Genres on right side */}
+                                    <div className="col-12 lg:col-3">
+                                        <div className="flex flex-column gap-4">
+                                            <h3 className="text-sm uppercase text-600 m-0">Genret</h3>
+                                            <GenreGroup
+                                                genres={getGenres()}
+                                                showOneCount
+                                                className="flex-wrap"
+                                            />
                                         </div>
                                     </div>
                                 </div>

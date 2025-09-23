@@ -15,6 +15,8 @@ export interface Bookseries {
     publisher: Publisher;
     editions: Edition[];
     links: LinkType[];
+    partof: Bookseries | null;
+    subseries: Bookseries[];
 }
 
 export interface BookseriesFormData {
@@ -24,4 +26,5 @@ export interface BookseriesFormData {
     description: string
     important: boolean
     links: LinkType[]
+    partof: Bookseries | null;
 }

@@ -9,7 +9,7 @@ import { useQueryClient, useMutation } from "@tanstack/react-query"
 import { FormProperties } from "../../../types/form-properties"
 import { Bookseries, BookseriesFormData } from "../types"
 import { getCurrenUser } from "../../../services/auth-service"
-import { postApiContent, putApiContent } from "../../../services/user-service"
+import { getApiContent, postApiContent, putApiContent } from "../../../services/user-service"
 import { HttpStatusResponse } from "../../../services/user-service"
 import { isDisabled } from "../../../components/forms/forms"
 import { ProgressBar } from "primereact/progressbar"
@@ -18,6 +18,7 @@ import { FormCheckbox } from '../../../components/forms/field/form-checkbox';
 import { LinkType } from '../../../types/link';
 import { LinksField } from '@components/forms/links-field';
 import { FormEditor } from '@components/forms/field/form-editor';
+import { FormAutoComplete } from '@components/forms/field/form-auto-complete';
 
 export interface FormObjectProps {
   onSubmit: any;
@@ -37,7 +38,8 @@ export const BookseriesForm = (props: FormProperties<Bookseries>) => {
     orig_name: bookseries.orig_name,
     description: bookseries.description,
     important: bookseries.important,
-    links: (bookseries.links && bookseries.links.length > 0) ? bookseries.links : [{ link: '', description: '' }]
+    links: (bookseries.links && bookseries.links.length > 0) ? bookseries.links : [{ link: '', description: '' }],
+    partof: bookseries.partof,
   })
 
   const defaultValues: BookseriesFormData = {
@@ -46,13 +48,15 @@ export const BookseriesForm = (props: FormProperties<Bookseries>) => {
     orig_name: '',
     description: '',
     important: false,
-    links: [{ link: '', description: '' }]
+    links: [{ link: '', description: '' }],
+    partof: null,
   }
 
   const data = props.data ? convToForm(props.data) : defaultValues;
   const queryClient = useQueryClient();
   const methods = useForm<BookseriesFormData>({ defaultValues: data });
 
+  console.log(data);
   const updateBookseries = (data: BookseriesFormData) => {
     let retval: Promise<HttpStatusResponse>;
     if (typeof data.important === 'number') {
@@ -125,10 +129,18 @@ export const BookseriesForm = (props: FormProperties<Bookseries>) => {
 }
 
 const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
+  const user = useMemo(() => { return getCurrenUser() }, []);
   const errors = methods.formState.errors;
   const rules = { required: true };
+  const [filteredBookseries, setFilteredBookseries] = useState([]);
 
   const editor_style: React.CSSProperties = { height: '320px' };
+
+  async function filterBookseries(event: any) {
+    const url = "filter/bookseries/" + event.query;
+    const response = await getApiContent(url, user);
+    setFilteredBookseries(response.data);
+  }
 
   return (
     <div className="card mt-3">
@@ -151,6 +163,18 @@ const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
                 methods={methods}
                 label="Alkukielinen nimi"
                 disabled={disabled}
+              />
+            </div>
+            <div className="field col-6">
+              <FormAutoComplete
+                name="partof"
+                methods={methods}
+                label="Kuuluu sarjaan"
+                completeMethod={filterBookseries}
+                suggestions={filteredBookseries}
+                forceSelection={false}
+                placeholder='Kuuluu sarjaan'
+              //disabled={disabled}
               />
             </div>
             <div className="field col-12">

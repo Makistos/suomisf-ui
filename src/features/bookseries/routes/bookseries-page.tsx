@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Tooltip } from "primereact/tooltip";
@@ -175,6 +175,41 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
                                                     />
                                                 </div>
                                             )}
+
+                                            {/* Series relationships */}
+                                            <div className="grid mt-4">
+                                                {data.partof && (
+                                                    <div className="col-12 sm:col-6">
+                                                        <div className="flex flex-column gap-2">
+                                                            <h3 className="text-sm uppercase text-600 m-0">Kuuluu sarjaan</h3>
+                                                            <Link
+                                                                to={`/bookseries/${data.partof.id}`}
+                                                                className="text-xl no-underline text-primary hover:text-primary-700"
+                                                            >
+                                                                {data.partof.name}
+                                                            </Link>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {data.subseries && data.subseries.length > 0 && (
+                                                    <div className="col-12 sm:col-6">
+                                                        <div className="flex flex-column gap-2">
+                                                            <h3 className="text-sm uppercase text-600 m-0">Alasarjat</h3>
+                                                            <div className="flex flex-column gap-1">
+                                                                {data.subseries.map((subserie, index) => (
+                                                                    <Link
+                                                                        key={index}
+                                                                        to={`/bookseries/${subserie.id}`}
+                                                                        className="text-xl no-underline text-primary hover:text-primary-700"
+                                                                    >
+                                                                        {subserie.name}
+                                                                    </Link>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
 

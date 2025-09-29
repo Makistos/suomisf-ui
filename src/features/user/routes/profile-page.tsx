@@ -2,10 +2,11 @@ import React, { useMemo, useState } from 'react';
 
 import { getCurrenUser } from "../../../services/auth-service";
 import { OwnedBooks } from '../components/owned-books';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { selectId } from '@utils/select-id';
 import { Button } from 'primereact/button';
 import { UserStats } from '../components/user-stats';
+import { getApiContent } from '@services/user-service';
 
 interface UserPageProps {
     id: string | null;
@@ -13,8 +14,10 @@ interface UserPageProps {
 
 const ProfilePage = ({ id }: UserPageProps) => {
     const params = useParams();
+    const navigate = useNavigate();
     const currentUser = useMemo(() => { return getCurrenUser() }, []);
     const [currentContent, setCurrentContent] = useState<number>(0);
+    const [isLoadingRandomWork, setIsLoadingRandomWork] = useState<boolean>(false);
     let profileId = "";
     try {
         profileId = selectId(params, id);
@@ -22,9 +25,30 @@ const ProfilePage = ({ id }: UserPageProps) => {
         console.log(`${e} profile`);
     }
 
+    const handleRandomIncompleteWork = async () => {
+        setIsLoadingRandomWork(true);
+        try {
+            const response = await getApiContent('works/random/incomplete', currentUser);
+            console.log('Random work response:', response);
+            if (response.data && response.data.id) {
+                console.log('Navigating to work:', response.data.id);
+                navigate(`/works/${response.data.id}`);
+            } else {
+                console.error('No work data or ID found in response:', response);
+            }
+        } catch (error) {
+            console.error('Error fetching random incomplete work:', error);
+        } finally {
+            setIsLoadingRandomWork(false);
+        }
+    };
+
     if (!profileId) {
         return null;
     }
+
+    // Check if current user is viewing their own profile
+    const isOwnProfile = currentUser?.id?.toString() === profileId;
 
     return (
         <main className="all-content">
@@ -37,8 +61,15 @@ const ProfilePage = ({ id }: UserPageProps) => {
                 <Button type="button" outlined label="Muistilista" className="p-button-primary mr-2"
                     icon="pi pi-bookmark-fill"
                     onClick={() => setCurrentContent(1)} />
-                <Button type="button" outlined label="Tilastoja" className="p-button-primary" icon="fa-solid fa-chart-line"
+                <Button type="button" outlined label="Tilastoja" className="p-button-primary mr-2" icon="fa-solid fa-chart-line"
                     onClick={() => setCurrentContent(2)} />
+                {isOwnProfile && (
+                    <Button type="button" outlined label="Satunnainen keskeneräinen teos"
+                        className="p-button-secondary"
+                        icon="pi pi-shuffle"
+                        loading={isLoadingRandomWork}
+                        onClick={handleRandomIncompleteWork} />
+                )}
             </div>
             {currentContent === 0 ? <OwnedBooks userId={profileId} listType="owned" /> : null}
             {currentContent === 1 ? <OwnedBooks userId={profileId} listType="wishlist" /> : null}

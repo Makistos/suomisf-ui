@@ -7,6 +7,8 @@ import { selectId } from '@utils/select-id';
 import { Button } from 'primereact/button';
 import { UserStats } from '../components/user-stats';
 import { getApiContent } from '@services/user-service';
+import { useQuery } from '@tanstack/react-query';
+import { User } from '../types';
 
 interface UserPageProps {
     id: string | null;
@@ -24,6 +26,18 @@ const ProfilePage = ({ id }: UserPageProps) => {
     } catch (e) {
         console.log(`${e} profile`);
     }
+
+    // Fetch profile user data
+    const fetchProfileUser = async (userId: string): Promise<User> => {
+        const response = await getApiContent(`users/${userId}`, currentUser);
+        return response.data;
+    };
+
+    const { data: profileUser, isLoading: isLoadingProfileUser, isError } = useQuery({
+        queryKey: ['user', profileId],
+        queryFn: () => fetchProfileUser(profileId),
+        enabled: !!profileId
+    });
 
     const handleRandomIncompleteWork = async () => {
         setIsLoadingRandomWork(true);
@@ -47,13 +61,35 @@ const ProfilePage = ({ id }: UserPageProps) => {
         return null;
     }
 
+    // Show loading state while fetching profile user
+    if (isLoadingProfileUser) {
+        return (
+            <main className="all-content">
+                <div className="grid col-12 justify-content-center mb-5">
+                    <h1>Loading...</h1>
+                </div>
+            </main>
+        );
+    }
+
+    // Show error state if profile user fetch failed
+    if (isError || !profileUser) {
+        return (
+            <main className="all-content">
+                <div className="grid col-12 justify-content-center mb-5">
+                    <h1>User not found</h1>
+                </div>
+            </main>
+        );
+    }
+
     // Check if current user is viewing their own profile
     const isOwnProfile = currentUser?.id?.toString() === profileId;
 
     return (
         <main className="all-content">
             <div className="grid col-12 justify-content-center mb-5">
-                <h1>{currentUser?.name} </h1>
+                <h1>{profileUser?.name} </h1>
             </div>
             <div className="mb-5">
                 <Button type="button" outlined label="Omistetut" className="p-button-primary mr-2"

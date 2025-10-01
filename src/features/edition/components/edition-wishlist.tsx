@@ -68,7 +68,6 @@ export const EditionWishlist = ({ editionId, initial }: EditionWishlistProps) =>
         mutate(value);
     };
 
-    console.log(data)
     return (
         <>
             <i onClick={() => changeStatus(!data.wishlisted)}

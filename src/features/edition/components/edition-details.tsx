@@ -240,12 +240,6 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                     <Toast ref={toast} />
                     <ConfirmPopup />
                     {card && <b><EditionVersion edition={edition} work={work} /></b>}
-                    {user && edition.combined === false &&
-                        <span className="pl-2">
-                            <EditionWishlist editionId={edition.id}
-                                initial={edition.wishlisted?.some(owner => owner.id === user.id)} />
-                        </span>
-                    }
                     {work !== undefined && edition.title !== work.title &&
                         <><br /><i className="font-medium">{edition.title}</i></>}
                     {edition.publisher && (
@@ -279,7 +273,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                     }
                     <div>
                         {isAdmin(user) && edition.combined === false &&
-                            <>
+                            <div>
                                 <Button icon="pi pi-pencil" tooltip="Muokkaa" className="p-button-text" onClick={() => onDialogShow()} />
                                 <Button icon="pi pi-trash" tooltip="Poista" className="p-button-text"
                                     onClick={confirmDelete}
@@ -290,10 +284,14 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                                         onClick={() => onShortsShow()}
                                     />
                                 )}
-                            </>
+                            </div>
                         }
                         {user && edition.combined === false &&
-                            <EditionOwnership editionId={edition.id} />
+                            <div className="inline-block">
+                                <EditionWishlist editionId={edition.id}
+                                    initial={edition.wishlisted?.some(owner => owner.id === user.id)} />
+                                <EditionOwnership editionId={edition.id} />
+                            </div>
                         }
                     </div>
                 </>

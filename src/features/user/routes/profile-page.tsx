@@ -11,8 +11,7 @@ import { UserStats } from '../components/user-stats';
 import { getApiContent, postApiContent } from '@services/user-service';
 import { useQuery } from '@tanstack/react-query';
 import { User } from '../types';
-import { Contributor } from '@types/contributor';
-import { Contribution } from '@types/contribution';
+import { Contribution } from '../../../types/contribution';
 
 interface UserPageProps {
     id: string | null;
@@ -311,7 +310,7 @@ const ProfilePage = ({ id }: UserPageProps) => {
                                         </h4>
                                         {work.work_type && (
                                             <span className="text-sm text-600">
-                                                {work.work_type.name}
+                                                {work.work_type.name}. Painoksia: {work.editions.length}
                                             </span>
                                         )}
                                     </div>

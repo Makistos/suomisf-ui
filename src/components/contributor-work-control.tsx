@@ -269,7 +269,10 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
 
         // Add publisher before year with full stop
         if (edition.publisher) {
-            result += `. ${edition.publisher.name}`;
+            if (result.length > 2 && !result.endsWith('.')) {
+                result += ". ";
+            }
+            result += `${edition.publisher.name}`;
         }
 
         if (edition.pubyear) {

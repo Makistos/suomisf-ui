@@ -70,7 +70,8 @@ export const WorkDetails = ({ work }: WorkProps) => {
                         </div>
                     )}
                 <div className="grid col-12 pt-0 mt-3 mb-2 pb-0">
-                    <h1 className="mt-0 mb-0 text-2xl sm:text-3xl lg:text-4xl uppercase" style={{ lineHeight: '0.8' }}>
+                    <h1 className="mt-0 mb-0 text-2xl sm:text-3xl lg:text-4xl uppercase"
+                        style={{ lineHeight: '1.0' }}>
                         {work.title}<br />
                         {work.subtitle && (
                             <span className="text-base sm:text-lg pt-0 mt-0">{work.subtitle}</span>

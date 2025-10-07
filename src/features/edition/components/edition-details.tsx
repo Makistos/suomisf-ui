@@ -11,7 +11,7 @@ import { LinkList } from "../../../components/link-list";
 import { EditionProps } from "../types";
 import { EditionVersion } from "../utils/edition-version";
 import { EditionForm } from './edition-form';
-import { deleteApiContent } from '../../../services/user-service';
+import { deleteApiContent, postApiContent } from '../../../services/user-service';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Contribution } from '../../../types/contribution';
 import { EditionShortsPicker } from '../../short/components/shorts-picker';
@@ -127,6 +127,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
 
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [copying, setCopying] = useState(false);
     const toast = useRef<Toast>(null);
 
     const onDialogShow = () => {
@@ -166,6 +167,10 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                                 summary: 'Painos poistettu'
                             });
                         setLoading(false);
+                        // Refresh the page after successful deletion
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 100);
                     } else {
                         toast.current?.show(
                             {
@@ -175,6 +180,34 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                                 sticky: true
                             });
                         setLoading(false);
+                    }
+                });
+        }
+    }
+
+    const copyEdition = async (id: number) => {
+        setCopying(true);
+        if (id !== null) {
+            await postApiContent(`editions/${id}/copy`, {}, user).then(
+                result => {
+                    if (result.status === 200) {
+                        toast.current?.show(
+                            {
+                                severity: 'success',
+                                summary: 'Painos kopioitu',
+                                detail: 'Uusi painos luotu onnistuneesti'
+                            });
+                        queryClient.invalidateQueries();
+                        setCopying(false);
+                    } else {
+                        toast.current?.show(
+                            {
+                                severity: 'error',
+                                summary: 'Painosta ei kopioitu',
+                                detail: result.response,
+                                sticky: true
+                            });
+                        setCopying(false);
                     }
                 });
         }
@@ -233,7 +266,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
             >
                 <EditionShortsPicker id={edition.id.toString()} onClose={() => setShortsFormVisible(false)} />
             </Dialog>
-            {loading ?
+            {loading || copying ?
                 <div className="progressbar"><ProgressSpinner /></div>
                 :
                 <>
@@ -275,6 +308,9 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                         {isAdmin(user) && edition.combined === false &&
                             <div>
                                 <Button icon="pi pi-pencil" tooltip="Muokkaa" className="p-button-text" onClick={() => onDialogShow()} />
+                                <Button icon="pi pi-copy" tooltip="Kopioi painos" className="p-button-text"
+                                    onClick={() => copyEdition(edition.id)}
+                                    disabled={isDisabled(user, loading || copying)} />
                                 <Button icon="pi pi-trash" tooltip="Poista" className="p-button-text"
                                     onClick={confirmDelete}
                                     disabled={isDisabled(user, loading)} />

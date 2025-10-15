@@ -30,6 +30,7 @@ import { User, isAdmin } from "@features/user";
 import authHeader from "@services/auth-header";
 import { HttpStatusResponse } from "@services/user-service"
 import { WorkShortsPicker } from "@features/short/components/shorts-picker";
+import { WorkOmnibusPicker } from "../components/omnibus-picker";
 import { EntityChanges } from "@features/changes/components/entity-changes";
 import { groupSimilarEditions } from "@features/edition/utils/group-similar-editions";
 import { combineEditions } from "@features/edition/utils/combine-editions";
@@ -197,6 +198,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
     const [isEditVisible, setEditVisible] = useState(false);
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [isShortsFormVisible, setIsShortsFormVisible] = useState(false);
+    const [isOmnibusFormVisible, setOmnibusFormVisible] = useState(false);
     const [formData, setFormData] = useState<Work | null>(null);
     const [editWork, setEditWork] = useState(true);
     const [isEditionFormVisible, setEditionFormVisible] = useState(false);
@@ -291,6 +293,13 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
             command: () => {
                 setIsShortsFormVisible(true);
 
+            }
+        },
+        {
+            label: 'Muokkaa kokoomateosta',
+            icon: 'pi pi-server',
+            command: () => {
+                setOmnibusFormVisible(true);
             }
         }
     ]
@@ -443,6 +452,15 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
         queryClient.invalidateQueries({ queryKey: ["work", workId] });
     }
 
+    const onOmnibusFormShow = () => {
+        setOmnibusFormVisible(true);
+    }
+
+    const onOmnibusFormHide = () => {
+        setOmnibusFormVisible(false);
+        queryClient.invalidateQueries({ queryKey: ["work", workId] });
+    }
+
     const onAwardsFormShow = () => {
         setAwardsFormVisible(true);
     }
@@ -513,6 +531,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
         return contribs[0].person
     }
 
+    console.log("Rendering WorkPage for workId:", workId, "workData:", workData);
     return (
         <main className="work-page">
             <Toast ref={toastRef} />
@@ -669,6 +688,15 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                             closeOnEscape
                         >
                             <WorkShortsPicker id={workId ?? ""} onClose={() => onShortsFormHide()} />
+                        </Dialog>
+                        <Dialog maximizable blockScroll
+                            className="w-full xl:w-6"
+                            header="Omnibus" visible={isOmnibusFormVisible}
+                            onShow={() => onOmnibusFormShow()}
+                            onHide={() => onOmnibusFormHide()}
+                            closeOnEscape
+                        >
+                            <WorkOmnibusPicker id={workId ?? ""} onClose={() => onOmnibusFormHide()} />
                         </Dialog>
                         <Dialog maximizable blockScroll
                             className="w-full xl:w-6"

@@ -88,15 +88,60 @@ export const WorkDetails = ({ work }: WorkProps) => {
                             <WorkBookseriesBrowser workId={work.id} bookseriesId={work.bookseries.id} />
                         </div>
                     )}
-                    <div className="col-12 p-0">
-                        {work.misc}
-                    </div>
-                    {work.description && (
-                        <div className="grid flex-wrap col-12 pb-0 mb-0 p-0">
-                            <div dangerouslySetInnerHTML={{ __html: work.description }} />
-                            {work.descr_attr && (
-                                <div className="book-attribution"
-                                    dangerouslySetInnerHTML={{ __html: work.descr_attr }} />
+                    {work.consists_of && work.consists_of.length > 0 && (
+                        <div className="col-12 p-0 mt-2">
+                            <b>Koostuu teoksista:</b>
+                            <ul className="mt-0 mb-2">
+                                {work.consists_of.map((subwork) => (
+                                    <li key={subwork.id}>
+                                        <Link to={`/works/${subwork.id}`}>
+                                            {subwork.title}
+                                            {(subwork.orig_title && subwork.language_name?.id !== 7) || subwork.pubyear ? (
+                                                ` (${[
+                                                    subwork.orig_title && subwork.language_name?.id !== 7 ? subwork.orig_title : null,
+                                                    subwork.pubyear
+                                                ].filter(Boolean).join(', ')})`
+                                            ) : ''}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                    {work.part_of && work.part_of.length > 0 && (
+                        <div className="col-12 p-0 mt-2">
+                            {work.part_of.length === 1 && <b>Osa teosta:</b>}
+                            {work.part_of.length > 1 && <b>Osa teoksia:</b>}
+                            <ul className="mt-0 mt-2 mb-2">
+                                {work.part_of.map((parentwork) => (
+                                    <li key={parentwork.id}>
+                                        <Link to={`/works/${parentwork.id}`}>
+                                            {parentwork.title}
+                                            {(parentwork.orig_title && parentwork.language_name?.id !== 7) || parentwork.pubyear ? (
+                                                ` (${[
+                                                    parentwork.orig_title && parentwork.language_name?.id !== 7 ? parentwork.orig_title : null,
+                                                    parentwork.pubyear
+                                                ].filter(Boolean).join(', ')})`
+                                            ) : ''}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                    {work.editions && work.editions.length > 0 && (
+                        <div className="col-12 p-0">
+                            <div className="col-12 p-0">
+                                {work.misc}
+                            </div>
+                            {work.description && (
+                                <div className="grid flex-wrap col-12 pb-0 mb-0 p-0">
+                                    <div dangerouslySetInnerHTML={{ __html: work.description }} />
+                                    {work.descr_attr && (
+                                        <div className="book-attribution"
+                                            dangerouslySetInnerHTML={{ __html: work.descr_attr }} />
+                                    )}
+                                </div>
                             )}
                         </div>
                     )}

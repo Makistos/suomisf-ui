@@ -21,6 +21,8 @@ export interface Work {
     bookseries: Bookseries,
     bookseriesnum: string,
     bookseriesorder: number,
+    consists_of: Work[],
+    part_of: Work[],
     descr_attr: string,
     description: string,
     editions: Edition[],

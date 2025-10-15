@@ -288,8 +288,6 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
         {
             label: 'Muokkaa novelleja',
             icon: 'fa-solid fa-list-ul',
-            disabled: !(workData !== undefined && workData !== null &&
-                (workData.type === 2 || workData.type === 5)),
             command: () => {
                 setIsShortsFormVisible(true);
 
@@ -531,7 +529,6 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
         return contribs[0].person
     }
 
-    console.log("Rendering WorkPage for workId:", workId, "workData:", workData);
     return (
         <main className="work-page">
             <Toast ref={toastRef} />

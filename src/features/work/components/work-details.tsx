@@ -90,7 +90,7 @@ export const WorkDetails = ({ work }: WorkProps) => {
                     )}
                     {work.consists_of && work.consists_of.length > 0 && (
                         <div className="col-12 p-0 mt-2">
-                            <b>Koostuu teoksista:</b>
+                            <b>Sisältää teokset:</b>
                             <ul className="mt-0 mb-2">
                                 {work.consists_of.map((subwork) => (
                                     <li key={subwork.id}>
@@ -110,8 +110,8 @@ export const WorkDetails = ({ work }: WorkProps) => {
                     )}
                     {work.part_of && work.part_of.length > 0 && (
                         <div className="col-12 p-0 mt-2">
-                            {work.part_of.length === 1 && <b>Osa teosta:</b>}
-                            {work.part_of.length > 1 && <b>Osa teoksia:</b>}
+                            {work.part_of.length === 1 && <b>Myös teoksessa:</b>}
+                            {work.part_of.length > 1 && <b>Myös teoksissa:</b>}
                             <ul className="mt-0 mt-2 mb-2">
                                 {work.part_of.map((parentwork) => (
                                     <li key={parentwork.id}>

@@ -31,15 +31,36 @@ export const WorkDetails = ({ work }: WorkProps) => {
 
     const original = (work: Work) => {
         let retval = '';
-        if (isForeign(work)) {
+        if (isForeign(work) && work.orig_title) {
             retval = work.orig_title + ", "
         }
         retval += work.pubyear
-        if (work.language_name) {
+        if (work.type && work.type === 2 && work.stories && work.stories.length > 0) {
+            // Count frequency of each language
+            const languageCounts = work.stories.reduce((acc, story) => {
+                if (story.lang && story.lang.name) {
+                    const langName = story.lang.name;
+                    acc[langName] = (acc[langName] || 0) + 1;
+                }
+                return acc;
+            }, {} as Record<string, number>);
+
+            // Sort languages by frequency (descending) and get unique sorted list
+            const sortedLanguages = Object.entries(languageCounts)
+                .sort(([, a], [, b]) => b - a)
+                .map(([langName]) => langName);
+
+            if (sortedLanguages.length > 0) {
+                retval += " (" + sortedLanguages.join(', ') + ")"
+            }
+        } else if (work.language_name) {
             retval += " (" + work.language_name.name + ")"
         }
         return retval
     }
+
+    console.log(work.part_of);
+
     return (
         <>
             <div className="grid">
@@ -88,23 +109,28 @@ export const WorkDetails = ({ work }: WorkProps) => {
                             <WorkBookseriesBrowser workId={work.id} bookseriesId={work.bookseries.id} />
                         </div>
                     )}
-                    {work.consists_of && work.consists_of.length > 0 && (
+                    {(work.consists_of && work.consists_of.length > 0) && (
                         <div className="col-12 p-0 mt-2">
                             <b>Sisältää teokset:</b>
                             <ul className="mt-0 mb-2">
-                                {work.consists_of.map((subwork) => (
-                                    <li key={subwork.id}>
-                                        <Link to={`/works/${subwork.id}`}>
-                                            {subwork.title}
-                                            {(subwork.orig_title && subwork.language_name?.id !== 7) || subwork.pubyear ? (
-                                                ` (${[
-                                                    subwork.orig_title && subwork.language_name?.id !== 7 ? subwork.orig_title : null,
-                                                    subwork.pubyear
-                                                ].filter(Boolean).join(', ')})`
-                                            ) : ''}
-                                        </Link>
-                                    </li>
-                                ))}
+                                {
+                                    work.consists_of.map((item) => (
+                                        <li key={item.work.id} className="mb-1">
+                                            <Link to={`/works/${item.work.id}`}>
+                                                {item.work.title}
+                                                {(item.work.orig_title && item.work.language_name?.id !== 7) || item.work.pubyear ? (
+                                                    ` (${[
+                                                        item.work.orig_title && item.work.language_name?.id !== 7 ? item.work.orig_title : null,
+                                                        item.work.pubyear
+                                                    ].filter(Boolean).join(', ')})`
+                                                ) : ''}
+                                            </Link>
+                                            {item.explanation && (
+                                                <span> [{item.explanation}]</span>
+                                            )}
+                                        </li>
+                                    ))
+                                }
                             </ul>
                         </div>
                     )}
@@ -113,14 +139,14 @@ export const WorkDetails = ({ work }: WorkProps) => {
                             {work.part_of.length === 1 && <b>Myös teoksessa:</b>}
                             {work.part_of.length > 1 && <b>Myös teoksissa:</b>}
                             <ul className="mt-0 mt-2 mb-2">
-                                {work.part_of.map((parentwork) => (
-                                    <li key={parentwork.id}>
-                                        <Link to={`/works/${parentwork.id}`}>
-                                            {parentwork.title}
-                                            {(parentwork.orig_title && parentwork.language_name?.id !== 7) || parentwork.pubyear ? (
+                                {work.part_of.sort((a, b) => a.omnibus.title.localeCompare(b.omnibus.title)).map((parentwork) => (
+                                    <li key={parentwork.omnibus.id}>
+                                        <Link to={`/works/${parentwork.omnibus.id}`}>
+                                            {parentwork.omnibus.title}
+                                            {(parentwork.omnibus.orig_title && parentwork.omnibus.language_name?.id !== 7) || parentwork.omnibus.pubyear ? (
                                                 ` (${[
-                                                    parentwork.orig_title && parentwork.language_name?.id !== 7 ? parentwork.orig_title : null,
-                                                    parentwork.pubyear
+                                                    parentwork.omnibus.orig_title && parentwork.omnibus.language_name?.id !== 7 ? parentwork.omnibus.orig_title : null,
+                                                    parentwork.omnibus.pubyear
                                                 ].filter(Boolean).join(', ')})`
                                             ) : ''}
                                         </Link>

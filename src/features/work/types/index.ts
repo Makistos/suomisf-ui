@@ -13,6 +13,20 @@ export interface WorkType {
     id: number,
     name: string,
 }
+
+export interface OmnibusItem {
+    work: Work,
+    explanation?: string,
+    order?: number,
+}
+
+interface Omnibus {
+    omnibus: Work;
+    work: Work;
+    explanation: string;
+    order_num: number;
+}
+
 export interface Work {
     [index: string]: any,
     author_str: string,
@@ -21,8 +35,8 @@ export interface Work {
     bookseries: Bookseries,
     bookseriesnum: string,
     bookseriesorder: number,
-    consists_of: Work[],
-    part_of: Work[],
+    consists_of: Omnibus[],
+    part_of: Omnibus[],
     descr_attr: string,
     description: string,
     editions: Edition[],
@@ -32,6 +46,8 @@ export interface Work {
     links: LinkType[],
     misc: string,
     orig_title: string,
+    omnibus_description?: string,
+    omnibus_items?: OmnibusItem[],
     pubseries: Pubseries,
     pubyear: number,
     stories: Short[],

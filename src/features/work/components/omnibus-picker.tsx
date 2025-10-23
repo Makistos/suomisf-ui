@@ -13,15 +13,16 @@ import { AutoComplete } from "primereact/autocomplete";
 import { OrderList } from "primereact/orderlist";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { getCurrenUser } from "@services/auth-service";
 import { Person } from "@features/person";
-import { Work } from "../types";
+import { Work, OmnibusItem } from "../types";
 import { useFilterPeople } from "@hooks/use-people-filter";
 import { getApiContent } from "@services/user-service";
 import { getWorksByAuthor } from "@api/work/get-works-by-author";
-import { saveOmnibusWorks, OmnibusData } from "@api/work/save-omnibus-works";
+import { saveOmnibusWorks, OmnibusData, OmnibusWorkData } from "@api/work/save-omnibus-works";
 
 type PickerProps = {
     id: string;
@@ -34,6 +35,7 @@ interface OmnibusWork {
     title: string;
     orig_title: string;
     pubyear: number;
+    explanation?: string;
 }
 
 export const WorkOmnibusPicker = ({ id, onClose }: PickerProps) => {
@@ -44,18 +46,19 @@ export const WorkOmnibusPicker = ({ id, onClose }: PickerProps) => {
     useEffect(() => {
         const getOmnibusWorks = async () => {
             try {
-                const response = await getApiContent(`works/${id}`, user);
-                // Map the consists_of field to our OmnibusWork format
-                const omnibusWorks: OmnibusWork[] = response.data.consists_of?.map((work: Work) => ({
-                    id: work.id,
-                    author_str: work.author_str,
-                    title: work.title,
-                    orig_title: work.orig_title,
-                    pubyear: work.pubyear,
-                })) || [];
-                // Sort works by ID
-                const sortedWorks = omnibusWorks.sort((a, b) => a.id - b.id);
-                setWorks(sortedWorks);
+                const response = await getApiContent(`works/${id}/omnibus`, user);
+                // Handle the new backend structure - list of omnibus items
+                let omnibusWorks: OmnibusWork[] = [];
+
+                omnibusWorks = response.data.map((item: OmnibusItem) => ({
+                    id: item.work.id,
+                    author_str: item.work.author_str,
+                    title: item.work.title,
+                    orig_title: item.work.orig_title,
+                    pubyear: item.work.pubyear,
+                    explanation: item.explanation || "",
+                }));
+                setWorks(omnibusWorks);
             } catch (error) {
                 console.error("Error fetching omnibus works:", error);
                 setWorks([]);
@@ -68,8 +71,11 @@ export const WorkOmnibusPicker = ({ id, onClose }: PickerProps) => {
 
     const saveWorksToOmnibus = async (works: OmnibusWork[]): Promise<number> => {
         try {
-            const ids = works.map((work) => work.id);
-            const data: OmnibusData = { omnibus: parseInt(id), works: ids };
+            const worksData: OmnibusWorkData[] = works.map((work) => ({
+                id: work.id,
+                explanation: work.explanation || undefined
+            }));
+            const data: OmnibusData = { omnibus: parseInt(id), works: worksData };
             const response = await saveOmnibusWorks(data);
             onClose();
             queryClient.invalidateQueries({ queryKey: ["work", id] });
@@ -112,10 +118,7 @@ const OmnibusPicker = ({ source, saveCallback }: OmnibusPickerProps) => {
             if (selectedPerson !== null && selectedPerson !== undefined) {
                 try {
                     const works = await getWorksByAuthor(selectedPerson.id);
-                    const sortedWorks = works.sort((a: Work, b: Work) =>
-                        a.title.localeCompare(b.title)
-                    );
-                    setPersonWorks(sortedWorks);
+                    setPersonWorks(works);
                 } catch (error) {
                     console.error("Error fetching works by author:", error);
                     setPersonWorks([]);
@@ -127,7 +130,7 @@ const OmnibusPicker = ({ source, saveCallback }: OmnibusPickerProps) => {
 
     useEffect(() => {
         // Sort the source works by ID when setting them
-        const sortedSource = [...source].sort((a, b) => a.id - b.id);
+        const sortedSource = source;
         setSelectedOmnibusWorks(sortedSource);
     }, [source]);
 
@@ -161,6 +164,7 @@ const OmnibusPicker = ({ source, saveCallback }: OmnibusPickerProps) => {
             title: selectedWork.title,
             orig_title: selectedWork.orig_title,
             pubyear: selectedWork.pubyear,
+            explanation: "",
         };
 
         const newWorks = [...selectedOmnibusWorks, omnibusWork];
@@ -174,27 +178,67 @@ const OmnibusPicker = ({ source, saveCallback }: OmnibusPickerProps) => {
         setHasChanged(true);
     };
 
+    const updateExplanation = (workId: number, explanation: string) => {
+        const updatedWorks = selectedOmnibusWorks.map((work) =>
+            work.id === workId ? { ...work, explanation } : work
+        );
+        setSelectedOmnibusWorks(updatedWorks);
+        setHasChanged(true);
+    };
+
     const itemTemplate = (item: OmnibusWork) => {
         return (
-            <div className="flex">
-                <div className="flex-1 flex-column">
-                    {item.author_str}
+            <div className="flex flex-column p-2 border-1 border-200 mb-2">
+                <div className="flex mb-2">
+                    <div className="flex-1 flex-column mr-2">
+                        <small className="text-600">Tekijä</small>
+                        <div>{item.author_str}</div>
+                    </div>
+                    <div className="flex-1 flex-column mr-2">
+                        <small className="text-600">Nimeke</small>
+                        <div><b>{item.title}</b></div>
+                    </div>
+                    <div className="flex-1 flex-column mr-2">
+                        <small className="text-600">Alkuperäinen nimeke</small>
+                        <div>{item.orig_title && item.orig_title !== item.title ? item.orig_title : "-"}</div>
+                    </div>
+                    <div className="flex-none mr-2" style={{ width: '80px' }}>
+                        <small className="text-600">Vuosi</small>
+                        <div>{item.pubyear || "-"}</div>
+                    </div>
+                    <div className="flex-none">
+                        <Button
+                            type="button"
+                            icon="pi pi-times"
+                            severity="danger"
+                            size="small"
+                            tooltip="Poista"
+                            onClick={() => removeFromSelected(item.id)}
+                        />
+                    </div>
                 </div>
-                <div className="flex-1 flex-column">
-                    <b>{item.title}</b>
-                </div>
-                <div className="flex-1 flex-column">
-                    {item.orig_title && item.orig_title !== item.title && item.orig_title}
-                </div>
-                <div className="flex-1 flex-column">
-                    {item.pubyear && item.pubyear}
-                </div>
-                <div className="flex-1 flex-column">
-                    <Button
-                        type="button"
-                        icon="pi pi-times"
-                        onClick={() => removeFromSelected(item.id)}
-                    />
+                <div className="flex">
+                    <div className="flex-1">
+                        <small className="text-600">Selitys</small>
+                        <InputText
+                            value={item.explanation || ""}
+                            placeholder="Lisää selitys..."
+                            className="w-full"
+                            onChange={(e) => updateExplanation(item.id, e.target.value)}
+                            onKeyDown={(e) => {
+                                // Prevent OrderList from intercepting key events
+                                e.stopPropagation();
+                            }}
+                            onKeyUp={(e) => {
+                                // Prevent OrderList from intercepting key events
+                                e.stopPropagation();
+                            }}
+                            onKeyPress={(e) => {
+                                // Prevent OrderList from intercepting key events
+                                e.stopPropagation();
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
         );
@@ -277,6 +321,10 @@ const OmnibusPicker = ({ source, saveCallback }: OmnibusPickerProps) => {
                     </div>
                 </div>
                 <div className="field col-12">
+                    <h4 className="mb-2">Valitut teokset</h4>
+                    <small className="text-600 mb-2 block">
+                        Voit järjestellä teoksia vetämällä ja pudottamalla. Lisää selitykseen tietoa siitä, miten teos esiintyy kokoomateoksessa.
+                    </small>
                     {selectedOmnibusWorks && (
                         <OrderList
                             dataKey="id"

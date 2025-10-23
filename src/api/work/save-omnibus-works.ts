@@ -1,9 +1,14 @@
 import { getCurrenUser } from "@services/auth-service";
 import { postApiContent } from "@services/user-service";
 
+export interface OmnibusWorkData {
+    id: number;
+    description?: string;
+}
+
 export interface OmnibusData {
     omnibus: number;
-    works: number[];
+    works: OmnibusWorkData[];
 }
 
 export const saveOmnibusWorks = async (data: OmnibusData) => {

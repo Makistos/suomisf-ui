@@ -688,7 +688,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                         </Dialog>
                         <Dialog maximizable blockScroll
                             className="w-full xl:w-6"
-                            header="Omnibus" visible={isOmnibusFormVisible}
+                            header="Kokoomateos" visible={isOmnibusFormVisible}
                             onShow={() => onOmnibusFormShow()}
                             onHide={() => onOmnibusFormHide()}
                             closeOnEscape

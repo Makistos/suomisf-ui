@@ -45,13 +45,18 @@ export const WorkDetails = ({ work }: WorkProps) => {
                 return acc;
             }, {} as Record<string, number>);
 
-            // Sort languages by frequency (descending) and get unique sorted list
-            const sortedLanguages = Object.entries(languageCounts)
-                .sort(([, a], [, b]) => b - a)
-                .map(([langName]) => langName);
+            // Sort languages by frequency (descending) and format with counts
+            const sortedLanguageEntries = Object.entries(languageCounts)
+                .sort(([, a], [, b]) => b - a);
 
-            if (sortedLanguages.length > 0) {
-                retval += " (" + sortedLanguages.join(', ') + ")"
+            if (sortedLanguageEntries.length > 0) {
+                const formattedLanguages = sortedLanguageEntries.map(([langName, count]) => {
+                    if (sortedLanguageEntries.length > 1 && count > 1) {
+                        return `${langName} [${count}]`;
+                    }
+                    return langName;
+                });
+                retval += " (" + formattedLanguages.join(', ') + ")"
             } else if (work.language_name) {
                 retval += " (" + work.language_name.name + ")"
             }
@@ -65,13 +70,18 @@ export const WorkDetails = ({ work }: WorkProps) => {
                 return acc;
             }, {} as Record<string, number>);
 
-            // Sort languages by frequency (descending) and get unique sorted list
-            const sortedLanguages = Object.entries(languageCounts)
-                .sort(([, a], [, b]) => b - a)
-                .map(([langName]) => langName);
+            // Sort languages by frequency (descending) and format with counts
+            const sortedLanguageEntries = Object.entries(languageCounts)
+                .sort(([, a], [, b]) => b - a);
 
-            if (sortedLanguages.length > 0) {
-                retval += " (" + sortedLanguages.join(', ') + ")"
+            if (sortedLanguageEntries.length > 0) {
+                const formattedLanguages = sortedLanguageEntries.map(([langName, count]) => {
+                    if (sortedLanguageEntries.length > 1 && count > 1) {
+                        return `${langName} [${count}]`;
+                    }
+                    return langName;
+                });
+                retval += " (" + formattedLanguages.join(', ') + ")"
             } else if (work.language_name) {
                 retval += " (" + work.language_name.name + ")"
             }

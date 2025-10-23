@@ -52,6 +52,28 @@ export const WorkDetails = ({ work }: WorkProps) => {
 
             if (sortedLanguages.length > 0) {
                 retval += " (" + sortedLanguages.join(', ') + ")"
+            } else if (work.language_name) {
+                retval += " (" + work.language_name.name + ")"
+            }
+        } else if (work.type && work.type === 6 && work.consists_of && work.consists_of.length > 0) {
+            // Count frequency of each language from constituent works
+            const languageCounts = work.consists_of.reduce((acc, item) => {
+                if (item.work.language_name && item.work.language_name.name) {
+                    const langName = item.work.language_name.name;
+                    acc[langName] = (acc[langName] || 0) + 1;
+                }
+                return acc;
+            }, {} as Record<string, number>);
+
+            // Sort languages by frequency (descending) and get unique sorted list
+            const sortedLanguages = Object.entries(languageCounts)
+                .sort(([, a], [, b]) => b - a)
+                .map(([langName]) => langName);
+
+            if (sortedLanguages.length > 0) {
+                retval += " (" + sortedLanguages.join(', ') + ")"
+            } else if (work.language_name) {
+                retval += " (" + work.language_name.name + ")"
             }
         } else if (work.language_name) {
             retval += " (" + work.language_name.name + ")"

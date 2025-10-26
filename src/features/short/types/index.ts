@@ -19,6 +19,7 @@ export interface Short {
     lang: Language;
     pubyear: string;
     type: ShortType;
+    order_num: number;
     editions: Edition[];
     issues: Issue[];
     genres: Genre[];

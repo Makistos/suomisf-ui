@@ -120,6 +120,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPubli
         }
         return <></>;
     }
+    console.log(shorts)
     return (
         <div className="grid">
             {/* <div className="grid col-12 justify-content-end">
@@ -147,7 +148,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPubli
                             <div key={group}>
                                 {groupHeader(group)}
                                 {
-                                    shortList.sort(shortsCmp).map((short: Short) => (
+                                    shortList.sort((a, b) => a.order_num - b.order_num).map((short: Short) => (
                                         <ShortSummary short={short} key={short.id}
                                             skipAuthors={skipAuthors}
                                             {...(listPublications ? { listPublications } : {})}

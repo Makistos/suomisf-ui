@@ -23,7 +23,6 @@ export const EditionSummary = ({ edition, person, showPerson, showVersion, isOwn
         return edition.work[0].contributions.map(
             contrib => contrib.person.name).filter(uniquePeople).join(' & ');
     }
-    console.log(edition.work[0].language_name)
 
     return (
         <div className={isOwned ? "book owned" : isWishlisted ? "book wishlist" : "book not-owned"}>

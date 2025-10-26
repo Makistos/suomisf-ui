@@ -20,7 +20,7 @@ import { TabPanel, TabView } from "primereact/tabview"
 import { ShortDetails } from "../components/short-defails"
 import { on } from "stream"
 import { editionIsOwned } from "@features/edition/utils/edition-is-owned"
-import { confirmDialog } from "primereact/confirmdialog"
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog"
 import { deleteApiContent, HttpStatusResponse } from "@services/user-service"
 import { set } from "lodash"
 import { AwardedForm } from "@features/award/components/awarded-form"
@@ -67,6 +67,7 @@ export const ShortPage = (props: ShortPageProps) => {
 
     const deleteShort = (id: number) => {
         setQueryEnabled(false);
+        console.log("delete: " + id)
         const retval = deleteApiContent('shorts/' + id);
         setQueryEnabled(true);
         return retval;
@@ -164,6 +165,7 @@ export const ShortPage = (props: ShortPageProps) => {
     return (
         <main className="person-page">
             <Toast ref={toastRef} />
+            <ConfirmDialog />
             {isAdmin(user) && (
                 <>
                     <Tooltip position="left" target=".fixed-dial .p-speeddial-action" />

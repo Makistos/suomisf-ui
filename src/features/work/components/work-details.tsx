@@ -91,8 +91,6 @@ export const WorkDetails = ({ work }: WorkProps) => {
         return retval
     }
 
-    console.log(work.part_of);
-
     return (
         <>
             <div className="grid">

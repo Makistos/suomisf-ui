@@ -120,7 +120,6 @@ export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPubli
         }
         return <></>;
     }
-    console.log(shorts)
     return (
         <div className="grid">
             {/* <div className="grid col-12 justify-content-end">

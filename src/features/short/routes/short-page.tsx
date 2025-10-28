@@ -18,6 +18,8 @@ import { Tooltip } from "primereact/tooltip"
 import { Card } from "primereact/card"
 import { TabPanel, TabView } from "primereact/tabview"
 import { ShortDetails } from "../components/short-defails"
+import { SimilarShorts } from "../components/similar-shorts"
+import { useSimilarShorts } from "../hooks/use-similar-shorts"
 import { on } from "stream"
 import { editionIsOwned } from "@features/edition/utils/edition-is-owned"
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog"
@@ -48,6 +50,8 @@ export const ShortPage = (props: ShortPageProps) => {
     } catch (e) {
         console.log(`${e} short`);
     }
+
+    const { hasSimilarShorts } = useSimilarShorts(thisId, user);
 
     const fetchShort = async (id: string, user: User | null) => {
         const response = await getShort(thisId, user);
@@ -111,7 +115,7 @@ export const ShortPage = (props: ShortPageProps) => {
                 data.editions !== null),
             command: () => {
                 confirmDialog({
-                    message: 'Haluatko varmasti poistaa teoksen?',
+                    message: 'Haluatko varmasti poistaa novellin?',
                     header: 'Varmistus',
                     icon: 'pi pi-exclamation-triangle',
                     acceptClassName: 'p-button-danger',
@@ -123,7 +127,7 @@ export const ShortPage = (props: ShortPageProps) => {
                     reject: () => {
                         toastRef.current?.show({
                             severity: 'info',
-                            summary: 'Teosta ei poistettu'
+                            summary: 'Novellia ei poistettu'
                         })
                     }
                 })
@@ -220,12 +224,11 @@ export const ShortPage = (props: ShortPageProps) => {
                             </div>
                         </Card>
                     </div>
-
                     <div className="col-12">
                         <TabView className="shadow-2" scrollable={true}>
                             <TabPanel header="Julkaisut" leftIcon="pi pi-book">
                                 <div className="card">
-                                    {data.editions.length > 0 && (
+                                    {data.editions && data.editions.length > 0 && (
                                         <div className="mb-3">
                                             <h3 className="text-sm uppercase text-600 m-0 mb-1">Kirjat</h3>
                                             {data.editions.map(edition => (
@@ -239,7 +242,7 @@ export const ShortPage = (props: ShortPageProps) => {
                                             ))}
                                         </div>
                                     )}
-                                    {data.issues.length > 0 && (
+                                    {data.issues && data.issues.length > 0 && (
                                         <div>
                                             <h3 className="text-sm uppercase text-600 m-0 mb-1">Lehdet</h3>
                                             {data.issues.map(issue => (
@@ -263,7 +266,13 @@ export const ShortPage = (props: ShortPageProps) => {
                                     </div>
                                 </TabPanel>
                             )}
-
+                            {hasSimilarShorts && (
+                                <TabPanel header="Muut käännökset" leftIcon="pi pi-copy">
+                                    <div className="card">
+                                        <SimilarShorts shortId={data.id} user={user} />
+                                    </div>
+                                </TabPanel>
+                            )}
                         </TabView>
                     </div>
                     <Dialog maximizable blockScroll

@@ -45,6 +45,39 @@ const getShortTypes = (shorts: Short[]) => {
     return types;
 
 }
+
+const IssueNavigation = ({ issue }: { issue: Issue }) => {
+    return (
+        <div className="flex justify-content-between align-items-center mb-3 pt-2 border-top-1 surface-border flex-wrap gap-2">
+            <div>
+                {issue.prev && (
+                    <Link to={`/issues/${issue.prev}`} className="no-underline">
+                        <Button 
+                            icon="pi pi-chevron-left" 
+                            label="Edellinen" 
+                            className="p-button-outlined p-button-sm"
+                            size="small"
+                        />
+                    </Link>
+                )}
+            </div>
+            <div>
+                {issue.next && (
+                    <Link to={`/issues/${issue.next}`} className="no-underline">
+                        <Button 
+                            icon="pi pi-chevron-right" 
+                            iconPos="right"
+                            label="Seuraava" 
+                            className="p-button-outlined p-button-sm"
+                            size="small"
+                        />
+                    </Link>
+                )}
+            </div>
+        </div>
+    );
+};
+
 const IssueInfo = ({ issue }: IssueInfoProps) => {
     // Extract contributions by role
     const editorContributions = issue.contributors
@@ -358,6 +391,7 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
                                     <div className="col-12 lg:col-9">
                                         <div className="flex-column">
                                             <IssueInfo issue={data} />
+                                            <IssueNavigation issue={data} />
                                         </div>
                                     </div>
                                     <div className="col-12 lg:col-3">

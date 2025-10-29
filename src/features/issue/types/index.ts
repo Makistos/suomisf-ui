@@ -26,6 +26,8 @@ export interface Issue {
     stories: Short[];
     magazine: Magazine;
     magazine_id: number;
+    prev: number | null;
+    next: number | null;
 }
 
 export interface IssueFormData {

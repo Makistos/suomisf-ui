@@ -24,6 +24,7 @@ import { getApiContent, putApiContent } from "@services/user-service";
 import { ShortsForm } from "./shorts-form";
 import { saveIssueShorts } from "@api/issue/save-issue-shorts";
 import { getIssueShorts } from "@api/issue/get-issue-shorts";
+import { removeDuplicateContributions } from "@utils/remove-duplicate-contributions";
 
 type PickerProps = {
   id: string,
@@ -245,8 +246,32 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
     if (item.pubyear) {
       shortTitle += ` (${item.pubyear})`;
     }
+    const uniqueContributors = removeDuplicateContributions(item.contributors);
+    if (uniqueContributors.filter(c => c.role.name === 'Kääntäjä').length > 0) {
+      const translatorNames = uniqueContributors
+        .filter(c => c.role.name === 'Kääntäjä')
+        .map(c => c.person.alt_name);
+
+      let trs = '';
+      let includedCount = 0;
+      for (let i = 0; i < translatorNames.length; i++) {
+        const nameToAdd = i === 0 ? translatorNames[i] : `, ${translatorNames[i]}`;
+        if (trs.length + nameToAdd.length <= 40) {
+          trs += nameToAdd;
+          includedCount++;
+        } else {
+          break;
+        }
+      }
+
+      if (includedCount < translatorNames.length) {
+        trs += ' jne';
+      }
+
+      shortTitle += `[${trs}]`;
+    }
     return <div>{shortTitle}</div>;
-  };
+  }
 
   const clearPerson = () => {
     setSelectedPerson(null);

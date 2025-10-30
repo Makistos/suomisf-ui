@@ -52,9 +52,9 @@ const IssueNavigation = ({ issue }: { issue: Issue }) => {
             <div>
                 {issue.prev && (
                     <Link to={`/issues/${issue.prev}`} className="no-underline">
-                        <Button 
-                            icon="pi pi-chevron-left" 
-                            label="Edellinen" 
+                        <Button
+                            icon="pi pi-chevron-left"
+                            label="Edellinen"
                             className="p-button-outlined p-button-sm"
                             size="small"
                         />
@@ -64,10 +64,10 @@ const IssueNavigation = ({ issue }: { issue: Issue }) => {
             <div>
                 {issue.next && (
                     <Link to={`/issues/${issue.next}`} className="no-underline">
-                        <Button 
-                            icon="pi pi-chevron-right" 
+                        <Button
+                            icon="pi pi-chevron-right"
                             iconPos="right"
-                            label="Seuraava" 
+                            label="Seuraava"
                             className="p-button-outlined p-button-sm"
                             size="small"
                         />

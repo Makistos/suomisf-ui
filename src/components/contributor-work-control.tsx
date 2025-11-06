@@ -295,7 +295,7 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
     };
 
     if (groupedWorks.length === 0) {
-        return <div>Ei teoksia löytynyt.</div>;
+        return <div>Ei teoksia.</div>;
     }
 
     const toggleWorkTags = (workId: number) => {

@@ -45,11 +45,16 @@ export const EditionShortsPicker = ({ id }: PickerProps) => {
     }
   }, [])
 
-  const saveShortsToEdition = (shorts: Short[]): number => {
+  const saveShortsToEdition = async (shorts: Short[]): Promise<number> => {
     const ids = shorts.map(short => short.id);
     const data = { edition_id: id, shorts: ids }
-    const response = putApiContent('editions/shorts', data, user);
-    return 200
+    try {
+      const response = await putApiContent('editions/shorts', data, user);
+      return response.status || 200;
+    } catch (error) {
+      console.error('Failed to save shorts to edition:', error);
+      return 500;
+    }
   }
 
   return (
@@ -77,13 +82,18 @@ export const WorkShortsPicker = ({ id, onClose }: PickerProps) => {
     }
   }, [])
 
-  const saveShortsToWork = (shorts: Short[]): number => {
+  const saveShortsToWork = async (shorts: Short[]): Promise<number> => {
     const ids = shorts.map(short => short.id)
     const data = { work_id: id, shorts: ids }
-    const response = putApiContent('works/shorts', data, user);
-    onClose();
-    queryClient.invalidateQueries({ queryKey: ['work', id] });
-    return 200
+    try {
+      const response = await putApiContent('works/shorts', data, user);
+      queryClient.invalidateQueries({ queryKey: ['work', id] });
+      onClose();
+      return response.status || 200;
+    } catch (error) {
+      console.error('Failed to save shorts to work:', error);
+      return 500;
+    }
   }
 
   return (
@@ -109,16 +119,17 @@ export const IssueShortsPicker = ({ id, onClose }: PickerProps) => {
     }
   }, [])
 
-  const saveShortsToIssue = (shorts: Short[]): number => {
+  const saveShortsToIssue = async (shorts: Short[]): Promise<number> => {
     const ids = shorts.map(short => short.id)
     const data = { issue_id: id, shorts: ids }
-    const response = saveIssueShorts(data, user).then(
-      (response) => {
-        onClose();
-        return response.status;
-      }
-    );
-    return 200;
+    try {
+      const response = await saveIssueShorts(data, user);
+      onClose();
+      return response.status;
+    } catch (error) {
+      console.error('Failed to save shorts to issue:', error);
+      return 500;
+    }
   }
 
   return (
@@ -133,7 +144,7 @@ export const IssueShortsPicker = ({ id, onClose }: PickerProps) => {
 
 interface ShortsPickerProps {
   source: Short[],
-  saveCallback: (shorts: Short[]) => number,
+  saveCallback: (shorts: Short[]) => number | Promise<number>,
 }
 
 const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
@@ -315,8 +326,8 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
     setIsShortFormVisible(visible);
   }
 
-  const onSave = (shorts: Short[]) => {
-    saveCallback(shorts);
+  const onSave = async (shorts: Short[]) => {
+    await saveCallback(shorts);
   }
 
   return (

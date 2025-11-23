@@ -80,7 +80,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
     const { mutate } = useMutation({
         mutationFn: (values: number) => deletePublisher(values),
         onSuccess: (data: HttpStatusResponse) => {
-            const msg = data.response;
+            console.log(data);
             if (data.status === 200) {
                 navigate(-1);
                 toastRef.current?.show({ severity: 'success', summary: 'Kustantaja poistettu' })
@@ -165,7 +165,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
     return (
         <main className="publisher-page">
             <Toast ref={toastRef} />
-
+            <ConfirmDialog />
             {isAdmin(user) && (
                 <SpeedDial
                     model={dialItems}

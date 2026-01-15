@@ -66,6 +66,12 @@ export function MagazinesPage() {
                     : (
                         <div>
                             <h1 className="title">Lehdet</h1>
+                            <div className="mb-4 pl-3 pr-5">
+                                Lehdistä on luetteloitu novellit ja artikkelit.
+                                Sarjakuvat puuttuvat, mutta ne on tarkoitus jossain vaiheessa lisätä.
+                                Vakiopalstoja, kuten pääkirjoitus-, uutis-, kirja-arvostelu-, elokuva- ja videopalstoja, ei ole yleensä listattu, elleivät ne ole sisältäneet pidempää artikkelia.
+                                Artikkelimuotoiset arvostelut on luetteloitu.
+                            </div>
                             <div className="three-column">
                                 {
                                     data

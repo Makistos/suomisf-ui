@@ -51,7 +51,7 @@ export const ShortDetails = ({ short: data }: ShortDetailsProps) => {
                 <div className="col-12 justify-content-start">
                     {data.type.name}.<br />
                     {data.contributors.filter(contrib => contrib.role.id === 2).length > 0 && (
-                        <>
+                        <div>
                             Suom.&nbsp;
                             <LinkList path="people"
                                 separator=" &amp; "
@@ -60,10 +60,10 @@ export const ShortDetails = ({ short: data }: ShortDetailsProps) => {
                                     name: item.person['name'],
                                     alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
                                 }))} />
-                        </>
+                        </div>
                     )}
                     {data.contributors.filter(contrib => contrib.role.id === 6).length > 0 && (
-                        <>
+                        <div>
                             Henkilöt&nbsp;
                             <LinkList path="people"
                                 separator=" &amp; "
@@ -72,7 +72,7 @@ export const ShortDetails = ({ short: data }: ShortDetailsProps) => {
                                     name: item.person['name'],
                                     alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
                                 }))} />
-                        </>
+                        </div>
                     )}
                 </div>
             </div>

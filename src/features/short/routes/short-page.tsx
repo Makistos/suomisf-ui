@@ -246,14 +246,14 @@ export const ShortPage = (props: ShortPageProps) => {
                                         <div>
                                             <h3 className="text-sm uppercase text-600 m-0 mb-1">Lehdet</h3>
                                             {data.issues.map(issue => (
-                                                <span
+                                                <div className="book not-owned"
                                                     key={`issue-${issue.id}-link`}>
                                                     <Link to={`/issues/${issue.id}`}
                                                         key={`issue-${issue.id}-link`}>
                                                         {issue.magazine.name} {issue.cover_number}.
                                                         <br />
                                                     </Link>
-                                                </span>
+                                                </div>
                                             ))}
                                         </div>)}
                                 </div>

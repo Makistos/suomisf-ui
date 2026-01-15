@@ -85,7 +85,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
                 navigate(-1);
                 toastRef.current?.show({ severity: 'success', summary: 'Kustantaja poistettu' })
             } else {
-                toastRef.current?.show({ severity: 'error', summary: 'Kustantajan poisto ei onnistunut', detail: msg })
+                toastRef.current?.show({ severity: 'error', summary: 'Kustantajan poisto ei onnistunut' })
             }
         },
         onError: (error: any) => {

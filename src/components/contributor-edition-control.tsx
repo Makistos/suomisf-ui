@@ -123,7 +123,7 @@ export const ContributorEditionControl = ({
             .map(group => combineEditions(group, currentUser))
             .filter((ed): ed is CombinedEdition => ed !== undefined);
 
-        combinedEditions.forEach(edition => {
+        editions.forEach(edition => {
             if (edition.images && edition.images.length > 0) {
                 edition.images.forEach(img => {
                     const imageUrl = img.image_src.startsWith('http')

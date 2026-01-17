@@ -15,6 +15,7 @@ import { isDisabled } from '../../../components/forms/forms';
 import { HttpStatusResponse, getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
 import { FormProperties } from '../../../types/form-properties'
 import { LinksField } from '../../../components/forms/links-field';
+import { AliasesField } from '../../../components/forms/aliases-field';
 import { FormInputText } from '../../../components/forms/field/form-input-text';
 import { FormInputNumber } from '../../../components/forms/field/form-input-number';
 import { FormAutoComplete } from '../../../components/forms/field/form-auto-complete';
@@ -180,6 +181,9 @@ const FormObject = ({ onSubmit, methods }: FormObjectProps) => {
                                 label="Muita käytettyjä nimen muotoja"
                                 disabled={disabled}
                             />
+                        </div>
+                        <div className="field col-12">
+                            <AliasesField disabled={disabled} />
                         </div>
                         <div className="field col-3">
                             <FormInputNumber

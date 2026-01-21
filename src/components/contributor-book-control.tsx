@@ -26,6 +26,10 @@ interface CBCProps {
      */
     viewNonSf: boolean,
     /**
+     * What types of books to show.
+     */
+    types: Number[],
+    /**
      * An optional boolean value indicating whether collaborations should be
      * displayed last.
      */
@@ -36,7 +40,7 @@ interface CBCProps {
     tags?: SfTag[]  // Add this line
 }
 
-export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast = false, tags }: CBCProps) => {
+export const ContributorBookControl = ({ person, viewNonSf, types, collaborationsLast = false, tags }: CBCProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [showTags, setShowTags] = useState(false);
     const [works, setWorks]: [Work[], (sfWorks: Work[]) => void]
@@ -118,19 +122,21 @@ export const ContributorBookControl = ({ person, viewNonSf, collaborationsLast =
     }
 
     const edition_contributions = (editions: Edition[]) => {
-        return editions.filter(edition =>
-            contributions(edition.contributions, [2, 4, 5]).length > 0);
+        // console.log(editions)
+        const filtered = editions.filter(edition => types.includes(edition.work[0].work_type.id));
+        return filtered.filter(edition => contributions(edition.contributions, [2, 4, 5]).length > 0);
     }
 
     useEffect(() => {
         setWorks(person.works.filter(
-            work => viewNonSf ? isNonSf(work.genres) : !isNonSf(work.genres)));
+            work => ((types.includes(work.work_type.id)) &&
+                (viewNonSf ? isNonSf(work.genres) : !isNonSf(work.genres)))));
         const editions = edition_contributions(person.editions)
 
         const newTr = editions.filter(edition =>
             contributions(edition.contributions, [2]).length > 0);
         setTranslations(newTr);
-        setEdits(person.edits);
+        setEdits(person.edits.filter(edition => types.includes(edition.work[0].work_type.id)));
         const newCovers = editions.filter(edition =>
             contributions(edition.contributions, [4]).length > 0);
         setCovers(newCovers);

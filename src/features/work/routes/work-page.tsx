@@ -568,8 +568,11 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                                     </div>
 
                                     {/* Genres and tags on right side */}
-                                    <div className="col-12 lg:col-3">
+                                    <div className="col-12 lg:col-3 pt-2">
                                         <div className="flex flex-column gap-4">
+                                            <div className="flex flex-column gap-2 pt-3 border-bottom-1">
+                                                <span className="font-bold">{workData.work_type.name}</span>
+                                            </div>
                                             <div className="flex flex-column gap-2">
                                                 <h3 className="text-sm uppercase text-600 m-0">Genret</h3>
                                                 <GenreGroup

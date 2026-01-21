@@ -67,7 +67,7 @@ export const ShortDetails = ({ short: data }: ShortDetailsProps) => {
                             Henkilöt&nbsp;
                             <LinkList path="people"
                                 separator=" &amp; "
-                                items={data.contributors.filter(contrib => contrib.role.id === 6).map((item) => ({
+                                items={removeDuplicateContributions(data.contributors).filter(contrib => contrib.role.id === 6).map((item) => ({
                                     id: item.person['id'],
                                     name: item.person['name'],
                                     alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']

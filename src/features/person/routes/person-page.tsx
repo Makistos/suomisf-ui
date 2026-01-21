@@ -24,6 +24,7 @@ import { PersonForm } from '../components/person-form';
 import { selectId } from '../../../utils';
 import { User, isAdmin } from "../../user";
 import { useDocumentTitle } from '../../../components/document-title';
+import { Work } from '@features/work';
 
 import { Card } from 'primereact/card';
 import { TabView, TabPanel } from 'primereact/tabview';
@@ -34,6 +35,7 @@ import { PersonDetails } from '../components/person-details';
 import { AwardedForm } from '@features/award/components/awarded-form';
 import { ContributorMagazineControl } from '@components/contributor-magazine-control';
 import { Issue } from '@features/issue';
+import { all } from 'axios';
 
 const baseURL = "people/";
 
@@ -42,6 +44,9 @@ interface PersonPageProps {
 }
 
 let thisId = "";
+
+const FICTION_TYPES = [1, 2, 5, 6];
+const NONFICTION_TYPES = [4];
 
 export const PersonPage = ({ id }: PersonPageProps) => {
     const params = useParams();
@@ -269,6 +274,14 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     if (!data) {
         return <ProgressSpinner />
     }
+
+    const hasFictionType = (types: Number[]) => {
+        console.log(data)
+        return data.works.filter(work => types.includes(work.work_type.id)).length > 0 ||
+            data.editions.filter(edition => types.includes(edition.work[0].work_type.id)).length > 0 ||
+            data.edits.filter(edition => types.includes(edition.work[0].work_type.id)).length > 0
+    }
+
     console.log(data)
     return (
         <main className="person-page">
@@ -329,19 +342,38 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                         {/* Main Content */}
                         <div className="col-12">
                             <TabView className="shadow-2" scrollable={true}>
-                                <TabPanel header="Teokset" leftIcon="pi pi-book">
-                                    <div className="card">
-                                        {/* Existing ContributorBookControl */}
-                                        <ContributorBookControl
-                                            viewNonSf={false}
-                                            person={data}
-                                            collaborationsLast={true}
-                                            tags={getTags()}  // Add this line
-                                        />
-                                    </div>
-                                </TabPanel>
+                                {hasFictionType(FICTION_TYPES) &&
+                                    <TabPanel header="Teokset" leftIcon="pi pi-book">
+                                        <div className="card">
+                                            {/* Existing ContributorBookControl */}
+                                            <ContributorBookControl
+                                                viewNonSf={false}
+                                                person={data}
+                                                types={FICTION_TYPES}
+                                                collaborationsLast={true}
+                                                tags={getTags()}  // Add this line
+                                            />
+                                        </div>
+                                    </TabPanel>
+                                }
+                                {hasFictionType(NONFICTION_TYPES) &&
+                                    <TabPanel header="Tietokirjat" leftIcon="pi pi-book">
+                                        <div className="card">
+                                            {/* Existing ContributorBookControl */}
+                                            <ContributorBookControl
+                                                viewNonSf={false}
+                                                person={data}
+                                                types={NONFICTION_TYPES}
+                                                collaborationsLast={true}
+                                                tags={getTags()}  // Add this line
+                                            />
+                                        </div>
+                                    </TabPanel>
+                                }
+
+
                                 {data.stories && data.stories.length > 0 && (
-                                    <TabPanel header="Novellit" leftIcon="pi pi-list">
+                                    <TabPanel header="Novellit ja artikkelit" leftIcon="pi pi-list">
                                         <div className="card">
                                             <ShortsControl key={"sfshorts"}
                                                 person={data}
@@ -387,6 +419,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                                     <ContributorBookControl
                                                         viewNonSf={true}
                                                         person={data}
+                                                        types={[1, 2, 3, 4, 5, 6]}
                                                         collaborationsLast={true}
                                                     />
                                                 </div>

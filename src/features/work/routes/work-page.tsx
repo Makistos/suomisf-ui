@@ -36,7 +36,7 @@ import { groupSimilarEditions } from "@features/edition/utils/group-similar-edit
 import { combineEditions } from "@features/edition/utils/combine-editions";
 import { deleteEditionImage } from "@api/edition/delete-edition-image";
 import { ImageView } from "@utils/image-view";
-
+import { appearsIn } from "@utils/appears-in"
 import { Card } from "primereact/card";
 import { TabView, TabPanel } from "primereact/tabview";
 import { TagGroup } from "@features/tag";
@@ -392,7 +392,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
         return (
             <div className={className}>
                 <span className={titleClassName}>
-                    Novellit
+                    Novellit ja artikkelit
                 </span>
                 <button className={options.togglerClassName} onClick={options.onTogglerClick}>
                     <span className={toggleIcon}></span>
@@ -592,6 +592,17 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                                                     />
                                                 </div>
                                             )}
+                                            {appearsIn(workData.contributions) && (
+                                                <div className="flex flex-column gap-2">
+                                                    <h3 className="text-sm uppercase text-600 m-0">Henkilöt</h3>
+                                                    {appearsIn(workData.contributions)?.map(contrib => (
+                                                        <>{contrib}
+                                                            <br />
+                                                        </>
+                                                    )
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -648,7 +659,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                                 )}
 
                                 {workData.stories && workData.stories.length > 0 && (
-                                    <TabPanel header="Novellit" leftIcon="pi pi-list">
+                                    <TabPanel header="Novellit ja artikkelit" leftIcon="pi pi-list">
                                         <ShortsList
                                             shorts={workData.stories}
                                             person={anthologyAuthor()}

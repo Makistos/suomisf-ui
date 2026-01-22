@@ -27,6 +27,8 @@ import { deleteApiContent, HttpStatusResponse } from "@services/user-service"
 import { set } from "lodash"
 import { AwardedForm } from "@features/award/components/awarded-form"
 import { AwardList } from "@features/award"
+import { appearsIn } from "@utils/appears-in"
+import { removeDuplicateContributions } from "@utils/remove-duplicate-contributions"
 
 interface ShortPageProps {
     id: string | null
@@ -200,6 +202,11 @@ export const ShortPage = (props: ShortPageProps) => {
                                 </div>
                                 <div className="col-12 lg:col-3">
                                     <div className="flex flex-column gap-4">
+                                        <div className="flex flex-column gap-2 pt-3 border-bottom-1">
+                                            <span className="font-bold">
+                                                {data.type.name}<br />
+                                            </span>
+                                        </div>
                                         <div className="flex flex-column gap-2">
                                             <h3 className="text-sm uppercase text-600 m-0">Genret</h3>
                                             <GenreGroup
@@ -217,6 +224,17 @@ export const ShortPage = (props: ShortPageProps) => {
                                                     overflow={5}
                                                     showOneCount
                                                 />
+                                            </div>
+                                        )}
+                                        {appearsIn(data.contributors) && (
+                                            <div className="flex flex-column gap-2">
+                                                <h3 className="text-sm uppercase text-600 m-0">Henkilöt</h3>
+                                                {appearsIn(removeDuplicateContributions(data.contributors))?.map(contrib => (
+                                                    <>{contrib}
+                                                        <br />
+                                                    </>
+                                                )
+                                                )}
                                             </div>
                                         )}
                                     </div>

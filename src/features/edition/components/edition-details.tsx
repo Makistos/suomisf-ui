@@ -314,7 +314,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                                     onClick={confirmDelete}
                                     disabled={isDisabled(user, loading)} />
                                 {work && work.stories && work.stories.length > 0 && (
-                                    <Button icon="fa fa-list-ul" tooltip="Novellit"
+                                    <Button icon="fa fa-list-ul" tooltip="Novellit ja artikkelit"
                                         className='p-button-text'
                                         onClick={() => onShortsShow()}
                                     />

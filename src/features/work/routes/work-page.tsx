@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useRef, useCallback } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 
 import { DataView } from "primereact/dataview";
 import { Panel } from "primereact/panel";
@@ -596,9 +596,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                                                 <div className="flex flex-column gap-2">
                                                     <h3 className="text-sm uppercase text-600 m-0">Henkilöt</h3>
                                                     {appearsIn(workData.contributions)?.map(contrib => (
-                                                        <>{contrib}
-                                                            <br />
-                                                        </>
+                                                        <Link to={`/people/${contrib.person.id}`}>{contrib.person.alt_name}</Link>
                                                     )
                                                     )}
                                                 </div>

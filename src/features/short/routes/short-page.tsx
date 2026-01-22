@@ -230,7 +230,7 @@ export const ShortPage = (props: ShortPageProps) => {
                                             <div className="flex flex-column gap-2">
                                                 <h3 className="text-sm uppercase text-600 m-0">Henkilöt</h3>
                                                 {appearsIn(removeDuplicateContributions(data.contributors))?.map(contrib => (
-                                                    <>{contrib}
+                                                    <><Link to={`/people/${contrib.person.id}`}>{contrib.person.name}</Link>
                                                         <br />
                                                     </>
                                                 )

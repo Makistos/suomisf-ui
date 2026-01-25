@@ -71,6 +71,10 @@ export default function MainMenu() {
                     label: 'Palkinnot',
                     url: '/awards'
                 },
+                {
+                    label: 'Tietokirjat',
+                    url: '/nonfiction'
+                }
             ]
         },
         {
@@ -132,6 +136,10 @@ export default function MainMenu() {
                 {
                     label: 'Palkinnot',
                     url: '/awards'
+                },
+                {
+                    label: 'Tietokirjat',
+                    url: '/nonfiction'
                 }
             ]
         },

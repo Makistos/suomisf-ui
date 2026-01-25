@@ -31,6 +31,7 @@ import { LatestAdditions } from './features/latest/routes/latest-additions';
 import { FAQ } from 'faq';
 import ProfilePage from '@features/user/routes/profile-page';
 import { ShortPage } from '@features/short/routes/short-page';
+import { WorksByType } from '@features/work/routes/works-by-type';
 
 // console.log(process.env)
 
@@ -69,6 +70,7 @@ root.render(
         <Route path="/changes" element={<Changes />} />
         <Route path="/latest" element={<LatestAdditions />} />
         <Route path="/faq" element={<FAQ />} />
+        <Route path="/nonfiction" element={<WorksByType worktype={"4"} />} />
         <Route path="/users/:itemId" element={<ProfilePage id={null} />} />
         <Route path="*"
           element={

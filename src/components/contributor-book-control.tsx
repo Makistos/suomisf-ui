@@ -12,6 +12,7 @@ import { Genre } from "../features/genre";
 import { Edition } from "../features/edition";
 import { Contribution } from "../types/contribution";
 import { SfTag, TagGroup } from "@features/tag";
+import { appearsIn } from "@utils/appears-in";
 
 /**
  * Represents the props for the ContributorBookControl component.
@@ -50,6 +51,7 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
         = useState<Edition[]>([]);
     const [covers, setCovers] = useState<Edition[]>([]);
     const [illustrations, setIllustrations] = useState<Edition[]>([]);
+    const [appearsIn_, setAppearsIn] = useState<Work[]>([]);
 
     // Create list that contains all alias ids as well
     const person_ids = person.aliases.map(alias => alias.id);
@@ -143,6 +145,12 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
         const newIllustrations = editions.filter(edition =>
             contributions(edition.contributions, [5]).length > 0);
         setIllustrations(newIllustrations);
+        // const newAppearsIn = person.works.filter(work =>
+        //     contributions(work.contributions, [6]).length > 0);
+        const newAppearsIn = person.works.filter(edition =>
+            contributions(edition.contributions, [6]).length > 0);
+
+        setAppearsIn(newAppearsIn);
     }, [person.works, person.editions, viewNonSf]);
 
     useEffect(() => {
@@ -201,6 +209,9 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
     const illustrationContributions =
         contributions(illustrations.map(tr =>
             removeDuplicateEditionContributions(tr)).flat(1), [5]).length;
+    const appearsInContributions =
+        contributions(appearsIn_.map(work =>
+            removeDuplicateWorkContributions(work)).flat(1), [6]).length;
 
     return (
         <TabView key={viewNonSf ? "nonSF" : "SF"} activeIndex={activeIndex}
@@ -252,6 +263,17 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
                 disabled={illustrationContributions === 0}>
                 <ContributorEditionControl editions={illustrations} person={person} sort="author" collaborationsLast={collaborationsLast} detailLevel="brief" />
             </TabPanel>
+            <TabPanel key="Esiintyy"
+                header={headerText("Kirjoittanut", authorContributions)}
+                disabled={appearsInContributions === 0}>
+                <ContributorWorkControl
+                    works={appearsIn_}
+                    person={person.id}
+                    personName={person.name}
+                    collaborationsLast={collaborationsLast}
+                />
+            </TabPanel>
+
         </TabView>
     )
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { TabView, TabPanel } from "primereact/tabview";
 import { Button } from "primereact/button";
@@ -12,7 +12,7 @@ import { Genre } from "../features/genre";
 import { Edition } from "../features/edition";
 import { Contribution } from "../types/contribution";
 import { SfTag, TagGroup } from "@features/tag";
-import { appearsIn } from "@utils/appears-in";
+// import { appearsIn } from "@utils/appears-in";
 
 /**
  * Represents the props for the ContributorBookControl component.
@@ -44,7 +44,7 @@ interface CBCProps {
 export const ContributorBookControl = ({ person, viewNonSf, types, collaborationsLast = false, tags }: CBCProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [showTags, setShowTags] = useState(false);
-    const [works, setWorks]: [Work[], (sfWorks: Work[]) => void]
+    const [authored, setAuthored]: [Work[], (sfWorks: Work[]) => void]
         = useState<Work[]>([]);
     const [edits, setEdits]: [Edition[], (sfEdits: Edition[]) => void] = useState<Edition[]>([]);
     const [translations, setTranslations]: [Edition[], (sfTranslations: Edition[]) => void]
@@ -54,8 +54,9 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
     const [appearsIn_, setAppearsIn] = useState<Work[]>([]);
 
     // Create list that contains all alias ids as well
-    const person_ids = person.aliases.map(alias => alias.id);
-    person_ids.push(person.id);
+    const person_ids = useMemo(() => {
+        return [...person.aliases.map(alias => alias.id), person.id];
+    }, [person.aliases, person.id]);
 
     /**
      * Given list of genres, determines if they match a non-SF list.
@@ -74,25 +75,15 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
     }
 
     /**
-     * Determines which of the three book tabs should be set active.
+     * Determines which tab should be set active based on contribution counts.
+     * Returns the index of the first tab that has content (is not disabled).
      *
-     * If there are items in works, then this tab is selected. Else if
-     * edits has items then that tab is selected. And finally if neither have items
-     * but translations does it is selected. Default is always first tab.
-     *
-     * @param works - Books written by person.
-     * @param edits - Books edited by person.
-     * @param translations - Books translated by person.
-     * @returns Tab number (0-2)
+     * @param counts - Array of contribution counts in tab order
+     * @returns Tab number (0-5), defaults to 0
      */
-    const calcActiveIndex = (works: Work[], edits: Edition[], translations: Edition[], illustrations: Edition[], covers: Edition[]) => {
-        if (works.length > 0) return 0;
-        if (edits.length > 0) return 1;
-        if (translations.length > 0) return 2;
-        if (covers.length > 0) return 3;
-        if (illustrations.length > 0) return 4;
-        return 0;
-
+    const calcActiveIndex = (counts: number[]) => {
+        const firstWithContent = counts.findIndex(count => count > 0);
+        return firstWithContent >= 0 ? firstWithContent : 0;
     }
 
     const removeDuplicateWorks = (editions: Edition[]) => {
@@ -105,7 +96,7 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
            year. Then pick unique work ids. */
 
         let retval = _.sortBy(editions, [function (e) { return e.pubyear }]);
-        retval = _.uniqBy(retval, (value => value.work[0].id));
+        retval = _.uniqBy(retval, (value => value.work?.[0]?.id));
         return retval;
     }
 
@@ -125,20 +116,28 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
 
     const edition_contributions = (editions: Edition[]) => {
         // console.log(editions)
-        const filtered = editions.filter(edition => types.includes(edition.work[0].work_type.id));
+        const filtered = editions.filter(edition => edition.work?.[0] && types.includes(edition.work[0].work_type.id));
         return filtered.filter(edition => contributions(edition.contributions, [2, 4, 5]).length > 0);
     }
 
+    const work_contributions = (works: Work[], isSf: boolean, contributionType: number) => {
+        const filtered = works.filter(work => types.includes(work.work_type.id) &&
+            (isSf ? isNonSf(work.genres) : !isNonSf(work.genres)));
+        const retval = filtered.filter(work => contributions(work.contributions, [contributionType]).length > 0);
+        return retval;
+    }
+
     useEffect(() => {
-        setWorks(person.works.filter(
-            work => ((types.includes(work.work_type.id)) &&
-                (viewNonSf ? isNonSf(work.genres) : !isNonSf(work.genres)))));
-        const editions = edition_contributions(person.editions)
+        // setWorks(person.works.filter(
+        //     work => ((types.includes(work.work_type.id)) &&
+        //         (viewNonSf ? isNonSf(work.genres) : !isNonSf(work.genres)))));
+        setAuthored(work_contributions(person.works, viewNonSf, 1));
+        const editions = edition_contributions(person.editions);
 
         const newTr = editions.filter(edition =>
             contributions(edition.contributions, [2]).length > 0);
         setTranslations(newTr);
-        setEdits(person.edits.filter(edition => types.includes(edition.work[0].work_type.id)));
+        setEdits(person.edits.filter(edition => edition.work?.[0] && types.includes(edition.work[0].work_type.id)));
         const newCovers = editions.filter(edition =>
             contributions(edition.contributions, [4]).length > 0);
         setCovers(newCovers);
@@ -147,31 +146,26 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
         setIllustrations(newIllustrations);
         // const newAppearsIn = person.works.filter(work =>
         //     contributions(work.contributions, [6]).length > 0);
-        const newAppearsIn = person.works.filter(edition =>
-            contributions(edition.contributions, [6]).length > 0);
-
-        setAppearsIn(newAppearsIn);
-    }, [person.works, person.editions, viewNonSf]);
-
-    useEffect(() => {
-        const initialIndex = calcActiveIndex(works, edits, translations, illustrations, covers);
-        setActiveIndex(initialIndex);
-    }, [works, edits, translations, illustrations, covers])
+        // const newAppearsIn = person.works.filter(edition =>
+        //     contributions(edition.contributions, [6]).length > 0);
+        setAppearsIn(work_contributions(person.works, viewNonSf, 6));
+        // setAppearsIn(newAppearsIn);
+    }, [person.works, person.editions, viewNonSf, types, person_ids]);
 
     const headerText = (staticText: string, count: number) => {
         return staticText + " (" + count + ")";
     }
 
     const hasSeries = () => {
-        const retval = works.some(work => work.bookseries !== null)
+        const retval = authored.some(work => work.bookseries !== null)
         return retval;
     }
 
-    const onlyFirstEdition = (works: Work[]) => {
-        return works.filter((work, index) => {
-            return index === works.findIndex(w => work.id === w.id);
-        })
-    }
+    // const onlyFirstEdition = (works: Work[]) => {
+    //     return works.filter((work, index) => {
+    //         return index === works.findIndex(w => work.id === w.id);
+    //     })
+    // }
 
     const removeDuplicateWorkContributions = (work: Work) => {
 
@@ -194,7 +188,7 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
 
     // Find contributions for different types
     const authorContributions =
-        contributions(works.map(work =>
+        contributions(authored.map(work =>
             removeDuplicateWorkContributions(work)).flat(1), [1]).length;
     const editContributions =
         contributions(edits.map(edition =>
@@ -213,6 +207,11 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
         contributions(appearsIn_.map(work =>
             removeDuplicateWorkContributions(work)).flat(1), [6]).length;
 
+    // Set active tab to first one with content
+    useEffect(() => {
+        const counts = [authorContributions, editContributions, translationContributions, coverContributions, illustrationContributions, appearsInContributions];
+        setActiveIndex(calcActiveIndex(counts));
+    }, [authorContributions, editContributions, translationContributions, coverContributions, illustrationContributions, appearsInContributions]);
     return (
         <TabView key={viewNonSf ? "nonSF" : "SF"} activeIndex={activeIndex}
             onTabChange={(e) => setActiveIndex(e.index)} className="w-full"
@@ -237,8 +236,7 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
                     </div>
                 )}
                 <ContributorWorkControl
-                    works={works}
-                    person={person.id}
+                    works={authored}
                     personName={person.name}
                     collaborationsLast={collaborationsLast}
                 />
@@ -264,11 +262,10 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
                 <ContributorEditionControl editions={illustrations} person={person} sort="author" collaborationsLast={collaborationsLast} detailLevel="brief" />
             </TabPanel>
             <TabPanel key="Esiintyy"
-                header={headerText("Kirjoittanut", authorContributions)}
+                header={headerText("Esiintyy", appearsInContributions)}
                 disabled={appearsInContributions === 0}>
                 <ContributorWorkControl
                     works={appearsIn_}
-                    person={person.id}
                     personName={person.name}
                     collaborationsLast={collaborationsLast}
                 />

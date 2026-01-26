@@ -276,13 +276,13 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     }
 
     const hasFictionType = (types: Number[]) => {
-        console.log(data)
+        // console.log(data)
         return data.works.filter(work => types.includes(work.work_type.id)).length > 0 ||
             data.editions.filter(edition => types.includes(edition.work[0].work_type.id)).length > 0 ||
             data.edits.filter(edition => types.includes(edition.work[0].work_type.id)).length > 0
     }
 
-    console.log(data)
+    // console.log(data)
     return (
         <main className="person-page">
             <Toast ref={toastRef} />

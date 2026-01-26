@@ -16,12 +16,11 @@ interface ContributorWorkControlProps {
      * Works to be displayed.
      */
     works: Work[];
-    person?: number; // Optional person ID for filtering contributions
     personName?: string; // Person name for grouping
     collaborationsLast?: boolean;
 }
 
-export const ContributorWorkControl = ({ works, person, personName = "", collaborationsLast = false }: ContributorWorkControlProps) => {
+export const ContributorWorkControl = ({ works, personName = "", collaborationsLast = false }: ContributorWorkControlProps) => {
     const [expandedTags, setExpandedTags] = useState<Set<number>>(new Set());
     const [showAllImagesGallery, setShowAllImagesGallery] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(-1);
@@ -31,44 +30,42 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
     const currentUser = getCurrenUser();
 
     // Group works by author_str, with person's own works first
-    const groupedWorks = useMemo(() => {
-        const grouped: { [key: string]: { authorStr: string, works: Work[] } } = {};
+    const grouped: { [key: string]: { authorStr: string, works: Work[] } } = {};
 
-        works.forEach(work => {
-            const authorStr = work.author_str || "Tuntematon";
+    works.forEach(work => {
+        const authorStr = work.author_str || "Tuntematon";
 
-            if (!grouped[authorStr]) {
-                grouped[authorStr] = {
-                    authorStr,
-                    works: []
-                };
-            }
-
-            grouped[authorStr].works.push(work);
-        });
-
-        // Sort groups: person's works first, then alphabetically
-        const sortedKeys = Object.keys(grouped).sort((a, b) => {
-            if (a === personName) return -1;
-            if (b === personName) return 1;
-            return a.localeCompare(b, "fi");
-        });
-
-        // If collaborationsLast is true, move collaborative works to end
-        if (collaborationsLast && personName) {
-            const personalIndex = sortedKeys.indexOf(personName);
-            if (personalIndex > -1) {
-                const personalKey = sortedKeys.splice(personalIndex, 1)[0];
-                sortedKeys.unshift(personalKey);
-            }
+        if (!grouped[authorStr]) {
+            grouped[authorStr] = {
+                authorStr,
+                works: []
+            };
         }
 
-        // Sort works within each group by title using Finnish locale
-        return sortedKeys.map(key => ({
-            ...grouped[key],
-            works: grouped[key].works.sort((a, b) => a.title.localeCompare(b.title, "fi"))
-        }));
-    }, [works, person, personName, collaborationsLast]);
+        grouped[authorStr].works.push(work);
+    });
+
+    // Sort groups: person's works first, then alphabetically
+    const sortedKeys = Object.keys(grouped).sort((a, b) => {
+        if (a === personName) return -1;
+        if (b === personName) return 1;
+        return a.localeCompare(b, "fi");
+    });
+
+    // If collaborationsLast is true, move collaborative works to end
+    if (collaborationsLast && personName) {
+        const personalIndex = sortedKeys.indexOf(personName);
+        if (personalIndex > -1) {
+            const personalKey = sortedKeys.splice(personalIndex, 1)[0];
+            sortedKeys.unshift(personalKey);
+        }
+    }
+
+    // Sort works within each group by title using Finnish locale
+    const groupedWorks = sortedKeys.map(key => ({
+        ...grouped[key],
+        works: [...grouped[key].works].sort((a, b) => a.title.localeCompare(b.title, "fi"))
+    }));
 
     // Get the first edition with an image for a work
     const getFirstEditionWithImage = (work: Work): Edition | null => {
@@ -188,7 +185,7 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
 
     // Create galleria items
     const galleryItems = useMemo(() => {
-        return allWorksImages.map((item, index) => ({
+        return allWorksImages.map((item) => ({
             itemImageSrc: item.url,
             thumbnailImageSrc: item.url,
             alt: `${item.workTitle} kansi`,
@@ -198,7 +195,7 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
 
     // Create galleria items for current work
     const currentWorkGalleryItems = useMemo(() => {
-        return currentWorkImages.map((item, index) => ({
+        return currentWorkImages.map((item) => ({
             itemImageSrc: item.url,
             thumbnailImageSrc: item.url,
             alt: `${item.workTitle} kansi`,
@@ -329,7 +326,7 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
             )}
 
             <div className="w-full">
-                {groupedWorks.map((group, groupIndex) => (
+                {groupedWorks.map((group) => (
                     <div key={group.authorStr} className="mb-4">
                         {/* Group header */}
                         {groupedWorks.length > 1 && group.authorStr !== personName && (
@@ -338,8 +335,7 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
                             </h3>
                         )}
                         <div className="work-list">
-                            {group.works.map((work, index) => {
-                                const firstEdition = getFirstEditionWithImage(work);
+                            {group.works.map((work) => {
                                 const allImages = getAllImagesFromWork(work);
 
                                 return (
@@ -385,13 +381,13 @@ export const ContributorWorkControl = ({ works, person, personName = "", collabo
                                                 {/* Editions */}
                                                 {work.editions && work.editions.length > 0 && (
                                                     <div className="text-sm text-500 mb-2">
-                                                        {work.editions
+                                                        {[...work.editions]
                                                             .sort((a, b) => {
                                                                 const yearA = typeof a.pubyear === 'number' ? a.pubyear : parseInt(String(a.pubyear || 0));
                                                                 const yearB = typeof b.pubyear === 'number' ? b.pubyear : parseInt(String(b.pubyear || 0));
                                                                 return yearA - yearB;
                                                             })
-                                                            .map((edition, edIndex) => (
+                                                            .map((edition) => (
                                                                 <div key={edition.id}>
                                                                     <Link
                                                                         to={`/editions/${edition.id}`}

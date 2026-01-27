@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 import { Button } from "primereact/button";
 import { OverlayPanel } from "primereact/overlaypanel";
@@ -9,6 +9,7 @@ import { WorkStats } from "./work-stats";
 
 export const WorkStatsPanel = ({ works }: WorksProps) => {
     const op = useRef<OverlayPanel>(null);
+    const [isVisible, setIsVisible] = useState(false);
 
     if (!works)
         return null;
@@ -25,8 +26,10 @@ export const WorkStatsPanel = ({ works }: WorksProps) => {
                 aria-controls="workstats_panel" />
             <OverlayPanel
                 ref={op}
-                id="editionsstats_panel">
-                <WorkStats works={works} />
+                id="editionsstats_panel"
+                onShow={() => setIsVisible(true)}
+                onHide={() => setIsVisible(false)}>
+                {isVisible && <WorkStats works={works} />}
             </OverlayPanel>
 
 

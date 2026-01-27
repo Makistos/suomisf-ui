@@ -212,6 +212,7 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
         const counts = [authorContributions, editContributions, translationContributions, coverContributions, illustrationContributions, appearsInContributions];
         setActiveIndex(calcActiveIndex(counts));
     }, [authorContributions, editContributions, translationContributions, coverContributions, illustrationContributions, appearsInContributions]);
+
     return (
         <TabView key={viewNonSf ? "nonSF" : "SF"} activeIndex={activeIndex}
             onTabChange={(e) => setActiveIndex(e.index)} className="w-full"

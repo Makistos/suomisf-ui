@@ -2,3 +2,8 @@ export * from "./work-stats";
 export * from "./work-stats-panel";
 export * from "./editions-stats-panel";
 export * from "./edition-stats";
+export * from "./genre-chart";
+export * from "./works-by-year-chart";
+export * from "./publisher-chart";
+export * from "./issues-chart";
+export * from "./author-chart";

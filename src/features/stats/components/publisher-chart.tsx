@@ -1,5 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Card } from 'primereact/card';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import {
     Chart as ChartJS,
     ArcElement,
@@ -8,6 +11,10 @@ import {
 } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import { Dropdown } from 'primereact/dropdown';
+import { Slider } from 'primereact/slider';
+import { useQuery } from '@tanstack/react-query';
+import { getApiContent } from '../../../services/user-service';
+import { getCurrenUser } from '../../../services/auth-service';
 
 ChartJS.register(
     ArcElement,
@@ -21,10 +28,6 @@ interface PublisherCount {
     fullname: string | null;
     genres: { [key: string]: number };
     total: number;
-}
-
-interface PublisherChartProps {
-    data: PublisherCount[];
 }
 
 // Genre names for the dropdown
@@ -53,43 +56,55 @@ const publisherColors = [
     '#16A085', '#E74C3C', '#3498DB', '#9B59B6', '#34495E',
 ];
 
-export const PublisherChart = ({ data }: PublisherChartProps) => {
+export const PublisherChart = () => {
     const [selectedGenre, setSelectedGenre] = useState<string>('all');
+    const [publisherCount, setPublisherCount] = useState<number>(10);
+    const user = useMemo(() => getCurrenUser(), []);
 
-    const { chartData, totalPublishers } = useMemo(() => {
-        // Filter publishers based on selected genre
-        // Exclude "Muut" as it's an aggregated category from the API
-        const filteredPublishers = [...data]
-            .filter(pub => pub.name !== 'Muut' && pub.fullname !== 'Muut')
+    // Fetch publisher data with count and genre parameters
+    const publisherQuery = useQuery<PublisherCount[]>({
+        queryKey: ['stats', 'publishercounts', publisherCount, selectedGenre],
+        queryFn: async () => {
+            const genreParam = selectedGenre !== 'all' ? `&genre=${selectedGenre}` : '';
+            const response = await getApiContent(`stats/publishercounts?count=${publisherCount}${genreParam}`, user);
+            return response.data;
+        }
+    });
+
+    // Filter out "Muut" and process publishers
+    const publishers = useMemo(() => {
+        if (!publisherQuery.data) return [];
+        return publisherQuery.data.filter(pub => pub.name !== 'Muut' && pub.fullname !== 'Muut');
+    }, [publisherQuery.data]);
+
+    // Process publishers with count field
+    const allPublishers = useMemo(() => {
+        return [...publishers]
             .map(pub => ({
                 ...pub,
                 count: selectedGenre === 'all' ? pub.total : (pub.genres[selectedGenre] || 0)
             }))
-            .filter(pub => pub.count > 0);
+            .filter(pub => pub.count > 0)
+            .sort((a, b) => b.count - a.count);
+    }, [publishers, selectedGenre]);
 
-        // Sort and take top 30 for chart
-        const sortedPublishers = filteredPublishers
-            .sort((a, b) => b.count - a.count)
-            .slice(0, 30);
-
-        const labels = sortedPublishers.map(pub => pub.fullname || pub.name);
-        const values = sortedPublishers.map(pub => pub.count);
-        const colors = sortedPublishers.map((_, index) => publisherColors[index % publisherColors.length]);
+    // Chart data
+    const chartData = useMemo(() => {
+        const labels = allPublishers.map(pub => pub.fullname || pub.name);
+        const values = allPublishers.map(pub => pub.count);
+        const colors = allPublishers.map((_, index) => publisherColors[index % publisherColors.length]);
 
         return {
-            chartData: {
-                labels,
-                datasets: [
-                    {
-                        data: values,
-                        backgroundColor: colors,
-                        hoverBackgroundColor: colors.map(c => c + 'CC')
-                    }
-                ]
-            },
-            totalPublishers: filteredPublishers.length
+            labels,
+            datasets: [
+                {
+                    data: values,
+                    backgroundColor: colors,
+                    hoverBackgroundColor: colors.map(c => c + 'CC')
+                }
+            ]
         };
-    }, [data, selectedGenre]);
+    }, [allPublishers]);
 
     const chartOptions = {
         maintainAspectRatio: false,
@@ -117,7 +132,7 @@ export const PublisherChart = ({ data }: PublisherChartProps) => {
         <div className="flex justify-content-center">
             <Card className="shadow-2 text-center">
                 <h2 className="mt-0 mb-4">Suurimmat kustantajat</h2>
-                <div className="mb-3">
+                <div className="flex justify-content-center align-items-center gap-3 mb-3 flex-wrap">
                     <Dropdown
                         value={selectedGenre}
                         options={genreOptions}
@@ -127,13 +142,43 @@ export const PublisherChart = ({ data }: PublisherChartProps) => {
                         placeholder="Valitse genre"
                         className="w-auto"
                     />
-                    <span className="ml-3 text-500">
-                        Yhteensä {totalPublishers.toLocaleString('fi-FI')} kustantajaa
-                    </span>
+                    <div className="flex align-items-center gap-2">
+                        <span className="text-sm">Määrä: {publisherCount}</span>
+                        <Slider
+                            value={publisherCount}
+                            onChange={(e) => setPublisherCount(e.value as number)}
+                            min={10}
+                            max={100}
+                            step={10}
+                            className="w-8rem"
+                        />
+                    </div>
                 </div>
-                <div style={{ width: '1000px', height: '700px' }}>
-                    <Pie data={chartData} options={chartOptions} />
-                </div>
+                {publisherQuery.isLoading ? (
+                    <div className="flex justify-content-center p-4">
+                        <ProgressSpinner style={{ width: '50px', height: '50px' }} />
+                    </div>
+                ) : (
+                    <div style={{ width: '1000px', height: '700px' }}>
+                        <Pie data={chartData} options={chartOptions} />
+                    </div>
+                )}
+                <details className="mt-4 text-left">
+                    <summary className="cursor-pointer text-500">Näytä kaikki kustantajat ({allPublishers.length} kpl)</summary>
+                    <div className="mt-3">
+                        <DataTable
+                            value={allPublishers}
+                            stripedRows
+                            size="small"
+                            paginator
+                            rows={25}
+                            rowsPerPageOptions={[25, 50, 100]}
+                        >
+                            <Column field="fullname" header="Kustantaja" body={(rowData: PublisherCount) => rowData.fullname || rowData.name} sortable />
+                            <Column field="count" header="Teoksia" body={(rowData: any) => rowData.count.toLocaleString('fi-FI')} style={{ width: '100px', textAlign: 'right' }} sortable />
+                        </DataTable>
+                    </div>
+                </details>
             </Card>
         </div>
     );

@@ -17,14 +17,6 @@ interface GenreCounts {
     [key: string]: number;
 }
 
-interface PublisherCount {
-    id: number | null;
-    name: string;
-    fullname: string | null;
-    genres: { [key: string]: number };
-    total: number;
-}
-
 interface YearCount {
     year: number;
     count: number;
@@ -60,14 +52,6 @@ export const StatsPage = () => {
         queryKey: ['stats', 'genrecounts'],
         queryFn: async () => {
             const response = await getApiContent('stats/genrecounts', user);
-            return response.data;
-        }
-    });
-
-    const publisherCounts = useQuery<PublisherCount[]>({
-        queryKey: ['stats', 'publishercounts'],
-        queryFn: async () => {
-            const response = await getApiContent('stats/publishercounts?count=25', user);
             return response.data;
         }
     });
@@ -112,7 +96,7 @@ export const StatsPage = () => {
         }
     });
 
-    const isLoading = genreCounts.isLoading || publisherCounts.isLoading ||
+    const isLoading = genreCounts.isLoading ||
         worksByYear.isLoading || origWorksByYear.isLoading ||
         miscStats.isLoading || issuesPerYear.isLoading || nationalityCounts.isLoading;
 
@@ -159,7 +143,7 @@ export const StatsPage = () => {
                     </TabPanel>
 
                     <TabPanel header="Kustantajat">
-                        {publisherCounts.data && <PublisherChart data={publisherCounts.data} />}
+                        <PublisherChart />
                     </TabPanel>
 
                     <TabPanel header="Julkaisut vuosittain">

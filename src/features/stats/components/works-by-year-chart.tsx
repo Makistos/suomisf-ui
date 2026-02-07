@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import { Card } from 'primereact/card';
 import { Dropdown } from 'primereact/dropdown';
 import { SelectButton } from 'primereact/selectbutton';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -12,8 +14,6 @@ import {
     Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { isAdmin } from '@features/user';
-import { getCurrenUser } from '@services/auth-service';
 
 ChartJS.register(
     CategoryScale,
@@ -78,8 +78,6 @@ const languageOptions = [
 ];
 
 export const WorksByYearChart = ({ finnishEditionData, originalYearData }: WorksByYearChartProps) => {
-    const user = useMemo(() => { return getCurrenUser() }, []);
-
     // Get min and max years from combined data
     const { minYear, maxYear } = useMemo(() => {
         const allData = [...finnishEditionData, ...originalYearData];
@@ -235,11 +233,16 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData }: Works
                 }
             },
             tooltip: {
-                mode: 'nearest' as const,
-                intersect: true,
+                mode: 'y' as const,
+                intersect: false,
+                filter: (tooltipItem: any) => tooltipItem.parsed.x > 0,
                 callbacks: {
                     label: (context: any) => {
                         return `${context.dataset.label}: ${context.parsed.x.toLocaleString('fi-FI')} teosta`;
+                    },
+                    footer: (tooltipItems: any[]) => {
+                        const total = tooltipItems.reduce((sum, item) => sum + item.parsed.x, 0);
+                        return `Yhteensä: ${total.toLocaleString('fi-FI')} teosta`;
                     }
                 }
             }
@@ -259,10 +262,47 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData }: Works
         }
     }), [dataSource]);
 
-    // Get the current data for display
-    const displayData = dataSource === 'comparison'
-        ? [...finnishEditionData, ...originalYearData]
-        : activeData;
+    // Create grouped data for the table
+    const tableData = useMemo(() => {
+        const filterData = (data: YearCount[]) => data.filter(item =>
+            item.year >= startYear && item.year <= endYear &&
+            (selectedLanguage === 'all' || item.language_name === selectedLanguage)
+        );
+
+        const grouped: Record<string, number> = {};
+
+        if (dataSource === 'comparison') {
+            // For comparison, combine both datasets
+            const finnishFiltered = filterData(finnishEditionData);
+            const originalFiltered = filterData(originalYearData);
+            [...finnishFiltered, ...originalFiltered].forEach(item => {
+                if (item.year) {
+                    const key = viewMode === 'decade'
+                        ? `${Math.floor(item.year / 10) * 10}-luku`
+                        : String(item.year);
+                    grouped[key] = (grouped[key] || 0) + item.count;
+                }
+            });
+        } else {
+            const filteredData = filterData(activeData);
+            filteredData.forEach(item => {
+                if (item.year) {
+                    const key = viewMode === 'decade'
+                        ? `${Math.floor(item.year / 10) * 10}-luku`
+                        : String(item.year);
+                    grouped[key] = (grouped[key] || 0) + item.count;
+                }
+            });
+        }
+
+        return Object.entries(grouped)
+            .map(([year, count]) => ({ year, count }))
+            .sort((a, b) => {
+                const numA = parseInt(a.year);
+                const numB = parseInt(b.year);
+                return numA - numB;
+            });
+    }, [activeData, finnishEditionData, originalYearData, startYear, endYear, viewMode, dataSource, selectedLanguage]);
 
     return (
         <div className="flex justify-content-center">
@@ -323,20 +363,20 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData }: Works
                     <Bar data={chartData} options={chartOptions} />
                 </div>
                 <details className="mt-4 text-left">
-                    <summary className="cursor-pointer text-500">Näytä data ({displayData.filter(item => item.year >= startYear && item.year <= endYear).length} riviä)</summary>
-                    {isAdmin(user) &&
-                        <div className="mt-2 text-sm font-mono" style={{ maxHeight: '400px', overflow: 'auto' }}>
-                            {displayData
-                                .filter(item => item.year >= startYear && item.year <= endYear)
-                                .sort((a, b) => a.year - b.year || (a.language_name || '').localeCompare(b.language_name || ''))
-                                .map((item, index) => (
-                                    <div key={index}>
-                                        {item.year} | {item.language_name || 'Tuntematon'} | {item.count}
-                                    </div>
-                                ))
-                            }
-                        </div>
-                    }
+                    <summary className="cursor-pointer text-500">Näytä data ({tableData.length} {viewMode === 'decade' ? 'vuosikymmentä' : 'vuotta'})</summary>
+                    <div className="mt-3">
+                        <DataTable
+                            value={tableData}
+                            stripedRows
+                            size="small"
+                            paginator
+                            rows={25}
+                            rowsPerPageOptions={[25, 50, 100]}
+                        >
+                            <Column field="year" header={viewMode === 'decade' ? 'Vuosikymmen' : 'Vuosi'} sortable />
+                            <Column field="count" header="Teoksia" body={(rowData: { year: string; count: number }) => rowData.count.toLocaleString('fi-FI')} style={{ width: '100px', textAlign: 'right' }} sortable />
+                        </DataTable>
+                    </div>
                 </details>
             </Card>
         </div>

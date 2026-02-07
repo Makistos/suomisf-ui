@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Card } from 'primereact/card';
 import { Dropdown } from 'primereact/dropdown';
+import { MultiSelect } from 'primereact/multiselect';
 import { SelectButton } from 'primereact/selectbutton';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -64,7 +65,6 @@ const viewModeOptions = [
 ];
 
 const languageOptions = [
-    { label: 'Kaikki kielet', value: 'all' },
     { label: 'suomi', value: 'suomi' },
     { label: 'englanti', value: 'englanti' },
     { label: 'ruotsi', value: 'ruotsi' },
@@ -92,7 +92,7 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData }: Works
     const [startYear, setStartYear] = useState<number>(minYear);
     const [endYear, setEndYear] = useState<number>(maxYear);
     const [viewMode, setViewMode] = useState<'yearly' | 'decade'>('yearly');
-    const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
+    const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
 
     // Generate year options for dropdowns
     const yearOptions = useMemo(() => {
@@ -111,10 +111,10 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData }: Works
     }, [dataSource, finnishEditionData, originalYearData]);
 
     const chartData = useMemo(() => {
-        // Filter data by year range and genre
+        // Filter data by year range and language
         const filterData = (data: YearCount[]) => data.filter(item =>
             item.year >= startYear && item.year <= endYear &&
-            (selectedLanguage === 'all' || item.language_name === selectedLanguage)
+            (selectedLanguages.length === 0 || selectedLanguages.includes(item.language_name || ''))
         );
 
         if (dataSource === 'comparison') {
@@ -216,7 +216,7 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData }: Works
             datasets,
             keyCount: sortedKeys.length
         };
-    }, [activeData, finnishEditionData, originalYearData, startYear, endYear, viewMode, dataSource, selectedLanguage]);
+    }, [activeData, finnishEditionData, originalYearData, startYear, endYear, viewMode, dataSource, selectedLanguages]);
 
     // Calculate height based on number of bars (20px per bar + padding for legend)
     const chartHeight = Math.max(300, chartData.keyCount * 20 + 80);
@@ -249,6 +249,7 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData }: Works
         },
         scales: {
             x: {
+                position: 'top' as const,
                 stacked: dataSource !== 'comparison',
                 title: {
                     display: true,
@@ -262,17 +263,22 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData }: Works
         }
     }), [dataSource]);
 
-    // Create grouped data for the table
+    // Create grouped data for the table with language breakdown
     const tableData = useMemo(() => {
         const filterData = (data: YearCount[]) => data.filter(item =>
             item.year >= startYear && item.year <= endYear &&
-            (selectedLanguage === 'all' || item.language_name === selectedLanguage)
+            (selectedLanguages.length === 0 || selectedLanguages.includes(item.language_name || ''))
         );
 
-        const grouped: Record<string, number> = {};
+        interface TableRow {
+            year: string;
+            count: number;
+            languages?: { language: string; count: number }[];
+        }
 
         if (dataSource === 'comparison') {
-            // For comparison, combine both datasets
+            // For comparison, combine both datasets (no language breakdown)
+            const grouped: Record<string, number> = {};
             const finnishFiltered = filterData(finnishEditionData);
             const originalFiltered = filterData(originalYearData);
             [...finnishFiltered, ...originalFiltered].forEach(item => {
@@ -283,26 +289,74 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData }: Works
                     grouped[key] = (grouped[key] || 0) + item.count;
                 }
             });
-        } else {
-            const filteredData = filterData(activeData);
-            filteredData.forEach(item => {
-                if (item.year) {
-                    const key = viewMode === 'decade'
-                        ? `${Math.floor(item.year / 10) * 10}-luku`
-                        : String(item.year);
-                    grouped[key] = (grouped[key] || 0) + item.count;
-                }
-            });
+
+            return Object.entries(grouped)
+                .map(([year, count]): TableRow => ({ year, count }))
+                .sort((a, b) => parseInt(a.year) - parseInt(b.year));
         }
 
-        return Object.entries(grouped)
-            .map(([year, count]) => ({ year, count }))
-            .sort((a, b) => {
-                const numA = parseInt(a.year);
-                const numB = parseInt(b.year);
-                return numA - numB;
-            });
-    }, [activeData, finnishEditionData, originalYearData, startYear, endYear, viewMode, dataSource, selectedLanguage]);
+        // Single dataset mode with language breakdown
+        const groupedWithLanguages: Record<string, Record<string, number>> = {};
+        const filteredData = filterData(activeData);
+
+        filteredData.forEach(item => {
+            if (item.year && item.language_name) {
+                const key = viewMode === 'decade'
+                    ? `${Math.floor(item.year / 10) * 10}-luku`
+                    : String(item.year);
+
+                if (!groupedWithLanguages[key]) {
+                    groupedWithLanguages[key] = {};
+                }
+                groupedWithLanguages[key][item.language_name] =
+                    (groupedWithLanguages[key][item.language_name] || 0) + item.count;
+            }
+        });
+
+        return Object.entries(groupedWithLanguages)
+            .map(([year, langCounts]): TableRow => {
+                const languages = Object.entries(langCounts)
+                    .map(([language, count]) => ({ language, count }))
+                    .sort((a, b) => b.count - a.count);
+                const total = languages.reduce((sum, l) => sum + l.count, 0);
+                return {
+                    year,
+                    count: total,
+                    languages
+                };
+            })
+            .sort((a, b) => parseInt(a.year) - parseInt(b.year));
+    }, [activeData, finnishEditionData, originalYearData, startYear, endYear, viewMode, dataSource, selectedLanguages]);
+
+    // State for expanded rows
+    const [expandedRows, setExpandedRows] = useState<any>(null);
+
+    // Row expansion template for language breakdown
+    const rowExpansionTemplate = (data: { year: string; count: number; languages?: { language: string; count: number }[] }) => {
+        if (!data.languages || data.languages.length === 0) return null;
+        return (
+            <div className="p-3">
+                <DataTable value={data.languages} size="small">
+                    <Column field="language" header="Kieli" />
+                    <Column
+                        field="count"
+                        header="Teoksia"
+                        body={(rowData: { language: string; count: number }) => rowData.count.toLocaleString('fi-FI')}
+                        style={{ width: '100px', textAlign: 'right' }}
+                    />
+                </DataTable>
+            </div>
+        );
+    };
+
+    // Check if we should show expandable rows (more than one unique language across all data)
+    const hasMultipleLanguages = useMemo(() => {
+        const allLanguages = new Set<string>();
+        tableData.forEach(row => {
+            row.languages?.forEach(l => allLanguages.add(l.language));
+        });
+        return allLanguages.size > 1;
+    }, [tableData]);
 
     return (
         <div className="flex justify-content-center">
@@ -319,14 +373,16 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData }: Works
                 </div>
                 <div className="flex justify-content-center align-items-center gap-3 mb-3 flex-wrap">
                     <div className="flex align-items-center gap-2">
-                        <label>Kieli:</label>
-                        <Dropdown
-                            value={selectedLanguage}
+                        <label>Kielet:</label>
+                        <MultiSelect
+                            value={selectedLanguages}
                             options={languageOptions}
                             optionLabel="label"
                             optionValue="value"
-                            onChange={(e) => setSelectedLanguage(e.value)}
+                            onChange={(e) => setSelectedLanguages(e.value)}
+                            placeholder="Kaikki kielet"
                             className="w-auto"
+                            display="chip"
                         />
                     </div>
                     <div className="flex align-items-center gap-2">
@@ -372,7 +428,12 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData }: Works
                             paginator
                             rows={25}
                             rowsPerPageOptions={[25, 50, 100]}
+                            expandedRows={expandedRows}
+                            onRowToggle={(e) => setExpandedRows(e.data)}
+                            rowExpansionTemplate={hasMultipleLanguages ? rowExpansionTemplate : undefined}
+                            dataKey="year"
                         >
+                            {hasMultipleLanguages && <Column expander style={{ width: '3rem' }} />}
                             <Column field="year" header={viewMode === 'decade' ? 'Vuosikymmen' : 'Vuosi'} sortable />
                             <Column field="count" header="Teoksia" body={(rowData: { year: string; count: number }) => rowData.count.toLocaleString('fi-FI')} style={{ width: '100px', textAlign: 'right' }} sortable />
                         </DataTable>

@@ -8,10 +8,10 @@ import { useQuery } from '@tanstack/react-query';
 import { getApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { GenreChart } from '../components/genre-chart';
-import { WorksByYearChart } from '../components/works-by-year-chart';
 import { PublisherChart } from '../components/publisher-chart';
 import { IssuesChart } from '../components/issues-chart';
 import { AuthorChart } from '../components/author-chart';
+import { ShortStoryChart } from '../components/short-story-chart';
 
 interface GenreCounts {
     [key: string]: number;
@@ -26,12 +26,6 @@ interface YearCount {
 
 interface IssueYearCount {
     year: number;
-    count: number;
-}
-
-interface NationalityCount {
-    nationality_id: number | null;
-    nationality: string | null;
     count: number;
 }
 
@@ -88,17 +82,9 @@ export const StatsPage = () => {
         }
     });
 
-    const nationalityCounts = useQuery<NationalityCount[]>({
-        queryKey: ['stats', 'nationalitycounts'],
-        queryFn: async () => {
-            const response = await getApiContent('stats/nationalitycounts', user);
-            return response.data;
-        }
-    });
-
     const isLoading = genreCounts.isLoading ||
         worksByYear.isLoading || origWorksByYear.isLoading ||
-        miscStats.isLoading || issuesPerYear.isLoading || nationalityCounts.isLoading;
+        miscStats.isLoading || issuesPerYear.isLoading;
 
     if (isLoading) {
         return (
@@ -136,9 +122,12 @@ export const StatsPage = () => {
                         {genreCounts.data && <GenreChart data={genreCounts.data} />}
                     </TabPanel>
 
-                    <TabPanel header="Kirjailijat">
-                        {nationalityCounts.data && (
-                            <AuthorChart nationalityData={nationalityCounts.data} />
+                    <TabPanel header="Teokset">
+                        {worksByYear.data && origWorksByYear.data && (
+                            <AuthorChart
+                                finnishEditionData={worksByYear.data}
+                                originalYearData={origWorksByYear.data}
+                            />
                         )}
                     </TabPanel>
 
@@ -146,17 +135,12 @@ export const StatsPage = () => {
                         <PublisherChart />
                     </TabPanel>
 
-                    <TabPanel header="Julkaisut vuosittain">
-                        {worksByYear.data && origWorksByYear.data && (
-                            <WorksByYearChart
-                                finnishEditionData={worksByYear.data}
-                                originalYearData={origWorksByYear.data}
-                            />
-                        )}
-                    </TabPanel>
-
                     <TabPanel header="Lehdet">
                         {issuesPerYear.data && <IssuesChart data={issuesPerYear.data} />}
+                    </TabPanel>
+
+                    <TabPanel header="Novellit">
+                        <ShortStoryChart />
                     </TabPanel>
                 </TabView>
             </div>

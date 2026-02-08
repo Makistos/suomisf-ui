@@ -95,6 +95,26 @@ const storyTypeIdOptions = [
 // Capitalize first letter
 const capitalizeFirst = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
+// Get story type name from ID
+const getStoryTypeName = (storyTypeId: number) => {
+    const storyType = storyTypeIdOptions.find(s => s.value === storyTypeId);
+    return storyType ? storyType.label.toLowerCase() : 'novelli';
+};
+
+// Get Finnish plural form of story type
+const getStoryTypeNamePlural = (storyTypeId: number) => {
+    const name = getStoryTypeName(storyTypeId);
+    const plurals: { [key: string]: string } = {
+        'novelli': 'novelleja',
+        'kertomus': 'kertomuksia',
+        'runo': 'runoja',
+        'raapale': 'raapaleita',
+        'essee': 'esseitä',
+        'artikkeli': 'artikkeleita',
+    };
+    return plurals[name] || name;
+};
+
 // Colors for nationality pie chart
 const nationalityColors = [
     '#0958D7', '#D30031', '#DAA520', '#31572C', '#7B2D8E',
@@ -359,6 +379,83 @@ export const ShortStoryChart = () => {
         }
     }), [yearChartAxisLabel]);
 
+    // Create table data with language breakdown for year chart
+    const yearTableData = useMemo(() => {
+        if (!storiesByYearQuery.data) return [];
+
+        // Apply same filters as chart
+        let filteredData = storiesByYearQuery.data;
+
+        if (yearChartStoryType !== 'all') {
+            filteredData = filteredData.filter(item =>
+                item.storytype_name?.toLowerCase() === yearChartStoryType
+            );
+        }
+
+        if (yearChartLanguages.length > 0) {
+            filteredData = filteredData.filter(item =>
+                item.language_id !== null && yearChartLanguages.includes(item.language_id)
+            );
+        }
+
+        // Group by year with language breakdown
+        const groupedWithLanguages: Record<number, Record<string, number>> = {};
+
+        filteredData.forEach(item => {
+            if (item.year && item.language_name) {
+                if (!groupedWithLanguages[item.year]) {
+                    groupedWithLanguages[item.year] = {};
+                }
+                groupedWithLanguages[item.year][item.language_name] =
+                    (groupedWithLanguages[item.year][item.language_name] || 0) + item.count;
+            }
+        });
+
+        return Object.entries(groupedWithLanguages)
+            .map(([year, langCounts]) => {
+                const languages = Object.entries(langCounts)
+                    .map(([language, count]) => ({ language, count }))
+                    .sort((a, b) => b.count - a.count);
+                const total = languages.reduce((sum, l) => sum + l.count, 0);
+                return {
+                    year: Number(year),
+                    count: total,
+                    languages
+                };
+            })
+            .sort((a, b) => a.year - b.year);
+    }, [storiesByYearQuery.data, yearChartStoryType, yearChartLanguages]);
+
+    // State for expanded rows in year table
+    const [expandedYearRows, setExpandedYearRows] = useState<any>(null);
+
+    // Row expansion template for language breakdown
+    const yearRowExpansionTemplate = (data: { year: number; count: number; languages: { language: string; count: number }[] }) => {
+        if (!data.languages || data.languages.length === 0) return null;
+        return (
+            <div className="p-3">
+                <DataTable value={data.languages} size="small">
+                    <Column field="language" header="Kieli" />
+                    <Column
+                        field="count"
+                        header={yearChartAxisLabel}
+                        body={(rowData: { language: string; count: number }) => rowData.count.toLocaleString('fi-FI')}
+                        style={{ width: '100px', textAlign: 'right' }}
+                    />
+                </DataTable>
+            </div>
+        );
+    };
+
+    // Check if we should show expandable rows
+    const hasMultipleYearLanguages = useMemo(() => {
+        const allLanguages = new Set<string>();
+        yearTableData.forEach(row => {
+            row.languages?.forEach(l => allLanguages.add(l.language));
+        });
+        return allLanguages.size > 1;
+    }, [yearTableData]);
+
     const countTemplate = (rowData: any) => {
         return rowData.count.toLocaleString('fi-FI');
     };
@@ -374,25 +471,6 @@ export const ShortStoryChart = () => {
     const getRoleName = (roleId: number) => {
         const role = storyRoleIdOptions.find(r => r.value === roleId);
         return role ? role.label.toLowerCase() : 'kirjoittaja';
-    };
-
-    const getStoryTypeName = (storyTypeId: number) => {
-        const storyType = storyTypeIdOptions.find(s => s.value === storyTypeId);
-        return storyType ? storyType.label.toLowerCase() : 'novelli';
-    };
-
-    const getStoryTypeNamePlural = (storyTypeId: number) => {
-        const name = getStoryTypeName(storyTypeId);
-        // Finnish plural forms
-        const plurals: { [key: string]: string } = {
-            'novelli': 'novelleja',
-            'kertomus': 'kertomuksia',
-            'runo': 'runoja',
-            'raapale': 'raapaleita',
-            'essee': 'esseitä',
-            'artikkeli': 'artikkeleita',
-        };
-        return plurals[name] || name;
     };
 
     return (
@@ -544,6 +622,27 @@ export const ShortStoryChart = () => {
                     ) : (
                         <p className="text-500 text-center">Ei dataa</p>
                     )}
+                    <details className="mt-4 text-left">
+                        <summary className="cursor-pointer text-500">Näytä taulukko ({yearTableData.length} vuotta)</summary>
+                        <div className="mt-3">
+                            <DataTable
+                                value={yearTableData}
+                                stripedRows
+                                size="small"
+                                paginator
+                                rows={25}
+                                rowsPerPageOptions={[25, 50, 100]}
+                                expandedRows={expandedYearRows}
+                                onRowToggle={(e) => setExpandedYearRows(e.data)}
+                                rowExpansionTemplate={hasMultipleYearLanguages ? yearRowExpansionTemplate : undefined}
+                                dataKey="year"
+                            >
+                                {hasMultipleYearLanguages && <Column expander style={{ width: '3rem' }} />}
+                                <Column field="year" header="Vuosi" sortable />
+                                <Column field="count" header={yearChartAxisLabel} body={(rowData: { year: number; count: number }) => rowData.count.toLocaleString('fi-FI')} style={{ width: '100px', textAlign: 'right' }} sortable />
+                            </DataTable>
+                        </div>
+                    </details>
                 </Card>
             </div>
         </div>

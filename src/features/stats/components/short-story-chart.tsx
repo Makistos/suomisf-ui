@@ -145,7 +145,7 @@ export const ShortStoryChart = () => {
     const [personCount, setPersonCount] = useState<number>(10);
     const [nationalityRole, setNationalityRole] = useState<string>('kirjoittaja');
     const [nationalityStoryType, setNationalityStoryType] = useState<string>('novelli');
-    const [yearChartStoryType, setYearChartStoryType] = useState<string>('all');
+    const [yearChartStoryType, setYearChartStoryType] = useState<string>('novelli');
     const [yearChartLanguages, setYearChartLanguages] = useState<number[]>([]);
     const user = useMemo(() => getCurrenUser(), []);
 
@@ -382,11 +382,21 @@ export const ShortStoryChart = () => {
             legend: {
                 display: true,
                 position: 'top' as const,
+                labels: {
+                    usePointStyle: true
+                }
             },
             tooltip: {
+                mode: 'y' as const,
+                intersect: false,
+                filter: (tooltipItem: any) => tooltipItem.parsed.x > 0,
                 callbacks: {
                     label: (context: any) => {
                         return `${context.dataset.label}: ${context.parsed.x.toLocaleString('fi-FI')} kpl`;
+                    },
+                    footer: (tooltipItems: any[]) => {
+                        const total = tooltipItems.reduce((sum, item) => sum + item.parsed.x, 0);
+                        return `Yhteensä: ${total.toLocaleString('fi-FI')} kpl`;
                     }
                 }
             }

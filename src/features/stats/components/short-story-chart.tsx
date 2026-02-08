@@ -123,8 +123,21 @@ const nationalityColors = [
     '#607D8B', '#3F51B5', '#009688', '#CDDC39', '#FFC107',
 ];
 
-// Colors for year chart
-const yearChartColor = '#0958D7';
+// Colors for different languages in year chart
+const languageColors: Record<string, string> = {
+    'suomi': '#0958D7',
+    'englanti': '#D30031',
+    'ruotsi': '#DAA520',
+    'saksa': '#31572C',
+    'ranska': '#7B2D8E',
+    'venäjä': '#E67E22',
+    'espanja': '#E91E63',
+    'italia': '#17A2B8',
+    'japani': '#FF696D',
+    'puola': '#82C341',
+};
+
+const defaultLanguageColor = '#6C757D';
 
 export const ShortStoryChart = () => {
     const [selectedRole, setSelectedRole] = useState<number>(1);
@@ -286,7 +299,7 @@ export const ShortStoryChart = () => {
             .sort((a, b) => a.label.localeCompare(b.label, 'fi-FI'));
     }, [storiesByYearQuery.data]);
 
-    // Year chart data with filtering
+    // Year chart data with filtering and language breakdown
     const yearChartData = useMemo(() => {
         if (!storiesByYearQuery.data) return null;
 
@@ -305,35 +318,47 @@ export const ShortStoryChart = () => {
             );
         }
 
-        // Aggregate counts by year
-        const yearCounts = new Map<number, number>();
+        // Group data by year and language
+        const groupedData: Record<number, Record<string, number>> = {};
+        const languages = new Set<string>();
+
         filteredData.forEach(item => {
-            const currentCount = yearCounts.get(item.year) || 0;
-            yearCounts.set(item.year, currentCount + item.count);
+            if (item.year && item.language_name) {
+                if (!groupedData[item.year]) {
+                    groupedData[item.year] = {};
+                }
+                if (!groupedData[item.year][item.language_name]) {
+                    groupedData[item.year][item.language_name] = 0;
+                }
+                groupedData[item.year][item.language_name] += item.count;
+                languages.add(item.language_name);
+            }
         });
 
-        const sortedData = Array.from(yearCounts.entries())
-            .map(([year, count]) => ({ year, count }))
-            .sort((a, b) => a.year - b.year);
+        // Sort years
+        const sortedYears = Object.keys(groupedData)
+            .map(Number)
+            .sort((a, b) => a - b);
 
-        if (sortedData.length === 0) return null;
+        if (sortedYears.length === 0) return null;
 
-        // Get label based on story type selection
-        const storyTypeLabel = yearChartStoryType === 'all'
-            ? 'Novelleja'
-            : capitalizeFirst(getStoryTypeNamePlural(
-                storyTypeIdOptions.find(s => s.label.toLowerCase() === yearChartStoryType)?.value || 1
-            ));
+        // Sort languages by total count descending
+        const languageArray = Array.from(languages).sort((a, b) => {
+            const totalA = sortedYears.reduce((sum, year) => sum + (groupedData[year][a] || 0), 0);
+            const totalB = sortedYears.reduce((sum, year) => sum + (groupedData[year][b] || 0), 0);
+            return totalB - totalA;
+        });
+
+        // Create datasets for each language
+        const datasets = languageArray.map(language => ({
+            label: language,
+            data: sortedYears.map(year => groupedData[year][language] || 0),
+            backgroundColor: languageColors[language.toLowerCase()] || defaultLanguageColor,
+        }));
 
         return {
-            labels: sortedData.map(item => String(item.year)),
-            datasets: [
-                {
-                    label: storyTypeLabel,
-                    data: sortedData.map(item => item.count),
-                    backgroundColor: yearChartColor,
-                }
-            ]
+            labels: sortedYears.map(year => String(year)),
+            datasets
         };
     }, [storiesByYearQuery.data, yearChartStoryType, yearChartLanguages]);
 
@@ -355,18 +380,20 @@ export const ShortStoryChart = () => {
         maintainAspectRatio: false,
         plugins: {
             legend: {
-                display: false
+                display: true,
+                position: 'top' as const,
             },
             tooltip: {
                 callbacks: {
                     label: (context: any) => {
-                        return `${context.parsed.x.toLocaleString('fi-FI')} kpl`;
+                        return `${context.dataset.label}: ${context.parsed.x.toLocaleString('fi-FI')} kpl`;
                     }
                 }
             }
         },
         scales: {
             x: {
+                stacked: true,
                 position: 'top' as const,
                 title: {
                     display: true,
@@ -374,6 +401,7 @@ export const ShortStoryChart = () => {
                 }
             },
             y: {
+                stacked: true,
                 reverse: true,
             }
         }

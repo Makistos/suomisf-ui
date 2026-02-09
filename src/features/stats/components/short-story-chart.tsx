@@ -56,6 +56,11 @@ interface StoryYearCount {
     language_name: string | null;
 }
 
+interface StoryType {
+    id: number;
+    name: string;
+}
+
 // Role options for short stories
 const storyRoleOptions = [
     { label: 'Kaikki roolit', value: 'all' },
@@ -71,48 +76,19 @@ const storyRoleIdOptions = [
     { label: 'Esiintyy', value: 6 },
 ];
 
-// Story type options
-const storyTypeOptions = [
-    { label: 'Kaikki tyypit', value: 'all' },
-    { label: 'Novelli', value: 'novelli' },
-    { label: 'Kertomus', value: 'kertomus' },
-    { label: 'Runo', value: 'runo' },
-    { label: 'Raapale', value: 'raapale' },
-    { label: 'Essee', value: 'essee' },
-    { label: 'Artikkeli', value: 'artikkeli' },
-];
-
-// Story type options for API (uses IDs)
-const storyTypeIdOptions = [
-    { label: 'Novelli', value: 1 },
-    { label: 'Kertomus', value: 2 },
-    { label: 'Runo', value: 3 },
-    { label: 'Raapale', value: 4 },
-    { label: 'Essee', value: 5 },
-    { label: 'Artikkeli', value: 6 },
-];
-
 // Capitalize first letter
 const capitalizeFirst = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
-// Get story type name from ID
-const getStoryTypeName = (storyTypeId: number) => {
-    const storyType = storyTypeIdOptions.find(s => s.value === storyTypeId);
-    return storyType ? storyType.label.toLowerCase() : 'novelli';
-};
-
-// Get Finnish plural form of story type
-const getStoryTypeNamePlural = (storyTypeId: number) => {
-    const name = getStoryTypeName(storyTypeId);
-    const plurals: { [key: string]: string } = {
-        'novelli': 'novelleja',
-        'kertomus': 'kertomuksia',
-        'runo': 'runoja',
-        'raapale': 'raapaleita',
-        'essee': 'esseitä',
-        'artikkeli': 'artikkeleita',
-    };
-    return plurals[name] || name;
+// Finnish plural forms for story types
+const storyTypePlurals: { [key: string]: string } = {
+    'novelli': 'novelleja',
+    'kertomus': 'kertomuksia',
+    'runo': 'runoja',
+    'raapale': 'raapaleita',
+    'essee': 'esseitä',
+    'artikkeli': 'artikkeleita',
+    'romaaniote': 'romaaniotteita',
+    'sarjakuva': 'sarjakuvia',
 };
 
 // Colors for nationality pie chart
@@ -175,6 +151,55 @@ export const ShortStoryChart = () => {
             return response.data;
         }
     });
+
+    // Fetch story types from API
+    const storyTypesQuery = useQuery<StoryType[]>({
+        queryKey: ['shorttypes'],
+        queryFn: async () => {
+            const response = await getApiContent('shorttypes', user);
+            return response.data;
+        }
+    });
+
+    // Create story type options from API data (for dropdowns using lowercase name as value)
+    const storyTypeOptions = useMemo(() => {
+        const options = [{ label: 'Kaikki tyypit', value: 'all' }];
+        if (storyTypesQuery.data) {
+            storyTypesQuery.data.forEach(type => {
+                options.push({
+                    label: capitalizeFirst(type.name),
+                    value: type.name.toLowerCase()
+                });
+            });
+        } else {
+            // Fallback while loading
+            options.push({ label: 'Novelli', value: 'novelli' });
+        }
+        return options;
+    }, [storyTypesQuery.data]);
+
+    // Create story type options for API (uses IDs)
+    const storyTypeIdOptions = useMemo(() => {
+        if (!storyTypesQuery.data) {
+            return [{ label: 'Novelli', value: 1 }];
+        }
+        return storyTypesQuery.data.map(type => ({
+            label: capitalizeFirst(type.name),
+            value: type.id
+        }));
+    }, [storyTypesQuery.data]);
+
+    // Get story type name from ID
+    const getStoryTypeName = (storyTypeId: number): string => {
+        const storyType = storyTypeIdOptions.find(s => s.value === storyTypeId);
+        return storyType ? storyType.label.toLowerCase() : 'novelli';
+    };
+
+    // Get Finnish plural form of story type
+    const getStoryTypeNamePlural = (storyTypeId: number): string => {
+        const name = getStoryTypeName(storyTypeId);
+        return storyTypePlurals[name] || name;
+    };
 
     // Filter persons (exclude "Muut" aggregation)
     const persons = useMemo(() => {

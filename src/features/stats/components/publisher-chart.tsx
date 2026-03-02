@@ -61,12 +61,11 @@ export const PublisherChart = () => {
     const [publisherCount, setPublisherCount] = useState<number>(10);
     const user = useMemo(() => getCurrenUser(), []);
 
-    // Fetch publisher data with count and genre parameters
+    // Fetch publisher data with count parameter (genre filtering is done client-side)
     const publisherQuery = useQuery<PublisherCount[]>({
-        queryKey: ['stats', 'publishercounts', publisherCount, selectedGenre],
+        queryKey: ['stats', 'publishercounts', publisherCount],
         queryFn: async () => {
-            const genreParam = selectedGenre !== 'all' ? `&genre=${selectedGenre}` : '';
-            const response = await getApiContent(`stats/publishercounts?count=${publisherCount}${genreParam}`, user);
+            const response = await getApiContent(`stats/publishercounts?count=${publisherCount}`, user);
             return response.data;
         }
     });

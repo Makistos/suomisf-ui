@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Card } from 'primereact/card';
+import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import { MultiSelect } from 'primereact/multiselect';
 import { Slider } from 'primereact/slider';
@@ -20,6 +21,8 @@ import {
 import { Pie, Bar } from 'react-chartjs-2';
 import { getApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
+import { ShortsList } from '../../short/components/shorts-list';
+import { Short } from '../../short/types';
 
 ChartJS.register(
     ArcElement,
@@ -82,13 +85,14 @@ const capitalizeFirst = (str: string) => str.charAt(0).toUpperCase() + str.slice
 // Finnish plural forms for story types
 const storyTypePlurals: { [key: string]: string } = {
     'novelli': 'novelleja',
-    'kertomus': 'kertomuksia',
+    'pitkä novelli': 'pitkiä novelleja',
+    'pienoisromaani': 'pienoisromaaneja',
     'runo': 'runoja',
     'raapale': 'raapaleita',
-    'essee': 'esseitä',
+    'filk-laulu': 'filk-lauluja',
     'artikkeli': 'artikkeleita',
-    'romaaniote': 'romaaniotteita',
-    'sarjakuva': 'sarjakuvia',
+    'esipuhe': 'esipuheita',
+    'jälkisanat': 'jälkisanoja'
 };
 
 // Colors for nationality pie chart
@@ -123,6 +127,8 @@ export const ShortStoryChart = () => {
     const [nationalityStoryType, setNationalityStoryType] = useState<string>('novelli');
     const [yearChartStoryType, setYearChartStoryType] = useState<string>('novelli');
     const [yearChartLanguages, setYearChartLanguages] = useState<number[]>([]);
+    const [dialogVisible, setDialogVisible] = useState<boolean>(false);
+    const [dialogFilter, setDialogFilter] = useState<{ year: number; language: string; languageId: number; storyType: string } | null>(null);
     const user = useMemo(() => getCurrenUser(), []);
 
     // Fetch nationality data for short stories
@@ -159,6 +165,32 @@ export const ShortStoryChart = () => {
             const response = await getApiContent('shorttypes', user);
             return response.data;
         }
+    });
+
+    // Fetch filtered stories for the dialog
+    const filteredStoriesQuery = useQuery<Short[]>({
+        queryKey: ['stats', 'filterstories', dialogFilter?.storyType, dialogFilter?.languageId, dialogFilter?.year],
+        queryFn: async () => {
+            if (!dialogFilter) return [];
+            const storyTypeId = storyTypesQuery.data?.find(t => t.name.toLowerCase() === dialogFilter.storyType)?.id;
+            const params = new URLSearchParams();
+            if (storyTypeId) params.append('storytype', String(storyTypeId));
+            if (dialogFilter.languageId) params.append('language', String(dialogFilter.languageId));
+            params.append('pubyear_min', String(dialogFilter.year));
+            params.append('pubyear_max', String(dialogFilter.year));
+            const response = await getApiContent(`stats/filterstories?${params.toString()}`, user);
+            // Ensure required fields have default values (API returns brief schema)
+            return (response.data || []).map((short: Partial<Short>) => ({
+                ...short,
+                genres: short.genres || [],
+                editions: short.editions || [],
+                issues: short.issues || [],
+                tags: short.tags || [],
+                awards: short.awards || [],
+                order_num: short.order_num ?? 0,
+            })) as Short[];
+        },
+        enabled: dialogVisible && dialogFilter !== null
     });
 
     // Create story type options from API data (for dropdowns using lowercase name as value)
@@ -323,6 +355,21 @@ export const ShortStoryChart = () => {
             .map(([id, name]) => ({ label: name, value: id }))
             .sort((a, b) => a.label.localeCompare(b.label, 'fi-FI'));
     }, [storiesByYearQuery.data]);
+
+    // Get language ID from name
+    const getLanguageId = (languageName: string): number | null => {
+        const option = languageOptions.find(o => o.label === languageName);
+        return option?.value ?? null;
+    };
+
+    // Open dialog with filtered stories
+    const openStoriesDialog = (year: number, language: string) => {
+        const languageId = getLanguageId(language);
+        if (languageId !== null) {
+            setDialogFilter({ year, language, languageId, storyType: yearChartStoryType });
+            setDialogVisible(true);
+        }
+    };
 
     // Year chart data with filtering and language breakdown
     const yearChartData = useMemo(() => {
@@ -498,7 +545,22 @@ export const ShortStoryChart = () => {
         return (
             <div className="p-3">
                 <DataTable value={data.languages} size="small">
-                    <Column field="language" header="Kieli" />
+                    <Column
+                        field="language"
+                        header="Kieli"
+                        body={(rowData: { language: string; count: number }) => (
+                            <a
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    openStoriesDialog(data.year, rowData.language);
+                                }}
+                                className="text-primary cursor-pointer"
+                            >
+                                {rowData.language}
+                            </a>
+                        )}
+                    />
                     <Column
                         field="count"
                         header={yearChartAxisLabel}
@@ -708,6 +770,25 @@ export const ShortStoryChart = () => {
                     </details>
                 </Card>
             </div>
+
+            {/* Dialog for filtered stories */}
+            <Dialog
+                header={dialogFilter ? `${capitalizeFirst(dialogFilter.storyType)} - ${dialogFilter.language} (${dialogFilter.year})` : ''}
+                visible={dialogVisible}
+                onHide={() => setDialogVisible(false)}
+                style={{ width: '80vw', maxHeight: '90vh' }}
+                maximizable
+            >
+                {filteredStoriesQuery.isLoading ? (
+                    <div className="flex justify-content-center p-4">
+                        <ProgressSpinner style={{ width: '50px', height: '50px' }} />
+                    </div>
+                ) : filteredStoriesQuery.data && filteredStoriesQuery.data.length > 0 ? (
+                    <ShortsList shorts={filteredStoriesQuery.data} listPublications groupAuthors anthology />
+                ) : (
+                    <p className="text-500">Ei tuloksia</p>
+                )}
+            </Dialog>
         </div>
     );
 };

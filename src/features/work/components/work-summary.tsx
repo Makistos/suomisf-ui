@@ -95,9 +95,7 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
             </p>
             {work.editions && work.editions.length > 0 &&
                 work.editions.map((edition, index) => (
-                    <>
-                        <OtherEdition key={`${work.id}-${edition.id}-${index}`} work={work} edition={edition} details={detailLevel} />
-                    </>
+                    <OtherEdition key={`${work.id}-${edition.id}-${index}`} work={work} edition={edition} details={detailLevel} />
                 ))}
         </>
     );

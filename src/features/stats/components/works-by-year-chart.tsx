@@ -1,10 +1,17 @@
 import { useMemo, useState } from 'react';
 import { Card } from 'primereact/card';
+import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import { MultiSelect } from 'primereact/multiselect';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import { SelectButton } from 'primereact/selectbutton';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { useQuery } from '@tanstack/react-query';
+import { getApiContent } from '../../../services/user-service';
+import { getCurrenUser } from '../../../services/auth-service';
+import { WorkList } from '../../work/components/work-list';
+import { Work } from '../../work/types';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -78,6 +85,8 @@ const languageOptions = [
 ];
 
 export const WorksByYearChart = ({ finnishEditionData, originalYearData }: WorksByYearChartProps) => {
+    const user = useMemo(() => getCurrenUser(), []);
+
     // Get min and max years from combined data
     const { minYear, maxYear } = useMemo(() => {
         const allData = [...finnishEditionData, ...originalYearData];
@@ -93,6 +102,8 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData }: Works
     const [endYear, setEndYear] = useState<number>(maxYear);
     const [viewMode, setViewMode] = useState<'yearly' | 'decade'>('yearly');
     const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+    const [dialogVisible, setDialogVisible] = useState<boolean>(false);
+    const [dialogFilter, setDialogFilter] = useState<{ year: number; language: string; languageId: number; dataSource: 'finnish' | 'original' } | null>(null);
 
     // Generate year options for dropdowns
     const yearOptions = useMemo(() => {
@@ -102,6 +113,51 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData }: Works
         }
         return options;
     }, [minYear, maxYear]);
+
+    // Build language ID lookup from data
+    const languageIdMap = useMemo(() => {
+        const map = new Map<string, number>();
+        [...finnishEditionData, ...originalYearData].forEach(item => {
+            if (item.language_name && item.language_id !== null) {
+                map.set(item.language_name, item.language_id);
+            }
+        });
+        return map;
+    }, [finnishEditionData, originalYearData]);
+
+    // Get language ID from name
+    const getLanguageId = (languageName: string): number | null => {
+        return languageIdMap.get(languageName) ?? null;
+    };
+
+    // Fetch filtered works for the dialog
+    const filteredWorksQuery = useQuery<Work[]>({
+        queryKey: ['stats', 'filterworks', dialogFilter?.languageId, dialogFilter?.year, dialogFilter?.dataSource],
+        queryFn: async () => {
+            if (!dialogFilter) return [];
+            const params = new URLSearchParams();
+            if (dialogFilter.languageId) params.append('language', String(dialogFilter.languageId));
+            if (dialogFilter.dataSource === 'finnish') {
+                params.append('edition_year_min', String(dialogFilter.year));
+                params.append('edition_year_max', String(dialogFilter.year));
+            } else {
+                params.append('orig_year_min', String(dialogFilter.year));
+                params.append('orig_year_max', String(dialogFilter.year));
+            }
+            const response = await getApiContent(`stats/filterworks?${params.toString()}`, user);
+            return response.data;
+        },
+        enabled: dialogVisible && dialogFilter !== null
+    });
+
+    // Open dialog with filtered works
+    const openWorksDialog = (year: number, language: string) => {
+        const languageId = getLanguageId(language);
+        if (languageId !== null) {
+            setDialogFilter({ year, language, languageId, dataSource: dataSource === 'comparison' ? 'finnish' : dataSource });
+            setDialogVisible(true);
+        }
+    };
 
     // Get the active data based on selection
     const activeData = useMemo(() => {
@@ -334,10 +390,26 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData }: Works
     // Row expansion template for language breakdown
     const rowExpansionTemplate = (data: { year: string; count: number; languages?: { language: string; count: number }[] }) => {
         if (!data.languages || data.languages.length === 0) return null;
+        const yearNum = parseInt(data.year);
         return (
             <div className="p-3">
                 <DataTable value={data.languages} size="small">
-                    <Column field="language" header="Kieli" />
+                    <Column
+                        field="language"
+                        header="Kieli"
+                        body={(rowData: { language: string; count: number }) => (
+                            <a
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    openWorksDialog(yearNum, rowData.language);
+                                }}
+                                className="text-primary cursor-pointer"
+                            >
+                                {rowData.language}
+                            </a>
+                        )}
+                    />
                     <Column
                         field="count"
                         header="Teoksia"
@@ -440,6 +512,25 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData }: Works
                     </div>
                 </details>
             </Card>
+
+            {/* Dialog for filtered works */}
+            <Dialog
+                header={dialogFilter ? `${dialogFilter.language} (${dialogFilter.year}) - ${dialogFilter.dataSource === 'finnish' ? 'Suomenkielinen painos' : 'Alkuperäinen kirjoitusvuosi'}` : ''}
+                visible={dialogVisible}
+                onHide={() => setDialogVisible(false)}
+                style={{ width: '80vw', maxHeight: '90vh' }}
+                maximizable
+            >
+                {filteredWorksQuery.isLoading ? (
+                    <div className="flex justify-content-center p-4">
+                        <ProgressSpinner style={{ width: '50px', height: '50px' }} />
+                    </div>
+                ) : filteredWorksQuery.data && filteredWorksQuery.data.length > 0 ? (
+                    <WorkList works={filteredWorksQuery.data} />
+                ) : (
+                    <p className="text-500">Ei tuloksia</p>
+                )}
+            </Dialog>
         </div>
     );
 };

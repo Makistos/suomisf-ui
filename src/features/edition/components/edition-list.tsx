@@ -154,7 +154,7 @@ export const EditionList = ({ editions, person, sort = "year" }: EditionListProp
                                     {editionView === "Lista" ? (
                                         ed.sort(cmpEditions).map((edition: Edition) => (
                                             <div className="grid col-12" key={edition.id}>
-                                                <EditionSummary edition={edition} showVersion={true} work={edition.work[0]}
+                                                <EditionSummary edition={edition} showVersion={true} work={edition.work}
                                                     key={edition.id} showPerson={sorting !== "author"}
                                                     isOwned={editionIsOwned(edition, user)}
                                                     isWishlisted={editionIsWishlisted(edition, user)}

@@ -108,8 +108,7 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
     const getGenres = (): Genre[] => {
         if (!data || !data.editions) return [];
         return data.editions
-            .flatMap(edition => edition.work)
-            .flatMap(work => work.genres || []);
+            .flatMap(edition => edition.work?.genres || []);
     }
 
     const onDialogShow = () => {

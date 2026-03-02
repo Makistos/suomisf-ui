@@ -254,7 +254,7 @@ export const ShortPage = (props: ShortPageProps) => {
                                                     <EditionSummary edition={edition}
                                                         showPerson={true}
                                                         showVersion={true}
-                                                        work={edition.work[0]}
+                                                        work={edition.work}
                                                         isOwned={editionIsOwned(edition, user)} />
                                                 </span>
                                             ))}

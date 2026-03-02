@@ -96,7 +96,7 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
            year. Then pick unique work ids. */
 
         let retval = _.sortBy(editions, [function (e) { return e.pubyear }]);
-        retval = _.uniqBy(retval, (value => value.work?.[0]?.id));
+        retval = _.uniqBy(retval, (value => value.work?.id));
         return retval;
     }
 
@@ -116,7 +116,7 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
 
     const edition_contributions = (editions: Edition[]) => {
         // console.log(editions)
-        const filtered = editions.filter(edition => edition.work?.[0] && types.includes(edition.work[0].work_type.id));
+        const filtered = editions.filter(edition => edition.work && types.includes(edition.work.work_type.id));
         return filtered.filter(edition => contributions(edition.contributions, [2, 4, 5]).length > 0);
     }
 
@@ -137,7 +137,7 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
         const newTr = editions.filter(edition =>
             contributions(edition.contributions, [2]).length > 0);
         setTranslations(newTr);
-        setEdits(person.edits.filter(edition => edition.work?.[0] && types.includes(edition.work[0].work_type.id)));
+        setEdits(person.edits.filter(edition => edition.work && types.includes(edition.work.work_type.id)));
         const newCovers = editions.filter(edition =>
             contributions(edition.contributions, [4]).length > 0);
         setCovers(newCovers);
@@ -191,9 +191,8 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
         contributions(authored.map(work =>
             removeDuplicateWorkContributions(work)).flat(1), [1]).length;
     const editContributions =
-        contributions(edits.map(edition =>
-            edition.work).flat(1).map(work =>
-                removeDuplicateWorkContributions(work)).flat(1), [3]).length;
+        contributions(edits
+            .flatMap(edition => edition.work ? removeDuplicateWorkContributions(edition.work) : []), [3]).length;
     const translationContributions =
         contributions(translations.map(tr =>
             removeDuplicateEditionContributions(tr)).flat(1), [2]).length;

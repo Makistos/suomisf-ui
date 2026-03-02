@@ -24,7 +24,7 @@ export const EditionsStats = ({ editions }: EditionsProps) => {
         let genresCount = Object.entries(              // Convert to array
             _.countBy(                                 // Count occurences of genres
                 _.flatten(editions                     // Flatten array
-                    .map(edition => edition.work[0])
+                    .flatMap(edition => edition.work ? [edition.work] : [])
                     .map(work => work.genres)),        // Pick all work genres
                 (value => value.abbr)))                // Count by genre abbreviation
             .sort((a, b) => a[1] > b[1] ? -1 : 1);     // Sort by count in descending order

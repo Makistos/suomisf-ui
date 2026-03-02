@@ -255,7 +255,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                 onShow={() => onDialogShow()}
                 onHide={() => onDialogHide()}
             >
-                <EditionForm editionid={edition.id} work={work} onSubmitCallback={onFormSubmit} />
+                {work && <EditionForm editionid={edition.id} work={work} onSubmitCallback={onFormSubmit} />}
             </Dialog>
             <Dialog maximizable blockScroll className='w-full xl:w-9'
                 header="Novellien muokkaus"
@@ -272,7 +272,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                     <Toast ref={toast} />
                     <ConfirmPopup />
                     {card && <b><EditionVersion edition={edition} work={work} /></b>}
-                    {work !== undefined && edition.title !== work.title &&
+                    {work != null && edition.title !== work.title &&
                         <><br /><i className="font-medium">{edition.title}</i></>}
                     {edition.publisher && (
                         <><br /><Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link> </>)}

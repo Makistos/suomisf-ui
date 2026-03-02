@@ -52,7 +52,7 @@ export const OtherEdition = ({ edition, showFirst, details }: EditionProps) => {
             (showFirst || edition.editionnum !== 1 || (!isFirstVersion(edition.version)))) ? (
             <div className={clsName}>
                 <>{EditionString(edition) + ":"}</>
-                {edition.work && edition.title !== edition.work[0].title && (
+                {edition.work && edition.title !== edition.work.title && (
                     <><b> {edition.title}. </b></>
                 )}
                 {edition.version > 1 && edition.editionnum === 1 &&

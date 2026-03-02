@@ -79,7 +79,7 @@ export const Home = () => {
                           </>
                           :
                           <div>
-                            {edition.work[0].author_str}:<br />
+                            {edition.work?.author_str}:<br />
                             {edition.title}
                           </div>
                         }

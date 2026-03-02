@@ -11,14 +11,15 @@ export const groupEditionsByAuthor = (editions: Edition[] | CombinedEdition[]) =
         return array.indexOf(value) === index;
     }
     const authorStr = (edition: Edition) => {
+        if (!edition.work) return "";
         // Always use authors only if available
-        const authors = edition.work[0].contributions.filter(
+        const authors = edition.work.contributions.filter(
             contrib => contrib.role.id === 1);
         if (authors.length > 0) {
             return authors.map(author => author.person.name).filter(uniquePeople).join(' &');
         }
         // Only use editor if book has no authors
-        const editors = edition.work[0].contributions.filter(
+        const editors = edition.work.contributions.filter(
             contrib => contrib.role.id === 3);
         return editors.map(
             contrib => contrib.person.name).filter(uniquePeople).join(' & ');

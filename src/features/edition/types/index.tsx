@@ -39,7 +39,7 @@ export interface Edition {
     translators: Person[];
     verified: Boolean;
     version: number;
-    work: Work[];
+    work: Work | null;
     combined: boolean;
     owners: User[];
     wishlisted: User[];
@@ -71,7 +71,7 @@ export interface CombinedEdition {
     translators: Person[];
     verified: Boolean;
     version: number;
-    work: Work[];
+    work: Work | null;
     owners: User[]
     wishlisted: User[];
     combined: boolean;
@@ -83,7 +83,7 @@ export interface EditionProps {
     details?: string,
     person?: string,
     showPerson?: boolean,
-    work: Work,
+    work: Work | null,
     card?: boolean,
     showVersion?: boolean
     contributions?: Contribution[],

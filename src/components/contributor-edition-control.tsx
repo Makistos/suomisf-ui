@@ -79,8 +79,8 @@ export const ContributorEditionControl = ({
                 editorStr = person.name;
             } else if (edition.editors && edition.editors.length > 0) {
                 editorStr = edition.editors.map(editor => editor.name).join(", ");
-            } else if (edition.work && edition.work.length > 0) {
-                editorStr = edition.work[0].author_str.replace(" (toim.)", "") || "Tuntematon";
+            } else if (edition.work) {
+                editorStr = edition.work.author_str.replace(" (toim.)", "") || "Tuntematon";
             }
 
             if (!grouped[editorStr]) {
@@ -340,8 +340,8 @@ export const ContributorEditionControl = ({
                                         return yearA - yearB;
                                     }
                                     // Sort by author_str first, then by title
-                                    const authorA = a.work && a.work.length > 0 ? (a.work[0].author_str || "") : "";
-                                    const authorB = b.work && b.work.length > 0 ? (b.work[0].author_str || "") : "";
+                                    const authorA = a.work ? (a.work.author_str || "") : "";
+                                    const authorB = b.work ? (b.work.author_str || "") : "";
                                     if (authorA !== authorB) {
                                         return authorA.localeCompare(authorB, "fi");
                                     }
@@ -372,23 +372,17 @@ export const ContributorEditionControl = ({
                                                     )}
 
                                                     {/* Original title and year */}
-                                                    {edition.work && edition.work.length > 0 && (
+                                                    {edition.work && edition.work.orig_title && edition.work.orig_title !== edition.work.title && (
                                                         <div className="text-sm text-700 mb-1">
-                                                            {edition.work.map((work, workIndex) => (
-                                                                <div key={work.id}>
-                                                                    {work.orig_title && work.orig_title !== work.title && (
-                                                                        <span>
-                                                                            {work.orig_title}
-                                                                            {work.language_name && work.language_name.name !== "suomi" && (
-                                                                                <span> ({work.language_name.name})</span>
-                                                                            )}
-                                                                            {work.pubyear && (
-                                                                                <span>, {work.pubyear}</span>
-                                                                            )}
-                                                                        </span>
-                                                                    )}
-                                                                </div>
-                                                            ))}
+                                                            <span>
+                                                                {edition.work.orig_title}
+                                                                {edition.work.language_name && edition.work.language_name.name !== "suomi" && (
+                                                                    <span> ({edition.work.language_name.name})</span>
+                                                                )}
+                                                                {edition.work.pubyear && (
+                                                                    <span>, {edition.work.pubyear}</span>
+                                                                )}
+                                                            </span>
                                                         </div>
                                                     )}
 
@@ -398,24 +392,24 @@ export const ContributorEditionControl = ({
                                                     </div>
 
                                                     {/* Genres and Tags from the work */}
-                                                    {edition.work && edition.work.length > 0 && (
+                                                    {edition.work && (
                                                         <div className="mt-2">
-                                                            {edition.work[0].genres && edition.work[0].genres.length > 0 && (
+                                                            {edition.work.genres && edition.work.genres.length > 0 && (
                                                                 <div className="mb-2">
-                                                                    <GenreGroup genres={edition.work[0].genres} showOneCount />
+                                                                    <GenreGroup genres={edition.work.genres} showOneCount />
                                                                 </div>
                                                             )}
-                                                            {edition.work[0].tags && edition.work[0].tags.length > 0 && (
+                                                            {edition.work.tags && edition.work.tags.length > 0 && (
                                                                 <div>
                                                                     <Button
                                                                         icon={expandedTags.has(edition.id) ? "pi pi-chevron-up" : "pi pi-chevron-down"}
-                                                                        label={`Asiasanat (${edition.work[0].tags.length})`}
+                                                                        label={`Asiasanat (${edition.work.tags.length})`}
                                                                         className="p-button-text p-button-sm p-0"
                                                                         onClick={() => toggleEditionTags(edition.id)}
                                                                     />
                                                                     {expandedTags.has(edition.id) && (
                                                                         <div className="mt-2">
-                                                                            <TagGroup tags={edition.work[0].tags} showOneCount overflow={50} />
+                                                                            <TagGroup tags={edition.work.tags} showOneCount overflow={50} />
                                                                         </div>
                                                                     )}
                                                                 </div>

@@ -52,18 +52,18 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
         const uniqueEditions = editions
             .sort((a, b) => a.pubyear > b.pubyear ? -1 : 1)
             .filter(edition => {
-                const isDuplicate = uniqueIds.includes(edition.work[0].id ? edition.work[0].id : 0);
+                const isDuplicate = uniqueIds.includes(edition.work?.id ? edition.work.id : 0);
                 if (!isDuplicate) {
-                    uniqueIds.push(edition.work[0].id ? edition.work[0].id : 0);
+                    uniqueIds.push(edition.work?.id ? edition.work.id : 0);
                     return true;
                 }
                 return false;
             })
         const retval = uniqueEditions.map((edition) => (
             <span className="ml-2" key={edition.id}>
-                <Link to={`/works/${edition.work[0].id}`}
-                    key={edition.work[0].id}>
-                    {edition.work[0].title} ({edition.work[0].pubyear}).
+                <Link to={`/works/${edition.work?.id}`}
+                    key={edition.work?.id}>
+                    {edition.work?.title} ({edition.work?.pubyear}).
                     <br />
                 </Link>
             </span>

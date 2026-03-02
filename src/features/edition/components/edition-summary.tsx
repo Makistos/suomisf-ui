@@ -20,18 +20,19 @@ export const EditionSummary = ({ edition, person, showPerson, showVersion, isOwn
         return array.indexOf(value) === index;
     }
     const authorStr = (edition: Edition) => {
-        return edition.work[0].contributions.map(
+        if (!edition.work) return "";
+        return edition.work.contributions.map(
             contrib => contrib.person.name).filter(uniquePeople).join(' & ');
     }
 
     return (
         <div className={isOwned ? "book owned" : isWishlisted ? "book wishlist" : "book not-owned"}>
-            {edition.work[0] && (showPerson || (person && person === authorStr(edition))) && <b>{authorStr(edition)}:&nbsp;</b>}
-            {edition.work[0] && <Link to={`/works/${edition.work[0].id}`}>
+            {edition.work && (showPerson || (person && person === authorStr(edition))) && <b>{authorStr(edition)}:&nbsp;</b>}
+            {edition.work && <Link to={`/works/${edition.work.id}`}>
                 {edition.title}</Link>}
-            {edition.work[0]
-                && isForeign(edition.work[0]) && (
-                    <>&nbsp;({edition.work[0].orig_title}, {edition.work[0].pubyear})</>
+            {edition.work
+                && isForeign(edition.work) && (
+                    <>&nbsp;({edition.work.orig_title}, {edition.work.pubyear})</>
                 )}
             {showVersion && notFirstEdition(edition) && edition.editionnum !== null && (
                 <>. <b>{EditionString(edition)}</b></>
@@ -43,11 +44,11 @@ export const EditionSummary = ({ edition, person, showPerson, showVersion, isOwn
                 <Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link>
             )}</>
             <>&nbsp;{edition.pubyear}.&nbsp;</>
-            {edition.work[0] &&
+            {edition.work &&
                 <GenreList
-                    genres={edition.work[0].genres}
-                    collection={edition.work[0].type === 2}
-                    booklet={edition.work[0].type === 5}
+                    genres={edition.work.genres}
+                    collection={edition.work.type === 2}
+                    booklet={edition.work.type === 5}
                 />}
         </div>
     )

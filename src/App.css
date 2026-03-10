@@ -13,6 +13,13 @@ h1 {
   line-height: 3rem;
 }
 
+@media screen and (max-width: 768px) {
+  h1 {
+    font-size: 1.75rem;
+    line-height: 2rem;
+  }
+}
+
 h1.frontpage {
   font-size: 2rem !important;
   font-weight: bolder;
@@ -448,6 +455,7 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 .work-page {
     padding: 2rem;
     background: var(--surface-ground);
+    overflow-x: hidden;
 }
 
 .work-page .p-card {
@@ -456,6 +464,7 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 
 .work-page .p-tabview .p-tabview-panels {
     padding: 1.5rem;
+    overflow-x: hidden;
 }
 
 .work-page h1 {
@@ -497,6 +506,7 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 .person-page {
     padding: 1rem;
     background: var(--surface-ground);
+    overflow-x: hidden;
 }
 
 .person-page .fixed-dial {
@@ -517,15 +527,43 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 
 @media screen and (max-width: 768px) {
     .person-page {
-        padding: 0.5rem;
+        padding: 0.25rem;
+    }
+
+    .person-page .p-card {
+        margin-bottom: 0.75rem;
+    }
+
+    .person-page .p-card .p-card-body {
+        padding: 0.75rem;
     }
 
     .person-page .p-card .p-card-content {
-        padding: 1rem;
+        padding: 0;
     }
 
     .person-page .p-tabview .p-tabview-panels {
-        padding: 1rem;
+        padding: 0.5rem;
+    }
+
+    .work-page {
+        padding: 0.25rem;
+    }
+
+    .work-page .p-card {
+        margin-bottom: 0.75rem;
+    }
+
+    .work-page .p-card .p-card-body {
+        padding: 0.75rem;
+    }
+
+    .work-page .p-card .p-card-content {
+        padding: 0;
+    }
+
+    .work-page .p-tabview .p-tabview-panels {
+        padding: 0.5rem;
     }
 }
 

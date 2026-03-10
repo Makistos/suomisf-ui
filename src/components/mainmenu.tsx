@@ -111,7 +111,7 @@ export default function MainMenu() {
             url: '/shortstoryindex'
         },
         {
-            label: 'Hakemistot',
+            label: 'Muut',
             items: [
                 {
                     label: 'Henkilöt',

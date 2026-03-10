@@ -140,6 +140,10 @@ export default function MainMenu() {
                 {
                     label: 'Tietokirjat',
                     url: '/nonfiction'
+                },
+                {
+                    label: 'Tilastot',
+                    url: '/stats'
                 }
             ]
         },

@@ -8,6 +8,13 @@ import { Nationality } from "../../../types/nationality";
 import { Contribution } from "../../../types/contribution";
 
 // export type PersonBrief = Pick<Person, "id" | "name" | "alt_name" | "fullname">
+export type PersonImage = {
+    id: number;
+    src: string;
+    attr: string;
+    license: string;
+}
+
 export type PersonBrief = {
     id: number;
     name: string;
@@ -26,6 +33,7 @@ export interface Person {
     other_names: string;
     image_src: string;
     qid: string;
+    images: PersonImage[];
     dob: number;
     dod: number;
     bio: string;

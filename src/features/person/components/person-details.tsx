@@ -1,6 +1,9 @@
+import { useMemo, useEffect, useRef } from "react"
 import { getCountryCode } from "@utils/country-utils"
 import { Person, PersonBrief } from "../types"
-import { useWikimediaImage } from "../hooks/use-wikimedia-image"
+import { useWikimediaImage, WikiImageInfo } from "../hooks/use-wikimedia-image"
+import { getCurrenUser } from "../../../services/auth-service"
+import { postApiContent } from "../../../services/user-service"
 
 interface PersonDetailsProps {
     person: Person
@@ -14,22 +17,46 @@ const combineNames = (aliases: PersonBrief[], other_names: string) => {
 
 
 export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
-    const { imageInfo } = useWikimediaImage(data);
+    const user = useMemo(() => getCurrenUser(), []);
+    const hasStoredImage = data.images && data.images.length > 0;
+    const savedRef = useRef(false);
+
+    const { imageInfo } = useWikimediaImage(data, !hasStoredImage);
+
+    // Auto-save newly discovered Wikidata image in the background
+    useEffect(() => {
+        if (!imageInfo || hasStoredImage || savedRef.current) return;
+        savedRef.current = true;
+        postApiContent(`person/${data.id}/images`, {
+            src: imageInfo.url,
+            attr: imageInfo.credit || '',
+            license: imageInfo.license || ''
+        }, user).catch(console.error);
+    }, [imageInfo]);
+
+    const displayImage: WikiImageInfo | null = hasStoredImage
+        ? {
+            url: data.images[0].src,
+            descriptionUrl: null,
+            credit: data.images[0].attr || null,
+            license: data.images[0].license || null
+        }
+        : imageInfo;
 
     return (
         <div className="grid">
             <div className="col-12 flex align-items-start gap-3 mt-3 p-0">
-                {imageInfo && (
+                {displayImage && (
                     <div className="flex flex-column gap-1 flex-shrink-0" style={{ maxWidth: '120px' }}>
                         <img
-                            src={imageInfo.url}
+                            src={displayImage.url}
                             alt={data.alt_name || data.name}
-                            title={[imageInfo.credit?.replace(/<[^>]+>/g, ''), imageInfo.license].filter(Boolean).join(' · ')}
+                            title={[displayImage.credit?.replace(/<[^>]+>/g, ''), displayImage.license].filter(Boolean).join(' · ')}
                             style={{ maxHeight: '160px', width: '100%', objectFit: 'cover', borderRadius: '4px' }}
                         />
-                        {imageInfo.descriptionUrl && (
+                        {displayImage.descriptionUrl && (
                             <a
-                                href={imageInfo.descriptionUrl}
+                                href={displayImage.descriptionUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-xs text-500 flex align-items-center gap-1 no-underline hover:text-primary"

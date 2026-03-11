@@ -43,6 +43,7 @@ export const PersonForm = (props: FormProperties<Person>) => {
         dod: person.dod,
         bio: person.bio,
         bio_src: person.bio_src,
+        qid: person.qid,
         links: person.links.length > 0 ? person.links : [{ 'link': '', description: '' }],
         nationality: person.nationality
     });
@@ -58,6 +59,7 @@ export const PersonForm = (props: FormProperties<Person>) => {
         dod: null,
         bio: '',
         bio_src: '',
+        qid: '',
         links: [{ link: '', description: '' }],
         nationality: null
     }
@@ -234,6 +236,14 @@ const FormObject = ({ onSubmit, methods }: FormObjectProps) => {
                                 name="bio_src"
                                 methods={methods}
                                 label="Lähde"
+                                disabled={disabled}
+                            />
+                        </div>
+                        <div className='field col-12 lg:col-6'>
+                            <FormInputText
+                                name="qid"
+                                methods={methods}
+                                label="Wikidata QID (esim. Q12345)"
                                 disabled={disabled}
                             />
                         </div>

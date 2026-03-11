@@ -21,6 +21,7 @@ import { LinkPanel } from "../../../components/link-panel";
 import { AwardList, AwardPanel, Awarded } from '../../award';
 import { Person, PersonBrief } from '../types';
 import { PersonForm } from '../components/person-form';
+import { PersonImagePickerDialog } from '../components/person-image-picker-dialog';
 import { selectId } from '../../../utils';
 import { User, isAdmin } from "../../user";
 import { useDocumentTitle } from '../../../components/document-title';
@@ -58,6 +59,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     const [formData, setFormData]: [Person | null, (formData: Person | null) => void] = useState<Person | null>(null);
     const [showNonSf, setShowNonSf] = useState(false);
     const [isAwardsVisible, setAwardsVisible] = useState(false);
+    const [isImagePickerVisible, setImagePickerVisible] = useState(false);
     //const [workAwards, setWorkAwards]: [Awarded[], (workAwards: Awarded[]) => void] = useState<Awarded[]>([]);
     //let workAwards: Awarded[] = [];
     const toastRef = useRef<Toast>(null);
@@ -129,6 +131,11 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                 setAwardsVisible(true);
 
             }
+        },
+        {
+            label: 'Kuva',
+            icon: 'fa-solid fa-image',
+            command: () => setImagePickerVisible(true)
         }
     ]
 
@@ -466,6 +473,14 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                         >
                             <PersonForm data={!formData || !editPerson ? null : formData} onSubmitCallback={onDialogHide} />
                         </Dialog>
+                        <PersonImagePickerDialog
+                            person={data}
+                            visible={isImagePickerVisible}
+                            onHide={() => {
+                                queryClient.invalidateQueries({ queryKey: ["person", data.id] });
+                                setImagePickerVisible(false);
+                            }}
+                        />
                         <Dialog maximizable blockScroll
                             className="w-full lg:w-6"
                             header="Palkintojen muokkaus" visible={isAwardsVisible}

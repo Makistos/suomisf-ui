@@ -25,6 +25,7 @@ export interface Person {
     fullname: string;
     other_names: string;
     image_src: string;
+    qid: string;
     dob: number;
     dod: number;
     bio: string;
@@ -54,6 +55,7 @@ export interface PersonFormData {
     dod: number | null;
     bio: string;
     bio_src: string;
+    qid: string;
     links: LinkType[];
     nationality: Nationality | null;
 }

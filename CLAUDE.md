@@ -1,0 +1,1 @@
+Application uses PrimeReact component library. Always suggest components in it if suitable components are available.

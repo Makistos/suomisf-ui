@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 import { Person } from '../types';
-import { WikimediaImage, findWikimediaImages } from './person-image-picker';
+import { WikimediaImage, findAllFreeImages } from './person-image-picker';
 import { postApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 
@@ -33,7 +33,7 @@ export const PersonImagePickerDialog = ({ person, visible, onHide }: PersonImage
         setAttr('');
         setLicense('');
         setLoading(true);
-        findWikimediaImages({
+        findAllFreeImages({
             qid: person.qid || undefined,
             fullname: person.fullname || undefined,
             alt_name: person.alt_name || undefined,
@@ -43,10 +43,12 @@ export const PersonImagePickerDialog = ({ person, visible, onHide }: PersonImage
         }).finally(() => setLoading(false));
     }, [visible, person.id]);
 
+    const stripHtml = (html: string) => html.replace(/<[^>]+>/g, '').trim();
+
     const handleSelect = (img: WikimediaImage) => {
         setSelected(img);
         setSrc(img.url);
-        setAttr(img.author);
+        setAttr(stripHtml(img.author));
         setLicense(img.license);
     };
 
@@ -84,9 +86,30 @@ export const PersonImagePickerDialog = ({ person, visible, onHide }: PersonImage
                 </div>
             ) : (
                 <div className="flex flex-column gap-4">
+                    {person.images && person.images.length > 0 && (
+                        <div>
+                            <p className="text-600 mb-2">Tallennetut kuvat:</p>
+                            <div className="flex flex-wrap gap-3">
+                                {person.images.map((img) => (
+                                    <div
+                                        key={img.id}
+                                        className={`cursor-pointer border-2 border-round p-1 ${src === img.src ? 'border-primary' : 'border-transparent surface-hover'}`}
+                                        onClick={() => { setSrc(img.src); setAttr(img.attr); setLicense(img.license); setSelected(null); }}
+                                        title={`${img.attr} — ${img.license}`}
+                                    >
+                                        <img
+                                            src={img.src}
+                                            alt={img.attr}
+                                            style={{ width: 120, height: 160, objectFit: 'cover', display: 'block' }}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                     {images.length > 0 ? (
                         <div>
-                            <p className="text-600 mb-2">Valitse kuva alla olevista vaihtoehdoista:</p>
+                            <p className="text-600 mb-2">Wikimedia-kuvat:</p>
                             <div className="flex flex-wrap gap-3">
                                 {images.map((img, i) => (
                                     <div

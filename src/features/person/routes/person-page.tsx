@@ -289,7 +289,6 @@ export const PersonPage = ({ id }: PersonPageProps) => {
             data.edits.filter(edition => edition.work && types.includes(edition.work.work_type.id)).length > 0
     }
 
-    // console.log(data)
     return (
         <main className="person-page">
             <Toast ref={toastRef} />

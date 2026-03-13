@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Person } from '../types';
+import { scoreImage } from '../components/score-image';
 
 const WIKIDATA_API = 'https://www.wikidata.org/w/api.php';
 const WIKIPEDIA_API = 'https://en.wikipedia.org/w/api.php';
@@ -11,7 +12,53 @@ export interface WikiImageInfo {
     credit: string | null;
     license: string | null;
 }
+export async function matchPersonYears(
+    qid: string,
+    birthYear: number | null,
+    deathYear: number | null
+): Promise<boolean> {
 
+    if (birthYear === null) {
+        return false;
+    }
+
+    const params = new URLSearchParams({
+        action: "wbgetentities",
+        ids: qid,
+        props: "claims",
+        format: "json",
+        origin: "*"
+    });
+
+    const res = await fetch(`${WIKIDATA_API}?${params}`);
+    const data = await res.json();
+
+    const claims = data?.entities?.[qid]?.claims;
+    if (!claims) return false;
+
+    const extractYear = (claimList: any[]): number | null => {
+        if (!claimList?.length) return null;
+
+        const time = claimList[0].mainsnak?.datavalue?.value?.time;
+        if (!time) return null;
+
+        // format: "+1920-01-02T00:00:00Z"
+        return parseInt(time.substring(1, 5), 10);
+    };
+
+    const wikidataBirth = extractYear(claims.P569);
+    const wikidataDeath = extractYear(claims.P570);
+
+    if (birthYear !== null && wikidataBirth !== birthYear) {
+        return false;
+    }
+
+    if (deathYear !== null && wikidataDeath !== deathYear) {
+        return false;
+    }
+
+    return true;
+}
 /** Fetch imageinfo + extmetadata for a file title (e.g. "File:Foo.jpg").
  *  Returns null if the image is non-free or not found. */
 const fetchImageMeta = async (apiBase: string, title: string): Promise<WikiImageInfo | null> => {
@@ -40,9 +87,26 @@ const fetchImageMeta = async (apiBase: string, title: string): Promise<WikiImage
     return null;
 };
 
-/** Search Wikidata for a human with a P18 image by name.
- *  Returns the image info or null if not found. */
-const searchWikidata = async (name: string): Promise<WikiImageInfo | null> => {
+/** Fetch P18 image directly from a known QID. */
+const fetchImageByQid = async (qid: string): Promise<WikiImageInfo | null> => {
+    const params = new URLSearchParams({
+        action: 'wbgetentities',
+        ids: qid,
+        props: 'claims',
+        format: 'json',
+        origin: '*',
+    });
+    const res = await fetch(`${WIKIDATA_API}?${params}`);
+    const data = await res.json();
+    const claims = data?.entities?.[qid]?.claims;
+    if (!claims?.P18?.length) return null;
+    const filename: string = claims.P18[0].mainsnak.datavalue.value;
+    return fetchImageMeta(COMMONS_API, `File:${filename}`);
+};
+
+/** Search Wikidata for humans with P18 images by name.
+ *  Returns candidates as { qid, info } pairs for year verification. */
+const searchWikidataCandidates = async (name: string): Promise<{ qid: string; info: WikiImageInfo }[]> => {
     const searchParams = new URLSearchParams({
         action: 'wbsearchentities',
         search: name,
@@ -55,7 +119,7 @@ const searchWikidata = async (name: string): Promise<WikiImageInfo | null> => {
     const searchRes = await fetch(`${WIKIDATA_API}?${searchParams}`);
     const searchData = await searchRes.json();
     const qids: string[] = searchData.search?.map((r: any) => r.id) || [];
-    if (!qids.length) return null;
+    if (!qids.length) return [];
 
     const entityParams = new URLSearchParams({
         action: 'wbgetentities',
@@ -67,6 +131,7 @@ const searchWikidata = async (name: string): Promise<WikiImageInfo | null> => {
     const entityRes = await fetch(`${WIKIDATA_API}?${entityParams}`);
     const entityData = await entityRes.json();
 
+    const results: { qid: string; info: WikiImageInfo }[] = [];
     for (const qid of qids) {
         const entity = entityData.entities?.[qid];
         if (!entity) continue;
@@ -75,12 +140,11 @@ const searchWikidata = async (name: string): Promise<WikiImageInfo | null> => {
             (c: any) => c.mainsnak.datavalue?.value?.id === 'Q5'
         );
         if (!isHuman || !claims.P18?.length) continue;
-
         const filename: string = claims.P18[0].mainsnak.datavalue.value;
         const info = await fetchImageMeta(COMMONS_API, `File:${filename}`);
-        if (info) return info;
+        if (info) results.push({ qid, info });
     }
-    return null;
+    return results;
 };
 
 /** Convert "Last, First" to "First Last"; leave other formats unchanged. */
@@ -94,7 +158,7 @@ export const useWikimediaImage = (person: Person, enabled = true) => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        if (!enabled) return;
+        if (!enabled || String(person.qid) === '0') return;
         let cancelled = false;
         setImageInfo(null);
         setIsLoading(true);
@@ -102,7 +166,17 @@ export const useWikimediaImage = (person: Person, enabled = true) => {
         (async () => {
             try {
                 // -----------------------
-                // 1️⃣ Try Wikidata P18 — attempt names in priority order
+                // 1️⃣ QID known — load image directly, no year check needed
+                // -----------------------
+                if (person.qid) {
+                    const info = await fetchImageByQid(person.qid);
+                    console.debug('[useWikimediaImage] QID path, found:', info?.url ?? 'none');
+                    if (info && !cancelled) setImageInfo(info);
+                    return;
+                }
+
+                // -----------------------
+                // 2️⃣ No QID — search by name, verify years for each candidate
                 // -----------------------
                 const namesToTry = [
                     person.fullname,
@@ -110,20 +184,24 @@ export const useWikimediaImage = (person: Person, enabled = true) => {
                     toNaturalOrder(person.name),
                 ].filter((n): n is string => !!n);
 
-                // Deduplicate while preserving order
                 const seen = new Set<string>();
                 const uniqueNames = namesToTry.filter(n => !seen.has(n) && seen.add(n));
 
                 for (const name of uniqueNames) {
-                    const info = await searchWikidata(name);
-                    if (info) {
-                        if (!cancelled) setImageInfo(info);
-                        return;
+                    const candidates = await searchWikidataCandidates(name);
+                    console.debug(`[useWikimediaImage] name search "${name}": ${candidates.length} candidate(s)`, candidates.map(c => `${c.qid}: ${c.info.url}`));
+                    for (const { qid, info } of candidates) {
+                        const yearsMatch = await matchPersonYears(qid, person.dob, person.dod);
+                        console.debug(`[useWikimediaImage]   ${qid} years match: ${yearsMatch}, image: ${info.url}`);
+                        if (yearsMatch) {
+                            if (!cancelled) setImageInfo(info);
+                            return;
+                        }
                     }
                 }
 
                 // -----------------------
-                // 2️⃣ Fallback: Wikipedia page images
+                // 3️⃣ Fallback: Wikipedia page images
                 // -----------------------
                 const searchName = toNaturalOrder(person.alt_name || person.name);
                 const wpImagesParams = new URLSearchParams({
@@ -138,24 +216,22 @@ export const useWikimediaImage = (person: Person, enabled = true) => {
                 const pages = wpImagesData.query?.pages;
                 if (!pages) return;
 
-                const altLower = (person.alt_name || '').toLowerCase().replace(/\s/g, '_');
+                const candidates: { title: string; score: number }[] = [];
                 for (const pageId in pages) {
                     for (const img of (pages[pageId].images || [])) {
-                        const lower: string = img.title.toLowerCase();
-                        if (
-                            lower.match(/\.(jpg|jpeg|png)$/) &&
-                            !lower.includes('logo') &&
-                            !lower.includes('cover') &&
-                            !lower.includes('icon') &&
-                            !lower.includes('signature') &&
-                            (altLower && lower.includes(altLower) || lower.includes('portrait'))
-                        ) {
-                            const info = await fetchImageMeta(WIKIPEDIA_API, img.title);
-                            if (info && !cancelled) {
-                                setImageInfo(info);
-                                return;
-                            }
-                        }
+                        if (!img.title.match(/\.(jpg|jpeg|png)$/i)) continue;
+                        const s = scoreImage(img.title);
+                        if (s > 0) candidates.push({ title: img.title, score: s });
+                    }
+                }
+                candidates.sort((a, b) => b.score - a.score);
+                console.debug('[useWikimediaImage] Wikipedia fallback candidates (sorted):', candidates.map(c => `${c.title} (score ${c.score})`));
+                for (const { title } of candidates) {
+                    const info = await fetchImageMeta(WIKIPEDIA_API, title);
+                    console.debug(`[useWikimediaImage]   ${title}: ${info ? info.url : 'no metadata / non-free'}`);
+                    if (info && !cancelled) {
+                        setImageInfo(info);
+                        return;
                     }
                 }
             } catch (err) {

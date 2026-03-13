@@ -23,21 +23,34 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
 
     const { imageInfo } = useWikimediaImage(data, !hasStoredImage);
 
+    const stripHtml = (html: string) => html.replace(/<[^>]+>/g, '').trim();
+
     // Auto-save newly discovered Wikidata image in the background
     useEffect(() => {
-        if (!imageInfo || hasStoredImage || savedRef.current) return;
+        if (!imageInfo || hasStoredImage || savedRef.current || String(data.qid) === '0') return;
         savedRef.current = true;
-        postApiContent(`person/${data.id}/images`, {
-            src: imageInfo.url,
-            attr: imageInfo.credit || '',
-            license: imageInfo.license || ''
-        }, user).catch(console.error);
+        const saves = [
+            postApiContent(`person/${data.id}/images`, {
+                src: imageInfo.url,
+                attr: stripHtml(imageInfo.credit || ''),
+                license: imageInfo.license || ''
+            }, user),
+        ];
+        if (imageInfo.descriptionUrl) {
+            saves.push(postApiContent(`person/${data.id}/links`, {
+                link: imageInfo.descriptionUrl,
+                description: 'Wikimedia Commons'
+            }, user));
+        }
+        Promise.all(saves).catch(console.error);
     }, [imageInfo]);
+
+    const wikimediaLink = data.links?.find(l => l.description === 'Wikimedia Commons')?.link ?? null;
 
     const displayImage: WikiImageInfo | null = hasStoredImage
         ? {
             url: data.images[0].src,
-            descriptionUrl: null,
+            descriptionUrl: wikimediaLink,
             credit: data.images[0].attr || null,
             license: data.images[0].license || null
         }

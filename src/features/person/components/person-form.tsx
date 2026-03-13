@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     FieldValues, FormProvider, SubmitHandler, useForm,
@@ -67,6 +67,10 @@ export const PersonForm = (props: FormProperties<Person>) => {
     const formData = props.data ? convToForm(props.data) : defaultValues;
     const methods = useForm<PersonFormData>({ defaultValues: formData });
     const queryClient = useQueryClient()
+
+    useEffect(() => {
+        methods.reset(props.data ? convToForm(props.data) : defaultValues);
+    }, [props.data]);
 
     const updatePerson = (data: PersonFormData) => {
         const saveData = { data: data };

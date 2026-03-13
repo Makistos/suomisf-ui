@@ -38,6 +38,15 @@ export function scoreImage(file: string, width?: number, height?: number): numbe
 
     if (width && height && Math.max(width, height) > 400) score += 2
 
+    // Give bonus for images that have greater height than width
+    if (width && height && height > width) score += 3
+
+    // Commas, and, & tend to point to an image with more than one person
+    const commaCount = (name.match(/,/g) || []).length
+    if (commaCount >= 2) score -= 10
+
+    if (/ and | & /.test(name)) score -= 5
+
     const negatives: [string, number][] = [
         ["cover", 10],
         ["poster", 10],

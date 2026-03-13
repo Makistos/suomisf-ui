@@ -5,7 +5,7 @@ import { InputText } from 'primereact/inputtext';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 import { Person } from '../types';
-import { WikimediaImage, findAllFreeImages } from './person-image-picker';
+import { WikiImageInfo, findPersonImages } from './find-person-images';
 import { postApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 
@@ -17,9 +17,9 @@ interface PersonImagePickerDialogProps {
 
 export const PersonImagePickerDialog = ({ person, visible, onHide }: PersonImagePickerDialogProps) => {
     const user = getCurrenUser();
-    const [images, setImages] = useState<WikimediaImage[]>([]);
+    const [images, setImages] = useState<WikiImageInfo[]>([]);
     const [loading, setLoading] = useState(false);
-    const [selected, setSelected] = useState<WikimediaImage | null>(null);
+    const [selected, setSelected] = useState<WikiImageInfo | null>(null);
     const [src, setSrc] = useState('');
     const [attr, setAttr] = useState('');
     const [license, setLicense] = useState('');
@@ -33,23 +33,18 @@ export const PersonImagePickerDialog = ({ person, visible, onHide }: PersonImage
         setAttr('');
         setLicense('');
         setLoading(true);
-        findAllFreeImages({
-            qid: person.qid || undefined,
-            fullname: person.fullname || undefined,
-            alt_name: person.alt_name || undefined,
-            name: person.name,
-        }).then(imgs => {
+        findPersonImages(person).then(imgs => {
             setImages(imgs);
         }).finally(() => setLoading(false));
     }, [visible, person.id]);
 
     const stripHtml = (html: string) => html.replace(/<[^>]+>/g, '').trim();
 
-    const handleSelect = (img: WikimediaImage) => {
+    const handleSelect = (img: WikiImageInfo) => {
         setSelected(img);
         setSrc(img.url);
-        setAttr(stripHtml(img.author));
-        setLicense(img.license);
+        setAttr(stripHtml(img.credit || ''));
+        setLicense(img.license || '');
     };
 
     const handleSubmit = async () => {
@@ -116,11 +111,11 @@ export const PersonImagePickerDialog = ({ person, visible, onHide }: PersonImage
                                         key={i}
                                         className={`cursor-pointer border-2 border-round p-1 ${selected?.url === img.url ? 'border-primary' : 'border-transparent surface-hover'}`}
                                         onClick={() => handleSelect(img)}
-                                        title={`${img.author} — ${img.license}`}
+                                        title={`${img.credit} — ${img.license}`}
                                     >
                                         <img
                                             src={img.url}
-                                            alt={img.author}
+                                            alt={img.credit ?? ''}
                                             style={{ width: 120, height: 160, objectFit: 'cover', display: 'block' }}
                                         />
                                     </div>

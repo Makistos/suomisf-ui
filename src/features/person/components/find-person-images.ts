@@ -1,4 +1,22 @@
 import { scoreImage, scoreFaces } from './score-image'
+import { getPublicContent } from '../../../services/user-service'
+
+/** Fetch free person images from the backend API. */
+export async function fetchPersonImagesFromApi(
+    personId: number | string,
+    limit = 20
+): Promise<WikiImageInfo[]> {
+    const res = await getPublicContent(`person/${personId}/images?limit=${limit}`)
+    return (res.data || []).map((img: any) => ({
+        url: img.url,
+        descriptionUrl: img.description_url || null,
+        credit: img.credit || null,
+        license: img.license || null,
+        _score: img.score ?? 0,
+        dimensions: img.dimensions || null,
+        scoring: img.scoring || undefined,
+    }))
+}
 
 export interface WikiImageInfo {
     url: string
@@ -6,6 +24,8 @@ export interface WikiImageInfo {
     credit: string | null
     license: string | null
     _score?: number
+    dimensions?: { width: number; height: number } | null
+    scoring?: Record<string, number>
 }
 
 export interface PersonImageQuery {

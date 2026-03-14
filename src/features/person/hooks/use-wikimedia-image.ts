@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Person } from '../types';
-import { WikiImageInfo, findPersonImages } from '../components/find-person-images';
+import { WikiImageInfo, fetchPersonImagesFromApi } from '../components/find-person-images';
 
 export type { WikiImageInfo };
 
@@ -14,12 +14,12 @@ export const useWikimediaImage = (person: Person, enabled = true) => {
         setImageInfo(null);
         setIsLoading(true);
 
-        findPersonImages(person)
-            .then(images => {
-                console.debug('[useWikimediaImage] candidates:', images.map(i => i.url));
+        fetchPersonImagesFromApi(person.id, 1)
+            .then((images: WikiImageInfo[]) => {
+                console.debug('[useWikimediaImage] candidates:', images.map((i: WikiImageInfo) => i.url));
                 if (images.length > 0 && !cancelled) setImageInfo(images[0]);
             })
-            .catch(err => console.warn('Failed to fetch Wikimedia/Wikipedia image:', err))
+            .catch((err: unknown) => console.warn('Failed to fetch Wikimedia/Wikipedia image:', err))
             .finally(() => { if (!cancelled) setIsLoading(false); });
 
         return () => { cancelled = true; };

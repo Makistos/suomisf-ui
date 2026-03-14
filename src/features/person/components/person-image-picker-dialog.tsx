@@ -3,9 +3,10 @@ import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { Slider } from 'primereact/slider';
 
 import { Person } from '../types';
-import { WikiImageInfo, findPersonImages } from './find-person-images';
+import { WikiImageInfo, fetchPersonImagesFromApi } from './find-person-images';
 import { postApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 
@@ -25,18 +26,23 @@ export const PersonImagePickerDialog = ({ person, visible, onHide, onSave }: Per
     const [attr, setAttr] = useState('');
     const [license, setLicense] = useState('');
     const [saving, setSaving] = useState(false);
+    const [limit, setLimit] = useState(10);
 
-    useEffect(() => {
-        if (!visible) return;
+    const runSearch = (lim: number) => {
         setImages([]);
         setSelected(null);
         setSrc('');
         setAttr('');
         setLicense('');
         setLoading(true);
-        findPersonImages(person).then(imgs => {
-            setImages(imgs);
-        }).finally(() => setLoading(false));
+        fetchPersonImagesFromApi(person.id, lim)
+            .then((imgs: WikiImageInfo[]) => setImages(imgs))
+            .finally(() => setLoading(false));
+    };
+
+    useEffect(() => {
+        if (!visible) return;
+        runSearch(limit);
     }, [visible, person.id]);
 
     const stripHtml = (html: string) => html.replace(/<[^>]+>/g, '').trim();
@@ -104,6 +110,17 @@ export const PersonImagePickerDialog = ({ person, visible, onHide, onSave }: Per
                             </div>
                         </div>
                     )}
+                    <div className="flex align-items-center gap-3">
+                        <span className="text-600 white-space-nowrap">Kuvia: {limit}</span>
+                        <Slider
+                            value={limit}
+                            min={1}
+                            max={100}
+                            className="flex-1"
+                            onChange={e => setLimit(e.value as number)}
+                            onSlideEnd={e => runSearch(e.value as number)}
+                        />
+                    </div>
                     {images.length > 0 ? (
                         <div>
                             <p className="text-600 mb-2">Wikimedia-kuvat:</p>
@@ -114,12 +131,22 @@ export const PersonImagePickerDialog = ({ person, visible, onHide, onSave }: Per
                                         className={`cursor-pointer border-2 border-round p-1 ${selected?.url === img.url ? 'border-primary' : 'border-transparent surface-hover'}`}
                                         onClick={() => handleSelect(img)}
                                         title={`${img.credit} — ${img.license}`}
+                                        style={{ width: 128 }}
                                     >
                                         <img
                                             src={img.url}
                                             alt={img.credit ?? ''}
                                             style={{ width: 120, height: 160, objectFit: 'cover', display: 'block' }}
                                         />
+                                        <div className="text-xs text-500 mt-1">
+                                            <div className="text-center">score: {img._score ?? 0}</div>
+                                            {img.dimensions && (
+                                                <div className="text-center">{img.dimensions.width}×{img.dimensions.height}</div>
+                                            )}
+                                            {img.scoring && Object.entries(img.scoring).map(([k, v]) => (
+                                                <div key={k}>{k}: {v}</div>
+                                            ))}
+                                        </div>
                                     </div>
                                 ))}
                             </div>

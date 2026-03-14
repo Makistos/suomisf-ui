@@ -33,7 +33,7 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
             postApiContent(`person/${data.id}/images`, {
                 src: imageInfo.url,
                 attr: stripHtml(imageInfo.credit || ''),
-                license: imageInfo.license || ''
+                license: imageInfo.license || '',
             }, user),
         ];
         if (imageInfo.descriptionUrl) {

@@ -186,18 +186,13 @@ export async function findPersonImages(person: PersonImageQuery): Promise<WikiIm
         allFiles.push(...p18Files, ...categoryFiles)
     }
 
-    // 2️⃣ Wikipedia page images
+    // 2️⃣ Wikipedia page images + 3️⃣ Commons full-text search (all in parallel)
     const titles = [fullname, alt_name, name].filter(Boolean) as string[]
-    for (const t of titles) {
-        const wpFiles = await fetchWikipediaPageImages(t)
-        allFiles.push(...wpFiles)
-    }
-
-    // 3️⃣ Commons full-text search
-    for (const t of titles) {
-        const commonsFiles = await searchCommonsFiles(t)
-        allFiles.push(...commonsFiles)
-    }
+    const [wpResults, commonsResults] = await Promise.all([
+        Promise.all(titles.map(fetchWikipediaPageImages)),
+        Promise.all(titles.map(searchCommonsFiles)),
+    ])
+    allFiles.push(...wpResults.flat(), ...commonsResults.flat())
 
     // Remove duplicates and filter jpg/png
     const uniqueFiles = Array.from(new Set(allFiles)).filter(f => f.match(/\.(jpg|jpeg|png)$/i))

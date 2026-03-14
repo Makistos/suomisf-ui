@@ -13,9 +13,10 @@ interface PersonImagePickerDialogProps {
     person: Person;
     visible: boolean;
     onHide: () => void;
+    onSave?: () => void;
 }
 
-export const PersonImagePickerDialog = ({ person, visible, onHide }: PersonImagePickerDialogProps) => {
+export const PersonImagePickerDialog = ({ person, visible, onHide, onSave }: PersonImagePickerDialogProps) => {
     const user = getCurrenUser();
     const [images, setImages] = useState<WikiImageInfo[]>([]);
     const [loading, setLoading] = useState(false);
@@ -52,6 +53,7 @@ export const PersonImagePickerDialog = ({ person, visible, onHide }: PersonImage
         setSaving(true);
         try {
             await postApiContent(`person/${person.id}/images`, { src, attr, license }, user);
+            onSave?.();
             onHide();
         } finally {
             setSaving(false);

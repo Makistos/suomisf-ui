@@ -475,10 +475,8 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                         <PersonImagePickerDialog
                             person={data}
                             visible={isImagePickerVisible}
-                            onHide={() => {
-                                queryClient.invalidateQueries({ queryKey: ["person", data.id] });
-                                setImagePickerVisible(false);
-                            }}
+                            onHide={() => setImagePickerVisible(false)}
+                            onSave={() => queryClient.invalidateQueries({ queryKey: ["person", thisId] })}
                         />
                         <Dialog maximizable blockScroll
                             className="w-full lg:w-6"

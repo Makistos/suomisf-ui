@@ -4,6 +4,7 @@ import { Person, PersonBrief } from "../types"
 import { useWikimediaImage, WikiImageInfo } from "../hooks/use-wikimedia-image"
 import { getCurrenUser } from "../../../services/auth-service"
 import { postApiContent } from "../../../services/user-service"
+import { isAdmin } from "../../user"
 
 interface PersonDetailsProps {
     person: Person
@@ -18,16 +19,17 @@ const combineNames = (aliases: PersonBrief[], other_names: string) => {
 
 export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
     const user = useMemo(() => getCurrenUser(), []);
-    const hasStoredImage = data.images && data.images.length > 0;
+    const hasImageRecord = !!(data.images && data.images.length > 0);
+    const hasStoredImage = data.images?.some(img => img.src) ?? false;
     const savedRef = useRef(false);
 
-    const { imageInfo } = useWikimediaImage(data, !hasStoredImage);
+    const { imageInfo } = useWikimediaImage(data, !hasImageRecord);
 
     const stripHtml = (html: string) => html.replace(/<[^>]+>/g, '').trim();
 
     // Auto-save newly discovered Wikidata image in the background
     useEffect(() => {
-        if (!imageInfo || hasStoredImage || savedRef.current || String(data.qid) === '0') return;
+        if (!imageInfo || hasStoredImage || savedRef.current || String(data.qid) === '0' || !isAdmin(user)) return;
         savedRef.current = true;
         const saves = [
             postApiContent(`person/${data.id}/images`, {
@@ -47,12 +49,13 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
 
     const wikimediaLink = data.links?.find(l => l.description === 'Wikimedia Commons')?.link ?? null;
 
-    const displayImage: WikiImageInfo | null = hasStoredImage
+    const storedImageEntry = data.images?.find(img => img.src) ?? null;
+    const displayImage: WikiImageInfo | null = storedImageEntry
         ? {
-            url: data.images[0].src,
+            url: storedImageEntry.src,
             descriptionUrl: wikimediaLink,
-            credit: data.images[0].attr || null,
-            license: data.images[0].license || null
+            credit: storedImageEntry.attr || null,
+            license: storedImageEntry.license || null
         }
         : imageInfo;
 

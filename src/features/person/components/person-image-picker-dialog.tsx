@@ -27,6 +27,7 @@ export const PersonImagePickerDialog = ({ person, visible, onHide, onSave }: Per
     const [license, setLicense] = useState('');
     const [saving, setSaving] = useState(false);
     const [limit, setLimit] = useState(10);
+    const [noPicture, setNoPicture] = useState(false);
 
     const runSearch = (lim: number) => {
         setImages([]);
@@ -34,6 +35,7 @@ export const PersonImagePickerDialog = ({ person, visible, onHide, onSave }: Per
         setSrc('');
         setAttr('');
         setLicense('');
+        setNoPicture(false);
         setLoading(true);
         fetchPersonImagesFromApi(person.id, lim)
             .then((imgs: WikiImageInfo[]) => setImages(imgs))
@@ -47,7 +49,16 @@ export const PersonImagePickerDialog = ({ person, visible, onHide, onSave }: Per
 
     const stripHtml = (html: string) => html.replace(/<[^>]+>/g, '').trim();
 
+    const handleSelectNoPicture = () => {
+        setSelected(null);
+        setSrc('');
+        setAttr('');
+        setLicense('');
+        setNoPicture(true);
+    };
+
     const handleSelect = (img: WikiImageInfo) => {
+        setNoPicture(false);
         setSelected(img);
         setSrc(img.url);
         setAttr(stripHtml(img.credit || ''));
@@ -55,7 +66,7 @@ export const PersonImagePickerDialog = ({ person, visible, onHide, onSave }: Per
     };
 
     const handleSubmit = async () => {
-        if (!src) return;
+        if (!src && !noPicture) return;
         setSaving(true);
         try {
             await postApiContent(`person/${person.id}/images`, { src, attr, license }, user);
@@ -69,7 +80,7 @@ export const PersonImagePickerDialog = ({ person, visible, onHide, onSave }: Per
     const footer = (
         <div className="flex gap-2 justify-content-end">
             <Button label="Peruuta" icon="pi pi-times" className="p-button-text" onClick={onHide} disabled={saving} />
-            <Button label="Tallenna" icon="pi pi-check" onClick={handleSubmit} disabled={!src || saving} loading={saving} />
+            <Button label="Tallenna" icon="pi pi-check" onClick={handleSubmit} disabled={!src && !noPicture || saving} loading={saving} />
         </div>
     );
 
@@ -89,6 +100,19 @@ export const PersonImagePickerDialog = ({ person, visible, onHide, onSave }: Per
                 </div>
             ) : (
                 <div className="flex flex-column gap-4">
+                    <div className="flex flex-wrap gap-3">
+                        <div
+                            className={`cursor-pointer border-2 border-round p-1 flex align-items-center justify-content-center ${noPicture ? 'border-primary' : 'border-transparent surface-hover'}`}
+                            style={{ width: 128, height: 160 }}
+                            onClick={handleSelectNoPicture}
+                            title="Ei kuvaa"
+                        >
+                            <div className="flex flex-column align-items-center gap-2 text-500">
+                                <i className="pi pi-ban" style={{ fontSize: '2rem' }} />
+                                <span className="text-sm">Ei kuvaa</span>
+                            </div>
+                        </div>
+                    </div>
                     {person.images && person.images.length > 0 && (
                         <div>
                             <p className="text-600 mb-2">Tallennetut kuvat:</p>

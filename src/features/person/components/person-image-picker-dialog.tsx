@@ -69,7 +69,16 @@ export const PersonImagePickerDialog = ({ person, visible, onHide, onSave }: Per
         if (!src && !noPicture) return;
         setSaving(true);
         try {
-            await postApiContent(`person/${person.id}/images`, { src, attr, license }, user);
+            const saves: Promise<unknown>[] = [
+                postApiContent(`person/${person.id}/images`, { src, attr, license }, user),
+            ];
+            if (selected?.descriptionUrl) {
+                saves.push(postApiContent(`person/${person.id}/links`, {
+                    link: selected.descriptionUrl,
+                    description: 'Wikimedia Commons'
+                }, user));
+            }
+            await Promise.all(saves);
             onSave?.();
             onHide();
         } finally {

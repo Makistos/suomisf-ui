@@ -5,6 +5,7 @@ import { useWikimediaImage, WikiImageInfo } from "../hooks/use-wikimedia-image"
 import { getCurrenUser } from "../../../services/auth-service"
 import { postApiContent } from "../../../services/user-service"
 import { isAdmin } from "../../user"
+import { Toast } from "primereact/toast"
 
 interface PersonDetailsProps {
     person: Person
@@ -22,8 +23,23 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
     const hasImageRecord = !!(data.images && data.images.length > 0);
     const hasStoredImage = data.images?.some(img => img.src) ?? false;
     const savedRef = useRef(false);
+    const toastRef = useRef<Toast>(null);
+    const wasLoadingRef = useRef(false);
 
-    const { imageInfo } = useWikimediaImage(data, !hasImageRecord);
+    const { imageInfo, isLoading } = useWikimediaImage(data, !hasImageRecord);
+
+    useEffect(() => {
+        if (isLoading) {
+            wasLoadingRef.current = true;
+        } else if (wasLoadingRef.current) {
+            wasLoadingRef.current = false;
+            if (imageInfo) {
+                toastRef.current?.show({ severity: 'success', summary: 'Kuva lisätty', life: 3000 });
+            } else {
+                toastRef.current?.show({ severity: 'info', summary: 'Kuvie ei löytynyt', life: 3000 });
+            }
+        }
+    }, [isLoading, imageInfo]);
 
     const stripHtml = (html: string) => html.replace(/<[^>]+>/g, '').trim();
 
@@ -60,6 +76,8 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
         : imageInfo;
 
     return (
+        <>
+        <Toast ref={toastRef} />
         <div className="grid">
             <div className="col-12 flex align-items-start gap-3 mt-3 p-0">
                 {displayImage && (
@@ -138,5 +156,6 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
                 )
             }
         </div >
+        </>
     )
 }

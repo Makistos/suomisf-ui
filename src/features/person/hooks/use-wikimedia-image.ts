@@ -9,7 +9,11 @@ export const useWikimediaImage = (person: Person, enabled = true) => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        if (!enabled || person.qid) return;
+        if (!enabled) {
+            setImageInfo(null);
+            return;
+        }
+        if (person.qid) return;
         let cancelled = false;
         setImageInfo(null);
         setIsLoading(true);

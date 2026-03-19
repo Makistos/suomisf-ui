@@ -19,6 +19,8 @@ export const FAQ = () => {
                     <p>Kansikuvat löytyvät pääasiassa eri sivustoilta, kuten Antikvaarista, Kansalliskirjastosta
                         (uudempien kirjojen osalta) ja Risingshadow'sta. Runsaasti kuvia on myös skannattu itse omista kirjoista.
                     </p>
+                    <p>Henkilöiden kuvat on haettu Wikipedia-, Wikimedia Commons- ja Wikidata-sivustoilta. Kuvina käytetään vain sellaisia, joiden lisenssi sallii uudelleenkäytön.
+                        Lisäksi lisenssin ja kuvan ottajan saa näkyviin viemällä kursorin kuvan päälle.</p>
 
                 </div>
                 <div className="grid col-12 mt-2">

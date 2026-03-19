@@ -210,8 +210,9 @@ export const PersonPage = ({ id }: PersonPageProps) => {
          * Check if person has any non-SF content in database (works, shorts).
          */
         if (!data) return false;
-        if (data.works === null || data.works.length === 0) return false;
-        if (data.stories === null || data.stories.length === 0) return false;
+
+        if ((data.works === null || data.works.length === 0) &&
+            (data.stories === null || data.stories.length === 0)) return false;
         let all_genres: Genre[] = [];
         if (what === "all" || what === "works") {
             all_genres = _.concat(all_genres, data.works.map(work => work.genres))
@@ -220,6 +221,8 @@ export const PersonPage = ({ id }: PersonPageProps) => {
             all_genres = _.concat(all_genres,
                 ...data.stories.map(story => story.genres));
         }
+        console.log(all_genres)
+        console.log(_.flatten(all_genres).some(genre => genre.abbr === 'eiSF'))
         return _.flatten(all_genres).some(genre => genre.abbr === 'eiSF');
     }
 

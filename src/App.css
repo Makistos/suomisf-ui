@@ -883,3 +883,188 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     padding: 10px;
     margin-bottom: 15px;
 }
+
+/* ── Alternative front page ─────────────────────────────────────── */
+
+.home-alt-page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 3rem;
+}
+
+.home-alt-heading {
+    font-family: "Roboto Slab", serif !important;
+    font-size: 1.75rem;
+    line-height: 2.25rem;
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+@media screen and (max-width: 768px) {
+    .home-alt-heading {
+        font-size: 1.35rem;
+        line-height: 1.8rem;
+    }
+    .home-alt-page {
+        padding: 1.25rem 1rem 2rem;
+    }
+}
+
+.home-alt-intro {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--text-color);
+    max-width: 65ch;
+    margin: 0;
+}
+
+.home-alt-intro a {
+    text-decoration: underline;
+    color: var(--primary-color);
+}
+
+.home-alt-intro a:hover {
+    opacity: 0.8;
+}
+
+.home-alt-section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.home-alt-section-title {
+    font-size: 0.75rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-color-secondary);
+    font-weight: 700 !important;
+    font-family: "Roboto", sans-serif !important;
+    margin: 0 0 1rem;
+}
+
+.home-alt-see-more {
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.home-alt-see-more:hover {
+    text-decoration: underline;
+}
+
+/* Cover strip */
+
+.home-alt-covers {
+    display: flex;
+    gap: 0.625rem;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.home-alt-cover-item {
+    flex-shrink: 0;
+}
+
+.home-alt-cover-item img {
+    display: block;
+    height: 160px;
+    width: auto;
+    border-radius: 2px;
+    box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.18);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.home-alt-cover-item img:hover {
+    transform: translateY(-4px);
+    box-shadow: 4px 8px 14px rgba(0, 0, 0, 0.24);
+}
+
+.home-alt-cover-fallback {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.3rem;
+    padding: 0.5rem;
+    width: 90px;
+    height: 160px;
+    background: var(--surface-100);
+    border: 1px solid var(--surface-border);
+    border-radius: 2px;
+    font-size: 0.7rem;
+    text-align: center;
+    box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.15s ease;
+}
+
+.home-alt-cover-fallback:hover {
+    transform: translateY(-4px);
+}
+
+.home-alt-cover-author {
+    color: var(--text-color-secondary);
+    font-size: 0.65rem;
+    line-height: 1.2;
+}
+
+.home-alt-cover-title {
+    color: var(--text-color);
+    font-weight: 600;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+/* Stats */
+
+.home-alt-stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.home-alt-stat {
+    margin: 0;
+    padding: 0.5rem 0 0.5rem;
+    border-top: 2px solid var(--primary-color);
+    min-width: 72px;
+}
+
+.home-alt-stat dt {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-color-secondary);
+    margin-bottom: 0.2rem;
+    font-family: "Roboto", sans-serif;
+}
+
+.home-alt-stat dd {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+    font-family: "Roboto Slab", serif;
+}
+
+/* Footer nav */
+
+.home-alt-footer-nav {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.home-alt-footer-nav a {
+    color: var(--text-color-secondary);
+    font-size: 0.875rem;
+    text-decoration: none;
+}
+
+.home-alt-footer-nav a:hover {
+    text-decoration: underline;
+    color: var(--text-color);
+}

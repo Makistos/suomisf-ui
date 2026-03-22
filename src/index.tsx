@@ -7,6 +7,7 @@ import 'primereact/resources/primereact.min.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Home from './home';
+import HomeAlt from './home-alt';
 import { MagazinesPage } from './features/magazine/routes/magazines-page';
 import { MagazinePage } from './features/magazine/routes/magazine-page';
 import { ArticleView } from './features/article/routes/article-page';
@@ -73,6 +74,7 @@ root.render(
         <Route path="/faq" element={<FAQ />} />
         <Route path="/nonfiction" element={<WorksByType worktype={"4"} />} />
         <Route path="/stats" element={<StatsPage />} />
+        <Route path="/home-alt" element={<HomeAlt />} />
         <Route path="/users/:itemId" element={<ProfilePage id={null} />} />
         <Route path="*"
           element={

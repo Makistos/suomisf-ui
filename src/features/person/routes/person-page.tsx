@@ -185,7 +185,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
             (s.contributors || []).some(c => c.person.id === data.id && c.role.id === ContributionType.Kirjoittaja)
         );
         const isNovellisti = authoredShorts.some(s => s.type && [1, 2, 3].includes(s.type.id));
-        const isRunoilija = authoredShorts.some(s => s.type && [4, 5].includes(s.type.id));
+        const isRunoilija = authoredShorts.some(s => s.type && [4, 5, 6].includes(s.type.id));
         const isKirjoittaja = authoredShorts.some(s => s.type && [7, 8, 9].includes(s.type.id));
 
         if (data.works.length > 0) roles.push('Kirjailija');

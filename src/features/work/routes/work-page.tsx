@@ -3,7 +3,6 @@ import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 
 import { DataView } from "primereact/dataview";
 import { Panel } from "primereact/panel";
-import { Ripple } from "primereact/ripple";
 import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
 import { Toast } from "primereact/toast";
@@ -149,12 +148,12 @@ const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, highlight
 
     return (
         <div className={`col-12 ${shouldHighlight ? 'highlighted-edition' : ''}`}>
-            <div className="grid">
-                <div className="col-12 lg:col-8">
+            <div className="flex gap-3 align-items-start">
+                <div className="flex-1 min-w-0">
                     <EditionDetails edition={edition} card work={work}
                         onSubmitCallback={onSubmitCallback} />
                 </div>
-                <div className="col-12 lg:col-4 flex justify-content-start lg:justify-content-end align-items-center mt-3 lg:mt-0">
+                <div className="flex-shrink-0 flex justify-content-end align-items-center">
                     {edition.images.length > 0 ?
                         <ImageView
                             itemId={edition.id}
@@ -303,14 +302,15 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
     ]
 
     const detailOptions = [
-        { icon: 'pi pi-minus', value: 'brief' },
-        { icon: 'pi pi-bars', value: 'condensed' },
-        { icon: 'pi pi-align-justify', value: 'all' }
+        { icon: 'pi pi-minus', value: 'brief', label: 'Lyhyt' },
+        { icon: 'pi pi-bars', value: 'condensed', label: 'Tiivistetty' },
+        { icon: 'pi pi-align-justify', value: 'all', label: 'Kaikki' },
     ];
 
     type detailOptionType = {
         icon: string,
-        value: string
+        value: string,
+        label: string,
     }
 
     const deleteWork = (id: number) => {
@@ -363,43 +363,6 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
             onUpload={onUpload}
             highlightEditionId={highlightEditionId}
         />;
-    }
-
-    const renderHeader = () => {
-        return (<> </>
-            // <div className="grid grid-nogutter">
-            //     <div className="col" style={{ textAlign: 'left' }}>
-            //         <DataViewLayoutOptions layout={layout}
-            //             onChange={(e: DataViewLayoutOptionsChangeParams) => setLayout(e.value)} />
-            //     </div>
-            // </div>
-        )
-    }
-
-    const header = renderHeader();
-
-    /**
-     * Generates the panel template based on the given options.
-     *
-     * @param {any} options - The options for generating the panel template.
-     * @return {JSX.Element} - The panel template as a JSX element.
-     */
-    const panelTemplate = (options: any) => {
-        const toggleIcon = options.collapsed ? 'pi pi-chevron-down' : 'pi pi-chevron-up';
-        const className = `${options.className} justify-content-start`;
-        const titleClassName = `${options.titleClassName} pl-1`;
-
-        return (
-            <div className={className}>
-                <span className={titleClassName}>
-                    Novellit ja artikkelit
-                </span>
-                <button className={options.togglerClassName} onClick={options.onTogglerClick}>
-                    <span className={toggleIcon}></span>
-                    <Ripple />
-                </button>
-            </div>
-        )
     }
 
     const onDialogShow = () => {
@@ -467,9 +430,12 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
         queryClient.invalidateQueries({ queryKey: ["work", workId] });
     }
 
-    const detailTemplate = (option: detailOptionType) => {
-        return <i className={option.icon}></i>
-    }
+    const detailTemplate = (option: detailOptionType) => (
+        <span className="flex align-items-center gap-2">
+            <i className={option.icon} />
+            <span className="text-sm">{option.label}</span>
+        </span>
+    )
 
     if (isResolvingWorkId || isLoadingWorkData) {
         return (<div>Ladataan teosta...</div>);
@@ -483,37 +449,9 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
 
     const anthology = isAnthology(workData);
 
-    const startContent = () => {
-        // console.log(detailLevel)
-        if (detailLevel === "all") {
-            return (
-                <h2>Painokset</h2>
-            )
-        }
-        if (detailLevel === "condensed") {
-            return (
-                <h2>Painokset tiivistettynä</h2>
-            )
-        }
-        if (detailLevel === "brief") {
-            return (
-                <h2>Laitokset</h2>
-            )
-        }
-    }
-
     const changeDetailLevel = (level: string) => {
         setDetailLevel(level);
     }
-
-    const endContent = (
-        <SelectButton value={detailLevel} options={detailOptions}
-            optionLabel="icon"
-            id="details"
-            onChange={(e) => changeDetailLevel(e.value)}
-            itemTemplate={detailTemplate}
-        />
-    )
 
     const sortEditions = (a: Edition[], b: Edition[]): number => {
         const first = a[0];
@@ -630,12 +568,10 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                             <TabView className="shadow-2" scrollable={true}>
                                 <TabPanel header="Painokset" leftIcon="pi pi-book">
                                     <div className="card">
-                                        <div className="flex justify-content-between align-items-center mb-3">
-                                            <h2 className="m-0">Painokset</h2>
+                                        <div className="flex justify-content-end mb-3">
                                             <SelectButton
                                                 value={detailLevel}
                                                 options={detailOptions}
-                                                optionLabel="icon"
                                                 onChange={(e) => changeDetailLevel(e.value)}
                                                 itemTemplate={detailTemplate}
                                             />

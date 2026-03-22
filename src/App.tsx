@@ -1,7 +1,15 @@
 import { useState, useEffect, StrictMode } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: true,
+    }
+  }
+});
 
 import { locale, addLocale } from 'primereact/api';
 import 'primereact/resources/primereact.min.css'
@@ -14,6 +22,12 @@ import MainMenu from './components/mainmenu';
 //import { useDocumentTitle } from './components/document-title';
 
 function App() {
+  const location = useLocation();
+
+  useEffect(() => {
+    document.body.classList.remove('p-overflow-hidden');
+  }, [location.pathname]);
+
   addLocale('fi', {
     startsWith: 'Teksti alkaa',
     contains: 'Sisältää',
@@ -59,14 +73,6 @@ function App() {
   });
 
   locale('fi');
-
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: true,
-      }
-    }
-  });
 
   const [title, setTitle] = useState("SF-Bibliografia");
 

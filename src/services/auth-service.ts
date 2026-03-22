@@ -12,11 +12,19 @@ export async function login(username: string, password: string) {
             'username': username,
             'password': password
         })
-        .then((response) => {
+        .then(async (response) => {
             console.log("Login response: " + JSON.stringify(response, null, 2));
             if (response.data.access_token) {
-                //console.log("access_token");
-                localStorage.setItem("user", JSON.stringify(response.data));
+                const meResponse = await axios.get(baseURL + "me", {
+                    headers: { 'Authorization': `Bearer ${response.data.access_token}` }
+                });
+                const { name, is_admin } = meResponse.data;
+                const user = {
+                    ...response.data,
+                    name,
+                    role: is_admin ? 'admin' : 'user',
+                };
+                localStorage.setItem("user", JSON.stringify(user));
             }
             return response.data;
         });
@@ -50,6 +58,8 @@ export const getCurrenUser = (): User | null => {
     return null;
 }
 
+const axiosApiInstance = axios.create();
+
 export const refreshAccessTokenFn = async () => {
     const userStr = localStorage.getItem("user");
     let user = null;
@@ -60,17 +70,15 @@ export const refreshAccessTokenFn = async () => {
     const header = refreshHeader();
     const data = { 'username': user.name };
     try {
-        const response = await axios.post(baseURL + "refresh", data, { headers: header });
-        localStorage.setItem("user", JSON.stringify(response.data));
+        const response = await axiosApiInstance.post(baseURL + "refresh", data, { headers: header });
+        localStorage.setItem("user", JSON.stringify({ ...user, ...response.data }));
         // console.log("token refreshed");
         return response;
     } catch (error) {
         console.log("error refreshing token: " + JSON.stringify(error, null, 2));
+        throw error;
     }
-    return null;
 }
-
-const axiosApiInstance = axios.create();
 
 axios.interceptors.response.use(
     (response: AxiosResponse<any>) => {
@@ -105,8 +113,9 @@ axios.interceptors.response.use(
                     } else {
                         console.log('Error', error.message);
                     }
+                    return Promise.reject(error);
                 });
-            return Promise.resolve(res);
+            return res;
         } else {
             return Promise.reject(error);
         }

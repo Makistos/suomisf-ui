@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from "react-router-dom";
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ProgressSpinner } from "primereact/progressspinner";
-import { Fieldset } from 'primereact/fieldset';
 import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
 import { Dialog } from "primereact/dialog";
@@ -11,32 +10,26 @@ import _ from "lodash";
 
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
-import { Country } from "../../../types/country";
 import { ContributorBookControl } from "../../../components/contributor-book-control";
 import { ShortsControl } from '../../short';
-import { GenreGroup } from "../../genre";
-import { Genre } from "../../genre";
+import { GenreGroup, Genre } from "../../genre";
 import { TagGroup } from '../../tag';
-import { LinkPanel } from "../../../components/link-panel";
-import { AwardList, AwardPanel, Awarded } from '../../award';
-import { Person, PersonBrief } from '../types';
+import { AwardList, Awarded } from '../../award';
+import { Person } from '../types';
 import { PersonForm } from '../components/person-form';
 import { PersonImagePickerDialog } from '../components/person-image-picker-dialog';
 import { selectId } from '../../../utils';
 import { User, isAdmin } from "../../user";
 import { useDocumentTitle } from '../../../components/document-title';
-import { Work } from '@features/work';
-
 import { Card } from 'primereact/card';
 import { TabView, TabPanel } from 'primereact/tabview';
 import { BookSeriesList } from '@features/bookseries';
-import { getCountryCode } from '../../../utils/country-utils';
 import { Toast } from 'primereact/toast';
 import { PersonDetails } from '../components/person-details';
 import { AwardedForm } from '@features/award/components/awarded-form';
 import { ContributorMagazineControl } from '@components/contributor-magazine-control';
 import { Issue } from '@features/issue';
-import { all } from 'axios';
+import { ContributionType } from '../../../types/contribution';
 
 const baseURL = "people/";
 
@@ -52,12 +45,11 @@ const NONFICTION_TYPES = [4];
 export const PersonPage = ({ id }: PersonPageProps) => {
     const params = useParams();
     const user = getCurrenUser();
-    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+    const [, setDocumentTitle] = useDocumentTitle("");
     const [isEditVisible, setEditVisible] = useState(false);
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [editPerson, setEditPerson] = useState(true);
     const [formData, setFormData]: [Person | null, (formData: Person | null) => void] = useState<Person | null>(null);
-    const [showNonSf, setShowNonSf] = useState(false);
     const [isAwardsVisible, setAwardsVisible] = useState(false);
     const [isImagePickerVisible, setImagePickerVisible] = useState(false);
     //const [workAwards, setWorkAwards]: [Awarded[], (workAwards: Awarded[]) => void] = useState<Awarded[]>([]);
@@ -139,27 +131,6 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         }
     ]
 
-    const personDetails = (nationality: Country | null, dob: number | null, dod: number | null) => {
-        let retval: string = "";
-        if (nationality) {
-            retval = nationality.name
-        }
-        if (dob) {
-            if (nationality) {
-                retval = retval + ', '
-            }
-            retval = retval + dob + '-'
-        }
-        if (dod) {
-            if (!dob) {
-                retval = retval + ' - '
-            }
-            retval = retval + dod
-        }
-        return retval;
-    }
-
-
     const getGenres = () => {
         if (!data) return [];
         return data.works.map(work => work.genres).flat();
@@ -177,23 +148,6 @@ export const PersonPage = ({ id }: PersonPageProps) => {
             .catch((error) => console.log(error));
         //console.log(response);
         return response == undefined ? [] : response;
-    }
-
-    const getWorkAwards = async () => {
-        // Return a list of all awards to works awarded to this person.
-        // List is automatically sorted by year in ascending order.
-        // if (!data) return [];
-        // const retval = data.works
-        //     .filter(work => work.awards && work.awards.length > 0)
-        //     .map(work => work.awards).flat()
-        //     .sort((a: Awarded, b: Awarded) => a.year < b.year ? -1 : 1);
-        const sorted = fetchPersonAwards(thisId, user).then((response) => {
-            const sortedAwards = response.sort((a: Awarded, b: Awarded) => a.year < b.year ? -1 : 1);
-            return sortedAwards;
-        }, onError => {
-            console.log(onError);
-        });
-        return sorted;
     }
 
     const { data: awards } = useQuery({
@@ -221,17 +175,41 @@ export const PersonPage = ({ id }: PersonPageProps) => {
             all_genres = _.concat(all_genres,
                 ...data.stories.map(story => story.genres));
         }
-        console.log(all_genres)
-        console.log(_.flatten(all_genres).some(genre => genre.abbr === 'eiSF'))
         return _.flatten(all_genres).some(genre => genre.abbr === 'eiSF');
     }
 
-    const hasBooks = (data: Person) => {
-        return (data.works.length > 0 || data.editions.length > 0);
-    }
+    const getDerivedRoles = (data: Person, issues: Issue[]): string[] => {
+        const roles: string[] = [];
 
-    const hasShorts = (data: Person) => {
-        return (data.stories.length > 0);
+        const authoredShorts = (data.stories || []).filter(s =>
+            (s.contributors || []).some(c => c.person.id === data.id && c.role.id === ContributionType.Kirjoittaja)
+        );
+        const isNovellisti = authoredShorts.some(s => s.type && [1, 2, 3].includes(s.type.id));
+        const isRunoilija = authoredShorts.some(s => s.type && [4, 5].includes(s.type.id));
+        const isKirjoittaja = authoredShorts.some(s => s.type && [7, 8, 9].includes(s.type.id));
+
+        if (data.works.length > 0) roles.push('Kirjailija');
+        if (isNovellisti) roles.push('Novellisti');
+        if (isRunoilija) roles.push('Runoilija');
+        if (isKirjoittaja) roles.push('Kirjoittaja');
+
+        const hasTranslatedBooks = data.translations && data.translations.length > 0;
+        const hasTranslatedShorts = (data.stories || []).some(s =>
+            (s.contributors || []).some(c => c.person.id === data.id && c.role.id === ContributionType.Kääntäjä)
+        );
+        if (hasTranslatedBooks || hasTranslatedShorts) roles.push('Kääntäjä');
+        if (data.edits && data.edits.length > 0) roles.push('Toimittaja');
+
+        const editions = data.editions || [];
+        if (editions.some(e => (e.contributions || []).some(c => c.person.id === data.id && c.role.id === ContributionType.Kansikuva)))
+            roles.push('Kansitaiteilija');
+        if (editions.some(e => (e.contributions || []).some(c => c.person.id === data.id && c.role.id === ContributionType.Kuvittaja)))
+            roles.push('Kuvittaja');
+        if (issues.some(i => (i.contributors || []).some(c => c.person.id === data.id && c.role.id === ContributionType.Päätoimittaja)))
+            roles.push('Päätoimittaja');
+
+        const order = ['Kirjailija', 'Kirjoittaja', 'Kääntäjä', 'Toimittaja', 'Novellisti', 'Runoilija', 'Kansitaiteilija', 'Kuvittaja', 'Päätoimittaja'];
+        return roles.sort((a, b) => order.indexOf(a) - order.indexOf(b));
     }
 
     const queryClient = useQueryClient();
@@ -260,26 +238,6 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     // if (data !== undefined) {
     //     console.log(data)
     // }
-
-    const countGenres = (genres: Genre[]) => {
-        return genres.reduce((acc: { [key: string]: { name: string, count: number } }, genre) => {
-            if (!acc[genre.id]) {
-                acc[genre.id] = { name: genre.name, count: 0 };
-            }
-            acc[genre.id].count++;
-            return acc;
-        }, {});
-    };
-
-    const countTags = (tags: { id: number, name: string }[]) => {
-        return tags.reduce((acc: { [key: string]: { name: string, count: number } }, tag) => {
-            if (!acc[tag.id]) {
-                acc[tag.id] = { name: tag.name, count: 0 };
-            }
-            acc[tag.id].count++;
-            return acc;
-        }, {});
-    };
 
     if (!data) {
         return <ProgressSpinner />
@@ -316,12 +274,29 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                     {/* Genres moved to right side */}
                                     <div className="col-12 lg:col-3">  {/* Full width on mobile, 3 cols on large screens */}
                                         <div className="flex flex-column gap-4">
-                                            <h3 className="text-sm uppercase text-600 m-0">Genret</h3>
-                                            <GenreGroup
-                                                genres={getGenres()}
-                                                showOneCount
-                                                className="flex-wrap"
-                                            />
+                                            {getDerivedRoles(data, issueContributions.data || []).length > 0 && (
+                                                <div className="flex flex-column gap-2 pt-3 border-bottom-1">
+                                                    <span className="font-bold">{getDerivedRoles(data, issueContributions.data || []).join(', ')}</span>
+                                                </div>
+                                            )}
+                                            <div className="flex flex-column gap-2">
+                                                <h3 className="text-sm uppercase text-600 m-0">Genret</h3>
+                                                <GenreGroup
+                                                    genres={getGenres()}
+                                                    showOneCount
+                                                    className="flex-wrap"
+                                                />
+                                            </div>
+                                            {getTags().length > 0 && (
+                                                <div className="flex flex-column gap-2">
+                                                    <h3 className="text-sm uppercase text-600 m-0">Asiasanat</h3>
+                                                    <TagGroup
+                                                        tags={getTags()}
+                                                        overflow={5}
+                                                        showOneCount
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -351,76 +326,72 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                         {/* Main Content */}
                         <div className="col-12">
                             <TabView className="shadow-2" scrollable={true}>
-                                {hasFictionType(FICTION_TYPES) &&
-                                    <TabPanel header="Teokset" leftIcon="pi pi-book">
-                                        <div className="card">
-                                            {/* Existing ContributorBookControl */}
-                                            <ContributorBookControl
-                                                viewNonSf={false}
-                                                person={data}
-                                                types={FICTION_TYPES}
-                                                collaborationsLast={true}
-                                                tags={getTags()}  // Add this line
-                                            />
-                                        </div>
-                                    </TabPanel>
-                                }
-                                {hasFictionType(NONFICTION_TYPES) &&
-                                    <TabPanel header="Tietokirjat" leftIcon="pi pi-book">
-                                        <div className="card">
-                                            {/* Existing ContributorBookControl */}
-                                            <ContributorBookControl
-                                                viewNonSf={false}
-                                                person={data}
-                                                types={NONFICTION_TYPES}
-                                                collaborationsLast={true}
-                                                tags={getTags()}  // Add this line
-                                            />
-                                        </div>
-                                    </TabPanel>
-                                }
-
-
-                                {data.stories && data.stories.length > 0 && (
-                                    <TabPanel header="Novellit ja artikkelit" leftIcon="pi pi-list">
-                                        <div className="card">
-                                            <ShortsControl key={"sfshorts"}
-                                                person={data}
-                                                listPublications
-                                                showAuthors
-                                                sort={"Title"}
-                                                what={"sf"}></ShortsControl>
-                                        </div>
-                                    </TabPanel>
-                                )}
-                                {data.works && data.works.some(work => work.bookseries) && (
-                                    <TabPanel header="Sarjat" leftIcon="pi pi-sitemap">
-                                        <div className="card">
-                                            <BookSeriesList
-                                                works={data.works}
-                                                seriesType='bookseries'
-                                            />
-                                        </div>
-                                    </TabPanel>
-                                )}
-                                {issueContributions.data && issueContributions.data.length > 0 && (
-                                    <TabPanel header="Lehdet" leftIcon="pi pi-newspaper">
-                                        <div className="card">
-                                            <ContributorMagazineControl
-                                                issues={issueContributions.data}
-                                                person={data.id}
-                                            />
-                                        </div>
-                                    </TabPanel>
-                                )}
-                                {awards && awards.length > 0 && (
-                                    <TabPanel header="Palkinnot" leftIcon="pi pi-trophy">
-                                        <AwardList awards={awards}></AwardList>
-                                    </TabPanel>
-                                )}
-
-                                {hasNonSf("all") && (
-                                    <TabPanel header="Muu tuotanto" leftIcon="pi pi-folder">
+                                {[
+                                    hasFictionType(FICTION_TYPES) && (
+                                        <TabPanel key="teokset" header="Teokset" leftIcon="pi pi-book">
+                                            <div className="card">
+                                                <ContributorBookControl
+                                                    viewNonSf={false}
+                                                    person={data}
+                                                    types={FICTION_TYPES}
+                                                    collaborationsLast={true}
+                                                />
+                                            </div>
+                                        </TabPanel>
+                                    ),
+                                    hasFictionType(NONFICTION_TYPES) && (
+                                        <TabPanel key="tietokirjat" header="Tietokirjat" leftIcon="pi pi-book">
+                                            <div className="card">
+                                                <ContributorBookControl
+                                                    viewNonSf={false}
+                                                    person={data}
+                                                    types={NONFICTION_TYPES}
+                                                    collaborationsLast={true}
+                                                />
+                                            </div>
+                                        </TabPanel>
+                                    ),
+                                    data.stories && data.stories.length > 0 && (
+                                        <TabPanel key="novellit" header="Novellit ja artikkelit" leftIcon="pi pi-list">
+                                            <div className="card">
+                                                <ShortsControl key={"sfshorts"}
+                                                    person={data}
+                                                    listPublications
+                                                    showAuthors
+                                                    sort={"Title"}
+                                                    what={"sf"} />
+                                            </div>
+                                        </TabPanel>
+                                    ),
+                                    data.works && data.works.some(work => work.bookseries) && (
+                                        <TabPanel key="sarjat" header="Sarjat" leftIcon="pi pi-sitemap">
+                                            <div className="card">
+                                                <BookSeriesList
+                                                    works={data.works}
+                                                    seriesType='bookseries'
+                                                />
+                                            </div>
+                                        </TabPanel>
+                                    ),
+                                    issueContributions.data && issueContributions.data.length > 0 && (
+                                        <TabPanel key="lehdet" header="Lehdet" leftIcon="pi pi-newspaper">
+                                            <div className="card">
+                                                <ContributorMagazineControl
+                                                    issues={issueContributions.data}
+                                                    person={data.id}
+                                                />
+                                            </div>
+                                        </TabPanel>
+                                    ),
+                                    awards && awards.length > 0 && (
+                                        <TabPanel key="palkinnot" header="Palkinnot" leftIcon="pi pi-trophy">
+                                            <div className="card">
+                                                <AwardList awards={awards} />
+                                            </div>
+                                        </TabPanel>
+                                    ),
+                                    hasNonSf("all") && (
+                                        <TabPanel key="muutuotanto" header="Muu tuotanto" leftIcon="pi pi-folder">
                                         <div className="card">
                                             {hasNonSf("works") && (
                                                 <div className="mb-4">
@@ -448,7 +419,8 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                             )}
                                         </div>
                                     </TabPanel>
-                                )}
+                                    ),
+                                ].filter(Boolean)}
                             </TabView>
                         </div>
 

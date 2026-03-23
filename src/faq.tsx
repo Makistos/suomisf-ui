@@ -78,8 +78,6 @@ export const FAQ = () => {
                         on <Link to={`https://primereact.org/`}>PrimeReact</Link>. Taustajärjestelmä eli bäkkäri on tehty Pythonilla <Link to={`https://flask.palletsprojects.com/en/3.0.x/`}>Flask</Link>-ympäristöön.
                     </p>
                     <p>Ikonit ovat <Link to={`https://www.iconarchive.com/`}>IconArchive</Link>-palvelusta.</p>
-                    <p>Etusivun kuva on <Link to={`https://www.pexels.com`}>Pexels</Link>-palvelusta. Kuvan ottaja on Gunnar Ridderström.&nbsp;
-                        <Link to={`https://www.pexels.com/photo/public-library-with-collection-of-multicolored-books-4318441/`}>Alkuperäinen kuva.</Link> </p>
                     <p>Kaikki koodi on vapaata. Käyttöliittymäkoodi löytyy osoitteesta
                         <Link to={`https://github.com/Makistos/suomisf-ui`}>https://github.com/Makistos/suomisf-ui</Link> ja
                         taustajärjestelmä osoitteesta <Link to={`https://github.com/Makistos/suomisf`}>https://github.com/Makistos/suomisf</Link>.

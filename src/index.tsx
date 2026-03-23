@@ -6,7 +6,6 @@ import 'primereact/resources/primereact.min.css'
 
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Home from './home';
 import HomeAlt from './home-alt';
 import { MagazinesPage } from './features/magazine/routes/magazines-page';
 import { MagazinePage } from './features/magazine/routes/magazine-page';
@@ -45,7 +44,7 @@ root.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />}>
-        <Route index element={<Home />} />
+        <Route index element={<HomeAlt />} />
         <Route path="awards" element={<Awards />} />
         <Route path="awards/:itemId" element={<AwardPage id={null} />} />
         <Route path="bookindex" element={<WorkSearchPage />} />

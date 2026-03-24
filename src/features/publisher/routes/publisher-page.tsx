@@ -243,7 +243,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
                         <div className="col-12">
                             <TabView className="shadow-2">
                                 <TabPanel header="Julkaisut" leftIcon="pi pi-book">
-                                    <div className="card min-w-full p-2">
+                                    <div className="card">
                                         <EditionList
                                             editions={data.editions.filter(ed => ed.publisher.id === Number(thisId))}
                                         />
@@ -252,7 +252,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
 
                                 {data.series && data.series.length > 0 && (
                                     <TabPanel header="Sarjat" leftIcon="pi pi-list">
-                                        <div className="card min-w-full">
+                                        <div className="card">
                                             <PubseriesList
                                                 pubseriesList={data.series}
                                             />

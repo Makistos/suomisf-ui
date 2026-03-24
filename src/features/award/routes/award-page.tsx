@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import { useParams, Link } from 'react-router-dom';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -136,7 +137,7 @@ export const AwardPage = ({ id }: AwardPageProps) => {
     return (
         <main className="all-content">
             {isLoading ? (
-                <div>Loading...</div>
+                <div className="progressbar"><ProgressSpinner /></div>
             ) : (
                 <>
                     <div className="grid mb-5 justify-content-center">

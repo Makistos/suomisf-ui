@@ -252,7 +252,7 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
                         <div className="col-12">
                             <TabView className="shadow-2">
                                 <TabPanel header="Kirjat" leftIcon="pi pi-book">
-                                    <div className="card min-w-full">
+                                    <div className="card">
                                         <WorkList works={data.works} />
                                     </div>
                                 </TabPanel>

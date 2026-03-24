@@ -222,7 +222,7 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
                         <div className="col-12">
                             <TabView className="shadow-2">
                                 <TabPanel header="Kirjat" leftIcon="pi pi-book">
-                                    <div className="card min-w-full">
+                                    <div className="card">
                                         <EditionList editions={data.editions}
                                             sort="author" />
                                     </div>

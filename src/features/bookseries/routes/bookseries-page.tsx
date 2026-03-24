@@ -134,14 +134,17 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
             <Toast ref={toast} />
 
             {isAdmin(user) && (
-                <SpeedDial
-                    model={dialItems}
-                    direction="up"
-                    className="fixed-dial"
-                    showIcon="pi pi-plus"
-                    hideIcon="pi pi-times"
-                    buttonClassName="p-button-primary"
-                />
+                <>
+                    <Tooltip position="left" target=".fixed-dial .p-speeddial-action" />
+                    <SpeedDial
+                        model={dialItems}
+                        direction="up"
+                        className="fixed-dial"
+                        showIcon="pi pi-plus"
+                        hideIcon="pi pi-times"
+                        buttonClassName="p-button-primary"
+                    />
+                </>
             )}
 
             {isLoading ? (

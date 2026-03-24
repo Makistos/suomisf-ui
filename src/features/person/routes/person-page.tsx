@@ -239,9 +239,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     //     console.log(data)
     // }
 
-    if (!data) {
-        return <ProgressSpinner />
-    }
+    if (!data) return null;
 
     const hasFictionType = (types: Number[]) => {
         // console.log(data)

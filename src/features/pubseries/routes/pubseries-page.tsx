@@ -6,6 +6,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Dialog } from "primereact/dialog";
 import { SpeedDial } from "primereact/speeddial";
+import { Tooltip } from "primereact/tooltip";
 import { Toast } from "primereact/toast";
 import { Card } from "primereact/card";
 import { TabView, TabPanel } from "primereact/tabview";
@@ -124,14 +125,17 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
             <Toast ref={toastRef} />
 
             {isAdmin(user) && (
-                <SpeedDial
-                    model={dialItems}
-                    direction="up"
-                    className="fixed-dial"
-                    showIcon="pi pi-plus"
-                    hideIcon="pi pi-times"
-                    buttonClassName="p-button-primary"
-                />
+                <>
+                    <Tooltip position="left" target=".fixed-dial .p-speeddial-action" />
+                    <SpeedDial
+                        model={dialItems}
+                        direction="up"
+                        className="fixed-dial"
+                        showIcon="pi pi-plus"
+                        hideIcon="pi pi-times"
+                        buttonClassName="p-button-primary"
+                    />
+                </>
             )}
 
             {isLoading ? (

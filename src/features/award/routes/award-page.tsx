@@ -130,7 +130,7 @@ export const AwardPage = ({ id }: AwardPageProps) => {
         );
     };
 
-    if (!data) return <></>
+    if (!data) return null;
 
     console.log(data)
 

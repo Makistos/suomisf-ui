@@ -187,7 +187,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
                         {/* Header Section */}
                         <div className="col-12">
                             <Card className="shadow-3">
-                                <div className="grid">
+                                <div className="grid pl-2 pr-2 pt-0">
                                     <div className="col-12 lg:col-9">
                                         <div className="flex-column">
                                             <h1 className="text-4xl font-bold m-0">{data.name}</h1>

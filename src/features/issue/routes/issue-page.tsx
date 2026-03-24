@@ -387,7 +387,7 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
                     <div className="grid">
                         <div className="col-12">
                             <Card className="shadow-3">
-                                <div className="grid pl2- pr-2 pt-0">
+                                <div className="grid pl-2 pr-2 pt-0">
                                     <div className="col-12 lg:col-9">
                                         <div className="flex-column">
                                             <IssueInfo issue={data} />

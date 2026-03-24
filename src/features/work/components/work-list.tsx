@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 import { SelectButton } from 'primereact/selectbutton';
 import { Dropdown } from "primereact/dropdown";
@@ -134,8 +135,32 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
                                 return (
                                     <div className="grid col-12" key={group}>
                                         <div className="grid col-12">
-                                            {group !== personName &&
-                                                <h3 className="">{group}</h3>}
+                                            {group !== personName && (
+                                                <h3 className="mt-2" style={{ marginBottom: '0.15rem' }}>
+                                                    {(() => {
+                                                        const contribs = (ws[0]?.contributions ?? [])
+                                                            .filter(c => c.role.id === 1 || c.role.id === 3);
+                                                        if (contribs.length === 0) return group;
+                                                        const isEditor = contribs.every(c => c.role.id === 3);
+                                                        return (
+                                                            <>
+                                                                {contribs.map((c, i) => (
+                                                                    <React.Fragment key={c.person.id}>
+                                                                        {i > 0 && ' & '}
+                                                                        <Link
+                                                                            to={`/people/${c.person.id}`}
+                                                                            className="author-link"
+                                                                        >
+                                                                            {c.person.alt_name || c.person.name}
+                                                                        </Link>
+                                                                    </React.Fragment>
+                                                                ))}
+                                                                {isEditor && ' (toim.)'}
+                                                            </>
+                                                        );
+                                                    })()}
+                                                </h3>
+                                            )}
                                         </div>
                                         <div>
                                             {workView === 'Lista' ? (

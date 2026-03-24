@@ -461,6 +461,19 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
   float: right;
 }
 
+.award-page {
+    padding: 2rem;
+    background: var(--surface-ground);
+    overflow-x: hidden;
+}
+
+.award-page .fixed-dial {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
 .work-page {
     padding: 2rem;
     background: var(--surface-ground);

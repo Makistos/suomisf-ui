@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { useParams, Link } from 'react-router-dom';
 
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { DataTable } from 'primereact/datatable'
+import { Card } from 'primereact/card';
+import { TabView, TabPanel } from 'primereact/tabview';
 
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
@@ -43,42 +45,6 @@ export const AwardPage = ({ id }: AwardPageProps) => {
         queryFn: () => fetchAward(awardId, user),
         enabled: queryEnabled
     })
-
-    const headerTemplate = () => {
-        return (
-            <div className="grid col-12">
-                <div className="grid col-2">
-                    Vuosi
-                </div>
-                <div className="grid col-6">
-                    Voittaja
-                </div>
-                <div className="grid col-4">
-                    Kategoria
-                </div>
-            </div>
-        )
-    }
-
-    const itemTemplate = (awarded: Awarded) => {
-        return (
-            <div className="grid col-12 p-1">
-                <div className="grid col-2">
-                    {awarded.year}
-                </div>
-                <div className="grid col-6">
-                    {awarded.person !== null && awarded.person.alt_name}
-                    {awarded.work !== null &&
-                        awarded.work.author_str + ": " + awarded.work.title}
-                    {awarded.story !== null &&
-                        awarded.story.title}
-                </div>
-                <div className="grid col-4">
-                    {awarded.category.name}
-                </div>
-            </div>
-        )
-    }
 
     const winnerTemplate = (awarded: Awarded) => {
         return (
@@ -132,49 +98,65 @@ export const AwardPage = ({ id }: AwardPageProps) => {
 
     if (!data) return null;
 
-    console.log(data)
-
     return (
-        <main className="all-content">
+        <main className="award-page">
             {isLoading ? (
-                <div className="progressbar"><ProgressSpinner /></div>
+                <div className="flex justify-content-center">
+                    <ProgressSpinner />
+                </div>
             ) : (
-                <>
-                    <div className="grid mb-5 justify-content-center">
-                        <h1 className='maintitle mb-3'>{data.name}</h1>
-                    </div>
-                    <div>
-                        <p>{data.description}</p>
-                        <p>
-                            <i>Lista sisältää vain sellaiset kirjailijat, joiden teoksia
-                                on suomennettu tai teosten ja
-                                novellien tapauksessa vain sellaiset, jotka on suomennettu.
-                            </i>
-                        </p>
-                    </div>
-                    <div>
-                        <DataTable
-                            value={data.winners.sort((a, b) =>
-                                a.category.type !== b.category.type ?
-                                    a.category.type > b.category.type ? 1 : -1 :
-                                    a.category.id !== b.category.id ?
-                                        a.category.id > b.category.id ? 1 : -1 :
-                                        a.year < b.year ? -1 : 1
-                            )}
-                            rowGroupMode="subheader"
-                            groupRowsBy="category.name"
-                            rowGroupHeaderTemplate={headerGroupTemplate}
-                            sortMode="single"
-                            responsiveLayout="scroll"
-                        >
-                            <Column field="year" header="Vuosi"></Column>
-                            <Column field="winners" header="Voittaja"
-                                body={winnerTemplate}></Column>
-                        </DataTable>
-                    </div>
-                </>
-            )}
+                data && (
+                    <div className="grid">
+                        {/* Header Section */}
+                        <div className="col-12">
+                            <Card className="shadow-3">
+                                <div className="grid pl-2 pr-2 pt-0">
+                                    <div className="col-12">
+                                        <h1 className="text-4xl font-bold m-0">{data.name}</h1>
+                                        {data.description && (
+                                            <div className="mt-3 line-height-3">{data.description}</div>
+                                        )}
+                                        <div className="mt-3">
+                                            <i>Lista sisältää vain sellaiset kirjailijat, joiden teoksia
+                                                on suomennettu tai teosten ja
+                                                novellien tapauksessa vain sellaiset, jotka on suomennettu.
+                                            </i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Card>
+                        </div>
 
+                        {/* Main Content */}
+                        <div className="col-12">
+                            <TabView className="shadow-2">
+                                <TabPanel header="Voittajat" leftIcon="pi pi-star">
+                                    <div className="card">
+                                        <DataTable
+                                            value={data.winners.sort((a, b) =>
+                                                a.category.type !== b.category.type ?
+                                                    a.category.type > b.category.type ? 1 : -1 :
+                                                    a.category.id !== b.category.id ?
+                                                        a.category.id > b.category.id ? 1 : -1 :
+                                                        a.year < b.year ? -1 : 1
+                                            )}
+                                            rowGroupMode="subheader"
+                                            groupRowsBy="category.name"
+                                            rowGroupHeaderTemplate={headerGroupTemplate}
+                                            sortMode="single"
+                                            responsiveLayout="scroll"
+                                        >
+                                            <Column field="year" header="Vuosi"></Column>
+                                            <Column field="winners" header="Voittaja"
+                                                body={winnerTemplate}></Column>
+                                        </DataTable>
+                                    </div>
+                                </TabPanel>
+                            </TabView>
+                        </div>
+                    </div>
+                )
+            )}
         </main>
     )
 }

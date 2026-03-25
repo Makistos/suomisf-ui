@@ -138,10 +138,13 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
                                             {group !== personName && (
                                                 <h3 className="mt-2" style={{ marginBottom: '0.15rem' }}>
                                                     {(() => {
-                                                        const contribs = (ws[0]?.contributions ?? [])
-                                                            .filter(c => c.role.id === 1 || c.role.id === 3);
+                                                        const allContribs = ws[0]?.contributions ?? [];
+                                                        const authors = allContribs.filter(c => c.role.id === 1);
+                                                        const contribs = authors.length > 0
+                                                            ? authors
+                                                            : allContribs.filter(c => c.role.id === 3);
                                                         if (contribs.length === 0) return group;
-                                                        const isEditor = contribs.every(c => c.role.id === 3);
+                                                        const isEditor = authors.length === 0;
                                                         return (
                                                             <>
                                                                 {contribs.map((c, i) => (

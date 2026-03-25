@@ -103,23 +103,6 @@ export const WorkDetails = ({ work }: WorkProps) => {
                         </h2>
                     </div>
                 )}
-                {work.contributions &&
-                    work.contributions.filter(person => person.role.id === 1).length === 0 &&
-                    work.contributions.filter(person => person.role.id === 3).length > 0 && (
-                        <div className="grid col-12">
-                            <h2 className="mb-0 mt-0 font-semibold">
-                                Toim.&nbsp;
-                                <LinkList path="people"
-                                    separator=" &amp; "
-                                    items={work.contributions.filter(
-                                        contrib => contrib.role.id === 3).map((item) => ({
-                                            id: item.person['id'],
-                                            name: item.person['name'],
-                                            alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
-                                        }))} />
-                            </h2>
-                        </div>
-                    )}
                 <div className="grid col-12 pt-0 mt-3 mb-2 pb-0">
                     <h1 className="mt-0 mb-0 text-2xl sm:text-3xl lg:text-4xl uppercase"
                         style={{ lineHeight: '1.0' }}>
@@ -133,6 +116,22 @@ export const WorkDetails = ({ work }: WorkProps) => {
                     <p className="font-medium text-sm mt-0">
                         {original(work)}
                     </p>
+                    {work.contributions &&
+                        work.contributions.filter(person => person.role.id === 3).length > 0 && (
+                            <div className="grid col-12">
+                                <h3 className="mb-0 mt-0 font-semibold">
+                                    Toim.&nbsp;
+                                    <LinkList path="people"
+                                        separator=" &amp; "
+                                        items={work.contributions.filter(
+                                            contrib => contrib.role.id === 3).map((item) => ({
+                                                id: item.person['id'],
+                                                name: item.person['name'],
+                                                alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
+                                            }))} />
+                                </h3>
+                            </div>
+                        )}
 
                     {work.bookseries && (
                         <div className="col-12 p-0">

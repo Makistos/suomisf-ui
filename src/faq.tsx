@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export const FAQ = () => {
     return (
-        <main>
+        <main className="all-content">
             <div className="grid col-12">
                 <div className="grid justify-content-center col-12">
                     <h1 className="maintitle">UKK</h1>

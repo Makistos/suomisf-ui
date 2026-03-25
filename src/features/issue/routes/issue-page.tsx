@@ -332,7 +332,7 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
     if (!data) return null;
 
     return (
-        <div className="issue-page">
+        <main className="issue-page">
             {isLoading ?
                 <div className="progressbar">
                     <ProgressSpinner />
@@ -482,6 +482,6 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
                     </div>
                 </>
             }
-        </div >
+        </main>
     )
 }

@@ -136,7 +136,7 @@ export const PeoplePage = () => {
     if (!people) return null;
 
     return (
-        <div>
+        <main className="all-content">
             <h1 className='title'>Henkilöluettelo</h1>
             <p>Henkilöitä yhteensä {totalRecords}.</p>
             <DataTable value={people}
@@ -199,6 +199,6 @@ export const PeoplePage = () => {
                 >
                 </Column>
             </DataTable>
-        </div>
+        </main>
     )
 }

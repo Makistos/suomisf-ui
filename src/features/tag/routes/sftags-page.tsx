@@ -54,7 +54,7 @@ export const SFTags = () => {
     }
 
     return (
-        <main>
+        <main className="all-content">
             {
                 (data === null || data === undefined) || isLoading ? (
                     <div className="progressbar">

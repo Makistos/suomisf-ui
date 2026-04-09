@@ -193,7 +193,9 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         if (isRunoilija) roles.push('Runoilija');
         if (isKirjoittaja) roles.push('Kirjoittaja');
 
-        const hasTranslatedBooks = data.translations && data.translations.length > 0;
+        const hasTranslatedBooks = (data.editions || []).some(e =>
+            (e.contributions || []).some(c => c.person.id === data.id && c.role.id === ContributionType.Kääntäjä)
+        );
         const hasTranslatedShorts = (data.stories || []).some(s =>
             (s.contributors || []).some(c => c.person.id === data.id && c.role.id === ContributionType.Kääntäjä)
         );

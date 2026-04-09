@@ -279,14 +279,16 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                                     <span className="font-bold">{getDerivedRoles(data, issueContributions.data || []).join(', ')}</span>
                                                 </div>
                                             )}
-                                            <div className="flex flex-column gap-2">
-                                                <h3 className="text-sm uppercase text-600 m-0">Genret</h3>
-                                                <GenreGroup
-                                                    genres={getGenres()}
-                                                    showOneCount
-                                                    className="flex-wrap"
-                                                />
-                                            </div>
+                                            {getGenres().length > 0 && (
+                                                <div className="flex flex-column gap-2">
+                                                    <h3 className="text-sm uppercase text-600 m-0">Genret</h3>
+                                                    <GenreGroup
+                                                        genres={getGenres()}
+                                                        showOneCount
+                                                        className="flex-wrap"
+                                                    />
+                                                </div>
+                                            )}
                                             {getTags().length > 0 && (
                                                 <div className="flex flex-column gap-2">
                                                     <h3 className="text-sm uppercase text-600 m-0">Asiasanat</h3>

@@ -1,4 +1,5 @@
 import { useMemo, useEffect, useRef } from "react"
+import { Link } from "react-router-dom"
 import { getCountryCode } from "@utils/country-utils"
 import { Person, PersonBrief } from "../types"
 import { useWikimediaImage, WikiImageInfo } from "../hooks/use-wikimedia-image"
@@ -141,6 +142,23 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
                         <div className="grid col-12 mt-3 gap-2 text-600">
                             <span className="mr-2">Myös:</span>
                             <span>{combineNames(data.aliases || [], data.other_names || '')}</span>
+                        </div>
+                    )
+                }
+                {
+                    data.real_names && data.real_names.length > 0 && (
+                        <div className="grid col-12 mt-1 gap-2 text-600">
+                            <span className="mr-2">Oikea henkilö:</span>
+                            <span>
+                                {data.real_names.map((rn, i) => (
+                                    <span key={rn.id}>
+                                        {i > 0 && ', '}
+                                        <Link to={`/people/${rn.id}`} className="author-link">
+                                            {rn.alt_name || rn.name}
+                                        </Link>
+                                    </span>
+                                ))}
+                            </span>
                         </div>
                     )
                 }

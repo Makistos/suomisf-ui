@@ -16,7 +16,7 @@ export const ShortDetails = ({ short: data }: ShortDetailsProps) => {
                             items={removeDuplicateContributions(data.contributors).filter(person => person.role.id === 1).map((item) => ({
                                 id: item.person['id'],
                                 name: item.person['name'],
-                                alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
+                                alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name'],
                             }))} />
                     </h2>
                 </div>
@@ -31,7 +31,8 @@ export const ShortDetails = ({ short: data }: ShortDetailsProps) => {
                                 items={removeDuplicateContributions(data.contributors).filter(person => person.role.id === 3).map((item) => ({
                                     id: item.person['id'],
                                     name: item.person['name'],
-                                    alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
+                                    alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name'],
+                                    real_person: item.real_person?.id ? item.real_person : undefined
                                 }))} />
                         </h2>
                     </div>
@@ -57,7 +58,8 @@ export const ShortDetails = ({ short: data }: ShortDetailsProps) => {
                                 items={removeDuplicateContributions(data.contributors).filter(contrib => contrib.role.id === 2).map((item) => ({
                                     id: item.person['id'],
                                     name: item.person['name'],
-                                    alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name']
+                                    alt_name: item.person['alt_name'] ? item.person['alt_name'] : item.person['name'],
+                                    real_person: item.real_person?.id ? item.real_person : undefined
                                 }))} />
                         </div>
                     )}

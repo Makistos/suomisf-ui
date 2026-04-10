@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from "react-router-dom";
 import _ from "lodash"
 
@@ -12,8 +12,35 @@ import { Contribution } from '../../../types/contribution';
 import WorkBookseriesBrowser from './work-bookseries-browser';
 import { isForeign } from '../utils/is-foreign';
 import { Work } from '../types';
+import { getApiContent } from '../../../services/user-service';
+import { getCurrenUser } from '../../../services/auth-service';
+import { PersonBrief } from '../../person';
 
 export const WorkDetails = ({ work }: WorkProps) => {
+    const user = useMemo(() => getCurrenUser(), []);
+    const [sharedAliasAuthors, setSharedAliasAuthors] = useState<{ aliasId: number; realPerson: PersonBrief }[]>([]);
+
+    useEffect(() => {
+        const authorContribsWithRealPerson = work.contributions
+            .filter(c => c.role.id === 1 && c.real_person?.id);
+
+        if (authorContribsWithRealPerson.length === 0) {
+            setSharedAliasAuthors([]);
+            return;
+        }
+
+        Promise.all(
+            authorContribsWithRealPerson.map(async c => {
+                const response = await getApiContent(`people/${c.person.id}/real-names`, user);
+                const realNames: PersonBrief[] = response.data;
+                return realNames.length > 1
+                    ? { aliasId: c.person.id, realPerson: c.real_person! }
+                    : null;
+            })
+        ).then(results => {
+            setSharedAliasAuthors(results.filter((r): r is { aliasId: number; realPerson: PersonBrief } => r !== null));
+        });
+    }, [work.id]);
 
     const compareContribs = (a: Contribution, b: Contribution) => {
         if (a.person.id !== b.person.id) return false;
@@ -133,6 +160,17 @@ export const WorkDetails = ({ work }: WorkProps) => {
                             </div>
                         )}
 
+                    {sharedAliasAuthors.length > 0 && (
+                        <div className="col-12 p-0 mb-1">
+                            Kirjoittanut{' '}
+                            {sharedAliasAuthors.map((a, i) => (
+                                <span key={a.aliasId}>
+                                    {i > 0 && ' & '}
+                                    <Link to={`/people/${a.realPerson.id}`}>{a.realPerson.alt_name}</Link>
+                                </span>
+                            ))}
+                        </div>
+                    )}
                     {work.bookseries && (
                         <div className="col-12 p-0">
                             <WorkBookseriesBrowser workId={work.id} bookseriesId={work.bookseries.id} />

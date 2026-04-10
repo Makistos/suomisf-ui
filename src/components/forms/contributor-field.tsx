@@ -6,7 +6,7 @@ import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
 import { Dropdown } from "primereact/dropdown";
 
-import { Person } from "../../features/person";
+import { Person, PersonBrief } from "../../features/person";
 import { Contributor } from "../../types/contributor";
 import { getApiContent } from "../../services/user-service";
 import { getCurrenUser, register } from "../../services/auth-service";
@@ -83,6 +83,20 @@ export const ContributorField = (
         const [roleList, setRoleList]: [ContributorFieldPair[],
             (roleList: ContributorFieldPair[]) => void]
             = useState<ContributorFieldPair[]>([]);
+        const [realNameOptions, setRealNameOptions] = useState<PersonBrief[]>([]);
+
+        const { setValue, getValues } = useFormContext();
+
+        async function fetchRealNames(personId: number) {
+            const response = await getApiContent(`people/${personId}/real-names`, user);
+            const names: PersonBrief[] = response.data;
+            setRealNameOptions(names);
+            if (names.length === 1) {
+                setValue(`${id}.${index}.real_person`, names[0]);
+            } else if (names.length === 0) {
+                setValue(`${id}.${index}.real_person`, { name: '', id: 0, alt_name: '', fullname: '' });
+            }
+        }
 
         useEffect(() => {
             async function getRoles() {
@@ -91,6 +105,11 @@ export const ContributorField = (
                 setRoleList(response.data);
             }
             getRoles();
+
+            const currentPerson = getValues(`${id}.${index}.person`);
+            if (currentPerson?.id) {
+                fetchRealNames(currentPerson.id);
+            }
         }, [])
 
         async function filterPeople(event: any) {
@@ -141,6 +160,15 @@ export const ContributorField = (
                                 inputClassName="w-full"
                                 disabled={disabled}
                                 inputRef={field.ref}
+                                onSelect={(e) => {
+                                    if (e.value?.id) {
+                                        fetchRealNames(e.value.id);
+                                    }
+                                }}
+                                onClear={() => {
+                                    setRealNameOptions([]);
+                                    setValue(`${id}.${index}.real_person`, { name: '', id: 0, alt_name: '', fullname: '' });
+                                }}
                             />
                         )}
                     />
@@ -186,6 +214,29 @@ export const ContributorField = (
                         )}
                     />
                 </div>
+                {realNameOptions.length > 1 && (
+                    <div className="field col-12 lg:col-3 p-2">
+                        <Controller
+                            name={`${id}.${index}.real_person` as const}
+                            control={control}
+                            render={({ field, fieldState }) => (
+                                <Dropdown
+                                    {...field}
+                                    optionLabel="name"
+                                    value={field.value?.id ? field.value : null}
+                                    options={realNameOptions}
+                                    className={classNames(
+                                        { "p-invalid": fieldState.error }, "w-full"
+                                    )}
+                                    placeholder="Oikea henkilö"
+                                    tooltip="Oikea henkilö"
+                                    disabled={disabled}
+                                    focusInputRef={field.ref}
+                                />
+                            )}
+                        />
+                    </div>
+                )}
                 {/*
                 <div className="field sm:col-12 lg:col-3">
                     <Controller

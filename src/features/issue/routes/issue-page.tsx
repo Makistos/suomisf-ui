@@ -103,6 +103,9 @@ const IssueInfo = ({ issue }: IssueInfoProps) => {
                             >
                                 {contrib.person.alt_name || contrib.person.name}
                             </Link>
+                            {contrib.real_person?.id ? (
+                                <> (oik. <Link to={`/people/${contrib.real_person.id}`} className="no-underline text-primary hover:text-primary-700">{contrib.real_person.name}</Link>)</>
+                            ) : null}
                             {contrib.description && ` (${contrib.description})`}
                             {!contrib.description && " (päätoimittaja)"}
                             {index < editorContributions.length - 1 && " & "}
@@ -120,6 +123,9 @@ const IssueInfo = ({ issue }: IssueInfoProps) => {
                             >
                                 {contrib.person.alt_name || contrib.person.name}
                             </Link>
+                            {contrib.real_person?.id ? (
+                                <> (oik. <Link to={`/people/${contrib.real_person.id}`} className="no-underline text-primary hover:text-primary-700">{contrib.real_person.name}</Link>)</>
+                            ) : null}
                             {contrib.description && ` (${contrib.description})`}
                             {!contrib.description && " (kansikuva)"}
                             {index < coverArtistContributions.length - 1 && " & "}

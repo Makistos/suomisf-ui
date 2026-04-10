@@ -26,6 +26,11 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
     const firstEdition = work.editions?.[0];
     const translators = firstEdition?.contributions?.filter(c => c.role.id === 2) ?? [];
 
+    const realAuthors = (work.contributions ?? [])
+        .filter(c => c.role.id === 1 && c.real_person?.id)
+        .map(c => c.real_person!);
+    const showRealAuthors = realAuthors.length > 1;
+
     const metaItems: React.ReactNode[] = [];
 
     if (work.bookseries) {
@@ -105,6 +110,9 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                     <Link className={"work-link-" + work.id} to={`/works/${work.id}`}>
                         <strong>{work.title}</strong>
                     </Link>
+                    {work.subtitle && (
+                        <span className="text-700 text-sm font-medium ml-1">{work.subtitle}</span>
+                    )}
                     {isForeign(work) && (
                         <span className="text-700 text-sm font-medium ml-2">
                             ({work.orig_title}{work.pubyear ? `, ${work.pubyear}` : ''})
@@ -112,6 +120,21 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
                     )}
                 </div>
 
+                {showRealAuthors && (
+                    <div className="text-sm text-700 font-medium">
+                        Kirjoittanut{' '}
+                        <LinkList
+                            path="people"
+                            uniquePart={`work-${work.id}-realauthor`}
+                            separator=" &amp; "
+                            items={realAuthors.map(p => ({
+                                id: p.id,
+                                name: p.name,
+                                alt_name: p.alt_name ?? p.name,
+                            }))}
+                        />
+                    </div>
+                )}
                 {metaItems.length > 0 && (
                     <div className="text-sm text-700 font-medium">
                         {metaItems}

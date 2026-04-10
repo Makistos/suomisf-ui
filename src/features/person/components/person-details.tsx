@@ -11,13 +11,6 @@ import { Toast } from "primereact/toast"
 interface PersonDetailsProps {
     person: Person
 }
-const combineNames = (aliases: PersonBrief[], other_names: string) => {
-    //let retval = aliases.map(alias => alias.alt_name ? alias.alt_name : alias.name);
-    let retval = aliases.map(alias => alias.alt_name);
-    if (other_names) retval.push(other_names);
-    return retval.join(', ');
-}
-
 
 export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
     const user = useMemo(() => getCurrenUser(), []);
@@ -141,7 +134,19 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
                     ((data.aliases && data.aliases.length > 0) || data.other_names) && (
                         <div className="grid col-12 mt-3 gap-2 text-600">
                             <span className="mr-2">Myös:</span>
-                            <span>{combineNames(data.aliases || [], data.other_names || '')}</span>
+                            <span>
+                                {(data.aliases || []).map((alias, i) => (
+                                    <span key={alias.id}>
+                                        {i > 0 && ', '}
+                                        <Link to={`/people/${alias.id}`} className="author-link">
+                                            {alias.alt_name || alias.name}
+                                        </Link>
+                                    </span>
+                                ))}
+                                {data.other_names && (
+                                    <span>{data.aliases && data.aliases.length > 0 ? ', ' : ''}{data.other_names}</span>
+                                )}
+                            </span>
                         </div>
                     )
                 }

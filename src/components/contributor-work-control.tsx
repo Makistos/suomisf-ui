@@ -329,7 +329,7 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
                 {groupedWorks.map((group) => (
                     <div key={group.authorStr} className="mb-4">
                         {/* Group header */}
-                        {groupedWorks.length > 1 && group.authorStr !== personName && (
+                        {group.authorStr !== personName && (
                             <h3 className="text-xl font-semibold mb-3 text-700 pb-2 border-bottom-1 border-300">
                                 {group.authorStr} ({group.works.length})
                             </h3>

@@ -124,10 +124,11 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
         const filtered = works.filter(work => types.includes(work.work_type.id) &&
             (isSf ? isNonSf(work.genres) : !isNonSf(work.genres)));
         const retval = filtered.filter(work => contributions(work.contributions, [contributionType]).length > 0);
+        const real_name_ids = (person.real_names || []).map(rn => rn.id);
         return retval.filter(work =>
             work.contributions
                 .filter(c => contributionType === c.role.id && person_ids.includes(c.person.id))
-                .every(c => !c.real_person?.id || c.real_person.id === person.id)
+                .every(c => !c.real_person?.id || person_ids.includes(c.real_person.id) || real_name_ids.includes(c.real_person.id))
         );
     }
 

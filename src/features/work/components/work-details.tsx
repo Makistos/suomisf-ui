@@ -40,7 +40,7 @@ export const WorkDetails = ({ work }: WorkProps) => {
         ).then(results => {
             setSharedAliasAuthors(results.filter((r): r is { aliasId: number; realPerson: PersonBrief } => r !== null));
         });
-    }, [work.id]);
+    }, [work.id, work.contributions.map(c => `${c.person.id}:${c.real_person?.id ?? 0}`).join(',')]);
 
     const compareContribs = (a: Contribution, b: Contribution) => {
         if (a.person.id !== b.person.id) return false;

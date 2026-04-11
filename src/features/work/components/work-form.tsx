@@ -77,7 +77,7 @@ export const WorkForm = (props: FormProps) => {
   const { mutate, error } = useMutation({
     mutationFn: (values: WorkFormData) => updateWork(values),
     onSuccess: (data: HttpStatusResponse, variables) => {
-      // queryClient.invalidateQueries(['work', props.workId]);
+      queryClient.invalidateQueries({ queryKey: ['work', props.workId] });
       props.onSubmitCallback(true, "");
       if (variables.id === null) {
         navigate('/works/' + data.response, { replace: false })

@@ -87,14 +87,16 @@ export const ContributorField = (
 
         const { setValue, getValues } = useFormContext();
 
-        async function fetchRealNames(personId: number) {
+        async function fetchRealNames(personId: number, overwrite: boolean = false) {
             const response = await getApiContent(`people/${personId}/real-names`, user);
             const names: PersonBrief[] = response.data;
             setRealNameOptions(names);
-            if (names.length === 1) {
-                setValue(`${id}.${index}.real_person`, names[0]);
-            } else if (names.length === 0) {
-                setValue(`${id}.${index}.real_person`, { name: '', id: 0, alt_name: '', fullname: '' });
+            if (overwrite) {
+                if (names.length === 1) {
+                    setValue(`${id}.${index}.real_person`, names[0]);
+                } else if (names.length === 0) {
+                    setValue(`${id}.${index}.real_person`, { name: '', id: 0, alt_name: '', fullname: '' });
+                }
             }
         }
 
@@ -108,7 +110,8 @@ export const ContributorField = (
 
             const currentPerson = getValues(`${id}.${index}.person`);
             if (currentPerson?.id) {
-                fetchRealNames(currentPerson.id);
+                const currentRealPerson = getValues(`${id}.${index}.real_person`);
+                fetchRealNames(currentPerson.id, !currentRealPerson?.id);
             }
         }, [])
 
@@ -214,7 +217,7 @@ export const ContributorField = (
                         )}
                     />
                 </div>
-                {realNameOptions.length > 1 && (
+                {realNameOptions.length > 0 && (
                     <div className="field col-12 lg:col-3 p-2">
                         <Controller
                             name={`${id}.${index}.real_person` as const}
@@ -223,6 +226,7 @@ export const ContributorField = (
                                 <Dropdown
                                     {...field}
                                     optionLabel="name"
+                                    dataKey="id"
                                     value={field.value?.id ? field.value : null}
                                     options={realNameOptions}
                                     className={classNames(

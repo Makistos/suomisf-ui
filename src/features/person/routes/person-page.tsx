@@ -243,6 +243,14 @@ export const PersonPage = ({ id }: PersonPageProps) => {
 
     if (!data) return null;
 
+    const person_ids = [...(data.aliases || []).map((a: any) => a.id), data.id];
+    const real_name_ids = (data.real_names || []).map((rn: any) => rn.id);
+    const worksForPerson = data.works.filter(work =>
+        work.contributions
+            .filter(c => c.role.id === 1 && person_ids.includes(c.person.id))
+            .every(c => !c.real_person?.id || person_ids.includes(c.real_person.id) || real_name_ids.includes(c.real_person.id))
+    );
+
     const hasFictionType = (types: Number[]) => {
         // console.log(data)
         return data.works.filter(work => types.includes(work.work_type.id)).length > 0 ||
@@ -365,11 +373,11 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                             </div>
                                         </TabPanel>
                                     ),
-                                    data.works && data.works.some(work => work.bookseries) && (
+                                    worksForPerson.some(work => work.bookseries) && (
                                         <TabPanel key="sarjat" header="Sarjat" leftIcon="pi pi-sitemap">
                                             <div className="card">
                                                 <BookSeriesList
-                                                    works={data.works}
+                                                    works={worksForPerson}
                                                     seriesType='bookseries'
                                                 />
                                             </div>

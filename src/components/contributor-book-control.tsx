@@ -124,7 +124,11 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
         const filtered = works.filter(work => types.includes(work.work_type.id) &&
             (isSf ? isNonSf(work.genres) : !isNonSf(work.genres)));
         const retval = filtered.filter(work => contributions(work.contributions, [contributionType]).length > 0);
-        return retval;
+        return retval.filter(work =>
+            work.contributions
+                .filter(c => contributionType === c.role.id && person_ids.includes(c.person.id))
+                .every(c => !c.real_person?.id || c.real_person.id === person.id)
+        );
     }
 
     useEffect(() => {

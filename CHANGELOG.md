@@ -4,6 +4,12 @@ This list is abbreviated to the most significant changes. Over two years (March 
 
 ---
 
+## 2026-04-25 `9e2a52a` — Fix: factual books now shown in Tietokirjat tab
+Factual books (work type 4) were appearing under Muu tuotanto instead of the Tietokirjat tab due to genre filtering. Added `ignoreGenreFilter` option to `ContributorBookControl` so type 4 works are shown regardless of SF/non-SF genre tagging. Type 4 also excluded from Muu tuotanto.
+
+## 2026-04-25 `0f67ec6` — Person page: Tietokirjailija role and refined Kirjailija
+Added Tietokirjailija as a derived role for persons with factual books (work type 4). Kirjailija is now only assigned for fiction work types (1, 2, 5, 6). A person can hold both roles simultaneously.
+
 ## 2026-03-23 `d2bbee2` — New home page
 Complete redesign of the front page: cleaner layout, latest additions as a cover image view, collection size statistics, and loading animations.
 

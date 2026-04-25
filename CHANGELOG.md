@@ -4,6 +4,39 @@ This list is abbreviated to the most significant changes. Over two years (March 
 
 ---
 
+## 2026-04-11 `76a2937` — Fix: real_person filtering applied to series listing
+Works are now filtered from the book series list using the same real_person logic as the contributor control, preventing series entries from appearing on the wrong person's page.
+
+## 2026-04-11 `5a37b8e` — Fix: alias work visibility and grouping on person pages
+Works are hidden only when real_person points outside the person's alias/real-name set, so they show correctly on both the alias and real person's page. Works written under an alias now appear under the alias name on the real person's page.
+
+## 2026-04-11 `4940617` — Fix: works hidden when real_person points to someone else
+Contributions where real_person is set to a different person are excluded from that person's work list.
+
+## 2026-04-10 `da8d4c6` — Fix: real person display in contributor control and work details
+Real person dropdown now shown for all aliases (not just multi-person ones). Fixed dropdown value matching, mount-time overwrite, query invalidation on save, and real author re-detection when contributions change.
+
+## 2026-04-10 `4e2a6d0` — Show real person behind shared alias on work and short pages
+Contributor field auto-selects the real person if an alias has exactly one, or shows a dropdown if multiple. Work and short pages display a "Kirjoittanut" line with real author links when an alias is shared. Real person also shown inline on issue page for editors and cover artists.
+
+## 2026-04-10 `970d679` — Person aliases are now clickable links
+
+## 2026-04-09 `f464eff` — Show real persons behind alias name; hide empty genres heading
+
+## 2026-04-09 `c05b081` — Fix: translator role detection in PersonPage
+
+## 2026-03-25 `092b76d` — Contribution list shows authors, falls back to editors
+
+## 2026-03-25 `19295d3` — Normalise page wrapper elements and CSS classes
+
+## 2026-03-24 `dd8355e` — Improved WorkList and WorkSummary design
+WorkSummary uses a two-line layout with title and muted original title on line one, metadata (series, translator, publisher, genres) on line two. Other editions grouped under their work. Author group headers in WorkList are linked to person pages.
+
+## 2026-03-24 `45e884b` — Award page refactored to standard entity page layout
+
+## 2026-03-24 `61a07bf` `5ecb63c` `f186877` — Visual consistency pass
+Normalised SpeedDial tooltips, loading spinners, tab content wrappers, and minor layout fixes across person, award, bookseries, pubseries, publisher, and issue pages.
+
 ## 2026-04-25 `9e2a52a` — Fix: factual books now shown in Tietokirjat tab
 Factual books (work type 4) were appearing under Muu tuotanto instead of the Tietokirjat tab due to genre filtering. Added `ignoreGenreFilter` option to `ContributorBookControl` so type 4 works are shown regardless of SF/non-SF genre tagging. Type 4 also excluded from Muu tuotanto.
 

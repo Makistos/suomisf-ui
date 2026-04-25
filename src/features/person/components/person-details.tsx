@@ -122,10 +122,13 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
                             {(data.dob || data.dod) && (
                                 <span className="flex align-items-center gap-1">
                                     <i className="pi pi-calendar" />
-                                    {data.dob || ''}{data.dob && data.dod ? '–' : ''}{data.dod || ''}
+                                    {data.dob ? data.dob : (data.dod ? '?' : '')}{data.dob && !data.dod && data.dob < new Date().getFullYear() - 100 ? <sup>*</sup> : ''}{data.dod ? '–' : ''}{data.dod || ''}
                                 </span>
                             )}
                         </div>
+                        {data.dob && !data.dod && data.dob < new Date().getFullYear() - 100 && (
+                            <div className="text-sm text-500 font-italic">*Tietoa kuolinvuodesta ei ole</div>
+                        )}
                     </div>
                 </div>
 

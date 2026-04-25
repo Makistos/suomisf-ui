@@ -188,7 +188,8 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         const isRunoilija = authoredShorts.some(s => s.type && [4, 6].includes(s.type.id));
         const isKirjoittaja = authoredShorts.some(s => s.type && [7, 8, 9].includes(s.type.id));
 
-        if (data.works.length > 0) roles.push('Kirjailija');
+        if (data.works.some(w => [1, 2, 5, 6].includes(w.work_type.id))) roles.push('Kirjailija');
+        if (data.works.some(w => w.work_type.id === 4)) roles.push('Tietokirjailija');
         if (isNovellisti) roles.push('Novellisti');
         if (isRunoilija) roles.push('Runoilija');
         if (isKirjoittaja) roles.push('Kirjoittaja');
@@ -210,7 +211,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         if (issues.some(i => (i.contributors || []).some(c => c.person.id === data.id && c.role.id === ContributionType.Päätoimittaja)))
             roles.push('Päätoimittaja');
 
-        const order = ['Kirjailija', 'Kirjoittaja', 'Kääntäjä', 'Toimittaja', 'Novellisti', 'Runoilija', 'Kansitaiteilija', 'Kuvittaja', 'Päätoimittaja'];
+        const order = ['Kirjailija', 'Tietokirjailija', 'Kirjoittaja', 'Kääntäjä', 'Toimittaja', 'Novellisti', 'Runoilija', 'Kansitaiteilija', 'Kuvittaja', 'Päätoimittaja'];
         return roles.sort((a, b) => order.indexOf(a) - order.indexOf(b));
     }
 

@@ -169,7 +169,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
             (data.stories === null || data.stories.length === 0)) return false;
         let all_genres: Genre[] = [];
         if (what === "all" || what === "works") {
-            all_genres = _.concat(all_genres, data.works.map(work => work.genres))
+            all_genres = _.concat(all_genres, data.works.filter(w => !NONFICTION_TYPES.includes(w.work_type.id)).map(work => work.genres))
         }
         if (what === "all" || what === "stories") {
             all_genres = _.concat(all_genres,
@@ -355,6 +355,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                             <div className="card">
                                                 <ContributorBookControl
                                                     viewNonSf={false}
+                                                    ignoreGenreFilter={true}
                                                     person={data}
                                                     types={NONFICTION_TYPES}
                                                     collaborationsLast={true}
@@ -410,7 +411,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                                     <ContributorBookControl
                                                         viewNonSf={true}
                                                         person={data}
-                                                        types={[1, 2, 3, 4, 5, 6]}
+                                                        types={[1, 2, 3, 5, 6]}
                                                         collaborationsLast={true}
                                                     />
                                                 </div>

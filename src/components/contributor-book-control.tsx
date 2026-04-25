@@ -39,9 +39,10 @@ interface CBCProps {
      * An optional array of tags associated with the contributor.
      */
     tags?: SfTag[]  // Add this line
+    ignoreGenreFilter?: boolean
 }
 
-export const ContributorBookControl = ({ person, viewNonSf, types, collaborationsLast = false, tags }: CBCProps) => {
+export const ContributorBookControl = ({ person, viewNonSf, types, collaborationsLast = false, tags, ignoreGenreFilter = false }: CBCProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [showTags, setShowTags] = useState(false);
     const [authored, setAuthored]: [Work[], (sfWorks: Work[]) => void]
@@ -122,7 +123,7 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
 
     const work_contributions = (works: Work[], isSf: boolean, contributionType: number) => {
         const filtered = works.filter(work => types.includes(work.work_type.id) &&
-            (isSf ? isNonSf(work.genres) : !isNonSf(work.genres)));
+            (ignoreGenreFilter || (isSf ? isNonSf(work.genres) : !isNonSf(work.genres))));
         const retval = filtered.filter(work => contributions(work.contributions, [contributionType]).length > 0);
         const real_name_ids = (person.real_names || []).map(rn => rn.id);
         return retval.filter(work =>

@@ -16,6 +16,7 @@ import { Pie } from 'react-chartjs-2';
 import { getApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { WorksByYearChart } from './works-by-year-chart';
+import { CumulativeEditionsChart } from './cumulative-editions-chart';
 
 ChartJS.register(
     ArcElement,
@@ -393,6 +394,11 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
                         </div>
                     </details>
                 </Card>
+            </div>
+
+            {/* Cumulative editions chart - full width */}
+            <div className="col-12">
+                <CumulativeEditionsChart data={finnishEditionData} />
             </div>
 
             {/* Works by year chart - full width at bottom */}

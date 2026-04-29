@@ -38,6 +38,7 @@ const ProfilePage = ({ id }: UserPageProps) => {
     const [currentContent, setCurrentContent] = useState<number>(0);
     const [isLoadingRandomWork, setIsLoadingRandomWork] = useState<boolean>(false);
     const [randomWorkResults, setRandomWorkResults] = useState<any[]>([]);
+    const [randomWorkTotal, setRandomWorkTotal] = useState<number | null>(null);
     const [formData, setFormData] = useState<RandomWorkFormData>({
         count: 10,
         description: false,
@@ -101,12 +102,14 @@ const ProfilePage = ({ id }: UserPageProps) => {
             const response = await postApiContent('works/random/incomplete', requestBody, currentUser);
             // console.log('Random work response:', response);
 
-            if (response.response && Array.isArray(response.response)) {
-                setRandomWorkResults(response.response);
-                // console.log('Results stored:', response.response);
+            const result = response.response as unknown as { works: any[]; total: number } | null;
+            if (result && result.works) {
+                setRandomWorkResults(result.works);
+                setRandomWorkTotal(result.total ?? null);
             } else {
                 console.error('No work results found in response:', response);
                 setRandomWorkResults([]);
+                setRandomWorkTotal(null);
             }
         } catch (error) {
             console.error('Error fetching random incomplete work:', error);
@@ -295,7 +298,14 @@ const ProfilePage = ({ id }: UserPageProps) => {
 
                     {randomWorkResults.length > 0 && (
                         <div className="mt-4">
-                            <h3>Löydetyt teokset:</h3>
+                            <h3>
+                                Löydetyt teokset
+                                {randomWorkTotal !== null && (
+                                    <span className="text-500 font-normal text-base ml-2">
+                                        ({randomWorkResults.length} näytetty, {randomWorkTotal.toLocaleString('fi-FI')} yhteensä)
+                                    </span>
+                                )}:
+                            </h3>
                             <div className="mt-3">
                                 {randomWorkResults.map((work) => (
                                     <div

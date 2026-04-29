@@ -105,6 +105,21 @@ const viewModeOptions = [
     { label: 'Genret erikseen', value: true },
 ];
 
+const combineGenreOptions = [
+    { label: 'Erilliset genret', value: false },
+    { label: 'Yhdistetyt genret', value: true },
+];
+
+// Groups for combined-genre mode
+const genreGroups = [
+    { key: 'SF',      label: 'Science Fiction',     color: '#0958D7', genres: ['SF', 'nSF', 'lSF'] },
+    { key: 'F',       label: 'Fantasia',             color: '#31572C', genres: ['F', 'nF', 'lF'] },
+    { key: 'K',       label: 'Kauhu',                color: '#D30031', genres: ['K', 'nK'] },
+    { key: 'PF',      label: 'Poliittinen fiktio',   color: '#7B2D8E', genres: ['PF'] },
+    { key: 'VEH',     label: 'Vaihtoehtohistoria',   color: '#E67E22', genres: ['VEH'] },
+    { key: 'rajatap', label: 'Rajatapaus',            color: '#A0522D', genres: ['rajatap'] },
+];
+
 // Build year->count map from YearCount[], optionally filtering by languages
 const aggregateByYear = (data: YearCount[], languages: string[]): Record<number, number> => {
     const result: Record<number, number> = {};
@@ -145,6 +160,7 @@ export const CumulativeEditionsChart = ({ data }: CumulativeEditionsChartProps) 
     const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
     const [selectedGenre, setSelectedGenre] = useState<string>('all');
     const [showByGenre, setShowByGenre] = useState<boolean>(false);
+    const [combineGenres, setCombineGenres] = useState<boolean>(false);
 
     const yearOptions = useMemo(() => {
         const opts = [];
@@ -193,6 +209,38 @@ export const CumulativeEditionsChart = ({ data }: CumulativeEditionsChartProps) 
 
     const chartData = useMemo(() => {
         if (showByGenre) {
+            if (combineGenres) {
+                const datasets = genreGroups
+                    .map(group => {
+                        const combined: Record<number, number> = {};
+                        group.genres.forEach(genre => {
+                            const idx = allGenres.indexOf(genre);
+                            const genreData = genreQueries[idx]?.data;
+                            if (!genreData) return;
+                            const yearCounts = aggregateByYear(genreData, selectedLanguages);
+                            Object.entries(yearCounts).forEach(([y, c]) => {
+                                combined[Number(y)] = (combined[Number(y)] || 0) + c;
+                            });
+                        });
+                        const cumulativeValues = computeCumulative(combined, minYear, displayYears);
+                        if (!cumulativeValues.some(v => v > 0)) return null;
+                        return {
+                            label: group.label,
+                            data: cumulativeValues,
+                            borderColor: group.color,
+                            backgroundColor: 'transparent',
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 0,
+                            pointHoverRadius: 4,
+                            borderWidth: 2,
+                        };
+                    })
+                    .filter((d): d is NonNullable<typeof d> => d !== null);
+
+                return { labels: displayYears.map(String), datasets };
+            }
+
             const datasets = allGenres
                 .map((genre, idx) => {
                     const genreData = genreQueries[idx]?.data;
@@ -254,6 +302,7 @@ export const CumulativeEditionsChart = ({ data }: CumulativeEditionsChartProps) 
         minYear,
         singleGenreQuery.data,
         showByGenre,
+        combineGenres,
         genreQueries,
     ]);
 
@@ -350,6 +399,15 @@ export const CumulativeEditionsChart = ({ data }: CumulativeEditionsChartProps) 
                         optionValue="value"
                         onChange={(e) => setShowByGenre(e.value)}
                     />
+                    {showByGenre && (
+                        <SelectButton
+                            value={combineGenres}
+                            options={combineGenreOptions}
+                            optionLabel="label"
+                            optionValue="value"
+                            onChange={(e) => setCombineGenres(e.value)}
+                        />
+                    )}
                 </div>
                 {isLoading ? (
                     <div className="flex justify-content-center p-4">

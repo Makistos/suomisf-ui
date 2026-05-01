@@ -3,6 +3,23 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-05-01 `a7b6fbb` — Tag type styles and new Lista type
+Added Lista as a new tag type (id 7) with purple colour and `pi-list` icon. Alagenre and Tyyli got icons (`pi-bookmark`, `pi-palette`). Era (Aika) now has a distinct sepia-brown colour instead of appearing unstyled. Lista appears as its own section between Tyylit and Paikat on the tags page.
+
+## 2026-04-29 `dc6a562` — Incomplete work search shows total match count
+The incomplete work search result now displays both the sampled count and the total number of matching works, e.g. "10 näytetty, 1 234 yhteensä".
+
+## 2026-04-29 `4038afd` — Combined-genres mode for cumulative editions chart
+Added a "Yhdistetyt genret" toggle (available when "Genret erikseen" is active) that merges subgenre variants into three bands: SF/nSF/lSF → Science Fiction, F/nF/lF → Fantasia, K/nK → Kauhu.
+
+## 2026-04-26 `79ca31d` — Cumulative editions line chart in Teokset stats tab
+New chart showing the running total of first editions by print year. Supports language filter, genre filter, year range, and per-genre breakdown with a separate line per genre via parallel API queries.
+
+## 2026-04-25 `9e2a52a` — Fix: factual books now shown in Tietokirjat tab
+Factual books (work type 4) were appearing under Muu tuotanto instead of the Tietokirjat tab due to genre filtering. Added `ignoreGenreFilter` option to `ContributorBookControl` so type 4 works are shown regardless of SF/non-SF genre tagging. Type 4 also excluded from Muu tuotanto.
+
+## 2026-04-25 `0f67ec6` — Person page: Tietokirjailija role and refined Kirjailija
+Added Tietokirjailija as a derived role for persons with factual books (work type 4). Kirjailija is now only assigned for fiction work types (1, 2, 5, 6). A person can hold both roles simultaneously.
 
 ## 2026-04-11 `76a2937` — Fix: real_person filtering applied to series listing
 Works are now filtered from the book series list using the same real_person logic as the contributor control, preventing series entries from appearing on the wrong person's page.
@@ -36,12 +53,6 @@ WorkSummary uses a two-line layout with title and muted original title on line o
 
 ## 2026-03-24 `61a07bf` `5ecb63c` `f186877` — Visual consistency pass
 Normalised SpeedDial tooltips, loading spinners, tab content wrappers, and minor layout fixes across person, award, bookseries, pubseries, publisher, and issue pages.
-
-## 2026-04-25 `9e2a52a` — Fix: factual books now shown in Tietokirjat tab
-Factual books (work type 4) were appearing under Muu tuotanto instead of the Tietokirjat tab due to genre filtering. Added `ignoreGenreFilter` option to `ContributorBookControl` so type 4 works are shown regardless of SF/non-SF genre tagging. Type 4 also excluded from Muu tuotanto.
-
-## 2026-04-25 `0f67ec6` — Person page: Tietokirjailija role and refined Kirjailija
-Added Tietokirjailija as a derived role for persons with factual books (work type 4). Kirjailija is now only assigned for fiction work types (1, 2, 5, 6). A person can hold both roles simultaneously.
 
 ## 2026-03-23 `d2bbee2` — New home page
 Complete redesign of the front page: cleaner layout, latest additions as a cover image view, collection size statistics, and loading animations.

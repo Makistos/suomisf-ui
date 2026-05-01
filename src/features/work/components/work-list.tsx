@@ -5,7 +5,7 @@ import { SelectButton } from 'primereact/selectbutton';
 import { Dropdown } from "primereact/dropdown";
 import "primeflex/primeflex.css";
 
-import { groupWorks } from "../utils/group-works";
+import { groupWorks, groupKeyDisplayName } from "../utils/group-works";
 import { WorkSummary } from "./work-summary";
 import { CoverImageList } from "../../../components/cover-image-list";
 import { WorkStatsPanel } from "../../stats";
@@ -61,8 +61,8 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
         // Special compare needed because we want the works by the person (if given)
         // to come first.
         if (sort === false) return 1;
-        const aName = a[0].replace(' (toim.)', '');
-        const bName = b[0].replace(' (toim.)', '');
+        const aName = groupKeyDisplayName(a[0]).replace(' (toim.)', '');
+        const bName = groupKeyDisplayName(b[0]).replace(' (toim.)', '');
         // Always place books written with real name first
         if (aName === personName) return -1;
         if (bName === personName) return 1;
@@ -135,7 +135,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
                                 return (
                                     <div className="grid col-12" key={group}>
                                         <div className="grid col-12">
-                                            {group !== personName && (
+                                            {groupKeyDisplayName(group) !== personName && (
                                                 <h3 className="mt-2" style={{ marginBottom: '0.15rem' }}>
                                                     {(() => {
                                                         const allContribs = ws[0]?.contributions ?? [];

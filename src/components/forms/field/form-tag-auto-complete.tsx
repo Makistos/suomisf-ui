@@ -23,6 +23,7 @@ interface NewItemProps {
 export const FormTagAutoComplete = ({ name, methods, label, labelClass, tagFunction, ...rest }: FormAutoCompleteProps) => {
   const [addNewItemVisible, setAddNewItemVisible] = useState(false);
   const [tagName, setTagName] = useState("");
+  const [currentQuery, setCurrentQuery] = useState("");
 
   const { control } = useFormContext();
 
@@ -30,10 +31,6 @@ export const FormTagAutoComplete = ({ name, methods, label, labelClass, tagFunct
     control,
     name: name
   })
-
-  const onNewItemShow = () => {
-    setAddNewItemVisible(true);
-  }
 
   const onNewItemHide = (tag: string) => {
     if (tag != "") {
@@ -43,6 +40,31 @@ export const FormTagAutoComplete = ({ name, methods, label, labelClass, tagFunct
     }
     setAddNewItemVisible(false);
   }
+
+  const wrappedCompleteMethod = (e: any) => {
+    if (tagFunction) setCurrentQuery(e.query);
+    rest.completeMethod?.(e);
+  };
+
+  const enrichedSuggestions = (() => {
+    const base = rest.suggestions ?? [];
+    if (!tagFunction || !currentQuery.trim()) return base;
+    const exactMatch = base.some((s: any) =>
+      s.name?.toLowerCase() === currentQuery.trim().toLowerCase()
+    );
+    if (exactMatch) return base;
+    return [{ id: 0, name: currentQuery.trim(), _isCreate: true }, ...base];
+  })();
+
+  const itemTemplate = (item: any) => {
+    if (item._isCreate) {
+      return <><i className="pi pi-plus-circle mr-2" />Lisää uusi: "{item.name}"</>;
+    }
+    if (rest.itemTemplate) {
+      return (rest.itemTemplate as Function)(item);
+    }
+    return item[typeof rest.field === 'string' ? rest.field : 'name'];
+  };
 
   const NewItem = () => {
     const [tag, setTag] = useState("");
@@ -101,6 +123,16 @@ export const FormTagAutoComplete = ({ name, methods, label, labelClass, tagFunct
                 minLength={rest.minLength ? rest.minLength : 2}
                 className={classNames({ 'p-invalid': fieldState.error },)}
                 {...rest}
+                onChange={(e) => {
+                  if (Array.isArray(e.value)) {
+                    field.onChange({ ...e, value: e.value.map(({ _isCreate, ...item }: any) => item) });
+                  } else {
+                    field.onChange(e);
+                  }
+                }}
+                completeMethod={wrappedCompleteMethod}
+                suggestions={enrichedSuggestions}
+                itemTemplate={itemTemplate}
               />
               {formErrorMessage(field.name, methods.formState.errors)}
             </>

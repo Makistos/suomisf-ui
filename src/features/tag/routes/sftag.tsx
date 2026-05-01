@@ -78,9 +78,13 @@ export const SFTag = ({ id }: SfTagProps) => {
         {
             label: 'Poista',
             icon: 'fa-solid fa-trash-can',
-            //disabled: { deleteDisabled },
             command: () => {
-                onSpeeddialClick('displayDelete');
+                const linked = (data?.works?.length ?? 0) + (data?.stories?.length ?? 0) + (data?.articles?.length ?? 0);
+                if (linked > 0) {
+                    setDisplayDelete(true);
+                } else {
+                    deleteTagFunc();
+                }
             }
         }
     ]
@@ -193,6 +197,19 @@ export const SFTag = ({ id }: SfTagProps) => {
     return (
         <main className="sftag-page">
             <Toast ref={toastRef} />
+
+            <ConfirmDialog
+                visible={displayDelete}
+                onHide={() => setDisplayDelete(false)}
+                message={`Asiasana on liitetty ${(data?.works?.length ?? 0) + (data?.stories?.length ?? 0) + (data?.articles?.length ?? 0)} kohteeseen. Haluatko silti poistaa sen?`}
+                header="Vahvista poisto"
+                icon="pi pi-exclamation-triangle"
+                acceptLabel="Poista"
+                rejectLabel="Peruuta"
+                acceptClassName="p-button-danger"
+                accept={deleteTagFunc}
+                reject={() => setDisplayDelete(false)}
+            />
 
             {isAdmin(user) && (
                 <SpeedDial

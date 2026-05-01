@@ -31,14 +31,26 @@ export const tagTypeToSeverity = (tag: SfTag) => {
     return undefined;
 }
 
+export const tagTypeToClass = (tag: SfTag) => {
+    if (tag.type?.id === 6) {
+        // Era
+        return "tag-era";
+    }
+    if (tag.type?.id === 7) {
+        // List
+        return "tag-list";
+    }
+    return undefined;
+}
+
 export const tagTypeIcon = (tag: SfTag) => {
     if (tag.type?.id === 2) {
         // Subgenre
-        return "";
+        return "pi pi-bookmark";
     }
     if (tag.type?.id === 3) {
         // Style
-        return "";
+        return "pi pi-palette";
     }
     if (tag.type?.id === 4) {
         // Actor
@@ -51,6 +63,10 @@ export const tagTypeIcon = (tag: SfTag) => {
     if (tag.type?.id === 6) {
         // Era
         return "pi pi-clock";
+    }
+    if (tag.type?.id === 7) {
+        // List
+        return "pi pi-list";
     }
 
     // For all other types

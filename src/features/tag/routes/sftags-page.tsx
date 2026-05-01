@@ -80,6 +80,12 @@ export const SFTags = () => {
                                 </div>
                             </div>
                             <div className="grid col-12 mb-3">
+                                <h2>Listat</h2>
+                                <div className="three-column">
+                                    {renderTags(data.filter(tag => tag.type?.name === 'Lista'))}
+                                </div>
+                            </div>
+                            <div className="grid col-12 mb-3">
                                 <h2>Paikat</h2>
                                 <div className="three-column">
                                     {renderTags(data.filter(tag => tag.type?.name === 'Paikka'))}

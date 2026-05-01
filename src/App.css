@@ -803,6 +803,16 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     color: var(--primary-color);
 }
 
+.tag-era {
+    background-color: #92400e;
+    color: #ffffff;
+}
+
+.tag-list {
+    background-color: #7c3aed;
+    color: #ffffff;
+}
+
 .sftag-page {
     padding: 2rem;
     background: var(--surface-ground);

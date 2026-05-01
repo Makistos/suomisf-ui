@@ -23,7 +23,7 @@ import { Toast } from 'primereact/toast';
 import { getTag } from '@api/tag/get-tag';
 import { mergeTags } from '@api/tag/merge-tags';
 import { Tag } from 'primereact/tag';
-import { tagTypeToSeverity } from '../components/tag-type-to-severity';
+import { tagTypeToClass, tagTypeToSeverity } from '../components/tag-type-to-severity';
 import { deleteTag } from '@api/tag/delete-tag';
 import { filterTags } from '@api/tag/filter-tags';
 import _ from 'lodash';
@@ -221,6 +221,7 @@ export const SFTag = ({ id }: SfTagProps) => {
                                             <h1 className="text-4xl font-bold m-0">{data.name}</h1>
                                             <Tag value={data?.type?.name}
                                                 severity={data ? tagTypeToSeverity(data) : undefined}
+                                                className={data ? tagTypeToClass(data) : undefined}
                                             />
                                             {data.description && (
                                                 <div className="mt-3 line-height-3"

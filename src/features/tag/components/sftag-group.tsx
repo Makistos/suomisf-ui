@@ -5,7 +5,7 @@ import { Button } from 'primereact/button';
 
 import { SfTag } from "../types";
 import { Link } from 'react-router-dom';
-import { tagTypeIcon, tagTypeToSeverity } from '@features/tag/components/tag-type-to-severity';
+import { tagTypeIcon, tagTypeToClass, tagTypeToSeverity } from '@features/tag/components/tag-type-to-severity';
 
 interface TagsProps {
     tags: SfTag[],
@@ -136,7 +136,7 @@ export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseF
         return (
             <Tag value={headerText(tag?.name === undefined ? "" : tag.name,
                 showOneCount && tag.count !== undefined && tag.count !== 1 ? tag.count : 0)}
-                className="p-overlay-badge"
+                className={`p-overlay-badge${tagTypeToClass(tag) ? ` ${tagTypeToClass(tag)}` : ''}`}
                 severity={tagTypeToSeverity(tag)}
             />
         )

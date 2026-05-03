@@ -15,6 +15,7 @@ import { isDisabled } from '../../../components/forms/forms';
 import { makeBriefContributor } from '../../../components/forms/makeBriefContributor';
 import { FormInputNumber } from '../../../components/forms/field/form-input-number';
 import { FormInputText } from '../../../components/forms/field/form-input-text';
+import { FormEditor } from '../../../components/forms/field/form-editor';
 import { FormDropdown } from '../../../components/forms/field/form-dropdown';
 import { FormAutoComplete } from '../../../components/forms/field/form-auto-complete';
 import { FormMultiSelect } from '../../../components/forms/field/form-multi-select';
@@ -61,6 +62,7 @@ export const ShortsForm = (props: ShortFormProps) => {
         lang: short.lang,
         pubyear: short.pubyear,
         type: short.type,
+        notes: short.notes ?? '',
         genres: short.genres,
         contributors: makeBriefContributor(contributors),
         tags: short.tags
@@ -73,6 +75,7 @@ export const ShortsForm = (props: ShortFormProps) => {
         lang: null,
         pubyear: "",
         type: null,
+        notes: '',
         genres: [],
         contributors: contributors,
         tags: []
@@ -230,6 +233,15 @@ const FormObject = ({ onSubmit, onClose, onDelete, methods, id }: FormObjectProp
                                     name="orig_title"
                                     methods={methods}
                                     label="Alkuperäinen nimi"
+                                    disabled={disabled}
+                                />
+                            </div>
+                            <div className="field col-12">
+                                <b>Muistiinpanot</b>
+                                <FormEditor
+                                    name="notes"
+                                    methods={methods}
+                                    style={{ height: '150px' }}
                                     disabled={disabled}
                                 />
                             </div>

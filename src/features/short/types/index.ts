@@ -20,6 +20,7 @@ export interface Short {
     pubyear: string;
     type: ShortType;
     order_num: number;
+    notes: string | null;
     editions: Edition[];
     issues: Issue[];
     genres: Genre[];
@@ -35,6 +36,7 @@ export interface ShortForm {
     lang: Language | null,
     pubyear: string,
     type: ShortType | null,
+    notes: string,
     genres: Genre[],
     contributors: Contribution[],
     tags: Pick<SfTag, "id" | "name" | "type">[]

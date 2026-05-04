@@ -144,7 +144,9 @@ export const AwardPage = ({ id }: AwardPageProps) => {
                                     <div className="col-12">
                                         <h1 className="text-4xl font-bold m-0">{data.name}</h1>
                                         {data.description && (
-                                            <div className="mt-3 line-height-3">{data.description}</div>
+                                            <div className="mt-3 line-height-3"
+                                                dangerouslySetInnerHTML={{ __html: data.description }}
+                                            />
                                         )}
                                         <div className="mt-3">
                                             <i>Lista sisältää vain sellaiset kirjailijat, joiden teoksia

@@ -9,6 +9,7 @@ import { getCurrenUser } from '../../../services/auth-service';
 import { putApiContent, HttpStatusResponse } from '../../../services/user-service';
 import { isDisabled } from '../../../components/forms/forms';
 import { FormInputText } from '../../../components/forms/field/form-input-text';
+import { FormEditor } from '../../../components/forms/field/form-editor';
 import { FormCheckbox } from '../../../components/forms/field/form-checkbox';
 import { LinksField } from '../../../components/forms/links-field';
 
@@ -68,10 +69,11 @@ export const AwardForm = ({ award, onClose }: AwardFormProps) => {
                             />
                         </div>
                         <div className="field col-12">
-                            <FormInputText
+                            <b>Kuvaus</b>
+                            <FormEditor
                                 name="description"
                                 methods={methods}
-                                label="Kuvaus"
+                                style={{ height: '150px' }}
                                 disabled={disabled}
                             />
                         </div>

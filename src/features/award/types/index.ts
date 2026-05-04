@@ -1,14 +1,24 @@
 import { Person } from "../../person";
 import type { Work } from "../../work";
 import { Short } from "../../short";
+import { LinkType } from "../../../types/link";
 
 export interface Award {
     id: number;
     name: string;
     description: string;
     domestic: boolean;
+    links: LinkType[];
     categories: AwardCategory[];
     winners: Omit<Awarded, "award">[];
+}
+
+export interface AwardFormData {
+    id: number;
+    name: string;
+    description: string;
+    domestic: boolean;
+    links: LinkType[];
 }
 
 export interface AwardCategory {

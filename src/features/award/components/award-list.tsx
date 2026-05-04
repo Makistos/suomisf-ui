@@ -3,6 +3,7 @@ import React from 'react';
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { classNames } from "primereact/utils";
+import { Link } from "react-router-dom";
 
 import { Awarded } from "../types";
 
@@ -24,6 +25,10 @@ export const AwardList = ({ awards }: AwardedProps) => {
         }
     }
 
+    const awardNameTemplate = (rowData: Awarded) => (
+        <Link to={`/awards/${rowData.award.id}`}>{rowData.award.name}</Link>
+    )
+
     const targetTemplate = (rowData: Awarded) => {
         if (rowData.work) {
             return rowData.work.title;
@@ -43,7 +48,7 @@ export const AwardList = ({ awards }: AwardedProps) => {
                 >
                     <Column field="icon" header="Tyyppi" body={awardIcon} />
                     <Column field="year" header="Vuosi" />
-                    <Column field="award.name" header="Palkinto" />
+                    <Column field="award.name" header="Palkinto" body={awardNameTemplate} />
                     <Column field="category.name" header="Kategoria" />
                     <Column field="target" header="Palkittu" body={targetTemplate} />
                 </DataTable>

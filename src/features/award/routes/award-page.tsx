@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { useParams, Link } from 'react-router-dom';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { DataTable } from 'primereact/datatable'
 import { Card } from 'primereact/card';
 import { TabView, TabPanel } from 'primereact/tabview';
+import { Dialog } from 'primereact/dialog';
+import { SpeedDial } from 'primereact/speeddial';
+import { Tooltip } from 'primereact/tooltip';
 
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
-import { User } from "../../user";
+import { isAdmin } from "../../user";
 import { Award, Awarded } from "../types";
+import { AwardForm } from "../components/award-form";
 import { selectId } from "../../../utils";
 import { Column } from 'primereact/column';
 import { LinkList } from '@components/link-list';
@@ -22,9 +26,10 @@ interface AwardPageProps {
 let awardId = "";
 
 export const AwardPage = ({ id }: AwardPageProps) => {
-    const user = getCurrenUser();
+    const user = useMemo(() => getCurrenUser(), []);
     const params = useParams();
-    const [queryEnabled, setQueryEnabled] = useState(true);
+    const queryClient = useQueryClient();
+    const [formVisible, setFormVisible] = useState(false);
 
     try {
         awardId = selectId(params, id);
@@ -32,7 +37,7 @@ export const AwardPage = ({ id }: AwardPageProps) => {
         console.log(`${e} work`);
     }
 
-    const fetchAward = async (id: string, user: User | null): Promise<Award> => {
+    const fetchAward = async (id: string): Promise<Award> => {
         const url = "awards/" + id;
         const data = await getApiContent(url, user).then(response =>
             response.data)
@@ -41,9 +46,8 @@ export const AwardPage = ({ id }: AwardPageProps) => {
     }
 
     const { isLoading, data } = useQuery({
-        queryKey: ["award", id],
-        queryFn: () => fetchAward(awardId, user),
-        enabled: queryEnabled
+        queryKey: ["award", awardId],
+        queryFn: () => fetchAward(awardId),
     })
 
     const winnerTemplate = (awarded: Awarded) => {
@@ -96,10 +100,36 @@ export const AwardPage = ({ id }: AwardPageProps) => {
         );
     };
 
+    const onFormClose = () => {
+        setFormVisible(false);
+        queryClient.invalidateQueries({ queryKey: ['award', awardId] });
+    };
+
+    const dialItems = [
+        {
+            label: 'Muokkaa',
+            icon: 'pi pi-pencil',
+            command: () => setFormVisible(true)
+        }
+    ];
+
     if (!data) return null;
 
     return (
         <main className="award-page">
+            {isAdmin(user) && (
+                <>
+                    <Tooltip position="left" target=".fixed-dial .p-speeddial-action" />
+                    <SpeedDial
+                        model={dialItems}
+                        direction="up"
+                        className="fixed-dial"
+                        showIcon="pi pi-plus"
+                        hideIcon="pi pi-times"
+                        buttonClassName="p-button-primary"
+                    />
+                </>
+            )}
             {isLoading ? (
                 <div className="flex justify-content-center">
                     <ProgressSpinner />
@@ -122,6 +152,24 @@ export const AwardPage = ({ id }: AwardPageProps) => {
                                                 novellien tapauksessa vain sellaiset, jotka on suomennettu.
                                             </i>
                                         </div>
+                                        {data.links && data.links.length > 0 && (
+                                            <div className="mt-4 pt-3 border-top-1 surface-border">
+                                                <div className="flex flex-wrap gap-3">
+                                                    {data.links.map((link, index) => (
+                                                        <a
+                                                            key={index}
+                                                            href={link.link}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="no-underline text-primary hover:text-primary-700 flex align-items-center gap-2"
+                                                        >
+                                                            <i className="pi pi-external-link" />
+                                                            <span>{link.description || link.link}</span>
+                                                        </a>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </Card>
@@ -154,6 +202,17 @@ export const AwardPage = ({ id }: AwardPageProps) => {
                                 </TabPanel>
                             </TabView>
                         </div>
+
+                        <Dialog
+                            maximizable
+                            blockScroll
+                            className="w-full xl:w-6"
+                            visible={formVisible}
+                            onHide={onFormClose}
+                            header="Muokkaa palkintoa"
+                        >
+                            <AwardForm award={data} onClose={onFormClose} />
+                        </Dialog>
                     </div>
                 )
             )}

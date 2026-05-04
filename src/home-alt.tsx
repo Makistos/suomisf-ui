@@ -58,7 +58,7 @@ export const HomeAlt = () => {
         setLoading(true);
         const [statsResponse, latestResponse] = await Promise.all([
           getApiContent("frontpagedata", user),
-          getApiContent(`latest/editions/${LATEST_COUNT * 3}`, user),
+          getApiContent(`latest/editions/${LATEST_COUNT * 10}`, user),
         ]);
         setStats(statsResponse.data);
         const seen = new Set<number>();

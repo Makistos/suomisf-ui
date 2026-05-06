@@ -10,6 +10,7 @@ import { TagGroup } from "@features/tag";
 import { ImageGallery } from ".";
 import { getCurrenUser } from "../services/auth-service";
 import { editionIsOwned } from "@features/edition/utils/edition-is-owned";
+import { editionIsWishlisted } from "@features/edition/utils/edition-is-wishlisted";
 
 interface ContributorWorkControlProps {
     /**
@@ -246,11 +247,6 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
     const formatEdition = (edition: Edition, workTitle: string): string => {
         let result = "";
 
-        // Add star if user owns this edition
-        if (currentUser && editionIsOwned(edition, currentUser)) {
-            result += "★ ";
-        }
-
         if (edition.version && edition.version > 1) {
             result += `${edition.version}. laitos `;
         }
@@ -388,7 +384,7 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
                                                                 return yearA - yearB;
                                                             })
                                                             .map((edition) => (
-                                                                <div key={edition.id}>
+                                                                <div key={edition.id} className={editionIsOwned(edition, currentUser) ? "book owned" : editionIsWishlisted(edition, currentUser) ? "book wishlist" : "book not-owned"}>
                                                                     <Link
                                                                         to={`/editions/${edition.id}`}
                                                                         className="no-underline text-primary hover:text-primary-700"

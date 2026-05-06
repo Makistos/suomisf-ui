@@ -10,6 +10,7 @@ import { TagGroup } from "@features/tag";
 import { ImageGallery } from ".";
 import { getCurrenUser } from "../services/auth-service";
 import { editionIsOwned } from "@features/edition/utils/edition-is-owned";
+import { editionIsWishlisted } from "@features/edition/utils/edition-is-wishlisted";
 import { groupSimilarEditions } from "@features/edition/utils/group-similar-editions";
 import { combineEditions } from "@features/edition/utils/combine-editions";
 
@@ -251,11 +252,6 @@ export const ContributorEditionControl = ({
     const formatEdition = (edition: CombinedEdition): string => {
         let result = "";
 
-        // Add star if user owns this edition
-        if (currentUser && editionIsOwned(edition, currentUser)) {
-            result += "★ ";
-        }
-
         if (edition.version && edition.version > 1) {
             result += `${edition.version}. laitos `;
         }
@@ -351,7 +347,7 @@ export const ContributorEditionControl = ({
                                     const editionImages = edition.images || [];
 
                                     return (
-                                        <div key={edition.id} className="mb-3 p-3 surface-50 border-round">
+                                        <div key={edition.id} className={`mb-3 p-3 surface-50 border-round ${editionIsOwned(edition, currentUser) ? "book owned" : editionIsWishlisted(edition, currentUser) ? "book wishlist" : "book not-owned"}`}>
                                             <div className="grid align-items-start gap-3">
                                                 <div className="col">
                                                     {/* Title with author */}

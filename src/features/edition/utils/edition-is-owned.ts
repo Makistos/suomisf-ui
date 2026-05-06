@@ -5,6 +5,6 @@ export const editionIsOwned = (edition: Edition | CombinedEdition, user: User | 
     let retval = false
     if (user === null) return false;
     if (!edition.owners) return false;
-    if (edition.owners.some(owner => owner.id === user.id)) retval = true;
+    if (edition.owners.some(owner => Number(owner.id) === Number(user.id))) retval = true;
     return retval;
 }

@@ -96,13 +96,13 @@ export const combineEditions = (editions: Edition[], user: User | null): Edition
 
     // Check if user own any of the editions
     const owners = editions.flatMap(edition => edition.owners);
-    if (owners.some(owner => owner.id === user?.id)) {
+    if (owners.some(owner => Number(owner.id) === Number(user?.id))) {
         retval.owners = owners;
     } else {
         retval.owners = [];
     }
     const wishlisted = editions.flatMap(edition => edition.wishlisted);
-    if (wishlisted.some(wl => wl.id === user?.id)) {
+    if (wishlisted.some(wl => Number(wl.id) === Number(user?.id))) {
         retval.wishlisted = wishlisted;
     } else {
         retval.wishlisted = [];

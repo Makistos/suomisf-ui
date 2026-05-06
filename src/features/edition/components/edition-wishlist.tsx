@@ -11,17 +11,17 @@ import { removeFromWishlist } from "@api/edition/remove-from-wishlist";
 
 interface EditionWishlistProps {
     editionId: number,
-    initial: boolean
+    initial: boolean,
+    workId?: number,
 }
 
-export const EditionWishlist = ({ editionId, initial }: EditionWishlistProps) => {
+export const EditionWishlist = ({ editionId, initial, workId }: EditionWishlistProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const queryClient = useQueryClient();
     if (!user) return <></>;
 
     const updateStatus = (value: boolean) => {
         let retval: Promise<HttpStatusResponse>;
-        console.log(value)
         if (value === false) {
             retval = removeFromWishlist(editionId, user);
         } else {
@@ -35,6 +35,9 @@ export const EditionWishlist = ({ editionId, initial }: EditionWishlistProps) =>
         onSuccess: (data: HttpStatusResponse, variables) => {
             if (data.status === 200 || data.status === 201) {
                 queryClient.invalidateQueries({ queryKey: ['edition', editionId] });
+                if (workId) {
+                    queryClient.invalidateQueries({ queryKey: ['work', workId] });
+                }
             } else {
                 if (JSON.parse(data.response).data["msg"] !== undefined) {
                     const errMsg = JSON.parse(data.response).data["msg"];

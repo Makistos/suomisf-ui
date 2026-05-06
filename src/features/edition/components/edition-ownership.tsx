@@ -17,6 +17,7 @@ import { deleteOwnership } from "@api/edition/delete-ownership";
 
 interface EditionOwnershipProps {
     editionId: number,
+    workId?: number,
 }
 
 interface ConditionDialogProps {
@@ -113,7 +114,7 @@ const emptyCondition: EditionOwnershipStatus = {
     user_id: null
 }
 
-export const EditionOwnership = ({ editionId }: EditionOwnershipProps) => {
+export const EditionOwnership = ({ editionId, workId }: EditionOwnershipProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [showInfoDialog, setShowInfoDialog] = useState(false);
     const [queryEnabled, setQueryEnabled] = useState(true);
@@ -145,6 +146,9 @@ export const EditionOwnership = ({ editionId }: EditionOwnershipProps) => {
             if (data.status === 200 || data.status === 201) {
                 queryClient.invalidateQueries({ queryKey: ['edition', 'owner', editionId] });
                 queryClient.invalidateQueries({ queryKey: ['edition', editionId] });
+                if (workId) {
+                    queryClient.invalidateQueries({ queryKey: ['work', workId] });
+                }
             } else {
                 if (JSON.parse(data.response).data["msg"] !== undefined) {
                     const errMsg = JSON.parse(data.response).data["msg"];

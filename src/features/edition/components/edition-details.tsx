@@ -324,8 +324,9 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                         {user && edition.combined === false &&
                             <div className="inline-block">
                                 <EditionWishlist editionId={edition.id}
-                                    initial={edition.wishlisted?.some(owner => owner.id === user.id)} />
-                                <EditionOwnership editionId={edition.id} />
+                                    initial={edition.wishlisted?.some(owner => owner.id === user.id)}
+                                    workId={work?.id} />
+                                <EditionOwnership editionId={edition.id} workId={work?.id} />
                             </div>
                         }
                     </div>

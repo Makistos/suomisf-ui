@@ -155,7 +155,7 @@ export const SFTag = ({ id }: SfTagProps) => {
                                         id={field.name}
                                         value={field.value}
                                         field="name"
-                                        onChange={(e) => field.onChange(e.target.value)}
+                                        onChange={(e) => field.onChange(e.value)}
                                         completeMethod={searchTags}
                                         suggestions={filteredTags}
                                         itemTemplate={tagTemplate}
@@ -303,6 +303,12 @@ export const SFTag = ({ id }: SfTagProps) => {
                         >
                             <SfTagForm tagId={(data && data.id) ? data.id : null}
                                 onSubmitCallback={onTagSubmit} />
+                        </Dialog>
+                        <Dialog
+                            header="Yhdistä asiasana" visible={displayMerge} onHide={() => onHide('displayMerge')}
+                            className="w-full xl:w-4"
+                        >
+                            <MergeTagsDialog />
                         </Dialog>
                     </div>
                 )

@@ -38,7 +38,7 @@ import { ImageView } from "@utils/image-view";
 import { appearsIn } from "@utils/appears-in"
 import { Card } from "primereact/card";
 import { TabView, TabPanel } from "primereact/tabview";
-import { TagGroup } from "@features/tag";
+import { TagGroup, KirjasampoTagImport } from "@features/tag";
 import { GenreGroup } from "@features/genre";
 import { AwardList, AwardPanel } from "@features/award";
 import { AwardedForm } from "@features/award/components/awarded-form";
@@ -530,6 +530,11 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                                                     />
                                                 </div>
                                             )}
+                                            <KirjasampoTagImport
+                                                work={workData}
+                                                user={user}
+                                                onImported={() => queryClient.invalidateQueries({ queryKey: ["work", workId] })}
+                                            />
                                             {appearsIn(workData.contributions) && (
                                                 <div className="flex flex-column gap-2">
                                                     <h3 className="text-sm uppercase text-600 m-0">Henkilöt</h3>

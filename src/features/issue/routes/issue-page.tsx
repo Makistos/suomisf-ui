@@ -15,9 +15,8 @@ import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
 import { deleteIssue } from '@api/issue/delete-issue';
 import { ImageView } from '@utils/image-view';
-import { ImageType } from "../../../types/image";
-import { deleteIssueCover } from '@api/issue/delete-issue-cover';
-import { saveIssueCover } from '@api/issue/save-issue-cover';
+import { deleteIssueImage } from '@api/issue/delete-issue-image';
+import { uploadIssueImage } from '@api/issue/upload-issue-image';
 import { FileUpload, FileUploadHandlerEvent } from 'primereact/fileupload';
 import { IssueShortsPicker } from '@features/short/components/shorts-picker';
 import _ from 'lodash';
@@ -26,8 +25,6 @@ import { TabPanel, TabView } from 'primereact/tabview';
 import { selectId } from '@utils/select-id';
 import { Tooltip } from 'primereact/tooltip';
 import { SpeedDial } from 'primereact/speeddial';
-import { Image } from 'primereact/image';
-import { ContextMenu } from 'primereact/contextmenu';
 import { ContributionType } from '../../../types/contribution';
 const baseURL = 'issues/';
 
@@ -156,8 +153,6 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
     const queryClient = useQueryClient();
     const params = useParams();
     let issueId = "";
-    const cm = useRef<ContextMenu>(null);
-
     // if (toast === undefined) {
     //     toast = useRef<Toast>(null);
     // }
@@ -232,39 +227,27 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
         setQueryEnabled(true);
     }
 
-    // imageId is not needed here but required in saveImage so it is just
-    // set to 0
-    const strToImageType = (str: string) => {
-        if (str) {
-            return [{
-                id: 0,
-                image_src: str?.startsWith('http') ? str : import.meta.env.VITE_IMAGE_URL + str,
-                image_attr: "",
-                size: null
-            }] as ImageType[];
-        }
-        return [];
-    }
+    const [imageIdx, setImageIdx] = useState(0);
 
     const saveImage = useCallback(async (event: FileUploadHandlerEvent) => {
-        saveIssueCover(issueId, event.files[0], event.files[0].name, user).then(response => {
+        uploadIssueImage(issueId, event.files[0], event.files[0].name).then(response => {
             if (response?.status === 200) {
                 onUpload('success', 'Kansi lisätty onnistuneesti');
             } else {
                 onUpload('error', 'Virhe kantta lisätäessä');
             }
         });
-    }, [issueId, user]);
+    }, [issueId]);
 
-    const deleteImage = useCallback(() => {
-        const response = deleteIssueCover(issueId).then(response => {
+    const deleteImage = useCallback((_itemId: string | number, imageId: number) => {
+        deleteIssueImage(issueId, imageId).then(response => {
             if (response?.status === 200) {
                 onUpload('success', 'Kansi poistettu onnistuneesti');
             } else {
                 onUpload('error', 'Virhe kantta poistettaessa');
             }
         });
-    }, [issueId, user]);
+    }, [issueId]);
 
     const onUpload = useCallback((severity: "success" | "info" | "warn" | "error", message: string) => {
         toast?.current?.show({
@@ -311,29 +294,6 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
         }
     ];
 
-    const imageItems = [
-        {
-            label: 'Poista kuva',
-            icon: 'pi pi-trash',
-            command: () => {
-                deleteImage();
-                queryClient.invalidateQueries();
-            },
-            visible: isAdmin(getCurrenUser())
-        },
-        {
-            label: 'Kopioi osoite',
-            icon: 'pi pi-copy',
-            command: () => {
-                if (data?.image_src.startsWith("http") ||
-                    data?.image_src.startsWith("https")) {
-                    navigator.clipboard.writeText(data.image_src);
-                } else {
-                    navigator.clipboard.writeText(import.meta.env.VITE_IMAGE_URL + data?.image_src);
-                }
-            }
-        }
-    ];
 
     if (!data) return null;
 
@@ -401,39 +361,28 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
                                         </div>
                                     </div>
                                     <div className="col-12 lg:col-3">
-                                        {(data.image_src && issueId) ? (
-                                            <>
-                                                <ContextMenu model={imageItems} ref={cm} />
-                                                <Image
-                                                    className="pt-2"
-                                                    preview
-                                                    width="150px"
-                                                    src={data.image_src?.startsWith('http') ? data.image_src : import.meta.env.VITE_IMAGE_URL + data.image_src}
-                                                    onContextMenu={(e) => cm.current?.show(e)}
-                                                />
-                                            </>
-                                            // <ImageView
-                                            //     itemId={issueId}
-                                            //     images={strToImageType(data.image_src)}
-                                            //     idx={0}
-                                            //     deleteFunc={deleteImage}
-                                            //     idxCb={
-                                            //         (idx: number) => {
-
-                                            //         }
-                                            //     }
-                                            // />
-                                        ) : isAdmin(user) &&
-                                        <FileUpload
-                                            id={"issue-image-" + issueId}
-                                            mode="basic"
-                                            accept='image/*'
-                                            name="image"
-                                            uploadLabel='Lisää kuva'
-                                            auto
-                                            customUpload
-                                            uploadHandler={saveImage}
-                                        />
+                                        {(data.images.length > 0 && issueId) ?
+                                            <ImageView
+                                                itemId={issueId}
+                                                images={data.images.sort((a, b) => a.id - b.id)}
+                                                idx={imageIdx}
+                                                saveFunc={saveImage}
+                                                deleteFunc={deleteImage}
+                                                onUpload={saveImage}
+                                                idxCb={setImageIdx}
+                                                editionCount={1}
+                                            />
+                                        : isAdmin(user) &&
+                                            <FileUpload
+                                                id={"issue-image-" + issueId}
+                                                mode="basic"
+                                                accept='image/*'
+                                                name="image"
+                                                uploadLabel='Lisää kuva'
+                                                auto
+                                                customUpload
+                                                uploadHandler={saveImage}
+                                            />
                                         }
                                     </div>
                                 </div>

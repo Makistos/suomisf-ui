@@ -261,11 +261,11 @@ export const MagazinePage = () => {
                                             )
                                                 .map((issue) => (
                                                     <div className="p-1">
-                                                        {issue.image_src && issue.image_src.length > 0 && (
+                                                        {issue.images?.[0] && (
                                                             <Image preview height="200px"
-                                                                src={issue.image_src?.startsWith('http') ?
-                                                                    issue.image_src :
-                                                                    import.meta.env.VITE_IMAGE_URL + issue?.image_src} alt={issue.cover_number} />
+                                                                src={issue.images[0].image_src.startsWith('http') ?
+                                                                    issue.images[0].image_src :
+                                                                    import.meta.env.VITE_IMAGE_URL + issue.images[0].image_src} alt={issue.cover_number} />
                                                         )}
                                                     </div>
                                                 ))

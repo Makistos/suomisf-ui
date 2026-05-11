@@ -86,10 +86,11 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
         });
 
         sortedContributions.forEach(({ issue }) => {
-            if (issue.image_src) {
-                const imageUrl = issue.image_src.startsWith('http')
-                    ? issue.image_src
-                    : `${import.meta.env.VITE_IMAGE_URL}${issue.image_src}`;
+            const firstImage = issue.images?.[0];
+            if (firstImage) {
+                const imageUrl = firstImage.image_src.startsWith('http')
+                    ? firstImage.image_src
+                    : `${import.meta.env.VITE_IMAGE_URL}${firstImage.image_src}`;
 
                 // Only add if we haven't seen this URL before
                 if (!seenUrls.has(imageUrl)) {
@@ -122,10 +123,11 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
                 }
             }
 
-            if (issue.image_src) {
-                const imageUrl = issue.image_src.startsWith('http')
-                    ? issue.image_src
-                    : `${import.meta.env.VITE_IMAGE_URL}${issue.image_src}`;
+            const firstImage = issue.images?.[0];
+            if (firstImage) {
+                const imageUrl = firstImage.image_src.startsWith('http')
+                    ? firstImage.image_src
+                    : `${import.meta.env.VITE_IMAGE_URL}${firstImage.image_src}`;
 
                 // Only add if we haven't seen this URL before
                 if (!seenUrls.has(imageUrl)) {
@@ -275,11 +277,11 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
                                                 </div>
 
                                                 {/* Cover Image */}
-                                                {issue.image_src && (
+                                                {issue.images?.[0] && (
                                                     <div className="flex-shrink-0">
                                                         <Link to={`/issues/${issue.id}`}>
                                                             <Image
-                                                                src={issue.image_src.startsWith('http') ? issue.image_src : `${import.meta.env.VITE_IMAGE_URL}${issue.image_src}`}
+                                                                src={issue.images[0].image_src.startsWith('http') ? issue.images[0].image_src : `${import.meta.env.VITE_IMAGE_URL}${issue.images[0].image_src}`}
                                                                 alt={`${issue.magazine.name} ${issue.cover_number} kansi`}
                                                                 width="64"
                                                                 height="80"

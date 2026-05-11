@@ -3,6 +3,7 @@ import { Short } from "../../short/types";
 import { Article } from "../../article";
 import { Magazine } from "../../magazine/types";
 import { Contribution } from "../../../types/contribution";
+import { ImageType } from "../../../types/image";
 
 
 export interface Issue {
@@ -14,7 +15,7 @@ export interface Issue {
     year: number;
     cover_number: string;
     publisher_id: number;
-    image_src: string;
+    images: ImageType[];
     pages: number;
     size: PublicationSize;
     link: string;

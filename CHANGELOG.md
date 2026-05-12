@@ -3,6 +3,36 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-05-12 `f65fe32` — Dark mode following browser preference
+The PrimeReact theme switches automatically between `mdc-light-indigo` and `mdc-dark-indigo` based on the OS/browser `prefers-color-scheme` setting. Theme is applied before React hydrates (no flash), and live-switches if the user changes their preference while the app is open. Hardcoded light-mode colours in CSS replaced with theme variables.
+
+## 2026-05-11 `0c4c6a5` — Multi-image support for issues
+Issue pages now use the shared `ImageView` component, supporting multiple cover images with previous/next navigation, upload, and delete. Duplicate image-handling code removed from the issue page.
+
+## 2026-05-10 `9b27d10` — Fix: tag combine button not working
+
+## 2026-05-10 `7ed56af` — Kirjasampo tag import for works
+Admin-only button on the work page that fetches tags from kirjasampo.fi and presents them for review before saving. Supports skip/omit and replace mappings that persist across imports.
+
+## 2026-05-06 `868e023` — Fix: ownership indicator not showing on person page
+
+## 2026-05-06 `ed9d752` — Fix: work/wishlist changes now reflect immediately
+React Query cache is invalidated after ownership and wishlist mutations, so lists update without a manual refresh.
+
+## 2026-05-05 `4f269f7` — Fix: front page cover strip picks oldest edition per work
+Latest additions cover strip now selects the oldest edition that has a cover image, avoiding placeholder slots when a newer edition lacks an image.
+
+## 2026-05-04 `a01f1cd` — Award description uses rich text editor
+
+## 2026-05-04 `1e90e48` — Award editing and links on award page
+Edit form for award name, description, domestic flag, and external links. Links are displayed in the award card header. Award list entries are now linked to their award page.
+
+## 2026-05-03 `c9e93a5` — Notes field on short story
+
+## 2026-05-01 `85ea770` — Fix: works grouped under wrong person when author names collide
+
+## 2026-05-01 `397e4c7` — Fix: tag delete button; inline tag creation in tag autocomplete field
+
 ## 2026-05-01 `a7b6fbb` — Tag type styles and new Lista type
 Added Lista as a new tag type (id 7) with purple colour and `pi-list` icon. Alagenre and Tyyli got icons (`pi-bookmark`, `pi-palette`). Era (Aika) now has a distinct sepia-brown colour instead of appearing unstyled. Lista appears as its own section between Tyylit and Paikat on the tags page.
 

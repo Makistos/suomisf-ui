@@ -15,10 +15,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/primeicons/7.0.0/primeicons.css"
     integrity="sha512-TrpBJRPu1GwAu1cMDKEHnDbLCnciebxralpA806EEIdNpmbuCAi0hZRBdbNHVl2fgOW96lnYyLIPqY/iL2saNg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/primereact/10.6.4/resources/themes/bootstrap4-light-blue/theme.css"
-    integrity="sha512-o6IGNtLNAkysWUP/Ucvj6nlc0vLXZrtf7Oo77bpwbtrB/+jlJTdlBRLJQmhaLv6pRIULmsySEACbrIHD/KSdgg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link id="theme-link" rel="stylesheet" />
+  <script>
+    (function () {
+      var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var base = 'https://cdnjs.cloudflare.com/ajax/libs/primereact/10.6.4/resources/themes/';
+      document.getElementById('theme-link').href = base + (dark ? 'mdc-dark-indigo' : 'mdc-light-indigo') + '/theme.css';
+    })();
+  </script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/primereact/10.6.4/resources/primereact.min.css"
     integrity="sha512-sHmNQOF6Ht0VB933/8QO2V4Y95srbrSZYImCQ64CpaRqIveCp5KCc7Zbzt7LHDTF1/tBHgbdXwN9ggOBtr5Zjg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />

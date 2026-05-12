@@ -150,7 +150,7 @@ a {
 }
 
 .p-accordion-header-link {
-  background-color: rgba(255, 255, 255) !important;
+  background-color: var(--surface-card) !important;
   border: none !important;
   padding-bottom: 0.5rem !important;
   padding-top: 0rem !important;
@@ -219,7 +219,7 @@ a {
 
 .editiontitle {
   font-size: 8;
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--text-color-secondary);
   font-weight: 400;
 }
 
@@ -445,14 +445,14 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
   left: -12px;
   width: 12px;
   height: 16px;
-  background: black;
+  background: var(--text-color);
   text-align: center;
   clip-path: polygon(0% 0%, 0% 100%, 50% 75%, 100% 100%, 100% 0%);
 }
 
 .book-attribution {
   font-size: 0.8em;
-  color: #666;
+  color: var(--text-color-secondary);
   font-style: italic;
   margin-top: -1.5em;
   padding-top: 0em;
@@ -914,6 +914,13 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     border-radius: 8px;
     padding: 10px;
     margin-bottom: 15px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .highlighted-edition {
+        background-color: #44380a;
+        border-color: #7a6a1a;
+    }
 }
 
 /* ── Alternative front page ─────────────────────────────────────── */

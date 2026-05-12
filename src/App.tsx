@@ -21,12 +21,26 @@ import './App.css';
 import MainMenu from './components/mainmenu';
 //import { useDocumentTitle } from './components/document-title';
 
+const THEME_BASE = 'https://cdnjs.cloudflare.com/ajax/libs/primereact/10.6.4/resources/themes/';
+
+function setTheme(dark: boolean) {
+  const link = document.getElementById('theme-link') as HTMLLinkElement | null;
+  if (link) link.href = THEME_BASE + (dark ? 'mdc-dark-indigo' : 'mdc-light-indigo') + '/theme.css';
+}
+
 function App() {
   const location = useLocation();
 
   useEffect(() => {
     document.body.classList.remove('p-overflow-hidden');
   }, [location.pathname]);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = (e: MediaQueryListEvent) => setTheme(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   addLocale('fi', {
     startsWith: 'Teksti alkaa',

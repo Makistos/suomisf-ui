@@ -27,7 +27,7 @@ export const WorkStatsPanel = ({ works }: WorksProps) => {
             <OverlayPanel
                 ref={op}
                 id="editionsstats_panel"
-                onShow={() => setIsVisible(true)}
+                onShow={() => requestAnimationFrame(() => setIsVisible(true))}
                 onHide={() => setIsVisible(false)}>
                 {isVisible && <WorkStats works={works} />}
             </OverlayPanel>

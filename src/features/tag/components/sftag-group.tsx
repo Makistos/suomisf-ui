@@ -46,7 +46,7 @@ export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseF
     }
 
     const filterTypes = (tags: SfTag[], type: string) => {
-        return tags.filter(tag => tag.type?.name === type)
+        return tags.filter(tag => tag?.type?.name === type)
             .map(tag => tag)
     }
 
@@ -59,7 +59,7 @@ export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseF
     }
 
     const filterTags = (tag: SfTag) => {
-        tag === undefined ? false : true;
+        if (tag === undefined) return false;
         if (reverseFilter) {
             return types ? tag.type ? !types.includes(tag.type.name) : true : true;
         }

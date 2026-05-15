@@ -36,6 +36,10 @@ function App() {
   }, [location.pathname]);
 
   useEffect(() => {
+    navigator.sendBeacon('/api/pageview', JSON.stringify({ path: location.pathname }));
+  }, [location.pathname]);
+
+  useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     const handler = (e: MediaQueryListEvent) => setTheme(e.matches);
     mq.addEventListener('change', handler);

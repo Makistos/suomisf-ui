@@ -36,10 +36,13 @@ function App() {
   }, [location.pathname]);
 
   useEffect(() => {
-    navigator.sendBeacon(
-      `${import.meta.env.VITE_API_URL}pageview`,
-      new Blob([JSON.stringify({ path: location.pathname })], { type: 'application/json' }),
-    );
+    fetch(`${import.meta.env.VITE_API_URL}pageview`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: location.pathname }),
+      keepalive: true,
+      credentials: 'omit',
+    });
   }, [location.pathname]);
 
   useEffect(() => {

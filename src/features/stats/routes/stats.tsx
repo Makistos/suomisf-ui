@@ -12,6 +12,7 @@ import { PublisherChart } from '../components/publisher-chart';
 import { IssuesChart } from '../components/issues-chart';
 import { AuthorChart } from '../components/author-chart';
 import { ShortStoryChart } from '../components/short-story-chart';
+import { VisitorStats } from '../components/visitor-stats';
 
 interface GenreCounts {
     [key: string]: number;
@@ -142,6 +143,12 @@ export const StatsPage = () => {
                     <TabPanel header="Novellit">
                         <ShortStoryChart />
                     </TabPanel>
+
+                    {user?.role === 'admin' && (
+                        <TabPanel header="Kävijät">
+                            <VisitorStats />
+                        </TabPanel>
+                    )}
                 </TabView>
             </div>
         </main>

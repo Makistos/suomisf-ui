@@ -9,3 +9,4 @@ export * from "./issues-chart";
 export * from "./author-chart";
 export * from "./short-story-chart";
 export * from "./cumulative-editions-chart";
+export * from "./visitor-stats";

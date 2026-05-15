@@ -36,7 +36,10 @@ function App() {
   }, [location.pathname]);
 
   useEffect(() => {
-    navigator.sendBeacon('/api/pageview', JSON.stringify({ path: location.pathname }));
+    navigator.sendBeacon(
+      `${import.meta.env.VITE_API_URL}pageview`,
+      new Blob([JSON.stringify({ path: location.pathname })], { type: 'application/json' }),
+    );
   }, [location.pathname]);
 
   useEffect(() => {

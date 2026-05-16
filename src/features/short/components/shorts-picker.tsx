@@ -31,7 +31,7 @@ type PickerProps = {
   onClose: () => void,
 }
 
-export const EditionShortsPicker = ({ id }: PickerProps) => {
+export const EditionShortsPicker = ({ id, onClose }: PickerProps) => {
   const user = useMemo(() => getCurrenUser(), []);
   const [shorts, setShorts] = useState<Short[]>([]);
 
@@ -49,6 +49,7 @@ export const EditionShortsPicker = ({ id }: PickerProps) => {
     const ids = shorts.map(short => short.id);
     try {
       const response = await putApiContent(`editions/${id}/shorts`, ids, user);
+      onClose();
       return response.status || 200;
     } catch (error) {
       console.error('Failed to save shorts to edition:', error);

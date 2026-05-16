@@ -47,17 +47,17 @@ export const VisitorStats = () => {
 
     const daily = useQuery<DailyRow[]>({
         queryKey: ['stats', 'visitors', 'daily', days],
-        queryFn: async () => (await getApiContent(`stats/visitors/daily?days=${days}`, user)).data,
+        queryFn: async () => (await getApiContent(`stats/site/daily?days=${days}`, user)).data,
     });
 
     const locations = useQuery<LocationRow[]>({
         queryKey: ['stats', 'visitors', 'locations'],
-        queryFn: async () => (await getApiContent('stats/visitors/locations', user)).data,
+        queryFn: async () => (await getApiContent('stats/site/locations', user)).data,
     });
 
     const breakdown = useQuery<Breakdown>({
         queryKey: ['stats', 'visitors', 'breakdown'],
-        queryFn: async () => (await getApiContent('stats/visitors/breakdown', user)).data,
+        queryFn: async () => (await getApiContent('stats/site/breakdown', user)).data,
     });
 
     const totalVisitors = useMemo(

@@ -55,7 +55,7 @@ export const PageviewTable = () => {
     const { data, isLoading } = useQuery<PageviewResponse>({
         queryKey: ['stats', 'visitors', 'pageviews', page, perPage, filters],
         queryFn: async () =>
-            (await getApiContent(`stats/visitors/pageviews?${queryParams}`, user)).data,
+            (await getApiContent(`stats/site/log?${queryParams}`, user)).data,
     });
 
     const updateFilter = (field: keyof Filters, value: string) => {

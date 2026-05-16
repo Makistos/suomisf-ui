@@ -13,6 +13,7 @@ import { IssuesChart } from '../components/issues-chart';
 import { AuthorChart } from '../components/author-chart';
 import { ShortStoryChart } from '../components/short-story-chart';
 import { VisitorStats } from '../components/visitor-stats';
+import { PageviewTable } from '../components/pageview-table';
 
 interface GenreCounts {
     [key: string]: number;
@@ -147,6 +148,11 @@ export const StatsPage = () => {
                     {user?.role === 'admin' && (
                         <TabPanel header="Kävijät">
                             <VisitorStats />
+                        </TabPanel>
+                    )}
+                    {user?.role === 'admin' && (
+                        <TabPanel header="Kirjaukset">
+                            <PageviewTable />
                         </TabPanel>
                     )}
                 </TabView>

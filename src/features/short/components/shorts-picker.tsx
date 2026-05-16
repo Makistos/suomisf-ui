@@ -47,9 +47,8 @@ export const EditionShortsPicker = ({ id }: PickerProps) => {
 
   const saveShortsToEdition = async (shorts: Short[]): Promise<number> => {
     const ids = shorts.map(short => short.id);
-    const data = { edition_id: id, shorts: ids }
     try {
-      const response = await putApiContent('editions/shorts', data, user);
+      const response = await putApiContent(`editions/${id}/shorts`, ids, user);
       return response.status || 200;
     } catch (error) {
       console.error('Failed to save shorts to edition:', error);

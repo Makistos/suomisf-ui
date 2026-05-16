@@ -20,7 +20,7 @@ ChartJS.register(
 );
 
 interface DailyRow { date: string; visitors: number; pageviews: number; }
-interface CountryRow { country: string; visitors: number; }
+interface LocationRow { location: string; visitors: number; }
 interface BreakdownItem { label: string; count: number; }
 interface Breakdown { browsers: BreakdownItem[]; os: BreakdownItem[]; devices: BreakdownItem[]; }
 
@@ -50,9 +50,9 @@ export const VisitorStats = () => {
         queryFn: async () => (await getApiContent(`stats/visitors/daily?days=${days}`, user)).data,
     });
 
-    const countries = useQuery<CountryRow[]>({
-        queryKey: ['stats', 'visitors', 'countries'],
-        queryFn: async () => (await getApiContent('stats/visitors/countries', user)).data,
+    const locations = useQuery<LocationRow[]>({
+        queryKey: ['stats', 'visitors', 'locations'],
+        queryFn: async () => (await getApiContent('stats/visitors/locations', user)).data,
     });
 
     const breakdown = useQuery<Breakdown>({
@@ -89,14 +89,14 @@ export const VisitorStats = () => {
         ],
     }), [daily.data]);
 
-    const countryChartData = useMemo(() => ({
-        labels: countries.data?.map(c => c.country) ?? [],
+    const locationChartData = useMemo(() => ({
+        labels: locations.data?.map(c => c.location) ?? [],
         datasets: [{
             label: 'Kävijät',
-            data: countries.data?.map(c => c.visitors) ?? [],
+            data: locations.data?.map(c => c.visitors) ?? [],
             backgroundColor: '#0958D7',
         }],
-    }), [countries.data]);
+    }), [locations.data]);
 
     const doughnutData = (items: BreakdownItem[] | undefined, labelMap?: Record<string, string>) => ({
         labels: items?.map(i => labelMap?.[i.label] ?? i.label) ?? [],
@@ -109,11 +109,11 @@ export const VisitorStats = () => {
         plugins: { legend: { position: 'right' as const } },
     };
 
-    if (daily.isLoading || countries.isLoading || breakdown.isLoading) {
+    if (daily.isLoading || locations.isLoading || breakdown.isLoading) {
         return <div className="flex justify-content-center p-4"><ProgressSpinner /></div>;
     }
 
-    const countryBarHeight = Math.max(200, (countries.data?.length ?? 0) * 28 + 40);
+    const locationBarHeight = Math.max(200, (locations.data?.length ?? 0) * 28 + 40);
 
     return (
         <div className="flex flex-column gap-3">
@@ -158,10 +158,10 @@ export const VisitorStats = () => {
             {/* Countries + device/OS doughnuts */}
             <div className="flex gap-3 flex-wrap">
                 <Card className="shadow-1" style={{ flex: '2 1 360px' }}>
-                    <h3 className="mt-0 mb-3">Maat (90 pv)</h3>
-                    <div style={{ height: `${countryBarHeight}px` }}>
+                    <h3 className="mt-0 mb-3">Sijainnit (90 pv)</h3>
+                    <div style={{ height: `${locationBarHeight}px` }}>
                         <Bar
-                            data={countryChartData}
+                            data={locationChartData}
                             options={{
                                 indexAxis: 'y',
                                 responsive: true,

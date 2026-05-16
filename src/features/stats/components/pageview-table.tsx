@@ -16,6 +16,7 @@ interface PageviewRow {
     browser: string | null;
     os: string | null;
     device_type: string | null;
+    operator: string | null;
 }
 
 interface PageviewResponse {
@@ -31,10 +32,11 @@ interface Filters {
     browser: string;
     os: string;
     device_type: string;
+    operator: string;
 }
 
 const EMPTY_FILTERS: Filters = {
-    ip: '', path: '', city: '', country: '', browser: '', os: '', device_type: '',
+    ip: '', path: '', city: '', country: '', browser: '', os: '', device_type: '', operator: '',
 };
 
 export const PageviewTable = () => {
@@ -139,6 +141,11 @@ export const PageviewTable = () => {
                 field="device_type" header="Laite"
                 filter filterElement={filterInput('device_type')} showFilterMenu={false}
                 style={{ minWidth: '7rem' }}
+            />
+            <Column
+                field="operator" header="Operaattori"
+                filter filterElement={filterInput('operator')} showFilterMenu={false}
+                style={{ minWidth: '12rem' }}
             />
         </DataTable>
     );

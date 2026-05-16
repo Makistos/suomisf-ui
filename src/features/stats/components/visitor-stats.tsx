@@ -22,7 +22,7 @@ ChartJS.register(
 interface DailyRow { date: string; visitors: number; pageviews: number; }
 interface LocationRow { location: string; visitors: number; }
 interface BreakdownItem { label: string; count: number; }
-interface Breakdown { browsers: BreakdownItem[]; os: BreakdownItem[]; devices: BreakdownItem[]; }
+interface Breakdown { browsers: BreakdownItem[]; os: BreakdownItem[]; devices: BreakdownItem[]; operators: BreakdownItem[]; }
 
 const DAY_OPTIONS = [
     { label: '30 pv', value: 30 },
@@ -195,28 +195,53 @@ export const VisitorStats = () => {
                 </div>
             </div>
 
-            {/* Browser breakdown */}
-            <Card className="shadow-1">
-                <h3 className="mt-0 mb-3">Selaimet (90 pv)</h3>
-                <div style={{ height: '260px' }}>
-                    <Bar
-                        data={{
-                            labels: breakdown.data?.browsers.map(b => b.label) ?? [],
-                            datasets: [{
-                                label: 'Käyttökerrat',
-                                data: breakdown.data?.browsers.map(b => b.count) ?? [],
-                                backgroundColor: PALETTE,
-                            }],
-                        }}
-                        options={{
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: { legend: { display: false } },
-                            scales: { y: { beginAtZero: true } },
-                        }}
-                    />
-                </div>
-            </Card>
+            {/* Browser + operator breakdown */}
+            <div className="flex gap-3 flex-wrap">
+                <Card className="shadow-1" style={{ flex: '1 1 300px' }}>
+                    <h3 className="mt-0 mb-3">Selaimet (90 pv)</h3>
+                    <div style={{ height: '260px' }}>
+                        <Bar
+                            data={{
+                                labels: breakdown.data?.browsers.map(b => b.label) ?? [],
+                                datasets: [{
+                                    label: 'Käyttökerrat',
+                                    data: breakdown.data?.browsers.map(b => b.count) ?? [],
+                                    backgroundColor: PALETTE,
+                                }],
+                            }}
+                            options={{
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: { legend: { display: false } },
+                                scales: { y: { beginAtZero: true } },
+                            }}
+                        />
+                    </div>
+                </Card>
+
+                <Card className="shadow-1" style={{ flex: '1 1 300px' }}>
+                    <h3 className="mt-0 mb-3">Operaattorit (90 pv)</h3>
+                    <div style={{ height: '260px' }}>
+                        <Bar
+                            data={{
+                                labels: breakdown.data?.operators.map(o => o.label) ?? [],
+                                datasets: [{
+                                    label: 'Käyttökerrat',
+                                    data: breakdown.data?.operators.map(o => o.count) ?? [],
+                                    backgroundColor: PALETTE,
+                                }],
+                            }}
+                            options={{
+                                indexAxis: 'y',
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: { legend: { display: false } },
+                                scales: { x: { beginAtZero: true } },
+                            }}
+                        />
+                    </div>
+                </Card>
+            </div>
 
         </div>
     );

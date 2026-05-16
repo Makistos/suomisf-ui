@@ -151,7 +151,7 @@ export const StatsPage = () => {
                         </TabPanel>
                     )}
                     {user?.role === 'admin' && (
-                        <TabPanel header="Kirjaukset">
+                        <TabPanel header="Käynnit">
                             <PageviewTable />
                         </TabPanel>
                     )}

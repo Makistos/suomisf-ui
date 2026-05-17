@@ -29,11 +29,16 @@ interface ShortProps {
      * magazines).
      */
     listPublications?: boolean,
-    enableQueries?: (state: boolean) => void
+    enableQueries?: (state: boolean) => void,
+    /**
+     * All editions of the containing work. When provided, stories not present
+     * in every edition will be annotated with which editions they appear in.
+     */
+    workEditions?: Edition[]
 }
 
 export const ShortSummary = ({ short, skipAuthors, listPublications,
-    enableQueries }: ShortProps) => {
+    enableQueries, workEditions }: ShortProps) => {
     const [isEditVisible, setEditVisible] = useState(false);
     const user = useMemo(() => { return getCurrenUser() }, []);
 
@@ -97,6 +102,31 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                 Suom {translators.map(tr => tr.person.alt_name).join(', ')}
                 . </>
         )
+    }
+
+    const editionAnnotation = (): string | null => {
+        if (!workEditions || workEditions.length <= 1) return null;
+        const workEditionIdSet = new Set(workEditions.map(e => e.id));
+        const storyWorkEditionIds = new Set(
+            short.editions.filter(e => workEditionIdSet.has(e.id)).map(e => e.id)
+        );
+        if (storyWorkEditionIds.size >= workEditions.length) return null;
+        const edLabel = (ed: Edition): string => {
+            const v = Number(ed.version) || 1;
+            const p = Number(ed.editionnum) || 1;
+            if (v === 1) return `${p}p`;
+            if (p === 1) return `${v}l`;
+            return `${v}l ${p}p`;
+        };
+        const labels = workEditions
+            .filter(e => storyWorkEditionIds.has(e.id))
+            .sort((a, b) => {
+                const vA = Number(a.version) || 1, vB = Number(b.version) || 1;
+                if (vA !== vB) return vA - vB;
+                return Number(a.editionnum) - Number(b.editionnum);
+            })
+            .map(edLabel);
+        return `(${labels.join(', ')})`;
     }
 
     const orderContributions = (short: Short): Short => {
@@ -184,6 +214,9 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                                 <i>({short.type.name})</i>
                             </span>
                         }
+                        {editionAnnotation() && (
+                            <span className="ml-1 text-color-secondary">{editionAnnotation()}</span>
+                        )}
 
                     </div>
                     {listPublications && short && short.editions &&

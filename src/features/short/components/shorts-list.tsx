@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 
 import { Person, PersonBrief } from "../../person";
+import { Edition } from "../../edition";
 import { ShortSummary } from './short-summary';
 import { groupShorts } from "../utils";
 import { Short } from "../types";
@@ -35,7 +36,8 @@ interface ShortsListProps {
      */
     anthology?: boolean,
     sort?: string,
-    enableQueries?: (state: boolean) => void
+    enableQueries?: (state: boolean) => void,
+    workEditions?: Edition[]
 }
 
 /**
@@ -52,7 +54,7 @@ interface ShortsListProps {
  * @return {JSX.Element} The rendered component.
  */
 export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPublications,
-    anthology, sort, enableQueries }: ShortsListProps): JSX.Element => {
+    anthology, sort, enableQueries, workEditions }: ShortsListProps): JSX.Element => {
 
     const [orderField, setOrderField] = useState(sort || "");
     const [groupedShorts, setGroupedShorts]: [Record<string, Short[]>,
@@ -153,6 +155,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPubli
                                             skipAuthors={skipAuthors}
                                             {...(listPublications ? { listPublications } : {})}
                                             enableQueries={enableQueries}
+                                            {...(workEditions ? { workEditions } : {})}
                                         />
                                     ))
                                 }

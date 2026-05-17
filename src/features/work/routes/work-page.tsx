@@ -603,6 +603,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                                             shorts={workData.stories}
                                             person={anthologyAuthor()}
                                             anthology={anthology}
+                                            workEditions={workData.editions}
                                         />
                                     </TabPanel>
                                 )}

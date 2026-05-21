@@ -968,7 +968,7 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 }
 
 .html-content a {
-    color: var(--primary-color);
+    color: var(--blue-500, #2196f3);
 }
 
 .html-content a:hover {

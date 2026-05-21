@@ -163,7 +163,7 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
                                             {data.description && (
                                                 <div className="mt-3">
                                                     <div
-                                                        className="text-base line-height-3"
+                                                        className="text-base line-height-3 html-content"
                                                         dangerouslySetInnerHTML={{ __html: data.description }}
                                                     />
                                                 </div>

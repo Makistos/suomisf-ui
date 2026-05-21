@@ -198,7 +198,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
                                                 <div className="text-xl text-600 mt-2">{data.fullname}</div>
                                             )}
                                             {data.description && (
-                                                <div className="mt-3 line-height-3"
+                                                <div className="mt-3 line-height-3 html-content"
                                                     dangerouslySetInnerHTML={{ __html: data.description }}>
                                                 </div>
                                             )}

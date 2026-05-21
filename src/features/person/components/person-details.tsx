@@ -173,7 +173,7 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
                 {
                     data.bio && (
                         <div className="grid col-12 pl-2 pb-0 mb-0 p-0">
-                            <div dangerouslySetInnerHTML={{ __html: data.bio }} />
+                            <div className="html-content" dangerouslySetInnerHTML={{ __html: data.bio }} />
                             {data.bio_src && (
                                 <div className="book-attribution mt-0 col-12 text-right justify-content-end"
                                     dangerouslySetInnerHTML={{ __html: data.bio_src }} />

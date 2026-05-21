@@ -199,7 +199,7 @@ export const ShortPage = (props: ShortPageProps) => {
                                     <div className="flex-column">
                                         <ShortDetails short={data} />
                                         {data.notes && (
-                                            <div className="mt-3 text-sm"
+                                            <div className="mt-3 text-sm html-content"
                                                 dangerouslySetInnerHTML={{ __html: data.notes }}
                                             />
                                         )}

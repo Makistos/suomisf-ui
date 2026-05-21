@@ -136,7 +136,7 @@ const IssueInfo = ({ issue }: IssueInfoProps) => {
             </div>
             <div className="mt-2">
                 {issue.notes && issue.notes !== "" && (
-                    <div dangerouslySetInnerHTML={{ __html: issue.notes }} />
+                    <div className="html-content" dangerouslySetInnerHTML={{ __html: issue.notes }} />
                 )}
             </div>
         </div>

@@ -241,7 +241,7 @@ export const SFTag = ({ id }: SfTagProps) => {
                                                 className={data ? tagTypeToClass(data) : undefined}
                                             />
                                             {data.description && (
-                                                <div className="mt-3 line-height-3"
+                                                <div className="mt-3 line-height-3 html-content"
                                                     dangerouslySetInnerHTML={{ __html: data.description }}>
                                                 </div>
                                             )}

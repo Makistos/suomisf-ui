@@ -194,7 +194,7 @@ export const MagazinePage = () => {
                                 <div className='col-12 p-0'>{data.issues?.length} numeroa.</div>
                                 <div className='col-12 p-0'>
                                     {data.description &&
-                                        <div dangerouslySetInnerHTML={{ __html: data.description }}></div>
+                                        <div className="html-content" dangerouslySetInnerHTML={{ __html: data.description }}></div>
                                     }
                                 </div>
                             </div>

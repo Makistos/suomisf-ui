@@ -144,7 +144,7 @@ export const AwardPage = ({ id }: AwardPageProps) => {
                                     <div className="col-12">
                                         <h1 className="text-4xl font-bold m-0">{data.name}</h1>
                                         {data.description && (
-                                            <div className="mt-3 line-height-3"
+                                            <div className="mt-3 line-height-3 html-content"
                                                 dangerouslySetInnerHTML={{ __html: data.description }}
                                             />
                                         )}

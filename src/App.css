@@ -971,6 +971,10 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     color: var(--blue-500, #2196f3);
 }
 
+.html-content a:visited {
+    color: var(--purple-500, #9c27b0);
+}
+
 .html-content a:hover {
     opacity: 0.8;
 }

@@ -958,13 +958,19 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     margin: 0;
 }
 
-.home-alt-intro a,
-.html-content a {
+.home-alt-intro a {
     text-decoration: underline;
     color: var(--primary-color);
 }
 
-.home-alt-intro a:hover,
+.home-alt-intro a:hover {
+    opacity: 0.8;
+}
+
+.html-content a {
+    color: var(--primary-color);
+}
+
 .html-content a:hover {
     opacity: 0.8;
 }

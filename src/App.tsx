@@ -33,6 +33,7 @@ function App() {
 
   useEffect(() => {
     document.body.classList.remove('p-overflow-hidden');
+    document.querySelectorAll('.p-dialog-mask, .p-speeddial-mask').forEach(el => el.remove());
   }, [location.pathname]);
 
   useEffect(() => {

@@ -21,6 +21,7 @@ import { isAdmin } from '../../user';
 import { ISBN } from '../types';
 import { Binding } from '../../../types/binding';
 import { EditionOwnership } from './edition-ownership';
+import { EditionPricesDialog } from './edition-prices-dialog';
 import { EditionWishlist } from './edition-wishlist';
 
 type Props = EditionProps &
@@ -124,6 +125,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [editVisible, setEditVisible] = useState(false);
     const [shortsFormVisible, setShortsFormVisible] = useState(false);
+    const [pricesVisible, setPricesVisible] = useState(false);
 
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [loading, setLoading] = useState(false);
@@ -265,6 +267,12 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
             >
                 <EditionShortsPicker id={edition.id.toString()} onClose={() => setShortsFormVisible(false)} />
             </Dialog>
+            <EditionPricesDialog
+                edition={edition}
+                workTitle={work?.title ?? undefined}
+                visible={pricesVisible}
+                onHide={() => setPricesVisible(false)}
+            />
             {loading || copying ?
                 <div className="progressbar"><ProgressSpinner /></div>
                 :
@@ -319,6 +327,10 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                                         onClick={() => onShortsShow()}
                                     />
                                 )}
+                                <Button icon="pi pi-euro" tooltip="Antikvaari-hinnat"
+                                    className="p-button-text"
+                                    onClick={() => setPricesVisible(true)}
+                                />
                             </div>
                         }
                         {user && edition.combined === false &&

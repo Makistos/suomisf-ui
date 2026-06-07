@@ -42,6 +42,7 @@ import { TagGroup, KirjasampoTagImport } from "@features/tag";
 import { GenreGroup } from "@features/genre";
 import { AwardList, AwardPanel } from "@features/award";
 import { AwardedForm } from "@features/award/components/awarded-form";
+import { AntikvaariProductPicker } from "../components/antikvaari-product-picker";
 export interface WorkProps {
     work: Work,
     detailLevel?: string,
@@ -205,6 +206,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
     const navigate = useNavigate();
     const [detailLevel, setDetailLevel] = useState("condensed");
     const [isAwardsFormVisible, setAwardsFormVisible] = useState(false);
+    const [isAntikvaariFormVisible, setAntikvaariFormVisible] = useState(false);
 
 
     // console.log("WorkPage props:", { id, editionId, workId });
@@ -297,6 +299,13 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
             icon: 'pi pi-server',
             command: () => {
                 setOmnibusFormVisible(true);
+            }
+        },
+        {
+            label: 'Antikvaari-hinnat',
+            icon: 'fa-solid fa-magnifying-glass-dollar',
+            command: () => {
+                setAntikvaariFormVisible(true);
             }
         }
     ]
@@ -659,6 +668,18 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                             <AwardedForm
                                 workId={workData.id.toString()}
                                 onClose={() => onAwardsFormHide()}
+                            />
+                        </Dialog>
+                        <Dialog blockScroll
+                            className="w-full xl:w-5"
+                            header="Antikvaari-hinnat"
+                            visible={isAntikvaariFormVisible}
+                            onHide={() => setAntikvaariFormVisible(false)}
+                            closeOnEscape
+                        >
+                            <AntikvaariProductPicker
+                                work={workData}
+                                onClose={() => setAntikvaariFormVisible(false)}
                             />
                         </Dialog>
                     </div>

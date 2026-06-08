@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button } from 'primereact/button';
 import { Divider } from 'primereact/divider';
 import { InputNumber } from 'primereact/inputnumber';
@@ -73,6 +74,7 @@ function formatDate(iso: string | null): string {
 
 export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariProductPickerProps) => {
     const user = useMemo(() => getCurrenUser(), []);
+    const queryClient = useQueryClient();
     const toastRef = useRef<Toast>(null);
 
     const initialQuery = `${work.author_str} ${work.title}`.trim();
@@ -196,6 +198,9 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
                 byId[r.antikvaari_book_id] = { status: r.status, reason: r.reason };
             }
             setSaveResults(byId);
+            if (saved > 0) {
+                queryClient.invalidateQueries({ queryKey: ['edition', 'prices', 'count'] });
+            }
             toastRef.current?.show({
                 severity: saved > 0 ? 'success' : 'info',
                 summary: `Tallennettu ${saved} riviä${skipped > 0 ? `, ohitettu ${skipped}` : ''}`,

@@ -138,7 +138,10 @@ export interface OwnedBook {
     [index: string]: any,
     book: Edition,
     user: User,
-    condition: EditionOwnershipStatus
+    condition: EditionOwnershipStatus,
+    best_price: number | null,
+    match_quality: string | null,
+    has_linked_products: boolean,
 }
 
 export interface EditionWishlistStatus {

@@ -8,6 +8,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Checkbox } from 'primereact/checkbox';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { UserStats } from '../components/user-stats';
+import { CollectionStatsDialog } from '../components/collection-stats-dialog';
 import { getApiContent, postApiContent } from '@services/user-service';
 import { useQuery } from '@tanstack/react-query';
 import { User } from '../types';
@@ -36,6 +37,7 @@ const ProfilePage = ({ id }: UserPageProps) => {
     const navigate = useNavigate();
     const currentUser = useMemo(() => { return getCurrenUser() }, []);
     const [currentContent, setCurrentContent] = useState<number>(0);
+    const [collectionStatsVisible, setCollectionStatsVisible] = useState(false);
     const [isLoadingRandomWork, setIsLoadingRandomWork] = useState<boolean>(false);
     const [randomWorkResults, setRandomWorkResults] = useState<any[]>([]);
     const [randomWorkTotal, setRandomWorkTotal] = useState<number | null>(null);
@@ -173,6 +175,9 @@ const ProfilePage = ({ id }: UserPageProps) => {
                     onClick={() => setCurrentContent(1)} />
                 <Button type="button" outlined label="Tilastoja" className="p-button-primary mr-2" icon="fa-solid fa-chart-line"
                     onClick={() => setCurrentContent(2)} />
+                <Button type="button" outlined label="Kokoelman arvo" className="p-button-primary mr-2"
+                    icon="pi pi-euro"
+                    onClick={() => setCollectionStatsVisible(true)} />
                 {isOwnProfile && (
                     <Button type="button" outlined label="Satunnainen keskeneräinen teos"
                         className="p-button-secondary"
@@ -330,6 +335,11 @@ const ProfilePage = ({ id }: UserPageProps) => {
                     )}
                 </div>
             ) : null}
+            <CollectionStatsDialog
+                userId={profileId}
+                visible={collectionStatsVisible}
+                onHide={() => setCollectionStatsVisible(false)}
+            />
         </main >
     );
 }

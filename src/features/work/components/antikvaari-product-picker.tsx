@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Divider } from 'primereact/divider';
+import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Tag } from 'primereact/tag';
@@ -31,11 +32,14 @@ interface FetchedRow {
     edition_id: number | null;
     edition_pubyear: number | null;
     edition_version: number | null;
+    edition_match_level: 'same' | 'close' | 'not_close' | null;
     antikvaari_book_id: string;
     antikvaari_product_id: string;
+    antikvaari_product_url: string | null;
     antikvaari_product_year: number | null;
     antikvaari_product_binding: number | null;
     antikvaari_product_version: number | null;
+    antikvaari_product_laitos: number | null;
     date_listed: string | null;
     last_updated: string | null;
     condition: string;
@@ -44,6 +48,11 @@ interface FetchedRow {
     missing_dust_cover: boolean;
     price: number | null;
     match_quality: string | null;
+}
+
+interface RowSaveResult {
+    status: 'saved' | 'skipped' | 'error';
+    reason: 'unchanged' | 'no_edition' | null | string;
 }
 
 interface AntikvaariProductPickerProps {
@@ -78,6 +87,7 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
     const [fetchedRows, setFetchedRows] = useState<FetchedRow[]>([]);
     const [fetching, setFetching] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [saveResults, setSaveResults] = useState<Record<string, RowSaveResult>>({});
 
     const loadLinkedProducts = useCallback(async () => {
         setLoadingLinked(true);
@@ -133,6 +143,12 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
         }
     };
 
+    const handleRowChange = useCallback((bookId: string, changes: Partial<FetchedRow>) => {
+        setFetchedRows(prev => prev.map(r =>
+            r.antikvaari_book_id === bookId ? { ...r, ...changes } : r
+        ));
+    }, []);
+
     const handleFetch = async () => {
         const urls = linkedProducts.map(p => p.url).filter((u): u is string => !!u);
         if (!urls.length) {
@@ -141,6 +157,7 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
         }
         setFetching(true);
         setFetchedRows([]);
+        setSaveResults({});
         try {
             const resp = await postApiContent(
                 `work/${work.id}/antikvaari/fetch`,
@@ -167,14 +184,22 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
                 fetchedRows,
                 user
             );
-            const result = resp.response as unknown as { saved: number; skipped: number };
+            const result = resp.response as unknown as {
+                saved: number;
+                skipped: number;
+                rows: Array<FetchedRow & RowSaveResult>;
+            };
             const saved = result?.saved ?? 0;
             const skipped = result?.skipped ?? 0;
+            const byId: Record<string, RowSaveResult> = {};
+            for (const r of result?.rows ?? []) {
+                byId[r.antikvaari_book_id] = { status: r.status, reason: r.reason };
+            }
+            setSaveResults(byId);
             toastRef.current?.show({
-                severity: 'success',
+                severity: saved > 0 ? 'success' : 'info',
                 summary: `Tallennettu ${saved} riviä${skipped > 0 ? `, ohitettu ${skipped}` : ''}`,
             });
-            setFetchedRows([]);
         } catch {
             toastRef.current?.show({ severity: 'error', summary: 'Tallentaminen epäonnistui' });
         } finally {
@@ -185,7 +210,7 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
     const isLinked = (productId: string) =>
         linkedProducts.some(p => p.antikvaari_product_id === productId);
 
-    const savableRows = fetchedRows.filter(r => r.edition_id !== null);
+    const savableRows = fetchedRows.filter(r => r.edition_id !== null && r.edition_match_level !== 'not_close');
 
     return (
         <div className="flex flex-column gap-4">
@@ -240,7 +265,7 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
                             <h4 className="mt-0 mb-0">
                                 Haetut hinnat {fetchedRows.length > 0 && `(${fetchedRows.length} kpl)`}
                             </h4>
-                            {savableRows.length > 0 && (
+                            {savableRows.length > 0 && Object.keys(saveResults).length === 0 && (
                                 <Button
                                     label={`Tallenna${savableRows.length < fetchedRows.length ? ` (${savableRows.length})` : ''}`}
                                     icon="pi pi-save"
@@ -258,7 +283,9 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
                         ) : (
                             <div className="flex flex-column gap-2">
                                 {fetchedRows.map((row, i) => (
-                                    <FetchedRowCard key={`${row.antikvaari_book_id}-${i}`} row={row} />
+                                    <FetchedRowCard key={`${row.antikvaari_book_id}-${i}`} row={row}
+                                        saveResult={saveResults[row.antikvaari_book_id]}
+                                        onRowChange={handleRowChange} />
                                 ))}
                             </div>
                         )}
@@ -328,30 +355,35 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
     );
 };
 
+const REASON_LABELS: Record<string, string> = {
+    unchanged: 'Ei muutoksia',
+    no_edition: 'Painosta ei löydy',
+    edition_missing: 'Painos puuttuu tietokannasta',
+};
+
 interface FetchedRowCardProps {
     row: FetchedRow;
+    saveResult?: RowSaveResult;
+    onRowChange: (bookId: string, changes: Partial<FetchedRow>) => void;
 }
 
-const FetchedRowCard = ({ row }: FetchedRowCardProps) => {
+const FetchedRowCard = ({ row, saveResult, onRowChange }: FetchedRowCardProps) => {
     const noEdition = row.edition_id === null;
-    const versionUnknown = !noEdition && row.antikvaari_product_version == null;
+    const editionMissing = !noEdition && row.edition_match_level === 'not_close';
 
     const bindingLabel = row.antikvaari_product_binding != null
         ? BINDING_LABELS[row.antikvaari_product_binding] ?? null
         : null;
 
-    // Antikvaari listing metadata (what the seller entered)
     const listingMeta = [
         row.antikvaari_product_year,
         bindingLabel,
-        row.antikvaari_product_version ? `${row.antikvaari_product_version}. painos` : null,
     ].filter(Boolean).join(' · ');
 
-    // Matched edition from our database
-    const editionMeta = row.edition_id != null ? [
-        row.edition_pubyear,
-        row.edition_version ? `${row.edition_version}. painos` : null,
-    ].filter(Boolean).join(', ') : null;
+    // Matched edition from our database (laitos not detected from Antikvaari, omit it here)
+    const editionMeta = row.edition_id != null && row.edition_pubyear != null
+        ? String(row.edition_pubyear)
+        : null;
 
     const flags = [
         row.is_library_discard && 'Kirjaston poisto',
@@ -359,24 +391,72 @@ const FetchedRowCard = ({ row }: FetchedRowCardProps) => {
         row.missing_dust_cover && 'Ei kansipaperia',
     ].filter(Boolean) as string[];
 
+    const hasSaveResult = !!saveResult;
+
     return (
-        <div className={`p-2 border-1 border-round flex flex-column gap-1 ${noEdition ? 'surface-100 border-300 text-500' : 'surface-border'}`}>
+        <div className={`p-2 border-1 border-round flex flex-column gap-1 ${noEdition || editionMissing ? 'surface-100 border-300 text-500' : 'surface-border'}`}>
             <div className="flex align-items-center justify-content-between gap-2">
-                <span className="font-bold">{row.condition || '—'}</span>
-                <span className="font-semibold">
-                    {row.price != null ? `${row.price.toFixed(2)} €` : '—'}
-                </span>
+                <div className="flex align-items-center gap-2">
+                    <span className="font-bold">{row.condition || '—'}</span>
+                    {row.antikvaari_product_url && (
+                        <a href={row.antikvaari_product_url} target="_blank" rel="noopener noreferrer"
+                            className="text-400 hover:text-primary" title="Avaa Antikvaari-sivu">
+                            <i className="pi pi-external-link text-xs" />
+                        </a>
+                    )}
+                </div>
+                <div className="flex align-items-center gap-2">
+                    {saveResult && (
+                        <Tag
+                            value={saveResult.status === 'saved' ? 'Tallennettu'
+                                : saveResult.reason ? (REASON_LABELS[saveResult.reason] ?? saveResult.reason)
+                                : 'Ohitettu'}
+                            severity={saveResult.status === 'saved' ? 'success'
+                                : saveResult.status === 'error' ? 'danger'
+                                : 'warning'}
+                        />
+                    )}
+                    <span className="font-semibold">
+                        {row.price != null ? `${row.price.toFixed(2)} €` : '—'}
+                    </span>
+                </div>
             </div>
+
             {listingMeta && (
                 <span className="text-sm text-600">{listingMeta}</span>
             )}
-            {editionMeta && (
-                <span className="text-xs text-500">Painos: {editionMeta}</span>
+
+            {/* Editable painos + laitos */}
+            {!hasSaveResult && (
+                <div className="flex align-items-center gap-3 mt-1">
+                    <div className="flex align-items-center gap-1">
+                        <label className="text-xs text-500 white-space-nowrap">Painos</label>
+                        <InputNumber
+                            value={row.antikvaari_product_version ?? 1}
+                            onValueChange={e => onRowChange(row.antikvaari_book_id, { antikvaari_product_version: e.value ?? 1 })}
+                            min={1} max={99} showButtons={false}
+                            inputStyle={{ width: '3rem', padding: '2px 4px', fontSize: '0.8rem' }}
+                        />
+                    </div>
+                    <div className="flex align-items-center gap-1">
+                        <label className="text-xs text-500 white-space-nowrap">Laitos</label>
+                        <InputNumber
+                            value={row.antikvaari_product_laitos ?? 1}
+                            onValueChange={e => onRowChange(row.antikvaari_book_id, { antikvaari_product_laitos: e.value ?? 1 })}
+                            min={1} max={99} showButtons={false}
+                            inputStyle={{ width: '3rem', padding: '2px 4px', fontSize: '0.8rem' }}
+                        />
+                    </div>
+                </div>
             )}
-            {(flags.length > 0 || noEdition || versionUnknown) && (
+
+            {editionMeta && (
+                <span className="text-xs text-500">Tunnistettu painos: {editionMeta}</span>
+            )}
+            {(flags.length > 0 || noEdition || editionMissing) && (
                 <div className="flex flex-wrap gap-1">
                     {flags.map(f => <Tag key={f} value={f} severity="warning" />)}
-                    {versionUnknown && <Tag value="Painos tuntematon" severity="warning" />}
+                    {editionMissing && <Tag value="Painos puuttuu tietokannasta" severity="danger" />}
                     {noEdition && <Tag value="Ei painosta" severity="danger" />}
                 </div>
             )}

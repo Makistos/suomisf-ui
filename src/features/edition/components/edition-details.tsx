@@ -11,7 +11,7 @@ import { LinkList } from "../../../components/link-list";
 import { EditionProps } from "../types";
 import { EditionVersion } from "../utils/edition-version";
 import { EditionForm } from './edition-form';
-import { deleteApiContent, postApiContent } from '../../../services/user-service';
+import { deleteApiContent, getApiContent, postApiContent } from '../../../services/user-service';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Contribution } from '../../../types/contribution';
 import { EditionShortsPicker } from '../../short/components/shorts-picker';
@@ -126,6 +126,20 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
     const [editVisible, setEditVisible] = useState(false);
     const [shortsFormVisible, setShortsFormVisible] = useState(false);
     const [pricesVisible, setPricesVisible] = useState(false);
+
+    const { data: pricesCountData, isError: pricesCountError } = useQuery({
+        queryKey: ['edition', 'prices', 'count', edition.id],
+        queryFn: async () => {
+            const resp = await getApiContent(`edition/${edition.id}/antikvaari/prices/count`, user);
+            return resp.data as { count: number };
+        },
+        enabled: !!user && isAdmin(user) && edition.combined === false,
+        staleTime: 5 * 60 * 1000,
+        retry: false,
+    });
+    // Fail-open: if the count query hasn't loaded yet or errors, enable the button
+    // and let the dialog show "no prices" if needed.
+    const hasPrices = pricesCountError || pricesCountData === undefined || (pricesCountData.count ?? 0) > 0;
 
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [loading, setLoading] = useState(false);
@@ -329,6 +343,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                                 )}
                                 <Button icon="pi pi-euro" tooltip="Antikvaari-hinnat"
                                     className="p-button-text"
+                                    disabled={!hasPrices}
                                     onClick={() => setPricesVisible(true)}
                                 />
                             </div>

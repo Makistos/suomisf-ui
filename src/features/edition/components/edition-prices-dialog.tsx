@@ -1,14 +1,17 @@
-import React, { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import React, { useRef, useMemo, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
+import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Tag } from 'primereact/tag';
+import { Toast } from 'primereact/toast';
 
 import { getOwnership } from '@api/edition/get-ownership';
 import { getCurrenUser } from '@services/auth-service';
-import { getApiContent } from '@services/user-service';
+import { deleteApiContent, getApiContent } from '@services/user-service';
 import { Edition, CombinedEdition } from '../types';
 
 interface PriceRow {
@@ -70,6 +73,9 @@ const Legend = () => (
 
 export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Props) => {
     const user = useMemo(() => getCurrenUser(), []);
+    const queryClient = useQueryClient();
+    const toastRef = useRef<Toast>(null);
+    const [deletingId, setDeletingId] = useState<number | null>(null);
 
     const { data: ownership } = useQuery({
         queryKey: ['edition', 'owner', edition.id],
@@ -117,6 +123,31 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
     ].filter(Boolean).join(', ');
 
     const title = [workTitle, editionLabel].filter(Boolean).join(' — ');
+
+    const handleDelete = async (priceId: number) => {
+        setDeletingId(priceId);
+        try {
+            await deleteApiContent(`antikvaari/prices/${priceId}`);
+            await queryClient.invalidateQueries({ queryKey: ['edition', 'prices', edition.id] });
+            toastRef.current?.show({ severity: 'success', summary: 'Hinta poistettu' });
+        } catch {
+            toastRef.current?.show({ severity: 'error', summary: 'Poisto epäonnistui' });
+        } finally {
+            setDeletingId(null);
+        }
+    };
+
+    const confirmDelete = (event: React.MouseEvent<HTMLButtonElement>, priceId: number) => {
+        confirmPopup({
+            target: event.currentTarget,
+            message: 'Poistetaanko hinta?',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Poista',
+            rejectLabel: 'Peruuta',
+            acceptClassName: 'p-button-danger p-button-sm',
+            accept: () => handleDelete(priceId),
+        });
+    };
 
     const rowClass = (row: PriceRow) => {
         switch (row.match_quality) {
@@ -173,6 +204,8 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
             className="w-11 xl:w-9"
             maximizable
         >
+            <Toast ref={toastRef} />
+            <ConfirmPopup />
             {isLoading ? (
                 <div className="flex justify-content-center p-4">
                     <ProgressSpinner style={{ width: '40px', height: '40px' }} strokeWidth="4" />
@@ -235,6 +268,19 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                             header="Haettu"
                             body={(row: PriceRow) => formatDate(row.date_fetched)}
                             style={{ minWidth: '7rem' }}
+                        />
+                        <Column
+                            body={(row: PriceRow) => (
+                                <Button
+                                    icon="pi pi-trash"
+                                    size="small"
+                                    severity="danger"
+                                    text
+                                    loading={deletingId === row.id}
+                                    onClick={e => confirmDelete(e, row.id)}
+                                />
+                            )}
+                            style={{ width: '3rem' }}
                         />
                     </DataTable>
                 </div>

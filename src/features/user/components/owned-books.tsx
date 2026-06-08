@@ -181,6 +181,28 @@ export const OwnedBooks = ({ userId, listType }: OwnedBooksProps) => {
         // return null
     }
 
+    const qualityColors: Record<string, string> = {
+        'Perfect': 'text-green-600',
+        'Good': 'text-blue-600',
+        'Decent': 'text-orange-500',
+        'Poor': 'text-red-500',
+    }
+
+    const priceTemplate = (rowData: OwnedBook) => {
+        if (rowData.best_price == null) {
+            if (rowData.has_linked_products) {
+                return <span className="text-400" title="Tuotteilla ei ole tallennettuja hintoja">?</span>;
+            }
+            return null;
+        }
+        const cls = qualityColors[rowData.match_quality ?? ''] ?? 'text-color';
+        return (
+            <span className={cls}>
+                {rowData.best_price.toFixed(2)} €
+            </span>
+        );
+    }
+
     const versionTemplate = (rowData: OwnedBook) => {
         return (rowData.version)
     }
@@ -237,6 +259,11 @@ export const OwnedBooks = ({ userId, listType }: OwnedBooksProps) => {
                 <Column field="value" header="K"
                     body={conditionTemplate}
                     sortable />
+
+                <Column field="best_price" header="Hinta"
+                    body={priceTemplate}
+                    sortable
+                    sortField="best_price" />
 
                 <Column field="description" header="Kuvaus"
                     sortable

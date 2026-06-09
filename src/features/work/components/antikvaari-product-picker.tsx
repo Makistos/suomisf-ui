@@ -132,13 +132,9 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
     const handleAdd = async (productId: string, url: string) => {
         setAddingIds(prev => new Set(prev).add(productId));
         try {
-            const alreadyLinkedIds = new Set(linkedProducts.map(p => p.antikvaari_product_id));
-            const rejected = searchResults
-                .filter(r => r.product_id !== productId && !alreadyLinkedIds.has(r.product_id))
-                .map(r => ({ product_id: r.product_id, url: r.url, rejected: true }));
             await postApiContent(
                 `work/${work.id}/antikvaari/products`,
-                [{ product_id: productId, url }, ...rejected],
+                [{ product_id: productId, url }],
                 user
             );
             await loadLinkedProducts();
@@ -175,6 +171,16 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
             setFetchedRows(rows);
             if (rows.length === 0) {
                 toastRef.current?.show({ severity: 'info', summary: 'Ei löydettyjä hintoja' });
+            }
+
+            // Mark search results not linked to this work as rejected
+            const linkedIds = new Set(linkedProducts.filter(p => !p.rejected).map(p => p.antikvaari_product_id));
+            const toReject = searchResults
+                .filter(r => !linkedIds.has(r.product_id))
+                .map(r => ({ product_id: r.product_id, url: r.url, rejected: true }));
+            if (toReject.length > 0) {
+                await postApiContent(`work/${work.id}/antikvaari/products`, toReject, user);
+                await loadLinkedProducts();
             }
         } catch {
             toastRef.current?.show({ severity: 'error', summary: 'Hintojen haku epäonnistui' });

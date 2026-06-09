@@ -17,6 +17,7 @@ interface LinkedProduct {
     antikvaari_product_id: string;
     added: string | null;
     url: string | null;
+    rejected: boolean;
 }
 
 interface SearchResult {
@@ -131,9 +132,13 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
     const handleAdd = async (productId: string, url: string) => {
         setAddingIds(prev => new Set(prev).add(productId));
         try {
+            const alreadyLinkedIds = new Set(linkedProducts.map(p => p.antikvaari_product_id));
+            const rejected = searchResults
+                .filter(r => r.product_id !== productId && !alreadyLinkedIds.has(r.product_id))
+                .map(r => ({ product_id: r.product_id, url: r.url, rejected: true }));
             await postApiContent(
                 `work/${work.id}/antikvaari/products`,
-                [{ product_id: productId, url }],
+                [{ product_id: productId, url }, ...rejected],
                 user
             );
             await loadLinkedProducts();
@@ -152,7 +157,7 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
     }, []);
 
     const handleFetch = async () => {
-        const urls = linkedProducts.map(p => p.url).filter((u): u is string => !!u);
+        const urls = linkedProducts.filter(p => !p.rejected).map(p => p.url).filter((u): u is string => !!u);
         if (!urls.length) {
             toastRef.current?.show({ severity: 'warn', summary: 'Linkitetyillä tuotteilla ei ole URL-osoitteita' });
             return;
@@ -213,7 +218,10 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
     };
 
     const isLinked = (productId: string) =>
-        linkedProducts.some(p => p.antikvaari_product_id === productId);
+        linkedProducts.some(p => p.antikvaari_product_id === productId && !p.rejected);
+
+    const isRejected = (productId: string) =>
+        linkedProducts.some(p => p.antikvaari_product_id === productId && p.rejected);
 
     const savableRows = fetchedRows.filter(r => r.edition_id !== null && r.edition_match_level !== 'not_close');
 
@@ -230,7 +238,7 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
                     <p className="text-600 text-sm m-0">Ei linkitettyjä tuotteita.</p>
                 ) : (
                     <div className="flex flex-column gap-2">
-                        {linkedProducts.map(p => (
+                        {linkedProducts.filter(p => !p.rejected).map(p => (
                             <div key={p.id} className="flex align-items-center gap-2">
                                 {p.url ? (
                                     <a href={p.url} target="_blank" rel="noopener noreferrer"
@@ -254,7 +262,7 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
                                 size="small"
                                 onClick={handleFetch}
                                 loading={fetching}
-                                disabled={linkedProducts.every(p => !p.url)}
+                                disabled={linkedProducts.filter(p => !p.rejected).every(p => !p.url)}
                             />
                         </div>
                     </div>
@@ -327,32 +335,38 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
 
                 {!searching && searchResults.length > 0 && (
                     <div className="flex flex-column gap-2 mt-3">
-                        {searchResults.map(r => (
-                            <div key={r.product_id}
-                                className="flex align-items-center justify-content-between p-2 border-1 surface-border border-round gap-3">
-                                <div className="flex flex-column gap-1 min-w-0">
-                                    <a href={r.url} target="_blank" rel="noopener noreferrer"
-                                        className="font-semibold no-underline text-primary hover:underline">
-                                        {r.title}
-                                    </a>
-                                    <span className="text-600 text-sm">
-                                        {r.author}{r.year ? ` · ${r.year}` : ''}{r.binding ? ` · ${r.binding}` : ''} · {r.available_count} kpl
-                                    </span>
+                        {searchResults.map(r => {
+                            const linked = isLinked(r.product_id);
+                            const rejected = isRejected(r.product_id);
+                            return (
+                                <div key={r.product_id}
+                                    className={`flex align-items-center justify-content-between p-2 border-1 border-round gap-3 ${rejected ? 'surface-100 border-300' : 'surface-border'}`}>
+                                    <div className="flex flex-column gap-1 min-w-0">
+                                        <a href={r.url} target="_blank" rel="noopener noreferrer"
+                                            className={`font-semibold no-underline hover:underline ${rejected ? 'text-400' : 'text-primary'}`}>
+                                            {r.title}
+                                        </a>
+                                        <span className={`text-sm ${rejected ? 'text-300' : 'text-600'}`}>
+                                            {r.author}{r.year ? ` · ${r.year}` : ''}{r.binding ? ` · ${r.binding}` : ''} · {r.available_count} kpl
+                                        </span>
+                                    </div>
+                                    <div className="flex-shrink-0">
+                                        {linked ? (
+                                            <Tag value="Lisätty" severity="success" />
+                                        ) : rejected ? (
+                                            <Tag value="Ei sopiva" />
+                                        ) : (
+                                            <Button
+                                                label="Lisää"
+                                                size="small"
+                                                onClick={() => handleAdd(r.product_id, r.url)}
+                                                loading={addingIds.has(r.product_id)}
+                                            />
+                                        )}
+                                    </div>
                                 </div>
-                                <div className="flex-shrink-0">
-                                    {isLinked(r.product_id) ? (
-                                        <Tag value="Lisätty" severity="success" />
-                                    ) : (
-                                        <Button
-                                            label="Lisää"
-                                            size="small"
-                                            onClick={() => handleAdd(r.product_id, r.url)}
-                                            loading={addingIds.has(r.product_id)}
-                                        />
-                                    )}
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 )}
             </section>

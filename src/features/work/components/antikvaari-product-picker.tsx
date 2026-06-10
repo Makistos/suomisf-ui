@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from 'primereact/button';
+import { Checkbox } from 'primereact/checkbox';
 import { Divider } from 'primereact/divider';
 import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
@@ -9,7 +10,7 @@ import { Tag } from 'primereact/tag';
 import { Toast } from 'primereact/toast';
 
 import { getCurrenUser } from '@services/auth-service';
-import { getApiContent, postApiContent } from '@services/user-service';
+import { deleteApiContent, getApiContent, postApiContent } from '@services/user-service';
 import { Work } from '../types';
 
 interface LinkedProduct {
@@ -42,6 +43,9 @@ interface FetchedRow {
     antikvaari_product_binding: number | null;
     antikvaari_product_version: number | null;
     antikvaari_product_laitos: number | null;
+    book_title: string | null;
+    book_author: string | null;
+    book_language: string | null;
     date_listed: string | null;
     last_updated: string | null;
     condition: string;
@@ -50,6 +54,7 @@ interface FetchedRow {
     missing_dust_cover: boolean;
     price: number | null;
     match_quality: string | null;
+    user_excluded: boolean;
 }
 
 interface RowSaveResult {
@@ -86,6 +91,7 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
     const [searching, setSearching] = useState(false);
     const [addingIds, setAddingIds] = useState<Set<string>>(new Set());
+    const [removingIds, setRemovingIds] = useState<Set<string>>(new Set());
 
     const [fetchedRows, setFetchedRows] = useState<FetchedRow[]>([]);
     const [fetching, setFetching] = useState(false);
@@ -143,6 +149,19 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
             toastRef.current?.show({ severity: 'error', summary: 'Tuotteen lisääminen epäonnistui' });
         } finally {
             setAddingIds(prev => { const s = new Set(prev); s.delete(productId); return s; });
+        }
+    };
+
+    const handleRemove = async (productId: string) => {
+        setRemovingIds(prev => new Set(prev).add(productId));
+        try {
+            await deleteApiContent(`work/${work.id}/antikvaari/products/${productId}`);
+            await loadLinkedProducts();
+            toastRef.current?.show({ severity: 'success', summary: 'Tuote poistettu' });
+        } catch {
+            toastRef.current?.show({ severity: 'error', summary: 'Poisto epäonnistui' });
+        } finally {
+            setRemovingIds(prev => { const s = new Set(prev); s.delete(productId); return s; });
         }
     };
 
@@ -229,7 +248,7 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
     const isRejected = (productId: string) =>
         linkedProducts.some(p => p.antikvaari_product_id === productId && p.rejected);
 
-    const savableRows = fetchedRows.filter(r => r.edition_id !== null && r.edition_match_level !== 'not_close');
+    const savableRows = fetchedRows.filter(r => r.edition_id !== null && r.edition_match_level !== 'not_close' && !r.user_excluded);
 
     return (
         <div className="flex flex-column gap-4">
@@ -284,7 +303,7 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
                             <h4 className="mt-0 mb-0">
                                 Haetut hinnat {fetchedRows.length > 0 && `(${fetchedRows.length} kpl)`}
                             </h4>
-                            {savableRows.length > 0 && Object.keys(saveResults).length === 0 && (
+                            {fetchedRows.length > 0 && Object.keys(saveResults).length === 0 && (
                                 <Button
                                     label={`Tallenna${savableRows.length < fetchedRows.length ? ` (${savableRows.length})` : ''}`}
                                     icon="pi pi-save"
@@ -358,7 +377,17 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
                                     </div>
                                     <div className="flex-shrink-0">
                                         {linked ? (
-                                            <Tag value="Lisätty" severity="success" />
+                                            <Button
+                                                label="Lisätty"
+                                                icon="pi pi-times"
+                                                iconPos="right"
+                                                size="small"
+                                                severity="success"
+                                                outlined
+                                                onClick={() => handleRemove(r.product_id)}
+                                                loading={removingIds.has(r.product_id)}
+                                                title="Poista linkitys"
+                                            />
                                         ) : rejected ? (
                                             <Tag value="Ei sopiva" />
                                         ) : (
@@ -384,6 +413,7 @@ const REASON_LABELS: Record<string, string> = {
     unchanged: 'Ei muutoksia',
     no_edition: 'Painosta ei löydy',
     edition_missing: 'Painos puuttuu tietokannasta',
+    excluded: 'Ei valittu',
 };
 
 interface FetchedRowCardProps {
@@ -395,6 +425,7 @@ interface FetchedRowCardProps {
 const FetchedRowCard = ({ row, saveResult, onRowChange }: FetchedRowCardProps) => {
     const noEdition = row.edition_id === null;
     const editionMissing = !noEdition && row.edition_match_level === 'not_close';
+    const isExcluded = row.user_excluded;
 
     const bindingLabel = row.antikvaari_product_binding != null
         ? BINDING_LABELS[row.antikvaari_product_binding] ?? null
@@ -417,9 +448,26 @@ const FetchedRowCard = ({ row, saveResult, onRowChange }: FetchedRowCardProps) =
     ].filter(Boolean) as string[];
 
     const hasSaveResult = !!saveResult;
+    const dimmed = noEdition || editionMissing || isExcluded;
 
     return (
-        <div className={`p-2 border-1 border-round flex flex-column gap-1 ${noEdition || editionMissing ? 'surface-100 border-300 text-500' : 'surface-border'}`}>
+        <div className={`p-2 border-1 border-round flex flex-column gap-1 ${dimmed ? 'surface-100 border-300 text-500' : 'surface-border'}`}>
+            {/* Author / title */}
+            {(row.book_author || row.book_title) && (
+                <div className="flex flex-column gap-0">
+                    {row.book_title && (
+                        <span className={`text-sm font-semibold ${isExcluded ? 'text-400' : ''}`}>
+                            {row.book_title}
+                        </span>
+                    )}
+                    {(row.book_author || row.book_language) && (
+                        <span className={`text-xs ${isExcluded ? 'text-300' : 'text-600'}`}>
+                            {[row.book_author, row.book_language].filter(Boolean).join(' · ')}
+                        </span>
+                    )}
+                </div>
+            )}
+
             <div className="flex align-items-center justify-content-between gap-2">
                 <div className="flex align-items-center gap-2">
                     <span className="font-bold">{row.condition || '—'}</span>
@@ -451,25 +499,36 @@ const FetchedRowCard = ({ row, saveResult, onRowChange }: FetchedRowCardProps) =
                 <span className="text-sm text-600">{listingMeta}</span>
             )}
 
-            {/* Editable painos + laitos */}
+            {/* Editable painos + laitos + exclude checkbox */}
             {!hasSaveResult && (
-                <div className="flex align-items-center gap-3 mt-1">
-                    <div className="flex align-items-center gap-1">
-                        <label className="text-xs text-500 white-space-nowrap">Painos</label>
-                        <InputNumber
-                            value={row.antikvaari_product_version ?? 1}
-                            onValueChange={e => onRowChange(row.antikvaari_book_id, { antikvaari_product_version: e.value ?? 1 })}
-                            min={1} max={99} showButtons={false}
-                            inputStyle={{ width: '3rem', padding: '2px 4px', fontSize: '0.8rem' }}
-                        />
+                <div className="flex align-items-center justify-content-between gap-3 mt-1">
+                    <div className="flex align-items-center gap-3">
+                        <div className="flex align-items-center gap-1">
+                            <label className="text-xs text-500 white-space-nowrap">Painos</label>
+                            <InputNumber
+                                value={row.antikvaari_product_version ?? 1}
+                                onValueChange={e => onRowChange(row.antikvaari_book_id, { antikvaari_product_version: e.value ?? 1 })}
+                                min={1} max={99} showButtons={false}
+                                inputStyle={{ width: '3rem', padding: '2px 4px', fontSize: '0.8rem' }}
+                                disabled={isExcluded}
+                            />
+                        </div>
+                        <div className="flex align-items-center gap-1">
+                            <label className="text-xs text-500 white-space-nowrap">Laitos</label>
+                            <InputNumber
+                                value={row.antikvaari_product_laitos ?? 1}
+                                onValueChange={e => onRowChange(row.antikvaari_book_id, { antikvaari_product_laitos: e.value ?? 1 })}
+                                min={1} max={99} showButtons={false}
+                                inputStyle={{ width: '3rem', padding: '2px 4px', fontSize: '0.8rem' }}
+                                disabled={isExcluded}
+                            />
+                        </div>
                     </div>
                     <div className="flex align-items-center gap-1">
-                        <label className="text-xs text-500 white-space-nowrap">Laitos</label>
-                        <InputNumber
-                            value={row.antikvaari_product_laitos ?? 1}
-                            onValueChange={e => onRowChange(row.antikvaari_book_id, { antikvaari_product_laitos: e.value ?? 1 })}
-                            min={1} max={99} showButtons={false}
-                            inputStyle={{ width: '3rem', padding: '2px 4px', fontSize: '0.8rem' }}
+                        <label className="text-xs text-500 white-space-nowrap">Sisällytä</label>
+                        <Checkbox
+                            checked={!isExcluded}
+                            onChange={e => onRowChange(row.antikvaari_book_id, { user_excluded: !e.checked })}
                         />
                     </div>
                 </div>

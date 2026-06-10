@@ -28,6 +28,8 @@ interface PriceRow {
     missing_dust_cover: boolean;
     price: number;
     match_quality: 'Perfect' | 'Good' | 'Decent' | 'Poor' | null;
+    product_url: string | null;
+    product_page_exists: boolean | null;
 }
 
 interface Props {
@@ -80,8 +82,7 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
     const { data: ownership } = useQuery({
         queryKey: ['edition', 'owner', edition.id],
         queryFn: () => getOwnership(edition.id, user!),
-        enabled: !!user,
-        staleTime: Infinity,
+        enabled: visible && !!user,
     });
 
     const targetCondition = ownership?.condition?.value
@@ -108,10 +109,11 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
     }, [rawPrices]);
 
     const bestMatchIndex = useMemo(() => {
+        if (!targetCondition) return -1;
         const perfectIdx = prices.findIndex(r => r.match_quality === 'Perfect');
         if (perfectIdx >= 0) return perfectIdx;
         return prices.findIndex(r => r.match_quality === 'Good');
-    }, [prices]);
+    }, [prices, targetCondition]);
 
     const minPrice = prices.length ? Math.min(...prices.map(r => r.price)) : null;
     const maxPrice = prices.length ? Math.max(...prices.map(r => r.price)) : null;
@@ -171,6 +173,12 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                         <i className="pi pi-star-fill text-yellow-500 text-xs" />
                     )}
                     {row.condition || '—'}
+                    {row.product_page_exists && row.product_url && (
+                        <a href={row.product_url} target="_blank" rel="noopener noreferrer"
+                            className="text-400 hover:text-primary ml-1" title="Avaa tuotesivu Antikvaari.fi:ssä">
+                            <i className="pi pi-external-link text-xs" />
+                        </a>
+                    )}
                 </span>
                 {flags.map(f => (
                     <Tag key={f} value={f} severity="warning" className="text-xs" />
@@ -187,11 +195,10 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
 
     const listingBody = (row: PriceRow) => {
         const parts = [
-            row.antikvaari_product_year,
+            edition.pubyear || null,
             row.antikvaari_product_binding != null
                 ? BINDING_LABELS[row.antikvaari_product_binding] : null,
-            row.antikvaari_product_version
-                ? `${row.antikvaari_product_version}. p.` : null,
+            edition.editionnum ? `${edition.editionnum}. p.` : null,
         ].filter(Boolean);
         return <span className="text-sm">{parts.join(' · ') || '—'}</span>;
     };

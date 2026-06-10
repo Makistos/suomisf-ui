@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from 'primereact/button';
 import { Checkbox } from 'primereact/checkbox';
+import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
 import { Divider } from 'primereact/divider';
 import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
@@ -38,6 +39,7 @@ interface FetchedRow {
     edition_match_level: 'same' | 'close' | 'not_close' | null;
     antikvaari_book_id: string;
     antikvaari_product_id: string;
+    antikvaari_product_page_url: string | null;
     antikvaari_product_url: string | null;
     antikvaari_product_year: number | null;
     antikvaari_product_binding: number | null;
@@ -92,6 +94,7 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
     const [searching, setSearching] = useState(false);
     const [addingIds, setAddingIds] = useState<Set<string>>(new Set());
     const [removingIds, setRemovingIds] = useState<Set<string>>(new Set());
+    const [unrejectingIds, setUnrejectingIds] = useState<Set<string>>(new Set());
 
     const [fetchedRows, setFetchedRows] = useState<FetchedRow[]>([]);
     const [fetching, setFetching] = useState(false);
@@ -152,16 +155,43 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
         }
     };
 
-    const handleRemove = async (productId: string) => {
-        setRemovingIds(prev => new Set(prev).add(productId));
+    const handleRemove = (event: React.MouseEvent<HTMLButtonElement>, productId: string) => {
+        confirmPopup({
+            target: event.currentTarget,
+            message: 'Poistetaanko tuotteen linkitys kokonaan?',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel: 'Poista',
+            rejectLabel: 'Peruuta',
+            acceptClassName: 'p-button-danger p-button-sm',
+            accept: async () => {
+                setRemovingIds(prev => new Set(prev).add(productId));
+                try {
+                    await deleteApiContent(`work/${work.id}/antikvaari/products/${productId}`);
+                    await loadLinkedProducts();
+                    toastRef.current?.show({ severity: 'success', summary: 'Tuote poistettu' });
+                } catch {
+                    toastRef.current?.show({ severity: 'error', summary: 'Poisto epäonnistui' });
+                } finally {
+                    setRemovingIds(prev => { const s = new Set(prev); s.delete(productId); return s; });
+                }
+            },
+        });
+    };
+
+    const handleUnreject = async (productId: string) => {
+        setUnrejectingIds(prev => new Set(prev).add(productId));
         try {
-            await deleteApiContent(`work/${work.id}/antikvaari/products/${productId}`);
+            await postApiContent(
+                `work/${work.id}/antikvaari/products`,
+                [{ product_id: productId, rejected: false }],
+                user
+            );
             await loadLinkedProducts();
-            toastRef.current?.show({ severity: 'success', summary: 'Tuote poistettu' });
+            toastRef.current?.show({ severity: 'success', summary: 'Tuote palautettu' });
         } catch {
-            toastRef.current?.show({ severity: 'error', summary: 'Poisto epäonnistui' });
+            toastRef.current?.show({ severity: 'error', summary: 'Palautus epäonnistui' });
         } finally {
-            setRemovingIds(prev => { const s = new Set(prev); s.delete(productId); return s; });
+            setUnrejectingIds(prev => { const s = new Set(prev); s.delete(productId); return s; });
         }
     };
 
@@ -190,16 +220,6 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
             setFetchedRows(rows);
             if (rows.length === 0) {
                 toastRef.current?.show({ severity: 'info', summary: 'Ei löydettyjä hintoja' });
-            }
-
-            // Mark search results not linked to this work as rejected
-            const linkedIds = new Set(linkedProducts.filter(p => !p.rejected).map(p => p.antikvaari_product_id));
-            const toReject = searchResults
-                .filter(r => !linkedIds.has(r.product_id))
-                .map(r => ({ product_id: r.product_id, url: r.url, rejected: true }));
-            if (toReject.length > 0) {
-                await postApiContent(`work/${work.id}/antikvaari/products`, toReject, user);
-                await loadLinkedProducts();
             }
         } catch {
             toastRef.current?.show({ severity: 'error', summary: 'Hintojen haku epäonnistui' });
@@ -257,6 +277,7 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
             {/* Linked products */}
             <section>
                 <h4 className="mt-0 mb-3">Linkitetyt tuotteet</h4>
+                <ConfirmPopup />
                 {loadingLinked ? (
                     <ProgressSpinner style={{ width: '24px', height: '24px' }} strokeWidth="4" />
                 ) : linkedProducts.length === 0 ? (
@@ -271,7 +292,7 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
                                         {p.antikvaari_product_id}
                                     </a>
                                 ) : (
-                                    <Tag value={p.antikvaari_product_id} />
+                                    <span className="font-semibold text-sm">{p.antikvaari_product_id}</span>
                                 )}
                                 {p.added && (
                                     <span className="text-500 text-sm">
@@ -280,6 +301,31 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
                                 )}
                             </div>
                         ))}
+                        {linkedProducts.some(p => p.rejected) && (
+                            <>
+                                <p className="text-400 text-xs m-0 mt-2">Hylätyt:</p>
+                                {linkedProducts.filter(p => p.rejected).map(p => (
+                                    <div key={p.id} className="flex align-items-center gap-2">
+                                        {p.url ? (
+                                            <a href={p.url} target="_blank" rel="noopener noreferrer"
+                                                className="text-400 hover:text-primary text-sm no-underline hover:underline">
+                                                {p.antikvaari_product_id}
+                                            </a>
+                                        ) : (
+                                            <span className="text-400 text-sm">{p.antikvaari_product_id}</span>
+                                        )}
+                                        <Button
+                                            label="Palauta"
+                                            size="small"
+                                            text
+                                            severity="secondary"
+                                            onClick={() => handleUnreject(p.antikvaari_product_id)}
+                                            loading={unrejectingIds.has(p.antikvaari_product_id)}
+                                        />
+                                    </div>
+                                ))}
+                            </>
+                        )}
                         <div className="mt-2">
                             <Button
                                 label="Hae hinnat"
@@ -319,13 +365,11 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
                                 <ProgressSpinner style={{ width: '32px', height: '32px' }} strokeWidth="4" />
                             </div>
                         ) : (
-                            <div className="flex flex-column gap-2">
-                                {fetchedRows.map((row, i) => (
-                                    <FetchedRowCard key={`${row.antikvaari_book_id}-${i}`} row={row}
-                                        saveResult={saveResults[row.antikvaari_book_id]}
-                                        onRowChange={handleRowChange} />
-                                ))}
-                            </div>
+                            <ProductGroupedRows
+                                fetchedRows={fetchedRows}
+                                saveResults={saveResults}
+                                onRowChange={handleRowChange}
+                            />
                         )}
                     </section>
                 </>
@@ -384,7 +428,7 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
                                                 size="small"
                                                 severity="success"
                                                 outlined
-                                                onClick={() => handleRemove(r.product_id)}
+                                                onClick={(e) => handleRemove(e, r.product_id)}
                                                 loading={removingIds.has(r.product_id)}
                                                 title="Poista linkitys"
                                             />
@@ -405,6 +449,64 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
                     </div>
                 )}
             </section>
+        </div>
+    );
+};
+
+interface ProductGroupedRowsProps {
+    fetchedRows: FetchedRow[];
+    saveResults: Record<string, RowSaveResult>;
+    onRowChange: (bookId: string, changes: Partial<FetchedRow>) => void;
+}
+
+const ProductGroupedRows = ({ fetchedRows, saveResults, onRowChange }: ProductGroupedRowsProps) => {
+    const groups = useMemo(() => {
+        const seen = new Map<string, { pageUrl: string | null; rows: FetchedRow[] }>();
+        for (const row of fetchedRows) {
+            const pid = row.antikvaari_product_id;
+            if (!seen.has(pid)) {
+                seen.set(pid, { pageUrl: row.antikvaari_product_page_url, rows: [] });
+            }
+            seen.get(pid)!.rows.push(row);
+        }
+        return [...seen.entries()];
+    }, [fetchedRows]);
+
+    const multipleGroups = groups.length > 1;
+
+    return (
+        <div className="flex flex-column gap-3">
+            {groups.map(([pid, { pageUrl, rows }]) => (
+                <div key={pid}>
+                    {multipleGroups && (
+                        <div className="mb-2">
+                            {pageUrl ? (
+                                <a href={pageUrl} target="_blank" rel="noopener noreferrer"
+                                    className="text-sm font-semibold no-underline text-primary hover:underline">
+                                    {pid}
+                                </a>
+                            ) : (
+                                <span className="text-sm font-semibold text-600">{pid}</span>
+                            )}
+                        </div>
+                    )}
+                    {!multipleGroups && pageUrl && (
+                        <div className="mb-2">
+                            <a href={pageUrl} target="_blank" rel="noopener noreferrer"
+                                className="text-sm text-400 hover:text-primary no-underline hover:underline">
+                                {pid}
+                            </a>
+                        </div>
+                    )}
+                    <div className="flex flex-column gap-2">
+                        {rows.map((row, i) => (
+                            <FetchedRowCard key={`${row.antikvaari_book_id}-${i}`} row={row}
+                                saveResult={saveResults[row.antikvaari_book_id]}
+                                onRowChange={onRowChange} />
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };

@@ -14,6 +14,7 @@ import { Button } from "primereact/button"
 import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect"
+import { Tooltip } from "primereact/tooltip"
 
 interface OwnedBooksProps {
     userId: string,
@@ -188,6 +189,13 @@ export const OwnedBooks = ({ userId, listType }: OwnedBooksProps) => {
         'Poor': 'text-red-500',
     }
 
+    const qualityLabels: Record<string, string> = {
+        'Perfect': 'Täydellinen',
+        'Good': 'Hyvä',
+        'Decent': 'Kohtalainen',
+        'Poor': 'Heikko',
+    }
+
     const priceTemplate = (rowData: OwnedBook) => {
         if (rowData.best_price == null) {
             if (rowData.has_linked_products) {
@@ -196,8 +204,13 @@ export const OwnedBooks = ({ userId, listType }: OwnedBooksProps) => {
             return null;
         }
         const cls = qualityColors[rowData.match_quality ?? ''] ?? 'text-color';
+        const label = qualityLabels[rowData.match_quality ?? ''];
         return (
-            <span className={cls}>
+            <span
+                className={`${cls} price-match-quality`}
+                data-pr-tooltip={label}
+                data-pr-position="left"
+            >
                 {rowData.best_price.toFixed(2)} €
             </span>
         );
@@ -214,6 +227,7 @@ export const OwnedBooks = ({ userId, listType }: OwnedBooksProps) => {
     //console.log(renderedItems);
     return (
         <div>
+            <Tooltip target=".price-match-quality" />
             <DataTable value={data}
                 ref={dt}
                 size="small"

@@ -341,9 +341,8 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                                         onClick={() => onShortsShow()}
                                     />
                                 )}
-                                <Button icon="pi pi-euro" tooltip="Antikvaari-hinnat"
-                                    className="p-button-text"
-                                    disabled={!hasPrices}
+                                <Button icon="pi pi-euro" tooltip="Hinnat"
+                                    className={`p-button-text${hasPrices ? '' : ' text-400'}`}
                                     onClick={() => setPricesVisible(true)}
                                 />
                             </div>

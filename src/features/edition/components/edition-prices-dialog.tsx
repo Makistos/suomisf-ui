@@ -1,21 +1,28 @@
 import React, { useRef, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from 'primereact/button';
+import { Calendar } from 'primereact/calendar';
 import { Column } from 'primereact/column';
 import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
+import { Dropdown } from 'primereact/dropdown';
+import { InputNumber } from 'primereact/inputnumber';
+import { InputText } from 'primereact/inputtext';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Tag } from 'primereact/tag';
 import { Toast } from 'primereact/toast';
 
 import { getOwnership } from '@api/edition/get-ownership';
 import { getCurrenUser } from '@services/auth-service';
-import { deleteApiContent, getApiContent } from '@services/user-service';
+import { deleteApiContent, getApiContent, postApiContent } from '@services/user-service';
 import { Edition, CombinedEdition } from '../types';
 
 interface PriceRow {
     id: number;
+    source_id: number | null;
+    source_name: string | null;
+    book_id: string | null;
     antikvaari_product_year: number | null;
     antikvaari_product_binding: number | null;
     antikvaari_product_version: number | null;
@@ -32,6 +39,11 @@ interface PriceRow {
     product_page_exists: boolean | null;
 }
 
+interface PriceSource {
+    id: number;
+    name: string;
+}
+
 interface Props {
     edition: Edition | CombinedEdition;
     workTitle?: string;
@@ -39,9 +51,9 @@ interface Props {
     onHide: () => void;
 }
 
-const QUALITY_RANK: Record<string, number> = { Perfect: 0, Good: 1, Decent: 2, Poor: 3 };
 const BINDING_LABELS: Record<number, string> = { 1: 'Ei tietoa', 2: 'Nidottu', 3: 'Sidottu' };
 const TEN_YEARS_MS = 10 * 365.25 * 24 * 60 * 60 * 1000;
+const CONDITIONS = ['K5', 'K4', 'K3', 'K2', 'K1'];
 
 function formatDate(iso: string | null): string {
     if (!iso) return '—';
@@ -73,11 +85,17 @@ const Legend = () => (
     </div>
 );
 
+const emptyForm = { url: '', source_id: null as number | null, book_id: '', condition: '', price: null as number | null, last_updated: null as Date | null };
+
 export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Props) => {
     const user = useMemo(() => getCurrenUser(), []);
     const queryClient = useQueryClient();
     const toastRef = useRef<Toast>(null);
     const [deletingId, setDeletingId] = useState<number | null>(null);
+    const [showForm, setShowForm] = useState(false);
+    const [form, setForm] = useState(emptyForm);
+    const [saving, setSaving] = useState(false);
+    const [fetching, setFetching] = useState(false);
 
     const { data: ownership } = useQuery({
         queryKey: ['edition', 'owner', edition.id],
@@ -95,6 +113,15 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
             const qs = targetCondition ? `?target_condition=${targetCondition}` : '';
             const resp = await getApiContent(`edition/${edition.id}/antikvaari/prices${qs}`, user);
             return resp.data as PriceRow[];
+        },
+        enabled: visible && !!user,
+    });
+
+    const { data: sources } = useQuery({
+        queryKey: ['price-sources'],
+        queryFn: async () => {
+            const resp = await getApiContent('price-sources', user);
+            return resp.data as PriceSource[];
         },
         enabled: visible && !!user,
     });
@@ -151,6 +178,49 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
         });
     };
 
+    const handleFetchUrl = async () => {
+        if (!form.url.trim()) return;
+        setFetching(true);
+        try {
+            const resp = await postApiContent('prices/scrape-url', { url: form.url.trim() }, user);
+            const d = resp.response as any;
+            setForm(f => ({
+                ...f,
+                source_id: d.source_id ?? f.source_id,
+                book_id: d.book_id ?? f.book_id,
+                condition: d.condition ?? f.condition,
+                price: d.price ?? f.price,
+                last_updated: d.last_updated ? new Date(d.last_updated) : f.last_updated,
+            }));
+        } catch {
+            toastRef.current?.show({ severity: 'error', summary: 'Sivun haku epäonnistui' });
+        } finally {
+            setFetching(false);
+        }
+    };
+
+    const handleSaveManual = async () => {
+        if (!form.source_id || !form.condition || form.price == null) return;
+        setSaving(true);
+        try {
+            await postApiContent(`edition/${edition.id}/prices/manual`, {
+                source_id: form.source_id,
+                book_id: form.book_id || null,
+                condition: form.condition,
+                price: form.price,
+                last_updated: form.last_updated ? form.last_updated.toISOString() : new Date().toISOString(),
+            }, user);
+            await queryClient.invalidateQueries({ queryKey: ['edition', 'prices', edition.id] });
+            toastRef.current?.show({ severity: 'success', summary: 'Hinta tallennettu' });
+            setForm(emptyForm);
+            setShowForm(false);
+        } catch {
+            toastRef.current?.show({ severity: 'error', summary: 'Tallennus epäonnistui' });
+        } finally {
+            setSaving(false);
+        }
+    };
+
     const rowClass = (row: PriceRow) => {
         switch (row.match_quality) {
             case 'Perfect': return 'bg-green-100';
@@ -194,18 +264,26 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
     );
 
     const listingBody = (row: PriceRow) => {
+        const bindingName = row.antikvaari_product_binding != null
+            ? BINDING_LABELS[row.antikvaari_product_binding]
+            : (edition.binding?.id > 1 ? edition.binding?.name : null);
         const parts = [
             edition.pubyear || null,
-            row.antikvaari_product_binding != null
-                ? BINDING_LABELS[row.antikvaari_product_binding] : null,
+            bindingName || null,
             edition.editionnum ? `${edition.editionnum}. p.` : null,
         ].filter(Boolean);
         return <span className="text-sm">{parts.join(' · ') || '—'}</span>;
     };
 
+    const sourceBody = (row: PriceRow) => (
+        <span className="text-sm">{row.source_name ?? '—'}</span>
+    );
+
+    const formValid = form.source_id != null && form.condition !== '' && form.price != null;
+
     return (
         <Dialog
-            header={`Antikvaari-hinnat${title ? ` — ${title}` : ''}`}
+            header={`Hinnat${title ? ` — ${title}` : ''}`}
             visible={visible}
             onHide={onHide}
             className="w-11 xl:w-9"
@@ -217,79 +295,196 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                 <div className="flex justify-content-center p-4">
                     <ProgressSpinner style={{ width: '40px', height: '40px' }} strokeWidth="4" />
                 </div>
-            ) : prices.length === 0 ? (
-                <p className="text-600 text-center p-4">Ei tallennettuja hintoja.</p>
             ) : (
                 <div className="flex flex-column gap-3">
-                    <div className="flex align-items-center gap-4 text-sm text-600 flex-wrap">
-                        <span>{prices.length} hintaa</span>
-                        {minPrice != null && maxPrice != null && (
-                            <span>
-                                {minPrice === maxPrice
-                                    ? `${minPrice.toFixed(2)} €`
-                                    : `${minPrice.toFixed(2)} – ${maxPrice.toFixed(2)} €`}
-                            </span>
-                        )}
-                        {targetCondition && (
-                            <span>Oma kunto: <strong>{targetCondition}</strong></span>
-                        )}
-                        {bestPrice != null && (
-                            <span>
-                                Paras osuma: <strong>{bestPrice.toFixed(2)} €</strong>
-                            </span>
-                        )}
-                    </div>
+                    {prices.length > 0 && (
+                        <>
+                            <div className="flex align-items-center gap-4 text-sm text-600 flex-wrap">
+                                <span>{prices.length} hintaa</span>
+                                {minPrice != null && maxPrice != null && (
+                                    <span>
+                                        {minPrice === maxPrice
+                                            ? `${minPrice.toFixed(2)} €`
+                                            : `${minPrice.toFixed(2)} – ${maxPrice.toFixed(2)} €`}
+                                    </span>
+                                )}
+                                {targetCondition && (
+                                    <span>Oma kunto: <strong>{targetCondition}</strong></span>
+                                )}
+                                {bestPrice != null && (
+                                    <span>
+                                        Paras osuma: <strong>{bestPrice.toFixed(2)} €</strong>
+                                    </span>
+                                )}
+                            </div>
 
-                    <Legend />
+                            <Legend />
 
-                    <DataTable
-                        value={prices}
-                        rowClassName={rowClass}
-                        paginator
-                        rows={25}
-                        size="small"
-                        stripedRows={false}
-                        emptyMessage="Ei hintoja"
-                    >
-                        <Column
-                            header="Kunto"
-                            body={(row, opts) => conditionBody(row, opts.rowIndex)}
-                            style={{ minWidth: '8rem' }}
-                        />
-                        <Column
-                            header="Hinta"
-                            body={priceBody}
-                            style={{ minWidth: '6rem' }}
-                        />
-                        <Column
-                            header="Ilmoitus"
-                            body={listingBody}
-                            style={{ minWidth: '10rem' }}
-                        />
-                        <Column
-                            header="Päivitetty"
-                            body={(row: PriceRow) => formatDate(row.last_updated)}
-                            style={{ minWidth: '7rem' }}
-                        />
-                        <Column
-                            header="Haettu"
-                            body={(row: PriceRow) => formatDate(row.date_fetched)}
-                            style={{ minWidth: '7rem' }}
-                        />
-                        <Column
-                            body={(row: PriceRow) => (
-                                <Button
-                                    icon="pi pi-trash"
-                                    size="small"
-                                    severity="danger"
-                                    text
-                                    loading={deletingId === row.id}
-                                    onClick={e => confirmDelete(e, row.id)}
+                            <DataTable
+                                value={prices}
+                                rowClassName={rowClass}
+                                paginator
+                                rows={25}
+                                size="small"
+                                stripedRows={false}
+                                emptyMessage="Ei hintoja"
+                            >
+                                <Column
+                                    header="Lähde"
+                                    body={sourceBody}
+                                    style={{ minWidth: '8rem' }}
                                 />
-                            )}
-                            style={{ width: '3rem' }}
-                        />
-                    </DataTable>
+                                <Column
+                                    header="Kunto"
+                                    body={(row, opts) => conditionBody(row, opts.rowIndex)}
+                                    style={{ minWidth: '8rem' }}
+                                />
+                                <Column
+                                    header="Hinta"
+                                    body={priceBody}
+                                    style={{ minWidth: '6rem' }}
+                                />
+                                <Column
+                                    header="Ilmoitus"
+                                    body={listingBody}
+                                    style={{ minWidth: '10rem' }}
+                                />
+                                <Column
+                                    header="Päivitetty"
+                                    body={(row: PriceRow) => formatDate(row.last_updated)}
+                                    style={{ minWidth: '7rem' }}
+                                />
+                                <Column
+                                    header="Haettu"
+                                    body={(row: PriceRow) => formatDate(row.date_fetched)}
+                                    style={{ minWidth: '7rem' }}
+                                />
+                                <Column
+                                    body={(row: PriceRow) => (
+                                        <Button
+                                            icon="pi pi-trash"
+                                            size="small"
+                                            severity="danger"
+                                            text
+                                            loading={deletingId === row.id}
+                                            onClick={e => confirmDelete(e, row.id)}
+                                        />
+                                    )}
+                                    style={{ width: '3rem' }}
+                                />
+                            </DataTable>
+                        </>
+                    )}
+
+                    {prices.length === 0 && !showForm && (
+                        <p className="text-600 text-center p-4">Ei tallennettuja hintoja.</p>
+                    )}
+
+                    {!showForm ? (
+                        <div>
+                            <Button
+                                label="Lisää hinta"
+                                icon="pi pi-plus"
+                                size="small"
+                                outlined
+                                onClick={() => setShowForm(true)}
+                            />
+                        </div>
+                    ) : (
+                        <div className="border-1 border-300 border-round p-3 flex flex-column gap-3">
+                            <span className="font-semibold">Lisää hinta manuaalisesti</span>
+                            <div className="flex align-items-end gap-2">
+                                <div className="flex-1">
+                                    <label className="block mb-1 text-sm">Osoite</label>
+                                    <InputText
+                                        value={form.url}
+                                        placeholder="https://www.antikvariaatti.net/tuotteet/..."
+                                        className="w-full"
+                                        onChange={e => setForm(f => ({ ...f, url: e.target.value }))}
+                                    />
+                                </div>
+                                <Button
+                                    label="Hae"
+                                    icon="pi pi-download"
+                                    size="small"
+                                    disabled={!form.url.trim()}
+                                    loading={fetching}
+                                    onClick={handleFetchUrl}
+                                />
+                            </div>
+                            <div className="formgrid grid">
+                                <div className="field col-12 md:col-4">
+                                    <label className="block mb-1 text-sm">Lähde *</label>
+                                    <Dropdown
+                                        value={form.source_id}
+                                        options={sources ?? []}
+                                        optionLabel="name"
+                                        optionValue="id"
+                                        placeholder="Valitse lähde"
+                                        className="w-full"
+                                        onChange={e => setForm(f => ({ ...f, source_id: e.value }))}
+                                    />
+                                </div>
+                                <div className="field col-12 md:col-4">
+                                    <label className="block mb-1 text-sm">Kirjan ID</label>
+                                    <InputText
+                                        value={form.book_id}
+                                        placeholder="esim. 640332182"
+                                        className="w-full"
+                                        onChange={e => setForm(f => ({ ...f, book_id: e.target.value }))}
+                                    />
+                                </div>
+                                <div className="field col-12 md:col-4">
+                                    <label className="block mb-1 text-sm">Kunto *</label>
+                                    <Dropdown
+                                        value={form.condition}
+                                        options={CONDITIONS}
+                                        placeholder="Valitse kunto"
+                                        className="w-full"
+                                        onChange={e => setForm(f => ({ ...f, condition: e.value }))}
+                                    />
+                                </div>
+                                <div className="field col-12 md:col-4">
+                                    <label className="block mb-1 text-sm">Hinta (€) *</label>
+                                    <InputNumber
+                                        value={form.price}
+                                        mode="decimal"
+                                        minFractionDigits={2}
+                                        maxFractionDigits={2}
+                                        min={0}
+                                        className="w-full"
+                                        onChange={e => setForm(f => ({ ...f, price: e.value }))}
+                                    />
+                                </div>
+                                <div className="field col-12 md:col-4">
+                                    <label className="block mb-1 text-sm">Päivitetty</label>
+                                    <Calendar
+                                        value={form.last_updated}
+                                        dateFormat="dd.mm.yy"
+                                        showIcon
+                                        className="w-full"
+                                        onChange={e => setForm(f => ({ ...f, last_updated: e.value as Date | null }))}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex gap-2">
+                                <Button
+                                    label="Tallenna"
+                                    icon="pi pi-save"
+                                    size="small"
+                                    disabled={!formValid}
+                                    loading={saving}
+                                    onClick={handleSaveManual}
+                                />
+                                <Button
+                                    label="Peruuta"
+                                    size="small"
+                                    text
+                                    onClick={() => { setShowForm(false); setForm(emptyForm); }}
+                                />
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
         </Dialog>

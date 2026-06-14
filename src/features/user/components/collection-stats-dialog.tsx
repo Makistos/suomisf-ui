@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { Chart } from 'primereact/chart';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
@@ -38,11 +39,17 @@ interface NoPriceBook {
     version: number | null;
 }
 
+interface PriceRange {
+    label: string;
+    count: number;
+}
+
 interface CollectionStats {
     total_owned: number;
     priced_count: number;
     total_value: number;
     quality_distribution: QualityDistribution;
+    price_distribution: PriceRange[];
     top_expensive: TopBook[];
     no_price_books: NoPriceBook[];
 }
@@ -83,6 +90,31 @@ export const CollectionStatsDialog = ({ userId, visible, onHide }: Props) => {
     const pricedTotal = dist
         ? dist.Perfect + dist.Good + dist.Decent + dist.Poor
         : 0;
+
+    const priceChartData = useMemo(() => {
+        const pd = stats?.price_distribution;
+        if (!pd || pd.every(r => r.count === 0)) return null;
+        return {
+            labels: pd.map(r => r.label),
+            datasets: [{
+                label: 'Kirjoja',
+                data: pd.map(r => r.count),
+                backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 1,
+                borderRadius: 4,
+            }],
+        };
+    }, [stats?.price_distribution]);
+
+    const priceChartOptions = {
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } },
+        },
+        responsive: true,
+        maintainAspectRatio: true,
+    };
 
     const titleBody = (row: TopBook) => (
         <Link to={`/works/${row.work_id}`} className="no-underline text-primary hover:underline">
@@ -165,6 +197,14 @@ export const CollectionStatsDialog = ({ userId, visible, onHide }: Props) => {
                                     </div>
                                 )}
                             </div>
+                        </div>
+                    )}
+
+                    {/* Price range distribution */}
+                    {priceChartData && (
+                        <div>
+                            <div className="text-600 text-sm mb-2">Hintojen jakauma</div>
+                            <Chart type="bar" data={priceChartData} options={priceChartOptions} />
                         </div>
                     )}
 

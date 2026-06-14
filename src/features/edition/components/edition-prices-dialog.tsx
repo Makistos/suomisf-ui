@@ -2,6 +2,7 @@ import React, { useRef, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
+import { Checkbox } from 'primereact/checkbox';
 import { Column } from 'primereact/column';
 import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
 import { DataTable } from 'primereact/datatable';
@@ -86,7 +87,7 @@ const Legend = () => (
     </div>
 );
 
-const emptyForm = { url: '', source_id: null as number | null, book_id: '', condition: '', price: null as number | null, last_updated: null as Date | null };
+const emptyForm = { url: '', source_id: null as number | null, book_id: '', condition: '', price: null as number | null, last_updated: null as Date | null, is_library_discard: false, has_markings: false, missing_dust_cover: false };
 
 export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Props) => {
     const user = useMemo(() => getCurrenUser(), []);
@@ -211,6 +212,9 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                 condition: form.condition,
                 price: form.price,
                 last_updated: form.last_updated ? form.last_updated.toISOString() : new Date().toISOString(),
+                is_library_discard: form.is_library_discard,
+                has_markings: form.has_markings,
+                missing_dust_cover: form.missing_dust_cover,
             }, user);
             await queryClient.invalidateQueries({ queryKey: ['edition', 'prices', edition.id] });
             toastRef.current?.show({ severity: 'success', summary: 'Hinta tallennettu' });
@@ -234,9 +238,9 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
 
     const conditionBody = (row: PriceRow, rowIndex: number) => {
         const flags = [
-            row.is_library_discard && 'Kirjaston poisto',
+            row.is_library_discard && 'Kirjastonpoisto',
             row.has_markings && 'Merkintöjä',
-            row.missing_dust_cover && 'Ei kansipaperia',
+            row.missing_dust_cover && 'Kansipaperi puuttuu',
         ].filter(Boolean) as string[];
         return (
             <div className="flex flex-column gap-1">
@@ -471,6 +475,32 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                                         className="w-full"
                                         onChange={e => setForm(f => ({ ...f, last_updated: e.value as Date | null }))}
                                     />
+                                </div>
+                            </div>
+                            <div className="flex flex-wrap gap-3">
+                                <div className="flex align-items-center gap-2">
+                                    <Checkbox
+                                        inputId="cb_library"
+                                        checked={form.is_library_discard}
+                                        onChange={e => setForm(f => ({ ...f, is_library_discard: !!e.checked }))}
+                                    />
+                                    <label htmlFor="cb_library" className="text-sm cursor-pointer">Kirjastonpoisto</label>
+                                </div>
+                                <div className="flex align-items-center gap-2">
+                                    <Checkbox
+                                        inputId="cb_markings"
+                                        checked={form.has_markings}
+                                        onChange={e => setForm(f => ({ ...f, has_markings: !!e.checked }))}
+                                    />
+                                    <label htmlFor="cb_markings" className="text-sm cursor-pointer">Merkintöjä</label>
+                                </div>
+                                <div className="flex align-items-center gap-2">
+                                    <Checkbox
+                                        inputId="cb_dust"
+                                        checked={form.missing_dust_cover}
+                                        onChange={e => setForm(f => ({ ...f, missing_dust_cover: !!e.checked }))}
+                                    />
+                                    <label htmlFor="cb_dust" className="text-sm cursor-pointer">Kansipaperi puuttuu</label>
                                 </div>
                             </div>
                             <div className="flex gap-2">

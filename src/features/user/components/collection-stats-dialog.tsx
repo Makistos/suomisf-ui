@@ -113,7 +113,7 @@ export const CollectionStatsDialog = ({ userId, visible, onHide }: Props) => {
             y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } },
         },
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
     };
 
     const titleBody = (row: TopBook) => (
@@ -204,7 +204,9 @@ export const CollectionStatsDialog = ({ userId, visible, onHide }: Props) => {
                     {priceChartData && (
                         <div>
                             <div className="text-600 text-sm mb-2">Hintojen jakauma</div>
-                            <Chart type="bar" data={priceChartData} options={priceChartOptions} />
+                            <div style={{ height: '180px' }}>
+                                <Chart type="bar" data={priceChartData} options={priceChartOptions} style={{ height: '100%' }} />
+                            </div>
                         </div>
                     )}
 

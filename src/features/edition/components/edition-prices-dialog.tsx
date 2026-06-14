@@ -23,6 +23,7 @@ interface PriceRow {
     source_id: number | null;
     source_name: string | null;
     book_id: string | null;
+    url: string | null;
     antikvaari_product_year: number | null;
     antikvaari_product_binding: number | null;
     antikvaari_product_version: number | null;
@@ -206,6 +207,7 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
             await postApiContent(`edition/${edition.id}/prices/manual`, {
                 source_id: form.source_id,
                 book_id: form.book_id || null,
+                url: form.url || null,
                 condition: form.condition,
                 price: form.price,
                 last_updated: form.last_updated ? form.last_updated.toISOString() : new Date().toISOString(),
@@ -276,7 +278,11 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
     };
 
     const sourceBody = (row: PriceRow) => (
-        <span className="text-sm">{row.source_name ?? '—'}</span>
+        <span className="text-sm">
+            {row.url
+                ? <a href={row.url} target="_blank" rel="noopener noreferrer">{row.source_name ?? '—'}</a>
+                : (row.source_name ?? '—')}
+        </span>
     );
 
     const formValid = form.source_id != null && form.condition !== '' && form.price != null;

@@ -228,7 +228,7 @@ export const WorkDetails = ({ work }: WorkProps) => {
                                 {work.misc}
                             </div>
                             {work.description && (
-                                <div className="grid flex-wrap col-12 pb-0 mb-0 p-0">
+                                <div className="col-12 pb-0 mb-0 p-0">
                                     <div className="html-content" dangerouslySetInnerHTML={{ __html: work.description }} />
                                     {work.descr_attr && (
                                         <div className="book-attribution"

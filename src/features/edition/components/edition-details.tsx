@@ -9,6 +9,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { LinkList } from "../../../components/link-list";
 import { EditionProps } from "../types";
+import { Tooltip } from "primereact/tooltip";
 import { EditionVersion } from "../utils/edition-version";
 import { EditionForm } from './edition-form';
 import { deleteApiContent, getApiContent, postApiContent } from '../../../services/user-service';
@@ -121,7 +122,20 @@ const IsbnString = ({ isbn, binding }: IsbnStringProps) => {
     )
 }
 
-export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallback }: Props) => {
+const qualityColors: Record<string, string> = {
+    Perfect: 'text-green-600',
+    Good: 'text-blue-600',
+    Decent: 'text-orange-500',
+    Poor: 'text-red-500',
+};
+const qualityLabels: Record<string, string> = {
+    Perfect: 'Täydellinen',
+    Good: 'Hyvä',
+    Decent: 'Kohtalainen',
+    Poor: 'Heikko',
+};
+
+export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallback, editionPrice }: Props) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [editVisible, setEditVisible] = useState(false);
     const [shortsFormVisible, setShortsFormVisible] = useState(false);
@@ -350,11 +364,23 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                             </div>
                         }
                         {user && edition.combined === false &&
-                            <div className="inline-block">
+                            <div className="flex align-items-center gap-2">
                                 <EditionWishlist editionId={edition.id}
                                     initial={edition.wishlisted?.some(owner => owner.id === user.id)}
                                     workId={work?.id} />
                                 <EditionOwnership editionId={edition.id} workId={work?.id} />
+                                {editionPrice && (
+                                    <>
+                                        <Tooltip target=".edition-price-badge" />
+                                        <span
+                                            className={`edition-price-badge font-medium ${qualityColors[editionPrice.match_quality]}`}
+                                            data-pr-tooltip={qualityLabels[editionPrice.match_quality]}
+                                            data-pr-position="top"
+                                        >
+                                            ({editionPrice.best_price.toFixed(2)} €)
+                                        </span>
+                                    </>
+                                )}
                             </div>
                         }
                     </div>

@@ -14,7 +14,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SelectButton } from 'primereact/selectbutton';
 import axios from "axios";
 
-import { Edition, EditionDetails } from "@features/edition";
+import { Edition, EditionDetails, EditionPrice } from "@features/edition";
 import { getCurrenUser } from "@services/auth-service";
 import { getApiContent, deleteApiContent } from "@services/user-service";
 import { ShortsList } from "@features/short";
@@ -107,12 +107,13 @@ function useEffectiveWorkId(
     };
 }
 
-const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, highlightEditionId }: {
+const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, highlightEditionId, editionPrice }: {
     editions: Edition[];
     work?: Work;
     onSubmitCallback: any;
     onUpload: any;
     highlightEditionId?: string | null;
+    editionPrice?: EditionPrice;
 }) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [currIdx, setCurrIdx] = useState(0);
@@ -152,7 +153,8 @@ const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, highlight
             <div className="flex gap-3 align-items-start">
                 <div className="flex-1 min-w-0">
                     <EditionDetails edition={edition} card work={work}
-                        onSubmitCallback={onSubmitCallback} />
+                        onSubmitCallback={onSubmitCallback}
+                        editionPrice={editionPrice} />
                 </div>
                 <div className="flex-shrink-0 flex justify-content-end align-items-center">
                     {edition.images.length > 0 ?
@@ -223,6 +225,15 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
             return response.data;
         },
         enabled: !!workId, // Add this to prevent the query from running when workId is undefined
+    });
+
+    const { data: editionPrices } = useQuery<Record<number, EditionPrice>>({
+        queryKey: ['work', workId, 'edition-prices', user?.id],
+        queryFn: async () => {
+            const resp = await getApiContent(`user/${user!.id}/work/${workId}/edition-prices`, user);
+            return resp.data as Record<number, EditionPrice>;
+        },
+        enabled: !!workId && !!user,
     });
 
     const dialItems = [
@@ -365,12 +376,14 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
         if (!editions) {
             return null;
         }
+        const combined = combineEditions(editions, user);
         return <EditionListItem
             editions={editions}
             work={workData}
             onSubmitCallback={editionFormCallback}
             onUpload={onUpload}
             highlightEditionId={highlightEditionId}
+            editionPrice={combined ? editionPrices?.[combined.id] : undefined}
         />;
     }
 

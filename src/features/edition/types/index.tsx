@@ -77,6 +77,11 @@ export interface CombinedEdition {
     combined: boolean;
 }
 
+export interface EditionPrice {
+    best_price: number;
+    match_quality: 'Perfect' | 'Good' | 'Decent' | 'Poor';
+}
+
 export interface EditionProps {
     edition: Edition | CombinedEdition,
     showFirst?: boolean,
@@ -89,7 +94,8 @@ export interface EditionProps {
     contributions?: Contribution[],
     detailDepth?: number,
     isOwned?: boolean,
-    isWishlisted?: boolean
+    isWishlisted?: boolean,
+    editionPrice?: EditionPrice,
 }
 
 export interface EditionFormData {

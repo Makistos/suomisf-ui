@@ -908,6 +908,12 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     background: var(--surface-ground);
 }
 
+.edition-list-item + .edition-list-item {
+    border-top: 1px solid var(--surface-border);
+    padding-top: 0.75rem;
+    margin-top: 0.25rem;
+}
+
 .highlighted-edition {
     background-color: #fff3cd;
     border: 2px solid #ffeaa7;

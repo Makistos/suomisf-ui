@@ -148,7 +148,7 @@ const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, highlight
     if (!work || !edition) return null;
 
     return (
-        <div className={`col-12 ${shouldHighlight ? 'highlighted-edition' : ''}`}>
+        <div className={`col-12 edition-list-item ${shouldHighlight ? 'highlighted-edition' : ''}`}>
             <div className="flex gap-3 align-items-start">
                 <div className="flex-1 min-w-0">
                     <EditionDetails edition={edition} card work={work}

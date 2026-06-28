@@ -293,13 +293,17 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                 <>
                     <Toast ref={toast} />
                     <ConfirmPopup />
-                    {card && <b><EditionVersion edition={edition} work={work} /></b>}
+                    {card && (
+                        <div className="flex align-items-baseline gap-2 mb-1">
+                            <b><EditionVersion edition={edition} work={work} /></b>
+                            {edition.pubyear && <span className="text-color-secondary">{edition.pubyear}</span>}
+                        </div>
+                    )}
                     {work != null && edition.title !== work.title &&
-                        <><br /><i className="font-medium">{edition.title}</i></>}
+                        <i className="font-medium">{edition.title}</i>}
                     {edition.publisher && (
-                        <><br /><Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link> </>)}
-                    {edition.pubyear}
-                    {edition.printedin ? " (" + edition.printedin + ")." : "."}
+                        <div><Link to={`/publishers/${edition.publisher.id}`}>{edition.publisher.name}</Link>
+                        {edition.printedin ? " (" + edition.printedin + ")." : "."}</div>)}
                     {contributorList(edition.contributions, 2, "Suom.", true)}
                     {edition.pubseries && (<div>
                         <Link to={`/pubseries/${edition.pubseries.id}`}>{edition.pubseries.name}</Link>
@@ -320,10 +324,8 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                     }
                     {contributorList(edition.contributions, 5, "Kuvitus", true)}
                     {contributorList(edition.contributions, 4, "Kansikuva", true)}
-                    {edition.verified &&
-                        <>
-                            <div><b>Tarkastettu.</b></div>
-                        </>
+                    {edition.verified && isAdmin(user) &&
+                        <div><b>Tarkastettu.</b></div>
                     }
                     <div>
                         {isAdmin(user) && edition.combined === false &&

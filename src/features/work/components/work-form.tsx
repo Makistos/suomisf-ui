@@ -130,6 +130,10 @@ const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
   const errors = methods.formState.errors;
 
   useEffect(() => {
+    methods.reset(data);
+  }, [data]);
+
+  useEffect(() => {
     async function getGenres() {
       const url = "genres";
       const response = await getApiContent(url, user);

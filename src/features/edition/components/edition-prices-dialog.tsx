@@ -160,6 +160,8 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
         try {
             await deleteApiContent(`antikvaari/prices/${priceId}`);
             await queryClient.invalidateQueries({ queryKey: ['edition', 'prices', edition.id] });
+            await queryClient.invalidateQueries({ queryKey: ['edition', 'prices', 'count', edition.id] });
+            await queryClient.invalidateQueries({ queryKey: ['work', edition.work?.id, 'edition-prices'] });
             toastRef.current?.show({ severity: 'success', summary: 'Hinta poistettu' });
         } catch {
             toastRef.current?.show({ severity: 'error', summary: 'Poisto epäonnistui' });
@@ -217,6 +219,8 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                 missing_dust_cover: form.missing_dust_cover,
             }, user);
             await queryClient.invalidateQueries({ queryKey: ['edition', 'prices', edition.id] });
+            await queryClient.invalidateQueries({ queryKey: ['edition', 'prices', 'count', edition.id] });
+            await queryClient.invalidateQueries({ queryKey: ['work', edition.work?.id, 'edition-prices'] });
             toastRef.current?.show({ severity: 'success', summary: 'Hinta tallennettu' });
             setForm(emptyForm);
             setShowForm(false);

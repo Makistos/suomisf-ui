@@ -593,7 +593,7 @@ const SuggestionCard = ({ work }: { work: Work }) => {
                     </div>
                     <div className="flex align-items-center gap-2 mt-2 flex-wrap">
                         {work.has_awards && (
-                            <i className="fa-solid fa-trophy"
+                            <i className="pi pi-trophy"
                                 style={{ color: "#d4a017" }}
                                 title="Palkittu teos" />
                         )}

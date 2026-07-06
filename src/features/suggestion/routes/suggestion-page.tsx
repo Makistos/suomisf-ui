@@ -10,6 +10,7 @@ import { InputSwitch } from "primereact/inputswitch";
 import { Button } from "primereact/button";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Message } from "primereact/message";
+import { Chip } from "primereact/chip";
 
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
@@ -190,6 +191,32 @@ export const SuggestionPage = () => {
     const availableLengths = lengthOptions.filter(
         l => !facets || facets.lengths.has(l.value)
             || filters.length === l.value);
+
+    // Concise summary of the current selections, shown under the stepper.
+    const nameOf = (arr: { id: number; name: string }[] | undefined,
+        id: number) => arr?.find(x => x.id === id)?.name ?? String(id);
+    const tagName = (id: number) => nameOf(tags.data, id);
+    const decadeLabel = (v: number) =>
+        decadeOptions.find(d => d.value === v)?.label ?? String(v);
+    const summary: { label: string; values: string[] }[] = [
+        { label: "Genre", values: filters.genres.map(id => nameOf(genres.data, id)) },
+        { label: "Alagenre", values: filters.subgenres.map(tagName) },
+        { label: "Tyyli", values: filters.styles.map(tagName) },
+        { label: "Kotimaa", values: filters.nationalities.map(id => nameOf(countries.data, id)) },
+        { label: "Julkaisuaika", values: filters.decades.map(decadeLabel) },
+        {
+            label: "Pituus", values: filters.length
+                ? [lengthOptions.find(l => l.value === filters.length)?.label
+                    ?? filters.length] : [],
+        },
+        { label: "Aihe", values: filters.subjects.map(tagName) },
+        { label: "Tapahtumapaikka", values: filters.locations.map(tagName) },
+        { label: "Tapahtuma-aika", values: filters.eras.map(tagName) },
+        { label: "Toimija", values: filters.actors.map(tagName) },
+        { label: "Lista", values: filters.lists.map(tagName) },
+        { label: "Palkitut", values: filters.awardOnly ? ["kyllä"] : [] },
+        { label: "Vain omat", values: filters.ownedOnly ? ["kyllä"] : [] },
+    ].filter(g => g.values.length > 0);
 
     const apiUrl = import.meta.env.VITE_API_URL + "searchworks";
     const userId = user?.id ?? null;
@@ -476,6 +503,26 @@ export const SuggestionPage = () => {
                             </div>
                         </StepperPanel>
                     </Stepper>
+                </div>
+            )}
+
+            {summary.length > 0 && (
+                <div className="col-12">
+                    <div className="flex flex-wrap align-items-center gap-3
+                        p-3 surface-100 border-round">
+                        <span className="font-semibold">Valinnat:</span>
+                        {summary.map(g => (
+                            <div key={g.label}
+                                className="flex align-items-center gap-2 flex-wrap">
+                                <span className="text-color-secondary text-sm">
+                                    {g.label}
+                                </span>
+                                {g.values.map((v, i) => (
+                                    <Chip key={i} label={v} />
+                                ))}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             )}
 

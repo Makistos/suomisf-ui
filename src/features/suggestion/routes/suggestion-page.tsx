@@ -305,7 +305,7 @@ export const SuggestionPage = () => {
                 </div>
             ) : (
                 <div className="col-12">
-                    <Stepper ref={stepperRef} orientation="vertical">
+                    <Stepper ref={stepperRef}>
                         <StepperPanel header="Genre">
                             <p className="text-color-secondary">
                                 Mistä genrestä olet kiinnostunut?

@@ -525,7 +525,14 @@ const SuggestionCard = ({ work }: { work: Work }) => {
                     )}
                 </div>
                 <div className="mt-auto">
-                    <div className="font-bold">{work.title}</div>
+                    <div className="font-bold flex align-items-center gap-2">
+                        {work.has_awards && (
+                            <i className="fa-solid fa-trophy"
+                                style={{ color: "#d4a017" }}
+                                title="Palkittu teos" />
+                        )}
+                        <span>{work.title}</span>
+                    </div>
                     <div className="text-color-secondary text-sm">
                         {work.author_str}
                     </div>

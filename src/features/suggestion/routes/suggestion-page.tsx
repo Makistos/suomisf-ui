@@ -57,7 +57,7 @@ interface Filters {
 }
 
 interface FacetSets {
-    tags: Set<number>;
+    tagCounts: Map<number, number>;
     nationalities: Set<number>;
     decades: Set<number>;
     lengths: Set<string>;
@@ -154,13 +154,20 @@ export const SuggestionPage = () => {
             .filter(t => t.type?.id === typeId && t.workcount > 0)
             .sort((a, b) => b.workcount - a.workcount);
 
-    // Tag options for a type, constrained to the current pool. Already-picked
-    // values are always kept so selections never vanish from their own list.
+    // Tag options for a type, constrained to the current pool with counts
+    // reflecting the narrowed selection. Already-picked values are always
+    // kept so selections never vanish from their own list.
     const tagOptions = (typeId: number, selected: number[]) =>
         tagsOfType(typeId)
-            .filter(t => !facets || facets.tags.has(t.id)
+            .filter(t => !facets || facets.tagCounts.has(t.id)
                 || selected.includes(t.id))
-            .map(t => ({ label: `${t.name} (${t.workcount})`, value: t.id }));
+            .map(t => ({
+                name: t.name,
+                value: t.id,
+                count: facets?.tagCounts.get(t.id) ?? t.workcount,
+            }))
+            .sort((a, b) => b.count - a.count)
+            .map(t => ({ label: `${t.name} (${t.count})`, value: t.value }));
 
     // Suomi first, then alphabetical; constrained to the current pool.
     const countryOptions = (countries.data ?? [])
@@ -202,7 +209,9 @@ export const SuggestionPage = () => {
             }
             const fd = facetsResp.data ?? {};
             setFacets({
-                tags: new Set<number>(fd.tags ?? []),
+                tagCounts: new Map<number, number>(
+                    Object.entries(fd.tags ?? {})
+                        .map(([k, v]) => [Number(k), v as number])),
                 nationalities: new Set<number>(fd.nationalities ?? []),
                 decades: new Set<number>(fd.decades ?? []),
                 lengths: new Set<string>(fd.lengths ?? []),

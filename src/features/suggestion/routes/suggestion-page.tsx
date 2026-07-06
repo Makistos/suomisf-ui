@@ -264,7 +264,7 @@ export const SuggestionPage = () => {
     // Reusable per-step navigation footer.
     const StepNav = ({ onNext, showBack = true }:
         { onNext: () => void; showBack?: boolean }) => (
-        <div className="flex justify-content-between mt-4">
+        <div className="flex flex-wrap justify-content-between gap-2 mt-4">
             <div>
                 {showBack && (
                     <Button label="Takaisin" severity="secondary" text
@@ -285,9 +285,10 @@ export const SuggestionPage = () => {
         || tags.isLoading;
 
     return (
-        <div className="grid">
-            <div className="col-12 flex justify-content-between align-items-start">
-                <div>
+        <div className="grid w-full" style={{ minWidth: 0 }}>
+            <div className="col-12 flex flex-wrap justify-content-between
+                align-items-start gap-3">
+                <div className="flex-1" style={{ minWidth: "15rem" }}>
                     <h1 className="mb-1">Kirjaehdotukset</h1>
                     <p className="text-color-secondary mt-0 mb-4">
                         Valitse mieltymyksesi vaihe vaiheelta. Voit valita
@@ -296,7 +297,8 @@ export const SuggestionPage = () => {
                     </p>
                 </div>
                 <Button label="Aloita alusta" icon="pi pi-replay"
-                    severity="secondary" outlined onClick={startOver} />
+                    severity="secondary" outlined onClick={startOver}
+                    className="flex-shrink-0" />
             </div>
 
             {optionsLoading ? (
@@ -304,7 +306,7 @@ export const SuggestionPage = () => {
                     <ProgressSpinner />
                 </div>
             ) : (
-                <div className="col-12">
+                <div className="col-12" style={{ overflowX: "auto", minWidth: 0 }}>
                     <Stepper ref={stepperRef}>
                         <StepperPanel header="Genre">
                             <p className="text-color-secondary">
@@ -469,7 +471,8 @@ export const SuggestionPage = () => {
             )}
 
             <div className="col-12">
-                <div className="flex align-items-center justify-content-between mb-3">
+                <div className="flex flex-wrap align-items-center
+                    justify-content-between gap-2 mb-3">
                     <h2 className="m-0">Ehdotukset</h2>
                     {works && works.length > 0 && (
                         <Button label="Sekoita" icon="pi pi-refresh"

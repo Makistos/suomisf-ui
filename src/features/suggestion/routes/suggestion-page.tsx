@@ -56,6 +56,13 @@ interface Filters {
     lists: number[];
 }
 
+interface FacetSets {
+    tags: Set<number>;
+    nationalities: Set<number>;
+    decades: Set<number>;
+    lengths: Set<string>;
+}
+
 const emptyFilters: Filters = {
     genres: [], subgenres: [], styles: [], nationalities: [], decades: [],
     length: null, awardOnly: false, ownedOnly: false, subjects: [],
@@ -114,6 +121,10 @@ export const SuggestionPage = () => {
     const [works, setWorks] = useState<Work[] | null>(null);
     const [loading, setLoading] = useState(false);
     const [emptyPool, setEmptyPool] = useState(false);
+    // Option ids that still have matches given the committed filters, so
+    // later steps only offer values that exist in the narrowed pool. Null
+    // until the first query (all options shown).
+    const [facets, setFacets] = useState<FacetSets | null>(null);
 
     const [documentTitle] = useDocumentTitle("Kirjaehdotukset");
     if (documentTitle !== undefined) document.title = documentTitle;
@@ -143,30 +154,59 @@ export const SuggestionPage = () => {
             .filter(t => t.type?.id === typeId && t.workcount > 0)
             .sort((a, b) => b.workcount - a.workcount);
 
-    // Suomi first, then alphabetical.
+    // Tag options for a type, constrained to the current pool. Already-picked
+    // values are always kept so selections never vanish from their own list.
+    const tagOptions = (typeId: number, selected: number[]) =>
+        tagsOfType(typeId)
+            .filter(t => !facets || facets.tags.has(t.id)
+                || selected.includes(t.id))
+            .map(t => ({ label: `${t.name} (${t.workcount})`, value: t.id }));
+
+    // Suomi first, then alphabetical; constrained to the current pool.
     const countryOptions = (countries.data ?? [])
         .slice()
         .sort((a, b) => {
             if (a.name === "Suomi") return -1;
             if (b.name === "Suomi") return 1;
             return a.name.localeCompare(b.name, "fi");
-        });
+        })
+        .filter(c => !facets || facets.nationalities.has(c.id)
+            || filters.nationalities.includes(c.id))
+        .map(c => ({ label: c.name, value: c.id }));
 
-    // Fetch a fresh random 10 matching the given filters.
+    const availableDecades = decadeOptions.filter(
+        d => !facets || facets.decades.has(d.value)
+            || filters.decades.includes(d.value));
+    const availableLengths = lengthOptions.filter(
+        l => !facets || facets.lengths.has(l.value)
+            || filters.length === l.value);
+
+    // Fetch a fresh random 10 matching the given filters, plus the facets
+    // (available option ids) so later steps can be constrained.
     const refresh = async (f: Filters, exclude: number[] = []) => {
         setLoading(true);
         setEmptyPool(false);
+        const url = import.meta.env.VITE_API_URL + "searchworks";
+        const userId = user?.id ?? null;
         try {
-            const response = await axios.post(
-                import.meta.env.VITE_API_URL + "searchworks",
-                buildParams(f, user?.id ?? null, exclude));
-            const result: Work[] = response.data ?? [];
+            const [worksResp, facetsResp] = await Promise.all([
+                axios.post(url, buildParams(f, userId, exclude)),
+                axios.post(url, { ...buildParams(f, userId), facets: true }),
+            ]);
+            const result: Work[] = worksResp.data ?? [];
             if (result.length === 0) {
                 // Empty-pool guard: keep the previous suggestions.
                 setEmptyPool(true);
             } else {
                 setWorks(result);
             }
+            const fd = facetsResp.data ?? {};
+            setFacets({
+                tags: new Set<number>(fd.tags ?? []),
+                nationalities: new Set<number>(fd.nationalities ?? []),
+                decades: new Set<number>(fd.decades ?? []),
+                lengths: new Set<string>(fd.lengths ?? []),
+            });
         } catch (e) {
             console.error(e);
         } finally {
@@ -191,6 +231,7 @@ export const SuggestionPage = () => {
         setFilters(emptyFilters);
         setWorks(null);
         setEmptyPool(false);
+        setFacets(null);
         stepperRef.current?.setActiveStep(0);
     };
 
@@ -266,11 +307,8 @@ export const SuggestionPage = () => {
                                 <label className="block mb-2">Alagenre</label>
                                 <MultiSelect
                                     value={filters.subgenres}
-                                    options={tagsOfType(TAG_TYPE.ALAGENRE)
-                                        .map(t => ({
-                                            label: `${t.name} (${t.workcount})`,
-                                            value: t.id,
-                                        }))}
+                                    options={tagOptions(TAG_TYPE.ALAGENRE,
+                                        filters.subgenres)}
                                     onChange={(e) => setFilters({
                                         ...filters, subgenres: e.value,
                                     })}
@@ -282,11 +320,8 @@ export const SuggestionPage = () => {
                                 <label className="block mb-2">Tyyli</label>
                                 <MultiSelect
                                     value={filters.styles}
-                                    options={tagsOfType(TAG_TYPE.TYYLI)
-                                        .map(t => ({
-                                            label: `${t.name} (${t.workcount})`,
-                                            value: t.id,
-                                        }))}
+                                    options={tagOptions(TAG_TYPE.TYYLI,
+                                        filters.styles)}
                                     onChange={(e) => setFilters({
                                         ...filters, styles: e.value,
                                     })}
@@ -306,9 +341,7 @@ export const SuggestionPage = () => {
                             </p>
                             <MultiSelect
                                 value={filters.nationalities}
-                                options={countryOptions.map(c => ({
-                                    label: c.name, value: c.id,
-                                }))}
+                                options={countryOptions}
                                 onChange={(e) => setFilters({
                                     ...filters, nationalities: e.value,
                                 })}
@@ -328,7 +361,7 @@ export const SuggestionPage = () => {
                             <SelectButton
                                 multiple
                                 value={filters.decades}
-                                options={decadeOptions}
+                                options={availableDecades}
                                 onChange={(e) => setFilters({
                                     ...filters, decades: e.value ?? [],
                                 })} />
@@ -343,7 +376,7 @@ export const SuggestionPage = () => {
                             </p>
                             <SelectButton
                                 value={filters.length}
-                                options={lengthOptions}
+                                options={availableLengths}
                                 onChange={(e) => setFilters({
                                     ...filters, length: e.value,
                                 })} />
@@ -385,10 +418,8 @@ export const SuggestionPage = () => {
                                         </label>
                                         <MultiSelect
                                             value={filters[key] as number[]}
-                                            options={tagsOfType(typeId).map(t => ({
-                                                label: `${t.name} (${t.workcount})`,
-                                                value: t.id,
-                                            }))}
+                                            options={tagOptions(typeId,
+                                                filters[key] as number[])}
                                             onChange={(e) => setFilters({
                                                 ...filters, [key]: e.value,
                                             })}

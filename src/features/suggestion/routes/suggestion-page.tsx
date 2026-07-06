@@ -188,17 +188,49 @@ export const SuggestionPage = () => {
         l => !facets || facets.lengths.has(l.value)
             || filters.length === l.value);
 
+    const apiUrl = import.meta.env.VITE_API_URL + "searchworks";
+    const userId = user?.id ?? null;
+
+    const setFacetsFromData = (fd: any) => {
+        setFacets({
+            tagCounts: new Map<number, number>(
+                Object.entries(fd?.tags ?? {})
+                    .map(([k, v]) => [Number(k), v as number])),
+            nationalities: new Set<number>(fd?.nationalities ?? []),
+            decades: new Set<number>(fd?.decades ?? []),
+            lengths: new Set<string>(fd?.lengths ?? []),
+        });
+    };
+
+    // Recompute the available options for the given filters without touching
+    // the suggestions. Used for live cross-filtering within a step (e.g.
+    // narrowing styles when the subgenre selection changes).
+    const fetchFacets = async (f: Filters) => {
+        try {
+            const resp = await axios.post(
+                apiUrl, { ...buildParams(f, userId), facets: true });
+            setFacetsFromData(resp.data);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    // Update a facet selection and immediately refresh the available options.
+    const updateFilter = (partial: Partial<Filters>) => {
+        const merged = { ...filters, ...partial };
+        setFilters(merged);
+        fetchFacets(merged);
+    };
+
     // Fetch a fresh random 10 matching the given filters, plus the facets
     // (available option ids) so later steps can be constrained.
     const refresh = async (f: Filters, exclude: number[] = []) => {
         setLoading(true);
         setEmptyPool(false);
-        const url = import.meta.env.VITE_API_URL + "searchworks";
-        const userId = user?.id ?? null;
         try {
             const [worksResp, facetsResp] = await Promise.all([
-                axios.post(url, buildParams(f, userId, exclude)),
-                axios.post(url, { ...buildParams(f, userId), facets: true }),
+                axios.post(apiUrl, buildParams(f, userId, exclude)),
+                axios.post(apiUrl, { ...buildParams(f, userId), facets: true }),
             ]);
             const result: Work[] = worksResp.data ?? [];
             if (result.length === 0) {
@@ -207,15 +239,7 @@ export const SuggestionPage = () => {
             } else {
                 setWorks(result);
             }
-            const fd = facetsResp.data ?? {};
-            setFacets({
-                tagCounts: new Map<number, number>(
-                    Object.entries(fd.tags ?? {})
-                        .map(([k, v]) => [Number(k), v as number])),
-                nationalities: new Set<number>(fd.nationalities ?? []),
-                decades: new Set<number>(fd.decades ?? []),
-                lengths: new Set<string>(fd.lengths ?? []),
-            });
+            setFacetsFromData(facetsResp.data);
         } catch (e) {
             console.error(e);
         } finally {
@@ -318,8 +342,8 @@ export const SuggestionPage = () => {
                                     value={filters.subgenres}
                                     options={tagOptions(TAG_TYPE.ALAGENRE,
                                         filters.subgenres)}
-                                    onChange={(e) => setFilters({
-                                        ...filters, subgenres: e.value,
+                                    onChange={(e) => updateFilter({
+                                        subgenres: e.value,
                                     })}
                                     display="chip" filter
                                     placeholder="Valitse alagenret"
@@ -331,8 +355,8 @@ export const SuggestionPage = () => {
                                     value={filters.styles}
                                     options={tagOptions(TAG_TYPE.TYYLI,
                                         filters.styles)}
-                                    onChange={(e) => setFilters({
-                                        ...filters, styles: e.value,
+                                    onChange={(e) => updateFilter({
+                                        styles: e.value,
                                     })}
                                     display="chip" filter
                                     placeholder="Valitse tyylit"

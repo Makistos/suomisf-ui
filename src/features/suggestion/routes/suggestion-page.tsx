@@ -322,6 +322,16 @@ export const SuggestionPage = () => {
                                 placeholder="Valitse genret"
                                 filter
                                 className="w-full" />
+                            {user && (
+                                <div className="field flex align-items-center gap-2 mt-3">
+                                    <InputSwitch
+                                        checked={filters.ownedOnly}
+                                        onChange={(e) => updateFilter({
+                                            ownedOnly: e.value,
+                                        })} />
+                                    <label>Vain omistamani teokset</label>
+                                </div>
+                            )}
                             <StepNav showBack={false}
                                 onNext={() => applyAndNext({
                                     genres: filters.genres,
@@ -420,16 +430,6 @@ export const SuggestionPage = () => {
                                     })} />
                                 <label>Vain palkitut teokset</label>
                             </div>
-                            {user && (
-                                <div className="field flex align-items-center gap-2">
-                                    <InputSwitch
-                                        checked={filters.ownedOnly}
-                                        onChange={(e) => updateFilter({
-                                            ownedOnly: e.value,
-                                        })} />
-                                    <label>Vain omistamani teokset</label>
-                                </div>
-                            )}
                             {([
                                 ["Aihe", TAG_TYPE.AIHE, "subjects"],
                                 ["Tapahtumapaikka", TAG_TYPE.PAIKKA, "locations"],

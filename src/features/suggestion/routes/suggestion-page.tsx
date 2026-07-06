@@ -525,18 +525,19 @@ const SuggestionCard = ({ work }: { work: Work }) => {
                     )}
                 </div>
                 <div className="mt-auto">
-                    <div className="font-bold flex align-items-center gap-2">
+                    <div className="font-bold">
+                        {work.title}
+                        {work.pubyear ? ` (${work.pubyear})` : ""}
+                    </div>
+                    <div className="text-color-secondary text-sm">
+                        {work.author_str}
+                    </div>
+                    <div className="flex align-items-center gap-2 mt-2 flex-wrap">
                         {work.has_awards && (
                             <i className="fa-solid fa-trophy"
                                 style={{ color: "#d4a017" }}
                                 title="Palkittu teos" />
                         )}
-                        <span>{work.title}</span>
-                    </div>
-                    <div className="text-color-secondary text-sm">
-                        {work.author_str}
-                    </div>
-                    <div className="flex gap-2 mt-2 flex-wrap">
                         {genreIcons.map(g => (
                             <i key={g.id} className={getGenreIcon(g.name)}
                                 title={g.name} />

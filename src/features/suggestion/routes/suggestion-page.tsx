@@ -373,7 +373,7 @@ export const SuggestionPage = () => {
                             })} />
                         </StepperPanel>
 
-                        <StepperPanel header="Kirjailijan alkuperä">
+                        <StepperPanel header="Kirjailijan kotimaa">
                             <p className="text-color-secondary">
                                 Mistä maasta kirjailija on kotoisin?
                             </p>

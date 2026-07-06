@@ -48,6 +48,11 @@ export default function MainMenu() {
             label: 'Hakemistot',
             items: [
                 {
+                    label: 'Kirjaehdotukset',
+                    url: '/suggestions',
+                    target: '_blank'
+                },
+                {
                     label: 'Henkilöt',
                     url: '/people'
                 },
@@ -113,6 +118,11 @@ export default function MainMenu() {
         {
             label: 'Muut',
             items: [
+                {
+                    label: 'Kirjaehdotukset',
+                    url: '/suggestions',
+                    target: '_blank'
+                },
                 {
                     label: 'Henkilöt',
                     url: '/people'

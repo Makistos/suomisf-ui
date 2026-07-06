@@ -32,6 +32,7 @@ import ProfilePage from '@features/user/routes/profile-page';
 import { ShortPage } from '@features/short/routes/short-page';
 import { WorksByType } from '@features/work/routes/works-by-type';
 import { StatsPage } from '@features/stats';
+import { SuggestionPage } from '@features/suggestion';
 
 // console.log(process.env)
 
@@ -72,6 +73,7 @@ root.render(
         <Route path="/faq" element={<FAQ />} />
         <Route path="/nonfiction" element={<WorksByType worktype={"4"} />} />
         <Route path="/stats" element={<StatsPage />} />
+        <Route path="/suggestions" element={<SuggestionPage />} />
         <Route path="/home-alt" element={<HomeAlt />} />
         <Route path="/users/:itemId" element={<ProfilePage id={null} />} />
         <Route path="*"

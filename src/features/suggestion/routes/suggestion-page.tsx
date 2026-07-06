@@ -116,6 +116,7 @@ const buildParams = (f: Filters, userId: number | null,
 export const SuggestionPage = () => {
     const user = getCurrenUser();
     const stepperRef = useRef<StepperRefAttributes>(null);
+    const reqRef = useRef(0);
 
     const [filters, setFilters] = useState<Filters>(emptyFilters);
     const [works, setWorks] = useState<Work[] | null>(null);
@@ -202,29 +203,12 @@ export const SuggestionPage = () => {
         });
     };
 
-    // Recompute the available options for the given filters without touching
-    // the suggestions. Used for live cross-filtering within a step (e.g.
-    // narrowing styles when the subgenre selection changes).
-    const fetchFacets = async (f: Filters) => {
-        try {
-            const resp = await axios.post(
-                apiUrl, { ...buildParams(f, userId), facets: true });
-            setFacetsFromData(resp.data);
-        } catch (e) {
-            console.error(e);
-        }
-    };
-
-    // Update a facet selection and immediately refresh the available options.
-    const updateFilter = (partial: Partial<Filters>) => {
-        const merged = { ...filters, ...partial };
-        setFilters(merged);
-        fetchFacets(merged);
-    };
-
     // Fetch a fresh random 10 matching the given filters, plus the facets
-    // (available option ids) so later steps can be constrained.
+    // (available options) so both the suggestions and the later steps reflect
+    // the current selection. A sequence guard makes the latest request win so
+    // rapid selection changes don't clobber each other with stale responses.
     const refresh = async (f: Filters, exclude: number[] = []) => {
+        const reqId = ++reqRef.current;
         setLoading(true);
         setEmptyPool(false);
         try {
@@ -232,6 +216,7 @@ export const SuggestionPage = () => {
                 axios.post(apiUrl, buildParams(f, userId, exclude)),
                 axios.post(apiUrl, { ...buildParams(f, userId), facets: true }),
             ]);
+            if (reqId !== reqRef.current) return; // a newer request superseded
             const result: Work[] = worksResp.data ?? [];
             if (result.length === 0) {
                 // Empty-pool guard: keep the previous suggestions.
@@ -243,8 +228,16 @@ export const SuggestionPage = () => {
         } catch (e) {
             console.error(e);
         } finally {
-            setLoading(false);
+            if (reqId === reqRef.current) setLoading(false);
         }
+    };
+
+    // Update a selection and immediately refresh the suggestions and options
+    // so they fit what the user has chosen on the current step.
+    const updateFilter = (partial: Partial<Filters>) => {
+        const merged = { ...filters, ...partial };
+        setFilters(merged);
+        refresh(merged);
     };
 
     // Merge a partial selection, store it and re-query, then advance.
@@ -322,8 +315,8 @@ export const SuggestionPage = () => {
                                 options={(genres.data ?? []).map(g => ({
                                     label: g.name, value: g.id,
                                 }))}
-                                onChange={(e) => setFilters({
-                                    ...filters, genres: e.value,
+                                onChange={(e) => updateFilter({
+                                    genres: e.value,
                                 })}
                                 display="chip"
                                 placeholder="Valitse genret"
@@ -375,8 +368,8 @@ export const SuggestionPage = () => {
                             <MultiSelect
                                 value={filters.nationalities}
                                 options={countryOptions}
-                                onChange={(e) => setFilters({
-                                    ...filters, nationalities: e.value,
+                                onChange={(e) => updateFilter({
+                                    nationalities: e.value,
                                 })}
                                 display="chip" filter
                                 placeholder="Valitse maat"
@@ -395,8 +388,8 @@ export const SuggestionPage = () => {
                                 multiple
                                 value={filters.decades}
                                 options={availableDecades}
-                                onChange={(e) => setFilters({
-                                    ...filters, decades: e.value ?? [],
+                                onChange={(e) => updateFilter({
+                                    decades: e.value ?? [],
                                 })} />
                             <StepNav onNext={() => applyAndNext({
                                 decades: filters.decades,
@@ -410,8 +403,8 @@ export const SuggestionPage = () => {
                             <SelectButton
                                 value={filters.length}
                                 options={availableLengths}
-                                onChange={(e) => setFilters({
-                                    ...filters, length: e.value,
+                                onChange={(e) => updateFilter({
+                                    length: e.value,
                                 })} />
                             <StepNav onNext={() => applyAndNext({
                                 length: filters.length,
@@ -422,8 +415,8 @@ export const SuggestionPage = () => {
                             <div className="field flex align-items-center gap-2">
                                 <InputSwitch
                                     checked={filters.awardOnly}
-                                    onChange={(e) => setFilters({
-                                        ...filters, awardOnly: e.value,
+                                    onChange={(e) => updateFilter({
+                                        awardOnly: e.value,
                                     })} />
                                 <label>Vain palkitut teokset</label>
                             </div>
@@ -431,8 +424,8 @@ export const SuggestionPage = () => {
                                 <div className="field flex align-items-center gap-2">
                                     <InputSwitch
                                         checked={filters.ownedOnly}
-                                        onChange={(e) => setFilters({
-                                            ...filters, ownedOnly: e.value,
+                                        onChange={(e) => updateFilter({
+                                            ownedOnly: e.value,
                                         })} />
                                     <label>Vain omistamani teokset</label>
                                 </div>
@@ -453,8 +446,8 @@ export const SuggestionPage = () => {
                                             value={filters[key] as number[]}
                                             options={tagOptions(typeId,
                                                 filters[key] as number[])}
-                                            onChange={(e) => setFilters({
-                                                ...filters, [key]: e.value,
+                                            onChange={(e) => updateFilter({
+                                                [key]: e.value,
                                             })}
                                             display="chip" filter
                                             placeholder={`Valitse: ${label}`}

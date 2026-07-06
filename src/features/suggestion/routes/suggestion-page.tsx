@@ -493,7 +493,7 @@ export const SuggestionPage = () => {
                     </div>
                 ) : works === null ? (
                     <p className="text-color-secondary">
-                        Aloita valitsemalla genre — ehdotukset ilmestyvät tähän.
+                        Aloita rajaamalla teoksia - ehdotukset ilmestyvät tähän.
                     </p>
                 ) : (
                     <div className="grid">

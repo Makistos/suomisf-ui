@@ -75,13 +75,15 @@ const lengthOptions = [
     { label: "Pitkä (yli 500 s.)", value: "long" },
 ];
 
-// Decade chips from 1900s to the current decade.
+// Decade chips from the current decade down to the 1900s, plus a
+// "before 1900" bucket (value 0, matched as pubyear < 1900 on the server).
 const decadeOptions = (() => {
     const current = Math.floor(new Date().getFullYear() / 10) * 10;
     const opts = [];
     for (let d = current; d >= 1900; d -= 10) {
         opts.push({ label: `${d}-luku`, value: d });
     }
+    opts.push({ label: "ennen 1900", value: 0 });
     return opts;
 })();
 
@@ -192,13 +194,16 @@ export const SuggestionPage = () => {
     const apiUrl = import.meta.env.VITE_API_URL + "searchworks";
     const userId = user?.id ?? null;
 
-    const setFacetsFromData = (fd: any) => {
+    // decadeSource lets the decade options be computed from a facet query
+    // that ignores the decade selection itself, so several decades stay
+    // selectable (a work belongs to exactly one decade).
+    const setFacetsFromData = (fd: any, decadeSource: any = fd) => {
         setFacets({
             tagCounts: new Map<number, number>(
                 Object.entries(fd?.tags ?? {})
                     .map(([k, v]) => [Number(k), v as number])),
             nationalities: new Set<number>(fd?.nationalities ?? []),
-            decades: new Set<number>(fd?.decades ?? []),
+            decades: new Set<number>(decadeSource?.decades ?? []),
             lengths: new Set<string>(fd?.lengths ?? []),
         });
     };
@@ -212,9 +217,13 @@ export const SuggestionPage = () => {
         setLoading(true);
         setEmptyPool(false);
         try {
-            const [worksResp, facetsResp] = await Promise.all([
+            const [worksResp, facetsResp, decadeFacetResp] = await Promise.all([
                 axios.post(apiUrl, buildParams(f, userId, exclude)),
                 axios.post(apiUrl, { ...buildParams(f, userId), facets: true }),
+                axios.post(apiUrl, {
+                    ...buildParams({ ...f, decades: [] }, userId),
+                    facets: true,
+                }),
             ]);
             if (reqId !== reqRef.current) return; // a newer request superseded
             const result: Work[] = worksResp.data ?? [];
@@ -224,7 +233,7 @@ export const SuggestionPage = () => {
             } else {
                 setWorks(result);
             }
-            setFacetsFromData(facetsResp.data);
+            setFacetsFromData(facetsResp.data, decadeFacetResp.data);
         } catch (e) {
             console.error(e);
         } finally {

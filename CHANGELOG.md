@@ -3,6 +3,27 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-07-06 `247720f` — Book suggestion wizard
+New `/suggestions` page: a PrimeReact Stepper wizard that recommends books in refining steps — genre, subgenre & style, author's home country, original publication decade (including a pre-1900 bucket), length, and a final step with award-winning and owned-only switches plus subject/location/era/actor/list tags. Each selection live-refreshes a random ten matching works; option lists are constrained to the narrowed pool with per-tag match counts; a summary of the current selections shows under the stepper; award-winning books are marked with a trophy. Linked under the Muut menu and opens in a new tab. (Evolved through `73ea791`.)
+
+## 2026-06-28 `661d757` — Edition best price in work ownership row
+The ownership row on the work page shows the best available price for the edition.
+
+## 2026-06-07 `1d0976b` — Antikvaari/Antikka price tracking UI
+UI for second-hand book price tracking: a price picker and dialog with exclusions and product removal, manual price entry with URL scraping, match-quality tooltips, price source URLs, laitos/painos editing, and a price-range chart in collection stats. (Through `7b7735c`.)
+
+## 2026-05-26 `d1fe511` — Fix: stale overlay masks after back navigation
+Stale PrimeReact overlay masks no longer block the UI after browser back navigation.
+
+## 2026-05-21 `c5fde9a` — Styled links in HTML description/bio/notes
+Links inside HTML description, bio, and notes fields now match the site link style, with a visited-link style added.
+
+## 2026-05-17 `62382c5` — Per-edition story differences in Novellit tab
+The Novellit ja artikkelit tab shows how short-story contents differ between editions.
+
+## 2026-05-16 `802a5d9` — Visitor analytics tab and pageview tracking
+Admin-only visitor analytics tab on the stats page with a filterable pageview log, operator and location columns, and pageview beacons sent on every route change.
+
 ## 2026-05-12 `f65fe32` — Dark mode following browser preference
 The PrimeReact theme switches automatically between `mdc-light-indigo` and `mdc-dark-indigo` based on the OS/browser `prefers-color-scheme` setting. Theme is applied before React hydrates (no flash), and live-switches if the user changes their preference while the app is open. Hardcoded light-mode colours in CSS replaced with theme variables.
 

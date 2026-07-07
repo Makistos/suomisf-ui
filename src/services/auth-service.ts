@@ -30,11 +30,13 @@ export async function login(username: string, password: string) {
         });
 };
 
-export const register = async (username: string, password: string) => {
+export const register = async (username: string, password: string,
+    email?: string) => {
     return await axios.post(baseURL + "register",
         {
             'username': username,
-            'password': password
+            'password': password,
+            'email': email
         })
         .then((response) => {
             console.log("Register response: " + JSON.stringify(response, null, 2));
@@ -44,6 +46,19 @@ export const register = async (username: string, password: string) => {
             }
             return response.data;
         });
+};
+
+// Request a password-reset link. Resolves on 2xx; the backend always
+// returns 200 whether or not the address is registered.
+export const forgotPassword = async (email: string) => {
+    return await axios.post(baseURL + "password/forgot", { email })
+        .then((response) => response.data);
+};
+
+// Set a new password using a reset token from the emailed link.
+export const resetPassword = async (token: string, password: string) => {
+    return await axios.post(baseURL + "password/reset", { token, password })
+        .then((response) => response.data);
 };
 
 export const logout = () => {

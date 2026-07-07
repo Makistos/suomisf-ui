@@ -88,6 +88,9 @@ export const LoginView = () => {
                                     )}
                                     <span>Kirjaudu</span>
                                 </Button>
+                                <div className="text-center mt-3">
+                                    <Link to={`/forgot-password`} className="font-medium no-underline text-blue-500 cursor-pointer">Unohtuiko salasana?</Link>
+                                </div>
                             </div>
                         </div>
                     </div>

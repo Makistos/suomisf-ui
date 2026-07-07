@@ -8,11 +8,13 @@ import { Link } from 'react-router-dom';
 
 type FormData = {
     username: string,
+    email: string,
     password: string,
     password2: string
 }
 const defaultValues: FormData = {
     username: "",
+    email: "",
     password: "",
     password2: ""
 };
@@ -25,7 +27,7 @@ export const RegisterView = () => {
     const onSubmit: SubmitHandler<FormData> = (data) => {
         console.log(data);
         setLoading(true);
-        register(data.username, data.password).then(
+        register(data.username, data.password, data.email).then(
             () => {
                 window.location.reload();
             }
@@ -55,6 +57,21 @@ export const RegisterView = () => {
                                                 <InputText
                                                     id={field.name} {...field} autoFocus
                                                     {...form.register("username", { required: true })}
+                                                    className={classNames({ 'p-invalid': fieldState.error },
+                                                        "w-full mb-3")}
+                                                />
+                                            )} />
+                                    </span>
+                                </div>
+                                <div className="field">
+                                    <span>
+                                        <label htmlFor="email">Sähköposti (salasanan palautusta varten)</label>
+                                        <Controller name="email" control={form.control}
+                                            render={({ field, fieldState }) => (
+                                                <InputText
+                                                    id={field.name} {...field}
+                                                    {...form.register("email")}
+                                                    type="email"
                                                     className={classNames({ 'p-invalid': fieldState.error },
                                                         "w-full mb-3")}
                                                 />

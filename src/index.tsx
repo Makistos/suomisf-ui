@@ -13,6 +13,8 @@ import { IssuePage } from './features/issue/routes/issue-page';
 import { PeoplePage, PersonPage } from './features/person';
 import { WorkPage } from './features/work';
 import LoginView from './features/user/components/login-view';
+import { ForgotPasswordView } from './features/user/components/forgot-password-view';
+import { ResetPasswordView } from './features/user/components/reset-password-view';
 import { BookseriesPage } from './features/bookseries/routes/bookseries-page';
 import { PubseriesPage } from './features/pubseries/routes/pubseries-page';
 import { PublisherPage } from './features/publisher/routes/publisher-page';
@@ -68,6 +70,8 @@ root.render(
         <Route path="tags" element={<SFTags />} />
         <Route path="tags/:tagid" element={<SFTag id={null} />} />
         <Route path="/login" element={<LoginView />} />
+        <Route path="/forgot-password" element={<ForgotPasswordView />} />
+        <Route path="/reset-password" element={<ResetPasswordView />} />
         <Route path="/changes" element={<Changes />} />
         <Route path="/latest" element={<LatestAdditions />} />
         <Route path="/faq" element={<FAQ />} />

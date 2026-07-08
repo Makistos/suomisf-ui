@@ -181,6 +181,7 @@ const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
               <LinksField
                 id={"links"}
                 disabled={disabled}
+                linkType="bookseries"
               />
             </div>
             <div className="field col-12">

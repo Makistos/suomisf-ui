@@ -87,7 +87,7 @@ export const AwardForm = ({ award, onClose }: AwardFormProps) => {
                             />
                         </div>
                         <div className="field col-12">
-                            <LinksField id="links" disabled={disabled} />
+                            <LinksField id="links" disabled={disabled} linkType="award" />
                         </div>
                         <div className="field col-12">
                             <Button type="submit" label="Tallenna" className="w-full justify-content-center" />

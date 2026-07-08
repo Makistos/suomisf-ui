@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 
 import { Controller, useFieldArray } from "react-hook-form"
 import { Button } from "primereact/button";
-import { AutoComplete } from "primereact/autocomplete";
+import { AutoComplete, AutoCompleteCompleteEvent } from "primereact/autocomplete";
 import { InputText } from "primereact/inputtext"
 import { classNames } from "primereact/utils"
 
@@ -11,29 +11,55 @@ import { useFormContext } from "react-hook-form"
 import { LinkType } from "../../types/link"
 import { getApiContent } from "../../services/user-service";
 
+// The kind of entity the links belong to. Determines which existing link
+// descriptions are offered as autocomplete options.
+export type LinkOwnerType =
+  | "person"
+  | "work"
+  | "publisher"
+  | "bookseries"
+  | "pubseries"
+  | "award";
+
 interface LinksFieldProps {
   id: string,
-  disabled: boolean
+  disabled: boolean,
+  linkType: LinkOwnerType
 }
 
-export const LinksField = ({ id, disabled }: LinksFieldProps) => {
+export const LinksField = ({ id, disabled, linkType }: LinksFieldProps) => {
   const user = useMemo(() => { return getCurrenUser() }, [])
-  // const [filteredLinkNames, setFilteredLinkNames] = useState<any>([]);
+  const [descriptions, setDescriptions] = useState<string[]>([]);
   const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'links',
   });
 
-  // async function filterLinkNames(event: any) {
-  //   const url = "filter/linknames/" + event.query;
-  //   const response = await getApiContent(url, user);
-  //   const ln = response.data;
-  //   setFilteredLinkNames(ln);
-  //   return ln;
-  // }
+  useEffect(() => {
+    let active = true;
+    getApiContent("filter/linknames/" + linkType, user)
+      .then((response) => {
+        if (active && Array.isArray(response.data)) {
+          setDescriptions(response.data);
+        }
+      })
+      .catch(() => { /* ignore, autocomplete just stays empty */ });
+    return () => { active = false; };
+  }, [user, linkType]);
 
   const LinksRow = ({ index }: { index: number }) => {
+    const [filteredDescriptions, setFilteredDescriptions] = useState<string[]>([]);
+
+    const searchDescriptions = (event: AutoCompleteCompleteEvent) => {
+      const query = event.query.toLowerCase();
+      setFilteredDescriptions(
+        query
+          ? descriptions.filter((d) => d.toLowerCase().includes(query))
+          : [...descriptions]
+      );
+    };
+
     const keyName = `{links-field.${index}}`;
     const emptyLink: LinkType = {
       link: "",
@@ -71,29 +97,22 @@ export const LinksField = ({ id, disabled }: LinksFieldProps) => {
             name={`links.${index}.description` as const}
             control={control}
             render={({ field, fieldState }) => (
-              // <AutoComplete
-              //   {...field}
-              //   field="description"
-              //   completeMethod={filterLinkNames}
-              //   suggestions={filteredLinkNames}
-              //   placeholder="Kuvaus"
-              //   tooltip="Kuvaus"
-              //   forceSelection={false}
-              //   delay={300}
-              //   className={classNames(
-              //     { "p-invalid": fieldState.error },
-              //     "w-full"
-              //   )}
-              //   inputClassName="w-full"
-              //   disabled={disabled}
-              //   inputRef={field.ref}
-              // />
-              <InputText
+              <AutoComplete
                 {...field}
-                tooltip="Kuvaus"
+                completeMethod={searchDescriptions}
+                suggestions={filteredDescriptions}
                 placeholder="Kuvaus"
+                tooltip="Kuvaus"
+                forceSelection={false}
+                dropdown
+                delay={300}
+                className={classNames(
+                  { "p-invalid": fieldState.error },
+                  "w-full"
+                )}
+                inputClassName="w-full"
                 disabled={disabled}
-                className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+                inputRef={field.ref}
               />
             )}
           />

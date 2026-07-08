@@ -223,6 +223,7 @@ const FormObject = ({ onSubmit, methods }: FormObjectProps) => {
                             <LinksField
                                 id={"links"}
                                 disabled={disabled}
+                                linkType="person"
                             />
                         </div>
 

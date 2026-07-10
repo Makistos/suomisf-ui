@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { Award, AwardFormData } from '../types';
 import { getCurrenUser } from '../../../services/auth-service';
-import { putApiContent, HttpStatusResponse } from '../../../services/user-service';
+import { postApiContent, putApiContent, HttpStatusResponse } from '../../../services/user-service';
 import { isDisabled } from '../../../components/forms/forms';
 import { FormInputText } from '../../../components/forms/field/form-input-text';
 import { FormEditor } from '../../../components/forms/field/form-editor';
@@ -35,11 +35,16 @@ export const AwardForm = ({ award, onClose }: AwardFormProps) => {
     const methods = useForm<AwardFormData>({ defaultValues: convToForm(award) });
     const disabled = isDisabled(user, methods.formState.isSubmitting);
 
+    const isNew = award.id === 0;
+
     const { mutate } = useMutation({
-        mutationFn: (data: AwardFormData) => putApiContent('awards', { data }, user),
+        mutationFn: (data: AwardFormData) => isNew
+            ? postApiContent('awards', { data }, user)
+            : putApiContent('awards', { data }, user),
         onSuccess: (response: HttpStatusResponse) => {
-            if (response.status === 200) {
+            if (response.status === 200 || response.status === 201) {
                 queryClient.invalidateQueries({ queryKey: ['award', award.id.toString()] });
+                queryClient.invalidateQueries({ queryKey: ['awards'] });
                 toast.current?.show({ severity: 'success', summary: 'Tallennettu' });
                 onClose();
             } else {

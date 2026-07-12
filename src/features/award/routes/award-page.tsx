@@ -15,6 +15,7 @@ import { getApiContent } from "../../../services/user-service";
 import { isAdmin } from "../../user";
 import { Award, Awarded } from "../types";
 import { AwardForm } from "../components/award-form";
+import { AwardImportDialog } from "../components/award-import-dialog";
 import { selectId } from "../../../utils";
 import { Column } from 'primereact/column';
 import { LinkList } from '@components/link-list';
@@ -23,6 +24,21 @@ interface AwardPageProps {
     id: string | null
 }
 
+// Winners may have no category (e.g. imported from a source category that
+// isn't mapped locally). Use a placeholder so sorting/grouping stay safe.
+const UNCATEGORIZED_CATEGORY = { id: 0, name: "Muu", type: 99 };
+
+const sortWinners = (winners: Omit<Awarded, "award">[] = []) =>
+    [...winners]
+        .map((w) => ({ ...w, category: w.category ?? UNCATEGORIZED_CATEGORY }))
+        .sort((a, b) =>
+            a.category.type !== b.category.type
+                ? a.category.type > b.category.type ? 1 : -1
+                : a.category.id !== b.category.id
+                    ? a.category.id > b.category.id ? 1 : -1
+                    : a.year < b.year ? -1 : 1
+        );
+
 let awardId = "";
 
 export const AwardPage = ({ id }: AwardPageProps) => {
@@ -30,6 +46,7 @@ export const AwardPage = ({ id }: AwardPageProps) => {
     const params = useParams();
     const queryClient = useQueryClient();
     const [formVisible, setFormVisible] = useState(false);
+    const [importVisible, setImportVisible] = useState(false);
 
     try {
         awardId = selectId(params, id);
@@ -96,7 +113,7 @@ export const AwardPage = ({ id }: AwardPageProps) => {
 
     const headerGroupTemplate = (data: Awarded) => {
         return (
-            <span className="font-bold text-xl">{data.category.name}</span>
+            <span className="font-bold text-xl">{data.category?.name ?? "Muu"}</span>
         );
     };
 
@@ -105,15 +122,24 @@ export const AwardPage = ({ id }: AwardPageProps) => {
         queryClient.invalidateQueries({ queryKey: ['award', awardId] });
     };
 
+    const onImportSaved = () => {
+        queryClient.invalidateQueries({ queryKey: ['award', awardId] });
+    };
+
+    if (!data) return null;
+
     const dialItems = [
         {
             label: 'Muokkaa',
             icon: 'pi pi-pencil',
             command: () => setFormVisible(true)
-        }
+        },
+        ...(data.has_import_source ? [{
+            label: 'Tuo voittajat ISFDB:stä',
+            icon: 'pi pi-download',
+            command: () => setImportVisible(true)
+        }] : [])
     ];
-
-    if (!data) return null;
 
     return (
         <main className="award-page">
@@ -183,13 +209,7 @@ export const AwardPage = ({ id }: AwardPageProps) => {
                                 <TabPanel header="Voittajat" leftIcon="pi pi-star">
                                     <div className="card">
                                         <DataTable
-                                            value={data.winners.sort((a, b) =>
-                                                a.category.type !== b.category.type ?
-                                                    a.category.type > b.category.type ? 1 : -1 :
-                                                    a.category.id !== b.category.id ?
-                                                        a.category.id > b.category.id ? 1 : -1 :
-                                                        a.year < b.year ? -1 : 1
-                                            )}
+                                            value={sortWinners(data.winners)}
                                             rowGroupMode="subheader"
                                             groupRowsBy="category.name"
                                             rowGroupHeaderTemplate={headerGroupTemplate}
@@ -215,6 +235,14 @@ export const AwardPage = ({ id }: AwardPageProps) => {
                         >
                             <AwardForm award={data} onClose={onFormClose} />
                         </Dialog>
+
+                        <AwardImportDialog
+                            awardId={data.id}
+                            awardName={data.name}
+                            visible={importVisible}
+                            onHide={() => setImportVisible(false)}
+                            onSaved={onImportSaved}
+                        />
                     </div>
                 )
             )}

@@ -11,6 +11,32 @@ export interface Award {
     links: LinkType[];
     categories: AwardCategory[];
     winners: Omit<Awarded, "award">[];
+    // True when the award has ISFDB import sources (winners can be imported).
+    has_import_source?: boolean;
+}
+
+// A single scraped winner in the ISFDB import preview.
+export interface AwardImportEntry {
+    year: number | null;
+    title: string;
+    author: string;
+    isfdb_category: string;
+    our_category: string | null;
+    item_type: number;
+    match_type: "work" | "short" | null;
+    target_id: number | null;
+    target_title: string | null;
+    category_id: number | null;
+    status: "new" | "awarded" | "not_found" | "ambiguous";
+    candidates: number[];
+}
+
+export interface AwardImportPreview {
+    award_id: number;
+    award_name: string;
+    counts: Record<string, number>;
+    errors: string[];
+    entries: AwardImportEntry[];
 }
 
 export interface AwardFormData {

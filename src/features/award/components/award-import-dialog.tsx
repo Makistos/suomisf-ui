@@ -140,6 +140,13 @@ export const AwardImportDialog = ({
 
     const matchBody = (row: Row) => row.target_title ?? "—";
 
+    const categoryBody = (row: Row) =>
+        row.our_category ? (
+            row.our_category
+        ) : (
+            <span className="text-color-secondary">Muu</span>
+        );
+
     const counts = preview?.counts ?? {};
     const footer = (
         <div className="flex justify-content-between align-items-center">
@@ -230,6 +237,7 @@ export const AwardImportDialog = ({
                             <Column
                                 field="our_category"
                                 header="Kategoria"
+                                body={categoryBody}
                                 sortable
                             />
                             <Column field="author" header="Tekijä" sortable />

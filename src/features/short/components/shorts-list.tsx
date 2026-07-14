@@ -37,7 +37,12 @@ interface ShortsListProps {
     anthology?: boolean,
     sort?: string,
     enableQueries?: (state: boolean) => void,
-    workEditions?: Edition[]
+    workEditions?: Edition[],
+    /**
+     * Whether to hide the story type annotation on each row. Used where the
+     * surrounding context (e.g. a per-type tab) already names the type.
+     */
+    hideType?: boolean
 }
 
 /**
@@ -54,7 +59,7 @@ interface ShortsListProps {
  * @return {JSX.Element} The rendered component.
  */
 export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPublications,
-    anthology, sort, enableQueries, workEditions }: ShortsListProps): JSX.Element => {
+    anthology, sort, enableQueries, workEditions, hideType }: ShortsListProps): JSX.Element => {
 
     const [orderField, setOrderField] = useState(sort || "");
     const [groupedShorts, setGroupedShorts]: [Record<string, Short[]>,
@@ -156,6 +161,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPubli
                                             {...(listPublications ? { listPublications } : {})}
                                             enableQueries={enableQueries}
                                             {...(workEditions ? { workEditions } : {})}
+                                            hideType={hideType}
                                         />
                                     ))
                                 }

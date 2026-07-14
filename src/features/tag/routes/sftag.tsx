@@ -298,7 +298,7 @@ export const SFTag = ({ id }: SfTagProps) => {
                                                 header={`${shortType.name} (${typeShorts.length})`}
                                                 leftIcon="pi pi-file">
                                                 <div className="card min-w-full">
-                                                    <ShortsList shorts={typeShorts} anthology />
+                                                    <ShortsList shorts={typeShorts} anthology hideType />
                                                 </div>
                                             </TabPanel>
                                         );

@@ -34,11 +34,16 @@ interface ShortProps {
      * All editions of the containing work. When provided, stories not present
      * in every edition will be annotated with which editions they appear in.
      */
-    workEditions?: Edition[]
+    workEditions?: Edition[],
+    /**
+     * Whether to hide the story type annotation. Used where the surrounding
+     * context (e.g. a per-type tab) already communicates the type.
+     */
+    hideType?: boolean
 }
 
 export const ShortSummary = ({ short, skipAuthors, listPublications,
-    enableQueries, workEditions }: ShortProps) => {
+    enableQueries, workEditions, hideType }: ShortProps) => {
     const [isEditVisible, setEditVisible] = useState(false);
     const user = useMemo(() => { return getCurrenUser() }, []);
 
@@ -209,7 +214,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                             />
                         } */}
 
-                        {short.type.id !== 1 &&
+                        {!hideType && short.type.id !== 1 &&
                             <span>
                                 <i>({short.type.name})</i>
                             </span>

@@ -14,8 +14,7 @@ import { ConfirmDialog } from 'primereact/confirmdialog';
 
 import { getCurrenUser } from '@services/auth-service';
 import { WorkList } from '@features/work';
-import { Short, ShortsList, ShortType } from '@features/short';
-import { ArticleList } from '@features/article';
+import { ShortsList } from '@features/short';
 import { SfTagProps } from '../types';
 import { SfTagForm } from '../components/sftag-form';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -33,6 +32,11 @@ import { Card } from 'primereact/card';
 import { isAdmin } from '@features/user';
 
 
+// Short story types that are articles rather than fiction (Artikkeli,
+// Esipuhe, Jälkisanat). Used only for the summary counts; the tabs
+// themselves are generated per story type.
+const ARTICLE_STORY_TYPES = [7, 8, 9];
+
 export const SFTag = ({ id }: SfTagProps) => {
     const params = useParams();
     const [displayChangeName, setDisplayChangeName] = useState(false);
@@ -42,7 +46,6 @@ export const SFTag = ({ id }: SfTagProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const navigate = useNavigate();
     const toastRef = useRef<Toast>(null);
-    const [shortTypes, setShortTypes]: [ShortType[], (shortTypes: ShortType[]) => void] = useState<ShortType[]>([]);
 
     const dialogFuncMap: Record<string, React.Dispatch<React.SetStateAction<boolean>>> = {
         'displayChangeName': setDisplayChangeName,
@@ -257,11 +260,15 @@ export const SFTag = ({ id }: SfTagProps) => {
                                             </div>
                                             <div className="flex flex-column gap-2">
                                                 <h3 className="text-sm uppercase text-600 m-0">Novelleja</h3>
-                                                <span className="text-xl">{data.stories?.length}</span>
+                                                <span className="text-xl">
+                                                    {(data.stories ?? []).filter(s => !ARTICLE_STORY_TYPES.includes(s.type?.id)).length}
+                                                </span>
                                             </div>
                                             <div className="flex flex-column gap-2">
                                                 <h3 className="text-sm uppercase text-600 m-0">Artikkeleita</h3>
-                                                <span className="text-xl">{data.articles?.length}</span>
+                                                <span className="text-xl">
+                                                    {(data.stories ?? []).filter(s => ARTICLE_STORY_TYPES.includes(s.type?.id)).length}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -271,28 +278,32 @@ export const SFTag = ({ id }: SfTagProps) => {
 
                         {/* Main Content */}
                         <div className="col-12">
-                            <TabView className="shadow-2">
-                                <TabPanel header="Teokset" leftIcon="pi pi-book">
-                                    <div className="card min-w-full">
-                                        {data.works &&
-                                            <WorkList works={data?.works} />
-                                        }
-                                    </div>
-                                </TabPanel>
-                                <TabPanel header="Novellit" leftIcon="pi pi-file">
-                                    <div className="card min-w-full">
-                                        {data.stories &&
-                                            <ShortsList shorts={data?.stories} />
-                                        }
-                                    </div>
-                                </TabPanel>
-                                <TabPanel header="Artikkelit" leftIcon="pi pi-file">
-                                    <div className="card min-w-full">
-                                        {data.articles &&
-                                            <ArticleList articles={data?.articles} />
-                                        }
-                                    </div>
-                                </TabPanel>
+                            <TabView className="shadow-2" scrollable>
+                                {[
+                                    <TabPanel key="works" header="Teokset" leftIcon="pi pi-book">
+                                        <div className="card min-w-full">
+                                            {data.works &&
+                                                <WorkList works={data?.works} />
+                                            }
+                                        </div>
+                                    </TabPanel>,
+                                    // One tab per short story type (Novelli, Runo,
+                                    // Artikkeli, ...), mirroring the person page.
+                                    ...getShortTypes(data.stories ?? []).map((shortType) => {
+                                        const typeShorts = (data.stories ?? [])
+                                            .filter((s) => s.type?.id === shortType.id)
+                                            .sort((a, b) => a.title.localeCompare(b.title));
+                                        return (
+                                            <TabPanel key={`storytype-${shortType.id}`}
+                                                header={`${shortType.name} (${typeShorts.length})`}
+                                                leftIcon="pi pi-file">
+                                                <div className="card min-w-full">
+                                                    <ShortsList shorts={typeShorts} anthology />
+                                                </div>
+                                            </TabPanel>
+                                        );
+                                    })
+                                ]}
                             </TabView>
                         </div>
 

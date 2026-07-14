@@ -174,12 +174,14 @@ export const AwardPage = ({ id }: AwardPageProps) => {
                                                 dangerouslySetInnerHTML={{ __html: data.description }}
                                             />
                                         )}
-                                        <div className="mt-3">
-                                            <i>Lista sisältää vain sellaiset kirjailijat, joiden teoksia
-                                                on suomennettu tai teosten ja
-                                                novellien tapauksessa vain sellaiset, jotka on suomennettu.
-                                            </i>
-                                        </div>
+                                        {!data.domestic && (
+                                            <div className="mt-3">
+                                                <i>Lista sisältää vain sellaiset kirjailijat, joiden teoksia
+                                                    on suomennettu tai teosten ja
+                                                    novellien tapauksessa vain sellaiset, jotka on suomennettu.
+                                                </i>
+                                            </div>
+                                        )}
                                         {data.links && data.links.length > 0 && (
                                             <div className="mt-4 pt-3 border-top-1 surface-border">
                                                 <div className="flex flex-wrap gap-3">

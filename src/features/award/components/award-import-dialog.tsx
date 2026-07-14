@@ -178,7 +178,7 @@ export const AwardImportDialog = ({
         <>
             <Toast ref={toast} />
             <Dialog
-                header={`Tuo voittajat ISFDB:stä – ${awardName}`}
+                header={`Tuo voittajat – ${awardName}`}
                 visible={visible}
                 onHide={onHide}
                 maximizable
@@ -189,7 +189,7 @@ export const AwardImportDialog = ({
                 {loading ? (
                     <div className="flex flex-column align-items-center gap-3 p-5">
                         <ProgressSpinner />
-                        <span>Haetaan tietoja ISFDB:stä…</span>
+                        <span>Haetaan tietoja…</span>
                     </div>
                 ) : preview ? (
                     <>
@@ -230,7 +230,7 @@ export const AwardImportDialog = ({
                             <Column field="year" header="Vuosi" sortable />
                             <Column
                                 field="title"
-                                header="Nimi (ISFDB)"
+                                header="Nimi (lähde)"
                                 sortable
                             />
                             <Column header="Vastaavuus" body={matchBody} />

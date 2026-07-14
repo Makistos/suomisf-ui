@@ -11,15 +11,16 @@ export interface Award {
     links: LinkType[];
     categories: AwardCategory[];
     winners: Omit<Awarded, "award">[];
-    // True when the award has ISFDB import sources (winners can be imported).
+    // True when the award's winners can be imported from an external source.
     has_import_source?: boolean;
 }
 
-// A single scraped winner in the ISFDB import preview.
+// A single scraped winner in the import preview.
 export interface AwardImportEntry {
     year: number | null;
     title: string;
     author: string;
+    // Source's category label (backend field name is historical).
     isfdb_category: string;
     our_category: string | null;
     item_type: number;

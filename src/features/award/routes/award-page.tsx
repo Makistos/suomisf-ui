@@ -135,7 +135,7 @@ export const AwardPage = ({ id }: AwardPageProps) => {
             command: () => setFormVisible(true)
         },
         ...(data.has_import_source ? [{
-            label: 'Tuo voittajat ISFDB:stä',
+            label: 'Tuo voittajat',
             icon: 'pi pi-download',
             command: () => setImportVisible(true)
         }] : [])

@@ -27,7 +27,10 @@ export const AwardDescription = ({ award }: AwardInfoProps) => {
     return (
         <div key={award.id}>
             <h3><Link to={`/awards/${award.id}`}>{award.name}</Link></h3>
-            {award.description}
+            {award.description && (
+                <div className="html-content"
+                    dangerouslySetInnerHTML={{ __html: award.description }} />
+            )}
         </div>
     )
 }

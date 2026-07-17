@@ -68,3 +68,14 @@ p-radiobutton-label {
 .not-owned::before {
   content: '';
 }
+
+/* Read-status control (work page): small, borderless thumb buttons. */
+.work-read-select .p-button {
+  border: none;
+  background: transparent;
+  padding: 0.25rem 0.5rem;
+}
+
+.work-read-select .p-button:not(.p-highlight) {
+  color: var(--text-color-secondary);
+}

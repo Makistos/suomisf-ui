@@ -30,6 +30,7 @@ import authHeader from "@services/auth-header";
 import { HttpStatusResponse } from "@services/user-service"
 import { WorkShortsPicker } from "@features/short/components/shorts-picker";
 import { WorkOmnibusPicker } from "../components/omnibus-picker";
+import { WorkReadControl } from "../components/work-read-control";
 import { EntityChanges } from "@features/changes/components/entity-changes";
 import { groupSimilarEditions } from "@features/edition/utils/group-similar-editions";
 import { combineEditions } from "@features/edition/utils/combine-editions";
@@ -557,6 +558,9 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                                                 user={user}
                                                 onImported={() => queryClient.invalidateQueries({ queryKey: ["work", workId] })}
                                             />
+                                            {user && (
+                                                <WorkReadControl workId={workData.id} />
+                                            )}
                                             {appearsIn(workData.contributions) && (
                                                 <div className="flex flex-column gap-2">
                                                     <h3 className="text-sm uppercase text-600 m-0">Henkilöt</h3>

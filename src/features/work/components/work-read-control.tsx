@@ -1,6 +1,5 @@
 import { SelectButton, SelectButtonChangeEvent } from "primereact/selectbutton";
 import { Tooltip } from "primereact/tooltip";
-import { Button } from "primereact/button";
 
 import { useReadWorks } from "../utils/use-read-works";
 
@@ -64,19 +63,6 @@ export const WorkReadControl = ({ workId }: WorkReadControlProps) => {
                 className="work-read-select"
                 aria-label="Merkitse teos luetuksi ja arvioi se"
             />
-            {read ? (
-                <Button
-                    label="Poista lukumerkintä"
-                    icon="pi pi-times"
-                    text
-                    className="p-0 text-500 justify-content-start"
-                    onClick={() => unsetRead(workId)}
-                />
-            ) : (
-                <small className="text-500">
-                    Merkitse luetuksi valitsemalla arvio
-                </small>
-            )}
         </div>
     );
 };

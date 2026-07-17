@@ -1125,3 +1125,52 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     text-decoration: underline;
     color: var(--text-color);
 }
+
+/* Read-status control (work page): small, borderless thumb buttons with the
+   icon centred in each box. Raised specificity / !important beat the theme's
+   own .p-selectbutton .p-button sizing, which loads after this file. */
+.work-read-select.p-selectbutton .p-button {
+  border: none;
+  background: transparent;
+  padding: 0.25rem !important;
+  min-width: 2rem !important;
+  line-height: 1 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.work-read-select .work-read-opt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.work-read-select .work-read-opt .pi {
+  font-size: 0.85rem !important;
+}
+
+.work-read-select .p-button:not(.p-highlight) {
+  color: var(--text-color-secondary);
+}
+
+/* Selected (read) thumb: just colour the icon yellow; the background stays
+   transparent like the unselected thumbs. */
+.work-read-select.p-selectbutton .p-button.p-highlight {
+  color: #eab308 !important;
+}
+
+/* The theme fills the clicked button's background on hover/focus/active,
+   which makes a just-deselected thumb still look selected. Force those
+   states transparent for non-selected buttons; keep a keyboard-only outline. */
+.work-read-select .p-button:not(.p-highlight):hover,
+.work-read-select .p-button:not(.p-highlight):focus,
+.work-read-select .p-button:not(.p-highlight):active {
+  background: transparent !important;
+  box-shadow: none;
+}
+
+.work-read-select .p-button:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: -2px;
+}

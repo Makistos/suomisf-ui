@@ -39,6 +39,10 @@ export const WorkReadControl = ({ workId }: WorkReadControlProps) => {
         } else {
             setRead(workId, e.value);
         }
+        // Drop focus from the clicked thumb so the theme's focus/active
+        // background doesn't linger and keep it looking selected.
+        const target = e.originalEvent?.currentTarget as HTMLElement | undefined;
+        target?.blur?.();
     };
 
     const itemTemplate = (option: ReadOption) => (

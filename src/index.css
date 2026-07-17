@@ -79,3 +79,19 @@ p-radiobutton-label {
 .work-read-select .p-button:not(.p-highlight) {
   color: var(--text-color-secondary);
 }
+
+/* The theme fills the clicked button's background on hover/focus/active,
+   which makes a just-deselected thumb still look selected. Force those
+   states transparent for non-selected buttons (the .p-highlight selected
+   state keeps its fill). Keep a keyboard-only outline for accessibility. */
+.work-read-select .p-button:not(.p-highlight):hover,
+.work-read-select .p-button:not(.p-highlight):focus,
+.work-read-select .p-button:not(.p-highlight):active {
+  background: transparent !important;
+  box-shadow: none;
+}
+
+.work-read-select .p-button:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: -2px;
+}

@@ -50,6 +50,7 @@ interface Filters {
     length: string | null;
     awardOnly: boolean;
     ownedOnly: boolean;
+    hideRead: boolean;
     subjects: number[];
     locations: number[];
     eras: number[];
@@ -66,8 +67,8 @@ interface FacetSets {
 
 const emptyFilters: Filters = {
     genres: [], subgenres: [], styles: [], nationalities: [], decades: [],
-    length: null, awardOnly: false, ownedOnly: false, subjects: [],
-    locations: [], eras: [], actors: [], lists: [],
+    length: null, awardOnly: false, ownedOnly: false, hideRead: false,
+    subjects: [], locations: [], eras: [], actors: [], lists: [],
 };
 
 const lengthOptions = [
@@ -102,6 +103,10 @@ const buildParams = (f: Filters, userId: number | null,
     if (f.awardOnly) params.award_only = true;
     if (f.ownedOnly && userId) {
         params.owned = true;
+        params.user_id = userId;
+    }
+    if (f.hideRead && userId) {
+        params.read = false;
         params.user_id = userId;
     }
 
@@ -216,6 +221,7 @@ export const SuggestionPage = () => {
         { label: "Lista", values: filters.lists.map(tagName) },
         { label: "Palkitut", values: filters.awardOnly ? ["kyllä"] : [] },
         { label: "Vain omat", values: filters.ownedOnly ? ["kyllä"] : [] },
+        { label: "Piilota luetut", values: filters.hideRead ? ["kyllä"] : [] },
     ].filter(g => g.values.length > 0);
 
     const apiUrl = import.meta.env.VITE_API_URL + "searchworks";
@@ -368,6 +374,16 @@ export const SuggestionPage = () => {
                                             ownedOnly: e.value,
                                         })} />
                                     <label>Vain omistamani teokset</label>
+                                </div>
+                            )}
+                            {user && (
+                                <div className="field flex align-items-center gap-2 mt-2">
+                                    <InputSwitch
+                                        checked={filters.hideRead}
+                                        onChange={(e) => updateFilter({
+                                            hideRead: e.value,
+                                        })} />
+                                    <label>Piilota jo lukemani teokset</label>
                                 </div>
                             )}
                             <StepNav showBack={false}

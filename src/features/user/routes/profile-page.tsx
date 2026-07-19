@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { getCurrenUser } from "../../../services/auth-service";
 import { OwnedBooks } from '../components/owned-books';
+import { ReadBooks } from '../components/read-books';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { selectId } from '@utils/select-id';
 import { Button } from 'primereact/button';
@@ -173,6 +174,9 @@ const ProfilePage = ({ id }: UserPageProps) => {
                 <Button type="button" outlined label="Muistilista" className="p-button-primary mr-2"
                     icon="pi pi-bookmark-fill"
                     onClick={() => setCurrentContent(1)} />
+                <Button type="button" outlined label="Luetut" className="p-button-primary mr-2"
+                    icon="pi pi-check-circle"
+                    onClick={() => setCurrentContent(4)} />
                 <Button type="button" outlined label="Tilastoja" className="p-button-primary mr-2" icon="fa-solid fa-chart-line"
                     onClick={() => setCurrentContent(2)} />
                 <Button type="button" outlined label="Kokoelman arvo" className="p-button-primary mr-2"
@@ -188,6 +192,7 @@ const ProfilePage = ({ id }: UserPageProps) => {
             {currentContent === 0 ? <OwnedBooks userId={profileId} listType="owned" /> : null}
             {currentContent === 1 ? <OwnedBooks userId={profileId} listType="wishlist" /> : null}
             {currentContent === 2 ? <UserStats userId={profileId} /> : null}
+            {currentContent === 4 ? <ReadBooks userId={profileId} /> : null}
             {currentContent === 3 ? (
                 <div className="p-fluid">
                     <div className="field mb-4">

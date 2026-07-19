@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Menubar } from 'primereact/menubar';
 import { AutoComplete } from 'primereact/autocomplete';
@@ -10,18 +11,49 @@ import { getApiContent } from '../services/user-service';
 import { LoginView, User } from '../features/user';
 import { RegisterView } from '@features/user/components/register-view';
 import { classNames } from 'primereact/utils';
+import { WorkForm } from '../features/work/components/work-form';
+import { PersonForm } from '../features/person/components/person-form';
 
 export default function MainMenu() {
     const user = useMemo(() => { return getCurrenUser() }, []);
+    const navigate = useNavigate();
     //const [currentUser, setCurrentUser] = useState<User | null>(user);
     const [selectedItem, setSelectedItem] = useState<any>(null);
     const [filteredItems, setFilteredItems] = useState<any>(null);
     const [loginVisible, setLoginVisible] = useState(false);
     const [registerVisible, setRegisterVisible] = useState(false);
+    const [workFormVisible, setWorkFormVisible] = useState(false);
+    const [personFormVisible, setPersonFormVisible] = useState(false);
+    // Path to navigate to once the corresponding creation dialog has closed.
+    const [pendingNav, setPendingNav] = useState<string | null>(null);
 
     const onHide = () => {
         setLoginVisible(false);
     }
+
+    // The forms are told not to self-navigate (navigateOnSuccess={false}) and
+    // instead hand us the new item id. The Dialog is a React portal that lives
+    // in this (route-persistent) menu; navigating while it is still mounted —
+    // or unmounting it after the route has already changed — throws a portal
+    // "removeChild" error that blanks the target page. So we close the dialog
+    // first and record where to go; the navigation happens in the effect below,
+    // which runs only after the dialog has actually unmounted.
+    const workFormCallback = (status: boolean, message: string) => {
+        if (status && message) setPendingNav('/works/' + message);
+        setWorkFormVisible(false);
+    }
+    const personFormCallback = (id?: string) => {
+        if (id) setPendingNav('/people/' + id);
+        setPersonFormVisible(false);
+    }
+
+    useEffect(() => {
+        if (pendingNav && !workFormVisible && !personFormVisible) {
+            const target = pendingNav;
+            setPendingNav(null);
+            navigate(target);
+        }
+    }, [pendingNav, workFormVisible, personFormVisible, navigate]);
     const loginScreen = () => {
         setLoginVisible(true);
     }
@@ -157,6 +189,26 @@ export default function MainMenu() {
                 }
             ]
         },
+        ...(user?.role === 'admin' ? [{
+            label: 'Ylläpito',
+            icon: 'fa-solid fa-screwdriver-wrench',
+            items: [
+                {
+                    label: 'Uusi teos',
+                    icon: 'fa-solid fa-book',
+                    command: () => {
+                        setWorkFormVisible(true);
+                    }
+                },
+                {
+                    label: 'Uusi henkilö',
+                    icon: 'fa-solid fa-user',
+                    command: () => {
+                        setPersonFormVisible(true);
+                    }
+                }
+            ]
+        }] : []),
         {
             label: userName(),
             icon: 'fa-solid fa-circle-user',
@@ -326,6 +378,24 @@ export default function MainMenu() {
             >
                 <RegisterView />
             </Dialog>
+            {workFormVisible &&
+                <Dialog maximizable blockScroll
+                    className="w-full lg:w-6"
+                    header="Uusi teos" visible={true}
+                    onHide={() => setWorkFormVisible(false)}
+                >
+                    <WorkForm workId={null} onSubmitCallback={workFormCallback} navigateOnSuccess={false} />
+                </Dialog>
+            }
+            {personFormVisible &&
+                <Dialog maximizable blockScroll
+                    className="w-full lg:w-6"
+                    header="Uusi henkilö" visible={true}
+                    onHide={() => setPersonFormVisible(false)}
+                >
+                    <PersonForm data={null} onSubmitCallback={personFormCallback} navigateOnSuccess={false} />
+                </Dialog>
+            }
 
             <Menubar className="navbar-dark" model={user === null ? not_logged_items : logged_items} start={start} end={End} />
         </div>

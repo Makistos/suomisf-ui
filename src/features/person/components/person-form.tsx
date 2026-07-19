@@ -26,7 +26,16 @@ type FormObjectProps = {
     methods: any,
 }
 
-export const PersonForm = (props: FormProperties<Person>) => {
+interface PersonFormProps {
+    data: Person | null,
+    onSubmitCallback: (id?: string) => void,
+    /** When false, the form does not self-navigate to the created person.
+     * Used when the caller (e.g. the admin menu) owns navigation so it can
+     * unmount its dialog first and avoid a portal removeChild crash. */
+    navigateOnSuccess?: boolean,
+}
+
+export const PersonForm = (props: PersonFormProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [loading, setLoading] = useState(false);
 
@@ -84,9 +93,11 @@ export const PersonForm = (props: FormProperties<Person>) => {
     const { mutate } = useMutation({
         mutationFn: (values: PersonFormData) => updatePerson(values),
         onSuccess: (data: HttpStatusResponse, variables) => {
-            props.onSubmitCallback();
+            props.onSubmitCallback(variables.id === null ? String(data.response) : undefined);
             if (variables.id === null) {
-                navigate('/people/' + data.response, { replace: false })
+                if (props.navigateOnSuccess !== false) {
+                    navigate('/people/' + data.response, { replace: false })
+                }
             } else if (data.status === 200) {
 
             } else {

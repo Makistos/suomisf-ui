@@ -24,7 +24,12 @@ import { FormTagAutoComplete } from '@components/forms/field/form-tag-auto-compl
 
 interface FormProps {
   workId: string | null,
-  onSubmitCallback: ((status: boolean, message: string) => void)
+  onSubmitCallback: ((status: boolean, message: string) => void),
+  /** When false, the form does not self-navigate to the created work. On a
+   * successful create the new work id is passed as the callback `message` so
+   * the caller can navigate itself (used by the admin menu, which must unmount
+   * its dialog before navigating to avoid a portal removeChild crash). */
+  navigateOnSuccess?: boolean,
 }
 type FormObjectProps = {
   onSubmit: any;
@@ -78,9 +83,11 @@ export const WorkForm = (props: FormProps) => {
     mutationFn: (values: WorkFormData) => updateWork(values),
     onSuccess: (data: HttpStatusResponse, variables) => {
       queryClient.invalidateQueries({ queryKey: ['work', props.workId] });
-      props.onSubmitCallback(true, "");
+      props.onSubmitCallback(true, variables.id === null ? String(data.response) : "");
       if (variables.id === null) {
-        navigate('/works/' + data.response, { replace: false })
+        if (props.navigateOnSuccess !== false) {
+          navigate('/works/' + data.response, { replace: false })
+        }
       } else if (data.status === 200) {
 
       } else {

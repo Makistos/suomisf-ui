@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { getCurrenUser } from "../../../services/auth-service";
 import { OwnedBooks } from '../components/owned-books';
 import { ReadBooks } from '../components/read-books';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { selectId } from '@utils/select-id';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
@@ -37,7 +37,18 @@ const ProfilePage = ({ id }: UserPageProps) => {
     const params = useParams();
     const navigate = useNavigate();
     const currentUser = useMemo(() => { return getCurrenUser() }, []);
-    const [currentContent, setCurrentContent] = useState<number>(0);
+    // Persist the open view in the URL (?view=) so it is restored when the
+    // user follows a link and navigates back, and so it survives a reload.
+    const [searchParams, setSearchParams] = useSearchParams();
+    const parsedView = Number(searchParams.get('view'));
+    const currentContent = Number.isFinite(parsedView) ? parsedView : 0;
+    const setCurrentContent = (view: number) => {
+        setSearchParams(prev => {
+            const next = new URLSearchParams(prev);
+            next.set('view', String(view));
+            return next;
+        }, { replace: true });
+    };
     const [collectionStatsVisible, setCollectionStatsVisible] = useState(false);
     const [isLoadingRandomWork, setIsLoadingRandomWork] = useState<boolean>(false);
     const [randomWorkResults, setRandomWorkResults] = useState<any[]>([]);

@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
 import { Dialog } from "primereact/dialog";
+import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 import _ from "lodash";
 
 import { getCurrenUser } from "../../../services/auth-service";
-import { getApiContent } from "../../../services/user-service";
+import { getApiContent, deleteApiContent, HttpStatusResponse } from "../../../services/user-service";
 import { ContributorBookControl } from "../../../components/contributor-book-control";
 import { ShortsControl } from '../../short';
 import { GenreGroup, Genre } from "../../genre";
@@ -44,6 +45,7 @@ const NONFICTION_TYPES = [4];
 
 export const PersonPage = ({ id }: PersonPageProps) => {
     const params = useParams();
+    const navigate = useNavigate();
     const user = getCurrenUser();
     const [, setDocumentTitle] = useDocumentTitle("");
     const [isEditVisible, setEditVisible] = useState(false);
@@ -95,6 +97,40 @@ export const PersonPage = ({ id }: PersonPageProps) => {
             setDocumentTitle(data.name);
     }, [data])
 
+    // A person can only be deleted if nothing references them. The backend
+    // enforces this too (and returns a Finnish error if not), but we also
+    // disable the action in the UI to make the state clear.
+    const hasLinkedItems = (person: Person): boolean => {
+        const counts = [
+            person.works, person.translations, person.edits, person.articles,
+            person.stories, person.magazine_stories, person.awarded,
+            person.editions, person.aliases, person.real_names,
+            issueContributions.data,
+        ];
+        return counts.some(items => (items?.length ?? 0) > 0);
+    };
+
+    const { mutate: deletePerson } = useMutation({
+        mutationFn: (personId: number) => deleteApiContent('people/' + personId),
+        onSuccess: (response: HttpStatusResponse) => {
+            if (response.status === 200) {
+                toastRef.current?.show({ severity: 'success', summary: 'Henkilö poistettu' });
+                navigate('/people');
+            } else {
+                toastRef.current?.show({
+                    severity: 'error', summary: 'Henkilön poisto ei onnistunut',
+                    detail: response.response, life: 6000
+                });
+            }
+        },
+        onError: (error: any) => {
+            toastRef.current?.show({
+                severity: 'error', summary: 'Henkilön poisto ei onnistunut',
+                detail: error?.message, life: 6000
+            });
+        }
+    });
+
     const dialItems = [
         {
             label: 'Uusi henkilö',
@@ -114,6 +150,28 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                     setFormData(data);
                     setEditVisible(true);
                 }
+            }
+        },
+        {
+            label: 'Poista',
+            icon: 'fa-solid fa-trash',
+            disabled: !data || hasLinkedItems(data),
+            command: () => {
+                if (!data) return;
+                confirmDialog({
+                    message: `Haluatko varmasti poistaa henkilön "${data.name}"?`,
+                    header: 'Varmistus',
+                    icon: 'pi pi-exclamation-triangle',
+                    acceptClassName: 'p-button-danger',
+                    acceptLabel: 'Poista',
+                    rejectLabel: 'Peruuta',
+                    accept: () => deletePerson(data.id),
+                    reject: () => {
+                        toastRef.current?.show({
+                            severity: 'info', summary: 'Henkilöä ei poistettu'
+                        });
+                    }
+                });
             }
         },
         {
@@ -262,6 +320,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     return (
         <main className="person-page">
             <Toast ref={toastRef} />
+            <ConfirmDialog />
 
             {isLoading ? (
                 <div className="flex justify-content-center">

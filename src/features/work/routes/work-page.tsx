@@ -210,6 +210,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
     const [detailLevel, setDetailLevel] = useState("condensed");
     const [isAwardsFormVisible, setAwardsFormVisible] = useState(false);
     const [isAntikvaariFormVisible, setAntikvaariFormVisible] = useState(false);
+    const [priceSource, setPriceSource] = useState('Antikvaari');
 
 
     // console.log("WorkPage props:", { id, editionId, workId });
@@ -314,7 +315,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
             }
         },
         {
-            label: 'Antikvaari-hinnat',
+            label: 'Hinnat',
             icon: 'fa-solid fa-magnifying-glass-dollar',
             command: () => {
                 setAntikvaariFormVisible(true);
@@ -689,7 +690,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                         </Dialog>
                         <Dialog blockScroll
                             className="w-full xl:w-5"
-                            header="Antikvaari-hinnat"
+                            header={`${priceSource}-hinnat`}
                             visible={isAntikvaariFormVisible}
                             onHide={() => setAntikvaariFormVisible(false)}
                             closeOnEscape
@@ -697,6 +698,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                             <AntikvaariProductPicker
                                 work={workData}
                                 onClose={() => setAntikvaariFormVisible(false)}
+                                onSourceChange={setPriceSource}
                             />
                         </Dialog>
                     </div>

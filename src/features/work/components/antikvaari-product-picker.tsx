@@ -7,6 +7,7 @@ import { Divider } from 'primereact/divider';
 import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { SelectButton } from 'primereact/selectbutton';
 import { Tag } from 'primereact/tag';
 import { Toast } from 'primereact/toast';
 
@@ -30,6 +31,14 @@ interface SearchResult {
     binding: string;
     url: string;
     available_count: number;
+    price?: number | null;
+}
+
+interface PriceSource {
+    id: number;
+    name: string;
+    has_search?: boolean;
+    has_fetch?: boolean;
 }
 
 interface FetchedRow {
@@ -67,6 +76,7 @@ interface RowSaveResult {
 interface AntikvaariProductPickerProps {
     work: Work;
     onClose: () => void;
+    onSourceChange?: (source: string) => void;
 }
 
 const BINDING_LABELS: Record<number, string> = {
@@ -80,13 +90,15 @@ function formatDate(iso: string | null): string {
     return new Date(iso).toLocaleDateString('fi-FI');
 }
 
-export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariProductPickerProps) => {
+export const AntikvaariProductPicker = ({ work, onClose: _onClose, onSourceChange }: AntikvaariProductPickerProps) => {
     const user = useMemo(() => getCurrenUser(), []);
     const queryClient = useQueryClient();
     const toastRef = useRef<Toast>(null);
 
     const initialQuery = `${work.author_str} ${work.title}`.trim();
 
+    const [sources, setSources] = useState<PriceSource[]>([]);
+    const [source, setSource] = useState<string>('Antikvaari');
     const [linkedProducts, setLinkedProducts] = useState<LinkedProduct[]>([]);
     const [loadingLinked, setLoadingLinked] = useState(true);
     const [searchQuery, setSearchQuery] = useState(initialQuery);
@@ -101,10 +113,12 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
     const [saving, setSaving] = useState(false);
     const [saveResults, setSaveResults] = useState<Record<string, RowSaveResult>>({});
 
-    const loadLinkedProducts = useCallback(async () => {
+    const loadLinkedProducts = useCallback(async (src: string) => {
         setLoadingLinked(true);
         try {
-            const resp = await getApiContent(`work/${work.id}/antikvaari/products`, user);
+            const resp = await getApiContent(
+                `work/${work.id}/antikvaari/products?source=${encodeURIComponent(src)}`, user
+            );
             setLinkedProducts(resp.data ?? []);
         } catch {
             toastRef.current?.show({ severity: 'error', summary: 'Linkitettyjen tuotteiden lataus epäonnistui' });
@@ -113,13 +127,13 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
         }
     }, [work.id, user]);
 
-    const runSearch = useCallback(async (query: string) => {
+    const runSearch = useCallback(async (query: string, src: string) => {
         if (!query.trim()) return;
         setSearching(true);
         setSearchResults([]);
         try {
             const resp = await getApiContent(
-                `antikvaari/search?q=${encodeURIComponent(query.trim())}`, user
+                `antikvaari/search?q=${encodeURIComponent(query.trim())}&source=${encodeURIComponent(src)}`, user
             );
             setSearchResults(resp.data ?? []);
             if ((resp.data ?? []).length === 0) {
@@ -133,20 +147,49 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
     }, [user]);
 
     useEffect(() => {
-        loadLinkedProducts();
-        runSearch(initialQuery);
+        (async () => {
+            try {
+                const resp = await getApiContent('price-sources', user);
+                const all: PriceSource[] = resp.data ?? [];
+                setSources(all.filter(s => s.has_search));
+            } catch {
+                // Sources are optional; fall back to the default single source.
+            }
+        })();
+        onSourceChange?.('Antikvaari');
+        loadLinkedProducts('Antikvaari');
+        runSearch(initialQuery, 'Antikvaari');
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    // Antikvaari's search API handles "author title" well; antikka (WooCommerce)
+    // and other shops search unreliably with the author included, so default
+    // them to a title-only query.
+    const queryForSource = (src: string) =>
+        src === 'Antikvaari' ? initialQuery : work.title;
+
+    const handleSourceChange = (next: string) => {
+        if (!next || next === source) return;
+        setSource(next);
+        onSourceChange?.(next);
+        const query = queryForSource(next);
+        setSearchQuery(query);
+        setSearchResults([]);
+        setFetchedRows([]);
+        setSaveResults({});
+        loadLinkedProducts(next);
+        runSearch(query, next);
+    };
 
     const handleAdd = async (productId: string, url: string) => {
         setAddingIds(prev => new Set(prev).add(productId));
         try {
             await postApiContent(
-                `work/${work.id}/antikvaari/products`,
+                `work/${work.id}/antikvaari/products?source=${encodeURIComponent(source)}`,
                 [{ product_id: productId, url }],
                 user
             );
-            await loadLinkedProducts();
+            await loadLinkedProducts(source);
             toastRef.current?.show({ severity: 'success', summary: 'Tuote linkitetty' });
         } catch {
             toastRef.current?.show({ severity: 'error', summary: 'Tuotteen lisääminen epäonnistui' });
@@ -166,8 +209,8 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
             accept: async () => {
                 setRemovingIds(prev => new Set(prev).add(productId));
                 try {
-                    await deleteApiContent(`work/${work.id}/antikvaari/products/${productId}`);
-                    await loadLinkedProducts();
+                    await deleteApiContent(`work/${work.id}/antikvaari/products/${productId}?source=${encodeURIComponent(source)}`);
+                    await loadLinkedProducts(source);
                     toastRef.current?.show({ severity: 'success', summary: 'Tuote poistettu' });
                 } catch {
                     toastRef.current?.show({ severity: 'error', summary: 'Poisto epäonnistui' });
@@ -182,11 +225,11 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
         setUnrejectingIds(prev => new Set(prev).add(productId));
         try {
             await postApiContent(
-                `work/${work.id}/antikvaari/products`,
+                `work/${work.id}/antikvaari/products?source=${encodeURIComponent(source)}`,
                 [{ product_id: productId, rejected: false }],
                 user
             );
-            await loadLinkedProducts();
+            await loadLinkedProducts(source);
             toastRef.current?.show({ severity: 'success', summary: 'Tuote palautettu' });
         } catch {
             toastRef.current?.show({ severity: 'error', summary: 'Palautus epäonnistui' });
@@ -213,7 +256,7 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
         try {
             const resp = await postApiContent(
                 `work/${work.id}/antikvaari/fetch`,
-                { product_urls: urls },
+                { product_urls: urls, source },
                 user
             );
             const rows: FetchedRow[] = (resp.response as unknown as FetchedRow[]) ?? [];
@@ -273,6 +316,16 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
     return (
         <div className="flex flex-column gap-4">
             <Toast ref={toastRef} />
+
+            {/* Source selector */}
+            {sources.length > 1 && (
+                <SelectButton
+                    value={source}
+                    options={sources.map(s => s.name)}
+                    onChange={e => handleSourceChange(e.value)}
+                    allowEmpty={false}
+                />
+            )}
 
             {/* Linked products */}
             <section>
@@ -379,18 +432,18 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
 
             {/* Search */}
             <section>
-                <h4 className="mt-0 mb-3">Hae Antikvaari-tuotteita</h4>
+                <h4 className="mt-0 mb-3">Hae {source}-tuotteita</h4>
                 <div className="flex gap-2">
                     <InputText
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
-                        onKeyDown={e => e.key === 'Enter' && runSearch(searchQuery)}
+                        onKeyDown={e => e.key === 'Enter' && runSearch(searchQuery, source)}
                         className="flex-1"
                     />
                     <Button
                         label="Hae"
                         icon="pi pi-search"
-                        onClick={() => runSearch(searchQuery)}
+                        onClick={() => runSearch(searchQuery, source)}
                         loading={searching}
                         disabled={!searchQuery.trim()}
                     />
@@ -416,7 +469,13 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose }: AntikvaariP
                                             {r.title}
                                         </a>
                                         <span className={`text-sm ${rejected ? 'text-300' : 'text-600'}`}>
-                                            {r.author}{r.year ? ` · ${r.year}` : ''}{r.binding ? ` · ${r.binding}` : ''} · {r.available_count} kpl
+                                            {[
+                                                r.author,
+                                                r.year,
+                                                r.binding,
+                                                r.price != null ? `${r.price.toFixed(2)} €` : null,
+                                                `${r.available_count} kpl`,
+                                            ].filter(Boolean).join(' · ')}
                                         </span>
                                     </div>
                                     <div className="flex-shrink-0">

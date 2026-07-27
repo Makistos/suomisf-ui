@@ -82,7 +82,7 @@ interface AntikvaariProductPickerProps {
 }
 
 // Preferred order of source tabs; unknown sources fall to the end.
-const SOURCE_ORDER = ['Antikvaari', 'Antikka', 'Antikvariaatti'];
+const SOURCE_ORDER = ['Antikvaari', 'Antikka', 'Antikvariaatti', 'Oranssi Planeetta'];
 const sourceRank = (name: string) => {
     const i = SOURCE_ORDER.indexOf(name);
     return i === -1 ? SOURCE_ORDER.length : i;

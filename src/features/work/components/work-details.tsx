@@ -224,9 +224,6 @@ export const WorkDetails = ({ work }: WorkProps) => {
                     )}
                     {work.editions && work.editions.length > 0 && (
                         <div className="col-12 p-0">
-                            <div className="col-12 p-0">
-                                {work.misc}
-                            </div>
                             {work.description && (
                                 <div className="col-12 pb-0 mb-0 p-0">
                                     <div className="html-content" dangerouslySetInnerHTML={{ __html: work.description }} />
@@ -234,6 +231,12 @@ export const WorkDetails = ({ work }: WorkProps) => {
                                         <div className="book-attribution"
                                             dangerouslySetInnerHTML={{ __html: work.descr_attr }} />
                                     )}
+                                </div>
+                            )}
+                            {work.misc && (
+                                <div className="col-12 p-0 mt-3" style={{ clear: 'both' }}>
+                                    <h3 className="text-sm uppercase text-600 m-0 mb-1">Muuta</h3>
+                                    <div className="text-sm text-color-secondary font-italic">{work.misc}</div>
                                 </div>
                             )}
                         </div>

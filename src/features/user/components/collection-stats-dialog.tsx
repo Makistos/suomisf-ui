@@ -28,6 +28,8 @@ interface TopBook {
     price: number;
     match_quality: string;
     condition: string;
+    seller: string | null;
+    seller_url: string | null;
 }
 
 interface NoPriceBook {
@@ -129,6 +131,16 @@ export const CollectionStatsDialog = ({ userId, visible, onHide }: Props) => {
 
     const priceBody = (row: TopBook) => (
         <span className="font-semibold">{row.price.toFixed(2)} €</span>
+    );
+
+    const sellerBody = (row: TopBook) => (
+        <span className="text-sm text-600">
+            {row.seller
+                ? (row.seller_url
+                    ? <a href={row.seller_url} target="_blank" rel="noopener noreferrer">{row.seller}</a>
+                    : row.seller)
+                : '—'}
+        </span>
     );
 
     const qualityBody = (row: TopBook) => (
@@ -234,6 +246,8 @@ export const CollectionStatsDialog = ({ userId, visible, onHide }: Props) => {
                                     style={{ width: '4rem' }} />
                                 <Column header="Hinta" body={priceBody}
                                     style={{ width: '6rem' }} />
+                                <Column header="Myyjä" body={sellerBody}
+                                    style={{ minWidth: '8rem' }} />
                                 <Column header="Osuvuus" body={qualityBody}
                                     style={{ minWidth: '7rem' }} />
                             </DataTable>

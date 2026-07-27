@@ -57,6 +57,8 @@ interface FetchedRow {
     book_title: string | null;
     book_author: string | null;
     book_language: string | null;
+    seller: string | null;
+    seller_url: string | null;
     date_listed: string | null;
     last_updated: string | null;
     condition: string;
@@ -575,6 +577,7 @@ const REASON_LABELS: Record<string, string> = {
     no_edition: 'Painosta ei löydy',
     edition_missing: 'Painos puuttuu tietokannasta',
     excluded: 'Ei valittu',
+    duplicate: 'Sama myyjä ja hinta',
 };
 
 interface FetchedRowCardProps {
@@ -658,6 +661,16 @@ const FetchedRowCard = ({ row, saveResult, onRowChange }: FetchedRowCardProps) =
 
             {listingMeta && (
                 <span className="text-sm text-600">{listingMeta}</span>
+            )}
+
+            {row.seller && (
+                <span className="text-xs text-500">
+                    Myyjä:{' '}
+                    {row.seller_url ? (
+                        <a href={row.seller_url} target="_blank" rel="noopener noreferrer"
+                            className="text-500 hover:text-primary">{row.seller}</a>
+                    ) : row.seller}
+                </span>
             )}
 
             {/* Editable painos + laitos + exclude checkbox */}

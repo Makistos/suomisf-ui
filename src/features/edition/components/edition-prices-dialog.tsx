@@ -23,6 +23,8 @@ interface PriceRow {
     id: number;
     source_id: number | null;
     source_name: string | null;
+    seller: string | null;
+    seller_url: string | null;
     book_id: string | null;
     url: string | null;
     antikvaari_product_year: number | null;
@@ -87,7 +89,7 @@ const Legend = () => (
     </div>
 );
 
-const emptyForm = { url: '', source_id: null as number | null, book_id: '', condition: '', price: null as number | null, last_updated: null as Date | null, is_library_discard: false, has_markings: false, missing_dust_cover: false };
+const emptyForm = { url: '', source_id: null as number | null, book_id: '', seller: '', seller_url: '', condition: '', price: null as number | null, last_updated: null as Date | null, is_library_discard: false, has_markings: false, missing_dust_cover: false };
 
 export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Props) => {
     const user = useMemo(() => getCurrenUser(), []);
@@ -192,6 +194,8 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                 ...f,
                 source_id: d.source_id ?? f.source_id,
                 book_id: d.book_id ?? f.book_id,
+                seller: d.seller ?? f.seller,
+                seller_url: d.seller_url ?? f.seller_url,
                 condition: d.condition ?? f.condition,
                 price: d.price ?? f.price,
                 last_updated: d.last_updated ? new Date(d.last_updated) : f.last_updated,
@@ -211,6 +215,8 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                 source_id: form.source_id,
                 book_id: form.book_id || null,
                 url: form.url || null,
+                seller: form.seller || null,
+                seller_url: form.seller_url || null,
                 condition: form.condition,
                 price: form.price,
                 last_updated: form.last_updated ? form.last_updated.toISOString() : new Date().toISOString(),
@@ -293,6 +299,16 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
         </span>
     );
 
+    const sellerBody = (row: PriceRow) => (
+        <span className="text-sm">
+            {row.seller
+                ? (row.seller_url
+                    ? <a href={row.seller_url} target="_blank" rel="noopener noreferrer">{row.seller}</a>
+                    : row.seller)
+                : '—'}
+        </span>
+    );
+
     const formValid = form.source_id != null && form.condition !== '' && form.price != null;
 
     return (
@@ -346,6 +362,11 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                                 <Column
                                     header="Lähde"
                                     body={sourceBody}
+                                    style={{ minWidth: '8rem' }}
+                                />
+                                <Column
+                                    header="Myyjä"
+                                    body={sellerBody}
                                     style={{ minWidth: '8rem' }}
                                 />
                                 <Column

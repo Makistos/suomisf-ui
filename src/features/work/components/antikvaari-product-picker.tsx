@@ -81,6 +81,13 @@ interface AntikvaariProductPickerProps {
     onSourceChange?: (source: string) => void;
 }
 
+// Preferred order of source tabs; unknown sources fall to the end.
+const SOURCE_ORDER = ['Antikvaari', 'Antikka', 'Antikvariaatti'];
+const sourceRank = (name: string) => {
+    const i = SOURCE_ORDER.indexOf(name);
+    return i === -1 ? SOURCE_ORDER.length : i;
+};
+
 const BINDING_LABELS: Record<number, string> = {
     1: 'Ei tietoa',
     2: 'Nidottu',
@@ -153,7 +160,8 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose, onSourceChang
             try {
                 const resp = await getApiContent('price-sources', user);
                 const all: PriceSource[] = resp.data ?? [];
-                setSources(all.filter(s => s.has_search));
+                setSources(all.filter(s => s.has_search)
+                    .sort((a, b) => sourceRank(a.name) - sourceRank(b.name)));
             } catch {
                 // Sources are optional; fall back to the default single source.
             }

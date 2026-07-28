@@ -21,9 +21,9 @@ export default function MainMenu() {
     //const [currentUser, setCurrentUser] = useState<User | null>(user);
     const [selectedItem, setSelectedItem] = useState<any>(null);
     const [filteredItems, setFilteredItems] = useState<any>(null);
-    // Restrict search to titles/names only (persisted preference).
+    // Restrict search to titles/names only (persisted preference, on by default).
     const [titlesOnly, setTitlesOnly] = useState<boolean>(
-        () => localStorage.getItem('searchTitlesOnly') === '1');
+        () => localStorage.getItem('searchTitlesOnly') !== '0');
     const [lastQuery, setLastQuery] = useState<string>('');
     const [loginVisible, setLoginVisible] = useState(false);
     const [registerVisible, setRegisterVisible] = useState(false);

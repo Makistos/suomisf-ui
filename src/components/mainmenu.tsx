@@ -380,17 +380,18 @@ export default function MainMenu() {
                     delay={800}
                     scrollHeight="400px"
                 />
-                <span className="flex align-items-center gap-1 white-space-nowrap">
+                <span className="flex align-items-center gap-1 white-space-nowrap text-600">
                     <Checkbox
                         inputId="searchTitlesOnly"
                         checked={titlesOnly}
+                        style={{ transform: 'scale(0.7)' }}
                         onChange={(e) => {
                             const val = !!e.checked;
                             setTitlesOnly(val);
                             localStorage.setItem('searchTitlesOnly', val ? '1' : '0');
                         }}
                     />
-                    <label htmlFor="searchTitlesOnly" className="text-sm">Vain nimet</label>
+                    <label htmlFor="searchTitlesOnly" className="text-xs cursor-pointer">Vain nimet</label>
                 </span>
             </div>
         );

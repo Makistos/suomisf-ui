@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Menubar } from 'primereact/menubar';
 import { AutoComplete } from 'primereact/autocomplete';
+import { Checkbox } from 'primereact/checkbox';
 import { Dialog } from 'primereact/dialog';
 
 import { getCurrenUser } from '../services/auth-service';
@@ -20,12 +21,26 @@ export default function MainMenu() {
     //const [currentUser, setCurrentUser] = useState<User | null>(user);
     const [selectedItem, setSelectedItem] = useState<any>(null);
     const [filteredItems, setFilteredItems] = useState<any>(null);
+    // Restrict search to titles/names only (persisted preference).
+    const [titlesOnly, setTitlesOnly] = useState<boolean>(
+        () => localStorage.getItem('searchTitlesOnly') === '1');
+    const [lastQuery, setLastQuery] = useState<string>('');
     const [loginVisible, setLoginVisible] = useState(false);
     const [registerVisible, setRegisterVisible] = useState(false);
     const [workFormVisible, setWorkFormVisible] = useState(false);
     const [personFormVisible, setPersonFormVisible] = useState(false);
     // Path to navigate to once the corresponding creation dialog has closed.
     const [pendingNav, setPendingNav] = useState<string | null>(null);
+
+    // Re-run the current search when the titles-only toggle changes.
+    useEffect(() => {
+        if (lastQuery.trim().length >= 3) {
+            getApiContent("search/" + lastQuery + (titlesOnly ? "?titles=1" : ""), user)
+                .then(r => setFilteredItems(r.data))
+                .catch(() => { });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [titlesOnly]);
 
     const onHide = () => {
         setLoginVisible(false);
@@ -232,10 +247,12 @@ export default function MainMenu() {
     const start = <span><a href="/" > <b>SuomiSF </b></a > </span>
     const End = () => {
         async function getResults(query: string) {
-            const response = await getApiContent("search/" + query, user);
+            const response = await getApiContent(
+                "search/" + query + (titlesOnly ? "?titles=1" : ""), user);
             setFilteredItems(response.data);
         }
         const searchItems = (event: any) => {
+            setLastQuery(event.query);
             getResults(event.query);
         };
 
@@ -349,7 +366,7 @@ export default function MainMenu() {
         }
 
         return (
-            <div>
+            <div className="flex align-items-center gap-2">
                 <AutoComplete
                     placeholder="Etsi"
                     minLength={3}
@@ -363,6 +380,18 @@ export default function MainMenu() {
                     delay={800}
                     scrollHeight="400px"
                 />
+                <span className="flex align-items-center gap-1 white-space-nowrap">
+                    <Checkbox
+                        inputId="searchTitlesOnly"
+                        checked={titlesOnly}
+                        onChange={(e) => {
+                            const val = !!e.checked;
+                            setTitlesOnly(val);
+                            localStorage.setItem('searchTitlesOnly', val ? '1' : '0');
+                        }}
+                    />
+                    <label htmlFor="searchTitlesOnly" className="text-sm">Vain nimet</label>
+                </span>
             </div>
         );
     }

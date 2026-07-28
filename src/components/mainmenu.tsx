@@ -366,7 +366,7 @@ export default function MainMenu() {
         }
 
         return (
-            <div className="flex align-items-center gap-2">
+            <div className="relative inline-block">
                 <AutoComplete
                     placeholder="Etsi"
                     minLength={3}
@@ -379,12 +379,16 @@ export default function MainMenu() {
                     itemTemplate={itemTemplate}
                     delay={800}
                     scrollHeight="400px"
+                    inputStyle={{ paddingRight: '5rem' }}
                 />
-                <span className="flex align-items-center gap-1 white-space-nowrap text-600">
+                <span
+                    className="absolute flex align-items-center gap-1 white-space-nowrap text-600"
+                    style={{ right: '0.5rem', top: '50%', transform: 'translateY(-50%)' }}
+                >
                     <Checkbox
                         inputId="searchTitlesOnly"
                         checked={titlesOnly}
-                        style={{ transform: 'scale(0.7)' }}
+                        style={{ transform: 'scale(0.65)' }}
                         onChange={(e) => {
                             const val = !!e.checked;
                             setTitlesOnly(val);

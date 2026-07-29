@@ -46,6 +46,11 @@ interface PriceRange {
     count: number;
 }
 
+interface DistItem {
+    name: string;
+    count: number;
+}
+
 interface CollectionStats {
     total_owned: number;
     priced_count: number;
@@ -54,7 +59,18 @@ interface CollectionStats {
     price_distribution: PriceRange[];
     top_expensive: TopBook[];
     no_price_books: NoPriceBook[];
+    publisher_distribution: DistItem[];
+    language_distribution: DistItem[];
+    worktype_distribution: DistItem[];
+    short_story_count: number;
+    total_pages: number;
+    shelf_width_meters: number;
 }
+
+const PALETTE = [
+    '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899',
+    '#14b8a6', '#f97316', '#6366f1', '#84cc16', '#94a3b8',
+];
 
 interface Props {
     userId: string;
@@ -114,6 +130,56 @@ export const CollectionStatsDialog = ({ userId, visible, onHide }: Props) => {
         scales: {
             y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } },
         },
+        responsive: true,
+        maintainAspectRatio: false,
+    };
+
+    const doughnutData = (items?: DistItem[]) => {
+        if (!items || items.length === 0) return null;
+        return {
+            labels: items.map(i => i.name),
+            datasets: [{
+                data: items.map(i => i.count),
+                backgroundColor: items.map((_, i) => PALETTE[i % PALETTE.length]),
+                borderWidth: 0,
+            }],
+        };
+    };
+    const doughnutOptions = {
+        plugins: {
+            legend: {
+                position: 'right' as const,
+                labels: { boxWidth: 12, font: { size: 11 } },
+            },
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+    };
+
+    const langChartData = useMemo(() => doughnutData(stats?.language_distribution),
+        [stats?.language_distribution]);
+    const typeChartData = useMemo(() => doughnutData(stats?.worktype_distribution),
+        [stats?.worktype_distribution]);
+
+    const pubChartData = useMemo(() => {
+        const d = stats?.publisher_distribution?.slice(0, 10);
+        if (!d || d.length === 0) return null;
+        return {
+            labels: d.map(p => p.name),
+            datasets: [{
+                label: 'Kirjoja',
+                data: d.map(p => p.count),
+                backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 1,
+                borderRadius: 4,
+            }],
+        };
+    }, [stats?.publisher_distribution]);
+    const pubChartOptions = {
+        indexAxis: 'y' as const,
+        plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true, ticks: { precision: 0 } } },
         responsive: true,
         maintainAspectRatio: false,
     };
@@ -184,6 +250,58 @@ export const CollectionStatsDialog = ({ userId, visible, onHide }: Props) => {
                             <div className="text-600 text-sm mb-1">Arvioitu kokonaisarvo</div>
                             <div className="text-3xl font-bold">{stats.total_value.toFixed(2)} €</div>
                         </div>
+                    </div>
+
+                    {/* Collection composition counts */}
+                    <div className="grid">
+                        <div className="col-6 md:col-3">
+                            <div className="text-600 text-sm mb-1">Novelleja kokoelmissa</div>
+                            <div className="text-2xl font-bold">
+                                {stats.short_story_count.toLocaleString('fi-FI')}
+                            </div>
+                        </div>
+                        <div className="col-6 md:col-3">
+                            <div className="text-600 text-sm mb-1">Sivuja yhteensä</div>
+                            <div className="text-2xl font-bold">
+                                {stats.total_pages.toLocaleString('fi-FI')}
+                            </div>
+                        </div>
+                        <div className="col-6 md:col-3">
+                            <div className="text-600 text-sm mb-1">Hyllynleveys</div>
+                            <div className="text-2xl font-bold">
+                                {stats.shelf_width_meters.toLocaleString('fi-FI')} m
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Publishers */}
+                    {pubChartData && (
+                        <div>
+                            <div className="text-600 text-sm mb-2">Kustantajat (10 yleisintä)</div>
+                            <div style={{ height: '260px' }}>
+                                <Chart type="bar" data={pubChartData} options={pubChartOptions} style={{ height: '100%' }} />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Original language + work type */}
+                    <div className="grid">
+                        {langChartData && (
+                            <div className="col-12 md:col-6">
+                                <div className="text-600 text-sm mb-2">Alkukieli</div>
+                                <div style={{ height: '220px' }}>
+                                    <Chart type="doughnut" data={langChartData} options={doughnutOptions} style={{ height: '100%' }} />
+                                </div>
+                            </div>
+                        )}
+                        {typeChartData && (
+                            <div className="col-12 md:col-6">
+                                <div className="text-600 text-sm mb-2">Teostyypit</div>
+                                <div style={{ height: '220px' }}>
+                                    <Chart type="doughnut" data={typeChartData} options={doughnutOptions} style={{ height: '100%' }} />
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Quality distribution */}

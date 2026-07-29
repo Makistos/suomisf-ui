@@ -191,6 +191,7 @@ export const UserStats = ({ userId }: UserStatsProps) => {
                 <WorksByYearChart
                     finnishEditionData={comp.editions_by_year}
                     originalYearData={comp.origworks_by_year}
+                    ownerId={userId}
                 />
             )}
         </div>

@@ -42,6 +42,8 @@ interface YearCount {
 interface WorksByYearChartProps {
     finnishEditionData: YearCount[];
     originalYearData: YearCount[];
+    // When set, drill-down lists only works owned by this user.
+    ownerId?: string;
 }
 
 // Colors for different languages
@@ -84,7 +86,7 @@ const languageOptions = [
     { label: 'puola', value: 'puola' },
 ];
 
-export const WorksByYearChart = ({ finnishEditionData, originalYearData }: WorksByYearChartProps) => {
+export const WorksByYearChart = ({ finnishEditionData, originalYearData, ownerId }: WorksByYearChartProps) => {
     const user = useMemo(() => getCurrenUser(), []);
 
     // Get min and max years from combined data
@@ -132,10 +134,11 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData }: Works
 
     // Fetch filtered works for the dialog
     const filteredWorksQuery = useQuery<Work[]>({
-        queryKey: ['stats', 'filterworks', dialogFilter?.languageId, dialogFilter?.year, dialogFilter?.dataSource],
+        queryKey: ['stats', 'filterworks', dialogFilter?.languageId, dialogFilter?.year, dialogFilter?.dataSource, ownerId],
         queryFn: async () => {
             if (!dialogFilter) return [];
             const params = new URLSearchParams();
+            if (ownerId) params.append('owner', ownerId);
             if (dialogFilter.languageId) params.append('language', String(dialogFilter.languageId));
             if (dialogFilter.dataSource === 'finnish') {
                 params.append('edition_year_min', String(dialogFilter.year));

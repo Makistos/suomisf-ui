@@ -4,9 +4,17 @@ import { Chart } from "primereact/chart";
 import { ChartData } from "chart.js/index";
 import { useEffect, useMemo, useState } from "react";
 import { getGenreColors } from "../../genre";
+import { WorksByYearChart } from "../../stats/components/works-by-year-chart";
 
 interface UserStatsProps {
     userId: string
+}
+
+interface YearCount {
+    year: number;
+    count: number;
+    language_id: number | null;
+    language_name: string | null;
 }
 
 type GenreData = {
@@ -28,6 +36,8 @@ interface CollectionComposition {
     short_story_count: number;
     total_pages: number;
     shelf_width_meters: number;
+    editions_by_year: YearCount[];
+    origworks_by_year: YearCount[];
 }
 
 const PALETTE = [
@@ -61,7 +71,7 @@ export const UserStats = ({ userId }: UserStatsProps) => {
     const doughnutData = (items?: DistItem[]) => {
         if (!items || items.length === 0) return null;
         return {
-            labels: items.map(i => i.name),
+            labels: items.map(i => `${i.name} (${i.count})`),
             datasets: [{
                 data: items.map(i => i.count),
                 backgroundColor: items.map((_, i) => PALETTE[i % PALETTE.length]),
@@ -175,6 +185,14 @@ export const UserStats = ({ userId }: UserStatsProps) => {
                     </div>
                 )}
             </div>
+
+            {/* Publications per year */}
+            {comp && comp.editions_by_year.length > 0 && (
+                <WorksByYearChart
+                    finnishEditionData={comp.editions_by_year}
+                    originalYearData={comp.origworks_by_year}
+                />
+            )}
         </div>
     );
 }

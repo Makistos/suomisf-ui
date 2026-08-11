@@ -5,8 +5,6 @@
   <meta charset="utf-8" />
   <link rel="icon" href="/favicon.ico" />
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Slab&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 
   <!-- <link rel="stylesheet" href="https://unpkg.com/primeicons/primeicons.css" />
   <link rel="stylesheet" href="https://unpkg.com/primereact/resources/themes/bootstrap4-light-blue/theme.css" />
@@ -29,7 +27,16 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/primeflex/4.0.0/primeflex.min.css"
     integrity="sha512-sl5UktE7YNdAMnjAvXBliT9iy2r+iCgjsbj4nOT3OBeY3TflWCNRvocwqQu7pST5IXO6YmycCDPZWF+k+NptMQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" type="text/css" href="App.css" />
+  <!--
+      The PrimeReact theme's own @font-face rules for Roboto point at font
+      files cdnjs no longer serves (404s in the console). Loading Google
+      Fonts' Roboto in the weights the theme needs, after the theme
+      stylesheet, makes the browser prefer these working @font-face rules
+      instead (last matching @font-face rule wins) and avoids the dead
+      requests.
+    -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Slab&display=swap"
+    rel="stylesheet">
   <!-- <link rel="stylesheet" href="%PUBLIC_URL%/primeicons/primeicons.css" />
   <link id="theme-link" rel="stylesheet" href="%PUBLIC_URL%/resources/themes/bootstrap4-light-blue/theme.css">
   <link rel="stylesheet" href="%PUBLIC_URL%/resources/primereact.min.css" /> -->

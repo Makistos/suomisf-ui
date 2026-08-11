@@ -151,13 +151,13 @@ const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, highlight
 
     return (
         <div className={`col-12 edition-list-item ${shouldHighlight ? 'highlighted-edition' : ''}`}>
-            <div className="flex gap-3 align-items-start">
+            <div className="flex flex-column sm:flex-row gap-3 align-items-start">
                 <div className="flex-1 min-w-0">
                     <EditionDetails edition={edition} card work={work}
                         onSubmitCallback={onSubmitCallback}
                         editionPrice={editionPrice} />
                 </div>
-                <div className="flex-shrink-0 flex justify-content-end align-items-center">
+                <div className="flex-shrink-0 flex justify-content-center sm:justify-content-end align-items-center">
                     {edition.images.length > 0 ?
                         <ImageView
                             itemId={edition.id}

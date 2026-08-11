@@ -413,6 +413,15 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
   ;
 }
 
+.p-rating-condensed .p-rating-item {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.p-rating-condensed .p-rating-item .p-rating-icon {
+  font-size: 0.9rem;
+}
+
 /* .owned::before {
     content: '⭐';
     margin-right: 8px;

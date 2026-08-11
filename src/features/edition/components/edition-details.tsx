@@ -365,7 +365,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                             </div>
                         }
                         {user && edition.combined === false &&
-                            <div className="flex align-items-center gap-2">
+                            <div className="flex flex-wrap align-items-center gap-2">
                                 <EditionWishlist editionId={edition.id}
                                     initial={edition.wishlisted?.some(owner => owner.id === user.id)}
                                     workId={work?.id} />
@@ -375,7 +375,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                                     <>
                                         <Tooltip target=".edition-price-badge" />
                                         <span
-                                            className={`edition-price-badge font-medium ${qualityColors[editionPrice.match_quality]}`}
+                                            className={`edition-price-badge font-medium white-space-nowrap ${qualityColors[editionPrice.match_quality]}`}
                                             data-pr-tooltip={qualityLabels[editionPrice.match_quality]}
                                             data-pr-position="top"
                                         >

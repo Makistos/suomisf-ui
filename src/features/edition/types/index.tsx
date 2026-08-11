@@ -140,6 +140,13 @@ export interface EditionOwnershipStatus {
     description: string | null
 }
 
+export interface EditionOwner {
+    [index: string]: any,
+    user: User,
+    condition: EditionCondition | null,
+    description: string | null
+}
+
 export interface OwnedBook {
     [index: string]: any,
     book: Edition,

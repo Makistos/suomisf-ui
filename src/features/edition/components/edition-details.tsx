@@ -22,6 +22,7 @@ import { isAdmin } from '../../user';
 import { ISBN } from '../types';
 import { Binding } from '../../../types/binding';
 import { EditionOwnership } from './edition-ownership';
+import { EditionOwnersPanel } from './edition-owners-panel';
 import { EditionPricesDialog } from './edition-prices-dialog';
 import { EditionWishlist } from './edition-wishlist';
 
@@ -369,6 +370,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                                     initial={edition.wishlisted?.some(owner => owner.id === user.id)}
                                     workId={work?.id} />
                                 <EditionOwnership editionId={edition.id} workId={work?.id} />
+                                <EditionOwnersPanel editionId={edition.id} currentUserId={user.id} />
                                 {editionPrice && (
                                     <>
                                         <Tooltip target=".edition-price-badge" />

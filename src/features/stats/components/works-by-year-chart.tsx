@@ -44,6 +44,9 @@ interface WorksByYearChartProps {
     originalYearData: YearCount[];
     // When set, drill-down lists only works owned by this user.
     ownerId?: string;
+    // When set, drill-down lists only works this user has marked read.
+    // Mutually exclusive with ownerId.
+    readUserId?: string;
 }
 
 // Colors for different languages
@@ -86,7 +89,7 @@ const languageOptions = [
     { label: 'puola', value: 'puola' },
 ];
 
-export const WorksByYearChart = ({ finnishEditionData, originalYearData, ownerId }: WorksByYearChartProps) => {
+export const WorksByYearChart = ({ finnishEditionData, originalYearData, ownerId, readUserId }: WorksByYearChartProps) => {
     const user = useMemo(() => getCurrenUser(), []);
 
     // Get min and max years from combined data
@@ -134,11 +137,12 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData, ownerId
 
     // Fetch filtered works for the dialog
     const filteredWorksQuery = useQuery<Work[]>({
-        queryKey: ['stats', 'filterworks', dialogFilter?.languageId, dialogFilter?.year, dialogFilter?.dataSource, ownerId],
+        queryKey: ['stats', 'filterworks', dialogFilter?.languageId, dialogFilter?.year, dialogFilter?.dataSource, ownerId, readUserId],
         queryFn: async () => {
             if (!dialogFilter) return [];
             const params = new URLSearchParams();
             if (ownerId) params.append('owner', ownerId);
+            if (readUserId) params.append('read', readUserId);
             if (dialogFilter.languageId) params.append('language', String(dialogFilter.languageId));
             if (dialogFilter.dataSource === 'finnish') {
                 params.append('edition_year_min', String(dialogFilter.year));

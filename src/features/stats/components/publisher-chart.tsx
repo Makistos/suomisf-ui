@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Card } from 'primereact/card';
+import { Dialog } from 'primereact/dialog';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -15,6 +16,9 @@ import { Slider } from 'primereact/slider';
 import { useQuery } from '@tanstack/react-query';
 import { getApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
+import { Genre } from '../../genre';
+import { WorkList } from '../../work/components/work-list';
+import { Work } from '../../work/types';
 
 ChartJS.register(
     ArcElement,
@@ -59,7 +63,22 @@ const publisherColors = [
 export const PublisherChart = () => {
     const [selectedGenre, setSelectedGenre] = useState<string>('all');
     const [publisherCount, setPublisherCount] = useState<number>(10);
+    const [publisherDialogFilter, setPublisherDialogFilter] = useState<{ id: number; name: string; count: number } | null>(null);
     const user = useMemo(() => getCurrenUser(), []);
+
+    const genresQuery = useQuery<Genre[]>({
+        queryKey: ['genres'],
+        queryFn: async () => {
+            const response = await getApiContent('genres', user);
+            return response.data;
+        }
+    });
+
+    const genreIdByAbbr = useMemo(() => {
+        const map = new Map<string, number>();
+        genresQuery.data?.forEach(g => map.set(g.abbr, g.id));
+        return map;
+    }, [genresQuery.data]);
 
     // Fetch publisher data with count parameter (genre filtering is done client-side)
     const publisherQuery = useQuery<PublisherCount[]>({
@@ -105,7 +124,7 @@ export const PublisherChart = () => {
         };
     }, [allPublishers]);
 
-    const chartOptions = {
+    const chartOptions = useMemo(() => ({
         maintainAspectRatio: false,
         plugins: {
             legend: {
@@ -122,10 +141,31 @@ export const PublisherChart = () => {
                             index
                         }));
                     }
+                },
+                onClick: (_event: unknown, legendItem: { index?: number }) => {
+                    const pub = allPublishers[legendItem.index ?? -1];
+                    if (pub?.id) {
+                        setPublisherDialogFilter({ id: pub.id, name: pub.fullname || pub.name, count: pub.count });
+                    }
                 }
             }
         }
-    };
+    }), [allPublishers]);
+
+    const publisherWorksQuery = useQuery<Work[]>({
+        queryKey: ['stats', 'filterworks', 'publisher', publisherDialogFilter?.id, selectedGenre],
+        queryFn: async () => {
+            const params = new URLSearchParams();
+            params.append('publisher', String(publisherDialogFilter?.id));
+            if (selectedGenre !== 'all') {
+                const genreId = genreIdByAbbr.get(selectedGenre);
+                if (genreId) params.append('genre', String(genreId));
+            }
+            const response = await getApiContent(`stats/filterworks?${params.toString()}`, user);
+            return response.data;
+        },
+        enabled: publisherDialogFilter !== null
+    });
 
     return (
         <div className="flex justify-content-center">
@@ -179,6 +219,25 @@ export const PublisherChart = () => {
                     </div>
                 </details>
             </Card>
+
+            {/* Dialog for works filtered by publisher */}
+            <Dialog
+                header={publisherDialogFilter ? `${publisherDialogFilter.name} (${publisherDialogFilter.count})` : ''}
+                visible={publisherDialogFilter !== null}
+                onHide={() => setPublisherDialogFilter(null)}
+                style={{ width: '80vw', maxHeight: '90vh' }}
+                maximizable
+            >
+                {publisherWorksQuery.isLoading ? (
+                    <div className="flex justify-content-center p-4">
+                        <ProgressSpinner style={{ width: '50px', height: '50px' }} />
+                    </div>
+                ) : publisherWorksQuery.data && publisherWorksQuery.data.length > 0 ? (
+                    <WorkList works={publisherWorksQuery.data} />
+                ) : (
+                    <p className="text-500">Ei tuloksia</p>
+                )}
+            </Dialog>
         </div>
     );
 };

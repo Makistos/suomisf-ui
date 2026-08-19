@@ -79,6 +79,13 @@ const storyRoleIdOptions = [
     { label: 'Esiintyy', value: 6 },
 ];
 
+// Role name -> id, matching storyRoleIdOptions above
+const storyRoleNameToId: Record<string, number> = {
+    'kirjoittaja': 1,
+    'kääntäjä': 2,
+    'esiintyy': 6,
+};
+
 // Capitalize first letter
 const capitalizeFirst = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -129,6 +136,7 @@ export const ShortStoryChart = () => {
     const [yearChartLanguages, setYearChartLanguages] = useState<number[]>([]);
     const [dialogVisible, setDialogVisible] = useState<boolean>(false);
     const [dialogFilter, setDialogFilter] = useState<{ year: number; language: string; languageId: number; storyType: string } | null>(null);
+    const [nationalityDialogFilter, setNationalityDialogFilter] = useState<{ id: number; name: string; count: number } | null>(null);
     const user = useMemo(() => getCurrenUser(), []);
 
     // Fetch nationality data for short stories
@@ -286,8 +294,9 @@ export const ShortStoryChart = () => {
     const allNationalities = useMemo(() => {
         if (!nationalityQuery.data) return [];
         return nationalityQuery.data
-            .filter(item => item.nationality !== null)
+            .filter(item => item.nationality !== null && item.nationality_id !== null)
             .map(item => ({
+                nationality_id: item.nationality_id!,
                 nationality: item.nationality!,
                 count: getNationalityCount(item)
             }))
@@ -295,9 +304,12 @@ export const ShortStoryChart = () => {
             .sort((a, b) => b.count - a.count);
     }, [nationalityQuery.data, nationalityStoryType, nationalityRole]);
 
+    // Top 20 nationalities shown in the chart (also drives legend click index)
+    const top20Nationalities = useMemo(() => allNationalities.slice(0, 20), [allNationalities]);
+
     // Chart data (top 20 nationalities)
     const nationalityChartData = useMemo(() => {
-        const top20 = allNationalities.slice(0, 20);
+        const top20 = top20Nationalities;
 
         if (top20.length === 0) return null;
 
@@ -311,7 +323,7 @@ export const ShortStoryChart = () => {
                 }
             ]
         };
-    }, [allNationalities]);
+    }, [top20Nationalities]);
 
     const nationalityChartOptions = useMemo(() => ({
         maintainAspectRatio: false,
@@ -330,6 +342,12 @@ export const ShortStoryChart = () => {
                             index
                         }));
                     }
+                },
+                onClick: (_event: unknown, legendItem: { index?: number }) => {
+                    const item = top20Nationalities[legendItem.index ?? -1];
+                    if (item) {
+                        setNationalityDialogFilter({ id: item.nationality_id, name: item.nationality, count: item.count });
+                    }
                 }
             },
             tooltip: {
@@ -340,7 +358,40 @@ export const ShortStoryChart = () => {
                 }
             }
         }
-    }), []);
+    }), [top20Nationalities]);
+
+    const storyTypeIdByName = useMemo(() => {
+        const map = new Map<string, number>();
+        storyTypesQuery.data?.forEach(t => map.set(t.name.toLowerCase(), t.id));
+        return map;
+    }, [storyTypesQuery.data]);
+
+    const nationalityStoriesQuery = useQuery<Short[]>({
+        queryKey: ['stats', 'filterstories', 'nationality', nationalityDialogFilter?.id, nationalityStoryType, nationalityRole],
+        queryFn: async () => {
+            const params = new URLSearchParams();
+            params.append('nationality', String(nationalityDialogFilter?.id));
+            if (nationalityStoryType !== 'all') {
+                const storyTypeId = storyTypeIdByName.get(nationalityStoryType);
+                if (storyTypeId) params.append('storytype', String(storyTypeId));
+            }
+            if (nationalityRole !== 'all') {
+                const roleId = storyRoleNameToId[nationalityRole];
+                if (roleId) params.append('role', String(roleId));
+            }
+            const response = await getApiContent(`stats/filterstories?${params.toString()}`, user);
+            return (response.data || []).map((short: Partial<Short>) => ({
+                ...short,
+                genres: short.genres || [],
+                editions: short.editions || [],
+                issues: short.issues || [],
+                tags: short.tags || [],
+                awards: short.awards || [],
+                order_num: short.order_num ?? 0,
+            })) as Short[];
+        },
+        enabled: nationalityDialogFilter !== null
+    });
 
     // Extract unique languages from year data for MultiSelect options
     const languageOptions = useMemo(() => {
@@ -785,6 +836,25 @@ export const ShortStoryChart = () => {
                     </div>
                 ) : filteredStoriesQuery.data && filteredStoriesQuery.data.length > 0 ? (
                     <ShortsList shorts={filteredStoriesQuery.data} listPublications groupAuthors anthology />
+                ) : (
+                    <p className="text-500">Ei tuloksia</p>
+                )}
+            </Dialog>
+
+            {/* Dialog for stories filtered by nationality */}
+            <Dialog
+                header={nationalityDialogFilter ? `${nationalityDialogFilter.name} (${nationalityDialogFilter.count})` : ''}
+                visible={nationalityDialogFilter !== null}
+                onHide={() => setNationalityDialogFilter(null)}
+                style={{ width: '80vw', maxHeight: '90vh' }}
+                maximizable
+            >
+                {nationalityStoriesQuery.isLoading ? (
+                    <div className="flex justify-content-center p-4">
+                        <ProgressSpinner style={{ width: '50px', height: '50px' }} />
+                    </div>
+                ) : nationalityStoriesQuery.data && nationalityStoriesQuery.data.length > 0 ? (
+                    <ShortsList shorts={nationalityStoriesQuery.data} listPublications groupAuthors anthology />
                 ) : (
                     <p className="text-500">Ei tuloksia</p>
                 )}

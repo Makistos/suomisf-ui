@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Card } from 'primereact/card';
 import { Dropdown } from 'primereact/dropdown';
 import { Slider } from 'primereact/slider';
+import { Dialog } from 'primereact/dialog';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -17,6 +18,9 @@ import { getApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { WorksByYearChart } from './works-by-year-chart';
 import { CumulativeEditionsChart } from './cumulative-editions-chart';
+import { Genre } from '../../genre';
+import { WorkList } from '../../work/components/work-list';
+import { Work } from '../../work/types';
 
 ChartJS.register(
     ArcElement,
@@ -89,7 +93,22 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
     const [authorCount, setAuthorCount] = useState<number>(10);
     const [nationalityGenre, setNationalityGenre] = useState<string>('all');
     const [nationalityRole, setNationalityRole] = useState<string>('kirjoittaja');
+    const [nationalityDialogFilter, setNationalityDialogFilter] = useState<{ id: number; name: string; count: number } | null>(null);
     const user = useMemo(() => getCurrenUser(), []);
+
+    const genresQuery = useQuery<Genre[]>({
+        queryKey: ['genres'],
+        queryFn: async () => {
+            const response = await getApiContent('genres', user);
+            return response.data;
+        }
+    });
+
+    const genreIdByAbbr = useMemo(() => {
+        const map = new Map<string, number>();
+        genresQuery.data?.forEach(g => map.set(g.abbr, g.id));
+        return map;
+    }, [genresQuery.data]);
 
     // Fetch roles from API
     const rolesQuery = useQuery<Role[]>({
@@ -211,8 +230,9 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
     const allNationalities = useMemo(() => {
         if (!nationalityQuery.data) return [];
         return nationalityQuery.data
-            .filter(item => item.nationality !== null)
+            .filter(item => item.nationality !== null && item.nationality_id !== null)
             .map(item => ({
+                nationality_id: item.nationality_id!,
                 nationality: item.nationality!,
                 count: getNationalityCount(item)
             }))
@@ -220,9 +240,12 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
             .sort((a, b) => b.count - a.count);
     }, [nationalityQuery.data, nationalityGenre, nationalityRole]);
 
+    // Top 20 nationalities shown in the chart (also drives legend click index)
+    const top20Nationalities = useMemo(() => allNationalities.slice(0, 20), [allNationalities]);
+
     // Chart data (top 20 nationalities)
     const nationalityChartData = useMemo(() => {
-        const top20 = allNationalities.slice(0, 20);
+        const top20 = top20Nationalities;
 
         if (top20.length === 0) return null;
 
@@ -236,7 +259,7 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
                 }
             ]
         };
-    }, [allNationalities]);
+    }, [top20Nationalities]);
 
     const nationalityChartOptions = useMemo(() => ({
         maintainAspectRatio: false,
@@ -255,6 +278,12 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
                             index
                         }));
                     }
+                },
+                onClick: (_event: unknown, legendItem: { index?: number }) => {
+                    const item = top20Nationalities[legendItem.index ?? -1];
+                    if (item) {
+                        setNationalityDialogFilter({ id: item.nationality_id, name: item.nationality, count: item.count });
+                    }
                 }
             },
             tooltip: {
@@ -265,7 +294,32 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
                 }
             }
         }
-    }), []);
+    }), [top20Nationalities]);
+
+    const roleIdByName = useMemo(() => {
+        const map = new Map<string, number>();
+        rolesQuery.data?.forEach(r => map.set(r.name.toLowerCase(), r.id));
+        return map;
+    }, [rolesQuery.data]);
+
+    const nationalityWorksQuery = useQuery<Work[]>({
+        queryKey: ['stats', 'filterworks', 'nationality', nationalityDialogFilter?.id, nationalityGenre, nationalityRole],
+        queryFn: async () => {
+            const params = new URLSearchParams();
+            params.append('nationality', String(nationalityDialogFilter?.id));
+            if (nationalityGenre !== 'all') {
+                const genreId = genreIdByAbbr.get(nationalityGenre);
+                if (genreId) params.append('genre', String(genreId));
+            }
+            if (nationalityRole !== 'all') {
+                const roleId = roleIdByName.get(nationalityRole);
+                if (roleId) params.append('role', String(roleId));
+            }
+            const response = await getApiContent(`stats/filterworks?${params.toString()}`, user);
+            return response.data;
+        },
+        enabled: nationalityDialogFilter !== null
+    });
 
     const countTemplate = (rowData: any) => {
         return rowData.count.toLocaleString('fi-FI');
@@ -408,6 +462,25 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
                     originalYearData={originalYearData}
                 />
             </div>
+
+            {/* Dialog for works filtered by nationality */}
+            <Dialog
+                header={nationalityDialogFilter ? `${nationalityDialogFilter.name} (${nationalityDialogFilter.count})` : ''}
+                visible={nationalityDialogFilter !== null}
+                onHide={() => setNationalityDialogFilter(null)}
+                style={{ width: '80vw', maxHeight: '90vh' }}
+                maximizable
+            >
+                {nationalityWorksQuery.isLoading ? (
+                    <div className="flex justify-content-center p-4">
+                        <ProgressSpinner style={{ width: '50px', height: '50px' }} />
+                    </div>
+                ) : nationalityWorksQuery.data && nationalityWorksQuery.data.length > 0 ? (
+                    <WorkList works={nationalityWorksQuery.data} />
+                ) : (
+                    <p className="text-500">Ei tuloksia</p>
+                )}
+            </Dialog>
         </div>
     );
 };

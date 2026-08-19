@@ -55,3 +55,17 @@ Note: `package-lock.json` was gitignored until this file was added, so
 GitHub's dependency graph couldn't see resolved transitive versions and its
 alert count lagged badly behind reality. Now tracked in git — dependabot's
 numbers should catch up over the next scan cycle.
+
+## yarn.lock removed (2026-08-19)
+
+`yarn.lock` was a dead leftover from the project's original create-react-app
+scaffold (added 2021-11-26, the initial commit). Nothing in the project
+actually used it — no `packageManager` field, all scripts call `vite`/`npm`
+directly, and `yarn` isn't even installed in dev environments here. But
+GitHub's dependency graph had been tracking it as a *second*, independent
+manifest the whole time, with its own dependabot alerts (some dating back to
+2025-02-11) separate from whatever `package.json`/`package-lock.json`
+showed. The moment `package-lock.json` got tracked, every already-open
+`yarn.lock` alert got a duplicate opened against the new manifest too —
+that's the "two new alerts" that prompted this. Deleted `yarn.lock` entirely
+so there's one lockfile and one set of alerts going forward.

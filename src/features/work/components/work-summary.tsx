@@ -13,7 +13,7 @@ import { editionIsOwned } from '@features/edition/utils/edition-is-owned';
 import { editionIsWishlisted } from '@features/edition/utils/edition-is-wishlisted';
 import { getCurrenUser } from '@services/auth-service';
 
-export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
+export const WorkSummary = React.memo(({ work, detailLevel }: WorkProps) => {
     const user = useMemo(() => getCurrenUser(), [])
     const isOwned = detailLevel == "brief"
         ? work.editions.some(edition => editionIsOwned(edition, user))
@@ -149,4 +149,4 @@ export const WorkSummary = ({ work, detailLevel }: WorkProps) => {
             ))}
         </div>
     );
-};
+});

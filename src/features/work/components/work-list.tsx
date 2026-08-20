@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 import { SelectButton } from 'primereact/selectbutton';
@@ -79,6 +79,14 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
         return aName.localeCompare(bName, "fi");
     }
 
+    // Oldest edition's publication year, without mutating work.editions
+    // (Array.prototype.sort sorts in place, and this used to run on every
+    // comparator call during the outer sort).
+    const oldestEditionPubyear = (work: Work): number =>
+        work.editions.length > 0
+            ? Math.min(...work.editions.map(e => Number(e.pubyear)))
+            : Infinity;
+
     const compareWorks = (a: Work, b: Work) => {
         if (sort === false) return 1;
         if (orderField === 'Title') {
@@ -88,13 +96,27 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
             if (a.pubyear < b.pubyear) return -1;
             if (a.pubyear > b.pubyear) return 1;
         } else if (orderField === 'Pubyear') {
-            const oldestA = a.editions.sort((a, b) => a.pubyear > b.pubyear ? 1 : -1)[0]
-            const oldestB = b.editions.sort((a, b) => a.pubyear > b.pubyear ? 1 : -1)[0]
-            if (oldestA.pubyear < oldestB.pubyear) return -1;
-            if (oldestA.pubyear > oldestB.pubyear) return 1;
+            const oldestA = oldestEditionPubyear(a);
+            const oldestB = oldestEditionPubyear(b);
+            if (oldestA < oldestB) return -1;
+            if (oldestA > oldestB) return 1;
         }
         return 0;
     }
+
+    // Grouping + author sort + per-group filter/sort, computed once per
+    // relevant change instead of on every render (real cost at list size).
+    const sortedGroupedWorks = useMemo(() => {
+        return Object.entries(groupedWorks)
+            .sort(compareAuthors)
+            .map(([group, ws]) => ({
+                group,
+                works: ws,
+                listWorks: ws.filter(work => work.editions.length > 0)
+                    .sort(compareWorks),
+            }));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [groupedWorks, personName, collaborationsLast, sort, orderField]);
 
     const detailTemplate = (option: detailOptionType) => {
         return <i className={option.icon}></i>
@@ -129,9 +151,8 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
                 </div>
                 <div className="grid col-12">
                     {
-                        Object.entries(groupedWorks)
-                            .sort(compareAuthors)
-                            .map(([group, ws]) => {
+                        sortedGroupedWorks
+                            .map(({ group, works: ws, listWorks }) => {
                                 return (
                                     <div className="grid col-12" key={group}>
                                         <div className="grid col-12">
@@ -167,16 +188,14 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
                                         </div>
                                         <div>
                                             {workView === 'Lista' ? (
-                                                ws.filter(work => work.editions.length > 0)
-                                                    .sort(compareWorks)
-                                                    .map((work) => (
-                                                        <WorkSummary
-                                                            work={work}
-                                                            key={`work-${work.id}-summary`}
-                                                            detailLevel={detailLevel}
-                                                            orderField={orderField}
-                                                        />
-                                                    ))
+                                                listWorks.map((work) => (
+                                                    <WorkSummary
+                                                        work={work}
+                                                        key={`work-${work.id}-summary`}
+                                                        detailLevel={detailLevel}
+                                                        orderField={orderField}
+                                                    />
+                                                ))
                                             ) : (
                                                 <CoverImageList key={group} works={ws} />
                                             )}

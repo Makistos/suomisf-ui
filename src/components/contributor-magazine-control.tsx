@@ -228,7 +228,7 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
                             )}
 
                             <div className="contribution-list">
-                                {typeData.contributions
+                                {[...typeData.contributions]
                                     .sort((a, b) => {
                                         // Sort by year first (descending - most recent first)
                                         const yearA = a.issue.year || 0;

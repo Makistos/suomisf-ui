@@ -328,7 +328,7 @@ export const ContributorEditionControl = ({
                             </h3>
                         )}
                         <div className="edition-list">
-                            {group.editions
+                            {[...group.editions]
                                 .sort((a, b) => {
                                     if (sort === "year") {
                                         const yearA = typeof a.pubyear === 'number' ? a.pubyear : parseInt(String(a.pubyear || 0));

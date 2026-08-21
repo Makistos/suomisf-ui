@@ -59,7 +59,7 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
             return <></>
         }
         const uniqueIds: number[] = [];
-        const uniqueEditions = editions
+        const uniqueEditions = [...editions]
             .sort((a, b) => a.pubyear > b.pubyear ? -1 : 1)
             .filter(edition => {
                 const isDuplicate = uniqueIds.includes(edition.work?.id ? edition.work.id : 0);
@@ -135,12 +135,11 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
     }
 
     const orderContributions = (short: Short): Short => {
-        let retval: Short = short
-        if (short.contributors !== undefined) {
-            let contrib = short.contributors.sort((a, b) => a.role.id - b.role.id)
-            retval.contributors = contrib
-        }
-        return retval
+        if (short.contributors === undefined) return short;
+        return {
+            ...short,
+            contributors: [...short.contributors].sort((a, b) => a.role.id - b.role.id),
+        };
     }
 
     const onDialogShow = () => {

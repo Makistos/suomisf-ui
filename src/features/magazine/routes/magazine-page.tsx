@@ -215,7 +215,7 @@ export const MagazinePage = () => {
                                 <TabPanel header="Lehdet" leftIcon="pi pi-book">
                                     <div className="card">
                                         {Object.entries(
-                                            data.issues
+                                            [...data.issues]
                                                 .sort((a, b) => {
                                                     if (a.year !== b.year) {
                                                         return a.year - b.year;
@@ -249,7 +249,7 @@ export const MagazinePage = () => {
                                 <TabPanel header="Kannet" leftIcon="pi pi-image">
                                     <div className="card">
                                         <div className="grid">
-                                            {data.issues.sort((a, b) => {
+                                            {[...data.issues].sort((a, b) => {
                                                 if (a.year !== b.year) {
                                                     return a.year - b.year;
                                                 }
@@ -260,7 +260,7 @@ export const MagazinePage = () => {
                                             }
                                             )
                                                 .map((issue) => (
-                                                    <div className="p-1">
+                                                    <div className="p-1" key={issue.id}>
                                                         {issue.images?.[0] && (
                                                             <Image preview height="200px"
                                                                 src={issue.images[0].image_src.startsWith('http') ?

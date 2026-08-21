@@ -44,7 +44,7 @@ export const BookSeriesList = ({ works, seriesType }: SeriesListProps) => {
                                 </Link>
                                 </h3>
                                 {
-                                    ser.sort((a, b) => a.pubyear < b.pubyear ? -1 : 1).map((work: Work) => (
+                                    [...ser].sort((a, b) => a.pubyear < b.pubyear ? -1 : 1).map((work: Work) => (
                                         <WorkSummary work={work} key={work.id}
                                             detailLevel="brief"
                                             orderField="title"

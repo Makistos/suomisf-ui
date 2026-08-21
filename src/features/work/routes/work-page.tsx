@@ -161,7 +161,7 @@ const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, highlight
                     {edition.images.length > 0 ?
                         <ImageView
                             itemId={edition.id}
-                            images={edition.images.sort((a, b) => a.id - b.id)}
+                            images={[...edition.images].sort((a, b) => a.id - b.id)}
                             idx={currIdx}
                             saveFunc={customSave}
                             deleteFunc={deleteImage}

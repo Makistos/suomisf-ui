@@ -262,5 +262,215 @@
       "totalGzipKb": 1020,
       "hasSizeWarning": true
     }
+  },
+  {
+    "label": "after-mutating-sorts",
+    "note": "fixed 17+ in-place-mutating .sort() calls across 14 files (state/props/react-query cache/useMemo mutated during render), plus a missing key prop on magazine-page.tsx's cover grid that was causing the baseline's React key-warning on /magazines/43",
+    "timestamp": "2026-08-21T18:00:13.029Z",
+    "routes": [
+      {
+        "path": "/",
+        "name": "home",
+        "area": "bundle size / overall load",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [
+          "Failed to load resource: the server responded with a status of 404 ()",
+          "Failed to load resource: the server responded with a status of 404 ()"
+        ],
+        "significantErrors": [],
+        "wallMs": 2288,
+        "timing": {
+          "domContentLoaded": 508,
+          "loadEvent": 510,
+          "responseEnd": 5
+        },
+        "totalBytes": 12644145,
+        "requestCount": 394,
+        "domNodeCount": 547,
+        "bodyTextLength": 665,
+        "title": "SF-Bibliografia"
+      },
+      {
+        "path": "/stats",
+        "name": "stats",
+        "area": "code splitting (heavy chart page)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1236,
+        "timing": {
+          "domContentLoaded": 516,
+          "loadEvent": 519,
+          "responseEnd": 3
+        },
+        "totalBytes": 11463263,
+        "requestCount": 386,
+        "domNodeCount": 517,
+        "bodyTextLength": 400,
+        "title": "SF-Bibliografia"
+      },
+      {
+        "path": "/works/63",
+        "name": "work-with-omnibus",
+        "area": "work-details.tsx part_of mutating sort",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1310,
+        "timing": {
+          "domContentLoaded": 499,
+          "loadEvent": 502,
+          "responseEnd": 3
+        },
+        "totalBytes": 11564578,
+        "requestCount": 383,
+        "domNodeCount": 640,
+        "bodyTextLength": 943,
+        "title": "Etelän tähti"
+      },
+      {
+        "path": "/works/1505",
+        "name": "work-many-editions",
+        "area": "cover-image-list.tsx lazy loading (37 editions)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1635,
+        "timing": {
+          "domContentLoaded": 506,
+          "loadEvent": 509,
+          "responseEnd": 3
+        },
+        "totalBytes": 13964416,
+        "requestCount": 388,
+        "domNodeCount": 856,
+        "bodyTextLength": 2848,
+        "title": "Lohikäärmevuori"
+      },
+      {
+        "path": "/people/2286",
+        "name": "person-prolific",
+        "area": "bookseries-list.tsx mutating sort (Stephen King)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 3205,
+        "timing": {
+          "domContentLoaded": 484,
+          "loadEvent": 487,
+          "responseEnd": 3
+        },
+        "totalBytes": 22430656,
+        "requestCount": 467,
+        "domNodeCount": 3904,
+        "bodyTextLength": 12470,
+        "title": "SF-Bibliografia - King, Stephen"
+      },
+      {
+        "path": "/publishers/387",
+        "name": "publisher-wsoy",
+        "area": "edition-list.tsx mutating sort (2200+ editions)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 5123,
+        "timing": {
+          "domContentLoaded": 514,
+          "loadEvent": 516,
+          "responseEnd": 3
+        },
+        "totalBytes": 15818318,
+        "requestCount": 383,
+        "domNodeCount": 7725,
+        "bodyTextLength": 116797,
+        "title": "SF-Bibliografia - WSOY"
+      },
+      {
+        "path": "/issues/1",
+        "name": "issue",
+        "area": "issue-page.tsx images mutating sort",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1285,
+        "timing": {
+          "domContentLoaded": 521,
+          "loadEvent": 524,
+          "responseEnd": 3
+        },
+        "totalBytes": 11550405,
+        "requestCount": 383,
+        "domNodeCount": 587,
+        "bodyTextLength": 471,
+        "title": "SF-Bibliografia"
+      },
+      {
+        "path": "/magazines/43",
+        "name": "magazine-many-issues",
+        "area": "magazine-page.tsx issues mutating sort (177 issues)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1365,
+        "timing": {
+          "domContentLoaded": 535,
+          "loadEvent": 538,
+          "responseEnd": 3
+        },
+        "totalBytes": 12311750,
+        "requestCount": 382,
+        "domNodeCount": 1009,
+        "bodyTextLength": 1812,
+        "title": "SF-Bibliografia - Spin"
+      },
+      {
+        "path": "/shorts/4985",
+        "name": "short-many-contributors",
+        "area": "remove-duplicate-contributions.ts mutating sort, 4x/render (20 contributors)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1396,
+        "timing": {
+          "domContentLoaded": 510,
+          "loadEvent": 513,
+          "responseEnd": 3
+        },
+        "totalBytes": 11392185,
+        "requestCount": 384,
+        "domNodeCount": 571,
+        "bodyTextLength": 499,
+        "title": "SF-Bibliografia - Kylä kukkulalla"
+      },
+      {
+        "path": "/changes",
+        "name": "changes-log",
+        "area": "unpaginated audit log table",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 2147,
+        "timing": {
+          "domContentLoaded": 522,
+          "loadEvent": 525,
+          "responseEnd": 3
+        },
+        "totalBytes": 13093357,
+        "requestCount": 382,
+        "domNodeCount": 11342,
+        "bodyTextLength": 40852,
+        "title": "SF-Bibliografia"
+      }
+    ]
   }
 ]

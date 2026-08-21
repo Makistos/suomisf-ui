@@ -364,7 +364,7 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
                                         {(data.images.length > 0 && issueId) ?
                                             <ImageView
                                                 itemId={issueId}
-                                                images={data.images.sort((a, b) => a.id - b.id)}
+                                                images={[...data.images].sort((a, b) => a.id - b.id)}
                                                 idx={imageIdx}
                                                 saveFunc={saveImage}
                                                 deleteFunc={deleteImage}

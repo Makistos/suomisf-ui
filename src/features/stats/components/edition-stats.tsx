@@ -42,12 +42,12 @@ export const EditionsStats = ({ editions }: EditionsProps) => {
 
 
     const oldestEdition = () => {
-        const oldest = editions.sort((a, b) => a.pubyear < b.pubyear ? -1 : 1)[0];
+        const oldest = [...editions].sort((a, b) => a.pubyear < b.pubyear ? -1 : 1)[0];
         return oldest.title + "(" + oldest.pubyear + ")";
     }
 
     const newestEdition = () => {
-        const newest = editions.sort((a, b) => a.pubyear > b.pubyear ? -1 : 1)[0]
+        const newest = [...editions].sort((a, b) => a.pubyear > b.pubyear ? -1 : 1)[0]
         return newest.title + "(" + newest.pubyear + ")";
     }
 

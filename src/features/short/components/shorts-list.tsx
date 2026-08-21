@@ -155,7 +155,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPubli
                             <div key={group}>
                                 {groupHeader(group)}
                                 {
-                                    shortList.sort((a, b) => a.order_num - b.order_num).map((short: Short) => (
+                                    [...shortList].sort((a, b) => a.order_num - b.order_num).map((short: Short) => (
                                         <ShortSummary short={short} key={short.id}
                                             skipAuthors={skipAuthors}
                                             {...(listPublications ? { listPublications } : {})}

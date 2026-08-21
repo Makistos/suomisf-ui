@@ -206,7 +206,7 @@ export const WorkDetails = ({ work }: WorkProps) => {
                             {work.part_of.length === 1 && <b>Myös teoksessa:</b>}
                             {work.part_of.length > 1 && <b>Myös teoksissa:</b>}
                             <ul className="mt-0 mt-2 mb-2">
-                                {work.part_of.sort((a, b) => a.omnibus.title.localeCompare(b.omnibus.title)).map((parentwork) => (
+                                {[...work.part_of].sort((a, b) => a.omnibus.title.localeCompare(b.omnibus.title)).map((parentwork) => (
                                     <li key={parentwork.omnibus.id}>
                                         <Link to={`/works/${parentwork.omnibus.id}`}>
                                             {parentwork.omnibus.title}

@@ -8,7 +8,7 @@ import { Contribution } from "../types/contribution";
  */
 export const removeDuplicateContributions = (contributions: Contribution[]) => {
     const uniqueIds: number[] = [];
-    const uniqueContributions = contributions
+    const uniqueContributions = [...contributions]
         .sort((a, b) => a.role.id - b.role.id)
         .filter(contrib => {
             const isDuplicate = uniqueIds.includes(contrib.person.id);

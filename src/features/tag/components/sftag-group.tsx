@@ -143,7 +143,7 @@ export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseF
     }
     return (
         <div className="flex flex-wrap m-0 p-0">
-            {groupedTags.sort(sortTags).map((tag, idx) => {
+            {[...groupedTags].sort(sortTags).map((tag, idx) => {
                 return (overflow === undefined || idx < overflow || showAll) &&
                     <span key={tag.name} className="mr-1 mb-1">
                         <Link to={`/tags/${tag.id}`} className="mr-1 mb-1"

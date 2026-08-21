@@ -152,7 +152,7 @@ export const EditionList = ({ editions, person, sort = "year" }: EditionListProp
                                         )
                                     }
                                     {editionView === "Lista" ? (
-                                        ed.sort(cmpEditions).map((edition: Edition) => (
+                                        [...ed].sort(cmpEditions).map((edition: Edition) => (
                                             <div className="grid col-12" key={edition.id}>
                                                 <EditionSummary edition={edition} showVersion={true} work={edition.work}
                                                     key={edition.id} showPerson={sorting !== "author"}
@@ -162,7 +162,7 @@ export const EditionList = ({ editions, person, sort = "year" }: EditionListProp
                                             </div>
                                         ))
                                     ) : (
-                                        <CoverImageList key={group} editions={ed.sort(cmpEditions)} />
+                                        <CoverImageList key={group} editions={[...ed].sort(cmpEditions)} />
                                     )
                                     }
                                 </div>

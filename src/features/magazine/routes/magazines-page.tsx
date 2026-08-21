@@ -74,7 +74,7 @@ export function MagazinesPage() {
                             </div>
                             <div className="three-column">
                                 {
-                                    data
+                                    [...data]
                                         .sort((a, b) => a.name > b.name ? 1 : -1)
                                         .map((data) => (
                                             <div key={data.id} className="mb-2">

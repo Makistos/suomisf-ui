@@ -38,6 +38,7 @@
   },
   "scripts": {
     "start": "vite",
+    "dev:e2e": "vite --mode e2e",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "lint": "eslint .",

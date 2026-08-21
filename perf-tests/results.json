@@ -472,5 +472,590 @@
         "title": "SF-Bibliografia"
       }
     ]
+  },
+  {
+    "label": "after-codesplitting",
+    "note": "route-based code splitting: App+HomeAlt eager, all other ~29 routes converted to React.lazy",
+    "timestamp": "2026-08-21T18:05:30.649Z",
+    "routes": [
+      {
+        "path": "/",
+        "name": "home",
+        "area": "bundle size / overall load",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [
+          "Failed to load resource: the server responded with a status of 404 ()",
+          "Failed to load resource: the server responded with a status of 404 ()"
+        ],
+        "significantErrors": [],
+        "wallMs": 2159,
+        "timing": {
+          "domContentLoaded": 299,
+          "loadEvent": 302,
+          "responseEnd": 4
+        },
+        "totalBytes": 7415232,
+        "requestCount": 199,
+        "domNodeCount": 547,
+        "bodyTextLength": 665,
+        "title": "SF-Bibliografia"
+      },
+      {
+        "path": "/stats",
+        "name": "stats",
+        "area": "code splitting (heavy chart page)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1152,
+        "timing": {
+          "domContentLoaded": 327,
+          "loadEvent": 330,
+          "responseEnd": 3
+        },
+        "totalBytes": 8610509,
+        "requestCount": 297,
+        "domNodeCount": 517,
+        "bodyTextLength": 400,
+        "title": "SF-Bibliografia"
+      },
+      {
+        "path": "/works/63",
+        "name": "work-with-omnibus",
+        "area": "work-details.tsx part_of mutating sort",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1236,
+        "timing": {
+          "domContentLoaded": 318,
+          "loadEvent": 321,
+          "responseEnd": 3
+        },
+        "totalBytes": 8711824,
+        "requestCount": 294,
+        "domNodeCount": 641,
+        "bodyTextLength": 943,
+        "title": "Etelän tähti"
+      },
+      {
+        "path": "/works/1505",
+        "name": "work-many-editions",
+        "area": "cover-image-list.tsx lazy loading (37 editions)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1480,
+        "timing": {
+          "domContentLoaded": 314,
+          "loadEvent": 316,
+          "responseEnd": 3
+        },
+        "totalBytes": 11111662,
+        "requestCount": 299,
+        "domNodeCount": 857,
+        "bodyTextLength": 2848,
+        "title": "Lohikäärmevuori"
+      },
+      {
+        "path": "/people/2286",
+        "name": "person-prolific",
+        "area": "bookseries-list.tsx mutating sort (Stephen King)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 3207,
+        "timing": {
+          "domContentLoaded": 307,
+          "loadEvent": 309,
+          "responseEnd": 3
+        },
+        "totalBytes": 21302345,
+        "requestCount": 409,
+        "domNodeCount": 3905,
+        "bodyTextLength": 12470,
+        "title": "SF-Bibliografia - King, Stephen"
+      },
+      {
+        "path": "/publishers/387",
+        "name": "publisher-wsoy",
+        "area": "edition-list.tsx mutating sort (2200+ editions)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 5045,
+        "timing": {
+          "domContentLoaded": 325,
+          "loadEvent": 328,
+          "responseEnd": 3
+        },
+        "totalBytes": 10844583,
+        "requestCount": 206,
+        "domNodeCount": 7725,
+        "bodyTextLength": 116797,
+        "title": "SF-Bibliografia - WSOY"
+      },
+      {
+        "path": "/issues/1",
+        "name": "issue",
+        "area": "issue-page.tsx images mutating sort",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1150,
+        "timing": {
+          "domContentLoaded": 328,
+          "loadEvent": 331,
+          "responseEnd": 3
+        },
+        "totalBytes": 6759102,
+        "requestCount": 217,
+        "domNodeCount": 588,
+        "bodyTextLength": 471,
+        "title": "SF-Bibliografia"
+      },
+      {
+        "path": "/magazines/43",
+        "name": "magazine-many-issues",
+        "area": "magazine-page.tsx issues mutating sort (177 issues)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1142,
+        "timing": {
+          "domContentLoaded": 314,
+          "loadEvent": 317,
+          "responseEnd": 3
+        },
+        "totalBytes": 7301507,
+        "requestCount": 201,
+        "domNodeCount": 1010,
+        "bodyTextLength": 1812,
+        "title": "SF-Bibliografia - Spin"
+      },
+      {
+        "path": "/shorts/4985",
+        "name": "short-many-contributors",
+        "area": "remove-duplicate-contributions.ts mutating sort, 4x/render (20 contributors)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1165,
+        "timing": {
+          "domContentLoaded": 320,
+          "loadEvent": 322,
+          "responseEnd": 3
+        },
+        "totalBytes": 8627541,
+        "requestCount": 300,
+        "domNodeCount": 572,
+        "bodyTextLength": 499,
+        "title": "SF-Bibliografia - Kylä kukkulalla"
+      },
+      {
+        "path": "/changes",
+        "name": "changes-log",
+        "area": "unpaginated audit log table",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1945,
+        "timing": {
+          "domContentLoaded": 348,
+          "loadEvent": 352,
+          "responseEnd": 4
+        },
+        "totalBytes": 7882158,
+        "requestCount": 188,
+        "domNodeCount": 11342,
+        "bodyTextLength": 40852,
+        "title": "SF-Bibliografia"
+      }
+    ],
+    "buildMetrics": {
+      "mainChunkFile": "index-CNDkJ88B.js",
+      "mainChunkKb": 792.77,
+      "mainChunkGzipKb": 235.06,
+      "allChunks": [
+        {
+          "file": "index-CNDkJ88B.js",
+          "kb": 792.77,
+          "gzipKb": 235.06
+        },
+        {
+          "file": "index-yev0dV2-.js",
+          "kb": 720.64,
+          "gzipKb": 178.46
+        },
+        {
+          "file": "jspdf.es.min-6pNXYl5B.js",
+          "kb": 390.26,
+          "gzipKb": 127.24
+        },
+        {
+          "file": "sftag-group-BNaKP9vG.js",
+          "kb": 297.35,
+          "gzipKb": 96.45
+        },
+        {
+          "file": "quill-DkQYjyuM.js",
+          "kb": 203.24,
+          "gzipKb": 60.6
+        },
+        {
+          "file": "html2canvas.esm-CBrSDip1.js",
+          "kb": 201.42,
+          "gzipKb": 47.7
+        },
+        {
+          "file": "datatable.esm-Djaf06Uz.js",
+          "kb": 190.09,
+          "gzipKb": 50.75
+        },
+        {
+          "file": "index-DT3vBRyO.js",
+          "kb": 170.59,
+          "gzipKb": 49.2
+        },
+        {
+          "file": "index.es-BKWvN_OL.js",
+          "kb": 149.91,
+          "gzipKb": 51.01
+        },
+        {
+          "file": "image-view-DPE7A8j-.js",
+          "kb": 79.53,
+          "gzipKb": 22.35
+        },
+        {
+          "file": "awarded-form-DTiIr9Go.js",
+          "kb": 41.42,
+          "gzipKb": 11.79
+        },
+        {
+          "file": "jspdf.plugin.autotable-CHGJwQue.js",
+          "kb": 31.1,
+          "gzipKb": 9.94
+        },
+        {
+          "file": "purify.es-BnINGy_Y.js",
+          "kb": 28.93,
+          "gzipKb": 11.11
+        },
+        {
+          "file": "profile-page-D0nhf2mr.js",
+          "kb": 28.77,
+          "gzipKb": 7.95
+        },
+        {
+          "file": "image.esm-CkVYdI6t.js",
+          "kb": 24.93,
+          "gzipKb": 8.76
+        },
+        {
+          "file": "index-Caxt8nP7.js",
+          "kb": 24.85,
+          "gzipKb": 7.91
+        },
+        {
+          "file": "toast.esm-D4EhwsOk.js",
+          "kb": 18.66,
+          "gzipKb": 7.04
+        },
+        {
+          "file": "short-summary-WPO_KLHn.js",
+          "kb": 17.57,
+          "gzipKb": 6.45
+        },
+        {
+          "file": "tabview.esm-CMCG3jjd.js",
+          "kb": 16.24,
+          "gzipKb": 5.54
+        },
+        {
+          "file": "speeddial.esm-C9vBLjGC.js",
+          "kb": 14.48,
+          "gzipKb": 4.86
+        },
+        {
+          "file": "work-search-DJiBcBNF.js",
+          "kb": 11.05,
+          "gzipKb": 3.68
+        },
+        {
+          "file": "short-page-DVQlolCB.js",
+          "kb": 8.6,
+          "gzipKb": 3.02
+        },
+        {
+          "file": "award-page-CWP-ZfZ5.js",
+          "kb": 8.4,
+          "gzipKb": 3.42
+        },
+        {
+          "file": "sftag-CKm41XGf.js",
+          "kb": 8.24,
+          "gzipKb": 3.09
+        },
+        {
+          "file": "bookseries-page-NwsjDSA4.js",
+          "kb": 8.03,
+          "gzipKb": 2.98
+        },
+        {
+          "file": "issue-page-jALWHrid.js",
+          "kb": 7.86,
+          "gzipKb": 2.86
+        },
+        {
+          "file": "magazine-page-Esonlge6.js",
+          "kb": 7.8,
+          "gzipKb": 2.93
+        },
+        {
+          "file": "publisher-page-CO8ruDys.js",
+          "kb": 7.02,
+          "gzipKb": 2.7
+        },
+        {
+          "file": "index-DinLIQf5.js",
+          "kb": 6.78,
+          "gzipKb": 2.65
+        },
+        {
+          "file": "confirmdialog.esm-CcdK-pEJ.js",
+          "kb": 6.7,
+          "gzipKb": 2.64
+        },
+        {
+          "file": "pubseries-page-CT1ZpJZt.js",
+          "kb": 6.55,
+          "gzipKb": 2.55
+        },
+        {
+          "file": "selectbutton.esm-BoDE6S4T.js",
+          "kb": 6.05,
+          "gzipKb": 2.51
+        },
+        {
+          "file": "genre-icons-BvBz1ktF.js",
+          "kb": 5.4,
+          "gzipKb": 2.37
+        },
+        {
+          "file": "faq-VHQAGxRQ.js",
+          "kb": 5.22,
+          "gzipKb": 2.06
+        },
+        {
+          "file": "latest-additions-sE48lohC.js",
+          "kb": 4.48,
+          "gzipKb": 1.45
+        },
+        {
+          "file": "short-search-page-D9iwNuQt.js",
+          "kb": 4.43,
+          "gzipKb": 1.49
+        },
+        {
+          "file": "inputswitch.esm-Dbw6LwAx.js",
+          "kb": 3.84,
+          "gzipKb": 1.65
+        },
+        {
+          "file": "issue-form-DvmwrrYC.js",
+          "kb": 3.7,
+          "gzipKb": 1.39
+        },
+        {
+          "file": "genre-group-CuTb2gsQ.js",
+          "kb": 3.63,
+          "gzipKb": 1.66
+        },
+        {
+          "file": "toolbar.esm-DORip1UD.js",
+          "kb": 3.44,
+          "gzipKb": 1.48
+        },
+        {
+          "file": "group-similar-editions-DN6CG09b.js",
+          "kb": 2.78,
+          "gzipKb": 1.05
+        },
+        {
+          "file": "tag.esm-CviBQhZV.js",
+          "kb": 2.63,
+          "gzipKb": 1.22
+        },
+        {
+          "file": "index.esm-BkSmWZ9X.js",
+          "kb": 2.51,
+          "gzipKb": 1.06
+        },
+        {
+          "file": "edition-list-ComKQ6HO.js",
+          "kb": 2.48,
+          "gzipKb": 1.19
+        },
+        {
+          "file": "sftags-page-DU6T7knC.js",
+          "kb": 2.46,
+          "gzipKb": 0.71
+        },
+        {
+          "file": "reset-password-view-DRE8jJA3.js",
+          "kb": 2.45,
+          "gzipKb": 1.07
+        },
+        {
+          "file": "award-form-NAym6Ne9.js",
+          "kb": 2.02,
+          "gzipKb": 0.97
+        },
+        {
+          "file": "awards-page-zwiSrBMb.js",
+          "kb": 1.99,
+          "gzipKb": 0.98
+        },
+        {
+          "file": "forgot-password-view-Cs7baRX1.js",
+          "kb": 1.83,
+          "gzipKb": 0.83
+        },
+        {
+          "file": "auto-CnkOtbCx.js",
+          "kb": 1.74,
+          "gzipKb": 0.83
+        },
+        {
+          "file": "article-page-DBhD87BX.js",
+          "kb": 1.67,
+          "gzipKb": 0.91
+        },
+        {
+          "file": "publisher-list-page-DlWbQux-.js",
+          "kb": 1.67,
+          "gzipKb": 0.79
+        },
+        {
+          "file": "changes-page-ovxlTM03.js",
+          "kb": 1.66,
+          "gzipKb": 0.77
+        },
+        {
+          "file": "card.esm-DLsRn7tu.js",
+          "kb": 1.57,
+          "gzipKb": 0.72
+        },
+        {
+          "file": "magazines-page-D1lPy49g.js",
+          "kb": 1.56,
+          "gzipKb": 0.85
+        },
+        {
+          "file": "shorts-list-B5posjW7.js",
+          "kb": 1.45,
+          "gzipKb": 0.78
+        },
+        {
+          "file": "bookseries-list-page-Dq2oq_CE.js",
+          "kb": 1.32,
+          "gzipKb": 0.72
+        },
+        {
+          "file": "pubseries-list-page-uq1E4lA2.js",
+          "kb": 1.31,
+          "gzipKb": 0.7
+        },
+        {
+          "file": "index.esm-BcA2HTJM.js",
+          "kb": 1.15,
+          "gzipKb": 0.72
+        },
+        {
+          "file": "edition-summary-xf46qPRE.js",
+          "kb": 1.14,
+          "gzipKb": 0.59
+        },
+        {
+          "file": "works-by-type-C4ykJ6Bb.js",
+          "kb": 1.03,
+          "gzipKb": 0.61
+        },
+        {
+          "file": "index.esm-FMls1NgQ.js",
+          "kb": 0.96,
+          "gzipKb": 0.58
+        },
+        {
+          "file": "form-checkbox-CJgw_AEM.js",
+          "kb": 0.54,
+          "gzipKb": 0.35
+        },
+        {
+          "file": "link-list-Bi6zrUMk.js",
+          "kb": 0.53,
+          "gzipKb": 0.34
+        },
+        {
+          "file": "publisher-selector-DAN0BIqU.js",
+          "kb": 0.43,
+          "gzipKb": 0.31
+        },
+        {
+          "file": "genre-list-BObzFhau.js",
+          "kb": 0.4,
+          "gzipKb": 0.28
+        },
+        {
+          "file": "document-title-BIe1HsUt.js",
+          "kb": 0.18,
+          "gzipKb": 0.18
+        },
+        {
+          "file": "appears-in-DXZhJFVy.js",
+          "kb": 0.15,
+          "gzipKb": 0.14
+        },
+        {
+          "file": "get-short-types-DFOzQj32.js",
+          "kb": 0.15,
+          "gzipKb": 0.15
+        },
+        {
+          "file": "select-id-OccwO3bO.js",
+          "kb": 0.14,
+          "gzipKb": 0.13
+        },
+        {
+          "file": "reply-message-CEpsxUDK.js",
+          "kb": 0.13,
+          "gzipKb": 0.12
+        },
+        {
+          "file": "filter-tags-Dw450N-2.js",
+          "kb": 0.12,
+          "gzipKb": 0.13
+        },
+        {
+          "file": "contribution-BcpRzarL.js",
+          "kb": 0.09,
+          "gzipKb": 0.11
+        }
+      ],
+      "totalJsKb": 3612,
+      "totalGzipKb": 1070,
+      "hasSizeWarning": true
+    }
   }
 ]

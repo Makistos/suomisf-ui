@@ -43,7 +43,12 @@ export default async function globalSetup() {
     const logFd = fs.openSync(LOG_FILE, 'w');
     const child = spawn(
         GUNICORN,
-        ['wsgi:app', '--bind', '127.0.0.1:5001', '--pid', PID_FILE],
+        // --workers > 1: the E2E backend takes bursty, concurrent traffic
+        // from many parallel Playwright workers, unlike the normal
+        // single-user dev gunicorn instance on :5000 - the default of one
+        // sync worker serializes every request and causes exactly the kind
+        // of timeout under load this was tuned to fix.
+        ['wsgi:app', '--bind', '127.0.0.1:5001', '--workers', '4', '--pid', PID_FILE],
         {
             cwd: BACKEND_DIR,
             env: { ...process.env, SUOMISF_DOTENV: '.env.e2e' },

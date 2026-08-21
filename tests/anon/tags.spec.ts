@@ -4,6 +4,9 @@ test('Tags page loads and displays categories with tags', async ({ page }) => {
     // Navigate to tags page
     await page.goto('/tags');
 
+    // Wait for the tag list query to resolve before checking content
+    await expect(page.getByRole('progressbar')).not.toBeVisible({ timeout: 20000 });
+
     // Check that the page heading exists
     await expect(page.getByRole('heading', { name: /Asiasanat/i })).toBeVisible();
 

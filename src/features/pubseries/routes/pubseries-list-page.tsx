@@ -70,6 +70,9 @@ export const PubseriesListPage = () => {
                             dataKey="id"
                             emptyMessage="Sarjoja ei löytynyt"
                             loading={isLoading}
+                            paginator
+                            rows={50}
+                            rowsPerPageOptions={[25, 50, 100]}
                         >
                             <Column field="name" header="Nimi"
                                 body={nameTemplate}

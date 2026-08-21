@@ -108,6 +108,9 @@ export const PublisherListPage = () => {
                         dataKey="id"
                         emptyMessage="Kustantajia ei löytynyt"
                         loading={isLoading}
+                        paginator
+                        rows={50}
+                        rowsPerPageOptions={[25, 50, 100]}
                     >
                         <Column field="name" header="Nimi"
                             body={nameTemplate}

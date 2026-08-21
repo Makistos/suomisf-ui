@@ -258,4 +258,8 @@ function writeMarkdown(allRuns) {
   fs.writeFileSync(RESULTS_MD, md);
 }
 
-main();
+module.exports = { writeMarkdown };
+
+if (require.main === module) {
+  main();
+}

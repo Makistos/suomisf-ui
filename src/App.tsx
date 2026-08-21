@@ -7,6 +7,11 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: true,
+      // Without this, refetchOnWindowFocus refires for data that was just
+      // fetched a moment ago (e.g. alt-tab and back) since staleTime
+      // otherwise defaults to 0. A minute is enough to absorb that without
+      // meaningfully delaying genuinely stale data from refreshing.
+      staleTime: 60 * 1000,
     }
   }
 });

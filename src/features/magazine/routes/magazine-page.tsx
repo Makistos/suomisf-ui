@@ -265,7 +265,8 @@ export const MagazinePage = () => {
                                                             <Image preview height="200px"
                                                                 src={issue.images[0].image_src.startsWith('http') ?
                                                                     issue.images[0].image_src :
-                                                                    import.meta.env.VITE_IMAGE_URL + issue.images[0].image_src} alt={issue.cover_number} />
+                                                                    import.meta.env.VITE_IMAGE_URL + issue.images[0].image_src} alt={issue.cover_number}
+                                                                loading="lazy" />
                                                         )}
                                                     </div>
                                                 ))

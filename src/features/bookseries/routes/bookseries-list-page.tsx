@@ -70,6 +70,9 @@ export const BookseriesListPage = () => {
                         loading={isLoading}
                         sortField="name"
                         sortOrder={1}
+                        paginator
+                        rows={50}
+                        rowsPerPageOptions={[25, 50, 100]}
                     >
                         <Column field="name" header="Nimi"
                             body={nameTemplate}

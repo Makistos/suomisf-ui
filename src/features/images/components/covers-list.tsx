@@ -19,6 +19,7 @@ export const CoversList = ({ covers }: CoversListProps) => {
               alt={cover.edition.title}
               height={"200"}
               key={"image-" + cover.id}
+              loading="lazy"
             />
           </Link>
         </div>

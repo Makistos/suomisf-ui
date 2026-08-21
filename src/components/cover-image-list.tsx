@@ -146,6 +146,7 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
                                 height={imageHeight(image.edition_id ?? 0, image.size)}
                                 src={import.meta.env.VITE_IMAGE_URL + image.image_src}
                                 key={"image-" + image.edition_id + "-" + image.id}
+                                loading="lazy"
                             />
                         </span>
                     )

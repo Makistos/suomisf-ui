@@ -83,6 +83,9 @@ export const Changes = () => {
               expandedRows={expandedRows}
               onRowToggle={(e: DataTableRowToggleEvent) => setExpandedRows(e.data)}
               rowGroupHeaderTemplate={headerTemplate}
+              paginator
+              rows={50}
+              rowsPerPageOptions={[25, 50, 100]}
             >
               <Column field="object_name" header="Nimi" body={linkTemplate}
                 filter filterField="object_name"

@@ -1,0 +1,12 @@
+[
+  { "path": "/", "name": "home", "area": "bundle size / overall load" },
+  { "path": "/stats", "name": "stats", "area": "code splitting (heavy chart page)" },
+  { "path": "/works/63", "name": "work-with-omnibus", "area": "work-details.tsx part_of mutating sort" },
+  { "path": "/works/1505", "name": "work-many-editions", "area": "cover-image-list.tsx lazy loading (37 editions)" },
+  { "path": "/people/2286", "name": "person-prolific", "area": "bookseries-list.tsx mutating sort (Stephen King)" },
+  { "path": "/publishers/387", "name": "publisher-wsoy", "area": "edition-list.tsx mutating sort (2200+ editions)" },
+  { "path": "/issues/1", "name": "issue", "area": "issue-page.tsx images mutating sort" },
+  { "path": "/magazines/43", "name": "magazine-many-issues", "area": "magazine-page.tsx issues mutating sort (177 issues)" },
+  { "path": "/shorts/4985", "name": "short-many-contributors", "area": "remove-duplicate-contributions.ts mutating sort, 4x/render (20 contributors)" },
+  { "path": "/changes", "name": "changes-log", "area": "unpaginated audit log table" }
+]

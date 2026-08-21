@@ -1,0 +1,266 @@
+[
+  {
+    "label": "baseline",
+    "note": "before any frontend performance fixes; work-list.tsx/work-summary.tsx memoization fixes already applied and included here",
+    "timestamp": "2026-08-21T17:48:14.429Z",
+    "routes": [
+      {
+        "path": "/",
+        "name": "home",
+        "area": "bundle size / overall load",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [
+          "Failed to load resource: the server responded with a status of 404 ()",
+          "Failed to load resource: the server responded with a status of 404 ()"
+        ],
+        "significantErrors": [],
+        "wallMs": 2350,
+        "timing": {
+          "domContentLoaded": 507,
+          "loadEvent": 509,
+          "responseEnd": 4
+        },
+        "totalBytes": 12641251,
+        "requestCount": 394,
+        "domNodeCount": 547,
+        "bodyTextLength": 665,
+        "title": "SF-Bibliografia"
+      },
+      {
+        "path": "/stats",
+        "name": "stats",
+        "area": "code splitting (heavy chart page)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1228,
+        "timing": {
+          "domContentLoaded": 514,
+          "loadEvent": 516,
+          "responseEnd": 3
+        },
+        "totalBytes": 11460369,
+        "requestCount": 386,
+        "domNodeCount": 517,
+        "bodyTextLength": 400,
+        "title": "SF-Bibliografia"
+      },
+      {
+        "path": "/works/63",
+        "name": "work-with-omnibus",
+        "area": "work-details.tsx part_of mutating sort",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1326,
+        "timing": {
+          "domContentLoaded": 526,
+          "loadEvent": 528,
+          "responseEnd": 3
+        },
+        "totalBytes": 11561684,
+        "requestCount": 383,
+        "domNodeCount": 640,
+        "bodyTextLength": 943,
+        "title": "Etelän tähti"
+      },
+      {
+        "path": "/works/1505",
+        "name": "work-many-editions",
+        "area": "cover-image-list.tsx lazy loading (37 editions)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1639,
+        "timing": {
+          "domContentLoaded": 514,
+          "loadEvent": 517,
+          "responseEnd": 3
+        },
+        "totalBytes": 13961522,
+        "requestCount": 388,
+        "domNodeCount": 856,
+        "bodyTextLength": 2848,
+        "title": "Lohikäärmevuori"
+      },
+      {
+        "path": "/people/2286",
+        "name": "person-prolific",
+        "area": "bookseries-list.tsx mutating sort (Stephen King)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 3100,
+        "timing": {
+          "domContentLoaded": 489,
+          "loadEvent": 492,
+          "responseEnd": 3
+        },
+        "totalBytes": 22427762,
+        "requestCount": 467,
+        "domNodeCount": 3904,
+        "bodyTextLength": 12470,
+        "title": "SF-Bibliografia - King, Stephen"
+      },
+      {
+        "path": "/publishers/387",
+        "name": "publisher-wsoy",
+        "area": "edition-list.tsx mutating sort (2200+ editions)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 5095,
+        "timing": {
+          "domContentLoaded": 531,
+          "loadEvent": 534,
+          "responseEnd": 3
+        },
+        "totalBytes": 15815424,
+        "requestCount": 383,
+        "domNodeCount": 7725,
+        "bodyTextLength": 116797,
+        "title": "SF-Bibliografia - WSOY"
+      },
+      {
+        "path": "/issues/1",
+        "name": "issue",
+        "area": "issue-page.tsx images mutating sort",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1257,
+        "timing": {
+          "domContentLoaded": 511,
+          "loadEvent": 514,
+          "responseEnd": 3
+        },
+        "totalBytes": 11547511,
+        "requestCount": 383,
+        "domNodeCount": 587,
+        "bodyTextLength": 471,
+        "title": "SF-Bibliografia"
+      },
+      {
+        "path": "/magazines/43",
+        "name": "magazine-many-issues",
+        "area": "magazine-page.tsx issues mutating sort (177 issues)",
+        "pass": false,
+        "navError": null,
+        "consoleErrors": [
+          "Warning: Each child in a list should have a unique \"key\" prop.%s%s See https://reactjs.org/link/warning-keys for more information.%s \n\nCheck the render method of `MagazinePage`.  \n    at div\n    at MagazinePage (http://localhost:3000/src/features/magazine/routes/magazine-page.tsx:39:16)\n    at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=180af3e7:4112:5)\n    at Outlet (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=180af3e7:4518:26)\n    at div\n    at div\n    at QueryClientProvider (http://localhost:3000/node_modules/.vite/deps/chunk-COCOWLIP.js?v=180af3e7:3024:3)\n    at App (http://localhost:3000/src/App.tsx:42:20)\n    at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=180af3e7:4112:5)\n    at Routes (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=180af3e7:4582:5)\n    at Router (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=180af3e7:4525:15)\n    at BrowserRouter (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=180af3e7:5263:5)"
+        ],
+        "significantErrors": [
+          "Warning: Each child in a list should have a unique \"key\" prop.%s%s See https://reactjs.org/link/warning-keys for more information.%s \n\nCheck the render method of `MagazinePage`.  \n    at div\n    at MagazinePage (http://localhost:3000/src/features/magazine/routes/magazine-page.tsx:39:16)\n    at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=180af3e7:4112:5)\n    at Outlet (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=180af3e7:4518:26)\n    at div\n    at div\n    at QueryClientProvider (http://localhost:3000/node_modules/.vite/deps/chunk-COCOWLIP.js?v=180af3e7:3024:3)\n    at App (http://localhost:3000/src/App.tsx:42:20)\n    at RenderedRoute (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=180af3e7:4112:5)\n    at Routes (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=180af3e7:4582:5)\n    at Router (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=180af3e7:4525:15)\n    at BrowserRouter (http://localhost:3000/node_modules/.vite/deps/react-router-dom.js?v=180af3e7:5263:5)"
+        ],
+        "wallMs": 1324,
+        "timing": {
+          "domContentLoaded": 512,
+          "loadEvent": 515,
+          "responseEnd": 3
+        },
+        "totalBytes": 12308856,
+        "requestCount": 382,
+        "domNodeCount": 1009,
+        "bodyTextLength": 1812,
+        "title": "SF-Bibliografia - Spin"
+      },
+      {
+        "path": "/shorts/4985",
+        "name": "short-many-contributors",
+        "area": "remove-duplicate-contributions.ts mutating sort, 4x/render (20 contributors)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1235,
+        "timing": {
+          "domContentLoaded": 497,
+          "loadEvent": 499,
+          "responseEnd": 3
+        },
+        "totalBytes": 11389291,
+        "requestCount": 384,
+        "domNodeCount": 571,
+        "bodyTextLength": 499,
+        "title": "SF-Bibliografia - Kylä kukkulalla"
+      },
+      {
+        "path": "/changes",
+        "name": "changes-log",
+        "area": "unpaginated audit log table",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 2116,
+        "timing": {
+          "domContentLoaded": 496,
+          "loadEvent": 498,
+          "responseEnd": 3
+        },
+        "totalBytes": 13090463,
+        "requestCount": 382,
+        "domNodeCount": 11342,
+        "bodyTextLength": 40852,
+        "title": "SF-Bibliografia"
+      }
+    ],
+    "buildMetrics": {
+      "mainChunkFile": "index-pzqi7XhV.js",
+      "mainChunkKb": 2582.35,
+      "mainChunkGzipKb": 712.28,
+      "allChunks": [
+        {
+          "file": "index-pzqi7XhV.js",
+          "kb": 2582.35,
+          "gzipKb": 712.28
+        },
+        {
+          "file": "jspdf.es.min-B9C67wM8.js",
+          "kb": 390.26,
+          "gzipKb": 127.24
+        },
+        {
+          "file": "quill-CMyrGr82.js",
+          "kb": 203.24,
+          "gzipKb": 60.6
+        },
+        {
+          "file": "html2canvas.esm-CBrSDip1.js",
+          "kb": 201.42,
+          "gzipKb": 47.7
+        },
+        {
+          "file": "index.es-Ben3DY26.js",
+          "kb": 149.91,
+          "gzipKb": 51.01
+        },
+        {
+          "file": "jspdf.plugin.autotable-CHGJwQue.js",
+          "kb": 31.1,
+          "gzipKb": 9.94
+        },
+        {
+          "file": "purify.es-BnINGy_Y.js",
+          "kb": 28.93,
+          "gzipKb": 11.11
+        },
+        {
+          "file": "auto-Bhf9EWHK.js",
+          "kb": 1.22,
+          "gzipKb": 0.59
+        }
+      ],
+      "totalJsKb": 3588,
+      "totalGzipKb": 1020,
+      "hasSizeWarning": true
+    }
+  }
+]

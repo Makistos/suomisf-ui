@@ -12,11 +12,16 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     build: {
-      outDir: 'build',
+      // Separate output dir so an e2e build never collides with a real
+      // deployment build in build/.
+      outDir: isE2e ? 'build-e2e' : 'build',
     },
     server: {
       open: !isE2e,
       port: isE2e ? 3100 : 3000
+    },
+    preview: {
+      port: isE2e ? 3100 : 4173,
     },
   };
 });

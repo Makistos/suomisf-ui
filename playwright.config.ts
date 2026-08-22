@@ -17,19 +17,33 @@ export default defineConfig({
         {
             name: 'chromium',
             use: { ...devices['Desktop Chrome'] },
+            // password-reset.spec.ts temporarily changes Test User's
+            // password, which every other userPage-fixture test depends on
+            // being unchanged (they log in via API with a fixed password).
+            // It has its own project below, run explicitly with
+            // --project=password-reset - kept out of this one and out of
+            // `npm run test:e2e` (which pins --project=chromium) so a plain
+            // `npx playwright test` with no flags is the only way to hit
+            // both at once, and that's on the caller.
+            testIgnore: '**/password-reset.spec.ts',
         },
         {
             name: 'firefox',
             use: { ...devices['Desktop Firefox'] },
+            testIgnore: '**/password-reset.spec.ts',
         },
         // {
         //     name: 'webkit',
         //     use: { ...devices['Desktop Safari'] },
         // },
+        {
+            name: 'password-reset',
+            use: { ...devices['Desktop Chrome'] },
+            testMatch: '**/password-reset.spec.ts',
+        },
     ],
-    webServer: {
-        command: 'npm run dev:e2e',
-        url: 'http://localhost:3100',
-        reuseExistingServer: !process.env.CI,
-    },
+    // No webServer entry: global-setup.ts builds the frontend and starts
+    // both it and the E2E backend itself (Playwright doesn't guarantee
+    // globalSetup finishes before webServer's command starts, which raced
+    // against the build here), and global-teardown.ts stops them.
 });

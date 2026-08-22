@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { TabPanel, TabView } from "primereact/tabview";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SpeedDial } from "primereact/speeddial";
 import { Dialog } from "primereact/dialog";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
@@ -42,6 +42,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
     const [queryEnabled, setQueryEnabled] = useState(true);
     const toastRef = useRef<Toast>(null);
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     try {
         thisId = selectId(params, id);
@@ -149,6 +150,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
     }
 
     const onDialogHide = () => {
+        queryClient.invalidateQueries({ queryKey: ["publisher", thisId] });
         setQueryEnabled(true);
         setEditVisible(false);
     }

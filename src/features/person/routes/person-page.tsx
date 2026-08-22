@@ -286,13 +286,13 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     }
 
     const onDialogHide = () => {
-        queryClient.invalidateQueries({ queryKey: ["person", data?.id] });
+        queryClient.invalidateQueries({ queryKey: ["person", thisId] });
         setQueryEnabled(true);
         setEditVisible(false);
     }
 
     const onAwardsHide = () => {
-        queryClient.invalidateQueries({ queryKey: ["person", data?.id] });
+        queryClient.invalidateQueries({ queryKey: ["person", thisId] });
         // setQueryEnabled(true);
         setAwardsVisible(false);
     }

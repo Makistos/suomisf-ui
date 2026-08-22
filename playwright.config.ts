@@ -7,7 +7,14 @@ export default defineConfig({
     fullyParallel: true,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
-    workers: process.env.CI ? 1 : undefined,
+    // Uncapped (Playwright's default, one per CPU) was fine for the
+    // original mostly-read-only suite, but the admin/ specs are numerous,
+    // multi-step and write-heavy - full concurrency there saturates the
+    // E2E backend/browser processes together and causes real timeouts, not
+    // just slowness. Capped rather than tuning gunicorn's worker count
+    // further upward, which just shifted the bottleneck to the machine
+    // itself under both scaled up together.
+    workers: process.env.CI ? 1 : 8,
     reporter: 'html',
     use: {
         baseURL: 'http://localhost:3100',

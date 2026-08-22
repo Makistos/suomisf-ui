@@ -116,7 +116,7 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
         setEditVisible(true);
     }
     const onDialogHide = () => {
-        queryClient.invalidateQueries({ queryKey: ["pubseries", data?.id] });
+        queryClient.invalidateQueries({ queryKey: ["pubseries", thisId] });
         setEditVisible(false);
     }
 

@@ -62,6 +62,7 @@ export const MagazineForm = ({ id, onSubmitCallback }: MagazineFormProps) => {
     }
 
     const updateMagazine = (data: MagazineFormData) => {
+        console.log('DEBUG updateMagazine called', data.id, data);
         let reval = null;
         const saveData = { data: data };
         if (data.id !== null) {
@@ -174,6 +175,12 @@ const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
                                 // itemTemplate={typeTemplate}
                                 methods={methods}
                                 options={types}
+                                // The selected type and the options list come from
+                                // separate fetches, so they're different object
+                                // references even when equal - without dataKey the
+                                // Dropdown can't match them and shows blank when
+                                // editing an existing magazine.
+                                dataKey="id"
                                 label="Tyyppi"
                                 rules={required_rule}
                                 labelClass='required-field'

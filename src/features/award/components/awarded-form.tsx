@@ -1,9 +1,9 @@
 import { useForm } from '@tanstack/react-form'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Award, AwardCategory, Awarded, AwardedFormData, AwardedRowData } from '../types';
 import { getApiContent, postApiContent } from '@services/user-service';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { User } from '@features/user';
 import { getCurrenUser } from '@services/auth-service';
 import { InputText } from 'primereact/inputtext';
@@ -11,6 +11,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { AutoComplete } from 'primereact/autocomplete';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
+import { Toast } from 'primereact/toast';
 import { FormInputNumber } from '@components/forms/field/form-input-number';
 
 interface AwardFormProps {
@@ -60,6 +61,8 @@ export const AwardedForm = ({ workId, personId, shortId: storyId, onClose }: Awa
     const thisId = itemType == "work" ? workId : itemType == "person" ? personId : storyId;
     const [filteredAwards, setFilteredAwards] = useState([]);
     const [categories, setCategories] = useState<AwardCategory[]>([]);
+    const toastRef = useRef<Toast>(null);
+    const queryClient = useQueryClient();
 
     if (!thisId || user === null) {
         return <div>Invalid ID</div>
@@ -136,8 +139,17 @@ export const AwardedForm = ({ workId, personId, shortId: storyId, onClose }: Awa
         },
         onSubmit: async ({ value }) => {
             const response = await postApiContent('awarded', value, user);
-            console.log(value);
-            onClose();
+            if (response.status === 200) {
+                queryClient.invalidateQueries({ queryKey: ['awarded', thisId] });
+                onClose();
+            } else {
+                toastRef.current?.show({
+                    severity: 'error',
+                    summary: 'Tallentaminen epäonnistui',
+                    detail: response.response,
+                    life: 6000,
+                });
+            }
         }
     })
 
@@ -155,6 +167,7 @@ export const AwardedForm = ({ workId, personId, shortId: storyId, onClose }: Awa
     console.log(data);
     return (
         <div className="card mt-3">
+            <Toast ref={toastRef} />
             <form
                 onSubmit={(e) => {
                     e.preventDefault();

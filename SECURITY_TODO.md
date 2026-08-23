@@ -4,21 +4,39 @@ Tracks dependency vulnerabilities that were investigated but deliberately
 *not* fixed yet, and why. See `npm audit` for the live list; this file is
 about the ones that need a real decision, not just a version bump.
 
-Last reviewed: 2026-08-19.
+Last reviewed: 2026-08-23.
 
 ## Needs a major-version migration
 
-- **react-router-dom v7** — one moderate CVE (GHSA-337j-9hxr-rhxg, arbitrary
-  constructor injection via `deserializeErrors()` in SSR hydration) is only
-  fixed in react-router 7.18.0+. We're on 6.30.6 (latest 6.x), which closes
-  the other two flagged CVEs. v7 has real API changes (data router patterns,
-  route config); needs its own migration pass and testing, not a drive-by
-  bump.
-- **vite 8** — esbuild's dev-server CVE (GHSA-67mh-4wv8-2f99) and some vite
-  CVEs are only fixed from vite 6+ (fully from 8.2.1). We're on 5.4.21
-  (latest 5.x), which closes the CVEs patched within 5.x. Vite major bumps
-  tend to have real breaking changes (plugin API, config shape); needs
-  testing across the whole build/dev pipeline before attempting.
+- **react-router-dom v7** — the vulnerable range for GHSA-337j-9hxr-rhxg
+  (arbitrary constructor injection via `deserializeErrors()` in SSR
+  hydration) has since grown to cover all of 6.x through 7.17.0
+  (re-checked 2026-08-23; previously only part of 6.x was affected, which
+  is why staying on 6.30.6 was safe at the time). That safe-harbor no
+  longer exists — the only fix is 7.18.2+. v7 has real API changes (data
+  router patterns, route config); needs its own migration pass and
+  testing, not a drive-by bump.
+
+## Already fixed (2026-08-23)
+
+- **vite 5.4.21 → 8.2.2** — the esbuild dev-server CVE range
+  (GHSA-67mh-4wv8-2f99) grew to include all of vite's 5.x line, closing
+  the "stay on 5.4.21" safe-harbor that used to hold. Bumped straight to
+  8.2.2 (`@vitejs/plugin-react` → 5.2.0, not the newer 6.x line — 6.x adds
+  optional peer deps on `@rolldown/plugin-babel`/`babel-plugin-react-compiler`
+  that produced an npm ERESOLVE conflict with this project's own
+  `@babel/core` chain; 5.2.0 supports vite 8 without pulling that in;
+  `vite-tsconfig-paths` → 6.1.1). `npm audit` no longer lists vite at all.
+  Verified: `tsc --noEmit` clean, production build succeeds (vite 8 uses
+  rolldown as its bundler by default now — the "Module fs externalized"
+  and rolldown-runtime chunk in the build output are expected, not
+  errors), dev server smoke-tested (HMR/`@react-refresh` responding),
+  full Playwright suite green (chromium 44/44, isolated). Three chromium
+  failures on the first full-parallel run (ownership/profile/read-status
+  specs) reproduced as passing 3/3 when rerun single-worker — parallel
+  workers racing the same `Test User` account's rating/ownership state,
+  not a vite regression; matches the same flake class already documented
+  in `tests/README.md` for firefox.
 
 ## No upstream fix exists
 
@@ -35,12 +53,9 @@ Last reviewed: 2026-08-19.
 
 ## Backend (../suomisf, separate repo)
 
-- **Flask 2.3.2 → 3.1.3+ / Werkzeug (pinned `<3.0.0`) → 3.1.6+** — all 6
-  open Werkzeug/Flask CVEs (mostly `safe_join()` Windows device-name issues,
-  plus one Werkzeug debugger RCE) only have fixes in the 3.x line. This is a
-  major-version bump touching every request the backend handles; needs its
-  own testing pass across the API before attempting. Explicitly deferred —
-  see `pyproject.toml`'s `Flask==2.3.2` / `werkzeug<3.0.0` pins.
+Flask/Werkzeug fixed 2026-08-23 (Flask 3.1.3, Werkzeug 3.1.8) — see that
+repo's own `SECURITY_TODO.md` for details. No open backend items here
+currently.
 
 ## Already fixed (2026-08-19)
 

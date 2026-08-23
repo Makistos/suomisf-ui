@@ -312,13 +312,9 @@ export default function MainMenu() {
                         </>
                     )}
                     {item.description && (
-                        <>
-                            <div dangerouslySetInnerHTML={{ __html: truncateDescription(item.description) }} className="searchItemContents" >
-                                {/* <p className="searchItemContents">
-                                    {searchText(item.description)}
-                                </p> */}
-                            </div>
-                        </>
+                        <div className="searchItemContents">
+                            {truncateDescription(item.description)}
+                        </div>
                     )}
                 </div >
             )

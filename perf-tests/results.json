@@ -1662,5 +1662,555 @@
       "totalGzipKb": 1070,
       "hasSizeWarning": true
     }
+  },
+  {
+    "label": "after-backend-and-vite8-router7-upgrades",
+    "note": "vite 5->8, react-router-dom 6->7, backend Flask/Werkzeug/SQLAlchemy/marshmallow upgrades, WTForms removal",
+    "timestamp": "2026-08-23T16:55:23.033Z",
+    "routes": [
+      {
+        "path": "/",
+        "name": "home",
+        "area": "bundle size / overall load",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [
+          "Failed to load resource: the server responded with a status of 404 ()",
+          "Failed to load resource: the server responded with a status of 404 ()"
+        ],
+        "significantErrors": [],
+        "wallMs": 1950,
+        "timing": {
+          "domContentLoaded": 377,
+          "loadEvent": 380,
+          "responseEnd": 5
+        },
+        "totalBytes": 16516237,
+        "requestCount": 192,
+        "domNodeCount": 547,
+        "bodyTextLength": 665,
+        "title": "SF-Bibliografia"
+      },
+      {
+        "path": "/stats",
+        "name": "stats",
+        "area": "code splitting (heavy chart page)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1210,
+        "timing": {
+          "domContentLoaded": 365,
+          "loadEvent": 368,
+          "responseEnd": 3
+        },
+        "totalBytes": 19376900,
+        "requestCount": 290,
+        "domNodeCount": 517,
+        "bodyTextLength": 400,
+        "title": "SF-Bibliografia"
+      },
+      {
+        "path": "/works/63",
+        "name": "work-with-omnibus",
+        "area": "work-details.tsx part_of mutating sort",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1267,
+        "timing": {
+          "domContentLoaded": 354,
+          "loadEvent": 357,
+          "responseEnd": 3
+        },
+        "totalBytes": 19472904,
+        "requestCount": 287,
+        "domNodeCount": 641,
+        "bodyTextLength": 943,
+        "title": "Etelän tähti"
+      },
+      {
+        "path": "/works/1505",
+        "name": "work-with-many-editions",
+        "area": "work-details.tsx / edition list rendering",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1560,
+        "timing": {
+          "domContentLoaded": 352,
+          "loadEvent": 355,
+          "responseEnd": 3
+        },
+        "totalBytes": 21449146,
+        "requestCount": 292,
+        "domNodeCount": 857,
+        "bodyTextLength": 2848,
+        "title": "Lohikäärmevuori"
+      },
+      {
+        "path": "/nonfiction",
+        "name": "worklist-cover-view",
+        "area": "cover-image-list.tsx lazy loading (works list, Kannet view)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1923,
+        "timing": {
+          "domContentLoaded": 363,
+          "loadEvent": 365,
+          "responseEnd": 4
+        },
+        "totalBytes": 19616758,
+        "requestCount": 288,
+        "domNodeCount": 1962,
+        "bodyTextLength": 10069,
+        "title": "SF-Bibliografia"
+      },
+      {
+        "path": "/people/2286",
+        "name": "person-prolific",
+        "area": "bookseries-list.tsx mutating sort (Stephen King)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 3259,
+        "timing": {
+          "domContentLoaded": 359,
+          "loadEvent": 362,
+          "responseEnd": 3
+        },
+        "totalBytes": 34117083,
+        "requestCount": 402,
+        "domNodeCount": 3905,
+        "bodyTextLength": 12470,
+        "title": "SF-Bibliografia - King, Stephen"
+      },
+      {
+        "path": "/publishers/387",
+        "name": "publisher-wsoy",
+        "area": "edition-list.tsx mutating sort (2200+ editions)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 5007,
+        "timing": {
+          "domContentLoaded": 377,
+          "loadEvent": 379,
+          "responseEnd": 3
+        },
+        "totalBytes": 20228064,
+        "requestCount": 199,
+        "domNodeCount": 7725,
+        "bodyTextLength": 116797,
+        "title": "SF-Bibliografia - WSOY"
+      },
+      {
+        "path": "/issues/1",
+        "name": "issue",
+        "area": "issue-page.tsx images mutating sort",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1122,
+        "timing": {
+          "domContentLoaded": 357,
+          "loadEvent": 359,
+          "responseEnd": 3
+        },
+        "totalBytes": 16323677,
+        "requestCount": 210,
+        "domNodeCount": 588,
+        "bodyTextLength": 471,
+        "title": "SF-Bibliografia"
+      },
+      {
+        "path": "/magazines/43",
+        "name": "magazine-many-issues",
+        "area": "magazine-page.tsx issues mutating sort (177 issues)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1186,
+        "timing": {
+          "domContentLoaded": 395,
+          "loadEvent": 398,
+          "responseEnd": 3
+        },
+        "totalBytes": 15801626,
+        "requestCount": 194,
+        "domNodeCount": 1010,
+        "bodyTextLength": 1812,
+        "title": "SF-Bibliografia - Spin"
+      },
+      {
+        "path": "/shorts/4985",
+        "name": "short-many-contributors",
+        "area": "remove-duplicate-contributions.ts mutating sort, 4x/render (20 contributors)",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1235,
+        "timing": {
+          "domContentLoaded": 375,
+          "loadEvent": 378,
+          "responseEnd": 3
+        },
+        "totalBytes": 19378889,
+        "requestCount": 293,
+        "domNodeCount": 572,
+        "bodyTextLength": 499,
+        "title": "SF-Bibliografia - Kylä kukkulalla"
+      },
+      {
+        "path": "/changes",
+        "name": "changes-log",
+        "area": "unpaginated audit log table",
+        "pass": true,
+        "navError": null,
+        "consoleErrors": [],
+        "significantErrors": [],
+        "wallMs": 1215,
+        "timing": {
+          "domContentLoaded": 362,
+          "loadEvent": 365,
+          "responseEnd": 3
+        },
+        "totalBytes": 17076825,
+        "requestCount": 180,
+        "domNodeCount": 670,
+        "bodyTextLength": 586,
+        "title": "SF-Bibliografia"
+      }
+    ],
+    "buildMetrics": {
+      "mainChunkFile": "index-DiIf83XZ.js",
+      "mainChunkKb": 612.13,
+      "mainChunkGzipKb": 169.86,
+      "allChunks": [
+        {
+          "file": "person-CLg6GC9U.js",
+          "kb": 727.13,
+          "gzipKb": 176.3
+        },
+        {
+          "file": "index-DiIf83XZ.js",
+          "kb": 612.13,
+          "gzipKb": 169.86
+        },
+        {
+          "file": "jspdf.es.min-jOldz3MY.js",
+          "kb": 399.05,
+          "gzipKb": 129.51
+        },
+        {
+          "file": "tag-CQfs46jn.js",
+          "kb": 388.38,
+          "gzipKb": 118.03
+        },
+        {
+          "file": "quill-DMKsM2OA.js",
+          "kb": 199.91,
+          "gzipKb": 58.59
+        },
+        {
+          "file": "html2canvas-CI5GuChk.js",
+          "kb": 199.5,
+          "gzipKb": 46.78
+        },
+        {
+          "file": "inputtext.esm-CkQ35bhm.js",
+          "kb": 165.53,
+          "gzipKb": 51.98
+        },
+        {
+          "file": "index.es-CSi49ORG.js",
+          "kb": 150.49,
+          "gzipKb": 48.54
+        },
+        {
+          "file": "auth-header-9ZLsWk-d.js",
+          "kb": 132.93,
+          "gzipKb": 41.38
+        },
+        {
+          "file": "toast.esm-CA7jz4DG.js",
+          "kb": 111.16,
+          "gzipKb": 28.18
+        },
+        {
+          "file": "inputnumber.esm-Bc6rZKQ8.js",
+          "kb": 56.95,
+          "gzipKb": 15.4
+        },
+        {
+          "file": "image-view-BG3eNqSx.js",
+          "kb": 52.79,
+          "gzipKb": 15.38
+        },
+        {
+          "file": "chunk-62JRHF6Z-AEmsMPSh.js",
+          "kb": 37.6,
+          "gzipKb": 13.53
+        },
+        {
+          "file": "tabview.esm-bHmjqc4k.js",
+          "kb": 31.41,
+          "gzipKb": 8.87
+        },
+        {
+          "file": "index.esm-CZSTly0-.js",
+          "kb": 31.05,
+          "gzipKb": 10.28
+        },
+        {
+          "file": "jspdf.plugin.autotable-knrFLnck.js",
+          "kb": 29.72,
+          "gzipKb": 9.46
+        },
+        {
+          "file": "index.esm-CDt2UCqz.js",
+          "kb": 29.23,
+          "gzipKb": 10.55
+        },
+        {
+          "file": "profile-page-BhQtK58X.js",
+          "kb": 29.1,
+          "gzipKb": 7.66
+        },
+        {
+          "file": "purify.es-ChwZkWde.js",
+          "kb": 26.81,
+          "gzipKb": 10.65
+        },
+        {
+          "file": "suggestion-CVBjqLt5.js",
+          "kb": 24.69,
+          "gzipKb": 7.74
+        },
+        {
+          "file": "useQuery-BFNQM1Op.js",
+          "kb": 14.78,
+          "gzipKb": 4.91
+        },
+        {
+          "file": "work-search-Ctz4H4zk.js",
+          "kb": 11.17,
+          "gzipKb": 3.59
+        },
+        {
+          "file": "user-service-HAu5ymIH.js",
+          "kb": 9.75,
+          "gzipKb": 3.64
+        },
+        {
+          "file": "short-search-page-DVl0dHy7.js",
+          "kb": 9.16,
+          "gzipKb": 3.01
+        },
+        {
+          "file": "award-page-DmWkZglu.js",
+          "kb": 8.48,
+          "gzipKb": 3.3
+        },
+        {
+          "file": "short-page-BkuRifjs.js",
+          "kb": 8.42,
+          "gzipKb": 2.83
+        },
+        {
+          "file": "issue-page-CqDEUoQD.js",
+          "kb": 8.05,
+          "gzipKb": 2.84
+        },
+        {
+          "file": "bookseries-page-CfjlmYHK.js",
+          "kb": 8,
+          "gzipKb": 2.85
+        },
+        {
+          "file": "magazine-page-DvnLoGv5.js",
+          "kb": 7.95,
+          "gzipKb": 2.91
+        },
+        {
+          "file": "publisher-page-um0kxV3p.js",
+          "kb": 7.26,
+          "gzipKb": 2.68
+        },
+        {
+          "file": "index.esm-BXPMDfDM.js",
+          "kb": 7.13,
+          "gzipKb": 2.55
+        },
+        {
+          "file": "jsx-runtime-BShSzW0e.js",
+          "kb": 7.11,
+          "gzipKb": 2.72
+        },
+        {
+          "file": "confirmdialog.esm-Dzy9TvRe.js",
+          "kb": 6.8,
+          "gzipKb": 2.68
+        },
+        {
+          "file": "pubseries-page-DC3KVFHZ.js",
+          "kb": 6.58,
+          "gzipKb": 2.45
+        },
+        {
+          "file": "web-vitals-ClwxELjJ.js",
+          "kb": 5.61,
+          "gzipKb": 2.33
+        },
+        {
+          "file": "faq-CqLzQjp-.js",
+          "kb": 5.56,
+          "gzipKb": 2.08
+        },
+        {
+          "file": "latest-additions-Dhhms-hV.js",
+          "kb": 4.39,
+          "gzipKb": 1.35
+        },
+        {
+          "file": "inputswitch.esm-FDrab9N9.js",
+          "kb": 3.95,
+          "gzipKb": 1.72
+        },
+        {
+          "file": "issue-form-BWHoVRgN.js",
+          "kb": 3.89,
+          "gzipKb": 1.48
+        },
+        {
+          "file": "index.esm-gY_nq0Kp.js",
+          "kb": 3.02,
+          "gzipKb": 1.26
+        },
+        {
+          "file": "reset-password-view-Dwt3UHDC.js",
+          "kb": 2.76,
+          "gzipKb": 1.17
+        },
+        {
+          "file": "sftags-page-2xC2rbZ1.js",
+          "kb": 2.63,
+          "gzipKb": 0.81
+        },
+        {
+          "file": "login-view-C4oCPh__.js",
+          "kb": 2.61,
+          "gzipKb": 1.02
+        },
+        {
+          "file": "awards-page-NV5CPmmw.js",
+          "kb": 2.31,
+          "gzipKb": 1.07
+        },
+        {
+          "file": "award-form-RhA3ZxrE.js",
+          "kb": 2.26,
+          "gzipKb": 1.03
+        },
+        {
+          "file": "forgot-password-view-1ZBG4cvN.js",
+          "kb": 2.18,
+          "gzipKb": 0.95
+        },
+        {
+          "file": "index.esm-B-yT0Qzh.js",
+          "kb": 2.12,
+          "gzipKb": 1.18
+        },
+        {
+          "file": "auth-service-CFCzTXj-.js",
+          "kb": 1.94,
+          "gzipKb": 0.85
+        },
+        {
+          "file": "changes-page-BSkcoS_l.js",
+          "kb": 1.92,
+          "gzipKb": 0.87
+        },
+        {
+          "file": "publisher-list-page-D8B6IL9Y.js",
+          "kb": 1.92,
+          "gzipKb": 0.89
+        },
+        {
+          "file": "magazines-page-h5-wE-Ri.js",
+          "kb": 1.88,
+          "gzipKb": 0.96
+        },
+        {
+          "file": "pubseries-list-page-Dh4H3FYR.js",
+          "kb": 1.59,
+          "gzipKb": 0.81
+        },
+        {
+          "file": "bookseries-list-page-BnAa2bR1.js",
+          "kb": 1.58,
+          "gzipKb": 0.83
+        },
+        {
+          "file": "article-page-Be5XZvgw.js",
+          "kb": 1.25,
+          "gzipKb": 0.7
+        },
+        {
+          "file": "auto-DB-J0JeO.js",
+          "kb": 1.19,
+          "gzipKb": 0.59
+        },
+        {
+          "file": "preload-helper-Czpn1I53.js",
+          "kb": 1.19,
+          "gzipKb": 0.67
+        },
+        {
+          "file": "rolldown-runtime-Dd_uD5pT.js",
+          "kb": 1.1,
+          "gzipKb": 0.62
+        },
+        {
+          "file": "works-by-type-BF4SiMaO.js",
+          "kb": 0.72,
+          "gzipKb": 0.47
+        },
+        {
+          "file": "publisher-selector-GrUjZXMF.js",
+          "kb": 0.61,
+          "gzipKb": 0.39
+        },
+        {
+          "file": "document-title-9OA0ZFRO.js",
+          "kb": 0.25,
+          "gzipKb": 0.21
+        },
+        {
+          "file": "select-id-BGnKFAJN.js",
+          "kb": 0.13,
+          "gzipKb": 0.12
+        },
+        {
+          "file": "contribution-BEdT9Leb.js",
+          "kb": 0.11,
+          "gzipKb": 0.11
+        }
+      ],
+      "totalJsKb": 3617,
+      "totalGzipKb": 1048,
+      "hasSizeWarning": true
+    }
   }
 ]

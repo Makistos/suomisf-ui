@@ -6,18 +6,24 @@ about the ones that need a real decision, not just a version bump.
 
 Last reviewed: 2026-08-23.
 
-## Needs a major-version migration
-
-- **react-router-dom v7** — the vulnerable range for GHSA-337j-9hxr-rhxg
-  (arbitrary constructor injection via `deserializeErrors()` in SSR
-  hydration) has since grown to cover all of 6.x through 7.17.0
-  (re-checked 2026-08-23; previously only part of 6.x was affected, which
-  is why staying on 6.30.6 was safe at the time). That safe-harbor no
-  longer exists — the only fix is 7.18.2+. v7 has real API changes (data
-  router patterns, route config); needs its own migration pass and
-  testing, not a drive-by bump.
-
 ## Already fixed (2026-08-23)
+
+- **react-router-dom 6.30.6 → 7.18.2** — the vulnerable range for
+  GHSA-337j-9hxr-rhxg (arbitrary constructor injection via
+  `deserializeErrors()` in SSR hydration) grew to cover all of 6.x
+  through 7.17.0, closing the "stay on 6.30.6" safe-harbor. Straight
+  version bump, no code changes needed: this app only uses the stable,
+  carried-over declarative API (`BrowserRouter`, `Routes`/`Route`,
+  `Link`, `Outlet`, `useNavigate`, `useParams`, `useLocation`,
+  `useSearchParams` — grepped every `react-router-dom` import across 65
+  files to confirm), not the data-router/loader/action patterns that
+  actually changed between v6 and v7. `npm audit` no longer lists
+  react-router or react-router-dom. Verified: `tsc --noEmit` clean,
+  production build succeeds, full Playwright suite green (chromium
+  43/44 on the full parallel run, the one failure — `latest.spec.ts`,
+  an anon read racing concurrently-running admin create/delete specs —
+  reproduced as 3/3 passing in isolation single-worker; no route,
+  param, navigate, or outlet related failures anywhere in the run).
 
 - **vite 5.4.21 → 8.2.2** — the esbuild dev-server CVE range
   (GHSA-67mh-4wv8-2f99) grew to include all of vite's 5.x line, closing

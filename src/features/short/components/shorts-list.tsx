@@ -59,7 +59,7 @@ interface ShortsListProps {
  * @return {JSX.Element} The rendered component.
  */
 export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPublications,
-    anthology, sort, enableQueries, workEditions, hideType }: ShortsListProps): JSX.Element => {
+    anthology, sort, enableQueries, workEditions, hideType }: ShortsListProps): React.JSX.Element => {
 
     const [orderField, setOrderField] = useState(sort || "");
     const [groupedShorts, setGroupedShorts]: [Record<string, Short[]>,

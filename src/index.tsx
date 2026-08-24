@@ -38,7 +38,7 @@ const Awards = lazy(() => import('./features/award/routes/awards-page').then(m =
 const AwardPage = lazy(() => import('./features/award/routes/award-page').then(m => ({ default: m.AwardPage })));
 const Changes = lazy(() => import('./features/changes/routes/changes-page').then(m => ({ default: m.Changes })));
 const LatestAdditions = lazy(() => import('./features/latest/routes/latest-additions').then(m => ({ default: m.LatestAdditions })));
-const FAQ = lazy(() => import('faq').then(m => ({ default: m.FAQ })));
+const FAQ = lazy(() => import('./faq').then(m => ({ default: m.FAQ })));
 const ProfilePage = lazy(() => import('@features/user/routes/profile-page'));
 const ShortPage = lazy(() => import('@features/short/routes/short-page').then(m => ({ default: m.ShortPage })));
 const WorksByType = lazy(() => import('@features/work/routes/works-by-type').then(m => ({ default: m.WorksByType })));

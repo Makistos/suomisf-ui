@@ -10,22 +10,19 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
     "types": ["vite/client", "node"],
-    "baseUrl": "./src",
     "paths": {
-      "@/*": ["__dirname", "../"],
-      "@api/*": ["api/*"],
-      "@components/*": ["./components/*"],
-      "@features/*": ["features/*"],
-      "@hooks/*": ["hooks/*"],
-      "@services/*": ["./services/*"],
-      "@types/*": ["./types/*"],
-      "@utils/*": ["utils/*"]
+      "@api/*": ["./src/api/*"],
+      "@components/*": ["./src/components/*"],
+      "@features/*": ["./src/features/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@services/*": ["./src/services/*"],
+      "@utils/*": ["./src/utils/*"]
     }
   },
   "include": ["src"]

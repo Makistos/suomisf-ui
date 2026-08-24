@@ -1,8 +1,8 @@
 import { User } from "@features/user";
 import { Work, WorkFormData } from "@features/work";
 import { getApiContent } from "@services/user-service";
-import { Contribution } from "types/contribution";
-import { emptyContributor } from "components/forms/contributor-field";
+import { Contribution } from "../../types/contribution";
+import { emptyContributor } from "@components/forms/contributor-field";
 
 const convToForm = (work: Work): WorkFormData => ({
     id: work.id,

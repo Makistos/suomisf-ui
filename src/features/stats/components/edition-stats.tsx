@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { Chart } from "primereact/chart";
-import { ChartData } from "chart.js/index";
+import { ChartData } from "chart.js";
 import _ from "lodash";
 
 import { getGenreColors } from "../../genre";
@@ -29,14 +29,15 @@ export const EditionsStats = ({ editions }: EditionsProps) => {
                 (value => value.abbr)))                // Count by genre abbreviation
             .sort((a, b) => a[1] > b[1] ? -1 : 1);     // Sort by count in descending order
         genresCount = genresCount.filter(genre => genre[0] !== 'kok' && genre[0] !== 'eiSF');
-        let newGenres: ChartData = {};
-        newGenres.datasets = [];
         const data = genresCount.map(genre => genre[1]);
         const labels = genreLabels(genresCount);
-        newGenres.datasets[0] = {};
-        newGenres.datasets[0].data = data;
-        newGenres.datasets[0].backgroundColor = getGenreColors(genresCount.map(genre => genre[0]));
-        newGenres.labels = labels;
+        const newGenres: ChartData = {
+            labels,
+            datasets: [{
+                data,
+                backgroundColor: getGenreColors(genresCount.map(genre => genre[0])),
+            }],
+        };
         setGenres(newGenres);
     }, [editions])
 

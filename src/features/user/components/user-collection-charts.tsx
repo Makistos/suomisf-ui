@@ -1,7 +1,7 @@
 import { Chart } from "primereact/chart";
 import { Dialog } from "primereact/dialog";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { ChartData } from "chart.js/index";
+import { ChartData } from "chart.js";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getApiContent } from "@services/user-service";

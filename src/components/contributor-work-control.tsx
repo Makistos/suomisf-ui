@@ -335,8 +335,10 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
                             </Link>
                         </div>
 
-                        {/* Original name and language */}
-                        {work.orig_title && work.orig_title !== work.title && (
+                        {/* Original name and language - shown even when it's
+                            identical to the Finnish title, since the original
+                            year is still worth showing on its own. */}
+                        {work.orig_title && (
                             <div className="text-sm text-600 mb-1">
                                 {work.orig_title}
                                 {work.language && work.language.name !== "suomi" && (

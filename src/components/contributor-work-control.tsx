@@ -1,6 +1,9 @@
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Galleria } from "primereact/galleria";
+import { Toolbar } from "primereact/toolbar";
+import { Checkbox } from "primereact/checkbox";
+import { Dropdown } from "primereact/dropdown";
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Work } from "@features/work/types";
@@ -11,6 +14,9 @@ import { ImageGallery } from ".";
 import { getCurrenUser } from "../services/auth-service";
 import { editionIsOwned } from "@features/edition/utils/edition-is-owned";
 import { editionIsWishlisted } from "@features/edition/utils/edition-is-wishlisted";
+import {
+    renderContributorLink, compareWorksByField, workSortOptions, WorkSortField
+} from "@features/work/utils/group-works";
 
 interface ContributorWorkControlProps {
     /**
@@ -26,6 +32,8 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
     const [showAllImagesGallery, setShowAllImagesGallery] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(-1);
     const [currentWorkImages, setCurrentWorkImages] = useState<{ url: string; workTitle: string; version?: number; editionnum?: number }[]>([]);
+    const [groupByAuthor, setGroupByAuthor] = useState<boolean>(true);
+    const [orderField, setOrderField] = useState<WorkSortField>("Title");
 
     // Get current user for ownership checking
     const currentUser = getCurrenUser();
@@ -62,11 +70,15 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
         }
     }
 
-    // Sort works within each group by title using Finnish locale
+    // Sort works within each group by the selected field
     const groupedWorks = sortedKeys.map(key => ({
         ...grouped[key],
-        works: [...grouped[key].works].sort((a, b) => a.title.localeCompare(b.title, "fi"))
+        works: [...grouped[key].works].sort((a, b) => compareWorksByField(a, b, orderField))
     }));
+
+    // Ungrouped view: one flat list sorted by the selected field
+    // across all works, instead of sorting within each author's group.
+    const flatWorks = [...works].sort((a, b) => compareWorksByField(a, b, orderField));
 
     // Get the first edition with an image for a work
     const getFirstEditionWithImage = (work: Work): Edition | null => {
@@ -303,149 +315,186 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
         });
     };
 
-    return (
-        <div>
-            {/* Header with "View All Images" button */}
-            {allWorksImages.length > 0 && (
-                <div className="mb-3 flex justify-content-end">
-                    <Button
-                        icon="pi pi-images"
-                        label={`Näytä kaikki kuvat (${allWorksImages.length})`}
-                        className="p-button-outlined p-button-sm"
-                        onClick={() => {
-                            setCurrentWorkImages([]); // Clear current work images to show all
-                            setCurrentImageIndex(-1); // Reset to show thumbnails first
-                            setShowAllImagesGallery(true);
-                        }}
-                    />
-                </div>
-            )}
+    const renderWorkCard = (work: Work, authorPrefix?: React.ReactNode) => {
+        const allImages = getAllImagesFromWork(work);
 
-            <div className="w-full">
-                {groupedWorks.map((group) => (
-                    <div key={group.authorStr} className="mb-4">
-                        {/* Group header */}
-                        {group.authorStr !== personName && (
-                            <h3 className="text-xl font-semibold mb-3 text-700 pb-2 border-bottom-1 border-300">
-                                {group.authorStr} ({group.works.length})
-                            </h3>
+        return (
+            <div key={work.id} className="mb-3 p-3 surface-50 border-round">
+                <div className="grid align-items-start gap-3">
+                    <div className="col">
+                        {/* Title */}
+                        <div className="font-semibold mb-1">
+                            {authorPrefix && (
+                                <><strong>{authorPrefix}</strong>: </>
+                            )}
+                            <Link
+                                to={`/works/${work.id}`}
+                                className="no-underline text-primary hover:text-primary-700"
+                            >
+                                {work.title}
+                            </Link>
+                        </div>
+
+                        {/* Original name and language */}
+                        {work.orig_title && work.orig_title !== work.title && (
+                            <div className="text-sm text-600 mb-1">
+                                {work.orig_title}
+                                {work.language && work.language.name !== "suomi" && (
+                                    <span> ({work.language.name})</span>
+                                )}
+                                {work.pubyear && (
+                                    <span> {work.pubyear}</span>
+                                )}
+                            </div>
                         )}
-                        <div className="work-list">
-                            {group.works.map((work) => {
-                                const allImages = getAllImagesFromWork(work);
 
-                                return (
-                                    <div key={work.id} className="mb-3 p-3 surface-50 border-round">
-                                        <div className="grid align-items-start gap-3">
-                                            <div className="col">
-                                                {/* Title */}
-                                                <div className="font-semibold mb-1">
-                                                    <Link
-                                                        to={`/works/${work.id}`}
-                                                        className="no-underline text-primary hover:text-primary-700"
-                                                    >
-                                                        {work.title}
-                                                    </Link>
-                                                </div>
+                        {/* Bookseries */}
+                        {work.bookseries && (
+                            <div className="text-sm text-700 mb-1">
+                                <Link
+                                    to={`/bookseries/${work.bookseries.id}`}
+                                    className="no-underline text-primary hover:text-primary-700"
+                                >
+                                    {work.bookseries.name}
+                                </Link>
+                                {work.bookseriesnum && <span> #{work.bookseriesnum}</span>}
+                            </div>
+                        )}
 
-                                                {/* Original name and language */}
-                                                {work.orig_title && work.orig_title !== work.title && (
-                                                    <div className="text-sm text-600 mb-1">
-                                                        {work.orig_title}
-                                                        {work.language && work.language.name !== "suomi" && (
-                                                            <span> ({work.language.name})</span>
-                                                        )}
-                                                        {work.pubyear && (
-                                                            <span> {work.pubyear}</span>
-                                                        )}
-                                                    </div>
-                                                )}
-
-                                                {/* Bookseries */}
-                                                {work.bookseries && (
-                                                    <div className="text-sm text-700 mb-1">
-                                                        <Link
-                                                            to={`/bookseries/${work.bookseries.id}`}
-                                                            className="no-underline text-primary hover:text-primary-700"
-                                                        >
-                                                            {work.bookseries.name}
-                                                        </Link>
-                                                        {work.bookseriesnum && <span> #{work.bookseriesnum}</span>}
-                                                    </div>
-                                                )}
-
-                                                {/* Editions */}
-                                                {work.editions && work.editions.length > 0 && (
-                                                    <div className="text-sm text-500 mb-2">
-                                                        {[...work.editions]
-                                                            .sort((a, b) => {
-                                                                const yearA = typeof a.pubyear === 'number' ? a.pubyear : parseInt(String(a.pubyear || 0));
-                                                                const yearB = typeof b.pubyear === 'number' ? b.pubyear : parseInt(String(b.pubyear || 0));
-                                                                return yearA - yearB;
-                                                            })
-                                                            .map((edition) => (
-                                                                <div key={edition.id} className={editionIsOwned(edition, currentUser) ? "book owned" : editionIsWishlisted(edition, currentUser) ? "book wishlist" : "book not-owned"}>
-                                                                    <Link
-                                                                        to={`/editions/${edition.id}`}
-                                                                        className="no-underline text-primary hover:text-primary-700"
-                                                                    >
-                                                                        <span dangerouslySetInnerHTML={{ __html: formatEdition(edition, work.title) }} />
-                                                                    </Link>
-                                                                </div>
-                                                            ))
-                                                        }
-                                                    </div>
-                                                )}
-
-                                                {/* Genres and Tags */}
-                                                <div className="mt-2">
-                                                    {work.genres && work.genres.length > 0 && (
-                                                        <div className="mb-2">
-                                                            <GenreGroup genres={work.genres} showOneCount />
-                                                        </div>
-                                                    )}
-                                                    {work.tags && work.tags.length > 0 && (
-                                                        <div>
-                                                            <Button
-                                                                icon={expandedTags.has(work.id) ? "pi pi-chevron-up" : "pi pi-chevron-down"}
-                                                                label={`Asiasanat (${work.tags.length})`}
-                                                                className="p-button-text p-button-sm p-0"
-                                                                onClick={() => toggleWorkTags(work.id)}
-                                                            />
-                                                            {expandedTags.has(work.id) && (
-                                                                <div className="mt-2">
-                                                                    <TagGroup tags={work.tags} showOneCount overflow={50} />
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-
-                                            {/* Cover Image */}
-                                            {allImages.length > 0 && (
-                                                <div className="col-fixed" style={{ width: '182px' }}>
-                                                    <div className="flex justify-content-end" style={{ minHeight: '182px' }}>
-                                                        <ImageGallery
-                                                            imageData={allImages}
-                                                            alt={`${work.title} kansi`}
-                                                            height="150"
-                                                            className="border-round shadow-2 hover:shadow-4 transition-all transition-duration-200"
-                                                            imageClassName="object-fit-cover"
-                                                            preview={allImages.length === 1}
-                                                            showGalleryButton={false}
-                                                            onClick={allImages.length > 1 ? () => showWorkGallery(work) : undefined}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            )}
+                        {/* Editions */}
+                        {work.editions && work.editions.length > 0 && (
+                            <div className="text-sm text-500 mb-2">
+                                {[...work.editions]
+                                    .sort((a, b) => {
+                                        const yearA = typeof a.pubyear === 'number' ? a.pubyear : parseInt(String(a.pubyear || 0));
+                                        const yearB = typeof b.pubyear === 'number' ? b.pubyear : parseInt(String(b.pubyear || 0));
+                                        return yearA - yearB;
+                                    })
+                                    .map((edition) => (
+                                        <div key={edition.id} className={editionIsOwned(edition, currentUser) ? "book owned" : editionIsWishlisted(edition, currentUser) ? "book wishlist" : "book not-owned"}>
+                                            <Link
+                                                to={`/editions/${edition.id}`}
+                                                className="no-underline text-primary hover:text-primary-700"
+                                            >
+                                                <span dangerouslySetInnerHTML={{ __html: formatEdition(edition, work.title) }} />
+                                            </Link>
                                         </div>
-                                    </div>
-                                );
-                            })}
+                                    ))
+                                }
+                            </div>
+                        )}
+
+                        {/* Genres and Tags */}
+                        <div className="mt-2">
+                            {work.genres && work.genres.length > 0 && (
+                                <div className="mb-2">
+                                    <GenreGroup genres={work.genres} showOneCount />
+                                </div>
+                            )}
+                            {work.tags && work.tags.length > 0 && (
+                                <div>
+                                    <Button
+                                        icon={expandedTags.has(work.id) ? "pi pi-chevron-up" : "pi pi-chevron-down"}
+                                        label={`Asiasanat (${work.tags.length})`}
+                                        className="p-button-text p-button-sm p-0"
+                                        onClick={() => toggleWorkTags(work.id)}
+                                    />
+                                    {expandedTags.has(work.id) && (
+                                        <div className="mt-2">
+                                            <TagGroup tags={work.tags} showOneCount overflow={50} />
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
-                ))}
+
+                    {/* Cover Image */}
+                    {allImages.length > 0 && (
+                        <div className="col-fixed" style={{ width: '182px' }}>
+                            <div className="flex justify-content-end" style={{ minHeight: '182px' }}>
+                                <ImageGallery
+                                    imageData={allImages}
+                                    alt={`${work.title} kansi`}
+                                    height="150"
+                                    className="border-round shadow-2 hover:shadow-4 transition-all transition-duration-200"
+                                    imageClassName="object-fit-cover"
+                                    preview={allImages.length === 1}
+                                    showGalleryButton={false}
+                                    onClick={allImages.length > 1 ? () => showWorkGallery(work) : undefined}
+                                />
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
+    const toolbarStart = (
+        <div className="flex flex-wrap align-items-center gap-3">
+            <div className="flex align-items-center gap-2">
+                <Checkbox
+                    inputId="cwcGroupByAuthor"
+                    checked={groupByAuthor}
+                    onChange={(e) => setGroupByAuthor(!!e.checked)}
+                />
+                <label htmlFor="cwcGroupByAuthor" className="white-space-nowrap">
+                    Ryhmittele tekijän mukaan
+                </label>
+            </div>
+            <Dropdown value={orderField}
+                options={workSortOptions}
+                optionLabel="name"
+                optionValue="code"
+                onChange={(e) => setOrderField(e.value)}
+                placeholder="Järjestä"
+            />
+        </div>
+    );
+
+    const toolbarEnd = allWorksImages.length > 0 && (
+        <Button
+            icon="pi pi-images"
+            label={`Näytä kaikki kuvat (${allWorksImages.length})`}
+            className="p-button-outlined p-button-sm"
+            onClick={() => {
+                setCurrentWorkImages([]); // Clear current work images to show all
+                setCurrentImageIndex(-1); // Reset to show thumbnails first
+                setShowAllImagesGallery(true);
+            }}
+        />
+    );
+
+    return (
+        <div>
+            <div className="mb-3">
+                <Toolbar start={toolbarStart} end={toolbarEnd} className="flex-wrap row-gap-3" />
+            </div>
+
+            <div className="w-full">
+                {groupByAuthor ? (
+                    groupedWorks.map((group) => (
+                        <div key={group.authorStr} className="mb-4">
+                            {/* Group header */}
+                            {group.authorStr !== personName && (
+                                <h3 className="text-xl font-semibold mb-3 text-700 pb-2 border-bottom-1 border-300">
+                                    {renderContributorLink(group.works[0]?.contributions ?? [], group.authorStr)}
+                                    {' '}({group.works.length})
+                                </h3>
+                            )}
+                            <div className="work-list">
+                                {group.works.map((work) => renderWorkCard(work))}
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <div className="work-list">
+                        {flatWorks.map((work) => renderWorkCard(
+                            work, renderContributorLink(work.contributions ?? [], work.author_str)
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Image Gallery Dialog */}

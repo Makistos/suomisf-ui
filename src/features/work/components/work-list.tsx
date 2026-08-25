@@ -5,7 +5,10 @@ import { Dropdown } from "primereact/dropdown";
 import { Checkbox } from "primereact/checkbox";
 import "primeflex/primeflex.css";
 
-import { groupWorks, groupKeyDisplayName, renderContributorLink } from "../utils/group-works";
+import {
+    groupWorks, groupKeyDisplayName, renderContributorLink,
+    compareWorksByField, workSortOptions, WorkSortField
+} from "../utils/group-works";
 import { WorkSummary } from "./work-summary";
 import { CoverImageList } from "../../../components/cover-image-list";
 import { WorkStatsPanel } from "../../stats";
@@ -26,7 +29,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
     const [groupedWorks, setGroupedWorks]: [Record<string, Work[]>,
         (works: Record<string, Work[]>) => void] = useState({});
     const [detailLevel, setDetailLevel] = useState(details);
-    const [orderField, setOrderField] = useState("Title");
+    const [orderField, setOrderField] = useState<WorkSortField>("Title");
     const [workView, setWorkView] = useState("Lista");
     const [showNonSf, setShowNonSf] = useState<boolean>(false);
     const [groupByAuthor, setGroupByAuthor] = useState<boolean>(true);
@@ -52,13 +55,6 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
         { icon: 'pi pi-align-justify', value: 'all' }
     ];
 
-    const sortOptions = [
-        { name: 'Nimi', code: 'Title' },
-        { name: 'Alkuperäinen nimi', code: 'OrigTitle' },
-        { name: 'Ensipainoksen vuosi', code: 'Pubyear' },
-        { name: 'Alkuperäinen vuosi', code: 'Year' },
-    ];
-
     const compareAuthors = (a: [string, Work[]], b: [string, Work[]]) => {
         // Special compare needed because we want the works by the person (if given)
         // to come first.
@@ -81,34 +77,9 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
         return aName.localeCompare(bName, "fi");
     }
 
-    // Oldest edition's publication year, without mutating work.editions
-    // (Array.prototype.sort sorts in place, and this used to run on every
-    // comparator call during the outer sort).
-    const oldestEditionPubyear = (work: Work): number =>
-        work.editions.length > 0
-            ? Math.min(...work.editions.map(e => Number(e.pubyear)))
-            : Infinity;
-
     const compareWorks = (a: Work, b: Work) => {
         if (sort === false) return 1;
-        if (orderField === 'Title') {
-            if (a.title.toUpperCase() < b.title.toUpperCase()) return -1;
-            if (a.title.toUpperCase() > b.title.toUpperCase()) return 1;
-        } else if (orderField === 'OrigTitle') {
-            const aOrig = (a.orig_title || a.title).toUpperCase();
-            const bOrig = (b.orig_title || b.title).toUpperCase();
-            if (aOrig < bOrig) return -1;
-            if (aOrig > bOrig) return 1;
-        } else if (orderField === 'Year') {
-            if (a.pubyear < b.pubyear) return -1;
-            if (a.pubyear > b.pubyear) return 1;
-        } else if (orderField === 'Pubyear') {
-            const oldestA = oldestEditionPubyear(a);
-            const oldestB = oldestEditionPubyear(b);
-            if (oldestA < oldestB) return -1;
-            if (oldestA > oldestB) return 1;
-        }
-        return 0;
+        return compareWorksByField(a, b, orderField);
     }
 
     // Grouping + author sort + per-group filter/sort, computed once per
@@ -154,7 +125,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
                 </label>
             </div>
             <Dropdown value={orderField}
-                options={sortOptions}
+                options={workSortOptions}
                 optionLabel="name"
                 optionValue="code"
                 onChange={(e) => setOrderField(e.value)}

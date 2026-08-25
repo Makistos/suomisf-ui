@@ -47,7 +47,8 @@ import { AntikvaariProductPicker } from "../components/antikvaari-product-picker
 export interface WorkProps {
     work: Work,
     detailLevel?: string,
-    orderField?: string
+    orderField?: string,
+    authorPrefix?: React.ReactNode
 }
 
 const baseURL = "works/";

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";
 
 import { SelectButton } from 'primereact/selectbutton';
 import { Dropdown } from "primereact/dropdown";
+import { Checkbox } from "primereact/checkbox";
 import "primeflex/primeflex.css";
 
-import { groupWorks, groupKeyDisplayName } from "../utils/group-works";
+import { groupWorks, groupKeyDisplayName, renderContributorLink } from "../utils/group-works";
 import { WorkSummary } from "./work-summary";
 import { CoverImageList } from "../../../components/cover-image-list";
 import { WorkStatsPanel } from "../../stats";
@@ -29,6 +29,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
     const [orderField, setOrderField] = useState("Title");
     const [workView, setWorkView] = useState("Lista");
     const [showNonSf, setShowNonSf] = useState<boolean>(false);
+    const [groupByAuthor, setGroupByAuthor] = useState<boolean>(true);
 
     useEffect(() => {
         if (works !== null && works.length > 0) {
@@ -53,8 +54,9 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
 
     const sortOptions = [
         { name: 'Nimi', code: 'Title' },
-        { name: 'Julkaisuvuosi', code: 'Year' },
-        { name: "Suom. järjestys", code: 'Pubyear' }
+        { name: 'Alkuperäinen nimi', code: 'OrigTitle' },
+        { name: 'Ensipainoksen vuosi', code: 'Pubyear' },
+        { name: 'Alkuperäinen vuosi', code: 'Year' },
     ];
 
     const compareAuthors = (a: [string, Work[]], b: [string, Work[]]) => {
@@ -92,6 +94,11 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
         if (orderField === 'Title') {
             if (a.title.toUpperCase() < b.title.toUpperCase()) return -1;
             if (a.title.toUpperCase() > b.title.toUpperCase()) return 1;
+        } else if (orderField === 'OrigTitle') {
+            const aOrig = (a.orig_title || a.title).toUpperCase();
+            const bOrig = (b.orig_title || b.title).toUpperCase();
+            if (aOrig < bOrig) return -1;
+            if (aOrig > bOrig) return 1;
         } else if (orderField === 'Year') {
             if (a.pubyear < b.pubyear) return -1;
             if (a.pubyear > b.pubyear) return 1;
@@ -118,15 +125,42 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [groupedWorks, personName, collaborationsLast, sort, orderField]);
 
+    // Ungrouped view: one flat, globally-sorted list instead of
+    // sorting within each author's group.
+    const sortedFlatWorks = useMemo(() => {
+        if (works === null || works === undefined) return [];
+        return works.filter(work => work.editions.length > 0).sort(compareWorks);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [works, sort, orderField]);
+
     const detailTemplate = (option: detailOptionType) => {
         return <i className={option.icon}></i>
     }
 
     const startContent = (
-        <SelectButton value={workView}
-            options={workViewOptions}
-            onChange={(e) => setWorkView(e.value)}
-        />
+        <div className="flex flex-wrap align-items-center gap-3">
+            <SelectButton value={workView}
+                options={workViewOptions}
+                onChange={(e) => setWorkView(e.value)}
+            />
+            <div className="flex align-items-center gap-2 pl-2 border-left-1 border-300">
+                <Checkbox
+                    inputId="groupByAuthor"
+                    checked={groupByAuthor}
+                    onChange={(e) => setGroupByAuthor(!!e.checked)}
+                />
+                <label htmlFor="groupByAuthor" className="white-space-nowrap">
+                    Ryhmittele tekijän mukaan
+                </label>
+            </div>
+            <Dropdown value={orderField}
+                options={sortOptions}
+                optionLabel="name"
+                optionValue="code"
+                onChange={(e) => setOrderField(e.value)}
+                placeholder="Järjestä"
+            />
+        </div>
     );
 
     const centerContent = (
@@ -147,10 +181,12 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
         works && works.length > 0 ? (
             <div className="grid w-full">
                 <div className="w-full">
-                    <Toolbar start={startContent} center={centerContent} end={endContent} />
+                    <Toolbar start={startContent} center={centerContent} end={endContent}
+                        className="flex-wrap row-gap-3"
+                    />
                 </div>
                 <div className="grid col-12">
-                    {
+                    {groupByAuthor ? (
                         sortedGroupedWorks
                             .map(({ group, works: ws, listWorks }) => {
                                 return (
@@ -158,31 +194,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
                                         <div className="grid col-12">
                                             {groupKeyDisplayName(group) !== personName && (
                                                 <h3 className="mt-2" style={{ marginBottom: '0.15rem' }}>
-                                                    {(() => {
-                                                        const allContribs = ws[0]?.contributions ?? [];
-                                                        const authors = allContribs.filter(c => c.role.id === 1);
-                                                        const contribs = authors.length > 0
-                                                            ? authors
-                                                            : allContribs.filter(c => c.role.id === 3);
-                                                        if (contribs.length === 0) return group;
-                                                        const isEditor = authors.length === 0;
-                                                        return (
-                                                            <>
-                                                                {contribs.map((c, i) => (
-                                                                    <React.Fragment key={c.person.id}>
-                                                                        {i > 0 && ' & '}
-                                                                        <Link
-                                                                            to={`/people/${c.person.id}`}
-                                                                            className="author-link"
-                                                                        >
-                                                                            {c.person.alt_name || c.person.name}
-                                                                        </Link>
-                                                                    </React.Fragment>
-                                                                ))}
-                                                                {isEditor && ' (toim.)'}
-                                                            </>
-                                                        );
-                                                    })()}
+                                                    {renderContributorLink(ws[0]?.contributions ?? [], group)}
                                                 </h3>
                                             )}
                                         </div>
@@ -203,7 +215,25 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
                                     </div>
                                 );
                             })
-                    }
+                    ) : (
+                        <div className="col-12">
+                            {workView === 'Lista' ? (
+                                sortedFlatWorks.map((work) => (
+                                    <WorkSummary
+                                        work={work}
+                                        key={`work-${work.id}-summary`}
+                                        detailLevel={detailLevel}
+                                        orderField={orderField}
+                                        authorPrefix={renderContributorLink(
+                                            work.contributions ?? [], work.author_str
+                                        )}
+                                    />
+                                ))
+                            ) : (
+                                <CoverImageList works={sortedFlatWorks} />
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         ) : (<></>)

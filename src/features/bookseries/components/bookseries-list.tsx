@@ -36,6 +36,7 @@ export const BookSeriesList = ({ works, seriesType }: SeriesListProps) => {
         <div>
             {
                 Object.entries(groupedSeries)
+                    .sort(([a], [b]) => a.localeCompare(b, "fi"))
                     .map(([seriesName, ser]) => {
                         return (
                             <div key={bookseries[seriesName]}>

@@ -11,7 +11,7 @@ export const PubseriesList = ({ pubseriesList }: PubseriesListProps) => {
     const [pubseries, setPubseries]: [Pubseries[], (pubseries: Pubseries[]) => void] = useState<Pubseries[]>([]);
 
     useEffect(() => {
-        setPubseries(pubseriesList);
+        setPubseries([...pubseriesList].sort((a, b) => a.name.localeCompare(b.name, "fi")));
     }, [pubseriesList])
 
     return (

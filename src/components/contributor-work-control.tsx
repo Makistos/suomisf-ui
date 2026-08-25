@@ -335,14 +335,18 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
                             </Link>
                         </div>
 
-                        {/* Original name and language - shown even when it's
-                            identical to the Finnish title, since the original
-                            year is still worth showing on its own. */}
-                        {work.orig_title && (
+                        {/* Original name and language. Gated on language,
+                            not on orig_title differing from the title - a
+                            Finnish-language work's "original" title is the
+                            same info already shown in the title line above,
+                            but a foreign-language work's original year is
+                            still worth showing even when the title itself
+                            wasn't changed for Finnish publication. */}
+                        {work.orig_title && work.language_name?.id !== 7 && (
                             <div className="text-sm text-600 mb-1">
                                 {work.orig_title}
-                                {work.language && work.language.name !== "suomi" && (
-                                    <span> ({work.language.name})</span>
+                                {work.language_name && (
+                                    <span> ({work.language_name.name})</span>
                                 )}
                                 {work.pubyear && (
                                     <span> {work.pubyear}</span>

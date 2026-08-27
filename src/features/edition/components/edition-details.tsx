@@ -23,6 +23,7 @@ import { ISBN } from '../types';
 import { Binding } from '../../../types/binding';
 import { EditionOwnership } from './edition-ownership';
 import { EditionOwnersPanel } from './edition-owners-panel';
+import { editionIsOwned } from '../utils/edition-is-owned';
 import { EditionPricesDialog } from './edition-prices-dialog';
 import { EditionWishlist } from './edition-wishlist';
 
@@ -141,6 +142,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
     const [editVisible, setEditVisible] = useState(false);
     const [shortsFormVisible, setShortsFormVisible] = useState(false);
     const [pricesVisible, setPricesVisible] = useState(false);
+    const canPrice = !!user && (isAdmin(user) || editionIsOwned(edition, user));
 
     const { data: pricesCountData, isError: pricesCountError } = useQuery({
         queryKey: ['edition', 'prices', 'count', edition.id],
@@ -148,7 +150,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
             const resp = await getApiContent(`edition/${edition.id}/antikvaari/prices/count`, user);
             return resp.data as { count: number };
         },
-        enabled: !!user && isAdmin(user) && edition.combined === false,
+        enabled: canPrice && edition.combined === false,
         staleTime: 5 * 60 * 1000,
         retry: false,
     });
@@ -358,6 +360,10 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                                         onClick={() => onShortsShow()}
                                     />
                                 )}
+                            </div>
+                        }
+                        {canPrice && edition.combined === false &&
+                            <div>
                                 <Button icon="pi pi-euro" tooltip="Hinnat"
                                     className={`p-button-text${hasPrices ? '' : ' text-400'}`}
                                     onClick={() => setPricesVisible(true)}

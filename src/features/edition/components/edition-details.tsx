@@ -362,14 +362,6 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                                 )}
                             </div>
                         }
-                        {canPrice && edition.combined === false &&
-                            <div>
-                                <Button icon="pi pi-euro" tooltip="Hinnat"
-                                    className={`p-button-text${hasPrices ? '' : ' text-400'}`}
-                                    onClick={() => setPricesVisible(true)}
-                                />
-                            </div>
-                        }
                         {user && edition.combined === false &&
                             <div className="flex flex-wrap align-items-center gap-2">
                                 <EditionWishlist editionId={edition.id}
@@ -388,6 +380,12 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
                                             ({editionPrice.best_price.toFixed(2)} €)
                                         </span>
                                     </>
+                                )}
+                                {canPrice && (
+                                    <Button icon="pi pi-euro" tooltip="Hinnat"
+                                        className={`p-button-text${hasPrices ? '' : ' text-400'}`}
+                                        onClick={() => setPricesVisible(true)}
+                                    />
                                 )}
                             </div>
                         }

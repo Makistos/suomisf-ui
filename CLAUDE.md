@@ -35,9 +35,12 @@ Application uses PrimeReact component library. Always suggest components in it i
 
 - Price sources are pluggable via the backend provider registry
   `../suomisf/app/price_providers.py` (each source wires search / fetch /
-  scrape_single). Current sources: Antikvaari, Antikka, Antikvariaatti, Oranssi
-  Planeetta, Lukuhetki. WooCommerce shops (antikka, oranssiplaneetta) share
-  `_scrape_woocommerce` / `_woocommerce_search`.
+  scrape_single). Current sources: Antikvaari, Antikka, Antikvariaatti,
+  Lukuhetki, Kampin kirjakauppa. Oranssi Planeetta's scraper stays registered
+  but is hidden from both source pickers (`HIDDEN_SOURCES` in
+  antikvaari-product-picker.tsx; filtered by name in
+  edition-prices-dialog.tsx). WooCommerce shops (antikka, oranssiplaneetta)
+  share `_scrape_woocommerce` / `_woocommerce_search`.
 - The work-page picker is
   `src/features/work/components/antikvaari-product-picker.tsx` (source selector
   order in `SOURCE_ORDER`); stored prices show in

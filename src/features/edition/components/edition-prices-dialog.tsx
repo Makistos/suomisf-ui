@@ -126,7 +126,10 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
         queryKey: ['price-sources'],
         queryFn: async () => {
             const resp = await getApiContent('price-sources', user);
-            return resp.data as PriceSource[];
+            const all = resp.data as PriceSource[];
+            // Scraper stays registered on the backend; hidden from source
+            // pickers only.
+            return all.filter(s => s.name !== 'Oranssi Planeetta');
         },
         enabled: visible && !!user,
     });

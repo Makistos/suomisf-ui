@@ -82,11 +82,15 @@ interface AntikvaariProductPickerProps {
 }
 
 // Preferred order of source tabs; unknown sources fall to the end.
-const SOURCE_ORDER = ['Antikvaari', 'Antikka', 'Antikvariaatti', 'Oranssi Planeetta', 'Lukuhetki'];
+const SOURCE_ORDER = ['Antikvaari', 'Antikka', 'Antikvariaatti', 'Lukuhetki', 'Kampin kirjakauppa'];
 const sourceRank = (name: string) => {
     const i = SOURCE_ORDER.indexOf(name);
     return i === -1 ? SOURCE_ORDER.length : i;
 };
+
+// Scraper stays registered on the backend; this just keeps it out of the
+// source picker so it can't be searched/fetched from the UI.
+const HIDDEN_SOURCES = ['Oranssi Planeetta'];
 
 const BINDING_LABELS: Record<number, string> = {
     1: 'Ei tietoa',
@@ -160,7 +164,7 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose, onSourceChang
             try {
                 const resp = await getApiContent('price-sources', user);
                 const all: PriceSource[] = resp.data ?? [];
-                setSources(all.filter(s => s.has_search)
+                setSources(all.filter(s => s.has_search && !HIDDEN_SOURCES.includes(s.name))
                     .sort((a, b) => sourceRank(a.name) - sourceRank(b.name)));
             } catch {
                 // Sources are optional; fall back to the default single source.

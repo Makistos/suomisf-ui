@@ -303,6 +303,8 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose, onSourceChang
             setSaveResults(byId);
             if (saved > 0) {
                 queryClient.invalidateQueries({ queryKey: ['edition', 'prices', 'count'] });
+                // work-page's query key stores workId as the string route param.
+                queryClient.invalidateQueries({ queryKey: ['work', work.id.toString(), 'edition-prices'] });
             }
             toastRef.current?.show({
                 severity: saved > 0 ? 'success' : 'info',

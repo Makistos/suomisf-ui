@@ -164,7 +164,9 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
             await deleteApiContent(`antikvaari/prices/${priceId}`);
             await queryClient.invalidateQueries({ queryKey: ['edition', 'prices', edition.id] });
             await queryClient.invalidateQueries({ queryKey: ['edition', 'prices', 'count', edition.id] });
-            await queryClient.invalidateQueries({ queryKey: ['work', edition.work?.id, 'edition-prices'] });
+            // work-page's query key stores workId as the string route param,
+            // so invalidation must match that, not the numeric edition.work.id.
+            await queryClient.invalidateQueries({ queryKey: ['work', edition.work?.id?.toString(), 'edition-prices'] });
             toastRef.current?.show({ severity: 'success', summary: 'Hinta poistettu' });
         } catch {
             toastRef.current?.show({ severity: 'error', summary: 'Poisto epäonnistui' });
@@ -256,7 +258,9 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
             }
             await queryClient.invalidateQueries({ queryKey: ['edition', 'prices', edition.id] });
             await queryClient.invalidateQueries({ queryKey: ['edition', 'prices', 'count', edition.id] });
-            await queryClient.invalidateQueries({ queryKey: ['work', edition.work?.id, 'edition-prices'] });
+            // work-page's query key stores workId as the string route param,
+            // so invalidation must match that, not the numeric edition.work.id.
+            await queryClient.invalidateQueries({ queryKey: ['work', edition.work?.id?.toString(), 'edition-prices'] });
             toastRef.current?.show({ severity: 'success', summary: editingId != null ? 'Hinta päivitetty' : 'Hinta tallennettu' });
             cancelForm();
         } catch {

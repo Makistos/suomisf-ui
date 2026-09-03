@@ -306,7 +306,12 @@ export const AntikvaariProductPicker = ({ work, onClose: _onClose, onSourceChang
             }
             setSaveResults(byId);
             if (saved > 0) {
-                queryClient.invalidateQueries({ queryKey: ['edition', 'prices', 'count'] });
+                // Broad ['edition', 'prices'] prefix so this also invalidates the
+                // per-edition price *list* (['edition','prices',editionId,cond]),
+                // not just the count badge — rows can land on any edition in the
+                // work, and EditionPricesDialog otherwise keeps showing stale data
+                // until a full page reload.
+                queryClient.invalidateQueries({ queryKey: ['edition', 'prices'] });
                 // work-page's query key stores workId as the string route param.
                 queryClient.invalidateQueries({ queryKey: ['work', work.id.toString(), 'edition-prices'] });
             }

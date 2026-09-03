@@ -16,7 +16,7 @@ import { Toast } from 'primereact/toast';
 
 import { getOwnership } from '@api/edition/get-ownership';
 import { getCurrenUser } from '@services/auth-service';
-import { deleteApiContent, getApiContent, postApiContent } from '@services/user-service';
+import { deleteApiContent, getApiContent, postApiContent, putApiContent } from '@services/user-service';
 import { Edition, CombinedEdition } from '../types';
 
 interface PriceRow {
@@ -97,6 +97,7 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
     const toastRef = useRef<Toast>(null);
     const [deletingId, setDeletingId] = useState<number | null>(null);
     const [showForm, setShowForm] = useState(false);
+    const [editingId, setEditingId] = useState<number | null>(null);
     const [form, setForm] = useState(emptyForm);
     const [saving, setSaving] = useState(false);
     const [fetching, setFetching] = useState(false);
@@ -207,11 +208,35 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
         }
     };
 
+    const startEdit = (row: PriceRow) => {
+        setForm({
+            url: row.url || '',
+            source_id: row.source_id,
+            book_id: row.book_id || '',
+            seller: row.seller || '',
+            seller_url: row.seller_url || '',
+            condition: row.condition || '',
+            price: row.price,
+            last_updated: row.last_updated ? new Date(row.last_updated) : null,
+            is_library_discard: row.is_library_discard,
+            has_markings: row.has_markings,
+            missing_dust_cover: row.missing_dust_cover,
+        });
+        setEditingId(row.id);
+        setShowForm(true);
+    };
+
+    const cancelForm = () => {
+        setShowForm(false);
+        setEditingId(null);
+        setForm(emptyForm);
+    };
+
     const handleSaveManual = async () => {
         if (!form.source_id || !form.condition || form.price == null) return;
         setSaving(true);
         try {
-            await postApiContent(`edition/${edition.id}/prices/manual`, {
+            const payload = {
                 source_id: form.source_id,
                 book_id: form.book_id || null,
                 url: form.url || null,
@@ -223,15 +248,19 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                 is_library_discard: form.is_library_discard,
                 has_markings: form.has_markings,
                 missing_dust_cover: form.missing_dust_cover,
-            }, user);
+            };
+            if (editingId != null) {
+                await putApiContent(`antikvaari/prices/${editingId}`, payload, user);
+            } else {
+                await postApiContent(`edition/${edition.id}/prices/manual`, payload, user);
+            }
             await queryClient.invalidateQueries({ queryKey: ['edition', 'prices', edition.id] });
             await queryClient.invalidateQueries({ queryKey: ['edition', 'prices', 'count', edition.id] });
             await queryClient.invalidateQueries({ queryKey: ['work', edition.work?.id, 'edition-prices'] });
-            toastRef.current?.show({ severity: 'success', summary: 'Hinta tallennettu' });
-            setForm(emptyForm);
-            setShowForm(false);
+            toastRef.current?.show({ severity: 'success', summary: editingId != null ? 'Hinta päivitetty' : 'Hinta tallennettu' });
+            cancelForm();
         } catch {
-            toastRef.current?.show({ severity: 'error', summary: 'Tallennus epäonnistui' });
+            toastRef.current?.show({ severity: 'error', summary: editingId != null ? 'Päivitys epäonnistui' : 'Tallennus epäonnistui' });
         } finally {
             setSaving(false);
         }
@@ -396,16 +425,24 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                                 />
                                 <Column
                                     body={(row: PriceRow) => (
-                                        <Button
-                                            icon="pi pi-trash"
-                                            size="small"
-                                            severity="danger"
-                                            text
-                                            loading={deletingId === row.id}
-                                            onClick={e => confirmDelete(e, row.id)}
-                                        />
+                                        <div className="flex">
+                                            <Button
+                                                icon="pi pi-pencil"
+                                                size="small"
+                                                text
+                                                onClick={() => startEdit(row)}
+                                            />
+                                            <Button
+                                                icon="pi pi-trash"
+                                                size="small"
+                                                severity="danger"
+                                                text
+                                                loading={deletingId === row.id}
+                                                onClick={e => confirmDelete(e, row.id)}
+                                            />
+                                        </div>
                                     )}
-                                    style={{ width: '3rem' }}
+                                    style={{ width: '5.5rem' }}
                                 />
                             </DataTable>
                         </>
@@ -427,7 +464,7 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                         </div>
                     ) : (
                         <div className="border-1 border-300 border-round p-3 flex flex-column gap-3">
-                            <span className="font-semibold">Lisää hinta manuaalisesti</span>
+                            <span className="font-semibold">{editingId != null ? 'Muokkaa hintaa' : 'Lisää hinta manuaalisesti'}</span>
                             <div className="flex align-items-end gap-2">
                                 <div className="flex-1">
                                     <label className="block mb-1 text-sm">Osoite</label>
@@ -530,7 +567,7 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                             </div>
                             <div className="flex gap-2">
                                 <Button
-                                    label="Tallenna"
+                                    label={editingId != null ? 'Päivitä' : 'Tallenna'}
                                     icon="pi pi-save"
                                     size="small"
                                     disabled={!formValid}
@@ -541,7 +578,7 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                                     label="Peruuta"
                                     size="small"
                                     text
-                                    onClick={() => { setShowForm(false); setForm(emptyForm); }}
+                                    onClick={cancelForm}
                                 />
                             </div>
                         </div>

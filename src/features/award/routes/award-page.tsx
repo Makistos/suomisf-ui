@@ -81,7 +81,7 @@ export const AwardPage = ({ id }: AwardPageProps) => {
                             {awarded.work.author_str}
                         </b>
                         : <Link to={`/works/${awarded.work.id}`}>{awarded.work.title}</Link>
-                        {awarded.work.orig_title !== awarded.work.title ?
+                        {awarded.work.orig_title && awarded.work.orig_title !== awarded.work.title ?
                             <>&nbsp; ({awarded.work.orig_title})</> : ""}
                     </>
                 )}
@@ -102,7 +102,7 @@ export const AwardPage = ({ id }: AwardPageProps) => {
                                 }))} /></b>:&nbsp;
 
                         <Link to={`/shorts/${awarded.story.id}`}>{awarded.story.title}</Link>
-                        {awarded.story.orig_title !== awarded.story.title ?
+                        {awarded.story.orig_title && awarded.story.orig_title !== awarded.story.title ?
                             <>&nbsp; ({awarded.story.orig_title})</> : ""}
                     </>
                 }

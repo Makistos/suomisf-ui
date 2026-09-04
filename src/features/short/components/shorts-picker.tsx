@@ -232,7 +232,7 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
           <b>{item.title}</b>
         </div>
         <div className="flex-1 flex-column">
-          {item.orig_title && item.orig_title != item.title &&
+          {item.orig_title && item.lang?.id !== 7 &&
             item.orig_title
           }
         </div>
@@ -251,7 +251,7 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
   }
   const dropDownShortTemplate = (item: Short) => {
     let shortTitle = item.title;
-    if (item.orig_title) {
+    if (item.orig_title && item.lang?.id !== 7) {
       shortTitle += ` (${item.orig_title})`;
     }
     if (item.pubyear) {

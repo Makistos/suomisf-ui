@@ -81,7 +81,7 @@ export const WorkTooltip = ({ work }: WorkProps) => {
             </div>
           )}
         <p className="mt-1">
-          {work.orig_title && work.orig_title !== work.title && work.orig_title + ", "}
+          {work.orig_title && work.language_name?.id !== 7 && work.orig_title + ", "}
 
           {work.pubyear}
           {work.language_name && " (" + work.language_name.name + ")"}

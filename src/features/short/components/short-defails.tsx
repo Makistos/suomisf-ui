@@ -42,10 +42,10 @@ export const ShortDetails = ({ short: data }: ShortDetailsProps) => {
             </div>
             <div className="grid col-12 mt-0 pt-0 p-2">
                 <p className="font-medium text-sm mt-0">
-                    {data.orig_title && data.orig_title !== data.title &&
+                    {data.orig_title && data.lang?.id !== 7 &&
                         data.orig_title
                     }
-                    {data.orig_title && data.orig_title !== data.title && data.pubyear && ", "}
+                    {data.orig_title && data.lang?.id !== 7 && data.pubyear && ", "}
                     {data.pubyear && data.pubyear}
                     &nbsp;{data.lang && "(" + data.lang.name + ")"}
                 </p>

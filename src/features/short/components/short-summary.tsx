@@ -186,14 +186,14 @@ export const ShortSummary = ({ short, skipAuthors, listPublications,
                             </b>
                         }
                         <Link to={`/shorts/${short.id}`}>{short.title}</Link>
-                        {short.orig_title && short.orig_title !== short.title && (
+                        {short.orig_title && short.lang?.id !== 7 && (
                             <> ({short.orig_title}</>
                         )}
                         {short.pubyear && (
                             <>, {short.pubyear}</>
                         )
                         }
-                        {short.orig_title && short.orig_title !== short.title && (
+                        {short.orig_title && short.lang?.id !== 7 && (
                             <>)</>
                         )}
 

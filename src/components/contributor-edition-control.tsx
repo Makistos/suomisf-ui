@@ -368,7 +368,7 @@ export const ContributorEditionControl = ({
                                                     )}
 
                                                     {/* Original title and year */}
-                                                    {edition.work && edition.work.orig_title && edition.work.orig_title !== edition.work.title && (
+                                                    {edition.work && edition.work.orig_title && edition.work.language_name?.id !== 7 && (
                                                         <div className="text-sm text-700 mb-1">
                                                             <span>
                                                                 {edition.work.orig_title}

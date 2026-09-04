@@ -59,9 +59,9 @@ export interface Awarded {
     year: number,
     award: Omit<Award, 'winners'>,
     person: Pick<Person, 'id' | 'name' | 'alt_name'>,
-    work: Pick<Work, 'id' | 'title' | 'orig_title' | 'author_str' | 'contributions'>,
+    work: Pick<Work, 'id' | 'title' | 'orig_title' | 'author_str' | 'contributions' | 'language_name'>,
     category: AwardCategory,
-    story: Pick<Short, 'id' | 'title' | 'contributors' | 'orig_title'>
+    story: Pick<Short, 'id' | 'title' | 'contributors' | 'orig_title' | 'lang'>
 }
 
 export interface AwardedRowData {

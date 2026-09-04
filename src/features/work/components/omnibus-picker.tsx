@@ -19,6 +19,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { getCurrenUser } from "@services/auth-service";
 import { Person } from "@features/person";
 import { Work, OmnibusItem } from "../types";
+import { Language } from "../../../types/language";
 import { useFilterPeople } from "@hooks/use-people-filter";
 import { getApiContent } from "@services/user-service";
 import { getWorksByAuthor } from "@api/work/get-works-by-author";
@@ -34,6 +35,7 @@ interface OmnibusWork {
     author_str: string;
     title: string;
     orig_title: string;
+    language_name: Language;
     pubyear: number;
     explanation?: string;
 }
@@ -55,6 +57,7 @@ export const WorkOmnibusPicker = ({ id, onClose }: PickerProps) => {
                     author_str: item.work.author_str,
                     title: item.work.title,
                     orig_title: item.work.orig_title,
+                    language_name: item.work.language_name,
                     pubyear: item.work.pubyear,
                     explanation: item.explanation || "",
                 }));
@@ -163,6 +166,7 @@ const OmnibusPicker = ({ source, saveCallback }: OmnibusPickerProps) => {
             author_str: selectedWork.author_str,
             title: selectedWork.title,
             orig_title: selectedWork.orig_title,
+            language_name: selectedWork.language_name,
             pubyear: selectedWork.pubyear,
             explanation: "",
         };
@@ -200,7 +204,7 @@ const OmnibusPicker = ({ source, saveCallback }: OmnibusPickerProps) => {
                     </div>
                     <div className="flex-1 flex-column mr-2">
                         <small className="text-600">Alkuperäinen nimeke</small>
-                        <div>{item.orig_title && item.orig_title !== item.title ? item.orig_title : "-"}</div>
+                        <div>{item.orig_title && item.language_name?.id !== 7 ? item.orig_title : "-"}</div>
                     </div>
                     <div className="flex-none mr-2" style={{ width: '80px' }}>
                         <small className="text-600">Vuosi</small>
@@ -246,7 +250,7 @@ const OmnibusPicker = ({ source, saveCallback }: OmnibusPickerProps) => {
 
     const dropDownWorkTemplate = (item: Work) => {
         let workTitle = item.title;
-        if (item.orig_title && item.orig_title !== item.title) {
+        if (item.orig_title && item.language_name?.id !== 7) {
             workTitle += ` (${item.orig_title})`;
         }
         if (item.pubyear) {

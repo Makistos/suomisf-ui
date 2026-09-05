@@ -4,7 +4,50 @@ Tracks dependency vulnerabilities that were investigated but deliberately
 *not* fixed yet, and why. See `npm audit` for the live list; this file is
 about the ones that need a real decision, not just a version bump.
 
-Last reviewed: 2026-08-23.
+Last reviewed: 2026-09-05.
+
+## Already fixed (2026-09-05)
+
+- **node-fetch** (via `face-api.js` → `@tensorflow/tfjs-core` →
+  `node-fetch`; GHSA-r683-j2x4-v87g high + GHSA-w7rc-rwvf-8q5r low, both
+  on the same package) —
+  the real fix noted below as "a separate, larger task" turned out to
+  be a contained one. Replaced face-api.js with
+  `@mediapipe/tasks-vision` (Google's actively-maintained successor
+  line — face-api.js's own author recommends it) in
+  `src/features/person/components/score-image.ts`, the only
+  consumer. Zero npm dependencies of its own, so no more transitive
+  node-fetch at all, not just a patched version. `scoreFaces()`'s
+  signature was unchanged, so its two callers
+  (`person-image-picker.tsx`, `find-person-images.ts`) needed no
+  edits. Model asset swapped from `public/models/tiny_face_detector_*`
+  to `public/models/blaze_face_short_range.tflite` (~230KB,
+  self-hosted same as before); the WASM runtime (~34MB across its
+  three browser-capability variants) is loaded from jsDelivr's CDN
+  rather than self-hosted, to avoid bloating the repo for a
+  rarely-used admin feature. Verified: `tsc --noEmit` clean,
+  production build succeeds, confirmed via direct browser evaluation
+  that `scoreFaces()` correctly detects one face in a real author
+  portrait (score 15) and zero faces in a landscape photo (score 0),
+  the admin image-picker dialog opens without errors, full Playwright
+  suite green. `npm audit`/Dependabot no longer show node-fetch at
+  all.
+  - Note found along the way, worth knowing for next time: this
+    specific node-fetch vulnerability was never actually reachable in
+    production even before the fix — `@tensorflow/tfjs-core`'s own
+    `package.json` declares `"browser": {"node-fetch": false}`, which
+    Vite honors, so the flagged code was already stripped from every
+    real browser bundle (confirmed by grepping the built output for
+    `node-fetch` — zero matches, pre-fix). Fixed anyway since it's
+    real dead weight and kept re-triggering scans, not because it was
+    an active exploit path.
+- **fflate 0.8.2 → 0.8.3** (GHSA-px8p-9vwx-vf98, medium, DoS via
+  infinite loop parsing a malformed ZIP64 archive) — pulled in
+  transitively via `jspdf`. `jspdf`'s own dependency range (`^0.8.1`)
+  already permitted the fix; the lockfile just hadn't picked it up.
+  Straight `npm update fflate --legacy-peer-deps`, no jspdf version
+  change. Verified: PDF export (profile page's owned-books export)
+  still produces a valid file, full Playwright suite green.
 
 ## Already fixed (2026-08-23)
 
@@ -49,13 +92,6 @@ Last reviewed: 2026-08-23.
 - **quill** (GHSA-v3m3-f69x-jf25, XSS via HTML export) — we're already on
   the latest release (2.0.3); no patched version exists yet. Re-check
   periodically (`npm view quill versions`).
-- **node-fetch** (via `face-api.js` → `@tensorflow/tfjs-core` → `node-fetch`)
-  — `npm audit fix --force` "fixes" this by *downgrading* face-api.js to
-  0.20.0, which isn't a real fix. face-api.js is actively used
-  (`src/features/person/components/score-image.ts`) and its tensorflow.js
-  dependency chain is old/unmaintained. Real fix would be replacing
-  face-api.js with a maintained face-detection library — a separate,
-  larger task, not a dependency bump.
 
 ## Backend (../suomisf, separate repo)
 

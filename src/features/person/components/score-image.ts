@@ -1,12 +1,26 @@
-import * as faceapi from 'face-api.js'
+import { FaceDetector, FilesetResolver } from '@mediapipe/tasks-vision'
 
-let modelLoadPromise: Promise<void> | null = null
+let detectorPromise: Promise<FaceDetector> | null = null
 
-async function ensureModels(): Promise<void> {
-    if (!modelLoadPromise) {
-        modelLoadPromise = faceapi.nets.tinyFaceDetector.loadFromUri('/models')
+async function ensureDetector(): Promise<FaceDetector> {
+    if (!detectorPromise) {
+        detectorPromise = (async () => {
+            const vision = await FilesetResolver.forVisionTasks(
+                'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm'
+            )
+            return FaceDetector.createFromOptions(vision, {
+                baseOptions: { modelAssetPath: '/models/blaze_face_short_range.tflite' },
+                runningMode: 'IMAGE',
+            })
+        })()
     }
-    return modelLoadPromise
+    return detectorPromise
+}
+
+async function fetchImageBitmap(url: string): Promise<ImageBitmap> {
+    const resp = await fetch(url)
+    const blob = await resp.blob()
+    return createImageBitmap(blob)
 }
 
 /** Returns a face-detection bonus score for the given image URL.
@@ -14,9 +28,10 @@ async function ensureModels(): Promise<void> {
  *  Returns 0 on failure or timeout. */
 export async function scoreFaces(imageUrl: string): Promise<number> {
     try {
-        await ensureModels()
-        const img = await faceapi.fetchImage(imageUrl)
-        const detections = await faceapi.detectAllFaces(img, new faceapi.TinyFaceDetectorOptions())
+        const detector = await ensureDetector()
+        const bitmap = await fetchImageBitmap(imageUrl)
+        const { detections } = detector.detect(bitmap)
+        bitmap.close()
         if (detections.length === 1) return 15
         if (detections.length > 1) return 6
         return 0

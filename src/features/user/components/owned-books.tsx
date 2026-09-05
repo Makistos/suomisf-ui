@@ -56,7 +56,7 @@ export const OwnedBooks = ({ userId, listType }: OwnedBooksProps) => {
         return await getApiContent(`editions/wishlist/${userId}`, null).then(response => response.data);
     }
     const { isLoading, data } = useQuery({
-        queryKey: ['ownedBooks', userId],
+        queryKey: ['ownedBooks', userId, listType],
         queryFn: () => getOwnedBooks(userId),
     })
 

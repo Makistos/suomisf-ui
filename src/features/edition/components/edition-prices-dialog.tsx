@@ -17,6 +17,7 @@ import { Toast } from 'primereact/toast';
 import { getOwnership } from '@api/edition/get-ownership';
 import { getCurrenUser } from '@services/auth-service';
 import { deleteApiContent, getApiContent, postApiContent, putApiContent } from '@services/user-service';
+import { isAdmin } from '../../user';
 import { Edition, CombinedEdition } from '../types';
 
 interface PriceRow {
@@ -41,6 +42,8 @@ interface PriceRow {
     match_quality: 'Perfect' | 'Good' | 'Decent' | 'Poor' | null;
     product_url: string | null;
     product_page_exists: boolean | null;
+    user_id: number | null;
+    added_by_name: string | null;
 }
 
 interface PriceSource {
@@ -177,6 +180,9 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
             setDeletingId(null);
         }
     };
+
+    const canEditRow = (row: PriceRow) =>
+        isAdmin(user) || (!!user && row.user_id === Number(user.id));
 
     const confirmDelete = (event: React.MouseEvent<HTMLButtonElement>, priceId: number) => {
         confirmPopup({
@@ -432,24 +438,31 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                                 />
                                 <Column
                                     body={(row: PriceRow) => (
-                                        <div className="flex">
-                                            <Button
-                                                icon="pi pi-pencil"
-                                                size="small"
-                                                text
-                                                onClick={() => startEdit(row)}
-                                            />
-                                            <Button
-                                                icon="pi pi-trash"
-                                                size="small"
-                                                severity="danger"
-                                                text
-                                                loading={deletingId === row.id}
-                                                onClick={e => confirmDelete(e, row.id)}
-                                            />
-                                        </div>
+                                        canEditRow(row) && (
+                                            <div className="flex">
+                                                <Button
+                                                    icon="pi pi-pencil"
+                                                    size="small"
+                                                    text
+                                                    onClick={() => startEdit(row)}
+                                                />
+                                                <Button
+                                                    icon="pi pi-trash"
+                                                    size="small"
+                                                    severity="danger"
+                                                    text
+                                                    loading={deletingId === row.id}
+                                                    onClick={e => confirmDelete(e, row.id)}
+                                                />
+                                            </div>
+                                        )
                                     )}
                                     style={{ width: '5.5rem' }}
+                                />
+                                <Column
+                                    header="Lisännyt"
+                                    body={(row: PriceRow) => row.added_by_name || '—'}
+                                    style={{ minWidth: '7rem' }}
                                 />
                             </DataTable>
                         </>

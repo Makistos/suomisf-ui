@@ -98,10 +98,17 @@ export const VisitorStats = () => {
         }],
     }), [locations.data]);
 
-    const doughnutData = (items: BreakdownItem[] | undefined, labelMap?: Record<string, string>) => ({
-        labels: items?.map(i => labelMap?.[i.label] ?? i.label) ?? [],
-        datasets: [{ data: items?.map(i => i.count) ?? [], backgroundColor: PALETTE }],
-    });
+    const doughnutData = (items: BreakdownItem[] | undefined, labelMap?: Record<string, string>) => {
+        const total = items?.reduce((s, i) => s + i.count, 0) ?? 0;
+        return {
+            labels: items?.map(i => {
+                const label = labelMap?.[i.label] ?? i.label;
+                const pct = total > 0 ? Math.floor((i.count / total) * 100) : 0;
+                return `${label}(${i.count}/${pct}%)`;
+            }) ?? [],
+            datasets: [{ data: items?.map(i => i.count) ?? [], backgroundColor: PALETTE }],
+        };
+    };
 
     const doughnutOptions = {
         responsive: true,

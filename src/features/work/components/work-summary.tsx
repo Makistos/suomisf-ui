@@ -34,6 +34,15 @@ export const WorkSummary = React.memo(({ work, detailLevel, authorPrefix }: Work
     const metaItems: React.ReactNode[] = [];
 
     if (work.bookseries) {
+        if (work.bookseries.partof) {
+            metaItems.push(
+                <React.Fragment key="parent-series">
+                    <Link to={`/bookseries/${work.bookseries.partof.id}`}>
+                        {work.bookseries.partof.name}
+                    </Link>.{' '}
+                </React.Fragment>
+            );
+        }
         metaItems.push(
             <React.Fragment key="series">
                 <Link to={`/bookseries/${work.bookseries.id}`}>

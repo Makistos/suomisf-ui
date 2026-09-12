@@ -357,6 +357,17 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
                         {/* Bookseries */}
                         {work.bookseries && (
                             <div className="text-sm text-700 mb-1">
+                                {work.bookseries.partof && (
+                                    <>
+                                        <Link
+                                            to={`/bookseries/${work.bookseries.partof.id}`}
+                                            className="no-underline text-primary hover:text-primary-700"
+                                        >
+                                            {work.bookseries.partof.name}
+                                        </Link>
+                                        {': '}
+                                    </>
+                                )}
                                 <Link
                                     to={`/bookseries/${work.bookseries.id}`}
                                     className="no-underline text-primary hover:text-primary-700"

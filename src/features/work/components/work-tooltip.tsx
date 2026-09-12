@@ -103,6 +103,14 @@ export const WorkTooltip = ({ work }: WorkProps) => {
         </div>
         {work.bookseries && (
           <div className="col-12">
+            {work.bookseries.partof && (
+              <>
+                <Link to={`/bookseries/${work.bookseries.partof.id}`}>
+                  <b>{work.bookseries.partof.name}</b>
+                </Link>
+                {': '}
+              </>
+            )}
             <Link to={`/bookseries/${work.bookseries.id}`}>
               <b>{work.bookseries.name}</b>
             </Link>

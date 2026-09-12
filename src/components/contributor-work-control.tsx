@@ -365,7 +365,7 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
                                         >
                                             {work.bookseries.partof.name}
                                         </Link>
-                                        {': '}
+                                        {' > '}
                                     </>
                                 )}
                                 <Link

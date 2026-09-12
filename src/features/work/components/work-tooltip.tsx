@@ -108,7 +108,7 @@ export const WorkTooltip = ({ work }: WorkProps) => {
                 <Link to={`/bookseries/${work.bookseries.partof.id}`}>
                   <b>{work.bookseries.partof.name}</b>
                 </Link>
-                {': '}
+                {' > '}
               </>
             )}
             <Link to={`/bookseries/${work.bookseries.id}`}>

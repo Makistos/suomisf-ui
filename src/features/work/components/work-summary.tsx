@@ -40,7 +40,7 @@ export const WorkSummary = React.memo(({ work, detailLevel, authorPrefix }: Work
                     <>
                         <Link to={`/bookseries/${work.bookseries.partof.id}`}>
                             {work.bookseries.partof.name}
-                        </Link>{': '}
+                        </Link>{' > '}
                     </>
                 )}
                 <Link to={`/bookseries/${work.bookseries.id}`}>

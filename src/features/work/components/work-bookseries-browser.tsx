@@ -48,7 +48,7 @@ export default function WorkBookseriesBrowser({ workId, bookseriesId }: WorkBook
                                 <Link to={`/bookseries/${bookseries.partof.id}`}>
                                     <b>{bookseries.partof.name}</b>
                                 </Link>
-                                {": "}
+                                {" > "}
                             </>
                         )}
                         <Link to={`/bookseries/${bookseriesId}`}>

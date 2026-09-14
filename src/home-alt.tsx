@@ -181,7 +181,7 @@ export const HomeAlt = () => {
 
       <section aria-labelledby="stats-heading">
         <h2 id="stats-heading" className="home-alt-section-title">
-          Kokoelman laajuus
+          Bibliografian laajuus
         </h2>
         {loading ? (
           <StatsSkeleton />

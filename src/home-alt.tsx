@@ -45,10 +45,41 @@ const StatsSkeleton = () => (
   </div>
 );
 
+const CoverGrid = ({ editions, keyPrefix }: { editions: Edition[]; keyPrefix: string }) => (
+  <div className="home-alt-covers">
+    {editions.map((edition) => {
+      const cls = `${keyPrefix}-${edition.id}`;
+      return (
+        <div key={edition.id} className="home-alt-cover-item">
+          <Tooltip target={`.${cls}`} position="top" mouseTrack mouseTrackLeft={10}>
+            <ImageTooltip edition={edition} />
+          </Tooltip>
+          <Link to={`/editions/${edition.id}`}>
+            {edition.images.length > 0 && edition.images[0].image_src ? (
+              <img
+                alt={edition.title}
+                className={cls}
+                src={import.meta.env.VITE_IMAGE_URL + edition.images[0].image_src}
+                height={COVER_HEIGHT}
+              />
+            ) : (
+              <div className={`home-alt-cover-fallback ${cls}`}>
+                <span className="home-alt-cover-author">{edition.work?.author_str}</span>
+                <span className="home-alt-cover-title">{edition.title}</span>
+              </div>
+            )}
+          </Link>
+        </div>
+      );
+    })}
+  </div>
+);
+
 export const HomeAlt = () => {
   const user = useMemo(() => getCurrenUser(), []);
   const [stats, setStats] = useState<Statistics | null>(null);
   const [latest, setLatest] = useState<Edition[]>([]);
+  const [randomPicks, setRandomPicks] = useState<Edition[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -56,11 +87,13 @@ export const HomeAlt = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [statsResponse, latestResponse] = await Promise.all([
+        const [statsResponse, latestResponse, randomResponse] = await Promise.all([
           getApiContent("frontpagedata", user),
           getApiContent(`latest/editions/${LATEST_COUNT * 10}`, user),
+          getApiContent("frontpage/random", user),
         ]);
         setStats(statsResponse.data);
+        setRandomPicks(randomResponse.data as Edition[]);
         const editions = latestResponse.data as Edition[];
         const workGroups = new Map<number, Edition[]>();
         const groups: { positionId: number; edition: Edition }[] = [];
@@ -136,44 +169,21 @@ export const HomeAlt = () => {
         {loading ? (
           <CoverSkeleton />
         ) : (
-          <div className="home-alt-covers">
-            {latest.map((edition) => (
-              <div key={edition.id} className="home-alt-cover-item">
-                <Tooltip
-                  target={`.hac-${edition.id}`}
-                  position="top"
-                  mouseTrack
-                  mouseTrackLeft={10}
-                >
-                  <ImageTooltip edition={edition} />
-                </Tooltip>
-                <Link to={`/editions/${edition.id}`}>
-                  {edition.images.length > 0 && edition.images[0].image_src ? (
-                    <img
-                      alt={edition.title}
-                      className={`hac-${edition.id}`}
-                      src={
-                        import.meta.env.VITE_IMAGE_URL +
-                        edition.images[0].image_src
-                      }
-                      height={COVER_HEIGHT}
-                    />
-                  ) : (
-                    <div
-                      className={`home-alt-cover-fallback hac-${edition.id}`}
-                    >
-                      <span className="home-alt-cover-author">
-                        {edition.work?.author_str}
-                      </span>
-                      <span className="home-alt-cover-title">
-                        {edition.title}
-                      </span>
-                    </div>
-                  )}
-                </Link>
-              </div>
-            ))}
-          </div>
+          <CoverGrid editions={latest} keyPrefix="hac" />
+        )}
+      </section>
+
+      <Divider />
+
+      <section aria-labelledby="random-heading">
+        <h2 id="random-heading" className="home-alt-section-title">
+          Bibliografiasta löytyy
+        </h2>
+
+        {loading ? (
+          <CoverSkeleton />
+        ) : (
+          <CoverGrid editions={randomPicks} keyPrefix="rnd" />
         )}
       </section>
 

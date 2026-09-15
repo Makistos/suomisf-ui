@@ -135,6 +135,8 @@ export const HomeAlt = () => {
       title: edition.work?.title ?? edition.title,
       author: edition.work?.author_str,
       description: edition.work?.description,
+      genres: edition.work?.genres,
+      tags: edition.work?.tags,
       linkTo: `/editions/${edition.id}`,
     })),
     [randomPicks]

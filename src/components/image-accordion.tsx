@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import { Genre, GenreGroup } from "@features/genre";
+import { SfTag, TagGroup } from "@features/tag";
+
 export interface ImageAccordionItem {
     id: number;
     imageSrc: string | null;
@@ -8,6 +11,8 @@ export interface ImageAccordionItem {
     title: string;
     author?: string;
     description?: string;
+    genres?: Genre[];
+    tags?: SfTag[];
     linkTo: string;
 }
 
@@ -40,7 +45,7 @@ export const ImageAccordion = ({ items, imageHeight = DEFAULT_IMAGE_HEIGHT }: Im
                     <div
                         key={item.id}
                         className={`image-accordion-item${isActive ? " image-accordion-item-active" : ""}`}
-                        style={{ order: isActive ? -1 : 0, height: `${imageHeight}px` }}
+                        style={{ order: isActive ? -1 : 0, height: isActive ? undefined : `${imageHeight}px` }}
                         onMouseEnter={() => setActiveId(item.id)}
                         onMouseLeave={() => setActiveId(null)}
                         onFocus={() => setActiveId(item.id)}
@@ -52,9 +57,13 @@ export const ImageAccordion = ({ items, imageHeight = DEFAULT_IMAGE_HEIGHT }: Im
                                     alt={item.imageAlt}
                                     src={item.imageSrc}
                                     className="image-accordion-cover"
+                                    style={{ height: `${imageHeight}px` }}
                                 />
                             ) : (
-                                <div className="image-accordion-cover-fallback">
+                                <div
+                                    className="image-accordion-cover-fallback"
+                                    style={{ height: `${imageHeight}px` }}
+                                >
                                     {item.author && (
                                         <span className="image-accordion-cover-author">{item.author}</span>
                                     )}
@@ -68,11 +77,19 @@ export const ImageAccordion = ({ items, imageHeight = DEFAULT_IMAGE_HEIGHT }: Im
                                 {item.author && (
                                     <div className="image-accordion-details-author">{item.author}</div>
                                 )}
+                                {item.genres && item.genres.length > 0 && (
+                                    <GenreGroup genres={item.genres} className="mb-2" />
+                                )}
                                 {item.description && (
                                     <div
                                         className="image-accordion-details-description html-content"
                                         dangerouslySetInnerHTML={{ __html: item.description }}
                                     />
+                                )}
+                                {item.tags && item.tags.length > 0 && (
+                                    <div className="mt-2">
+                                        <TagGroup tags={item.tags} overflow={5} showOneCount />
+                                    </div>
                                 )}
                             </div>
                         )}

@@ -1110,12 +1110,10 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 .image-accordion-cover-link {
     display: block;
     flex: 0 0 auto;
-    height: 100%;
 }
 
 .image-accordion-cover {
     display: block;
-    height: 100%;
     width: auto;
     border-radius: 2px;
     box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.18);
@@ -1134,7 +1132,6 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     gap: 0.3rem;
     padding: 0.5rem;
     width: 90px;
-    height: 100%;
     background: var(--surface-100);
     border: 1px solid var(--surface-border);
     border-radius: 2px;
@@ -1159,13 +1156,13 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 .image-accordion-item-active {
     flex: 1 1 auto;
     max-width: 100%;
+    align-items: flex-start;
 }
 
 .image-accordion-details {
     flex: 1 1 auto;
     min-width: 0;
     padding: 0 0 0 1.25rem;
-    overflow-y: auto;
 }
 
 .image-accordion-details-title {

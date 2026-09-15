@@ -1094,6 +1094,7 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 /* Image accordion */
 
 .image-accordion {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     gap: 0.625rem;
@@ -1120,7 +1121,7 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.image-accordion-item:not(.image-accordion-item-active) .image-accordion-cover:hover {
+.image-accordion-item .image-accordion-cover:hover {
     transform: translateY(-4px);
     box-shadow: 4px 8px 14px rgba(0, 0, 0, 0.24);
 }
@@ -1153,16 +1154,24 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     word-break: break-word;
 }
 
-.image-accordion-item-active {
-    flex: 1 1 auto;
-    max-width: 100%;
+.image-accordion-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
     align-items: flex-start;
+    background: var(--surface-card, var(--surface-0, #fff));
+    border-radius: 2px;
+    box-shadow: 4px 8px 20px rgba(0, 0, 0, 0.28);
+    padding: 0.5rem;
+    margin: -0.5rem;
 }
 
 .image-accordion-details {
     flex: 1 1 auto;
     min-width: 0;
-    padding: 0 0 0 1.25rem;
+    padding: 0 0.5rem 0 1.25rem;
 }
 
 .image-accordion-details-title {

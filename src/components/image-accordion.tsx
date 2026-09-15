@@ -1,0 +1,84 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+
+export interface ImageAccordionItem {
+    id: number;
+    imageSrc: string | null;
+    imageAlt: string;
+    title: string;
+    author?: string;
+    description?: string;
+    linkTo: string;
+}
+
+interface ImageAccordionProps {
+    items: ImageAccordionItem[];
+    height?: number;
+}
+
+const DEFAULT_HEIGHT = 200;
+
+/**
+ * A row of images that, at rest, sit side by side like a normal cover strip.
+ * Hovering (or focusing) one hides every other item and expands that one to
+ * show its description to the right of the image - moving it to the left
+ * edge of the component in the process, since it ends up the only item left.
+ */
+export const ImageAccordion = ({ items, height = DEFAULT_HEIGHT }: ImageAccordionProps) => {
+    const [activeId, setActiveId] = useState<number | null>(null);
+
+    return (
+        <div className="image-accordion" style={{ height: `${height}px` }}>
+            {items.map(item => {
+                const isActive = activeId === item.id;
+                if (activeId !== null && !isActive) {
+                    return null;
+                }
+                return (
+                    <div
+                        key={item.id}
+                        className={`image-accordion-item${isActive ? " image-accordion-item-active" : ""}`}
+                        style={{ order: isActive ? -1 : 0 }}
+                        onMouseEnter={() => setActiveId(item.id)}
+                        onMouseLeave={() => setActiveId(null)}
+                        onFocus={() => setActiveId(item.id)}
+                        onBlur={() => setActiveId(null)}
+                    >
+                        <Link to={item.linkTo} className="image-accordion-cover-link">
+                            {item.imageSrc ? (
+                                <img
+                                    alt={item.imageAlt}
+                                    src={item.imageSrc}
+                                    className="image-accordion-cover"
+                                />
+                            ) : (
+                                <div className="image-accordion-cover-fallback">
+                                    {item.author && (
+                                        <span className="image-accordion-cover-author">{item.author}</span>
+                                    )}
+                                    <span className="image-accordion-cover-title">{item.title}</span>
+                                </div>
+                            )}
+                        </Link>
+                        {isActive && (
+                            <div className="image-accordion-details">
+                                <div className="image-accordion-details-title">{item.title}</div>
+                                {item.author && (
+                                    <div className="image-accordion-details-author">{item.author}</div>
+                                )}
+                                {item.description && (
+                                    <div
+                                        className="image-accordion-details-description html-content"
+                                        dangerouslySetInnerHTML={{ __html: item.description }}
+                                    />
+                                )}
+                            </div>
+                        )}
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
+
+export default ImageAccordion;

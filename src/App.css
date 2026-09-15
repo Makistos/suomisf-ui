@@ -1083,6 +1083,102 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     word-break: break-word;
 }
 
+/* Image accordion */
+
+.image-accordion {
+    display: flex;
+    gap: 0.625rem;
+    align-items: stretch;
+}
+
+.image-accordion-item {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: stretch;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.image-accordion-cover-link {
+    display: block;
+    flex: 0 0 auto;
+    height: 100%;
+}
+
+.image-accordion-cover {
+    display: block;
+    height: 100%;
+    width: auto;
+    border-radius: 2px;
+    box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.18);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.image-accordion-item:not(.image-accordion-item-active) .image-accordion-cover:hover {
+    transform: translateY(-4px);
+    box-shadow: 4px 8px 14px rgba(0, 0, 0, 0.24);
+}
+
+.image-accordion-cover-fallback {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.3rem;
+    padding: 0.5rem;
+    width: 90px;
+    height: 100%;
+    background: var(--surface-100);
+    border: 1px solid var(--surface-border);
+    border-radius: 2px;
+    font-size: 0.7rem;
+    text-align: center;
+    box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.image-accordion-cover-author {
+    color: var(--text-color-secondary);
+    font-size: 0.65rem;
+    line-height: 1.2;
+}
+
+.image-accordion-cover-title {
+    color: var(--text-color);
+    font-weight: 600;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+.image-accordion-item-active {
+    flex: 1 1 auto;
+    max-width: 100%;
+}
+
+.image-accordion-details {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0 0 0 1.25rem;
+    overflow-y: auto;
+}
+
+.image-accordion-details-title {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text-color);
+    margin-bottom: 0.15rem;
+}
+
+.image-accordion-details-author {
+    color: var(--text-color-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.image-accordion-details-description {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-color);
+}
+
 /* Stats */
 
 .home-alt-stats {

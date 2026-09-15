@@ -10,6 +10,7 @@ import { getApiContent } from "./services/user-service";
 import { getCurrenUser } from "./services/auth-service";
 import { Edition } from "./features/edition";
 import { ImageTooltip } from "./utils/image-tooltip";
+import { ImageAccordion, ImageAccordionItem } from "./components/image-accordion";
 
 interface Statistics {
   works: number;
@@ -124,6 +125,21 @@ export const HomeAlt = () => {
     fetchData();
   }, [user]);
 
+  const randomAccordionItems: ImageAccordionItem[] = useMemo(
+    () => randomPicks.map(edition => ({
+      id: edition.id,
+      imageSrc: edition.images.length > 0 && edition.images[0].image_src
+        ? import.meta.env.VITE_IMAGE_URL + edition.images[0].image_src
+        : null,
+      imageAlt: edition.title,
+      title: edition.work?.title ?? edition.title,
+      author: edition.work?.author_str,
+      description: edition.work?.description,
+      linkTo: `/editions/${edition.id}`,
+    })),
+    [randomPicks]
+  );
+
   return (
     <main className="home-alt-page">
       <section className="home-alt-hero">
@@ -183,7 +199,7 @@ export const HomeAlt = () => {
         {loading ? (
           <CoverSkeleton />
         ) : (
-          <CoverGrid editions={randomPicks} keyPrefix="rnd" />
+          <ImageAccordion items={randomAccordionItems} height={COVER_HEIGHT + 40} />
         )}
       </section>
 

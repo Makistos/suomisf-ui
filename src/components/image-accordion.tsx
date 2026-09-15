@@ -1,8 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-import { Genre, GenreGroup } from "@features/genre";
-import { SfTag, TagGroup } from "@features/tag";
+// Import directly from the leaf modules, not the "@features/genre"/
+// "@features/tag" barrels - those re-export whole route pages (and even
+// mainmenu.tsx, for genre) alongside the components actually needed here,
+// which pulls that unrelated code into whatever chunk imports this file.
+import { Genre } from "@features/genre/types";
+import { GenreGroup } from "@features/genre/components/genre-group";
+import { SfTag } from "@features/tag/types";
+import { TagGroup } from "@features/tag/components/sftag-group";
 
 export interface ImageAccordionItem {
     id: number;

@@ -941,6 +941,14 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 /* ── Alternative front page ─────────────────────────────────────── */
 
 .home-alt-page {
+    /* Without an explicit width, this shrink-wraps to its content's
+       preferred width instead of filling up to max-width, because it's a
+       flex item in a `justify-content: center` row (App.tsx's
+       ".grid col-12 justify-content-center" wrapper) - centering doesn't
+       stretch children. That let any child with a wide "natural" content
+       width (e.g. the image accordion's expanded description panel) grow
+       this element - and the whole centered page along with it. */
+    width: 100%;
     max-width: 860px;
     margin: 0 auto;
     padding: 2.5rem 1.5rem 3rem;

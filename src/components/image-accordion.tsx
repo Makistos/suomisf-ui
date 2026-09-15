@@ -13,22 +13,24 @@ export interface ImageAccordionItem {
 
 interface ImageAccordionProps {
     items: ImageAccordionItem[];
-    height?: number;
+    imageHeight?: number;
 }
 
-const DEFAULT_HEIGHT = 200;
+const DEFAULT_IMAGE_HEIGHT = 160;
 
 /**
- * A row of images that, at rest, sit side by side like a normal cover strip.
- * Hovering (or focusing) one hides every other item and expands that one to
- * show its description to the right of the image - moving it to the left
- * edge of the component in the process, since it ends up the only item left.
+ * A row of images that, at rest, sit side by side like a normal cover strip
+ * (same size as the "latest additions" covers, wrapping onto more lines if
+ * they don't fit on one). Hovering (or focusing) one hides every other item
+ * and expands that one to show its description to the right of the image -
+ * moving it to the left edge of the component in the process, since it ends
+ * up the only item left.
  */
-export const ImageAccordion = ({ items, height = DEFAULT_HEIGHT }: ImageAccordionProps) => {
+export const ImageAccordion = ({ items, imageHeight = DEFAULT_IMAGE_HEIGHT }: ImageAccordionProps) => {
     const [activeId, setActiveId] = useState<number | null>(null);
 
     return (
-        <div className="image-accordion" style={{ height: `${height}px` }}>
+        <div className="image-accordion">
             {items.map(item => {
                 const isActive = activeId === item.id;
                 if (activeId !== null && !isActive) {
@@ -38,7 +40,7 @@ export const ImageAccordion = ({ items, height = DEFAULT_HEIGHT }: ImageAccordio
                     <div
                         key={item.id}
                         className={`image-accordion-item${isActive ? " image-accordion-item-active" : ""}`}
-                        style={{ order: isActive ? -1 : 0 }}
+                        style={{ order: isActive ? -1 : 0, height: `${imageHeight}px` }}
                         onMouseEnter={() => setActiveId(item.id)}
                         onMouseLeave={() => setActiveId(null)}
                         onFocus={() => setActiveId(item.id)}

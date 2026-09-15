@@ -1087,8 +1087,9 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 
 .image-accordion {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.625rem;
-    align-items: stretch;
+    align-items: flex-start;
 }
 
 .image-accordion-item {
@@ -1096,7 +1097,6 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     display: flex;
     align-items: stretch;
     border-radius: 2px;
-    overflow: hidden;
 }
 
 .image-accordion-cover-link {

@@ -199,7 +199,7 @@ export const HomeAlt = () => {
         {loading ? (
           <CoverSkeleton />
         ) : (
-          <ImageAccordion items={randomAccordionItems} height={COVER_HEIGHT + 40} />
+          <ImageAccordion items={randomAccordionItems} imageHeight={COVER_HEIGHT} />
         )}
       </section>
 

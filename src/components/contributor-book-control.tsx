@@ -192,21 +192,25 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
         return retval
     }
 
-    // Find contributions for different types
+    // Find contributions for different types. edits/translations/covers/
+    // illustrations are Edition[] - one entry per edition - so a work with
+    // several editions by the same person would otherwise be counted once
+    // per edition instead of once per work; removeDuplicateWorks collapses
+    // that down to one (the earliest) edition per work before counting.
     const authorContributions =
         contributions(authored.map(work =>
             removeDuplicateWorkContributions(work)).flat(1), [1]).length;
     const editContributions =
-        contributions(edits
+        contributions(removeDuplicateWorks(edits)
             .flatMap(edition => edition.work ? removeDuplicateWorkContributions(edition.work) : []), [3]).length;
     const translationContributions =
-        contributions(translations.map(tr =>
+        contributions(removeDuplicateWorks(translations).map(tr =>
             removeDuplicateEditionContributions(tr)).flat(1), [2]).length;
     const coverContributions =
-        contributions(covers.map(tr =>
+        contributions(removeDuplicateWorks(covers).map(tr =>
             removeDuplicateEditionContributions(tr)).flat(1), [4]).length;
     const illustrationContributions =
-        contributions(illustrations.map(tr =>
+        contributions(removeDuplicateWorks(illustrations).map(tr =>
             removeDuplicateEditionContributions(tr)).flat(1), [5]).length;
     const appearsInContributions =
         contributions(appearsIn_.map(work =>

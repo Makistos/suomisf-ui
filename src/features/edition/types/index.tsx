@@ -39,12 +39,6 @@ export interface Edition {
     translators: Person[];
     verified: Boolean;
     version: number;
-    // Set by combineEditions() to e.g. "1 - 2" when the combined editions
-    // span more than one version (laitos) of the work, so that information
-    // isn't lost the way it would be by only keeping the first edition's
-    // plain `version` number. Left undefined for a single, uncombined
-    // edition, or when every combined edition shares the same version.
-    versionRange?: string;
     work: Work | null;
     combined: boolean;
     owners: User[];
@@ -77,12 +71,6 @@ export interface CombinedEdition {
     translators: Person[];
     verified: Boolean;
     version: number;
-    // Set by combineEditions() to e.g. "1 - 2" when the combined editions
-    // span more than one version (laitos) of the work, so that information
-    // isn't lost the way it would be by only keeping the first edition's
-    // plain `version` number. Left undefined for a single, uncombined
-    // edition, or when every combined edition shares the same version.
-    versionRange?: string;
     work: Work | null;
     owners: User[]
     wishlisted: User[];

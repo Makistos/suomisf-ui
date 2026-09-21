@@ -3,7 +3,8 @@ import { Dialog } from "primereact/dialog";
 import { Galleria } from "primereact/galleria";
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Edition, CombinedEdition } from "@features/edition/types";
+import { Edition } from "@features/edition/types";
+import { Work } from "@features/work/types";
 import { Person } from "@features/person/types";
 import { GenreGroup } from "@features/genre";
 import { TagGroup } from "@features/tag";
@@ -11,12 +12,12 @@ import { ImageGallery } from ".";
 import { getCurrenUser } from "../services/auth-service";
 import { editionIsOwned } from "@features/edition/utils/edition-is-owned";
 import { editionIsWishlisted } from "@features/edition/utils/edition-is-wishlisted";
-import { groupSimilarEditions } from "@features/edition/utils/group-similar-editions";
-import { combineEditions } from "@features/edition/utils/combine-editions";
 
 interface ContributorEditionControlProps {
     /**
-     * Editions to be displayed.
+     * Editions to be displayed - already filtered down to the ones the
+     * person actually contributed to in the relevant role (translator,
+     * editor, cover art, illustration).
      */
     editions: Edition[];
     /**
@@ -32,23 +33,26 @@ interface ContributorEditionControlProps {
      * displayed last.
      */
     collaborationsLast?: boolean;
-    /**
-     * Detail level for combining editions ('brief', 'condensed', or 'all').
-     */
-    detailLevel?: string;
 }
+
+interface WorkEditionsGroup {
+    work: Work;
+    editions: Edition[];
+}
+
+const editionYear = (edition: Edition): number =>
+    typeof edition.pubyear === 'number' ? edition.pubyear : parseInt(String(edition.pubyear || 0));
 
 export const ContributorEditionControl = ({
     editions,
     person,
     sort = "year",
     collaborationsLast = false,
-    detailLevel = "brief"
 }: ContributorEditionControlProps) => {
     const [expandedTags, setExpandedTags] = useState<Set<number>>(new Set());
     const [showAllImagesGallery, setShowAllImagesGallery] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(-1);
-    const [currentEditionImages, setCurrentEditionImages] = useState<{ url: string; editionTitle: string; version?: number; editionnum?: number }[]>([]);
+    const [currentWorkImages, setCurrentWorkImages] = useState<{ url: string; workTitle: string; version?: number; editionnum?: number }[]>([]);
 
     // Get current user for ownership checking
     const currentUser = getCurrenUser();
@@ -57,41 +61,53 @@ export const ContributorEditionControl = ({
     const person_ids = person.aliases.map(alias => alias.id);
     person_ids.push(person.id);
 
-    // Group editions by editor/contributor, with person's own editions first
+    // Group editions by work, keeping every edition of that work the
+    // person contributed to in this role as its own line - mirrors how
+    // ContributorWorkControl lists every edition under one work card,
+    // instead of collapsing them into a single merged row.
     const groupedEditions = useMemo(() => {
-        // First, group similar editions and combine them
-        const groups = groupSimilarEditions(editions, detailLevel);
-        const combinedEditions = groups
-            .map(group => combineEditions(group, currentUser))
-            .filter((ed): ed is CombinedEdition => ed !== undefined);
+        const byWork = new Map<number, WorkEditionsGroup>();
+        for (const edition of editions) {
+            if (!edition.work) continue;
+            const key = edition.work.id;
+            if (!byWork.has(key)) {
+                byWork.set(key, { work: edition.work, editions: [] });
+            }
+            byWork.get(key)!.editions.push(edition);
+        }
+        const workGroups = Array.from(byWork.values());
 
-        const grouped: { [key: string]: { editorStr: string, editions: CombinedEdition[] } } = {};
+        const grouped: { [key: string]: { editorStr: string, workGroups: WorkEditionsGroup[] } } = {};
 
-        combinedEditions.forEach(edition => {
-            // Determine the editor/contributor string for this edition
+        workGroups.forEach(wg => {
+            // Determine the editor/contributor string for this work, from
+            // any of its (filtered) editions - a person might be credited
+            // on only one of several editions of the same work.
             let editorStr = "Muut";
-
-            // Check if this person contributed to this edition
-            const personContribution = edition.contributions.find(contrib =>
+            const allContributions = wg.editions.flatMap(ed => ed.contributions);
+            const personContribution = allContributions.find(contrib =>
                 person_ids.includes(contrib.person.id)
             );
+            const editors = Array.from(new Set(
+                wg.editions.flatMap(ed => ed.editors ?? []).map(editor => editor.name)
+            ));
 
             if (personContribution) {
                 editorStr = person.name;
-            } else if (edition.editors && edition.editors.length > 0) {
-                editorStr = edition.editors.map(editor => editor.name).join(", ");
-            } else if (edition.work) {
-                editorStr = edition.work.author_str.replace(" (toim.)", "") || "Tuntematon";
+            } else if (editors.length > 0) {
+                editorStr = editors.join(", ");
+            } else {
+                editorStr = wg.work.author_str?.replace(" (toim.)", "") || "Tuntematon";
             }
 
             if (!grouped[editorStr]) {
                 grouped[editorStr] = {
                     editorStr,
-                    editions: []
+                    workGroups: []
                 };
             }
 
-            grouped[editorStr].editions.push(edition);
+            grouped[editorStr].workGroups.push(wg);
         });
 
         // Sort groups: person's editions first, then alphabetically
@@ -111,48 +127,57 @@ export const ContributorEditionControl = ({
         }
 
         return sortedKeys.map(key => grouped[key]);
-    }, [editions, person, collaborationsLast, detailLevel, currentUser]);
+    }, [editions, person, collaborationsLast]);
 
-    // Get all images from all editions for the gallery
-    const getAllImagesFromAllEditions = () => {
-        const allImages: { url: string; editionTitle: string; version?: number; editionnum?: number }[] = [];
+    // Get all images from every (filtered) edition of a work
+    const getAllImagesFromWork = (workGroup: WorkEditionsGroup): { url: string; version?: number; editionnum?: number }[] => {
+        const allImages: { url: string; version?: number; editionnum?: number }[] = [];
         const seenUrls = new Set<string>();
 
-        // First, group similar editions and combine them
-        const groups = groupSimilarEditions(editions, detailLevel);
-        const combinedEditions = groups
-            .map(group => combineEditions(group, currentUser))
-            .filter((ed): ed is CombinedEdition => ed !== undefined);
+        workGroup.editions.forEach(edition => {
+            (edition.images ?? []).forEach(img => {
+                const imageUrl = img.image_src.startsWith('http')
+                    ? img.image_src
+                    : `${import.meta.env.VITE_IMAGE_URL}${img.image_src}`;
 
-        editions.forEach(edition => {
-            if (edition.images && edition.images.length > 0) {
-                edition.images.forEach(img => {
-                    const imageUrl = img.image_src.startsWith('http')
-                        ? img.image_src
-                        : `${import.meta.env.VITE_IMAGE_URL}${img.image_src}`;
-
-                    // Only add if we haven't seen this URL before
-                    if (!seenUrls.has(imageUrl)) {
-                        seenUrls.add(imageUrl);
-                        allImages.push({
-                            url: imageUrl,
-                            editionTitle: edition.title,
-                            version: edition.version,
-                            editionnum: typeof edition.editionnum === 'number' ? edition.editionnum : parseInt(String(edition.editionnum || 0))
-                        });
-                    }
-                });
-            }
+                if (!seenUrls.has(imageUrl)) {
+                    seenUrls.add(imageUrl);
+                    allImages.push({
+                        url: imageUrl,
+                        version: edition.version,
+                        editionnum: typeof edition.editionnum === 'number' ? edition.editionnum : parseInt(String(edition.editionnum || 0))
+                    });
+                }
+            });
         });
 
         return allImages;
     };
 
-    const allEditionImages = useMemo(() => getAllImagesFromAllEditions(), [editions, detailLevel, currentUser]);
+    // Get all images from every work for the "view all" gallery
+    const getAllImagesFromAllWorks = () => {
+        const allImages: { url: string; workTitle: string; version?: number; editionnum?: number }[] = [];
+        const seenUrls = new Set<string>();
+
+        groupedEditions.forEach(group => {
+            group.workGroups.forEach(wg => {
+                getAllImagesFromWork(wg).forEach(img => {
+                    if (!seenUrls.has(img.url)) {
+                        seenUrls.add(img.url);
+                        allImages.push({ ...img, workTitle: wg.work.title });
+                    }
+                });
+            });
+        });
+
+        return allImages;
+    };
+
+    const allWorkImages = useMemo(() => getAllImagesFromAllWorks(), [groupedEditions]);
 
     // Format image info for gallery
-    const formatImageInfo = (imageData: { editionTitle: string; version?: number; editionnum?: number }): string => {
-        let result = imageData.editionTitle;
+    const formatImageInfo = (imageData: { workTitle: string; version?: number; editionnum?: number }): string => {
+        let result = imageData.workTitle;
 
         if (imageData.version || imageData.editionnum) {
             const versionInfo = [];
@@ -170,8 +195,8 @@ export const ContributorEditionControl = ({
         return result;
     };
 
-    // Format image info for individual edition (without edition title)
-    const formatEditionImageInfo = (imageData: { version?: number; editionnum?: number }): string => {
+    // Format image info for an individual work (without the work title)
+    const formatWorkImageInfo = (imageData: { version?: number; editionnum?: number }): string => {
         if (imageData.version || imageData.editionnum) {
             const versionInfo = [];
             if (imageData.version) {
@@ -189,33 +214,31 @@ export const ContributorEditionControl = ({
 
     // Create galleria items
     const galleryItems = useMemo(() => {
-        return allEditionImages.map((item, index) => ({
+        return allWorkImages.map((item) => ({
             itemImageSrc: item.url,
             thumbnailImageSrc: item.url,
-            alt: `${item.editionTitle} kansi`,
+            alt: `${item.workTitle} kansi`,
             title: formatImageInfo(item)
         }));
-    }, [allEditionImages]);
+    }, [allWorkImages]);
 
-    // Create galleria items for current edition
-    const currentEditionGalleryItems = useMemo(() => {
-        return currentEditionImages.map((item, index) => ({
+    // Create galleria items for the currently opened work
+    const currentWorkGalleryItems = useMemo(() => {
+        return currentWorkImages.map((item) => ({
             itemImageSrc: item.url,
             thumbnailImageSrc: item.url,
-            alt: `${item.editionTitle} kansi`,
-            title: formatEditionImageInfo(item)
+            alt: `${item.workTitle} kansi`,
+            title: formatWorkImageInfo(item)
         }));
-    }, [currentEditionImages]);
+    }, [currentWorkImages]);
 
-    // Function to show gallery for a specific edition
-    const showEditionGallery = (edition: CombinedEdition) => {
-        const editionImages = (edition.images || []).map(img => ({
-            url: img.image_src.startsWith('http') ? img.image_src : `${import.meta.env.VITE_IMAGE_URL}${img.image_src}`,
-            editionTitle: edition.title,
-            version: edition.version,
-            editionnum: typeof edition.editionnum === 'number' ? edition.editionnum : parseInt(String(edition.editionnum || 0))
+    // Function to show gallery for a specific work
+    const showWorkGallery = (workGroup: WorkEditionsGroup) => {
+        const workImages = getAllImagesFromWork(workGroup).map(img => ({
+            ...img,
+            workTitle: workGroup.work.title
         }));
-        setCurrentEditionImages(editionImages);
+        setCurrentWorkImages(workImages);
         setCurrentImageIndex(-1); // Reset to show thumbnails first
         setShowAllImagesGallery(true);
     };
@@ -248,17 +271,12 @@ export const ContributorEditionControl = ({
         );
     };
 
-    // Format edition information
-    const formatEdition = (edition: CombinedEdition): string => {
+    // Format a single edition's own line (version/painos/publisher/year) -
+    // one edition, one number, never a combined range.
+    const formatEdition = (edition: Edition): string => {
         let result = "";
 
-        // versionRange is set when a combined entry spans more than one
-        // version (laitos) of the same work - show that range instead of
-        // just the lowest version, which would otherwise silently drop
-        // e.g. "2. laitos" from a merged 1st+2nd-laitos entry.
-        if (edition.versionRange) {
-            result += `${edition.versionRange}. laitos `;
-        } else if (edition.version && edition.version > 1) {
+        if (edition.version && edition.version > 1) {
             result += `${edition.version}. laitos `;
         }
 
@@ -294,29 +312,161 @@ export const ContributorEditionControl = ({
         return <div>Ei painoksia löytynyt.</div>;
     }
 
-    const toggleEditionTags = (editionId: number) => {
+    const toggleWorkTags = (workId: number) => {
         setExpandedTags(prev => {
             const newSet = new Set(prev);
-            if (newSet.has(editionId)) {
-                newSet.delete(editionId);
+            if (newSet.has(workId)) {
+                newSet.delete(workId);
             } else {
-                newSet.add(editionId);
+                newSet.add(workId);
             }
             return newSet;
         });
     };
 
+    const sortWorkGroups = (a: WorkEditionsGroup, b: WorkEditionsGroup) => {
+        if (sort === "year") {
+            const yearA = Math.min(...a.editions.map(editionYear));
+            const yearB = Math.min(...b.editions.map(editionYear));
+            return yearA - yearB;
+        }
+        // Sort by author_str first, then by title
+        const authorA = a.work.author_str || "";
+        const authorB = b.work.author_str || "";
+        if (authorA !== authorB) {
+            return authorA.localeCompare(authorB, "fi");
+        }
+        return a.work.title.localeCompare(b.work.title, "fi");
+    };
+
+    const renderWorkGroup = (workGroup: WorkEditionsGroup) => {
+        const { work } = workGroup;
+        const allImages = getAllImagesFromWork(workGroup);
+        const sortedEditions = [...workGroup.editions].sort((a, b) => editionYear(a) - editionYear(b));
+
+        return (
+            <div key={work.id} className="mb-3 p-3 surface-50 border-round">
+                <div className="grid align-items-start gap-3">
+                    <div className="col">
+                        {/* Title */}
+                        <div className="font-semibold mb-1">
+                            <Link
+                                to={`/works/${work.id}`}
+                                className="no-underline text-primary hover:text-primary-700"
+                            >
+                                {work.title}
+                            </Link>
+                        </div>
+
+                        {/* Original name and language */}
+                        {work.orig_title && work.language_name?.id !== 7 && (
+                            <div className="text-sm text-600 mb-1">
+                                {work.orig_title}
+                                {work.language_name && (
+                                    <span> ({work.language_name.name})</span>
+                                )}
+                                {work.pubyear && (
+                                    <span> {work.pubyear}</span>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Bookseries */}
+                        {work.bookseries && (
+                            <div className="text-sm text-700 mb-1">
+                                {work.bookseries.partof && (
+                                    <>
+                                        <Link
+                                            to={`/bookseries/${work.bookseries.partof.id}`}
+                                            className="no-underline text-primary hover:text-primary-700"
+                                        >
+                                            {work.bookseries.partof.name}
+                                        </Link>
+                                        {' > '}
+                                    </>
+                                )}
+                                <Link
+                                    to={`/bookseries/${work.bookseries.id}`}
+                                    className="no-underline text-primary hover:text-primary-700"
+                                >
+                                    {work.bookseries.name}
+                                </Link>
+                                {work.bookseriesnum && <span> #{work.bookseriesnum}</span>}
+                            </div>
+                        )}
+
+                        {/* Editions - one line per edition, like ContributorWorkControl */}
+                        <div className="text-sm text-500 mb-2">
+                            {sortedEditions.map((edition) => (
+                                <div key={edition.id} className={editionIsOwned(edition, currentUser) ? "book owned" : editionIsWishlisted(edition, currentUser) ? "book wishlist" : "book not-owned"}>
+                                    <Link
+                                        to={`/editions/${edition.id}`}
+                                        className="no-underline text-primary hover:text-primary-700"
+                                    >
+                                        <span dangerouslySetInnerHTML={{ __html: formatEdition(edition) }} />
+                                    </Link>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Genres and Tags from the work */}
+                        <div className="mt-2">
+                            {work.genres && work.genres.length > 0 && (
+                                <div className="mb-2">
+                                    <GenreGroup genres={work.genres} showOneCount />
+                                </div>
+                            )}
+                            {work.tags && work.tags.length > 0 && (
+                                <div>
+                                    <Button
+                                        icon={expandedTags.has(work.id) ? "pi pi-chevron-up" : "pi pi-chevron-down"}
+                                        label={`Asiasanat (${work.tags.length})`}
+                                        className="p-button-text p-button-sm p-0"
+                                        onClick={() => toggleWorkTags(work.id)}
+                                    />
+                                    {expandedTags.has(work.id) && (
+                                        <div className="mt-2">
+                                            <TagGroup tags={work.tags} showOneCount overflow={50} />
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Cover Image */}
+                    {allImages.length > 0 && (
+                        <div className="col-fixed" style={{ width: '182px' }}>
+                            <div className="flex justify-content-end" style={{ minHeight: '182px' }}>
+                                <ImageGallery
+                                    imageData={allImages}
+                                    alt={`${work.title} kansi`}
+                                    height="150"
+                                    className="border-round shadow-2 hover:shadow-4 transition-all transition-duration-200"
+                                    imageClassName="object-fit-cover"
+                                    preview={allImages.length === 1}
+                                    showGalleryButton={false}
+                                    onClick={allImages.length > 1 ? () => showWorkGallery(workGroup) : undefined}
+                                />
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div>
             {/* Header with "View All Images" button */}
-            {allEditionImages.length > 0 && (
+            {allWorkImages.length > 0 && (
                 <div className="mb-3 flex justify-content-end">
                     <Button
                         icon="pi pi-images"
-                        label={`Näytä kaikki kuvat (${allEditionImages.length})`}
+                        label={`Näytä kaikki kuvat (${allWorkImages.length})`}
                         className="p-button-outlined p-button-sm"
                         onClick={() => {
-                            setCurrentEditionImages([]); // Clear current edition images to show all
+                            setCurrentWorkImages([]); // Clear current work images to show all
                             setCurrentImageIndex(-1); // Reset to show thumbnails first
                             setShowAllImagesGallery(true);
                         }}
@@ -325,126 +475,18 @@ export const ContributorEditionControl = ({
             )}
 
             <div className="w-full">
-                {groupedEditions.map((group, groupIndex) => (
+                {groupedEditions.map((group) => (
                     <div key={group.editorStr} className="mb-4">
                         {/* Group header */}
                         {groupedEditions.length > 1 && group.editorStr !== person.name && (
                             <h3 className="text-xl font-semibold mb-3 text-700 pb-2 border-bottom-1 border-300">
-                                {group.editorStr} ({group.editions.length})
+                                {group.editorStr} ({group.workGroups.length})
                             </h3>
                         )}
-                        <div className="edition-list">
-                            {[...group.editions]
-                                .sort((a, b) => {
-                                    if (sort === "year") {
-                                        const yearA = typeof a.pubyear === 'number' ? a.pubyear : parseInt(String(a.pubyear || 0));
-                                        const yearB = typeof b.pubyear === 'number' ? b.pubyear : parseInt(String(b.pubyear || 0));
-                                        return yearA - yearB;
-                                    }
-                                    // Sort by author_str first, then by title
-                                    const authorA = a.work ? (a.work.author_str || "") : "";
-                                    const authorB = b.work ? (b.work.author_str || "") : "";
-                                    if (authorA !== authorB) {
-                                        return authorA.localeCompare(authorB, "fi");
-                                    }
-                                    return a.title.localeCompare(b.title, "fi");
-                                })
-                                .map((edition, index) => {
-                                    const editionImages = edition.images || [];
-
-                                    return (
-                                        <div key={edition.id} className={`mb-3 p-3 surface-50 border-round ${editionIsOwned(edition, currentUser) ? "book owned" : editionIsWishlisted(edition, currentUser) ? "book wishlist" : "book not-owned"}`}>
-                                            <div className="grid align-items-start gap-3">
-                                                <div className="col">
-                                                    {/* Title with author */}
-                                                    <div className="font-semibold mb-1">
-                                                        <Link
-                                                            to={`/editions/${edition.id}`}
-                                                            className="no-underline text-primary hover:text-primary-700"
-                                                        >
-                                                            {edition.title}
-                                                        </Link>
-                                                    </div>
-
-                                                    {/* Subtitle */}
-                                                    {edition.subtitle && (
-                                                        <div className="text-sm text-600 mb-1">
-                                                            {edition.subtitle}
-                                                        </div>
-                                                    )}
-
-                                                    {/* Original title and year */}
-                                                    {edition.work && edition.work.orig_title && edition.work.language_name?.id !== 7 && (
-                                                        <div className="text-sm text-700 mb-1">
-                                                            <span>
-                                                                {edition.work.orig_title}
-                                                                {edition.work.language_name && edition.work.language_name.name !== "suomi" && (
-                                                                    <span> ({edition.work.language_name.name})</span>
-                                                                )}
-                                                                {edition.work.pubyear && (
-                                                                    <span>, {edition.work.pubyear}</span>
-                                                                )}
-                                                            </span>
-                                                        </div>
-                                                    )}
-
-                                                    {/* Edition details */}
-                                                    <div className="text-sm text-500 mb-2">
-                                                        <span dangerouslySetInnerHTML={{ __html: formatEdition(edition) }} />
-                                                    </div>
-
-                                                    {/* Genres and Tags from the work */}
-                                                    {edition.work && (
-                                                        <div className="mt-2">
-                                                            {edition.work.genres && edition.work.genres.length > 0 && (
-                                                                <div className="mb-2">
-                                                                    <GenreGroup genres={edition.work.genres} showOneCount />
-                                                                </div>
-                                                            )}
-                                                            {edition.work.tags && edition.work.tags.length > 0 && (
-                                                                <div>
-                                                                    <Button
-                                                                        icon={expandedTags.has(edition.id) ? "pi pi-chevron-up" : "pi pi-chevron-down"}
-                                                                        label={`Asiasanat (${edition.work.tags.length})`}
-                                                                        className="p-button-text p-button-sm p-0"
-                                                                        onClick={() => toggleEditionTags(edition.id)}
-                                                                    />
-                                                                    {expandedTags.has(edition.id) && (
-                                                                        <div className="mt-2">
-                                                                            <TagGroup tags={edition.work.tags} showOneCount overflow={50} />
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                {/* Cover Image */}
-                                                {editionImages.length > 0 && (
-                                                    <div className="col-fixed" style={{ width: '182px' }}>
-                                                        <div className="flex justify-content-end" style={{ minHeight: '182px' }}>
-                                                            <ImageGallery
-                                                                imageData={editionImages.map(img => ({
-                                                                    url: img.image_src.startsWith('http') ? img.image_src : `${import.meta.env.VITE_IMAGE_URL}${img.image_src}`,
-                                                                    version: edition.version,
-                                                                    editionnum: typeof edition.editionnum === 'number' ? edition.editionnum : parseInt(String(edition.editionnum || 0))
-                                                                }))}
-                                                                alt={`${edition.title} kansi`}
-                                                                height="150"
-                                                                className="border-round shadow-2 hover:shadow-4 transition-all transition-duration-200"
-                                                                imageClassName="object-fit-cover"
-                                                                preview={editionImages.length === 1}
-                                                                showGalleryButton={false}
-                                                                onClick={editionImages.length > 1 ? () => showEditionGallery(edition) : undefined}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    );
-                                })}
+                        <div className="work-list">
+                            {[...group.workGroups]
+                                .sort(sortWorkGroups)
+                                .map(workGroup => renderWorkGroup(workGroup))}
                         </div>
                     </div>
                 ))}
@@ -452,27 +494,27 @@ export const ContributorEditionControl = ({
 
             {/* Image Gallery Dialog */}
             <Dialog
-                header={currentEditionImages.length > 0
-                    ? `${currentEditionImages[0]?.editionTitle} - Kuvat (${currentEditionImages.length})`
-                    : `Kaikki kuvat (${allEditionImages.length})`
+                header={currentWorkImages.length > 0
+                    ? `${currentWorkImages[0]?.workTitle} - Kuvat (${currentWorkImages.length})`
+                    : `Kaikki kuvat (${allWorkImages.length})`
                 }
                 visible={showAllImagesGallery}
                 onHide={() => {
                     setShowAllImagesGallery(false);
                     setCurrentImageIndex(-1); // Reset to thumbnails when closing
-                    setCurrentEditionImages([]); // Clear current edition images
+                    setCurrentWorkImages([]); // Clear current work images
                 }}
                 style={{ width: '90vw', maxWidth: '1200px' }}
                 contentStyle={{ padding: '1rem', overflow: 'auto' }}
                 modal
                 maximizable
             >
-                {(currentEditionImages.length > 0 ? currentEditionGalleryItems : galleryItems).length > 0 && (
+                {(currentWorkImages.length > 0 ? currentWorkGalleryItems : galleryItems).length > 0 && (
                     <>
                         {/* Show thumbnail grid initially */}
                         {currentImageIndex === -1 ? (
                             <div className="grid justify-content-center" style={{ width: '100%' }}>
-                                {(currentEditionImages.length > 0 ? currentEditionGalleryItems : galleryItems).map((item, index) => (
+                                {(currentWorkImages.length > 0 ? currentWorkGalleryItems : galleryItems).map((item, index) => (
                                     <div className="col-12 sm:col-6 md:col-4 lg:col-3 mb-3" key={index}>
                                         <div className="text-center cursor-pointer p-2" onClick={() => setCurrentImageIndex(index)}>
                                             <img
@@ -498,7 +540,7 @@ export const ContributorEditionControl = ({
                                     onClick={() => setCurrentImageIndex(-1)}
                                 />
                                 <Galleria
-                                    value={currentEditionImages.length > 0 ? currentEditionGalleryItems : galleryItems}
+                                    value={currentWorkImages.length > 0 ? currentWorkGalleryItems : galleryItems}
                                     activeIndex={currentImageIndex}
                                     onItemChange={(e) => setCurrentImageIndex(e.index)}
                                     item={itemTemplate}

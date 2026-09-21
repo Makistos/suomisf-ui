@@ -56,20 +56,6 @@ const addToGroup = (edition: Edition, groups: Edition[][], mode: string) => {
             }
         }
         groups.push([edition]);
-    } else if (mode === 'by-work') {
-        // Group ALL editions of the same work together, regardless of
-        // version - used for person-page contribution lists (translator/
-        // editor/cover/illustration tabs), where several editions or
-        // versions of the same work credited to the same person should
-        // appear as a single combined entry rather than one row per
-        // version.
-        for (const group of groups) {
-            if (group[0].work?.id === edition.work?.id) {
-                group.push(edition);
-                return;
-            }
-        }
-        groups.push([edition]);
     } else {
         // No grouping, each edition by itself
         groups.push([edition]);

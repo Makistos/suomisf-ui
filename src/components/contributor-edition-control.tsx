@@ -252,7 +252,13 @@ export const ContributorEditionControl = ({
     const formatEdition = (edition: CombinedEdition): string => {
         let result = "";
 
-        if (edition.version && edition.version > 1) {
+        // versionRange is set when a combined entry spans more than one
+        // version (laitos) of the same work - show that range instead of
+        // just the lowest version, which would otherwise silently drop
+        // e.g. "2. laitos" from a merged 1st+2nd-laitos entry.
+        if (edition.versionRange) {
+            result += `${edition.versionRange}. laitos `;
+        } else if (edition.version && edition.version > 1) {
             result += `${edition.version}. laitos `;
         }
 

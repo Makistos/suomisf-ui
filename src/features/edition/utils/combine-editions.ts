@@ -25,7 +25,6 @@ export const combineEditions = (editions: Edition[], user: User | null): Edition
     retval.id = editions[0].id;
 
     // These should be same for all
-    retval.version = editions[0].version;
     retval.title = editions[0].title;
     retval.subtitle = editions[0].subtitle;
     retval.contributions = editions[0].contributions;
@@ -61,6 +60,20 @@ export const combineEditions = (editions: Edition[], user: User | null): Edition
         const end = ednums[editions.length - 1] ? ednums[editions.length - 1] : "?";
         retval.editionnum = start + " - " + end;
     }
+    // editions is already sorted ascending by version (sortEditions, applied
+    // by groupSimilarEditions before combineEditions runs), so [0] is the
+    // lowest version present.
+    retval.version = editions[0].version;
+    // Combined groups can span several versions (laitos) - e.g.
+    // ContributorEditionControl's "by-work" grouping, which merges every
+    // edition of a work regardless of version. Record that as a range
+    // string alongside the plain `version` number above, so it isn't lost
+    // (a lone edition, or a group that's all one version, leaves this
+    // undefined - see the versionRange field's own comment).
+    const versions = editions.map(edition => edition.version);
+    retval.versionRange = versions.every(v => v === versions[0])
+        ? undefined
+        : `${versions[0]} - ${versions[versions.length - 1]}`;
     let isbns: tmpObj[] = [];
     for (const edition of editions) {
         isbns.push({

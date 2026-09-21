@@ -254,22 +254,22 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
             <TabPanel key="Toimittanut"
                 header={headerText("Toimittanut", editContributions)}
                 disabled={editContributions === 0}>
-                <ContributorEditionControl editions={edits} person={person} sort="author" collaborationsLast={collaborationsLast} detailLevel="brief" />
+                <ContributorEditionControl editions={edits} person={person} sort="author" collaborationsLast={collaborationsLast} detailLevel="by-work" />
             </TabPanel>
             <TabPanel key="Kääntänyt"
                 header={headerText("Kääntänyt", translationContributions)}
                 disabled={translationContributions === 0}>
-                <ContributorEditionControl editions={translations} person={person} sort="author" collaborationsLast={collaborationsLast} detailLevel="brief" />
+                <ContributorEditionControl editions={translations} person={person} sort="author" collaborationsLast={collaborationsLast} detailLevel="by-work" />
             </TabPanel>
             <TabPanel key="Kansikuva"
                 header={headerText("Kansi", coverContributions)}
                 disabled={coverContributions === 0}>
-                <ContributorEditionControl editions={covers} person={person} sort="author" collaborationsLast={collaborationsLast} detailLevel="brief" />
+                <ContributorEditionControl editions={covers} person={person} sort="author" collaborationsLast={collaborationsLast} detailLevel="by-work" />
             </TabPanel>
             <TabPanel key="Kuvittaja"
                 header={headerText("Kuvitus", illustrationContributions)}
                 disabled={illustrationContributions === 0}>
-                <ContributorEditionControl editions={illustrations} person={person} sort="author" collaborationsLast={collaborationsLast} detailLevel="brief" />
+                <ContributorEditionControl editions={illustrations} person={person} sort="author" collaborationsLast={collaborationsLast} detailLevel="by-work" />
             </TabPanel>
             <TabPanel key="Esiintyy"
                 header={headerText("Esiintyy", appearsInContributions)}

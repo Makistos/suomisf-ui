@@ -229,6 +229,21 @@ export const AwardPage = ({ id }: AwardPageProps) => {
                             </TabView>
                         </div>
 
+                        {data.import_source && (
+                            <div className="col-12">
+                                <div className="text-sm text-color-secondary">
+                                    Voittajatiedot päivitetään lähteestä{' '}
+                                    <a
+                                        href={data.import_source.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {data.import_source.label}
+                                    </a>.
+                                </div>
+                            </div>
+                        )}
+
                         <Dialog
                             maximizable
                             blockScroll

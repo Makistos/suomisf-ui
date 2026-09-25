@@ -13,6 +13,13 @@ export interface Award {
     winners: Omit<Awarded, "award">[];
     // True when the award's winners can be imported from an external source.
     has_import_source?: boolean;
+    // Where the automated winner import reads from, if any.
+    import_source?: AwardImportSourceInfo | null;
+}
+
+export interface AwardImportSourceInfo {
+    label: string;
+    url: string;
 }
 
 // A single scraped winner in the import preview.

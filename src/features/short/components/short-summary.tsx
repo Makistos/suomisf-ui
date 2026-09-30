@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Dialog } from 'primereact/dialog';
@@ -11,7 +11,6 @@ import { ShortsForm } from './shorts-form';
 import { Contribution } from '../../../types/contribution';
 import { Short } from '../types';
 import { removeDuplicateContributions } from '../../../utils';
-import { getCurrenUser } from '../../../services/auth-service';
 
 interface ShortProps {
     /**
@@ -43,7 +42,7 @@ interface ShortProps {
 export const ShortSummary = ({ short, skipAuthors, listPublications,
     enableQueries, workEditions, hideType }: ShortProps) => {
     const [isEditVisible, setEditVisible] = useState(false);
-    const user = useMemo(() => { return getCurrenUser() }, []);
+    
 
     const PickLinks = (items: Contribution[]) => {
         const retval = items.map((item) => item.person);

@@ -15,7 +15,6 @@ import { useDocumentTitle } from '../../../components/document-title';
 import { FormCheckbox } from "@components/forms/field/form-checkbox";
 import { getApiContent } from "@services/user-service";
 import { getCurrenUser } from "@services/auth-service";
-import { getShortTypes } from "../utils/get-short-types";
 import { Dropdown } from "primereact/dropdown";
 
 type FormData = {
@@ -44,8 +43,8 @@ export const ShortSearchPage = () => {
         { defaultValues: defaultValues }
     );
     const { control, handleSubmit, formState: { errors } } = methods;
-    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
-    const [loading, setLoading] = useState(false);
+    const [, setDocumentTitle] = useDocumentTitle("");
+    const [, setLoading] = useState(false);
     // const [shorts, setShorts]: [Short[], (shorts: Short[]) => void] = useState<Short[]>([]);
     const [searchParams, setSearchParams]: [FormData | null, (params: FormData) => void] = useState<FormData | null>(null);
     const [queryEnabled, setQueryEnabled] = useState(false);
@@ -94,7 +93,7 @@ export const ShortSearchPage = () => {
         setLoading(false);
     }
 
-    const { status, data, fetchStatus } = useQuery({
+    const { data, fetchStatus } = useQuery({
         queryKey: ["searchShorts", { params: searchParams }],
         enabled: queryEnabled,
         queryFn: () => searchShorts()
@@ -128,7 +127,7 @@ export const ShortSearchPage = () => {
                         <div className="field col mb-0">
                             <span className="p-float-label">
                                 <Controller name="title" control={control}
-                                    render={({ field, fieldState }) => (
+                                    render={({ field }) => (
                                         <InputText id={field.name} {...field}
                                         />
                                     )} />
@@ -138,7 +137,7 @@ export const ShortSearchPage = () => {
                         <div className="field col mb-0">
                             <span className="p-float-label">
                                 <Controller name="orig_name" control={control}
-                                    render={({ field, fieldState }) => (
+                                    render={({ field }) => (
                                         <InputText id={field.name} {...field}
                                         />
                                     )} />
@@ -148,7 +147,7 @@ export const ShortSearchPage = () => {
                         <div className="field col mb-0">
                             {/* <label htmlFor="title">Tyyppi</label> */}
                             <Controller name="type" control={control}
-                                render={({ field, fieldState }) => (
+                                render={({ field }) => (
                                     <Dropdown
                                         {...field}
                                         name="type"
@@ -167,7 +166,7 @@ export const ShortSearchPage = () => {
                         <div className="field col mb-0">
                             <span className="p-float-label">
                                 <Controller name="pubyear_first" control={control}
-                                    render={({ field, fieldState }) => (
+                                    render={({ field }) => (
                                         <InputText id={field.name} {...field}
                                             keyfilter="pint"
                                         />
@@ -178,7 +177,7 @@ export const ShortSearchPage = () => {
                         <div className="field col mb-0">
                             <span className="p-float-label">
                                 <Controller name="pubyear_last" control={control}
-                                    render={({ field, fieldState }) => (
+                                    render={({ field }) => (
                                         <InputText id={field.name} {...field}
                                             className="w-full" />
                                     )} />
@@ -187,7 +186,7 @@ export const ShortSearchPage = () => {
                         </div>
                         <div className="field col mb-0">
                             <Controller name="magazine" control={control}
-                                render={({ field, fieldState }) => (
+                                render={({ field }) => (
                                     <Dropdown
                                         {...field}
                                         name="magazine"
@@ -206,7 +205,7 @@ export const ShortSearchPage = () => {
                         <div className="field col mb-0">
                             <div className="flex align-items-center">
                                 <Controller name="awarded" control={control}
-                                    render={({ field, fieldState }) => (
+                                    render={() => (
                                         <FormCheckbox
                                             name="awarded"
                                             label=""

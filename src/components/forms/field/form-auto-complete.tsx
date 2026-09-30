@@ -2,7 +2,7 @@ import { Controller, UseFormReturn } from "react-hook-form"
 import { AutoComplete, AutoCompleteProps } from "primereact/autocomplete"
 import { classNames } from 'primereact/utils'
 import { formErrorMessage } from "../form-error-message"
-import { FormEventHandler, useState } from "react"
+import { FormEventHandler } from "react"
 
 interface FormAutoCompleteProps extends AutoCompleteProps {
   name: string,
@@ -10,10 +10,6 @@ interface FormAutoCompleteProps extends AutoCompleteProps {
   label: string,
   labelClass?: string,
   tagFunction?: FormEventHandler
-}
-
-interface NewItemProps {
-  submitFunction: FormEventHandler
 }
 
 export const FormAutoComplete = ({ name, methods, label, labelClass, ...rest }: FormAutoCompleteProps) => {

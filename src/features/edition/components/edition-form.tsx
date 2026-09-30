@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { useForm, FieldValues, FormProvider } from 'react-hook-form';
 import { Button } from 'primereact/button';
@@ -42,11 +41,11 @@ interface FormObjectProps {
 export const EditionForm = (props: EditionFormProps) => {
   const user = useMemo(() => { return getCurrenUser() }, []);
   const [bindings, setBindings] = useState<Binding[]>([]);
-  const [queryEnabled, setQueryEnabled] = useState(true);
+  const [queryEnabled] = useState(true);
 
-  let edition: Edition | null = null;
+  
 
-  const navigate = useNavigate();
+  
 
   const queryClient = useQueryClient()
 
@@ -82,7 +81,7 @@ export const EditionForm = (props: EditionFormProps) => {
 
   const { mutate } = useMutation({
     mutationFn: (values: EditionFormData) => updateEdition(values),
-    onSuccess: (data: HttpStatusResponse, variables) => {
+    onSuccess: (data: HttpStatusResponse) => {
       if (data.status === 200 || data.status === 201) {
         props.onSubmitCallback(true, "");
         queryClient.invalidateQueries({ queryKey: ['work', props.editionid, "form"] });
@@ -205,7 +204,7 @@ const FormObject = ({ onSubmit, data, work, disabled, bindings }: FormObjectProp
 
   const formData = data ? convToFormData(data) : defaultValues;
   const methods = useForm<EditionFormData>({ defaultValues: formData });
-  const errors = methods.formState.errors;
+  
 
   return (
     <div className='card mt-3'>

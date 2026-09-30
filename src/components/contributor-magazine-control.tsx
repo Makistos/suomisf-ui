@@ -4,7 +4,7 @@ import { Image } from "primereact/image";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Galleria } from "primereact/galleria";
-import { Contribution, ContributionType } from "../types/contribution";
+import { Contribution } from "../types/contribution";
 import { useState, useMemo } from "react";
 import { Issue } from "@features/issue";
 import { Link } from "react-router-dom";
@@ -110,42 +110,9 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
     };
 
     // Get all images from all issues for the gallery
-    const getAllImagesFromAllIssues = () => {
-        const allImages: { url: string; issueTitle: string; year?: number; magazineName: string }[] = [];
-        const seenUrls = new Set<string>();
+    
 
-        issues.forEach(issue => {
-            // Filter by person if specified
-            if (person) {
-                const hasPersonContribution = issue.contributors.some(contrib => contrib.person.id === person);
-                if (!hasPersonContribution) {
-                    return;
-                }
-            }
-
-            const firstImage = issue.images?.[0];
-            if (firstImage) {
-                const imageUrl = firstImage.image_src.startsWith('http')
-                    ? firstImage.image_src
-                    : `${import.meta.env.VITE_IMAGE_URL}${firstImage.image_src}`;
-
-                // Only add if we haven't seen this URL before
-                if (!seenUrls.has(imageUrl)) {
-                    seenUrls.add(imageUrl);
-                    allImages.push({
-                        url: imageUrl,
-                        issueTitle: issue.title || issue.cover_number,
-                        year: issue.year,
-                        magazineName: issue.magazine.name
-                    });
-                }
-            }
-        });
-
-        return allImages;
-    };
-
-    const allIssueImages = useMemo(() => getAllImagesFromAllIssues(), [issues, person]);
+    
 
     // Format image info for gallery
     const formatImageInfo = (imageData: { issueTitle: string; year?: number; magazineName: string; coverNumber?: string }): string => {
@@ -158,7 +125,7 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
         return result;
     };    // Create galleria items from current gallery images
     const galleryItems = useMemo(() => {
-        return currentGalleryImages.map((item, index) => ({
+        return currentGalleryImages.map((item) => ({
             itemImageSrc: item.url,
             thumbnailImageSrc: item.url,
             alt: `${item.magazineName} ${item.issueTitle} kansi`,

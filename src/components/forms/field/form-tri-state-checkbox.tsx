@@ -10,7 +10,7 @@ interface FormTristateCheckboxProps extends TriStateCheckboxProps {
   labelClass?: string,
 }
 
-export const FormTriStateCheckbox = ({ name, methods, label, labelClass, disabled, ...rest }: FormTristateCheckboxProps) => {
+export const FormTriStateCheckbox = ({ name, methods, label, labelClass, disabled }: FormTristateCheckboxProps) => {
 
   return (
     <span className="p-float-label">

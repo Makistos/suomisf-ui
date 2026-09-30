@@ -15,11 +15,6 @@ const emptyIsEqual = (a: any, b: any) => {
     return false;
 }
 
-// This is used for radio buttons where variables always have a value, even
-// when unknown. Unknown is equal to 1.
-// This will consider unknown to be equal to any other value.
-const unknownIsEqual = (a: any, b: any) => a === 1 || b === 1 || (a === b);
-
 // For versions, unknown is equal to 1.
 const unknownIsEqualToOne = (a: any, b: any) => {
     if (!a) a = 1;

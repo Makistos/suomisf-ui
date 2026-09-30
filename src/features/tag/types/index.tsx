@@ -1,7 +1,6 @@
 import { Work } from "../../work";
 import { Article } from "../../article";
 import { Short } from "../../short";
-import { Person } from "../../person";
 
 export interface TagType {
     id: number;

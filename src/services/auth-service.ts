@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 //import { API_URL } from "../systemProps";
 import { User } from "../features/user/types";
 import authHeader, { refreshHeader } from "./auth-header";
@@ -105,7 +105,7 @@ axios.interceptors.response.use(
         if (error?.response?.status === 401 && error?.response?.data['msg'].includes("Token has expired")) {
             // console.log("token expired");
             const res = await refreshAccessTokenFn()
-                .then((response) => {
+                .then(() => {
                     //localStorage.setItem("user", JSON.stringify(response.data));
                     // console.log("token refreshed");
                     //delete originalConfig.headers.Authorization;

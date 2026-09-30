@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Controller, useFieldArray, UseFormRegister, useFormContext } from 'react-hook-form';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { AutoComplete } from "primereact/autocomplete";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
@@ -10,9 +10,7 @@ import { PersonBrief } from "../../features/person";
 import { Contributor } from "../../types/contributor";
 import { getApiContent } from "../../services/user-service";
 import { getCurrenUser } from "../../services/auth-service";
-import { Contribution, ContributionType } from "../../types/contribution";
-import { WorkFormData } from '../../features/work/types';
-//import { ContributorRow } from "./contributor-row";
+import { Contribution } from "../../types/contribution";
 
 interface ContributorFieldProps {
     id: string,
@@ -50,7 +48,7 @@ export const emptyContributor: Contribution = {
 }
 
 export const ContributorField = (
-    { id, defValues, disabled, contributionTarget = '' }: ContributorFieldProps) => {
+    { id, disabled, contributionTarget = '' }: ContributorFieldProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
 
     const { control } = useFormContext();
@@ -76,7 +74,6 @@ export const ContributorField = (
         //const user = useMemo(() => { return getCurrenUser() }, []);
         const keyValue = `{contributors.${index}}`;
         const [filteredPeople, setFilteredPeople] = useState<any>([]);
-        const [filteredAliases, setFilteredAliases] = useState<any>(null);
         const [roleList, setRoleList]: [ContributorFieldPair[],
             (roleList: ContributorFieldPair[]) => void]
             = useState<ContributorFieldPair[]>([]);
@@ -120,10 +117,6 @@ export const ContributorField = (
             const p = response.data;
             setFilteredPeople(p);
             return p;
-        }
-
-        async function filterAliases(event: any) {
-            return null;
         }
 
         const addEmptyContributor = () => {

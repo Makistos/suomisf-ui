@@ -49,7 +49,7 @@ export const WorkSearchPage = () => {
     //const [initials, setInitials]: [string[], (initialis: string[]) => void] = useState<string[]>([]);
     const [initial, setInitial] = useState("");
 
-    const [documentTitle, setDocumentTitle] = useDocumentTitle("Kirjahaku");
+    const [documentTitle] = useDocumentTitle("Kirjahaku");
 
     if (documentTitle !== undefined)
         document.title = documentTitle;
@@ -152,7 +152,7 @@ export const WorkSearchPage = () => {
                                 <div className="field grid md:col-4 sm:col-12">
                                     <span className="p-float-label col">
                                         <Controller name="author" control={control}
-                                            render={({ field, fieldState }) => (
+                                            render={({ field }) => (
                                                 <InputText id={field.name} {...field}
                                                     className={classNames('w-full')}
                                                 />
@@ -163,7 +163,7 @@ export const WorkSearchPage = () => {
                                 <div className="field grid md:col-4 sm:col-12">
                                     <span className="p-float-label col">
                                         <Controller name="title" control={control}
-                                            render={({ field, fieldState }) => (
+                                            render={({ field }) => (
                                                 <InputText id={field.name} {...field}
                                                     className={classNames('w-full')}
                                                 />
@@ -174,7 +174,7 @@ export const WorkSearchPage = () => {
                                 <div className="field grid md:col-4 sm:col-12">
                                     <span className="p-float-label col">
                                         <Controller name="orig_name" control={control}
-                                            render={({ field, fieldState }) => (
+                                            render={({ field }) => (
                                                 <InputText id={field.name} {...field}
                                                     className={classNames('w-full')}
                                                 />
@@ -187,7 +187,7 @@ export const WorkSearchPage = () => {
                                 <div className="field grid md:col-6 sm:col-12">
                                     <span className="p-float-label col">
                                         <Controller name="pubyear_first" control={control}
-                                            render={({ field, fieldState }) => (
+                                            render={({ field }) => (
                                                 <InputText id={field.name} {...field}
                                                     className={classNames('w-full')}
                                                 />
@@ -198,7 +198,7 @@ export const WorkSearchPage = () => {
                                 <div className="field grid  md:col-6 sm:col-12">
                                     <span className="p-float-label col">
                                         <Controller name="pubyear_last" control={control}
-                                            render={({ field, fieldState }) => (
+                                            render={({ field }) => (
                                                 <InputText id={field.name} {...field}
                                                     className={classNames('w-full')}
                                                 />
@@ -211,7 +211,7 @@ export const WorkSearchPage = () => {
                                 <div className="field grid md:col-6 sm:col-12">
                                     <span className="p-float-label col">
                                         <Controller name="printyear_first" control={control}
-                                            render={({ field, fieldState }) => (
+                                            render={({ field }) => (
                                                 <InputText id={field.name} {...field}
                                                     className={classNames('w-full')}
                                                 />
@@ -222,7 +222,7 @@ export const WorkSearchPage = () => {
                                 <div className="field grid  md:col-6 sm:col-12">
                                     <span className="p-float-label col">
                                         <Controller name="printyear_last" control={control}
-                                            render={({ field, fieldState }) => (
+                                            render={({ field }) => (
                                                 <InputText id={field.name} {...field}
                                                     className={classNames('w-full')} />
                                             )} />
@@ -233,7 +233,7 @@ export const WorkSearchPage = () => {
                             <div className="grid">
                                 <div className="field grid md:col-4 sm:col-12 pr-3">
                                     <Controller name="genre" control={control}
-                                        render={({ field, fieldState }) => (
+                                        render={({ field }) => (
                                             <MultiSelect
                                                 {...field}
                                                 optionLabel="name"
@@ -256,7 +256,7 @@ export const WorkSearchPage = () => {
                                 </div>
                                 <div className="field grid md:col-4 sm:col-12 pr-3">
                                     <Controller name="nationality" control={control}
-                                        render={({ field, fieldState }) => (
+                                        render={({ field }) => (
                                             <Dropdown options={nationalities.data} placeholder="Kansallisuus" className="w-full"
                                                 id={field.name} {...field} value={field.value}
                                                 optionLabel="name" optionValue="id" filter showClear
@@ -265,7 +265,7 @@ export const WorkSearchPage = () => {
                                 </div>
                                 <div className="field grid md:col-4 sm:col-12">
                                     <Controller name="type" control={control}
-                                        render={({ field, fieldState }) => (
+                                        render={({ field }) => (
                                             <Dropdown options={worktypes.data} placeholder="Tyyppi" className="w-full"
                                                 id={field.name} {...field} value={field.value} showClear
                                                 optionLabel="name" optionValue="id"

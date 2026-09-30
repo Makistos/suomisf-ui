@@ -92,9 +92,9 @@ export const ShortsForm = (props: ShortFormProps) => {
         }
     }
 
-    const { mutate, error } = useMutation({
+    const { mutate } = useMutation({
         mutationFn: (values: ShortForm) => updateShort(values),
-        onSuccess: (data: HttpStatusResponse, variables) => {
+        onSuccess: (data: HttpStatusResponse) => {
             const id = data.response;
             props.onSubmitCallback(id, false);
 
@@ -120,7 +120,7 @@ export const ShortsForm = (props: ShortFormProps) => {
     )
 }
 
-const FormObject = ({ onSubmit, onClose, onDelete, methods, id }: FormObjectProps) => {
+const FormObject = ({ onSubmit, onDelete, methods, id }: FormObjectProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [typeList, setTypeList] = useState([]);
     const [genres, setGenres] = useState([]);

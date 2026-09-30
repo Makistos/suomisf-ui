@@ -103,13 +103,7 @@ export const AwardedForm = ({ workId, personId, shortId: storyId, onClose }: Awa
         }
     })
 
-    const findCatIndex = (id: number) => {
-        const index = categories?.findIndex((cat) => cat.id === id);
-        if (index === undefined || index === -1) {
-            return { id: 0, name: "" };
-        }
-        return index;
-    }
+    
 
     const form = useForm({
         defaultValues: {
@@ -176,7 +170,7 @@ export const AwardedForm = ({ workId, personId, shortId: storyId, onClose }: Awa
             >
                 <form.Field
                     name="id"
-                    children={(field) => {
+                    children={() => {
                         return (
                             <InputText
                                 value={thisId}
@@ -188,7 +182,7 @@ export const AwardedForm = ({ workId, personId, shortId: storyId, onClose }: Awa
                 />
                 <form.Field
                     name="type"
-                    children={(field) => {
+                    children={() => {
                         return (
                             <InputText
                                 value={typeId.toString()}

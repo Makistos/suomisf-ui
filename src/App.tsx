@@ -104,7 +104,7 @@ function App() {
 
   locale('fi');
 
-  const [title, setTitle] = useState("SF-Bibliografia");
+  const [title] = useState("SF-Bibliografia");
 
   useEffect(() => {
     document.title = title;

@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
-import { useForm, SubmitHandler, RegisterOptions, FormProvider } from 'react-hook-form';
+import { useForm, RegisterOptions, FormProvider } from 'react-hook-form';
 
-import { InputText } from 'primereact/inputtext';
 import { useMutation } from '@tanstack/react-query';
 import { Button } from 'primereact/button';
 
@@ -28,8 +27,6 @@ type FormObjectProps = {
 
 export const PublisherForm = (props: FormProps<Publisher>) => {
   const user = useMemo(() => { return getCurrenUser() }, []);
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const convToForm = (publisher: Publisher): PublisherFormData => ({
@@ -116,7 +113,7 @@ export const PublisherForm = (props: FormProps<Publisher>) => {
 
 const FormObject = ({ onSubmit, methods }: FormObjectProps) => {
   const user = useMemo(() => { return getCurrenUser() }, []);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const disabled = isDisabled(user, loading);
   const required_rule: RegisterOptions = { required: "Pakollinen kenttä" };
   const editor_style: React.CSSProperties = { height: '320px' };

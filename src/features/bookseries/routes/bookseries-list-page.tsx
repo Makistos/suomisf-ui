@@ -15,7 +15,7 @@ export const BookseriesListPage = () => {
      * Page that lists all bookseries in in the system in a table.
      */
     const user = getCurrenUser();
-    const [documentTitle, setDocumentTitle] = useDocumentTitle("Kirjasarjat");
+    const [, setDocumentTitle] = useDocumentTitle("Kirjasarjat");
 
     const fetchBookseries = async (): Promise<Bookseries[]> => {
         const url = 'bookseries';

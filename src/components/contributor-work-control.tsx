@@ -81,18 +81,7 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
     const flatWorks = [...works].sort((a, b) => compareWorksByField(a, b, orderField));
 
     // Get the first edition with an image for a work
-    const getFirstEditionWithImage = (work: Work): Edition | null => {
-        if (!work.editions || work.editions.length === 0) return null;
-
-        // Sort editions by year only
-        const sortedEditions = [...work.editions].sort((a, b) => {
-            const yearA = typeof a.pubyear === 'number' ? a.pubyear : parseInt(String(a.pubyear || 0));
-            const yearB = typeof b.pubyear === 'number' ? b.pubyear : parseInt(String(b.pubyear || 0));
-            return yearA - yearB;
-        });
-
-        return sortedEditions.find(edition => edition.images && edition.images.length > 0) || sortedEditions[0] || null;
-    };
+    
 
     // Get all images from all editions of a work
     const getAllImagesFromWork = (work: Work): { url: string; version?: number; editionnum?: number }[] => {

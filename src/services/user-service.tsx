@@ -10,25 +10,6 @@ const newBaseURL = import.meta.env.VITE_NEW_API_URL;
 // Re-export for convenience
 export { shouldUseNewApi };
 
-const handleError = (error: any): string => {
-    let message = "";
-    if (error.response) {
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-        message = error.response.data['msg']
-    } else if (error.request) {
-        console.log(error.request);
-        message = error.request;
-    } else {
-        console.log('Error', error.message);
-        message = error.message;
-    }
-    //console.log(error.config);
-    //<ConfirmAccessDenied />
-    return message;
-}
-
 interface cbType {
     (data: any): any;
 }
@@ -170,7 +151,7 @@ export const deleteApiContent = async (url: string, newApi?: boolean): Promise<H
             console.log("other error: " + error_msg);
         }
     }
-    return new Promise<HttpStatusResponse>((resolve, reject) => {
+    return new Promise<HttpStatusResponse>((resolve) => {
         resolve({
             response: error_msg,
             status: status

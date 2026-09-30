@@ -58,17 +58,13 @@ interface ShortsListProps {
  * @return {JSX.Element} The rendered component.
  */
 export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPublications,
-    anthology, sort, enableQueries, workEditions, hideType }: ShortsListProps): React.JSX.Element => {
+    anthology, enableQueries, workEditions, hideType }: ShortsListProps): React.JSX.Element => {
 
-    const [orderField, setOrderField] = useState(sort || "");
+    
     const [groupedShorts, setGroupedShorts]: [Record<string, Short[]>,
         (groupedShorts: Record<string, Short[]>) => void] = useState({});
     const grouping = groupAuthors ? "person" : groupRoles ? "role" : "";
-    const sortOptions = [
-        { name: 'Nimi', code: 'Title' },
-        { name: 'Julkaisuvuosi', code: 'Year' },
-        { name: 'Kirjoittaja', code: 'Author' }
-    ]
+    
 
     const sortGroups = (a: [string, Short[]], b: [string, Short[]]) => {
         if (person) {
@@ -83,25 +79,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPubli
         return a[0].localeCompare(b[0]);
     }
 
-    const shortsCmp = (a: Short, b: Short) => {
-        if (orderField === "Title") {
-            return a.title < b.title ? -1 : 1;
-        } else if (orderField === "Author") {
-            const aAuthor = a.contributors.filter(c => c.role.id === 1).map(name => name.person.name).join(", ");
-            const bAuthor = b.contributors.filter(c => c.role.id === 1).map(name => name.person.name).join(", ");
-            if (aAuthor === bAuthor) return a.title < b.title ? -1 : 1;
-            return aAuthor < bAuthor ? -1 : 1;
-        }
-        // a first if both are are null. Otherwise if one is null,
-        // that goes first.
-        if (!a.pubyear && !b.pubyear) return -1;
-        if (!a.pubyear) return -1;
-        if (!b.pubyear) return 1;
-        if (orderField === "Year") {
-            return a.pubyear < b.pubyear ? -1 : 1;
-        }
-        return 0;
-    }
+    
 
     useEffect(() => {
         if (groupAuthors || groupRoles) {

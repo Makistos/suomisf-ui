@@ -6,7 +6,6 @@ import { getCurrenUser } from '@services/auth-service';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { ProgressBar } from 'primereact/progressbar';
-import { HttpStatusResponse } from '@services/user-service';
 import { getTagTypes } from '@api/tag/get-tag-types';
 import { getTagFormData } from '@api/tag/get-tag-form-data';
 import { updateTag } from '@api/tag/update-tag';
@@ -44,10 +43,10 @@ export const SfTagForm = (props: FormProps) => {
     })
 
 
-    const { mutate, error } = useMutation({
+    const { mutate } = useMutation({
         mutationKey: ['tag', props.tagId],
         mutationFn: (data: any) => updateTag(data, user),
-        onSuccess: (data: HttpStatusResponse, variables) => {
+        onSuccess: () => {
             props.onSubmitCallback(true, "");
         },
         onError: (error: any) => {

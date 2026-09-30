@@ -161,9 +161,8 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
   // const [filteredPeople, filterPeople] = useFilterPeople();
   const [filteredPeople, setFilteredPeople] = useState<any>([]);
 
-  const [hasChanged, setHasChanged] = useState(false);
+  const [, setHasChanged] = useState(false);
   const [isShortFormVisible, setIsShortFormVisible] = useState(false);
-  const [filter, setFilter] = useState('');
 
   useEffect(() => {
     const getShorts = async () => {

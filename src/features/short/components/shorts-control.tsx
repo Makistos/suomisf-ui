@@ -40,16 +40,7 @@ export const ShortsControl = ({ person, listPublications, showAuthors, sort, wha
         }
 
         /** Joins two lists of short stories into one. */
-        const joinShortsLists = (aList: Short[], bList: Short[]) => {
-            const keys = Object.assign({}, ...aList.map(item => ({ [item.id]: item.title })));
-            bList.map(item => {
-                if (!(item.id in keys)) {
-                    aList.push(item);
-                }
-                return true;
-            });
-            return aList;
-        }
+        
         const newShorts = person.stories.filter(filterShorts);
         // const newShorts = joinShortsLists(
         //     person.stories.filter(filterShorts),

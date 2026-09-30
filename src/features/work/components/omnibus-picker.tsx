@@ -113,7 +113,7 @@ const OmnibusPicker = ({ source, saveCallback }: OmnibusPickerProps) => {
     // People matching search query
     const [filteredPeople, setFilteredPeople] = useState<any>([]);
 
-    const [hasChanged, setHasChanged] = useState(false);
+    const [, setHasChanged] = useState(false);
 
     useEffect(() => {
         const getWorks = async () => {

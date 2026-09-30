@@ -34,7 +34,7 @@ const PublishInfo = ({ magazine }: { magazine: Magazine }) => {
 
 export function MagazinesPage() {
     const user = getCurrenUser();
-    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+    const [, setDocumentTitle] = useDocumentTitle("");
 
     useEffect(() => {
         setDocumentTitle("Lehdet");

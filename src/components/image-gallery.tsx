@@ -95,20 +95,7 @@ export const ImageGallery = ({
     };
 
     // Format compact version for the small counter overlay
-    const formatCompactCounter = (index: number): string => {
-        const item = imageList[index];
-        if ('version' in item && 'editionnum' in item && (item.version || item.editionnum)) {
-            let result = "";
-            if (item.version) {
-                result += `${item.version}l`;
-            }
-            if (item.editionnum) {
-                result += `${item.editionnum}p`;
-            }
-            return result;
-        }
-        return ""; // Return empty string if no version or edition data
-    };
+    
 
     const galleryItems = imageList.map((item, index) => ({
         itemImageSrc: item.url,

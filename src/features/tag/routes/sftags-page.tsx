@@ -10,7 +10,7 @@ import { getTags } from '@api/tag/get-tags';
 import { useQuery } from '@tanstack/react-query';
 
 export const SFTags = () => {
-    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+    const [, setDocumentTitle] = useDocumentTitle("");
     useEffect(() => {
         setDocumentTitle("Asiasanat");
     }, [])

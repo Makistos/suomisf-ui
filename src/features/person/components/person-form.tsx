@@ -1,12 +1,12 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-    FieldValues, FormProvider, SubmitHandler, useForm,
+    FormProvider, useForm,
     RegisterOptions
 } from 'react-hook-form';
 
 import { Button } from 'primereact/button';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { ProgressBar } from 'primereact/progressbar';
 
 import { Person, PersonFormData } from '../types';
@@ -36,7 +36,6 @@ interface PersonFormProps {
 
 export const PersonForm = (props: PersonFormProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
-    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -74,7 +73,7 @@ export const PersonForm = (props: PersonFormProps) => {
 
     const formData = props.data ? convToForm(props.data) : defaultValues;
     const methods = useForm<PersonFormData>({ defaultValues: formData });
-    const queryClient = useQueryClient()
+    
 
     useEffect(() => {
         methods.reset(props.data ? convToForm(props.data) : defaultValues);
@@ -115,14 +114,7 @@ export const PersonForm = (props: PersonFormProps) => {
         }
     })
 
-    const onSubmit: SubmitHandler<FieldValues> = (data) => {
-        const retval = { data, changed: methods.formState.dirtyFields }
-        setLoading(true);
-
-        setLoading(false);
-        queryClient.invalidateQueries();
-        props.onSubmitCallback();
-    }
+    
 
     return <>
         {formData ? (
@@ -138,7 +130,7 @@ export const PersonForm = (props: PersonFormProps) => {
 
 const FormObject = ({ onSubmit, methods }: FormObjectProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
     const disabled = isDisabled(user, loading);
     const [filteredCountries, setFilteredCountries] = useState([]);
 
@@ -148,13 +140,11 @@ const FormObject = ({ onSubmit, methods }: FormObjectProps) => {
         setFilteredCountries(response.data);
     }
 
-    const renderSourceHeader = () => {
-        return (<></>)
-    }
-    const sourceHeader = renderSourceHeader();
+    
+    
     const required_rule: RegisterOptions = { required: "Pakollinen kenttä" };
     const editor_style: React.CSSProperties = { height: '320px' };
-    const source_style: React.CSSProperties = { height: '100px' };
+    
 
     return (
         <div className="card mt-3">

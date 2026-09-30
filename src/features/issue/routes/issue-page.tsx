@@ -1,8 +1,8 @@
-import React, { RefObject, useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
 
 import { getCurrenUser } from '../../../services/auth-service';
-import { Short, ShortSummary } from '../../short';
+import { ShortSummary } from '../../short';
 import { Issue } from '../types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getIssue } from '@api/issue/get-issue';
@@ -26,7 +26,7 @@ import { selectId } from '@utils/select-id';
 import { Tooltip } from 'primereact/tooltip';
 import { SpeedDial } from 'primereact/speeddial';
 import { ContributionType } from '../../../types/contribution';
-const baseURL = 'issues/';
+
 
 export type IssueProps = {
     id: string | null
@@ -34,13 +34,6 @@ export type IssueProps = {
 
 type IssueInfoProps = {
     issue: Issue
-}
-
-const getShortTypes = (shorts: Short[]) => {
-    const typeList = shorts.map(short => short.type);
-    const types = _.uniqBy(typeList, 'id').sort((a, b) => a.id < b.id ? -1 : 1);
-    return types;
-
 }
 
 const IssueNavigation = ({ issue }: { issue: Issue }) => {
@@ -267,9 +260,7 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
         queryClient.invalidateQueries({ queryKey: ['issue', issueId] });
     }
 
-    const onArticlesShow = () => {
-        setArticleFormVisible(true);
-    }
+    
 
     const onArticlesHide = () => {
         setArticleFormVisible(false);

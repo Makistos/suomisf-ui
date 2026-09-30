@@ -17,7 +17,7 @@ const baseURL = 'people';
 
 export const PeoplePage = () => {
     const user = useMemo(() => { return getCurrenUser() }, []);
-    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+    const [, setDocumentTitle] = useDocumentTitle("");
     const [people, setPeople]: [Person[], (people: Person[]) => void] = React.useState<Person[]>([]);
     const [countries, setCountries]: [Country[], (countries: Country[]) => void] = React.useState<Country[]>([]);
     const [totalRecords, setTotalRecords] = React.useState(0);

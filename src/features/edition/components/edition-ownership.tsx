@@ -11,7 +11,6 @@ import { saveOwnership } from "@api/edition/save-ownership";
 import { HttpStatusResponse } from "@services/user-service";
 import { FormInputText } from "@components/forms/field/form-input-text";
 import { Button } from "primereact/button";
-import { cond } from "lodash";
 
 interface EditionOwnershipProps {
     editionId: number,
@@ -119,7 +118,7 @@ export const EditionOwnership = ({ editionId, workId }: EditionOwnershipProps) =
     const [condition, setCondition] = useState<EditionOwnershipStatus>(
         emptyCondition
     );
-    const [value, setValue] = useState(0);
+    const [, setValue] = useState(0);
 
     const queryClient = useQueryClient();
 
@@ -139,7 +138,7 @@ export const EditionOwnership = ({ editionId, workId }: EditionOwnershipProps) =
 
     const { mutate } = useMutation({
         mutationFn: (values: OwnershipFormData) => updateStatus(values),
-        onSuccess: (data: HttpStatusResponse, variables) => {
+        onSuccess: (data: HttpStatusResponse) => {
 
             if (data.status === 200 || data.status === 201) {
                 queryClient.invalidateQueries({ queryKey: ['edition', 'owner', editionId] });
@@ -204,9 +203,7 @@ export const EditionOwnership = ({ editionId, workId }: EditionOwnershipProps) =
 
     }
 
-    const showInfoDialogCb = () => {
-        setShowInfoDialog(false);
-    }
+    
 
     const onShow = () => {
         setQueryEnabled(false);

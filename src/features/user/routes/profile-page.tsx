@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { getCurrenUser } from "../../../services/auth-service";
 import { OwnedBooks } from '../components/owned-books';
 import { ReadBooks } from '../components/read-books';
-import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { selectId } from '@utils/select-id';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
@@ -34,7 +34,7 @@ interface RandomWorkFormData {
 
 const ProfilePage = ({ id }: UserPageProps) => {
     const params = useParams();
-    const navigate = useNavigate();
+    
     const currentUser = useMemo(() => { return getCurrenUser() }, []);
     // Persist the open view in the URL (?view=) so it is restored when the
     // user follows a link and navigates back, and so it survives a reload.

@@ -34,8 +34,8 @@ let thisId = "";
 export const PubseriesPage = ({ id }: PubseriesPageProps) => {
     const params = useParams();
     const user = getCurrenUser();
-    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
-    const [editSeries, setEditSeries] = useState(true);
+    const [, setDocumentTitle] = useDocumentTitle("");
+    const [, setEditSeries] = useState(true);
     const [isEditVisible, setEditVisible] = useState(false);
     const [formData, setFormData]: [Pubseries | null, (formData: Pubseries | null) => void] = useState<Pubseries | null>(null);
     const navigate = useNavigate();
@@ -93,7 +93,7 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
     const { mutate } = useMutation({
         mutationFn: (values: number) => deletePubseries(values),
         onSuccess: (data: HttpStatusResponse) => {
-            const msg = data.response;
+            
             if (data.status === 200) {
                 navigate(-1);
 
@@ -111,9 +111,7 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
             .flatMap(edition => edition.work?.genres || []);
     }
 
-    const onDialogShow = () => {
-        setEditVisible(true);
-    }
+    
     const onDialogHide = () => {
         queryClient.invalidateQueries({ queryKey: ["pubseries", thisId] });
         setEditVisible(false);

@@ -92,7 +92,7 @@ export const PubseriesForm = (props: FormProps<Pubseries>) => {
 }
 
 const FormObject = ({ onSubmit, methods }: FormObjectProps) => {
-    const user = useMemo(() => { return getCurrenUser() }, []);
+    
 
     const required_rule: RegisterOptions = { required: "Pakollinen kenttä" };
     const editor_style: React.CSSProperties = { height: '320px' };

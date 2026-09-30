@@ -36,7 +36,7 @@ export const ShortPage = (props: ShortPageProps) => {
     const user = useMemo(() => getCurrenUser(), [])
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [shortFormVisible, setShortFormVisible] = useState(false);
-    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+    const [, setDocumentTitle] = useDocumentTitle("");
     const [isAwardsFormVisible, setAwardsFormVisible] = useState(false);
     const params = useParams();
     let thisId = "";
@@ -146,7 +146,7 @@ export const ShortPage = (props: ShortPageProps) => {
         setQueryEnabled(true);
     }
 
-    const onNewShort = (id: string, visible: boolean) => {
+    const onNewShort = (_id: string, _visible: boolean) => {
         toastRef.current?.show({ severity: 'success', summary: 'Tallentaminen onnistui' });
         onHide();
     }

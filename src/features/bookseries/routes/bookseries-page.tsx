@@ -32,11 +32,11 @@ let thisId = "";
 export const BookseriesPage = ({ id }: BookseriesPageProps) => {
     const params = useParams();
     const user = getCurrenUser();
-    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
-    const [formData, setFormData] = useState<Bookseries | null>(null);
+    const [, setDocumentTitle] = useDocumentTitle("");
+    const [, setFormData] = useState<Bookseries | null>(null);
     const [isFormVisible, setIsFormVisible] = useState(false);
     const [queryEnabled, setQueryEnabled] = useState(true)
-    const [formHeader, setFormHeader] = useState("")
+    const [, setFormHeader] = useState("")
 
     const toast = useRef<Toast>(null);
     const navigate = useNavigate();
@@ -119,10 +119,7 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
         queryClient.invalidateQueries({ queryKey: ['bookseries'] });
     }
 
-    const onDialogShow = () => {
-        setIsFormVisible(true);
-        setQueryEnabled(false);
-    }
+    
 
     if (isError) {
 

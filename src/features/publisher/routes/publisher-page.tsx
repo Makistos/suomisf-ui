@@ -12,7 +12,6 @@ import { Toast } from "primereact/toast";
 import { getCurrenUser } from "../../../services/auth-service";
 import { HttpStatusResponse, deleteApiContent, getApiContent } from "../../../services/user-service";
 import { EditionList } from "../../edition";
-import { LinkPanel } from "../../../components/link-panel";
 import { PubseriesList } from "../../pubseries";
 import { Publisher } from "../types";
 import { selectId } from "../../../utils";
@@ -21,7 +20,6 @@ import { useDocumentTitle } from '../../../components/document-title';
 import { PublisherForm } from "../components/publisher-form";
 import { isDisabled } from "../../../components/forms/forms";
 import { Tooltip } from "primereact/tooltip";
-import { isAbsolute } from "path";
 import { Card } from "primereact/card";
 
 const baseURL = 'publishers/';
@@ -35,7 +33,7 @@ let thisId: string = "";
 export const PublisherPage = ({ id }: PublisherPageProps) => {
     const params = useParams();
     const user = useMemo(() => { return getCurrenUser() }, []);
-    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+    const [, setDocumentTitle] = useDocumentTitle("");
     const [isEditVisible, setEditVisible] = useState(false);
     const [queryEnabled, setQueryEnabled] = useState(true);
     const toastRef = useRef<Toast>(null);
@@ -131,36 +129,16 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
         }
     ]
 
-    const publisherFormCallback = (status: boolean, message: string) => {
-        onDialogHide();
-        if (status) {
-            toastRef.current?.show({ severity: 'success', summary: 'Tallentaminen onnistui', detail: 'Tietojen päivitys onnistui', life: 4000 });
-        } else {
-            toastRef.current?.show({ severity: 'error', summary: 'Tietojen tallentaminen epäonnistui', detail: message, life: 4000 });
-        }
-    }
+    
 
-    const onDialogShow = () => {
-        setQueryEnabled(false);
-        // if (enableQueries) {
-        //     enableQueries(false);
-        // }
-    }
+    
 
     const onDialogHide = () => {
         queryClient.invalidateQueries({ queryKey: ["publisher", thisId] });
         setQueryEnabled(true);
         setEditVisible(false);
     }
-    const getActiveIndex = () => {
-        if (data && data.editions && data.editions.length > 0) {
-            return 0;
-        }
-        if (data && data.series && data.series.length > 0) {
-            return 1;
-        }
-        return 2;
-    }
+    
 
     return (
         <main className="publisher-page">

@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { ImageType } from "../types/image";
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import { ContextMenu } from "primereact/contextmenu";
 import { isAdmin } from "@features/user";
 import { getCurrenUser } from "@services/auth-service";
@@ -26,8 +26,8 @@ interface ImageViewProps {
  * @param {ImageViewProps} edition - The edition object containing image data.
  * @return {JSX.Element} The rendered image view component.
  */
-export const ImageView = ({ itemId, idx, images, saveFunc, deleteFunc, onUpload, idxCb, editionCount, ...rest }: ImageViewProps) => {
-    const user = useMemo(() => { return getCurrenUser() }, []);
+export const ImageView = ({ itemId, idx, images, saveFunc, deleteFunc, onUpload, idxCb, editionCount }: ImageViewProps) => {
+    
     const queryClient = useQueryClient();
 
     if (idx > images.length - 1) {

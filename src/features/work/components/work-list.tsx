@@ -31,7 +31,6 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
     const [detailLevel, setDetailLevel] = useState(details);
     const [orderField, setOrderField] = useState<WorkSortField>("Title");
     const [workView, setWorkView] = useState("Lista");
-    const [showNonSf, setShowNonSf] = useState<boolean>(false);
     const [groupByAuthor, setGroupByAuthor] = useState<boolean>(true);
 
     useEffect(() => {

@@ -13,7 +13,7 @@ export const FormEditor = ({ name, methods, style, disabled, ...rest }: FormEdit
     <Controller
       name={name}
       control={methods.control}
-      render={({ field, fieldState }) => (
+      render={({ field }) => (
         <Editor
           {...field}
           style={style}

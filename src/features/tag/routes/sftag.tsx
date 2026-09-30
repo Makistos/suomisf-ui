@@ -36,12 +36,11 @@ import { isAdmin } from '@features/user';
 // themselves are generated per story type.
 const ARTICLE_STORY_TYPES = [7, 8, 9];
 
-export const SFTag = ({ id }: SfTagProps) => {
+export const SFTag = (_props: SfTagProps) => {
     const params = useParams();
     const [displayChangeName, setDisplayChangeName] = useState(false);
     const [displayMerge, setDisplayMerge] = useState(false);
     const [displayDelete, setDisplayDelete] = useState(false);
-    const [loading, setLoading] = useState(false);
     const user = useMemo(() => { return getCurrenUser() }, []);
     const navigate = useNavigate();
     const toastRef = useRef<Toast>(null);
@@ -103,7 +102,6 @@ export const SFTag = ({ id }: SfTagProps) => {
         }
         const { control, handleSubmit } = useForm<Record<string, TagTypeInfo>>();
         const [filteredTags, setFilteredTags] = useState<any>(null);
-        const [selectedTag, setSelectedTag] = useState<any>(null);
         const mergeTagsSubmit: SubmitHandler<Record<string, TagTypeInfo>> = (data) => {
             const source = Number(data.name.id);
             if (source && params.tagid) {
@@ -124,9 +122,7 @@ export const SFTag = ({ id }: SfTagProps) => {
             getTags(event.query);
         }
 
-        const selectTag = (tag: TagTypeInfo) => {
-            setSelectedTag(null);
-        }
+        
 
         const searchText = (str: string) => {
             if (str.length > 300) {

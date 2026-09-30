@@ -44,12 +44,6 @@ test('Tags page loads and displays categories with tags', async ({ page }) => {
         { text: 'sivilisaatio', section: 'Aihe' }
     ];
 
-    // Debug: Log all sections first
-    const allSections = await page.locator('.tag-section').all();
-    // console.log('Found sections:', await Promise.all(allSections.map(async s => {
-    //     const heading = await s.locator('h2').textContent();
-    //     return heading;
-    // })));
 
     // Debug: Print DOM structure around headers
     // console.log('DOM structure:', await page.locator('main').innerHTML());

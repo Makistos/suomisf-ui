@@ -31,7 +31,7 @@ interface FormObjectProps {
 
 export const IssueForm = (props: IssueFormProps) => {
     const user = useMemo(() => getCurrenUser(), []);
-    const [queryEnabled, setQueryEnabled] = useState(true);
+    const [queryEnabled] = useState(true);
     const [sizes, setSizes] = useState<PublicationSize[]>([]);
 
     const convToForm = (issue: Issue | null): IssueFormData => {
@@ -123,7 +123,7 @@ export const IssueForm = (props: IssueFormProps) => {
 }
 
 const FormObject = ({ onSubmit, data, sizes }: FormObjectProps) => {
-    const user = useMemo(() => getCurrenUser(), []);
+    
     const editor_style: React.CSSProperties = { height: '320px' };
 
     const methods = useForm<IssueFormData>({ defaultValues: data });

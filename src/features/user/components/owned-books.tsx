@@ -10,8 +10,6 @@ import { InputText } from 'primereact/inputtext';
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { Button } from "primereact/button"
-import autoTable from "jspdf-autotable"
-import { MultiSelectChangeEvent } from "primereact/multiselect"
 import { Tooltip } from "primereact/tooltip"
 
 interface OwnedBooksProps {
@@ -29,7 +27,7 @@ export const OwnedBooks = ({ userId, listType }: OwnedBooksProps) => {
     // @ts-ignore
     const dt = useRef<DataTable>(null);
     const [renderedItems, setRenderedItems] = useState<OwnedBook[]>([])
-    const [cols, setCols] = useState<Col[]>([
+    const [cols] = useState<Col[]>([
         { field: 'author_str', header: 'Tekijä', show: true },
         { field: 'title', header: 'Nimi', show: true },
         { field: 'pubyear', header: 'Vuosi', show: true },
@@ -39,7 +37,6 @@ export const OwnedBooks = ({ userId, listType }: OwnedBooksProps) => {
         { field: 'value', header: 'Kunto', show: true },
         { field: 'description', header: 'Kuvaus', show: true }
     ])
-    const [selectedColumns, setSelectedColumns] = useState(cols.filter(col => col.show === true).map(col => col));
 
     console.log("Type:", listType)
     //console.log(selectedColumns)
@@ -95,13 +92,7 @@ export const OwnedBooks = ({ userId, listType }: OwnedBooksProps) => {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     })
 
-    const onColumnSelect = (e: MultiSelectChangeEvent) => {
-        const selected = e.value;
-        const _cols = cols.map(col => ({ ...col, show: selected.includes(col.field) ? !col.show : col.show }));
-        setCols(_cols);
-        //let _cols = cols.filter(col => selectedColumns.includes(col.field));
-        setSelectedColumns(cols.filter(col => col.show === true).map(col => col));
-    }
+    
 
     const [globalFilterValue, setGlobalFilterValue] = useState('');
 
@@ -156,14 +147,7 @@ export const OwnedBooks = ({ userId, listType }: OwnedBooksProps) => {
         )
     }
 
-    const publisherTemplate = (rowData: OwnedBook) => {
-        if (rowData.publisher_name) {
-            return (
-                <Link to={`/publishers/${rowData.publisher_id}`}>{(rowData.publisher_name)} </Link>
-            )
-        }
-        return null
-    }
+    
     const yearTemplate = (rowData: OwnedBook) => {
         return (rowData.pubyear)
     }

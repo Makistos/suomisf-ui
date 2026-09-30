@@ -35,11 +35,11 @@ export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseF
     maxCount }: TagsProps) => {
     const [groupedTags, setGroupedTags] = useState<TagCount[]>([]);
     const [showAll, setShowAll] = useState(false);
-    const [subgenres, setSubgenres] = useState<SfTag[]>([]);
-    const [styles, setStyles] = useState<SfTag[]>([]);
-    const [locations, setLocations] = useState<SfTag[]>([]);
-    const [actors, setActors] = useState<SfTag[]>([]);
-    const [eras, setEras] = useState<SfTag[]>([]);
+    const [, setSubgenres] = useState<SfTag[]>([]);
+    const [, setStyles] = useState<SfTag[]>([]);
+    const [, setLocations] = useState<SfTag[]>([]);
+    const [, setActors] = useState<SfTag[]>([]);
+    const [, setEras] = useState<SfTag[]>([]);
 
     if (tags == undefined || tags.length === 0) {
         return <></>;
@@ -158,10 +158,10 @@ export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseF
                 && !showAll ? (
                 <Button label="+" badge={(groupedTags.length - overflow).toString()}
                     className="p-button-sm p-button-help"
-                    onClick={(e) => setShowAll(true)}
+                    onClick={() => setShowAll(true)}
                 />
             ) : (groupedTags.length > overflow &&
-                <Button label="Vähemmän" onClick={(e) => setShowAll(false)}
+                <Button label="Vähemmän" onClick={() => setShowAll(false)}
                     className="p-button-sm p-button-help" />
             ))}
         </div>

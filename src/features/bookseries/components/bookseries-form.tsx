@@ -1,10 +1,10 @@
 import { useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { FormProvider, useForm, Controller } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { Button } from 'primereact/button'
 import { Toast } from 'primereact/toast'
-import { useQueryClient, useMutation } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 
 import { FormProperties } from "../../../types/form-properties"
 import { Bookseries, BookseriesFormData } from "../types"
@@ -52,7 +52,7 @@ export const BookseriesForm = (props: FormProperties<Bookseries>) => {
   }
 
   const data = props.data ? convToForm(props.data) : defaultValues;
-  const queryClient = useQueryClient();
+  
   const methods = useForm<BookseriesFormData>({ defaultValues: data });
 
   console.log(data);
@@ -129,7 +129,7 @@ export const BookseriesForm = (props: FormProperties<Bookseries>) => {
 
 const FormObject = ({ onSubmit, methods, disabled }: FormObjectProps) => {
   const user = useMemo(() => { return getCurrenUser() }, []);
-  const errors = methods.formState.errors;
+  
   const rules = { required: true };
   const [filteredBookseries, setFilteredBookseries] = useState([]);
 

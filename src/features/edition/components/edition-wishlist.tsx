@@ -13,7 +13,7 @@ interface EditionWishlistProps {
     workId?: number,
 }
 
-export const EditionWishlist = ({ editionId, initial, workId }: EditionWishlistProps) => {
+export const EditionWishlist = ({ editionId, workId }: EditionWishlistProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const queryClient = useQueryClient();
     if (!user) return <></>;
@@ -30,7 +30,7 @@ export const EditionWishlist = ({ editionId, initial, workId }: EditionWishlistP
 
     const { mutate } = useMutation({
         mutationFn: (values: boolean) => updateStatus(values),
-        onSuccess: (data: HttpStatusResponse, variables) => {
+        onSuccess: (data: HttpStatusResponse) => {
             if (data.status === 200 || data.status === 201) {
                 queryClient.invalidateQueries({ queryKey: ['edition', editionId] });
                 if (workId) {

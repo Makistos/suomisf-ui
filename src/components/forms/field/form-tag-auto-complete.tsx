@@ -16,13 +16,9 @@ interface FormAutoCompleteProps extends AutoCompleteProps {
   tagFunction?: FormEventHandler
 }
 
-interface NewItemProps {
-  submitFunction: FormEventHandler
-}
-
 export const FormTagAutoComplete = ({ name, methods, label, labelClass, tagFunction, ...rest }: FormAutoCompleteProps) => {
   const [addNewItemVisible, setAddNewItemVisible] = useState(false);
-  const [tagName, setTagName] = useState("");
+  const [, setTagName] = useState("");
   const [currentQuery, setCurrentQuery] = useState("");
 
   const { control } = useFormContext();

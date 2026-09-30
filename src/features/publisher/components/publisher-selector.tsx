@@ -12,7 +12,7 @@ interface PublisherSelectorProps extends AutoCompleteProps {
     tagFunction?: FormEventHandler
 }
 
-export const PublisherSelector = ({ name, methods, labelClass, tagFunction, ...rest }: PublisherSelectorProps) => {
+export const PublisherSelector = ({ name, methods, labelClass, ...rest }: PublisherSelectorProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [filteredPublishers, setFilteredPublishers] = useState([]);
     async function completeMethod(event: any) {

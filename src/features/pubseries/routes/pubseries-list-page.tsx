@@ -16,7 +16,7 @@ export const PubseriesListPage = () => {
      * Page that lists all the publisher series in the system in a table.
      */
     const user = getCurrenUser();
-    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+    const [, setDocumentTitle] = useDocumentTitle("");
 
     useEffect(() => {
         setDocumentTitle("Kustantajien sarjat");

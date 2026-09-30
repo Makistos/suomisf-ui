@@ -26,12 +26,12 @@ export const ArticlePage = () => {
         <ArticleView key={id} id={id} />
     )
 }
-export const ArticleView = ({ id }: ArticleProps) => {
+export const ArticleView = (_props: ArticleProps) => {
     const user = getCurrenUser();
     let params = useParams();
     const [article, setArticle]: [Article | null, (article: Article) => void] = React.useState<Article | null>(null);
     //const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
-    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+    const [, setDocumentTitle] = useDocumentTitle("");
     const PickLinks = (items: Person[]) => {
         return items.map((item) => ({ id: item['id'], name: item['name'], alt_name: item['alt_name'] ? item['alt_name'] : item['name'] }))
     }

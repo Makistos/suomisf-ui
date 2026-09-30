@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, KeyboardEvent } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useForm, FormProvider, RegisterOptions } from 'react-hook-form';
@@ -79,7 +79,7 @@ export const WorkForm = (props: FormProps) => {
     return retval;
   }
 
-  const { mutate, error } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: (values: WorkFormData) => updateWork(values),
     onSuccess: (data: HttpStatusResponse, variables) => {
       queryClient.invalidateQueries({ queryKey: ['work', props.workId] });
@@ -134,7 +134,7 @@ const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
   const disabled = isDisabled(user, loading);
 
   const methods = useForm<WorkFormData>({ defaultValues: data });
-  const errors = methods.formState.errors;
+  
 
   useEffect(() => {
     methods.reset(data);
@@ -164,12 +164,7 @@ const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
     setFilteredTags(response.data);
   }
 
-  const tagKeyPress = (e: KeyboardEvent) => {
-    console.log(e.code);
-    if (e.code == "Comma") {
-
-    }
-  }
+  
 
   async function filterBookseries(event: any) {
     const url = "filter/bookseries/" + event.query;

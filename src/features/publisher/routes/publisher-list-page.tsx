@@ -16,7 +16,7 @@ export const PublisherListPage = () => {
     /** Page that shows all the publishers in the system in a table.
      */
     const user = getCurrenUser();
-    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+    const [, setDocumentTitle] = useDocumentTitle("");
 
     useEffect(() => {
         if (data !== undefined)
@@ -35,12 +35,12 @@ export const PublisherListPage = () => {
             if (publisher.editions.length > 0) {
                 publisher.edition_count = publisher.editions.length;
                 const oldest
-                    = publisher.editions.reduce(function (prev, curr, index, array) {
+                    = publisher.editions.reduce(function (prev, curr) {
                         return (curr.pubyear < prev.pubyear ? curr : prev);
                     });
                 publisher.edition_oldest = Number(oldest.pubyear);
                 const newest
-                    = publisher.editions.reduce(function (prev, curr, index, array) {
+                    = publisher.editions.reduce(function (prev, curr) {
                         return (curr.pubyear > prev.pubyear ? curr : prev);
                     });
                 publisher.edition_newest = Number(newest.pubyear);

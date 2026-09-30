@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { getCurrenUser } from "../../../services/auth-service";
 import { deleteApiContent, HttpStatusResponse } from "../../../services/user-service";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Magazine } from '../types';
 import { useDocumentTitle } from '../../../components/document-title';
 import { Toast } from 'primereact/toast';
 import { IssueForm } from '@features/issue/components/issue-form';
@@ -18,7 +17,7 @@ import { TabPanel, TabView } from 'primereact/tabview';
 import { Card } from 'primereact/card';
 import { Image } from 'primereact/image';
 
-const baseURL = "magazines/";
+
 
 export const MagazinePage = () => {
 
@@ -48,7 +47,7 @@ export const MagazinePage = () => {
     let params = useParams();
     const magazineId = params.magazineId;
     const user = useMemo(() => { return getCurrenUser() }, []);
-    const [documentTitle, setDocumentTitle] = useDocumentTitle("");
+    const [, setDocumentTitle] = useDocumentTitle("");
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [isMagazineFormVisible, setMagazineFormVisible] = React.useState(false);
     const [isIssueFormVisible, setIssueFormVisible] = React.useState(false);
@@ -57,7 +56,7 @@ export const MagazinePage = () => {
     const [targetId, setTargetId] = useState(magazineId !== undefined ? magazineId : null);
     const navigate = useNavigate();
 
-    const { isLoading, data } = useQuery({
+    const { data } = useQuery({
         queryKey: ['magazine', magazineId],
         queryFn: () => getMagazine(magazineId !== undefined ? magazineId : null, user),
         enabled: queryEnabled

@@ -1,15 +1,14 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Link } from "react-router-dom";
 
 import { GenreList } from "../../genre";
 import { Edition, EditionProps } from "../types";
 import { EditionString } from "../utils/edition-string";
-import { getCurrenUser } from '@services/auth-service';
 import { isForeign } from '@features/work/utils/is-foreign';
 
 
 export const EditionSummary = ({ edition, person, showPerson, showVersion, isOwned, isWishlisted }: EditionProps) => {
-    const user = useMemo(() => getCurrenUser(), [])
+    
     const notFirstEdition = (edition: Edition) => {
         return !(edition.editionnum === 1 && (edition.version || edition.version === null || edition.version === 1))
     }

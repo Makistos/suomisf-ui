@@ -21,7 +21,6 @@ import { Work } from "../types";
 import { WorkDetails } from "../components/work-details";
 import { EditionForm } from "@features/edition/components/edition-form";
 import { isAnthology } from "../utils/is-anthology";
-import { useDocumentTitle } from '@components/document-title';
 import { WorkForm } from "../components/work-form";
 import { isAdmin } from "@features/user";
 import authHeader from "@services/auth-header";
@@ -194,11 +193,11 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
         highlightEditionId,
     } = useEffectiveWorkId(id, editionId);
 
-    const params = useParams();
+    
     const user = useMemo(() => { return getCurrenUser() }, []);
     // const [documentTitle, setDocumentTitle] = useDocumentTitle("");
     const [isEditVisible, setEditVisible] = useState(false);
-    const [queryEnabled, setQueryEnabled] = useState(true);
+    const [, setQueryEnabled] = useState(true);
     const [isShortsFormVisible, setIsShortsFormVisible] = useState(false);
     const [isOmnibusFormVisible, setOmnibusFormVisible] = useState(false);
     const [formData, setFormData] = useState<Work | null>(null);

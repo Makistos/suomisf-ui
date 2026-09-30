@@ -73,7 +73,7 @@ export const MagazineForm = ({ id, onSubmitCallback }: MagazineFormProps) => {
         return reval;
     }
 
-    const { mutate, error } = useMutation({
+    const { mutate } = useMutation({
         mutationFn: (data: MagazineFormData) => updateMagazine(data),
         onSuccess: (data: HttpStatusResponse, variables) => {
             onSubmitCallback(true, "");
@@ -123,17 +123,9 @@ export const MagazineForm = ({ id, onSubmitCallback }: MagazineFormProps) => {
 }
 
 const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
-    const user = useMemo(() => getCurrenUser(), []);
     const editor_style: React.CSSProperties = { height: '320px' };
     const methods = useForm<MagazineFormData>({ defaultValues: data });
     const required_rule: RegisterOptions = { required: "Pakollinen kenttä" };
-    const [filteredTags, setFilteredTags] = useState([]);
-
-    async function filterTags(event: any) {
-        const url = "filter/tags/" + event.query;
-        const response = await getApiContent(url, user);
-        setFilteredTags(response.data);
-    }
 
     // const addNewTag = (data: any) => {
     //     console.log(data);

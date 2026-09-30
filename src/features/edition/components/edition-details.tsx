@@ -87,7 +87,7 @@ interface IsbnStringProps {
 }
 
 const IsbnString = ({ isbn, binding }: IsbnStringProps) => {
-    const makeISBN = (isbnStr: string, binding: Binding | undefined | null, idx: number) => {
+    const makeISBN = (isbnStr: string, binding: Binding | undefined | null, _idx: number) => {
         //return "ISBN" + " " + isbnStr + " " + ((binding && binding.id > 1) ? binding?.name : "")
         if (isbnStr.length > 0) {
             return (
@@ -137,7 +137,7 @@ const qualityLabels: Record<string, string> = {
     Poor: 'Heikko',
 };
 
-export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallback, editionPrice }: Props) => {
+export const EditionDetails = ({ edition, work, card, onSubmitCallback, editionPrice }: Props) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [editVisible, setEditVisible] = useState(false);
     const [shortsFormVisible, setShortsFormVisible] = useState(false);
@@ -158,7 +158,7 @@ export const EditionDetails = ({ edition, work, card, detailDepth, onSubmitCallb
     // and let the dialog show "no prices" if needed.
     const hasPrices = pricesCountError || pricesCountData === undefined || (pricesCountData.count ?? 0) > 0;
 
-    const [queryEnabled, setQueryEnabled] = useState(true);
+    const [, setQueryEnabled] = useState(true);
     const [loading, setLoading] = useState(false);
     const [copying, setCopying] = useState(false);
     const toast = useRef<Toast>(null);

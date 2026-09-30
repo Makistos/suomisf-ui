@@ -162,10 +162,7 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
         return staticText + " (" + count + ")";
     }
 
-    const hasSeries = () => {
-        const retval = authored.some(work => work.bookseries !== null)
-        return retval;
-    }
+    
 
     // const onlyFirstEdition = (works: Work[]) => {
     //     return works.filter((work, index) => {

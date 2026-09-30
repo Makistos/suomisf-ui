@@ -8,6 +8,8 @@ test('Latest additions page loads with recent works', async ({ page }) => {
 
     // Content here is inherently a moving target (newest works), so just
     // check the list actually has entries rather than specific names.
-    const headings = await page.locator('h2, h3').allTextContents();
-    expect(headings.length).toBeGreaterThan(1);
+    // Wait for a second heading rather than reading them once: the
+    // progressbar check above passes immediately if loading hasn't started
+    // yet, which made this flaky under load.
+    await expect(page.locator('h2, h3').nth(1)).toBeVisible({ timeout: 20000 });
 });

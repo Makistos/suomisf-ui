@@ -37,7 +37,7 @@ export interface Edition {
     subtitle: string;
     title: string;
     translators: Person[];
-    verified: Boolean;
+    verified: boolean;
     version: number;
     work: Work | null;
     combined: boolean;
@@ -69,7 +69,7 @@ export interface CombinedEdition {
     subtitle: string;
     title: string;
     translators: Person[];
-    verified: Boolean;
+    verified: boolean;
     version: number;
     work: Work | null;
     owners: User[]
@@ -121,7 +121,7 @@ export interface EditionFormData {
     pubseries?: Pubseries | null,
     pubseriesnum?: number | null,
     publisher: Publisher | null,
-    verified: Boolean | null
+    verified: boolean | null
 
 }
 

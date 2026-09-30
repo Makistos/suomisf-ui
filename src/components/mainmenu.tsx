@@ -9,7 +9,7 @@ import { Dialog } from 'primereact/dialog';
 import { getCurrenUser } from '../services/auth-service';
 import { logout } from '../services/auth-service';
 import { getApiContent } from '../services/user-service';
-import { LoginView, User } from '../features/user';
+import { LoginView } from '../features/user';
 import { RegisterView } from '@features/user/components/register-view';
 import { classNames } from 'primereact/utils';
 import { WorkForm } from '../features/work/components/work-form';

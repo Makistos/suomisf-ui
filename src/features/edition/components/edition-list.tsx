@@ -7,7 +7,6 @@ import { groupEditionsByAuthor } from "../utils/group-editions-by-author";
 import { CombinedEdition, Edition } from "../types";
 import { Person } from "../../person/types";
 import { CoverImageList } from "../../../components/cover-image-list";
-import { User } from "@features/user";
 import { getCurrenUser } from "@services/auth-service";
 import { editionIsOwned } from "../utils/edition-is-owned";
 import { editionIsWishlisted } from "../utils/edition-is-wishlisted";

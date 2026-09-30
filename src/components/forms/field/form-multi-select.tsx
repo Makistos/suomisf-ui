@@ -1,7 +1,6 @@
 import { Controller, UseFormReturn } from "react-hook-form"
 import { MultiSelect, MultiSelectProps } from "primereact/multiselect"
 import { classNames } from 'primereact/utils'
-import { SelectItemOptionsType } from "primereact/selectitem"
 import { formErrorMessage } from "../form-error-message"
 
 interface FormMultiSelectProps extends MultiSelectProps {

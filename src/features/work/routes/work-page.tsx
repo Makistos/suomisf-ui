@@ -2,7 +2,6 @@ import React, { useEffect, useState, useMemo, useRef, useCallback } from "react"
 import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 
 import { DataView } from "primereact/dataview";
-import { Panel } from "primereact/panel";
 import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
 import { Toast } from "primereact/toast";
@@ -22,10 +21,9 @@ import { Work } from "../types";
 import { WorkDetails } from "../components/work-details";
 import { EditionForm } from "@features/edition/components/edition-form";
 import { isAnthology } from "../utils/is-anthology";
-import { selectId } from "../../../utils";
 import { useDocumentTitle } from '@components/document-title';
 import { WorkForm } from "../components/work-form";
-import { User, isAdmin } from "@features/user";
+import { isAdmin } from "@features/user";
 import authHeader from "@services/auth-header";
 import { HttpStatusResponse } from "@services/user-service"
 import { WorkShortsPicker } from "@features/short/components/shorts-picker";
@@ -41,7 +39,7 @@ import { Card } from "primereact/card";
 import { TabView, TabPanel } from "primereact/tabview";
 import { TagGroup, KirjasampoTagImport } from "@features/tag";
 import { GenreGroup } from "@features/genre";
-import { AwardList, AwardPanel } from "@features/award";
+import { AwardList } from "@features/award";
 import { AwardedForm } from "@features/award/components/awarded-form";
 import { AntikvaariProductPicker } from "../components/antikvaari-product-picker";
 export interface WorkProps {
@@ -567,7 +565,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                                                 <div className="flex flex-column gap-2">
                                                     <h3 className="text-sm uppercase text-600 m-0">Henkilöt</h3>
                                                     {appearsIn(workData.contributions)?.map(contrib => (
-                                                        <Link to={`/people/${contrib.person.id}`}>{contrib.person.alt_name}</Link>
+                                                        <Link key={contrib.person.id} to={`/people/${contrib.person.id}`}>{contrib.person.alt_name}</Link>
                                                     )
                                                     )}
                                                 </div>

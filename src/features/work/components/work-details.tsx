@@ -2,10 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from "react-router-dom";
 import _ from "lodash"
 
-import { GenreGroup } from "../../genre";
 import { TagGroup } from "../../tag";
 import { LinkList } from "../../../components/link-list";
-import { AwardPanel } from "../../award";
 import { LinkPanel } from "../../../components/link-panel";
 import { WorkProps } from "../routes";
 import { Contribution } from '../../../types/contribution';

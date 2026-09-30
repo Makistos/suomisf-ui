@@ -20,7 +20,6 @@ import { getCurrenUser } from "@services/auth-service";
 import { Person } from "@features/person";
 import { Work, OmnibusItem } from "../types";
 import { Language } from "../../../types/language";
-import { useFilterPeople } from "@hooks/use-people-filter";
 import { getApiContent } from "@services/user-service";
 import { getWorksByAuthor } from "@api/work/get-works-by-author";
 import { saveOmnibusWorks, OmnibusData, OmnibusWorkData } from "@api/work/save-omnibus-works";

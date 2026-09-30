@@ -1,6 +1,5 @@
 import { User } from "@features/user";
 import authHeader from "@services/auth-header";
-import { putApiContent } from "@services/user-service"
 import axios from "axios";
 
 export const saveIssueCover = async (issueId: number | string, file: Blob, fileName: string, user: User | null) => {

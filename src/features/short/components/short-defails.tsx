@@ -46,7 +46,7 @@ export const ShortDetails = ({ short: data }: ShortDetailsProps) => {
                         data.orig_title
                     }
                     {data.orig_title && data.lang?.id !== 7 && data.pubyear && ", "}
-                    {data.pubyear && data.pubyear}
+                    {data.pubyear}
                     &nbsp;{data.lang && "(" + data.lang.name + ")"}
                 </p>
                 <div className="col-12 justify-content-start">

@@ -1,22 +1,17 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Controller, useFieldArray, Control, UseFormRegister, FieldArrayWithId, useFormContext } from 'react-hook-form';
+import { Controller, useFieldArray, UseFormRegister, useFormContext } from 'react-hook-form';
 import { AutoComplete } from "primereact/autocomplete";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
 import { Dropdown } from "primereact/dropdown";
 
-import { Person } from "../../features/person";
 import { Contributor } from "../../types/contributor";
 import { getApiContent } from "../../services/user-service";
-import { getCurrenUser, register } from "../../services/auth-service";
-import { pickProperties } from "./forms";
-import { Contribution, ContributionSimple } from "../../types/contribution";
-import { isAdmin } from '../../features/user';
+import { getCurrenUser } from "../../services/auth-service";
+import { Contribution } from "../../types/contribution";
 import { WorkFormData } from '../../features/work/types';
-import { Contributable } from "../../types/generic";
 //import { ContributorRow } from "./contributor-row";
-import { ShortForm } from '../../features/short/types';
 
 interface ContributorFieldProps {
     id: string,

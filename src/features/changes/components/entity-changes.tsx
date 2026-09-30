@@ -1,8 +1,7 @@
-import { useMemo, useEffect, useState } from "react"
+import { useMemo, useState } from "react"
 import { getCurrenUser } from "@services/auth-service";
 import { LogItem } from "../types";
 import { getWorkChanges } from "@api/work/get-work-changes";
-import { Fieldset } from "primereact/fieldset";
 import { DataTable, DataTableExpandedRows } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
@@ -11,7 +10,6 @@ import { isAdmin } from "@features/user";
 import { HttpStatusResponse } from "@services/user-service";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "primereact/skeleton";
-import { ProgressSpinner } from "primereact/progressspinner";
 import { getPersonChanges } from "@api/people/get-person-changes";
 
 interface WorkChangesProps {

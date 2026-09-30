@@ -4,7 +4,7 @@ import { Image } from "primereact/image";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Galleria } from "primereact/galleria";
-import { Contribution, ContributionKey, ContributionType } from "../types/contribution";
+import { Contribution, ContributionType } from "../types/contribution";
 import { useState, useMemo } from "react";
 import { Issue } from "@features/issue";
 import { Link } from "react-router-dom";

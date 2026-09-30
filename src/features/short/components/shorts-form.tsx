@@ -5,7 +5,7 @@ import { Button } from 'primereact/button';
 import { confirmPopup, ConfirmPopup } from 'primereact/confirmpopup';
 import { Toast } from 'primereact/toast';
 import { ProgressBar } from 'primereact/progressbar';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { Short } from "../types";
 import { HttpStatusResponse, getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
@@ -24,7 +24,6 @@ import { deleteApiContent } from '../../../services/user-service';
 import { Contribution } from '../../../types/contribution';
 import { emptyContributor } from '../../../components/forms/contributor-field';
 import { removeDuplicateContributions } from '../../../utils';
-import { useNavigate } from 'react-router-dom';
 
 // import { shortIsSf } from '../utils';
 

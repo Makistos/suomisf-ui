@@ -1,4 +1,3 @@
-import { Person } from "../../person/types";
 import { Short } from "../../short/types";
 import { Article } from "../../article";
 import { Magazine } from "../../magazine/types";

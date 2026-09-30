@@ -10,12 +10,11 @@ import { Tooltip } from "primereact/tooltip";
 import { Toast } from "primereact/toast";
 import { Card } from "primereact/card";
 import { TabView, TabPanel } from "primereact/tabview";
-import { DataView } from "primereact/dataview";
 
 import { getCurrenUser } from "@services/auth-service";
 import { getApiContent, HttpStatusResponse } from "@services/user-service";
 import { selectId } from "../../../utils";
-import { Edition, EditionList } from "@features/edition";
+import { EditionList } from "@features/edition";
 import { Pubseries } from "../types";
 import { User, isAdmin } from "@features/user";
 import { useDocumentTitle } from '@components/document-title';

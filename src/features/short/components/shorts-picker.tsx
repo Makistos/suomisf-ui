@@ -19,7 +19,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { getCurrenUser } from "@services/auth-service";
 import { Person } from "@features/person";
 import { Short } from "../types";
-import { useFilterPeople } from "@hooks/use-people-filter"
 import { getApiContent, putApiContent } from "@services/user-service";
 import { ShortsForm } from "./shorts-form";
 import { saveIssueShorts } from "@api/issue/save-issue-shorts";
@@ -237,9 +236,7 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
           }
         </div>
         <div className="flex-1 flex-column">
-          {item.pubyear &&
-            item.pubyear
-          }
+          {item.pubyear}
         </div>
         <div className="flex-1 flex-column">
           <Button type="button" icon="pi pi-times"

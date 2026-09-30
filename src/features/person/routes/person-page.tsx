@@ -310,7 +310,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
             .every(c => !c.real_person?.id || person_ids.includes(c.real_person.id) || real_name_ids.includes(c.real_person.id))
     );
 
-    const hasFictionType = (types: Number[]) => {
+    const hasFictionType = (types: number[]) => {
         // console.log(data)
         return data.works.filter(work => types.includes(work.work_type.id)).length > 0 ||
             data.editions.filter(edition => edition.work && types.includes(edition.work.work_type.id)).length > 0 ||

@@ -6,7 +6,7 @@ import { isAdmin } from "@features/user";
 import { getCurrenUser } from "@services/auth-service";
 import { Image } from "primereact/image";
 import { Button } from "primereact/button";
-import { FileUpload, FileUploadHandlerEvent } from "primereact/fileupload";
+import { FileUploadHandlerEvent } from "primereact/fileupload";
 
 interface ImageViewProps {
     itemId: number | string,

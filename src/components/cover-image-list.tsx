@@ -79,7 +79,7 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
                     <div>
                         <b><u>{title}</u></b><br></br>
                         {editions.map(edition => (
-                            <div>{EditionString(edition)} ({edition.pubyear})</div>
+                            <div key={edition.id}>{EditionString(edition)} ({edition.pubyear})</div>
                         ))}
                     </div>
                 )

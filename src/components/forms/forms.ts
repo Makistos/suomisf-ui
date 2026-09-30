@@ -33,6 +33,6 @@ export const isDisabled = (user: User | null, loading: boolean): boolean => {
 }
 
 export interface FormSubmitObject {
-    data: Object,
-    changed: Object
+    data: object,
+    changed: object
 }

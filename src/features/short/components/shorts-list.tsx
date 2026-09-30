@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import { Dropdown } from "primereact/dropdown";
 
 import { Person, PersonBrief } from "../../person";
 import { Edition } from "../../edition";

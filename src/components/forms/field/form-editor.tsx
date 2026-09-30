@@ -1,6 +1,5 @@
 import { Controller, UseFormReturn } from "react-hook-form"
 import { Editor, EditorProps } from "primereact/editor"
-import { classNames } from 'primereact/utils'
 
 interface FormEditorProps extends EditorProps {
   name: string,

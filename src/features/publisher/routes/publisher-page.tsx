@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { TabPanel, TabView } from "primereact/tabview";
 import { ProgressSpinner } from "primereact/progressspinner";
@@ -12,7 +12,6 @@ import { Toast } from "primereact/toast";
 import { getCurrenUser } from "../../../services/auth-service";
 import { HttpStatusResponse, deleteApiContent, getApiContent } from "../../../services/user-service";
 import { EditionList } from "../../edition";
-import { EditionsStatsPanel } from "../../stats";
 import { LinkPanel } from "../../../components/link-panel";
 import { PubseriesList } from "../../pubseries";
 import { Publisher } from "../types";
@@ -22,7 +21,6 @@ import { useDocumentTitle } from '../../../components/document-title';
 import { PublisherForm } from "../components/publisher-form";
 import { isDisabled } from "../../../components/forms/forms";
 import { Tooltip } from "primereact/tooltip";
-import { MagazineList } from "../../magazine/components";
 import { isAbsolute } from "path";
 import { Card } from "primereact/card";
 

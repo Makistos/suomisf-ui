@@ -1,23 +1,20 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
 import axios from "axios";
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { Button } from 'primereact/button';
 import { ProgressSpinner } from "primereact/progressspinner";
-import _, { get } from "lodash";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import _ from "lodash";
+import { useQuery } from "@tanstack/react-query";
 
 import { ShortsList } from '../components/shorts-list';
 //import { API_URL } from "../../../systemProps";
-import { Short } from "../types";
 import { useDocumentTitle } from '../../../components/document-title';
-import { Checkbox } from "primereact/checkbox";
 import { FormCheckbox } from "@components/forms/field/form-checkbox";
 import { getApiContent } from "@services/user-service";
 import { getCurrenUser } from "@services/auth-service";
-import { FormDropdown } from "@components/forms/field/form-dropdown";
 import { getShortTypes } from "../utils/get-short-types";
 import { Dropdown } from "primereact/dropdown";
 

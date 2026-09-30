@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useForm, SubmitHandler, FieldValues, FormProvider, UseFormReturn } from 'react-hook-form';
+import { useForm, FieldValues, FormProvider } from 'react-hook-form';
 import { Button } from 'primereact/button';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -10,7 +10,7 @@ import { Edition } from '../types';
 import { ContributorField, emptyContributor } from '../../../components/forms/contributor-field';
 import { EditionFormData } from '../types';
 import { putApiContent, postApiContent, getApiContent, HttpStatusResponse } from '../../../services/user-service';
-import { isDisabled, FormSubmitObject } from '../../../components/forms/forms';
+import { isDisabled } from '../../../components/forms/forms';
 import { Binding } from '../../../types/binding';
 import { Work } from '../../work/types';
 import { Contribution } from '../../../types/contribution';

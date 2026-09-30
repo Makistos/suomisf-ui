@@ -7,7 +7,6 @@ import { selectId } from '@utils/select-id';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
 import { Checkbox } from 'primereact/checkbox';
-import { InputTextarea } from 'primereact/inputtextarea';
 import { UserStats } from '../components/user-stats';
 import { CollectionStatsDialog } from '../components/collection-stats-dialog';
 import { getApiContent, postApiContent } from '@services/user-service';

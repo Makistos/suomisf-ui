@@ -1,8 +1,7 @@
-import { Person } from "../../person/types";
 import { Edition } from "../../edition/types";
 import { Issue } from "../../issue/types";
 import { Genre } from "../../genre/types";
-import { Contribution, ContributionSimple } from '../../../types/contribution';
+import { Contribution } from '../../../types/contribution';
 import { SfTag } from "../../tag";
 import { Language } from "../../../types/language";
 import { Awarded } from "@features/award";

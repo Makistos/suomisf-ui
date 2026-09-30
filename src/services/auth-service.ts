@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 //import { API_URL } from "../systemProps";
 import { User } from "../features/user/types";
 import authHeader, { refreshHeader } from "./auth-header";

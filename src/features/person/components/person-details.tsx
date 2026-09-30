@@ -1,7 +1,7 @@
 import { useMemo, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
 import { getCountryCode } from "@utils/country-utils"
-import { Person, PersonBrief } from "../types"
+import { Person } from "../types"
 import { useWikimediaImage, WikiImageInfo } from "../hooks/use-wikimedia-image"
 import { getCurrenUser } from "../../../services/auth-service"
 import { postApiContent } from "../../../services/user-service"

@@ -84,7 +84,7 @@ export const Awards = () => {
                     <>
                         <h2>Kotimaiset palkinnot</h2>
                         {awards.filter(award => award.domestic === true).map(award => (
-                            <AwardDescription award={award} />
+                            <AwardDescription key={award.id} award={award} />
                         ))}
                     </>
                 }
@@ -92,7 +92,7 @@ export const Awards = () => {
                     <>
                         <h2>Ulkomaiset palkinnot</h2>
                         {awards.filter(award => award.domestic === false).map(award => (
-                            <AwardDescription award={award} />
+                            <AwardDescription key={award.id} award={award} />
                         ))}
                     </>
                 }

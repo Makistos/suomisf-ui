@@ -13,7 +13,6 @@ import { Person, PersonFormData } from '../types';
 import { getCurrenUser } from '../../../services/auth-service';
 import { isDisabled } from '../../../components/forms/forms';
 import { HttpStatusResponse, getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
-import { FormProperties } from '../../../types/form-properties'
 import { LinksField } from '../../../components/forms/links-field';
 import { AliasesField } from '../../../components/forms/aliases-field';
 import { FormInputText } from '../../../components/forms/field/form-input-text';

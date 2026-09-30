@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 
 import { LinkList } from "../../../components/link-list";
@@ -12,7 +11,6 @@ import { ShortsForm } from './shorts-form';
 import { Contribution } from '../../../types/contribution';
 import { Short } from '../types';
 import { removeDuplicateContributions } from '../../../utils';
-import { isAdmin } from '../../user';
 import { getCurrenUser } from '../../../services/auth-service';
 
 interface ShortProps {

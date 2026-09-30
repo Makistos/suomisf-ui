@@ -1,4 +1,4 @@
 export interface FormSubmitObject {
-  data: Object;
-  changed: Object;
+  data: object;
+  changed: object;
 }

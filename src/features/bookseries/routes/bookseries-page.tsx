@@ -18,7 +18,6 @@ import { useDocumentTitle } from '../../../components/document-title';
 import { BookseriesForm } from "../components/bookseries-form";
 import { Card } from "primereact/card";
 import { TabPanel, TabView } from "primereact/tabview";
-import { DataView, DataViewLayoutOptions } from "primereact/dataview";
 import { GenreGroup } from "../../genre";
 import { Genre } from "../../genre/types";
 

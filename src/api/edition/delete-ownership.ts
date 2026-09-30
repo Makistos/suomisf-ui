@@ -1,4 +1,3 @@
-import { EditionOwnershipStatus } from "@features/edition";
 import { User } from "@features/user"
 import { deleteApiContent, HttpStatusResponse } from "@services/user-service"
 

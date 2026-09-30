@@ -39,7 +39,7 @@
     "build:e2e": "vite build --mode e2e",
     "preview:e2e": "vite preview --mode e2e",
     "serve": "vite preview",
-    "lint": "eslint .",
+    "lint": "oxlint",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -69,6 +69,7 @@
     "@types/react-dom": "^19.2.5",
     "@vitejs/plugin-react": "^6.1.1",
     "@vitest/coverage-v8": "^5.0.3",
+    "oxlint": "^1.86.0",
     "playwright": "^1.62.1",
     "vite": "^8.2.2",
     "vitest": "^5.0.3"

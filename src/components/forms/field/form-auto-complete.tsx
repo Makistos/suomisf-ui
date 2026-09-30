@@ -2,8 +2,7 @@ import { Controller, UseFormReturn } from "react-hook-form"
 import { AutoComplete, AutoCompleteProps } from "primereact/autocomplete"
 import { classNames } from 'primereact/utils'
 import { formErrorMessage } from "../form-error-message"
-import { FormEventHandler, useMemo, useState } from "react"
-import { getCurrenUser } from "@services/auth-service"
+import { FormEventHandler, useState } from "react"
 
 interface FormAutoCompleteProps extends AutoCompleteProps {
   name: string,

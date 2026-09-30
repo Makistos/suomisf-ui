@@ -4,10 +4,9 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { Toast } from "primereact/toast";
 import { classNames } from "primereact/utils";
 
-import { getCurrenUser, login } from "../../../services/auth-service";
+import { login } from "../../../services/auth-service";
 
 type FormData = {
     username: string,

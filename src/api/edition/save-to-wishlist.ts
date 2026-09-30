@@ -1,4 +1,3 @@
-import { EditionWishlistStatus } from "@features/edition"
 import { User } from "@features/user"
 import { putApiContent } from "@services/user-service"
 

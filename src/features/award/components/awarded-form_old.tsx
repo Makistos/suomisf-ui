@@ -1,15 +1,10 @@
-import React, { useMemo, useRef, useState } from "react";
-import { OverlayPanel } from "primereact/overlaypanel";
+import React, { useMemo, useState } from "react";
 import { Button } from "primereact/button";
-import { AwardedProps, AwardList } from "./award-list";
 import { AutoComplete } from "primereact/autocomplete";
-import { classNames } from "primereact/utils";
-import { Controller, FormProvider, useFieldArray, useForm, useFormContext, UseFormReturn } from "react-hook-form";
-import { InputText } from "primereact/inputtext";
+import { FormProvider, useFieldArray, useForm, useFormContext, UseFormReturn } from "react-hook-form";
 import { getApiContent } from "@services/user-service";
 import { getCurrenUser } from "@services/auth-service";
-import { Award, AwardedFormData } from "../types";
-import { set } from "lodash";
+import { AwardedFormData } from "../types";
 import { useQuery } from "@tanstack/react-query";
 
 interface AwardFormProps {

@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { User } from "../../user";
 import { getApiContent } from "../../../services/user-service";
 import { getCurrenUser } from "../../../services/auth-service";

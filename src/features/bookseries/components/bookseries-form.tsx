@@ -1,7 +1,7 @@
 import { useMemo, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { FieldValues, FormProvider, useForm, SubmitHandler, Controller } from 'react-hook-form'
+import { FormProvider, useForm, Controller } from 'react-hook-form'
 import { Button } from 'primereact/button'
 import { Toast } from 'primereact/toast'
 import { useQueryClient, useMutation } from "@tanstack/react-query"
@@ -15,7 +15,6 @@ import { isDisabled } from "../../../components/forms/forms"
 import { ProgressBar } from "primereact/progressbar"
 import { FormInputText } from '../../../components/forms/field/form-input-text';
 import { FormCheckbox } from '../../../components/forms/field/form-checkbox';
-import { LinkType } from '../../../types/link';
 import { LinksField } from '@components/forms/links-field';
 import { FormEditor } from '@components/forms/field/form-editor';
 import { FormAutoComplete } from '@components/forms/field/form-auto-complete';

@@ -20,6 +20,9 @@ Application uses PrimeReact component library. Always suggest components in it i
   types, hooks). Shared UI in `src/components`, API helpers in `src/services`
   (`getApiContent` / `postApiContent` / … in `user-service.tsx`) and `src/api`.
 - Run `npx tsc --noEmit` to typecheck before committing.
+- Lint with `npm run lint` (oxlint, config in `.oxlintrc.json`; ESLint/typescript-eslint
+  can't parse with TypeScript 7). Unit tests: `npm test` (Vitest, `src/**/*.test.ts(x)`);
+  E2E: `npm run test:e2e` (Playwright, `tests/`). All checks run locally, no hosted CI.
 - Admin-only UI is gated with `isAdmin(user)` (role === 'admin').
 
 ## Search

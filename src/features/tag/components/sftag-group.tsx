@@ -5,7 +5,7 @@ import { Button } from 'primereact/button';
 
 import { SfTag } from "../types";
 import { Link } from 'react-router-dom';
-import { tagTypeIcon, tagTypeToClass, tagTypeToSeverity } from '@features/tag/components/tag-type-to-severity';
+import { tagTypeToClass, tagTypeToSeverity } from '@features/tag/components/tag-type-to-severity';
 
 interface TagsProps {
     tags: SfTag[],

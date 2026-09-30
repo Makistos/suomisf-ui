@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import { Fieldset } from "primereact/fieldset";
 import { TabView, TabPanel } from "primereact/tabview";
 import _ from "lodash";
 

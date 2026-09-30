@@ -5,15 +5,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Dialog } from "primereact/dialog";
 import { Rating, RatingChangeEvent } from "primereact/rating";
 import { useMemo, useState } from "react";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Edition, EditionCondition, EditionOwnershipStatus } from "../types";
+import { FormProvider, useForm } from "react-hook-form";
+import { EditionCondition, EditionOwnershipStatus } from "../types";
 import { saveOwnership } from "@api/edition/save-ownership";
 import { HttpStatusResponse } from "@services/user-service";
 import { FormInputText } from "@components/forms/field/form-input-text";
 import { Button } from "primereact/button";
-import { ProgressBar } from "primereact/progressbar";
 import { cond } from "lodash";
-import { deleteOwnership } from "@api/edition/delete-ownership";
 
 interface EditionOwnershipProps {
     editionId: number,

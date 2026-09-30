@@ -83,7 +83,7 @@ async function measureRoute(browser, route) {
   // cdnjs font 404s"). Excluded from the regression gate but kept in the raw
   // log for transparency.
   const isExternalResourceNoise = (msg) =>
-    /^Failed to load resource: the server responded with a status of 404/.test(msg);
+    msg.startsWith('Failed to load resource: the server responded with a status of 404');
   const significantErrors = consoleErrors.filter(m => !isExternalResourceNoise(m));
 
   const contentOk = !navError && bodyTextLength !== null && bodyTextLength > 100;

@@ -18,7 +18,6 @@ import { useDocumentTitle } from "../../../components/document-title";
 import { getGenreIcon } from "../../genre/utils/genre-icons";
 import { Genre } from "../../genre";
 import { Country } from "../../../types/country";
-import { User } from "../../user";
 import { Work } from "../../work/types";
 
 // TagType ids in the database (select * from tagtype).

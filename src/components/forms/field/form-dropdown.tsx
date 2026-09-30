@@ -2,7 +2,6 @@ import { Controller, RegisterOptions, UseFormReturn } from "react-hook-form"
 import { Dropdown, DropdownProps } from "primereact/dropdown"
 import { classNames } from 'primereact/utils'
 import { formErrorMessage } from "../form-error-message"
-import { SelectItemOptionsType } from "primereact/selectitem"
 
 interface FormDropdownProps extends DropdownProps {
   name: string,

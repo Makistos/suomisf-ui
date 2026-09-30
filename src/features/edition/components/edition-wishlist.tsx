@@ -1,12 +1,10 @@
 import { getCurrenUser } from "@services/auth-service";
-import { Edition, EditionProps, EditionWishlistStatus } from "../types";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { HttpStatusResponse } from "@services/user-service";
 import { User } from "@features/user";
 import { saveToWishlist } from "@api/edition/save-to-wishlist";
 import { getWishlistStatus } from "@api/edition/get-wishlist-status";
-import { remove, set } from "lodash";
 import { removeFromWishlist } from "@api/edition/remove-from-wishlist";
 
 interface EditionWishlistProps {

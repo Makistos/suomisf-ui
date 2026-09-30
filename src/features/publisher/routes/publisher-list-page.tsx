@@ -7,7 +7,6 @@ import { Column } from "primereact/column";
 import { Publisher } from "../types";
 import { getCurrenUser } from "../../../services/auth-service";
 import { getApiContent } from "../../../services/user-service";
-import { Edition } from "../../edition";
 import { useQuery } from "@tanstack/react-query";
 import { useDocumentTitle } from '../../../components/document-title';
 

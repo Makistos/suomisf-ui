@@ -1,8 +1,8 @@
 import axios from "axios";
 
 import { User } from "../features/user/types";
-import authHeader, { refreshHeader } from "./auth-header";
-import { shouldUseNewApi, HttpMethod } from "../config/api-routing";
+import authHeader from "./auth-header";
+import { shouldUseNewApi } from "../config/api-routing";
 
 const baseURL = import.meta.env.VITE_API_URL;
 const newBaseURL = import.meta.env.VITE_NEW_API_URL;

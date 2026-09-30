@@ -1,7 +1,7 @@
 import { useForm } from '@tanstack/react-form'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ProgressSpinner } from 'primereact/progressspinner';
-import { Award, AwardCategory, Awarded, AwardedFormData, AwardedRowData } from '../types';
+import { Award, AwardCategory, Awarded, AwardedRowData } from '../types';
 import { getApiContent, postApiContent } from '@services/user-service';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { User } from '@features/user';
@@ -12,7 +12,6 @@ import { AutoComplete } from 'primereact/autocomplete';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
-import { FormInputNumber } from '@components/forms/field/form-input-number';
 
 interface AwardFormProps {
     workId?: string,

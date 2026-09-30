@@ -6,7 +6,6 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Button } from 'primereact/button';
 import { ProgressSpinner } from "primereact/progressspinner";
 import { SpeedDial } from 'primereact/speeddial';
-import { Tooltip } from "primereact/tooltip";
 import { Dialog } from 'primereact/dialog';
 import { classNames } from "primereact/utils";
 import { AutoComplete } from 'primereact/autocomplete';

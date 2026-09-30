@@ -3,17 +3,15 @@ import { Column } from "primereact/column"
 import { OwnedBook } from "@features/edition"
 import { getApiContent } from "@services/user-service"
 import { useQuery } from "@tanstack/react-query"
-import { Link, useParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { FilterMatchMode } from "primereact/api"
 import { useRef, useState } from "react"
 import { InputText } from 'primereact/inputtext';
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
-import { Rating } from "primereact/rating"
 import { Button } from "primereact/button"
-import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
-import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect"
+import { MultiSelectChangeEvent } from "primereact/multiselect"
 import { Tooltip } from "primereact/tooltip"
 
 interface OwnedBooksProps {

@@ -1,4 +1,4 @@
-import React, { Fragment, RefObject, useCallback, useMemo, useRef, useState } from 'react';
+import React, { RefObject, useCallback, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
 
 import { getCurrenUser } from '../../../services/auth-service';
@@ -88,7 +88,7 @@ const IssueInfo = ({ issue }: IssueInfoProps) => {
             <h1 className="mt-0 text-2xl sm:text-3xl lg:text-4xl uppercase" style={{ lineHeight: '1.1' }}>
                 {issue.magazine.name} {issue.cover_number}
                 <br />
-                <div className="mt-0 text-base sm:txt-lg ml-1">{issue.title && issue.title}</div>
+                <div className="mt-0 text-base sm:txt-lg ml-1">{issue.title}</div>
             </h1>
             {editorContributions && editorContributions.length > 0 && (
                 <div className="mb-2">

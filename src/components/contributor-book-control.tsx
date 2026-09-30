@@ -29,7 +29,7 @@ interface CBCProps {
     /**
      * What types of books to show.
      */
-    types: Number[],
+    types: number[],
     /**
      * An optional boolean value indicating whether collaborations should be
      * displayed last.

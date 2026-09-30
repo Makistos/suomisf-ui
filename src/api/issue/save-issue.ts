@@ -1,6 +1,6 @@
 import { IssueFormData } from "@features/issue";
 import { User } from "@features/user";
-import { HttpStatusResponse, postApiContent, putApiContent } from "@services/user-service";
+import { postApiContent, putApiContent } from "@services/user-service";
 
 export const saveIssue = async (data: IssueFormData, user: User | null) => {
     if (data.id != null) {

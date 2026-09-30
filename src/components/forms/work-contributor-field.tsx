@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Controller, useFieldArray, Control, UseFormRegister, FieldArrayWithId, useFormContext } from 'react-hook-form';
+import { Controller, useFieldArray, Control, UseFormRegister, useFormContext } from 'react-hook-form';
 import { AutoComplete } from "primereact/autocomplete";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
@@ -9,12 +9,10 @@ import { Dropdown } from "primereact/dropdown";
 import { Person } from "../../features/person";
 import { Contributor } from "../../types/contributor";
 import { getApiContent } from "../../services/user-service";
-import { getCurrenUser, register } from "../../services/auth-service";
+import { getCurrenUser } from "../../services/auth-service";
 import { pickProperties } from "./forms";
-import { Contribution, ContributionSimple } from "../../types/contribution";
-import { isAdmin } from '../../features/user';
+import { Contribution } from "../../types/contribution";
 import { WorkFormData } from '../../features/work/types';
-import { Contributable } from "../../types/generic";
 import { ShortForm } from "../../features/short";
 //import { ContributorRow } from "./contributor-row";
 

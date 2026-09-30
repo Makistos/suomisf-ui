@@ -1,21 +1,17 @@
-import { useEffect, useState, useMemo } from 'react';
-import { useForm, Controller, SubmitHandler, FieldValues, RegisterOptions, FormProvider } from 'react-hook-form';
+import { useState, useMemo } from 'react';
+import { useForm, SubmitHandler, RegisterOptions, FormProvider } from 'react-hook-form';
 
-import { classNames } from 'primereact/utils';
 import { InputText } from 'primereact/inputtext';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { Button } from 'primereact/button';
 
-import { HttpStatusResponse, getApiContent, postApiContent, putApiContent } from '../../../services/user-service';
-import { FormSubmitObject, isDisabled } from '../../../components/forms/forms';
-import { register } from '../../../services/auth-service';
+import { HttpStatusResponse, postApiContent, putApiContent } from '../../../services/user-service';
+import { isDisabled } from '../../../components/forms/forms';
 import { getCurrenUser } from '../../../services/auth-service';
 import { PublisherFormData } from '../types';
 import { Publisher } from '../types';
-import { QueryClient } from '@tanstack/react-query';
 import { FormInputText } from '../../../components/forms/field/form-input-text';
 import { FormEditor } from '../../../components/forms/field/form-editor';
-import { method } from 'lodash';
 import { ProgressBar } from 'primereact/progressbar';
 import { useNavigate } from 'react-router-dom';
 import { LinksField } from '../../../components/forms/links-field';

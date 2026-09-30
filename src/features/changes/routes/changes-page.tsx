@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import { DataTable, DataTableExpandedRows, DataTableRowToggleEvent, DataTableValueArray } from "primereact/datatable";
+import { DataTable, DataTableExpandedRows, DataTableRowToggleEvent } from "primereact/datatable";
 import { useQuery } from '@tanstack/react-query';
 import { Column } from "primereact/column";
 import { ProgressSpinner } from "primereact/progressspinner";

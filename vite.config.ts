@@ -1,4 +1,5 @@
-import { build, defineConfig } from "vite";
+/// <reference types="vitest/config" />
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import viteTsconfigPaths from 'vite-tsconfig-paths'
 
@@ -22,6 +23,16 @@ export default defineConfig(({ mode }) => {
     },
     preview: {
       port: isE2e ? 3100 : 4173,
+    },
+    test: {
+      // Unit tests only; Playwright E2E specs live in tests/.
+      include: ['src/**/*.test.{ts,tsx}'],
+      coverage: {
+        provider: 'v8',
+        include: ['src/**/*.{ts,tsx}'],
+        exclude: ['src/**/*.test.{ts,tsx}', 'src/**/*.d.ts'],
+        reporter: ['text-summary', 'html'],
+      },
     },
   };
 });

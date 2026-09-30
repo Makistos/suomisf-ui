@@ -14,12 +14,13 @@ export const isAnthology = (work: Work) => {
         return false; // Not even a collection
     }
 
-    // Create a set of author names from the stories
+    // Create a set of author ids from the stories
     const authors = new Set(
         work.stories
-            .map(story =>
+            .flatMap(story =>
                 story.contributors
                     .filter(contribution => contribution.role.name === 'Kirjoittaja')
+                    .map(contribution => contribution.person.id)
             )
     );
 

@@ -63,7 +63,10 @@ const addToGroup = (edition: Edition, groups: Edition[][], mode: string) => {
 }
 
 const sortEditions = (a: Edition, b: Edition): number => {
-    return a.version !== b.version ? (a.version > b.version ? 1 : -1) :
+    // Missing version means the first one, as in unknownIsEqualToOne
+    const aVersion = a.version || 1;
+    const bVersion = b.version || 1;
+    return aVersion !== bVersion ? (aVersion > bVersion ? 1 : -1) :
         (a.editionnum && b.editionnum) ? Number(a.editionnum) - Number(b.editionnum) :
             (a.pubyear > b.pubyear ? 1 : -1);
 }

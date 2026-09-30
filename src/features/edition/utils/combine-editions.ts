@@ -1,8 +1,6 @@
 import { Edition } from "@features/edition";
 import { Binding } from "../../../types/binding";
 import { ImageType } from "../../../types/image";
-import { getCurrenUser } from "@services/auth-service";
-import { useMemo } from "react";
 import { User } from "@features/user";
 
 type tmpObj = {
@@ -11,7 +9,6 @@ type tmpObj = {
 }
 
 export const combineEditions = (editions: Edition[], user: User | null): Edition | undefined => {
-    // const user = useMemo(() => { return getCurrenUser() }, []);
     let retval = {} as Edition;
     if (editions.length === 0) {
         return undefined;

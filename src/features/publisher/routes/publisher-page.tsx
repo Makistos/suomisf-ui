@@ -28,7 +28,6 @@ interface PublisherPageProps {
     id: string | null;
 }
 
-let thisId: string = "";
 
 export const PublisherPage = ({ id }: PublisherPageProps) => {
     const params = useParams();
@@ -40,6 +39,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
+    let thisId = "";
     try {
         thisId = selectId(params, id);
     } catch (e) {

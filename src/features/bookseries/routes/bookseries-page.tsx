@@ -27,7 +27,6 @@ interface BookseriesPageProps {
     id: string | null;
 }
 
-let thisId = "";
 
 export const BookseriesPage = ({ id }: BookseriesPageProps) => {
     const params = useParams();
@@ -41,6 +40,7 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
     const toast = useRef<Toast>(null);
     const navigate = useNavigate();
 
+    let thisId = "";
     try {
         thisId = selectId(params, id);
     } catch (e) {

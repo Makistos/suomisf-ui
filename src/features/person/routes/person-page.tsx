@@ -38,7 +38,6 @@ interface PersonPageProps {
     id: string | null;
 }
 
-let thisId = "";
 
 const FICTION_TYPES = [1, 2, 5, 6];
 const NONFICTION_TYPES = [4];
@@ -58,6 +57,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     //let workAwards: Awarded[] = [];
     const toastRef = useRef<Toast>(null);
 
+    let thisId = "";
     try {
         thisId = selectId(params, id);
     } catch (e) {

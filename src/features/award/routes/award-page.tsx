@@ -39,7 +39,6 @@ const sortWinners = (winners: Omit<Awarded, "award">[] = []) =>
                     : a.year < b.year ? -1 : 1
         );
 
-let awardId = "";
 
 export const AwardPage = ({ id }: AwardPageProps) => {
     const user = useMemo(() => getCurrenUser(), []);
@@ -48,6 +47,7 @@ export const AwardPage = ({ id }: AwardPageProps) => {
     const [formVisible, setFormVisible] = useState(false);
     const [importVisible, setImportVisible] = useState(false);
 
+    let awardId = "";
     try {
         awardId = selectId(params, id);
     } catch (e) {

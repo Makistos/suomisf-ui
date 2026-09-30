@@ -24,7 +24,7 @@
     "react/set-state-in-effect": "warn",
     "react/static-components": "warn",
     "react/immutability": "warn",
-    "react/globals": "warn",
+    "react/globals": "error",
     "react/purity": "warn",
     "react/no-children-prop": "off"
   },

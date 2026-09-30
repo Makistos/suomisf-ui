@@ -18,6 +18,7 @@ export const FormInputText = ({ name, methods, rules, label, labelClass, ...rest
       <Controller
         name={name}
         control={methods.control}
+        rules={rules}
         render={({ field, fieldState }) => (
           <>
             <InputText

@@ -38,7 +38,14 @@ function App() {
 
   useEffect(() => {
     document.body.classList.remove('p-overflow-hidden');
-    document.querySelectorAll('.p-dialog-mask, .p-speeddial-mask').forEach(el => el.remove());
+    // Remove only orphaned masks. A mask React still owns (e.g. a
+    // ConfirmDialog mid-close when its accept handler navigates) will be
+    // removed by React itself; deleting it here made React's own
+    // removeChild throw and take down the whole app. React drops its
+    // __reactFiber$ key from a node once it has unmounted it.
+    document.querySelectorAll('.p-dialog-mask, .p-speeddial-mask').forEach(el => {
+      if (!Object.keys(el).some(key => key.startsWith('__reactFiber$'))) el.remove();
+    });
   }, [location.pathname]);
 
   useEffect(() => {

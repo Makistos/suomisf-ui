@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useParams } from "react-router-dom";
 
 import { LinkList } from '../../../components/link-list';
@@ -27,7 +27,9 @@ export const ArticlePage = () => {
     )
 }
 export const ArticleView = (_props: ArticleProps) => {
-    const user = getCurrenUser();
+    // Memoized: it's an effect dependency, and getCurrenUser() returns a new
+    // object each call, which made the article fetch run in a loop.
+    const user = useMemo(() => getCurrenUser(), []);
     let params = useParams();
     const [article, setArticle]: [Article | null, (article: Article) => void] = React.useState<Article | null>(null);
     //const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
@@ -54,7 +56,7 @@ export const ArticleView = (_props: ArticleProps) => {
     useEffect(() => {
         if (article !== undefined && article !== null)
             setDocumentTitle("Artikkeli: " + article.title);
-    }, [article])
+    }, [article, setDocumentTitle])
 
     if (!article) return null;
 
@@ -66,8 +68,11 @@ export const ArticleView = (_props: ArticleProps) => {
                     items={PickLinks(article.author_rel)}
                 /></h3>
             <h1 className="p-text-center">{article.title}</h1>
-            <div>Lehdessä {article.issue.magazine.name} {article.issue.cover_number}
-            </div>
+            {/* No article is linked to an issue any more (articles were moved
+                to short stories), so this is usually absent. */}
+            {article.issue &&
+                <div>Lehdessä {article.issue.magazine.name} {article.issue.cover_number}
+                </div>}
             {
                 article.tags.length > 0 &&
                 <LinkList

@@ -17,7 +17,6 @@ import HomeAlt from './home-alt';
 // 2.58 MB main bundle regardless of which page a visitor landed on.
 const MagazinesPage = lazy(() => import('./features/magazine/routes/magazines-page').then(m => ({ default: m.MagazinesPage })));
 const MagazinePage = lazy(() => import('./features/magazine/routes/magazine-page').then(m => ({ default: m.MagazinePage })));
-const ArticleView = lazy(() => import('./features/article/routes/article-page').then(m => ({ default: m.ArticleView })));
 const IssuePage = lazy(() => import('./features/issue/routes/issue-page').then(m => ({ default: m.IssuePage })));
 const PeoplePage = lazy(() => import('./features/person').then(m => ({ default: m.PeoplePage })));
 const PersonPage = lazy(() => import('./features/person').then(m => ({ default: m.PersonPage })));
@@ -75,7 +74,6 @@ root.render(
             <Route path="magazines" element={<MagazinesPage />} />
             <Route path="magazines/:magazineId" element={<MagazinePage />} />
             <Route path="issues/:itemId" element={<IssuePage id={null} />} />
-            <Route path="articles/:articleId" element={<ArticleView id={null} />} />
             <Route path="works/:itemId" element={<WorkPage />} />
             <Route path="editions/:itemId" element={<WorkPage />} />
             <Route path="bookseries" element={<BookseriesListPage />} />

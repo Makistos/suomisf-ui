@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/guard';
 
 test('Awards page loads and displays data', async ({ page }) => {
 

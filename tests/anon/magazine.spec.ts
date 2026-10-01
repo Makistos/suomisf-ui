@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/guard';
 
 test('Alienisti magazine page displays correct content', async ({ page }) => {
     // Navigate to specific magazine page

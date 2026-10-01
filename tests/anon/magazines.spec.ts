@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/guard';
 
 test('Magazines page loads and displays content', async ({ page }) => {
     // Navigate to magazines page

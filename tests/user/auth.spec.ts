@@ -1,4 +1,4 @@
-import { test as base, expect } from '@playwright/test';
+import { test as base, expect } from '../fixtures/guard';
 import { test as authTest } from '../fixtures/auth';
 
 base('wrong password shows an inline error, no crash', async ({ page }) => {

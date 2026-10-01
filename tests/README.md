@@ -19,12 +19,18 @@ fresh from the dev DB, seeds `Test Admin`/`Test User`, builds the frontend,
 and starts a throwaway backend (`:5001`) + frontend (`:3100`) — your normal
 dev servers on `:3000`/`:5000` are never touched.
 
-## Fixtures (`tests/fixtures/auth.ts`)
+## Fixtures (`tests/fixtures/`)
 
-- `userPage` / `adminPage` — pre-authenticated pages (API login +
+- `userPage` / `adminPage` (`auth.ts`) — pre-authenticated pages (API login +
   `localStorage` injection, not the login form) for `Test User` / `Test Admin`.
-- Plain `page` (from `@playwright/test` directly) — anonymous, or used by
-  the two specs that need to drive the real login form.
+- Plain `page` (`guard.ts`) — anonymous, or used by the two specs that need
+  to drive the real login form.
+- All three are guarded by `guardPage()` (`guard.ts`): a test fails on any
+  uncaught page error or unhandled rejection, React's "Maximum update depth
+  exceeded", or the same API request (method + URL + body) 15 times within
+  5 s — the signature of an effect re-running endlessly. Import `test` from
+  `../fixtures/guard` (or `../fixtures/auth`), not `@playwright/test`, so new
+  specs get it too.
 
 ## `tests/anon/` — anonymous, read-only
 
@@ -48,6 +54,9 @@ dev servers on `:3000`/`:5000` are never touched.
 | `short.spec.ts` | `/shorts/4985` | Title/author, and a short with 20 translators all rendered (exercises `remove-duplicate-contributions.ts`). |
 | `nonfiction.spec.ts` | `/nonfiction` | List view loads; switching to "Kannet" lazy-loads cover images (`cover-image-list.tsx`). |
 | `stats.spec.ts` | `/stats` | Every tab renders a chart `<canvas>`, no console errors. |
+| `stats-filters.spec.ts` | `/stats` | Changing the role filter on the Teokset and Novellit tabs' top-people tables refetches and re-renders (header and rows follow the new role). |
+| `issue.spec.ts` | `/issues/:id` | Opens an Alienisti issue, steps Seuraava → Edellinen; the heading follows each step. |
+| `in-place-navigation.spec.ts` | `/works/63`, `/people/1429` | Following a link to another item of the same type (work → omnibus; pseudonym "Outsider" → real person → back) replaces the content — the page component stays mounted, so this catches effects that don't re-run on the new id. |
 | `latest.spec.ts` | `/latest` | Page loads with entries — deliberately doesn't assert specific titles, since "latest" is inherently a moving target. |
 | `bookindex.spec.ts` | `/bookindex` | Page loads, an alphabet-letter filter (A–Ö buttons) returns matching results. |
 | `shortstoryindex.spec.ts` | `/shortstoryindex` | Page loads, a real author-name search returns results. |
@@ -84,13 +93,12 @@ rebuilt before the next run.
 | `magazine.spec.ts` | Two tests: (1) create a magazine and add an issue to it — not deleted afterward, since a magazine with issues genuinely can't be deleted (FK constraint) and the UI doesn't disable "Poista" for that case; (2) create-then-delete a magazine that has no issues, to still cover the delete path cleanly. Edit is not covered — see the `test.fail()` entry below. |
 | `short.spec.ts` | Creates a new short story via the work page's "Muokkaa novelleja" picker dialog's nested "Uusi" form, then attaches it to the work. |
 | `tag.spec.ts` | No "create" UI — rename + delete on a tag pre-verified to have zero linked works/stories/articles. |
+| `shorts-picker.spec.ts` | Opens the "Muokkaa novelleja" picker on a 5-story collection, searches a person, adds one of their stories to the list (6 items), closes without saving. |
 | `changes-audit.spec.ts` | Creates a work, then confirms a matching `Uusi`-action entry by `Test Admin` appears via `GET /api/changes`. |
 | `magazine.spec.ts` → `test.fail(...)` | **Known, unresolved bug**, not a real test: editing a magazine fails at the network layer (`net::ERR_FAILED` on the PUT). `test.fail()` means Playwright reports this test as failing *if it ever starts passing* — that's the signal that someone fixed `magazine-form.tsx`'s edit path. |
 
 ## Coverage gaps
 
-- `/issues/:id` has no dedicated anon spec (only reached indirectly via
-  `magazine.spec.ts`'s links).
 - `kirjasampo-tag-import.tsx` (importing tags from Kirjasampo) isn't
   covered — it depends on a live external service, so it was skipped
   rather than mocked.

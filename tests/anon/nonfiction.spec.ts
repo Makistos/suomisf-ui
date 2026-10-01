@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/guard';
 
 test('Nonfiction works list loads, and Kannet view lazy-loads cover images', async ({ page }) => {
     await page.goto('/nonfiction');

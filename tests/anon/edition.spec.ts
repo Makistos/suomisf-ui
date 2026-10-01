@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/guard';
 
 test('Edition page shows the parent work with that edition highlighted', async ({ page }) => {
     // /editions/:id shares WorkPage with /works/:id, but loads the parent

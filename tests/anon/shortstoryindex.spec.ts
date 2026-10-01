@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/guard';
 
 test('Short story index page loads and an author search returns results', async ({ page }) => {
     await page.goto('/shortstoryindex');

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/guard';
 
 test('Latest additions page loads with recent works', async ({ page }) => {
     await page.goto('/latest');

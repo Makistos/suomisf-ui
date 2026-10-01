@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/guard';
 
 test('Short story page loads with all contributors listed', async ({ page }) => {
     await page.goto('/shorts/4985');

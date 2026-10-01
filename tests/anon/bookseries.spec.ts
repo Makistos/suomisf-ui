@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/guard';
 
 test('Book series page loads and displays data', async ({ page }) => {
     // Navigate to book series page

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/guard';
 
 test('Tag page loads with description and linked works', async ({ page }) => {
     await page.goto('/tags/521');

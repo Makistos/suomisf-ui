@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/guard';
 
 test('FAQ page loads and has content', async ({ page }) => {
     // Navigate to FAQ page

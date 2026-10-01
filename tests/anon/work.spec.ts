@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/guard';
 
 test('Work page loads and displays content, including part_of relations', async ({ page }) => {
     await page.goto('/works/63');

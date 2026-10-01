@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/guard';
 
 test('Book index page loads and an alphabet filter returns results', async ({ page }) => {
     await page.goto('/bookindex');

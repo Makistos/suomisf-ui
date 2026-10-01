@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/guard';
 
 test('Tags page loads and displays categories with tags', async ({ page }) => {
     // Navigate to tags page

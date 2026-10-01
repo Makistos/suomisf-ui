@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/guard';
 
 test('Stats page renders charts across tabs without errors', async ({ page }) => {
     const errors: string[] = [];

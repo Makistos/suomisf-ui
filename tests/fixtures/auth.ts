@@ -1,4 +1,5 @@
-import { test as base, expect, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
+import { test as base, expect, guardPage } from './guard';
 
 const API_URL = 'http://localhost:5001/api/';
 
@@ -37,13 +38,17 @@ export const test = base.extend<{ adminPage: Page; userPage: Page }>({
     adminPage: async ({ browser }, use) => {
         const user = await loginAs('Test Admin', 'testadminpass123');
         const page = await pageAs(browser, user);
+        const check = guardPage(page);
         await use(page);
+        check();
         await page.close();
     },
     userPage: async ({ browser }, use) => {
         const user = await loginAs('Test User', 'testpassword123');
         const page = await pageAs(browser, user);
+        const check = guardPage(page);
         await use(page);
+        check();
         await page.close();
     },
 });

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/guard';
 
 test('Publisher series page loads and displays data', async ({ page }) => {
     // page.on('request', request => console.log('>>', request.method(), request.url()));

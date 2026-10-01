@@ -4,6 +4,7 @@ import { deleteApiContent, HttpStatusResponse } from "../../../services/user-ser
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDocumentTitle } from '../../../components/document-title';
 import { Toast } from 'primereact/toast';
+import { useGlobalToast } from "@components/global-toast";
 import { IssueForm } from '@features/issue/components/issue-form';
 import { Dialog } from 'primereact/dialog';
 import { isAdmin } from '@features/user';
@@ -55,6 +56,7 @@ export const MagazinePage = () => {
     const queryClient = useQueryClient();
     const [targetId, setTargetId] = useState(magazineId !== undefined ? magazineId : null);
     const navigate = useNavigate();
+    const showGlobalToast = useGlobalToast();
 
     const { data } = useQuery({
         queryKey: ['magazine', magazineId],
@@ -79,8 +81,9 @@ export const MagazinePage = () => {
         onSuccess: (data: HttpStatusResponse) => {
             queryClient.invalidateQueries({ queryKey: ['magazine', magazineId] });
             if (data.status === 200) {
+                // Global toast: navigating away unmounts this page's own Toast
+                showGlobalToast({ severity: 'success', summary: 'Lehti poistettu' });
                 navigate(-1);
-                toastRef.current?.show({ severity: 'success', summary: 'Lehti poistettu' })
             } else {
                 toastRef.current?.show({ severity: 'error', summary: 'Lehden poisto ei onnistunut' })
             }

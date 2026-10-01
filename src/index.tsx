@@ -6,6 +6,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import 'primereact/resources/primereact.min.css'
 
 import App from './App';
+import { GlobalToastProvider } from './components/global-toast';
 import reportWebVitals from './reportWebVitals';
 import HomeAlt from './home-alt';
 
@@ -59,52 +60,54 @@ const routeFallback = (
 
 root.render(
   <BrowserRouter>
-    <Suspense fallback={routeFallback}>
-      <Routes>
-        <Route path="/" element={<App />}>
-          <Route index element={<HomeAlt />} />
-          <Route path="awards" element={<Awards />} />
-          <Route path="awards/:itemId" element={<AwardPage id={null} />} />
-          <Route path="bookindex" element={<WorkSearchPage />} />
-          <Route path="faq" element={<FAQ />} />
-          <Route path="shortstoryindex" element={<ShortSearchPage />} />
-          <Route path="people" element={<PeoplePage />} />
-          <Route path="people/:itemId" element={<PersonPage id={null} />} />
-          <Route path="magazines" element={<MagazinesPage />} />
-          <Route path="magazines/:magazineId" element={<MagazinePage />} />
-          <Route path="issues/:itemId" element={<IssuePage id={null} />} />
-          <Route path="articles/:articleId" element={<ArticleView id={null} />} />
-          <Route path="works/:itemId" element={<WorkPage />} />
-          <Route path="editions/:itemId" element={<WorkPage />} />
-          <Route path="bookseries" element={<BookseriesListPage />} />
-          <Route path="bookseries/:itemId" element={<BookseriesPage id={null} />} />
-          <Route path="pubseries" element={<PubseriesListPage />} />
-          <Route path="pubseries/:itemId" element={<PubseriesPage id={null} />} />
-          <Route path="publishers/:itemId" element={<PublisherPage id={null} />} />
-          <Route path="publishers" element={<PublisherListPage />} />
-          <Route path="shorts/:itemId" element={<ShortPage id={null} />} />
-          <Route path="tags" element={<SFTags />} />
-          <Route path="tags/:tagid" element={<SFTag id={null} />} />
-          <Route path="/login" element={<LoginView />} />
-          <Route path="/forgot-password" element={<ForgotPasswordView />} />
-          <Route path="/reset-password" element={<ResetPasswordView />} />
-          <Route path="/changes" element={<Changes />} />
-          <Route path="/latest" element={<LatestAdditions />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/nonfiction" element={<WorksByType worktype={"4"} />} />
-          <Route path="/stats" element={<StatsPage />} />
-          <Route path="/suggestions" element={<SuggestionPage />} />
-          <Route path="/home-alt" element={<HomeAlt />} />
-          <Route path="/users/:itemId" element={<ProfilePage id={null} />} />
-          <Route path="*"
-            element={
-              <main style={{ padding: "3rem" }}>
-                Sivua ei löydy. Tarkista osoite tai palaa <a href="/">etusivulle</a>.
-              </main>
-            } />
-        </Route>
-      </Routes>
-    </Suspense>
+    <GlobalToastProvider>
+      <Suspense fallback={routeFallback}>
+        <Routes>
+          <Route path="/" element={<App />}>
+            <Route index element={<HomeAlt />} />
+            <Route path="awards" element={<Awards />} />
+            <Route path="awards/:itemId" element={<AwardPage id={null} />} />
+            <Route path="bookindex" element={<WorkSearchPage />} />
+            <Route path="faq" element={<FAQ />} />
+            <Route path="shortstoryindex" element={<ShortSearchPage />} />
+            <Route path="people" element={<PeoplePage />} />
+            <Route path="people/:itemId" element={<PersonPage id={null} />} />
+            <Route path="magazines" element={<MagazinesPage />} />
+            <Route path="magazines/:magazineId" element={<MagazinePage />} />
+            <Route path="issues/:itemId" element={<IssuePage id={null} />} />
+            <Route path="articles/:articleId" element={<ArticleView id={null} />} />
+            <Route path="works/:itemId" element={<WorkPage />} />
+            <Route path="editions/:itemId" element={<WorkPage />} />
+            <Route path="bookseries" element={<BookseriesListPage />} />
+            <Route path="bookseries/:itemId" element={<BookseriesPage id={null} />} />
+            <Route path="pubseries" element={<PubseriesListPage />} />
+            <Route path="pubseries/:itemId" element={<PubseriesPage id={null} />} />
+            <Route path="publishers/:itemId" element={<PublisherPage id={null} />} />
+            <Route path="publishers" element={<PublisherListPage />} />
+            <Route path="shorts/:itemId" element={<ShortPage id={null} />} />
+            <Route path="tags" element={<SFTags />} />
+            <Route path="tags/:tagid" element={<SFTag id={null} />} />
+            <Route path="/login" element={<LoginView />} />
+            <Route path="/forgot-password" element={<ForgotPasswordView />} />
+            <Route path="/reset-password" element={<ResetPasswordView />} />
+            <Route path="/changes" element={<Changes />} />
+            <Route path="/latest" element={<LatestAdditions />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/nonfiction" element={<WorksByType worktype={"4"} />} />
+            <Route path="/stats" element={<StatsPage />} />
+            <Route path="/suggestions" element={<SuggestionPage />} />
+            <Route path="/home-alt" element={<HomeAlt />} />
+            <Route path="/users/:itemId" element={<ProfilePage id={null} />} />
+            <Route path="*"
+              element={
+                <main style={{ padding: "3rem" }}>
+                  Sivua ei löydy. Tarkista osoite tai palaa <a href="/">etusivulle</a>.
+                </main>
+              } />
+          </Route>
+        </Routes>
+      </Suspense>
+    </GlobalToastProvider>
   </BrowserRouter>);
 
 // If you want to start measuring performance in your app, pass a function

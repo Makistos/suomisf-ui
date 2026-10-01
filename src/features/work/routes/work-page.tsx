@@ -5,6 +5,7 @@ import { DataView } from "primereact/dataview";
 import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
 import { Toast } from "primereact/toast";
+import { useGlobalToast } from "@components/global-toast";
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 import { FileUpload, FileUploadHandlerEvent } from "primereact/fileupload";
 import { Dialog } from "primereact/dialog";
@@ -205,6 +206,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
     const [isEditionFormVisible, setEditionFormVisible] = useState(false);
     const toastRef = useRef<Toast>(null);
     const navigate = useNavigate();
+    const showGlobalToast = useGlobalToast();
     const [detailLevel, setDetailLevel] = useState("condensed");
     const [isAwardsFormVisible, setAwardsFormVisible] = useState(false);
     const [isAntikvaariFormVisible, setAntikvaariFormVisible] = useState(false);
@@ -346,8 +348,9 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
         onSuccess: (data: HttpStatusResponse) => {
             const msg = data.response;
             if (data.status === 200) {
+                // Global toast: navigating away unmounts this page's own Toast
+                showGlobalToast({ severity: 'success', summary: 'Teos poistettu' });
                 navigate(-1);
-                toastRef.current?.show({ severity: 'success', summary: 'Teos poistettu' })
             } else {
                 toastRef.current?.show({ severity: 'error', summary: 'Teoksen poisto ei onnistunut', detail: msg })
             }

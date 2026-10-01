@@ -8,6 +8,7 @@ import { SpeedDial } from "primereact/speeddial";
 import { Dialog } from "primereact/dialog";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
+import { useGlobalToast } from "@components/global-toast";
 
 import { getCurrenUser } from "../../../services/auth-service";
 import { HttpStatusResponse, deleteApiContent, getApiContent } from "../../../services/user-service";
@@ -37,6 +38,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
     const [queryEnabled, setQueryEnabled] = useState(true);
     const toastRef = useRef<Toast>(null);
     const navigate = useNavigate();
+    const showGlobalToast = useGlobalToast();
     const queryClient = useQueryClient();
 
     let thisId = "";
@@ -79,8 +81,9 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
         onSuccess: (data: HttpStatusResponse) => {
             console.log(data);
             if (data.status === 200) {
+                // Global toast: navigating away unmounts this page's own Toast
+                showGlobalToast({ severity: 'success', summary: 'Kustantaja poistettu' });
                 navigate(-1);
-                toastRef.current?.show({ severity: 'success', summary: 'Kustantaja poistettu' })
             } else {
                 toastRef.current?.show({ severity: 'error', summary: 'Kustantajan poisto ei onnistunut' })
             }

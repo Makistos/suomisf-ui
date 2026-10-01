@@ -11,6 +11,7 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import { ShortsForm } from "../components"
 import { Dialog } from "primereact/dialog"
 import { Toast } from "primereact/toast"
+import { useGlobalToast } from "@components/global-toast";
 import { SpeedDial } from "primereact/speeddial"
 import { isAdmin, User } from "@features/user"
 import { EditionSummary } from "@features/edition"
@@ -42,6 +43,7 @@ export const ShortPage = (props: ShortPageProps) => {
     let thisId = "";
     const toastRef = useRef<Toast>(null);
     const navigate = useNavigate();
+    const showGlobalToast = useGlobalToast();
 
     const queryClient = useQueryClient();
 
@@ -82,8 +84,9 @@ export const ShortPage = (props: ShortPageProps) => {
         onSuccess: (data: HttpStatusResponse) => {
             const msg = data.response;
             if (data.status === 200) {
+                // Global toast: navigating away unmounts this page's own Toast
+                showGlobalToast({ severity: 'success', summary: 'Novelli poistettu' });
                 navigate(-1);
-                toastRef.current?.show({ severity: 'success', summary: 'Novelli poistettu' })
             } else {
                 toastRef.current?.show({ severity: 'error', summary: 'Novellin poisto ei onnistunut', detail: msg })
             }

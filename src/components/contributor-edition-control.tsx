@@ -58,8 +58,9 @@ export const ContributorEditionControl = ({
     const currentUser = getCurrenUser();
 
     // Create list that contains all alias ids as well
-    const person_ids = person.aliases.map(alias => alias.id);
-    person_ids.push(person.id);
+    const person_ids = useMemo(
+        () => [...person.aliases.map(alias => alias.id), person.id],
+        [person.aliases, person.id]);
 
     // Group editions by work, keeping every edition of that work the
     // person contributed to in this role as its own line - mirrors how
@@ -127,7 +128,7 @@ export const ContributorEditionControl = ({
         }
 
         return sortedKeys.map(key => grouped[key]);
-    }, [editions, person, collaborationsLast]);
+    }, [editions, person, person_ids, collaborationsLast]);
 
     // Get all images from every (filtered) edition of a work
     const getAllImagesFromWork = (workGroup: WorkEditionsGroup): { url: string; version?: number; editionnum?: number }[] => {
@@ -155,7 +156,8 @@ export const ContributorEditionControl = ({
     };
 
     // Get all images from every work for the "view all" gallery
-    const getAllImagesFromAllWorks = () => {
+
+    const allWorkImages = useMemo(() => {
         const allImages: { url: string; workTitle: string; version?: number; editionnum?: number }[] = [];
         const seenUrls = new Set<string>();
 
@@ -171,9 +173,7 @@ export const ContributorEditionControl = ({
         });
 
         return allImages;
-    };
-
-    const allWorkImages = useMemo(() => getAllImagesFromAllWorks(), [groupedEditions]);
+    }, [groupedEditions]);
 
     // Format image info for gallery
     const formatImageInfo = (imageData: { workTitle: string; version?: number; editionnum?: number }): string => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 
 
 import { Person, PersonBrief } from "../../person";
@@ -61,9 +61,15 @@ export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPubli
     anthology, enableQueries, workEditions, hideType }: ShortsListProps): React.JSX.Element => {
 
     
-    const [groupedShorts, setGroupedShorts]: [Record<string, Short[]>,
-        (groupedShorts: Record<string, Short[]>) => void] = useState({});
     const grouping = groupAuthors ? "person" : groupRoles ? "role" : "";
+    // Derived from props, including person: grouping by role depends on
+    // whose page this is, so it must follow person changes too.
+    const groupedShorts: Record<string, Short[]> = useMemo(() => {
+        if (grouping) {
+            return groupShorts(shorts, grouping, person);
+        }
+        return { "null": shorts };
+    }, [shorts, grouping, person]);
     
 
     const sortGroups = (a: [string, Short[]], b: [string, Short[]]) => {
@@ -80,17 +86,6 @@ export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPubli
     }
 
     
-
-    useEffect(() => {
-        if (groupAuthors || groupRoles) {
-            const grouped = groupShorts(shorts, grouping, person);
-            setGroupedShorts(grouped);
-        } else {
-            let grouped: Record<any, Short[]> = {};
-            grouped["null"] = shorts;
-            setGroupedShorts(grouped);
-        }
-    }, [shorts, groupAuthors, groupRoles])
 
     const skipAuthors = !anthology ? true : false;
 

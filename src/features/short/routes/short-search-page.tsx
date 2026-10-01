@@ -65,11 +65,11 @@ export const ShortSearchPage = () => {
         }
         getMagazines();
         getTypes();
-    }, [])
+    }, [user])
 
     useEffect(() => {
         setDocumentTitle("Novellihaku");
-    }, [])
+    }, [setDocumentTitle])
     //const user = useMemo(() => { return getCurrenUser() }, []);
 
     const searchShorts = async () => {

@@ -95,7 +95,7 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     useEffect(() => {
         if (data !== undefined)
             setDocumentTitle(data.name);
-    }, [data])
+    }, [data, setDocumentTitle])
 
     // A person can only be deleted if nothing references them. The backend
     // enforces this too (and returns a Finnish error if not), but we also

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useEffectEvent, useMemo } from "react";
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { AutoComplete } from "primereact/autocomplete";
 import { Button } from "primereact/button";
@@ -92,12 +92,18 @@ const ContributorRow = ({ id, index, contributionTarget, disabled, isLast, onAdd
             setRoleList(response.data);
         }
         getRoles();
+    }, [contributionTarget, user])
 
+    // Once per row: offer real names for the person the row starts with.
+    const initRealNames = useEffectEvent(() => {
         const currentPerson = getValues(`${id}.${index}.person`);
         if (currentPerson?.id) {
             const currentRealPerson = getValues(`${id}.${index}.real_person`);
             fetchRealNames(currentPerson.id, !currentRealPerson?.id);
         }
+    });
+    useEffect(() => {
+        initRealNames();
     }, [])
 
     async function filterPeople(event: any) {

@@ -134,11 +134,11 @@ const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
   const disabled = isDisabled(user, loading);
 
   const methods = useForm<WorkFormData>({ defaultValues: data });
-  
+  const { reset } = methods;
 
   useEffect(() => {
-    methods.reset(data);
-  }, [data]);
+    reset(data);
+  }, [data, reset]);
 
   useEffect(() => {
     async function getGenres() {

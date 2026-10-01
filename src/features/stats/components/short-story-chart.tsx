@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Card } from 'primereact/card';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
@@ -230,16 +230,16 @@ export const ShortStoryChart = () => {
     }, [storyTypesQuery.data]);
 
     // Get story type name from ID
-    const getStoryTypeName = (storyTypeId: number): string => {
+    const getStoryTypeName = useCallback((storyTypeId: number): string => {
         const storyType = storyTypeIdOptions.find(s => s.value === storyTypeId);
         return storyType ? storyType.label.toLowerCase() : 'novelli';
-    };
+    }, [storyTypeIdOptions]);
 
     // Get Finnish plural form of story type
-    const getStoryTypeNamePlural = (storyTypeId: number): string => {
+    const getStoryTypeNamePlural = useCallback((storyTypeId: number): string => {
         const name = getStoryTypeName(storyTypeId);
         return storyTypePlurals[name] || name;
-    };
+    }, [getStoryTypeName]);
 
     // Filter persons (exclude "Muut" aggregation)
     const persons = useMemo(() => {
@@ -258,41 +258,41 @@ export const ShortStoryChart = () => {
             .sort((a, b) => b.count - a.count);
     }, [persons]);
 
-    // Get person count for nationality based on story type and role filters
-    const getNationalityCount = (item: StoryNationalityCount): number => {
-        if (nationalityStoryType === 'all' && nationalityRole === 'all') {
-            return item.count;
-        }
-
-        // API returns capitalized keys, so we need to capitalize our lookup keys
-        const roleKey = capitalizeFirst(nationalityRole);
-        const storyTypeKey = capitalizeFirst(nationalityStoryType);
-
-        let personCount = 0;
-        if (nationalityStoryType === 'all') {
-            // All story types, specific role
-            Object.values(item.storytypes).forEach(roles => {
-                personCount += roles[roleKey] || 0;
-            });
-        } else if (nationalityRole === 'all') {
-            // Specific story type, all roles
-            const storyTypeData = item.storytypes[storyTypeKey];
-            if (storyTypeData) {
-                personCount = Object.values(storyTypeData).reduce((sum, count) => sum + count, 0);
-            }
-        } else {
-            // Specific story type and role
-            const storyTypeData = item.storytypes[storyTypeKey];
-            if (storyTypeData) {
-                personCount = storyTypeData[roleKey] || 0;
-            }
-        }
-        return personCount;
-    };
 
     // Nationality data with story type and role filtering
     const allNationalities = useMemo(() => {
         if (!nationalityQuery.data) return [];
+        // Get person count for nationality based on story type and role filters
+        const getNationalityCount = (item: StoryNationalityCount): number => {
+            if (nationalityStoryType === 'all' && nationalityRole === 'all') {
+                return item.count;
+            }
+
+            // API returns capitalized keys, so we need to capitalize our lookup keys
+            const roleKey = capitalizeFirst(nationalityRole);
+            const storyTypeKey = capitalizeFirst(nationalityStoryType);
+
+            let personCount = 0;
+            if (nationalityStoryType === 'all') {
+                // All story types, specific role
+                Object.values(item.storytypes).forEach(roles => {
+                    personCount += roles[roleKey] || 0;
+                });
+            } else if (nationalityRole === 'all') {
+                // Specific story type, all roles
+                const storyTypeData = item.storytypes[storyTypeKey];
+                if (storyTypeData) {
+                    personCount = Object.values(storyTypeData).reduce((sum, count) => sum + count, 0);
+                }
+            } else {
+                // Specific story type and role
+                const storyTypeData = item.storytypes[storyTypeKey];
+                if (storyTypeData) {
+                    personCount = storyTypeData[roleKey] || 0;
+                }
+            }
+            return personCount;
+        };
         return nationalityQuery.data
             .filter(item => item.nationality !== null && item.nationality_id !== null)
             .map(item => ({
@@ -495,7 +495,7 @@ export const ShortStoryChart = () => {
         if (yearChartStoryType === 'all') return 'Novelleja';
         const storyTypeId = storyTypeIdOptions.find(s => s.label.toLowerCase() === yearChartStoryType)?.value;
         return storyTypeId ? capitalizeFirst(getStoryTypeNamePlural(storyTypeId)) : 'Novelleja';
-    }, [yearChartStoryType]);
+    }, [yearChartStoryType, storyTypeIdOptions, getStoryTypeNamePlural]);
 
     const yearChartOptions = useMemo(() => ({
         indexAxis: 'y' as const,

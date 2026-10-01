@@ -20,13 +20,14 @@
         "ignoreRestSiblings": true
       }
     ],
-    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/exhaustive-deps": "error",
     "react/set-state-in-effect": "warn",
     "react/static-components": "warn",
     "react/immutability": "warn",
     "react/globals": "error",
     "react/purity": "warn",
-    "react/no-children-prop": "off"
+    "react/no-children-prop": "off",
+    "react-hooks/rules-of-hooks": "error"
   },
   "ignorePatterns": [
     "build/**",
@@ -34,5 +35,15 @@
     "coverage/**",
     "playwright-report/**",
     "test-results/**"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "tests/**"
+      ],
+      "rules": {
+        "react-hooks/rules-of-hooks": "off"
+      }
+    }
   ]
 }

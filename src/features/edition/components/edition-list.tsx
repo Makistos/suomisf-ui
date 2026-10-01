@@ -67,7 +67,7 @@ export const EditionList = ({ editions, person, sort = "year" }: EditionListProp
             setGroupedEditions(
                 { None: combined.filter((ed): ed is CombinedEdition => ed !== undefined) });
         }
-    }, [editions, sorting, detailLevel])
+    }, [editions, sorting, detailLevel, user])
 
     const editionListCmp = (a: [string, Edition[]], b: [string, Edition[]]) => {
         const aFirst = a[1][0];

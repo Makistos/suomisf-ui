@@ -20,7 +20,7 @@ export const PubseriesListPage = () => {
 
     useEffect(() => {
         setDocumentTitle("Kustantajien sarjat");
-    }, [])
+    }, [setDocumentTitle])
 
     const fetchPubseriesList = async (): Promise<Pubseries[]> => {
         const url = 'pubseries';

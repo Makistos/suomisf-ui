@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useEffectEvent } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
@@ -42,9 +42,12 @@ export const PersonImagePickerDialog = ({ person, visible, onHide, onSave }: Per
             .finally(() => setLoading(false));
     };
 
+    // Search when the dialog opens or the person changes, with whatever the
+    // limit is then; changing the limit searches through its own handler.
+    const searchOnOpen = useEffectEvent(() => runSearch(limit));
     useEffect(() => {
         if (!visible) return;
-        runSearch(limit);
+        searchOnOpen();
     }, [visible, person.id]);
 
     const stripHtml = (html: string) => html.replace(/<[^>]+>/g, '').trim();

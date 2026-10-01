@@ -34,7 +34,7 @@ export const BookseriesListPage = () => {
     useEffect(() => {
         if (data !== undefined)
             setDocumentTitle("Kirjasarjat");
-    }, [data])
+    }, [data, setDocumentTitle])
 
     const nameTemplate = (rowData: Bookseries) => {
         return (

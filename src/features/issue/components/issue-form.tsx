@@ -67,7 +67,7 @@ export const IssueForm = (props: IssueFormProps) => {
             setSizes(response);
         }
         getSizes();
-    }, [])
+    }, [user])
 
     const fetchIssue = async (id: string | null) => {
         if (id === null) {

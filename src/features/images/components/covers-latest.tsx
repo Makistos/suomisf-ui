@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import { ProgressSpinner } from "primereact/progressspinner";
 
@@ -13,7 +13,7 @@ interface CoversLatestProps {
 }
 
 export const CoversLatest = ({ count }: CoversLatestProps) => {
-  const user = getCurrenUser();
+  const user = useMemo(() => getCurrenUser(), []);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<EditionImage[]>([]);
 
@@ -31,7 +31,7 @@ export const CoversLatest = ({ count }: CoversLatestProps) => {
       setData(data);
       setLoading(false);
     });
-  }, [count])
+  }, [count, user])
 
   return (
     <div className="grid">

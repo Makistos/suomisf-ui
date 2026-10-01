@@ -48,7 +48,7 @@ export const MagazineForm = ({ id, onSubmitCallback }: MagazineFormProps) => {
             setTypeList(response.data);
         }
         getTypes();
-    }, [id])
+    }, [id, user])
 
     const defaultValues: MagazineFormData = {
         id: null,

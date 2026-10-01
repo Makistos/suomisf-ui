@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import { ProgressSpinner } from "primereact/progressspinner";
 
@@ -13,7 +13,7 @@ interface EditionLatestProps {
 }
 
 export const EditionsLatest = ({ count }: EditionLatestProps) => {
-  const user = getCurrenUser();
+  const user = useMemo(() => getCurrenUser(), []);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Edition[]>([]);
 
@@ -31,7 +31,7 @@ export const EditionsLatest = ({ count }: EditionLatestProps) => {
       setData(data);
       setLoading(false);
     });
-  }, [count])
+  }, [count, user])
 
   return (
     <>

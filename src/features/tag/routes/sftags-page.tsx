@@ -13,7 +13,7 @@ export const SFTags = () => {
     const [, setDocumentTitle] = useDocumentTitle("");
     useEffect(() => {
         setDocumentTitle("Asiasanat");
-    }, [])
+    }, [setDocumentTitle])
 
     // const [loading, setLoading] = useState(false);
     const user = useMemo(() => { return getCurrenUser() }, []);

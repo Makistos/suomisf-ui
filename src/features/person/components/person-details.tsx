@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useRef } from "react"
+import { useMemo, useEffect, useEffectEvent, useRef } from "react"
 import { Link } from "react-router-dom"
 import { getCountryCode } from "@utils/country-utils"
 import { Person } from "../types"
@@ -16,7 +16,9 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
     const user = useMemo(() => getCurrenUser(), []);
     const hasImageRecord = !!(data.images && data.images.length > 0);
     const hasStoredImage = data.images?.some(img => img.src) ?? false;
-    const savedRef = useRef(false);
+    // Person whose image was already auto-saved (the page can switch person
+    // without remounting this component).
+    const savedForRef = useRef<number | null>(null);
     const toastRef = useRef<Toast>(null);
     const wasLoadingRef = useRef(false);
 
@@ -37,10 +39,13 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
 
     const stripHtml = (html: string) => html.replace(/<[^>]+>/g, '').trim();
 
-    // Auto-save newly discovered Wikidata image in the background
-    useEffect(() => {
-        if (!imageInfo || hasStoredImage || savedRef.current || String(data.qid) === '0' || !isAdmin(user)) return;
-        savedRef.current = true;
+    // Auto-save newly discovered Wikidata image in the background. Runs only
+    // when imageInfo changes (an effect event reads the current person), so a
+    // previous person's image is never saved onto the next one.
+    const autoSaveImage = useEffectEvent((info: NonNullable<typeof imageInfo>) => {
+        if (hasStoredImage || savedForRef.current === data.id || String(data.qid) === '0' || !isAdmin(user)) return;
+        savedForRef.current = data.id;
+        const imageInfo = info;
         const saves = [
             postApiContent(`person/${data.id}/images`, {
                 src: imageInfo.url,
@@ -55,6 +60,9 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
             }, user));
         }
         Promise.all(saves).catch(console.error);
+    });
+    useEffect(() => {
+        if (imageInfo) autoSaveImage(imageInfo);
     }, [imageInfo]);
 
     const wikimediaLink = data.links?.find(l => l.description === 'Wikimedia Commons')?.link ?? null;

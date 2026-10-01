@@ -71,6 +71,7 @@ dev servers on `:3000`/`:5000` are never touched.
 | `ownership.spec.ts` | Marks an edition owned via the `Rating` widget on `/works/63`, confirms it appears under the profile's "Omistetut" tab. |
 | `read-status.spec.ts` | Marks a work read+liked via the thumbs `SelectButton` on `/works/2`, confirms it appears under "Luetut". |
 | `profile.spec.ts` | After owning a book, confirms the profile's "Tilastoja" tab renders a chart and "Kokoelman arvo" dialog opens without error. |
+| `article.spec.ts` | Opens `/articles/1` logged in; the guard checks the article isn't refetched in a loop (it was, for logged-in users only). |
 | `suggestion.spec.ts` | Walks the `/suggestions` stepper by skipping every step, confirms it reaches results. |
 | `password-reset.spec.ts` | Full forgot/reset-password cycle without email: drives `/forgot-password` for real, mints a valid reset token via the backend's `mint_reset_token.py` (the token is a deterministic signed hash, not something that needs to be emailed), resets the password, logs in with it, then resets back to the original so it doesn't break other specs. Run separately (see above) — the password change would otherwise race every other `userPage`-fixture test. |
 

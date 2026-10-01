@@ -114,7 +114,8 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
     };
 
     // Get all images from all works for the gallery
-    const getAllImagesFromAllWorks = () => {
+
+    const allWorksImages = useMemo(() => {
         const allImages: { url: string; workTitle: string; version?: number; editionnum?: number }[] = [];
         const seenUrls = new Set<string>();
 
@@ -144,9 +145,7 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
         });
 
         return allImages;
-    };
-
-    const allWorksImages = useMemo(() => getAllImagesFromAllWorks(), [works]);
+    }, [works]);
 
     // Format image info for gallery
     const formatImageInfo = (imageData: { workTitle: string; version?: number; editionnum?: number }): string => {

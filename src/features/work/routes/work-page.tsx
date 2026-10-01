@@ -136,7 +136,7 @@ const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, highlight
             headers: headers
         });
         onUpload();
-    }, [onUpload, edition, currIdx]);
+    }, [onUpload, edition]);
 
     // Check if this edition should be highlighted
     const shouldHighlight = highlightEditionId && editions.some(e => e.id.toString() === highlightEditionId);
@@ -373,7 +373,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
     const onUpload = useCallback(() => {
         toastRef.current?.show({ severity: 'info', summary: 'Success', detail: 'Kuva tallennettu' });
         queryClient.invalidateQueries({ queryKey: ["work", workId] });
-    }, [workId]);
+    }, [queryClient, workId]);
 
     const itemTemplate = (editions: Edition[]) => {
         if (!editions) {

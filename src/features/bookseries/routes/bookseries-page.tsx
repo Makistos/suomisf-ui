@@ -65,7 +65,7 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
     useEffect(() => {
         if (data !== undefined && data !== null)
             setDocumentTitle(data.name);
-    }, [data])
+    }, [data, setDocumentTitle])
 
     const dialItems = [
         {

@@ -34,50 +34,52 @@ interface PersonFormProps {
     navigateOnSuccess?: boolean,
 }
 
+// Module-level so they keep their identity across renders (used as
+// effect dependencies below).
+const convToForm = (person: Person): PersonFormData => ({
+    id: person.id,
+    name: person.name,
+    aliases: person.aliases,
+    alt_name: person.alt_name,
+    fullname: person.fullname,
+    other_names: person.other_names,
+    dob: person.dob,
+    dod: person.dod,
+    bio: person.bio,
+    bio_src: person.bio_src,
+    qid: person.qid,
+    links: person.links.length > 0 ? person.links : [{ 'link': '', description: '' }],
+    nationality: person.nationality
+});
+
+const defaultValues: PersonFormData = {
+    id: null,
+    name: '',
+    aliases: [],
+    alt_name: '',
+    fullname: '',
+    other_names: '',
+    dob: null,
+    dod: null,
+    bio: '',
+    bio_src: '',
+    qid: '',
+    links: [{ link: '', description: '' }],
+    nationality: null
+}
+
 export const PersonForm = (props: PersonFormProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
 
     const navigate = useNavigate();
 
-    const convToForm = (person: Person): PersonFormData => ({
-        id: person.id,
-        name: person.name,
-        aliases: person.aliases,
-        alt_name: person.alt_name,
-        fullname: person.fullname,
-        other_names: person.other_names,
-        dob: person.dob,
-        dod: person.dod,
-        bio: person.bio,
-        bio_src: person.bio_src,
-        qid: person.qid,
-        links: person.links.length > 0 ? person.links : [{ 'link': '', description: '' }],
-        nationality: person.nationality
-    });
-
-    const defaultValues: PersonFormData = {
-        id: null,
-        name: '',
-        aliases: [],
-        alt_name: '',
-        fullname: '',
-        other_names: '',
-        dob: null,
-        dod: null,
-        bio: '',
-        bio_src: '',
-        qid: '',
-        links: [{ link: '', description: '' }],
-        nationality: null
-    }
-
     const formData = props.data ? convToForm(props.data) : defaultValues;
     const methods = useForm<PersonFormData>({ defaultValues: formData });
-    
+    const { reset } = methods;
 
     useEffect(() => {
-        methods.reset(props.data ? convToForm(props.data) : defaultValues);
-    }, [props.data]);
+        reset(props.data ? convToForm(props.data) : defaultValues);
+    }, [props.data, reset]);
 
     const updatePerson = (data: PersonFormData) => {
         const saveData = { data: data };

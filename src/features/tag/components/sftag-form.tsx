@@ -35,7 +35,7 @@ export const SfTagForm = (props: FormProps) => {
             setTypes(response);
         }
         getTypes();
-    }, [])
+    }, [user])
 
     const { isLoading, data } = useQuery({
         queryKey: ['tags', props.tagId],

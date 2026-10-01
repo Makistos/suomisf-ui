@@ -19,9 +19,8 @@ export const PublisherListPage = () => {
     const [, setDocumentTitle] = useDocumentTitle("");
 
     useEffect(() => {
-        if (data !== undefined)
-            setDocumentTitle("Kustantajat");
-    }, [])
+        setDocumentTitle("Kustantajat");
+    }, [setDocumentTitle])
 
     const fetchPublishers = async () => {
         let publisherList: Publisher[] = [];

@@ -55,7 +55,7 @@ export const EditionForm = (props: EditionFormProps) => {
       setBindings(bindings.data);
     }
     fetchBindings();
-  }, []);
+  }, [user]);
 
   const { isLoading, data } = useQuery({
     queryKey: ['work', props.editionid, "form"],

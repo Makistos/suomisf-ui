@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 import { ProgressSpinner } from "primereact/progressspinner";
 
@@ -13,7 +13,7 @@ interface WorksLatestProps {
 }
 
 export const WorksLatest = ({ count }: WorksLatestProps) => {
-  const user = getCurrenUser();
+  const user = useMemo(() => getCurrenUser(), []);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Work[]>([]);
 
@@ -32,7 +32,7 @@ export const WorksLatest = ({ count }: WorksLatestProps) => {
       setData(data)
       setLoading(false);
     });
-  }, [count])
+  }, [count, user])
 
   return (
     <>

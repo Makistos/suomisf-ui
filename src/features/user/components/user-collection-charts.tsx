@@ -11,6 +11,17 @@ import { WorksByYearChart } from "../../stats/components/works-by-year-chart";
 import { WorkList } from "@features/work/components/work-list";
 import { Work } from "@features/work/types";
 
+const DOUGHNUT_OPTIONS = {
+    plugins: {
+        legend: {
+            position: 'right' as const,
+            labels: { boxWidth: 12, font: { size: 11 } },
+        },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+};
+
 export type GenreData = {
     id: number
     abbr: string
@@ -110,27 +121,16 @@ export const UserCollectionCharts = ({ userId, genreData, comp, filterParam }: U
             }],
         };
     };
-    const doughnutOptions = {
-        plugins: {
-            legend: {
-                position: 'right' as const,
-                labels: { boxWidth: 12, font: { size: 11 } },
-            },
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-    };
-
     const langChartData = useMemo(() => doughnutData(comp?.language_distribution),
         [comp?.language_distribution]);
     const typeChartData = useMemo(() => doughnutData(comp?.worktype_distribution),
         [comp?.worktype_distribution]);
 
     const langChartOptions = useMemo(() => ({
-        ...doughnutOptions,
+        ...DOUGHNUT_OPTIONS,
         plugins: {
             legend: {
-                ...doughnutOptions.plugins.legend,
+                ...DOUGHNUT_OPTIONS.plugins.legend,
                 onClick: (_event: unknown, legendItem: { index?: number }) => {
                     const item = comp?.language_distribution?.[legendItem.index ?? -1];
                     if (item?.id) {
@@ -154,10 +154,10 @@ export const UserCollectionCharts = ({ userId, genreData, comp, filterParam }: U
     });
 
     const typeChartOptions = useMemo(() => ({
-        ...doughnutOptions,
+        ...DOUGHNUT_OPTIONS,
         plugins: {
             legend: {
-                ...doughnutOptions.plugins.legend,
+                ...DOUGHNUT_OPTIONS.plugins.legend,
                 onClick: (_event: unknown, legendItem: { index?: number }) => {
                     const item = comp?.worktype_distribution?.[legendItem.index ?? -1];
                     if (item?.id) {

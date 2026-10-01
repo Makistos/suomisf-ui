@@ -27,7 +27,7 @@ export const useWikimediaImage = (person: Person, enabled = true) => {
             .finally(() => { if (!cancelled) setIsLoading(false); });
 
         return () => { cancelled = true; };
-    }, [person.id, enabled]);
+    }, [person.id, enabled, person.qid]);
 
     return { imageInfo, isLoading };
 };

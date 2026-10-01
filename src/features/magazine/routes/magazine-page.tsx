@@ -67,7 +67,7 @@ export const MagazinePage = () => {
     useEffect(() => {
         if (data !== undefined && data !== null)
             setDocumentTitle(data.name);
-    }, [data])
+    }, [data, setDocumentTitle])
 
     const deleteMagazine = (id: number) => {
         setQueryEnabled(false);

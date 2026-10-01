@@ -87,6 +87,9 @@ const nationalityColors = [
     '#607D8B', '#3F51B5', '#009688', '#CDDC39', '#FFC107',
 ];
 
+// Roles to exclude (only used for magazine issues, not works/editions)
+const EXCLUDED_ROLES = ['päätoimittaja'];
+
 export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChartProps) => {
     const [selectedGenre, setSelectedGenre] = useState<string>('all');
     const [selectedRole, setSelectedRole] = useState<number>(1);
@@ -119,14 +122,11 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
         }
     });
 
-    // Roles to exclude (only used for magazine issues, not works/editions)
-    const excludedRoles = ['päätoimittaja'];
-
     // Create role options from API data
     const roleOptions = useMemo(() => {
         if (!rolesQuery.data) return [];
         return rolesQuery.data
-            .filter(role => !excludedRoles.includes(role.name.toLowerCase()))
+            .filter(role => !EXCLUDED_ROLES.includes(role.name.toLowerCase()))
             .map(role => ({
                 label: capitalizeFirst(role.name),
                 value: role.id
@@ -138,7 +138,7 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
         const options = [{ label: 'Kaikki roolit', value: 'all' }];
         if (rolesQuery.data) {
             rolesQuery.data
-                .filter(role => !excludedRoles.includes(role.name.toLowerCase()))
+                .filter(role => !EXCLUDED_ROLES.includes(role.name.toLowerCase()))
                 .forEach(role => {
                     options.push({
                         label: capitalizeFirst(role.name),
@@ -195,40 +195,40 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
             .sort((a, b) => b.count - a.count);
     }, [authors, selectedGenre]);
 
-    // Get person count for nationality based on genre/role filters
-    const getNationalityCount = (item: NationalityCount): number => {
-        if (nationalityGenre === 'all' && nationalityRole === 'all') {
-            return item.count;
-        }
-
-        // API returns capitalized role names, so we need to capitalize our lookup key
-        const roleKey = capitalizeFirst(nationalityRole);
-
-        let personCount = 0;
-        if (nationalityGenre === 'all') {
-            // All genres, specific role
-            Object.values(item.genres).forEach(roles => {
-                personCount += roles[roleKey] || 0;
-            });
-        } else if (nationalityRole === 'all') {
-            // Specific genre, all roles
-            const genreData = item.genres[nationalityGenre];
-            if (genreData) {
-                personCount = Object.values(genreData).reduce((sum, count) => sum + count, 0);
-            }
-        } else {
-            // Specific genre and role
-            const genreData = item.genres[nationalityGenre];
-            if (genreData) {
-                personCount = genreData[roleKey] || 0;
-            }
-        }
-        return personCount;
-    };
 
     // Nationality data with genre/role filtering
     const allNationalities = useMemo(() => {
         if (!nationalityQuery.data) return [];
+        // Get person count for nationality based on genre/role filters
+        const getNationalityCount = (item: NationalityCount): number => {
+            if (nationalityGenre === 'all' && nationalityRole === 'all') {
+                return item.count;
+            }
+
+            // API returns capitalized role names, so we need to capitalize our lookup key
+            const roleKey = capitalizeFirst(nationalityRole);
+
+            let personCount = 0;
+            if (nationalityGenre === 'all') {
+                // All genres, specific role
+                Object.values(item.genres).forEach(roles => {
+                    personCount += roles[roleKey] || 0;
+                });
+            } else if (nationalityRole === 'all') {
+                // Specific genre, all roles
+                const genreData = item.genres[nationalityGenre];
+                if (genreData) {
+                    personCount = Object.values(genreData).reduce((sum, count) => sum + count, 0);
+                }
+            } else {
+                // Specific genre and role
+                const genreData = item.genres[nationalityGenre];
+                if (genreData) {
+                    personCount = genreData[roleKey] || 0;
+                }
+            }
+            return personCount;
+        };
         return nationalityQuery.data
             .filter(item => item.nationality !== null && item.nationality_id !== null)
             .map(item => ({

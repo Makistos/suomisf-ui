@@ -67,7 +67,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
     useEffect(() => {
         if (data !== undefined)
             setDocumentTitle(data.name);
-    }, [data])
+    }, [data, setDocumentTitle])
 
     const deletePublisher = (id: number) => {
         setQueryEnabled(false);

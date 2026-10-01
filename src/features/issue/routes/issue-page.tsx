@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
 
 import { getCurrenUser } from '../../../services/auth-service';
@@ -201,28 +201,39 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
         })
     }
 
-    const onFormSubmit = useCallback((success: boolean, message: string) => {
+    // Plain functions, not useCallback: nothing below is memoized, and
+    // recreating them each render keeps them from closing over a stale issueId.
+    const onDialogHide = () => {
+        setIssueFormVisible(false);
+        queryClient.invalidateQueries({ queryKey: ['issue', issueId] });
+        setQueryEnabled(true);
+    };
+
+    const onUpload = (severity: "success" | "info" | "warn" | "error", message: string) => {
+        toast?.current?.show({
+            severity: severity,
+            summary: '',
+            detail: message
+        })
+        queryClient.invalidateQueries({ queryKey: ['issue', issueId] });
+    };
+
+    const onFormSubmit = (success: boolean, message: string) => {
         if (!success) {
             console.log(message);
         }
         onDialogHide();
         setQueryEnabled(true);
-    }, [data, user]);
+    };
 
     const onDialogShow = () => {
         setIssueFormVisible(true);
         setQueryEnabled(false);
     }
 
-    const onDialogHide = () => {
-        setIssueFormVisible(false);
-        queryClient.invalidateQueries({ queryKey: ['issue', issueId] });
-        setQueryEnabled(true);
-    }
-
     const [imageIdx, setImageIdx] = useState(0);
 
-    const saveImage = useCallback(async (event: FileUploadHandlerEvent) => {
+    const saveImage = async (event: FileUploadHandlerEvent) => {
         uploadIssueImage(issueId, event.files[0], event.files[0].name).then(response => {
             if (response?.status === 200) {
                 onUpload('success', 'Kansi lisätty onnistuneesti');
@@ -230,9 +241,9 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
                 onUpload('error', 'Virhe kantta lisätäessä');
             }
         });
-    }, [issueId]);
+    };
 
-    const deleteImage = useCallback((_itemId: string | number, imageId: number) => {
+    const deleteImage = (_itemId: string | number, imageId: number) => {
         deleteIssueImage(issueId, imageId).then(response => {
             if (response?.status === 200) {
                 onUpload('success', 'Kansi poistettu onnistuneesti');
@@ -240,16 +251,7 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
                 onUpload('error', 'Virhe kantta poistettaessa');
             }
         });
-    }, [issueId]);
-
-    const onUpload = useCallback((severity: "success" | "info" | "warn" | "error", message: string) => {
-        toast?.current?.show({
-            severity: severity,
-            summary: '',
-            detail: message
-        })
-        queryClient.invalidateQueries({ queryKey: ['issue', issueId] });
-    }, [issueId, user])
+    };
 
     const onShortsShow = () => {
         setShortsFormVisible(true);

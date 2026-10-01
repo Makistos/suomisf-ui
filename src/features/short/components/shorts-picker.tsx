@@ -42,7 +42,7 @@ export const EditionShortsPicker = ({ id, onClose }: PickerProps) => {
     if (id) {
       getEditionShorts();
     }
-  }, [])
+  }, [user, id])
 
   const saveShortsToEdition = async (shorts: Short[]): Promise<number> => {
     const ids = shorts.map(short => short.id);
@@ -79,7 +79,7 @@ export const WorkShortsPicker = ({ id, onClose }: PickerProps) => {
     if (id && !isDirty) {
       getWorkShorts();
     }
-  }, [])
+  }, [user, id])
 
   const saveShortsToWork = async (shorts: Short[]): Promise<number> => {
     const ids = shorts.map(short => short.id)
@@ -116,7 +116,7 @@ export const IssueShortsPicker = ({ id, onClose }: PickerProps) => {
     if (id) {
       getShorts();
     }
-  }, [])
+  }, [user, id])
 
   const saveShortsToIssue = async (shorts: Short[]): Promise<number> => {
     const ids = shorts.map(short => short.id)
@@ -147,7 +147,7 @@ interface ShortsPickerProps {
 }
 
 const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
-  const user = getCurrenUser();
+  const user = useMemo(() => getCurrenUser(), []);
   // Person selected in the dropdown
   //const [selectedPerson, setSelectedPerson] = useState<Person | string | null>(null);
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
@@ -174,7 +174,7 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
       }
     }
     getShorts();
-  }, [selectedPerson])
+  }, [selectedPerson, user])
 
   useEffect(() => {
     setSelectedItemShorts(source);

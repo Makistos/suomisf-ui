@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { TabView, TabPanel } from "primereact/tabview";
 import { Button } from "primereact/button";
@@ -42,38 +42,31 @@ interface CBCProps {
     ignoreGenreFilter?: boolean
 }
 
+/**
+ * Given list of genres, determines if they match a non-SF list.
+ *
+ * non-SF is defined as having no other genres than "nonSF" and "compilation".
+ * Empty genre list is defined as being SF as there are quite a few items
+ * that lack genre definitions - and this is an SF database so we assume
+ * items are SF.
+ *
+ * @param genres List of genres.
+ * @returns True - is non-SF, false - is SF.
+ */
+const isNonSf = (genres: Genre[]) => {
+    return (genres.length === 0 || genres.filter(genre =>
+        (genre.abbr !== 'kok') && (genre.abbr !== 'eiSF')).length > 0) ? false : true;
+}
+
 export const ContributorBookControl = ({ person, viewNonSf, types, collaborationsLast = false, tags, ignoreGenreFilter = false }: CBCProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [showTags, setShowTags] = useState(false);
-    const [authored, setAuthored]: [Work[], (sfWorks: Work[]) => void]
-        = useState<Work[]>([]);
-    const [edits, setEdits]: [Edition[], (sfEdits: Edition[]) => void] = useState<Edition[]>([]);
-    const [translations, setTranslations]: [Edition[], (sfTranslations: Edition[]) => void]
-        = useState<Edition[]>([]);
-    const [covers, setCovers] = useState<Edition[]>([]);
-    const [illustrations, setIllustrations] = useState<Edition[]>([]);
-    const [appearsIn_, setAppearsIn] = useState<Work[]>([]);
 
     // Create list that contains all alias ids as well
     const person_ids = useMemo(() => {
         return [...person.aliases.map(alias => alias.id), person.id];
     }, [person.aliases, person.id]);
 
-    /**
-     * Given list of genres, determines if they match a non-SF list.
-     *
-     * non-SF is defined as having no other genres than "nonSF" and "compilation".
-     * Empty genre list is defined as being SF as there are quite a few items
-     * that lack genre definitions - and this is an SF database so we assume
-     * items are SF.
-     *
-     * @param genres List of genres.
-     * @returns True - is non-SF, false - is SF.
-     */
-    const isNonSf = (genres: Genre[]) => {
-        return (genres.length === 0 || genres.filter(genre =>
-            (genre.abbr !== 'kok') && (genre.abbr !== 'eiSF')).length > 0) ? false : true;
-    }
 
     /**
      * Determines which tab should be set active based on contribution counts.
@@ -108,20 +101,17 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
      * @param {number[]} contributionTypes - The list of contribution types to include.
      * @return {Contribution[]} The filtered list of contributions.
      */
-    const contributions = (contributions: Contribution[], contributionTypes: number[]) => {
-        // console.log(contributionType)
-        // console.log(contributions)
+    const contributions = useCallback((contributions: Contribution[], contributionTypes: number[]) => {
         if (contributions.length === 0) return [];
         return contributions.filter(contrib => (contributionTypes.includes(contrib.role.id) && person_ids.includes(contrib.person.id)))
-    }
+    }, [person_ids]);
 
-    const edition_contributions = (editions: Edition[]) => {
-        // console.log(editions)
+    const edition_contributions = useCallback((editions: Edition[]) => {
         const filtered = editions.filter(edition => edition.work && types.includes(edition.work.work_type.id));
         return filtered.filter(edition => contributions(edition.contributions, [2, 4, 5]).length > 0);
-    }
+    }, [types, contributions]);
 
-    const work_contributions = (works: Work[], isSf: boolean, contributionType: number) => {
+    const work_contributions = useCallback((works: Work[], isSf: boolean, contributionType: number) => {
         const filtered = works.filter(work => types.includes(work.work_type.id) &&
             (ignoreGenreFilter || (isSf ? isNonSf(work.genres) : !isNonSf(work.genres))));
         const retval = filtered.filter(work => contributions(work.contributions, [contributionType]).length > 0);
@@ -131,32 +121,22 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
                 .filter(c => contributionType === c.role.id && person_ids.includes(c.person.id))
                 .every(c => !c.real_person?.id || person_ids.includes(c.real_person.id) || real_name_ids.includes(c.real_person.id))
         );
-    }
+    }, [types, ignoreGenreFilter, contributions, person.real_names, person_ids]);
 
-    useEffect(() => {
-        // setWorks(person.works.filter(
-        //     work => ((types.includes(work.work_type.id)) &&
-        //         (viewNonSf ? isNonSf(work.genres) : !isNonSf(work.genres)))));
-        setAuthored(work_contributions(person.works, viewNonSf, 1));
+    // Derived lists, computed from props (previously copied into state by an
+    // effect that missed some of its inputs, e.g. person.edits).
+    const { authored, edits, translations, covers, illustrations, appearsIn_ } = useMemo(() => {
         const editions = edition_contributions(person.editions);
-
-        const newTr = editions.filter(edition =>
-            contributions(edition.contributions, [2]).length > 0);
-        setTranslations(newTr);
-        setEdits(person.edits.filter(edition => edition.work && types.includes(edition.work.work_type.id)));
-        const newCovers = editions.filter(edition =>
-            contributions(edition.contributions, [4]).length > 0);
-        setCovers(newCovers);
-        const newIllustrations = editions.filter(edition =>
-            contributions(edition.contributions, [5]).length > 0);
-        setIllustrations(newIllustrations);
-        // const newAppearsIn = person.works.filter(work =>
-        //     contributions(work.contributions, [6]).length > 0);
-        // const newAppearsIn = person.works.filter(edition =>
-        //     contributions(edition.contributions, [6]).length > 0);
-        setAppearsIn(work_contributions(person.works, viewNonSf, 6));
-        // setAppearsIn(newAppearsIn);
-    }, [person.works, person.editions, viewNonSf, types, person_ids]);
+        return {
+            authored: work_contributions(person.works, viewNonSf, 1),
+            translations: editions.filter(edition => contributions(edition.contributions, [2]).length > 0),
+            edits: person.edits.filter(edition => edition.work && types.includes(edition.work.work_type.id)),
+            covers: editions.filter(edition => contributions(edition.contributions, [4]).length > 0),
+            illustrations: editions.filter(edition => contributions(edition.contributions, [5]).length > 0),
+            appearsIn_: work_contributions(person.works, viewNonSf, 6),
+        };
+    }, [person.works, person.editions, person.edits, viewNonSf, types,
+        edition_contributions, work_contributions, contributions]);
 
     const headerText = (staticText: string, count: number) => {
         return staticText + " (" + count + ")";

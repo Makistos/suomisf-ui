@@ -36,7 +36,9 @@ export const WorkDetails = ({ work }: WorkProps) => {
         ).then(results => {
             setSharedAliasAuthors(results.filter((r): r is { aliasId: number; realPerson: PersonBrief } => r !== null));
         });
-    }, [work.id, work.contributions.map(c => `${c.person.id}:${c.real_person?.id ?? 0}`).join(',')]);
+    // React Query's structural sharing keeps work.contributions the same
+    // array until its content actually changes.
+    }, [work.contributions, user]);
 
     const compareContribs = (a: Contribution, b: Contribution) => {
         if (a.person.id !== b.person.id) return false;

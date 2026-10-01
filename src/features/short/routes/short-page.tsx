@@ -69,7 +69,7 @@ export const ShortPage = (props: ShortPageProps) => {
         if (data !== undefined && data !== null) {
             setDocumentTitle(data.title);
         }
-    }, [data])
+    }, [data, setDocumentTitle])
 
     const deleteShort = (id: number) => {
         setQueryEnabled(false);

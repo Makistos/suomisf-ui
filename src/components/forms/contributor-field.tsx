@@ -47,10 +47,220 @@ export const emptyContributor: Contribution = {
     },
 }
 
+interface ContributorRowProps {
+    id: string,
+    index: number,
+    contributionTarget: string,
+    disabled: boolean,
+    isLast: boolean,
+    onAdd: () => void,
+    onRemove: (index: number) => void,
+}
+
+// Module-level on purpose: when this was defined inside ContributorField,
+// every re-render of the form created a new component type, so React
+// remounted all rows (losing input state) and re-ran their mount effects,
+// refetching roles and real names over and over.
+const ContributorRow = ({ id, index, contributionTarget, disabled, isLast, onAdd, onRemove }: ContributorRowProps) => {
+    const user = useMemo(() => { return getCurrenUser() }, []);
+    const keyValue = `{contributors.${index}}`;
+    const [filteredPeople, setFilteredPeople] = useState<any>([]);
+    const [roleList, setRoleList]: [ContributorFieldPair[],
+        (roleList: ContributorFieldPair[]) => void]
+        = useState<ContributorFieldPair[]>([]);
+    const [realNameOptions, setRealNameOptions] = useState<PersonBrief[]>([]);
+
+    const { control, setValue, getValues } = useFormContext();
+
+    async function fetchRealNames(personId: number, overwrite: boolean = false) {
+        const response = await getApiContent(`people/${personId}/real-names`, user);
+        const names: PersonBrief[] = response.data;
+        setRealNameOptions(names);
+        if (overwrite) {
+            if (names.length === 1) {
+                setValue(`${id}.${index}.real_person`, names[0]);
+            } else if (names.length === 0) {
+                setValue(`${id}.${index}.real_person`, { name: '', id: 0, alt_name: '', fullname: '' });
+            }
+        }
+    }
+
+    useEffect(() => {
+        async function getRoles() {
+            const url = "roles/" + contributionTarget;
+            const response = await getApiContent(url, user);
+            setRoleList(response.data);
+        }
+        getRoles();
+
+        const currentPerson = getValues(`${id}.${index}.person`);
+        if (currentPerson?.id) {
+            const currentRealPerson = getValues(`${id}.${index}.real_person`);
+            fetchRealNames(currentPerson.id, !currentRealPerson?.id);
+        }
+    }, [])
+
+    async function filterPeople(event: any) {
+        const url =
+            "filter/people/" + event.query;
+        // console.log("Person search url:" + url);
+        const response = await getApiContent(url, user);
+        const p = response.data;
+        setFilteredPeople(p);
+        return p;
+    }
+
+    return (
+        <div key={keyValue}
+            className="grid">
+
+            <div className="field col-12 lg:col-3 p-2">
+                <Controller
+                    name={`${id}.${index}.person` as const}
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <AutoComplete
+                            {...field}
+                            field="name"
+                            completeMethod={filterPeople}
+                            suggestions={filteredPeople}
+                            minLength={3}
+                            placeholder="Henkilö"
+                            tooltip="Henkilö"
+                            forceSelection={false}
+                            delay={300}
+                            className={classNames(
+                                { "p-invalid": fieldState.error },
+                                "w-full"
+                            )}
+                            inputClassName="w-full"
+                            disabled={disabled}
+                            inputRef={field.ref}
+                            onSelect={(e) => {
+                                if (e.value?.id) {
+                                    fetchRealNames(e.value.id);
+                                }
+                            }}
+                            onClear={() => {
+                                setRealNameOptions([]);
+                                setValue(`${id}.${index}.real_person`, { name: '', id: 0, alt_name: '', fullname: '' });
+                            }}
+                        />
+                    )}
+                />
+            </div>
+            <div className="field col-12 lg:col-3 p-2">
+                <Controller
+                    name={`${id}.${index}.role` as const}
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <Dropdown
+                            {...field}
+                            optionLabel="name"
+                            id={field.value.id}
+                            value={field.value}
+                            options={roleList}
+                            className={classNames(
+                                { "p-invalid": fieldState.error }, "w-full"
+                            )}
+                            placeholder="Rooli"
+                            tooltip="Rooli"
+                            disabled={disabled}
+                            focusInputRef={field.ref}
+                        />
+                    )}
+                />
+            </div>
+            <div className="field col-12 lg:col-3 p-2">
+                <Controller
+                    name={`${id}.${index}.description` as const}
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <InputText
+                            {...field}
+                            value={field.value ? field.value : ""}
+                            tooltip="Kuvaus"
+                            placeholder="Kuvaus"
+                            className={classNames(
+                                { "p-invalid": fieldState.error },
+                                "w-full"
+                            )}
+                            disabled={disabled}
+                        />
+                    )}
+                />
+            </div>
+            {realNameOptions.length > 0 && (
+                <div className="field col-12 lg:col-3 p-2">
+                    <Controller
+                        name={`${id}.${index}.real_person` as const}
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <Dropdown
+                                {...field}
+                                optionLabel="name"
+                                dataKey="id"
+                                value={field.value?.id ? field.value : null}
+                                options={realNameOptions}
+                                className={classNames(
+                                    { "p-invalid": fieldState.error }, "w-full"
+                                )}
+                                placeholder="Oikea henkilö"
+                                tooltip="Oikea henkilö"
+                                disabled={disabled}
+                                focusInputRef={field.ref}
+                            />
+                        )}
+                    />
+                </div>
+            )}
+            {/*
+            <div className="field sm:col-12 lg:col-3">
+                <Controller
+                    name={`${id}.${index}.person.aliases` as const}
+                    control={control}
+                    render={({ field, fieldState }) => (
+                        <AutoComplete
+                            {...field}
+                            field="name"
+                            completeMethod={filterAliases}
+                            suggestions={filteredAliases}
+                            minLength={3}
+                            placeholder="Oikea nimi"
+                            tooltip="Oikea nimi"
+                            delay={800}
+                            className={classNames(
+                                { "p-invalid": fieldState.error },
+                                "w-full"
+                            )}
+                            inputClassName="w-full"
+                            disabled={true}
+                        />
+                    )}
+                />
+            </div>
+                            */}
+            <div className="flex align-content-center flex-wrap col-12 lg:col-2">
+                <Button type="button"
+                    className="p-button-rounded p-button-text"
+                    onClick={() => onRemove(index)}
+                    icon="pi pi-minus"
+                    disabled={disabled}
+                />
+                {isLast && (
+                    <Button type="button" className="p-button-rounded p-button-text"
+                        icon="pi pi-plus"
+                        onClick={onAdd}
+                        disabled={disabled}
+                    />
+                )}
+            </div>
+        </div>
+    )
+}
+
 export const ContributorField = (
     { id, disabled, contributionTarget = '' }: ContributorFieldProps) => {
-    const user = useMemo(() => { return getCurrenUser() }, []);
-
     const { control } = useFormContext();
 
     const { fields, append, remove } = useFieldArray({
@@ -65,225 +275,18 @@ export const ContributorField = (
     //     }
     //     return -1;
     // }
-    interface ContributorRowProps {
-        index: number,
-        key: string,
-        contributionTarget: string
-    }
-    const ContributorRow = ({ index, contributionTarget }: ContributorRowProps) => {
-        //const user = useMemo(() => { return getCurrenUser() }, []);
-        const keyValue = `{contributors.${index}}`;
-        const [filteredPeople, setFilteredPeople] = useState<any>([]);
-        const [roleList, setRoleList]: [ContributorFieldPair[],
-            (roleList: ContributorFieldPair[]) => void]
-            = useState<ContributorFieldPair[]>([]);
-        const [realNameOptions, setRealNameOptions] = useState<PersonBrief[]>([]);
-
-        const { setValue, getValues } = useFormContext();
-
-        async function fetchRealNames(personId: number, overwrite: boolean = false) {
-            const response = await getApiContent(`people/${personId}/real-names`, user);
-            const names: PersonBrief[] = response.data;
-            setRealNameOptions(names);
-            if (overwrite) {
-                if (names.length === 1) {
-                    setValue(`${id}.${index}.real_person`, names[0]);
-                } else if (names.length === 0) {
-                    setValue(`${id}.${index}.real_person`, { name: '', id: 0, alt_name: '', fullname: '' });
-                }
-            }
-        }
-
-        useEffect(() => {
-            async function getRoles() {
-                const url = "roles/" + contributionTarget;
-                const response = await getApiContent(url, user);
-                setRoleList(response.data);
-            }
-            getRoles();
-
-            const currentPerson = getValues(`${id}.${index}.person`);
-            if (currentPerson?.id) {
-                const currentRealPerson = getValues(`${id}.${index}.real_person`);
-                fetchRealNames(currentPerson.id, !currentRealPerson?.id);
-            }
-        }, [])
-
-        async function filterPeople(event: any) {
-            const url =
-                "filter/people/" + event.query;
-            // console.log("Person search url:" + url);
-            const response = await getApiContent(url, user);
-            const p = response.data;
-            setFilteredPeople(p);
-            return p;
-        }
-
-        const addEmptyContributor = () => {
-            append(emptyContributor);
-        }
-
-        const removeContributor = (index: number) => {
-            remove(index)
-        }
-
-        return (
-            <div key={keyValue}
-                className="grid">
-
-                <div className="field col-12 lg:col-3 p-2">
-                    <Controller
-                        name={`${id}.${index}.person` as const}
-                        control={control}
-                        render={({ field, fieldState }) => (
-                            <AutoComplete
-                                {...field}
-                                field="name"
-                                completeMethod={filterPeople}
-                                suggestions={filteredPeople}
-                                minLength={3}
-                                placeholder="Henkilö"
-                                tooltip="Henkilö"
-                                forceSelection={false}
-                                delay={300}
-                                className={classNames(
-                                    { "p-invalid": fieldState.error },
-                                    "w-full"
-                                )}
-                                inputClassName="w-full"
-                                disabled={disabled}
-                                inputRef={field.ref}
-                                onSelect={(e) => {
-                                    if (e.value?.id) {
-                                        fetchRealNames(e.value.id);
-                                    }
-                                }}
-                                onClear={() => {
-                                    setRealNameOptions([]);
-                                    setValue(`${id}.${index}.real_person`, { name: '', id: 0, alt_name: '', fullname: '' });
-                                }}
-                            />
-                        )}
-                    />
-                </div>
-                <div className="field col-12 lg:col-3 p-2">
-                    <Controller
-                        name={`${id}.${index}.role` as const}
-                        control={control}
-                        render={({ field, fieldState }) => (
-                            <Dropdown
-                                {...field}
-                                optionLabel="name"
-                                id={field.value.id}
-                                value={field.value}
-                                options={roleList}
-                                className={classNames(
-                                    { "p-invalid": fieldState.error }, "w-full"
-                                )}
-                                placeholder="Rooli"
-                                tooltip="Rooli"
-                                disabled={disabled}
-                                focusInputRef={field.ref}
-                            />
-                        )}
-                    />
-                </div>
-                <div className="field col-12 lg:col-3 p-2">
-                    <Controller
-                        name={`${id}.${index}.description` as const}
-                        control={control}
-                        render={({ field, fieldState }) => (
-                            <InputText
-                                {...field}
-                                value={field.value ? field.value : ""}
-                                tooltip="Kuvaus"
-                                placeholder="Kuvaus"
-                                className={classNames(
-                                    { "p-invalid": fieldState.error },
-                                    "w-full"
-                                )}
-                                disabled={disabled}
-                            />
-                        )}
-                    />
-                </div>
-                {realNameOptions.length > 0 && (
-                    <div className="field col-12 lg:col-3 p-2">
-                        <Controller
-                            name={`${id}.${index}.real_person` as const}
-                            control={control}
-                            render={({ field, fieldState }) => (
-                                <Dropdown
-                                    {...field}
-                                    optionLabel="name"
-                                    dataKey="id"
-                                    value={field.value?.id ? field.value : null}
-                                    options={realNameOptions}
-                                    className={classNames(
-                                        { "p-invalid": fieldState.error }, "w-full"
-                                    )}
-                                    placeholder="Oikea henkilö"
-                                    tooltip="Oikea henkilö"
-                                    disabled={disabled}
-                                    focusInputRef={field.ref}
-                                />
-                            )}
-                        />
-                    </div>
-                )}
-                {/*
-                <div className="field sm:col-12 lg:col-3">
-                    <Controller
-                        name={`${id}.${index}.person.aliases` as const}
-                        control={control}
-                        render={({ field, fieldState }) => (
-                            <AutoComplete
-                                {...field}
-                                field="name"
-                                completeMethod={filterAliases}
-                                suggestions={filteredAliases}
-                                minLength={3}
-                                placeholder="Oikea nimi"
-                                tooltip="Oikea nimi"
-                                delay={800}
-                                className={classNames(
-                                    { "p-invalid": fieldState.error },
-                                    "w-full"
-                                )}
-                                inputClassName="w-full"
-                                disabled={true}
-                            />
-                        )}
-                    />
-                </div>
-                                */}
-                <div className="flex align-content-center flex-wrap col-12 lg:col-2">
-                    <Button type="button"
-                        className="p-button-rounded p-button-text"
-                        onClick={() => removeContributor(index)}
-                        icon="pi pi-minus"
-                        disabled={disabled}
-                    />
-                    {index === fields.length - 1 && (
-                        <Button type="button" className="p-button-rounded p-button-text"
-                            icon="pi pi-plus"
-                            onClick={() => addEmptyContributor()}
-                            disabled={disabled}
-                        />
-                    )}
-                </div>
-            </div>
-        )
-    }
-
     return (
         <>
             <span >
                 <label htmlFor="contributors" className="form-field-header">Tekijät</label>
                 <div id={id} className="py-0" key={id}>
-                    {fields && fields.map((_, index) =>
-                        <ContributorRow index={index} key={index.toString()}
-                            contributionTarget={contributionTarget} />
+                    {fields && fields.map((field, index) =>
+                        <ContributorRow key={field.id} id={id} index={index}
+                            contributionTarget={contributionTarget}
+                            disabled={disabled}
+                            isLast={index === fields.length - 1}
+                            onAdd={() => append(emptyContributor)}
+                            onRemove={remove} />
                     )}
                 </div>
             </span>

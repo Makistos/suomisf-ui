@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 
 import { Dropdown } from "primereact/dropdown";
 import { SelectButton } from "primereact/selectbutton";
@@ -26,8 +26,6 @@ type detailOptionType = {
 }
 
 export const EditionList = ({ editions, person, sort = "year" }: EditionListProps) => {
-    const [groupedEditions, setGroupedEditions]: [Record<string, Edition[]>,
-        (editions: Record<string, Edition[]>) => void] = useState({});
     const [sorting, setSorting] = useState<string>(sort);
     const [editionView, setEditionView] = useState("Lista");
     const user = useMemo(() => { return getCurrenUser() }, []);
@@ -48,26 +46,13 @@ export const EditionList = ({ editions, person, sort = "year" }: EditionListProp
     const editionViewOptions = [
         'Lista', 'Kannet'
     ];
-    // useEffect(() => {
-    //     if (sorting === "author") {
-    //         setGroupedEditions(groupEditionsByAuthor(editions));
-    //     }
-    //     else {
-    //         setGroupedEditions({ None: editions });
-    //     }
-    // }, [editions, sorting])
-    useEffect(() => {
+    // Derived from props and the view settings
+    const groupedEditions: Record<string, Edition[]> = useMemo(() => {
         const groups = groupSimilarEditions(editions, detailLevel);
-        const combined = groups.map(group => combineEditions(group, user));
-        if (sorting === "author") {
-            // setGroupedEditions(groupEditionsByAuthor(groupSimilarEditions(editions, detailLevel));
-            setGroupedEditions(groupEditionsByAuthor(combined.filter((ed): ed is CombinedEdition => ed !== undefined)));
-        }
-        else {
-            setGroupedEditions(
-                { None: combined.filter((ed): ed is CombinedEdition => ed !== undefined) });
-        }
-    }, [editions, sorting, detailLevel, user])
+        const combined = groups.map(group => combineEditions(group, user))
+            .filter((ed): ed is CombinedEdition => ed !== undefined);
+        return sorting === "author" ? groupEditionsByAuthor(combined) : { None: combined };
+    }, [editions, sorting, detailLevel, user]);
 
     const editionListCmp = (a: [string, Edition[]], b: [string, Edition[]]) => {
         const aFirst = a[1][0];

@@ -103,6 +103,7 @@ const ContributorRow = ({ id, index, contributionTarget, disabled, isLast, onAdd
         }
     });
     useEffect(() => {
+        // oxlint-disable-next-line react/set-state-in-effect -- one-time row initialisation from form values (effect event)
         initRealNames();
     }, [])
 

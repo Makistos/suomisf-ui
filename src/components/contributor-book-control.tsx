@@ -196,6 +196,7 @@ export const ContributorBookControl = ({ person, viewNonSf, types, collaboration
     // Set active tab to first one with content
     useEffect(() => {
         const counts = [authorContributions, editContributions, translationContributions, coverContributions, illustrationContributions, appearsInContributions];
+        // oxlint-disable-next-line react/set-state-in-effect -- jump to the first non-empty tab when the data changes; the user can still switch tabs
         setActiveIndex(calcActiveIndex(counts));
     }, [authorContributions, editContributions, translationContributions, coverContributions, illustrationContributions, appearsInContributions]);
 

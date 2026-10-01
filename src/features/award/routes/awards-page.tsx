@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
@@ -37,24 +38,18 @@ export const AwardDescription = ({ award }: AwardInfoProps) => {
 
 export const Awards = () => {
     const user = useMemo(() => getCurrenUser(), []);
-    const [awards, setAwards] = useState<Award[]>([]);
     const [formVisible, setFormVisible] = useState(false);
+    const queryClient = useQueryClient();
 
-    const getAwards = useCallback(async () => {
-        const url = 'awards';
-        const data = await getApiContent(url, null).then(response => {
-            return response.data
-        })
-        setAwards(data);
-    }, []);
-
-    useEffect(() => {
-        getAwards();
-    }, [getAwards])
+    // AwardForm also invalidates ['awards'] after saving
+    const { data: awards = [] } = useQuery<Award[]>({
+        queryKey: ['awards'],
+        queryFn: async () => (await getApiContent('awards', null)).data ?? [],
+    });
 
     const onFormClose = () => {
         setFormVisible(false);
-        getAwards();
+        queryClient.invalidateQueries({ queryKey: ['awards'] });
     };
 
     return (

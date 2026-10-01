@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useMemo } from "react";
 
 import { Chart } from "primereact/chart";
 import { ChartData } from "chart.js";
@@ -9,19 +9,20 @@ import { WorksProps } from "../types";
 import { TagGroup } from "@features/tag";
 
 
+const genreLabels = (genres: [string, number][]) => {
+    let retval: string[] = [];
+    let total: number = 0;
+    genres.forEach(number => { total += number[1]; });
+
+    retval = genres.map(genre => genre[0] + "(" + genre[1] + "/" + Math.floor((genre[1] / total * 100)).toString() + "%)");
+    return retval;
+};
+
 export const WorkStats = ({ works }: WorksProps) => {
-    const [genres, setGenres]: [ChartData, (genres: ChartData) => void] = useState<ChartData>({ datasets: [], labels: [] });
 
-    const genreLabels = (genres: [string, number][]) => {
-        let retval: string[] = [];
-        let total: number = 0;
-        genres.forEach(number => { total += number[1]; });
 
-        retval = genres.map(genre => genre[0] + "(" + genre[1] + "/" + Math.floor((genre[1] / total * 100)).toString() + "%)");
-        return retval;
-    };
-
-    useEffect(() => {
+    // Chart data derived from props
+    const genres = useMemo<ChartData>(() => {
         let genresCount = Object.entries(
             _.countBy(
                 _.flatten(works // Flatten array
@@ -38,7 +39,7 @@ export const WorkStats = ({ works }: WorksProps) => {
                 backgroundColor: getGenreColors(genresCount.map(genre => genre[0])),
             }],
         };
-        setGenres(newGenres);
+        return newGenres;
     }, [works]);
     return (
         <div className="grid justify-content-center">

@@ -142,10 +142,10 @@ const FormObject = ({ onSubmit, onDelete, methods, id }: FormObjectProps) => {
             const response = await getApiContent(url, user);
             setGenres(response.data);
         }
-        setLoading(true);
+        // (These used to be wrapped in setLoading(true/false), but the fetches
+        // aren't awaited, so the flag was cleared immediately - a no-op.)
         getTypes();
         getGenres();
-        setLoading(false);
     }, [user])
 
     async function filterLanguages(event: any) {

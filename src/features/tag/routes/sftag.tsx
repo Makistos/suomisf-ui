@@ -28,13 +28,95 @@ import _ from 'lodash';
 import { getShortTypes } from '@features/short/utils/get-short-types';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { Card } from 'primereact/card';
-import { isAdmin } from '@features/user';
+import { isAdmin, User } from '@features/user';
 
 
 // Short story types that are articles rather than fiction (Artikkeli,
 // Esipuhe, Jälkisanat). Used only for the summary counts; the tabs
 // themselves are generated per story type.
 const ARTICLE_STORY_TYPES = [7, 8, 9];
+
+// Module-level: defined inside SFTag it was a new component type on every
+// render, so the merge form was reset whenever the page re-rendered.
+const MergeTagsDialog = ({ tagId, user, onDone }:
+    { tagId: string | undefined, user: User | null, onDone: () => void }) => {
+    type TagTypeInfo = {
+        id: number,
+        name: string
+    }
+    const { control, handleSubmit } = useForm<Record<string, TagTypeInfo>>();
+    const [filteredTags, setFilteredTags] = useState<any>(null);
+    const mergeTagsSubmit: SubmitHandler<Record<string, TagTypeInfo>> = (data) => {
+        const source = Number(data.name.id);
+        if (source && tagId) {
+            mergeTags(Number(tagId), source, user);
+        }
+        onDone();
+    }
+
+    async function getTags(query: string) {
+        try {
+            const response = await filterTags(query, user);
+            setFilteredTags(response);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    const searchTags = (event: any) => {
+        getTags(event.query);
+    }
+
+    
+
+    const searchText = (str: string) => {
+        if (str.length > 300) {
+            str = str.slice(0, 298);
+            str = str + "...";
+        }
+        let tmp = document.createElement("DIV");
+        tmp.innerHTML = str;
+        return tmp.textContent || tmp.innerText || "";
+    }
+
+    const tagTemplate = (item: any) => {
+        return (
+            <div>
+                <span>{searchText(item.name)}</span>
+            </div>
+        )
+    }
+    return (
+        <div className="grid col justify-content-center">
+            <form onSubmit={handleSubmit(mergeTagsSubmit)}>
+                <div className="grid col mt-3">
+                    <span className="grid col">
+                        <label htmlFor="name" >Yhdistettävä asiasana</label>
+                        <Controller name="name" control={control}
+                            render={({ field, fieldState }) => (
+                                <AutoComplete
+                                    id={field.name}
+                                    value={field.value}
+                                    field="name"
+                                    onChange={(e) => field.onChange(e.value)}
+                                    completeMethod={searchTags}
+                                    suggestions={filteredTags}
+                                    itemTemplate={tagTemplate}
+                                    delay={800}
+                                    minLength={2}
+                                    scrollHeight="400px"
+                                    className={classNames({ 'p-invalid': fieldState.error }, 'w-full')} />
+                            )} />
+                    </span>
+                </div>
+                <div className="grid col">
+                    <Button type="submit" className="w-full justify-content-center">
+                        Yhdistä
+                    </Button>
+                </div>
+            </form>
+        </div>
+    )
+}
 
 export const SFTag = (_props: SfTagProps) => {
     const params = useParams();
@@ -94,85 +176,6 @@ export const SFTag = (_props: SfTagProps) => {
         queryKey: ['tags', params.tagid],
         queryFn: () => getTag(Number(params.tagid), user)
     })
-
-    const MergeTagsDialog = () => {
-        type TagTypeInfo = {
-            id: number,
-            name: string
-        }
-        const { control, handleSubmit } = useForm<Record<string, TagTypeInfo>>();
-        const [filteredTags, setFilteredTags] = useState<any>(null);
-        const mergeTagsSubmit: SubmitHandler<Record<string, TagTypeInfo>> = (data) => {
-            const source = Number(data.name.id);
-            if (source && params.tagid) {
-                mergeTags(Number(params.tagid), source, user);
-            }
-            onHide('displayMerge');
-        }
-
-        async function getTags(query: string) {
-            try {
-                const response = await filterTags(query, user);
-                setFilteredTags(response);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-        const searchTags = (event: any) => {
-            getTags(event.query);
-        }
-
-        
-
-        const searchText = (str: string) => {
-            if (str.length > 300) {
-                str = str.slice(0, 298);
-                str = str + "...";
-            }
-            let tmp = document.createElement("DIV");
-            tmp.innerHTML = str;
-            return tmp.textContent || tmp.innerText || "";
-        }
-
-        const tagTemplate = (item: any) => {
-            return (
-                <div>
-                    <span>{searchText(item.name)}</span>
-                </div>
-            )
-        }
-        return (
-            <div className="grid col justify-content-center">
-                <form onSubmit={handleSubmit(mergeTagsSubmit)}>
-                    <div className="grid col mt-3">
-                        <span className="grid col">
-                            <label htmlFor="name" >Yhdistettävä asiasana</label>
-                            <Controller name="name" control={control}
-                                render={({ field, fieldState }) => (
-                                    <AutoComplete
-                                        id={field.name}
-                                        value={field.value}
-                                        field="name"
-                                        onChange={(e) => field.onChange(e.value)}
-                                        completeMethod={searchTags}
-                                        suggestions={filteredTags}
-                                        itemTemplate={tagTemplate}
-                                        delay={800}
-                                        minLength={2}
-                                        scrollHeight="400px"
-                                        className={classNames({ 'p-invalid': fieldState.error }, 'w-full')} />
-                                )} />
-                        </span>
-                    </div>
-                    <div className="grid col">
-                        <Button type="submit" className="w-full justify-content-center">
-                            Yhdistä
-                        </Button>
-                    </div>
-                </form>
-            </div>
-        )
-    }
 
     const deleteTagFunc = () => {
         if (data) {
@@ -314,7 +317,8 @@ export const SFTag = (_props: SfTagProps) => {
                             header="Yhdistä asiasana" visible={displayMerge} onHide={() => onHide('displayMerge')}
                             className="w-full xl:w-4"
                         >
-                            <MergeTagsDialog />
+                            <MergeTagsDialog tagId={params.tagid} user={user}
+                                onDone={() => onHide('displayMerge')} />
                         </Dialog>
                     </div>
                 )

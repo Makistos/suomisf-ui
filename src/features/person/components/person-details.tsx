@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useEffectEvent, useRef } from "react"
+import { useMemo, useEffect, useEffectEvent, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 import { getCountryCode } from "@utils/country-utils"
 import { Person } from "../types"
@@ -65,6 +65,11 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
         if (imageInfo) autoSaveImage(imageInfo);
     }, [imageInfo]);
 
+    // Born over 100 years ago with no death year recorded. Lazy useState so
+    // the clock is read once, not during every render.
+    const [currentYear] = useState(() => new Date().getFullYear());
+    const deathYearMissing = !!data.dob && !data.dod && data.dob < currentYear - 100;
+
     const wikimediaLink = data.links?.find(l => l.description === 'Wikimedia Commons')?.link ?? null;
 
     const storedImageEntry = data.images?.find(img => img.src) ?? null;
@@ -130,11 +135,11 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
                             {(data.dob || data.dod) && (
                                 <span className="flex align-items-center gap-1">
                                     <i className="pi pi-calendar" />
-                                    {data.dob ? data.dob : (data.dod ? '?' : '')}{data.dob && !data.dod && data.dob < new Date().getFullYear() - 100 ? <sup>*</sup> : ''}{data.dod ? '–' : ''}{data.dod || ''}
+                                    {data.dob ? data.dob : (data.dod ? '?' : '')}{deathYearMissing ? <sup>*</sup> : ''}{data.dod ? '–' : ''}{data.dod || ''}
                                 </span>
                             )}
                         </div>
-                        {data.dob && !data.dod && data.dob < new Date().getFullYear() - 100 && (
+                        {deathYearMissing && (
                             <div className="text-sm text-500 font-italic">*Tietoa kuolinvuodesta ei ole</div>
                         )}
                     </div>

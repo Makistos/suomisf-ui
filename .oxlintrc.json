@@ -21,11 +21,11 @@
       }
     ],
     "react-hooks/exhaustive-deps": "error",
-    "react/set-state-in-effect": "warn",
-    "react/static-components": "warn",
-    "react/immutability": "warn",
+    "react/set-state-in-effect": "error",
+    "react/static-components": "error",
+    "react/immutability": "error",
     "react/globals": "error",
-    "react/purity": "warn",
+    "react/purity": "error",
     "react/no-children-prop": "off",
     "react-hooks/rules-of-hooks": "error"
   },

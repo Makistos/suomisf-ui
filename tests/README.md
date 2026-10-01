@@ -91,12 +91,11 @@ rebuilt before the next run.
 | `pubseries.spec.ts` | Same pattern as publisher: no create UI, edit + delete on a linkage-free series. |
 | `award.spec.ts` | No "create new award" UI — adds and removes an award-*winner* entry (a work receiving the Hugo) via the work page's "Palkinnot" dialog. |
 | `bookseries.spec.ts` | Full create → edit → delete cycle. |
-| `magazine.spec.ts` | Two tests: (1) create a magazine and add an issue to it — not deleted afterward, since a magazine with issues genuinely can't be deleted (FK constraint) and the UI doesn't disable "Poista" for that case; (2) create-then-delete a magazine that has no issues, to still cover the delete path cleanly. Edit is not covered — see the `test.fail()` entry below. |
+| `magazine.spec.ts` | Three tests: (1) create a magazine and add an issue to it — not deleted afterward, since a magazine with issues genuinely can't be deleted (FK constraint) and the UI doesn't disable "Poista" for that case; (2) create-then-delete a magazine with no issues, checking the "Lehti poistettu" toast; (3) edit a magazine that has no publisher (used to crash the backend: the form sends `publisher: null`). |
 | `short.spec.ts` | Creates a new short story via the work page's "Muokkaa novelleja" picker dialog's nested "Uusi" form, then attaches it to the work. |
 | `tag.spec.ts` | No "create" UI — rename + delete on a tag pre-verified to have zero linked works/stories/articles. |
 | `shorts-picker.spec.ts` | Opens the "Muokkaa novelleja" picker on a 5-story collection, searches a person, adds one of their stories to the list (6 items), closes without saving. |
 | `changes-audit.spec.ts` | Creates a work, then confirms a matching `Uusi`-action entry by `Test Admin` appears via `GET /api/changes`. |
-| `magazine.spec.ts` → `test.fail(...)` | **Known, unresolved bug**, not a real test: editing a magazine fails at the network layer (`net::ERR_FAILED` on the PUT). `test.fail()` means Playwright reports this test as failing *if it ever starts passing* — that's the signal that someone fixed `magazine-form.tsx`'s edit path. |
 
 ## Coverage gaps
 

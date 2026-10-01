@@ -120,6 +120,27 @@ const buildParams = (f: Filters, userId: number | null,
     return params;
 };
 
+// Reusable per-step navigation footer; no back button without onBack.
+// Module-level so it isn't a new component type on every render.
+const StepNav = ({ onNext, onBack }:
+    { onNext: () => void; onBack?: () => void }) => (
+    <div className="flex flex-wrap justify-content-between gap-2 mt-4">
+        <div>
+            {onBack && (
+                <Button label="Takaisin" severity="secondary" text
+                    icon="pi pi-arrow-left"
+                    onClick={onBack} />
+            )}
+        </div>
+        <div className="flex gap-2">
+            <Button label="Ohita" severity="secondary" outlined
+                onClick={onNext} />
+            <Button label="Seuraava" icon="pi pi-arrow-right"
+                iconPos="right" onClick={onNext} />
+        </div>
+    </div>
+);
+
 export const SuggestionPage = () => {
     const user = getCurrenUser();
     const stepperRef = useRef<StepperRefAttributes>(null);
@@ -134,8 +155,7 @@ export const SuggestionPage = () => {
     // until the first query (all options shown).
     const [facets, setFacets] = useState<FacetSets | null>(null);
 
-    const [documentTitle] = useDocumentTitle("Kirjaehdotukset");
-    if (documentTitle !== undefined) document.title = documentTitle;
+    useDocumentTitle("Kirjaehdotukset");
 
     async function getOptions<T>(endpoint: string): Promise<T> {
         const data = await getApiContent(endpoint, user)
@@ -302,25 +322,7 @@ export const SuggestionPage = () => {
         stepperRef.current?.setActiveStep(0);
     };
 
-    // Reusable per-step navigation footer.
-    const StepNav = ({ onNext, showBack = true }:
-        { onNext: () => void; showBack?: boolean }) => (
-        <div className="flex flex-wrap justify-content-between gap-2 mt-4">
-            <div>
-                {showBack && (
-                    <Button label="Takaisin" severity="secondary" text
-                        icon="pi pi-arrow-left"
-                        onClick={() => stepperRef.current?.prevCallback()} />
-                )}
-            </div>
-            <div className="flex gap-2">
-                <Button label="Ohita" severity="secondary" outlined
-                    onClick={onNext} />
-                <Button label="Seuraava" icon="pi pi-arrow-right"
-                    iconPos="right" onClick={onNext} />
-            </div>
-        </div>
-    );
+    const goBack = () => stepperRef.current?.prevCallback();
 
     const optionsLoading = genres.isLoading || countries.isLoading
         || tags.isLoading;
@@ -385,7 +387,7 @@ export const SuggestionPage = () => {
                                     <label>Piilota jo lukemani teokset</label>
                                 </div>
                             )}
-                            <StepNav showBack={false}
+                            <StepNav
                                 onNext={() => applyAndNext({
                                     genres: filters.genres,
                                 })} />
@@ -418,7 +420,7 @@ export const SuggestionPage = () => {
                                     placeholder="Valitse tyylit"
                                     className="w-full" />
                             </div>
-                            <StepNav onNext={() => applyAndNext({
+                            <StepNav onBack={goBack} onNext={() => applyAndNext({
                                 subgenres: filters.subgenres,
                                 styles: filters.styles,
                             })} />
@@ -437,7 +439,7 @@ export const SuggestionPage = () => {
                                 display="chip" filter
                                 placeholder="Valitse maat"
                                 className="w-full" />
-                            <StepNav onNext={() => applyAndNext({
+                            <StepNav onBack={goBack} onNext={() => applyAndNext({
                                 nationalities: filters.nationalities,
                             })} />
                         </StepperPanel>
@@ -454,7 +456,7 @@ export const SuggestionPage = () => {
                                 onChange={(e) => updateFilter({
                                     decades: e.value ?? [],
                                 })} />
-                            <StepNav onNext={() => applyAndNext({
+                            <StepNav onBack={goBack} onNext={() => applyAndNext({
                                 decades: filters.decades,
                             })} />
                         </StepperPanel>
@@ -469,7 +471,7 @@ export const SuggestionPage = () => {
                                 onChange={(e) => updateFilter({
                                     length: e.value,
                                 })} />
-                            <StepNav onNext={() => applyAndNext({
+                            <StepNav onBack={goBack} onNext={() => applyAndNext({
                                 length: filters.length,
                             })} />
                         </StepperPanel>

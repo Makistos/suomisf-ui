@@ -47,6 +47,7 @@ export const PersonImagePickerDialog = ({ person, visible, onHide, onSave }: Per
     const searchOnOpen = useEffectEvent(() => runSearch(limit));
     useEffect(() => {
         if (!visible) return;
+        // oxlint-disable-next-line react/set-state-in-effect -- search when the dialog opens (effect event)
         searchOnOpen();
     }, [visible, person.id]);
 

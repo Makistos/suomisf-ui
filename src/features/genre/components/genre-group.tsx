@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { Genre } from "../types";
 import { GenreCount } from "./genre-count";
 
@@ -9,26 +9,14 @@ interface GenresProps {
 }
 
 export const GenreGroup = ({ genres, showOneCount, className }: GenresProps) => {
-    const [groupedGenres, setGroupedGenres] = useState<[string, number][]>([]);
-
-    useEffect(() => {
-        const countGenres = () => {
-            let retval = genres.reduce((acc, genre: Genre) => {
-                const genreName: string = genre.name;
-                if (!acc[genreName]) {
-                    acc[genreName] = 1;
-                } else {
-                    acc[genreName]++;
-                }
-                return acc;
-            }, {} as Record<string, number>);
-            return retval;
-        };
-        if (genres === undefined) return;
-        let counts = Object.entries(countGenres())
-            .sort((a, b) => a[1] > b[1] ? -1 : 1)
-            .map(genre => genre);
-        setGroupedGenres(counts);
+    // Genres by count, most common first
+    const groupedGenres = useMemo(() => {
+        if (genres === undefined) return [];
+        const counts = genres.reduce((acc, genre: Genre) => {
+            acc[genre.name] = (acc[genre.name] ?? 0) + 1;
+            return acc;
+        }, {} as Record<string, number>);
+        return Object.entries(counts).sort((a, b) => a[1] > b[1] ? -1 : 1);
     }, [genres]);
 
     return (

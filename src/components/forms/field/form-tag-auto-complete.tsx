@@ -16,6 +16,40 @@ interface FormAutoCompleteProps extends AutoCompleteProps {
   tagFunction?: FormEventHandler
 }
 
+// Module-level: defined inside the field it was a new component type on
+// every render, so the typed tag was lost whenever the form re-rendered.
+const NewItem = ({ onDone }: { onDone: (tag: string) => void }) => {
+  const [tag, setTag] = useState("");
+  return (
+    <div className="card grid mt-3 mb-0">
+      <div className="col-12 mb-0">
+        <FloatLabel>
+          <InputText
+            autoFocus
+            value={tag} id="item"
+            className="min-w-full"
+            onChange={(e) => setTag(e.target.value)}></InputText>
+          <label htmlFor="item">Uusi asiasana</label>
+        </FloatLabel>
+      </div>
+      <div className="col-12 mt-0 mb-0">
+        <Button type="button"
+          icon="pi pi-save"
+          size="large"
+          className="min-w-full"
+          onClick={() => onDone(tag)} label="Tallenna"></Button>
+      </div>
+      <div className="col-12 mt-0 pt-0" >
+        <Button type="button"
+          icon="pi pi-times"
+          size="large"
+          className="min-w-full"
+          onClick={() => onDone("")} label="Peruuta"></Button>
+      </div>
+    </div>
+  )
+}
+
 export const FormTagAutoComplete = ({ name, methods, label, labelClass, tagFunction, ...rest }: FormAutoCompleteProps) => {
   const [addNewItemVisible, setAddNewItemVisible] = useState(false);
   const [, setTagName] = useState("");
@@ -62,38 +96,6 @@ export const FormTagAutoComplete = ({ name, methods, label, labelClass, tagFunct
     return item[typeof rest.field === 'string' ? rest.field : 'name'];
   };
 
-  const NewItem = () => {
-    const [tag, setTag] = useState("");
-    return (
-      <div className="card grid mt-3 mb-0">
-        <div className="col-12 mb-0">
-          <FloatLabel>
-            <InputText
-              autoFocus
-              value={tag} id="item"
-              className="min-w-full"
-              onChange={(e) => setTag(e.target.value)}></InputText>
-            <label htmlFor="item">Uusi asiasana</label>
-          </FloatLabel>
-        </div>
-        <div className="col-12 mt-0 mb-0">
-          <Button type="button"
-            icon="pi pi-save"
-            size="large"
-            className="min-w-full"
-            onClick={() => onNewItemHide(tag)} label="Tallenna"></Button>
-        </div>
-        <div className="col-12 mt-0 pt-0" >
-          <Button type="button"
-            icon="pi pi-times"
-            size="large"
-            className="min-w-full"
-            onClick={() => onNewItemHide("")} label="Peruuta"></Button>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="flex">
       <div className="p-float-label">
@@ -104,7 +106,7 @@ export const FormTagAutoComplete = ({ name, methods, label, labelClass, tagFunct
             closable={false}
             // onShow={() => onNewItemShow}
             onHide={() => onNewItemHide}>
-            <NewItem />
+            <NewItem onDone={onNewItemHide} />
           </Dialog>
         }
         <Controller

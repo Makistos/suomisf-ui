@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useMemo } from "react";
 
 import { Chart } from "primereact/chart";
 import { ChartData } from "chart.js";
@@ -7,20 +7,21 @@ import _ from "lodash";
 import { getGenreColors } from "../../genre";
 import { EditionsProps } from "../types";
 
+const genreLabels = (genres: [string, number][]) => {
+    let retval: string[] = [];
+    let total: number = 0;
+    genres.forEach(number => { total += number[1]; })
+
+    retval = genres.map(genre =>
+        genre[0] + "(" + genre[1] + "/" + Math.floor((genre[1] / total * 100)).toString() + "%)");
+    return retval;
+}
+
 export const EditionsStats = ({ editions }: EditionsProps) => {
-    const [genres, setGenres]: [ChartData, (genres: ChartData) => void] = useState<ChartData>({ datasets: [], labels: [] });
 
-    const genreLabels = (genres: [string, number][]) => {
-        let retval: string[] = [];
-        let total: number = 0;
-        genres.forEach(number => { total += number[1]; })
 
-        retval = genres.map(genre =>
-            genre[0] + "(" + genre[1] + "/" + Math.floor((genre[1] / total * 100)).toString() + "%)");
-        return retval;
-    }
-
-    useEffect(() => {
+    // Chart data derived from props
+    const genres = useMemo<ChartData>(() => {
         let genresCount = Object.entries(              // Convert to array
             _.countBy(                                 // Count occurences of genres
                 _.flatten(editions                     // Flatten array
@@ -38,8 +39,8 @@ export const EditionsStats = ({ editions }: EditionsProps) => {
                 backgroundColor: getGenreColors(genresCount.map(genre => genre[0])),
             }],
         };
-        setGenres(newGenres);
-    }, [editions])
+        return newGenres;
+    }, [editions]);
 
 
     const oldestEdition = () => {

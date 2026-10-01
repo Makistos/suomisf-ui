@@ -154,7 +154,14 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
   // Shorts written by selected person
   const [personShorts, setPersonShorts] = useState<Short[]>([]);
   // Shorts that have been selected for this item
-  const [selectedItemShorts, setSelectedItemShorts] = useState<Short[]>([]);
+  const [selectedItemShorts, setSelectedItemShorts] = useState<Short[]>(source);
+  // Reset the editable list when a new source arrives (adjusting state
+  // during render, as React recommends, instead of in an effect).
+  const [prevSource, setPrevSource] = useState(source);
+  if (source !== prevSource) {
+    setPrevSource(source);
+    setSelectedItemShorts(source);
+  }
   // Short selected in the dropdown
   const [selectedShort, setSelectedShort] = useState<Short | null>(null);
   // People matching search query
@@ -175,10 +182,6 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
     }
     getShorts();
   }, [selectedPerson, user])
-
-  useEffect(() => {
-    setSelectedItemShorts(source);
-  }, [source])
 
   async function filterPeople(event: any) {
     const url =

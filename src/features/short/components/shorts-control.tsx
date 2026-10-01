@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 
 import { TabView, TabPanel } from "primereact/tabview";
 import _ from "lodash";
 
 import { Person } from "../../person";
 import { ShortsList } from "./shorts-list";
-import { Short, ShortType } from "../types";
+import { Short } from "../types";
 import { listIsSf } from "../../genre";
 import { getShortTypes } from "../utils/get-short-types";
 
@@ -29,25 +29,17 @@ interface ShortsProps {
 }
 
 export const ShortsControl = ({ person, listPublications, showAuthors, sort, what }: ShortsProps) => {
-    const [shorts, setShorts]: [Short[], (shorts: Short[]) => void] = useState<Short[]>([]);
-    const [shortTypes, setShortTypes]: [ShortType[], (shortTypes: ShortType[]) => void] = useState<ShortType[]>([]);
-    useEffect(() => {
+    // Derived from props: the person's stories filtered by what, and their types.
+    const { shorts, shortTypes } = useMemo(() => {
         /** Filter shorts by the what parameter. Either all or sf or non-sf stories. */
         const filterShorts = (short: Short) => {
             if (what === "all") return true;
             else if (what === "nonsf") return !listIsSf(short.genres);
             else return listIsSf(short.genres);
         }
-
-        /** Joins two lists of short stories into one. */
-        
-        const newShorts = person.stories.filter(filterShorts);
-        // const newShorts = joinShortsLists(
-        //     person.stories.filter(filterShorts),
-        //     person.magazine_stories.filter(filterShorts));
-        setShorts(newShorts);
-        setShortTypes(getShortTypes(newShorts));
-    }, [person, listPublications, what])
+        const filtered = person.stories.filter(filterShorts);
+        return { shorts: filtered, shortTypes: getShortTypes(filtered) };
+    }, [person, what]);
 
     const headerText = (staticText: string, count: number) => {
         return staticText + " (" + count + ")";

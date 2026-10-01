@@ -107,7 +107,14 @@ const OmnibusPicker = ({ source, saveCallback }: OmnibusPickerProps) => {
     // Works written by selected person
     const [personWorks, setPersonWorks] = useState<Work[]>([]);
     // Works that have been selected for this omnibus
-    const [selectedOmnibusWorks, setSelectedOmnibusWorks] = useState<OmnibusWork[]>([]);
+    const [selectedOmnibusWorks, setSelectedOmnibusWorks] = useState<OmnibusWork[]>(source);
+    // Reset the editable list when a new source arrives (adjusting state
+    // during render, as React recommends, instead of in an effect).
+    const [prevSource, setPrevSource] = useState(source);
+    if (source !== prevSource) {
+        setPrevSource(source);
+        setSelectedOmnibusWorks(source);
+    }
     // Work selected in the dropdown
     const [selectedWork, setSelectedWork] = useState<Work | null>(null);
     // People matching search query
@@ -129,12 +136,6 @@ const OmnibusPicker = ({ source, saveCallback }: OmnibusPickerProps) => {
         };
         getWorks();
     }, [selectedPerson]);
-
-    useEffect(() => {
-        // Sort the source works by ID when setting them
-        const sortedSource = source;
-        setSelectedOmnibusWorks(sortedSource);
-    }, [source]);
 
     async function filterPeople(event: any) {
         const url = "filter/people/" + event.query;

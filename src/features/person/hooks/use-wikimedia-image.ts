@@ -1,33 +1,33 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Person } from '../types';
 import { WikiImageInfo, fetchPersonImagesFromApi } from '../components/find-person-images';
 
 export type { WikiImageInfo };
 
 export const useWikimediaImage = (person: Person, enabled = true) => {
-    const [imageInfo, setImageInfo] = useState<WikiImageInfo | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    // Not for people that already have a Wikidata id
+    const active = enabled && !person.qid;
 
-    useEffect(() => {
-        if (!enabled) {
-            setImageInfo(null);
-            return;
-        }
-        if (person.qid) return;
-        let cancelled = false;
-        setImageInfo(null);
-        setIsLoading(true);
-
-        fetchPersonImagesFromApi(person.id, 1)
-            .then((images: WikiImageInfo[]) => {
+    const { data, isLoading } = useQuery({
+        // Own key (not under ['person', id]) so invalidating the person after
+        // an edit doesn't redo this external lookup; cached for the session.
+        queryKey: ['wikimedia-image', person.id],
+        queryFn: async (): Promise<WikiImageInfo | null> => {
+            try {
+                const images = await fetchPersonImagesFromApi(person.id, 1);
                 console.debug('[useWikimediaImage] candidates:', images.map((i: WikiImageInfo) => i.url));
-                if (images.length > 0 && !cancelled) setImageInfo(images[0]);
-            })
-            .catch((err: unknown) => console.warn('Failed to fetch Wikimedia/Wikipedia image:', err))
-            .finally(() => { if (!cancelled) setIsLoading(false); });
+                return images[0] ?? null;
+            } catch (err: unknown) {
+                console.warn('Failed to fetch Wikimedia/Wikipedia image:', err);
+                return null;
+            }
+        },
+        enabled: active,
+        staleTime: Infinity,
+    });
 
-        return () => { cancelled = true; };
-    }, [person.id, enabled, person.qid]);
-
-    return { imageInfo, isLoading };
+    return {
+        imageInfo: active ? data ?? null : null,
+        isLoading: active && isLoading,
+    };
 };

@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from "react-router-dom";
 import _ from "lodash"
 
@@ -14,31 +15,27 @@ import { PersonBrief } from '../../person';
 
 export const WorkDetails = ({ work }: WorkProps) => {
     const user = useMemo(() => getCurrenUser(), []);
-    const [sharedAliasAuthors, setSharedAliasAuthors] = useState<{ aliasId: number; realPerson: PersonBrief }[]>([]);
-
-    useEffect(() => {
-        const authorContribsWithRealPerson = work.contributions
-            .filter(c => c.role.id === 1 && c.real_person?.id);
-
-        if (authorContribsWithRealPerson.length === 0) {
-            setSharedAliasAuthors([]);
-            return;
-        }
-
-        Promise.all(
-            authorContribsWithRealPerson.map(async c => {
-                const response = await getApiContent(`people/${c.person.id}/real-names`, user);
-                const realNames: PersonBrief[] = response.data;
-                return realNames.length > 1
-                    ? { aliasId: c.person.id, realPerson: c.real_person! }
-                    : null;
-            })
-        ).then(results => {
-            setSharedAliasAuthors(results.filter((r): r is { aliasId: number; realPerson: PersonBrief } => r !== null));
-        });
-    // React Query's structural sharing keeps work.contributions the same
-    // array until its content actually changes.
-    }, [work.contributions, user]);
+    // Authors whose pseudonym is shared by several real people: those get the
+    // real person shown next to the pseudonym.
+    const authorContribsWithRealPerson = useMemo(
+        () => work.contributions.filter(c => c.role.id === 1 && c.real_person?.id),
+        [work.contributions]);
+    const { data: sharedAliasAuthors = [] } = useQuery({
+        queryKey: ['shared-alias-authors', authorContribsWithRealPerson.map(c => c.person.id)],
+        queryFn: async () => {
+            const results = await Promise.all(
+                authorContribsWithRealPerson.map(async c => {
+                    const response = await getApiContent(`people/${c.person.id}/real-names`, user);
+                    const realNames: PersonBrief[] = response.data;
+                    return realNames.length > 1
+                        ? { aliasId: c.person.id, realPerson: c.real_person! }
+                        : null;
+                })
+            );
+            return results.filter((r): r is { aliasId: number; realPerson: PersonBrief } => r !== null);
+        },
+        enabled: authorContribsWithRealPerson.length > 0,
+    });
 
     const compareContribs = (a: Contribution, b: Contribution) => {
         if (a.person.id !== b.person.id) return false;

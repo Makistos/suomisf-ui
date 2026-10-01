@@ -59,14 +59,16 @@ export const WorkForm = (props: FormProps) => {
 
   // const formData = props.data ? convToForm(props.data) : defaultValues;
 
-  const { isLoading, data } = useQuery({
+  const { isLoading, data: queryData } = useQuery({
     queryKey: ['work', props.workId, "form"],
     queryFn: () => getWorkFormData(props.workId, user)
   })
 
-  if (data && data.types === null && types) {
-    data.types = types;
-  }
+  // Fill in the type list without mutating React Query's cached object.
+  // Memoized: FormObject resets the form whenever data changes identity.
+  const data = useMemo(
+    () => queryData && queryData.types === null && types ? { ...queryData, types } : queryData,
+    [queryData, types]);
 
   const updateWork = (data: WorkFormData) => {
     let retval = null;
@@ -127,11 +129,10 @@ export const WorkForm = (props: FormProps) => {
 const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
   const user = useMemo(() => { return getCurrenUser() }, []);
   const [genres, setGenres] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [filteredLanguages, setFilteredLanguages] = useState([]);
   const [filteredTags, setFilteredTags] = useState([]);
   const [filteredBookseries, setFilteredBookseries] = useState([]);
-  const disabled = isDisabled(user, loading);
+  const disabled = isDisabled(user, false);
 
   const methods = useForm<WorkFormData>({ defaultValues: data });
   const { reset } = methods;
@@ -146,9 +147,7 @@ const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
       const response = await getApiContent(url, user);
       setGenres(response.data);
     }
-    setLoading(true);
     getGenres();
-    setLoading(false);
   }, [user])
 
   async function filterLanguages(event: any) {

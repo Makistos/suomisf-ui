@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { ProgressSpinner } from "primereact/progressspinner";
 
@@ -12,26 +13,21 @@ interface EditionLatestProps {
   count: string | number
 }
 
+const fetchLatestEditions = async (count: string | number, user: User | null): Promise<Edition[]> => {
+  const url = "latest/editions/" + count;
+  const data = await getApiContent(url, user).then(response =>
+    response.data)
+    .catch((error) => console.log(error));
+  // React Query rejects undefined data (the catch above yields it)
+  return data ?? [];
+}
+
 export const EditionsLatest = ({ count }: EditionLatestProps) => {
   const user = useMemo(() => getCurrenUser(), []);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<Edition[]>([]);
-
-  const fetchLatestEditions = async (count: string | number, user: User | null): Promise<Edition[]> => {
-    const url = "latest/editions/" + count;
-    const data = await getApiContent(url, user).then(response =>
-      response.data)
-      .catch((error) => console.log(error));
-    return data;
-  }
-
-  useEffect(() => {
-    setLoading(true);
-    fetchLatestEditions(count, user).then(data => {
-      setData(data);
-      setLoading(false);
-    });
-  }, [count, user])
+  const { isLoading: loading, data } = useQuery({
+    queryKey: ['latest', 'editions', count, user?.id],
+    queryFn: () => fetchLatestEditions(count, user),
+  });
 
   return (
     <>

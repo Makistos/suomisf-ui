@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { ProgressSpinner } from 'primereact/progressspinner';
 
@@ -12,26 +13,21 @@ interface ShortsLatestProps {
   count: string | number
 }
 
+const fetchLatestShorts = async (count: string | number, user: User | null): Promise<Short[]> => {
+  const url = "latest/shorts/" + count;
+  const data = await getApiContent(url, user).then(response =>
+    response.data)
+    .catch((error) => console.log(error));
+  // React Query rejects undefined data (the catch above yields it)
+  return data ?? [];
+}
+
 export const ShortsLatest = ({ count }: ShortsLatestProps) => {
   const user = useMemo(() => getCurrenUser(), []);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<Short[]>([]);
-
-  const fetchLatestShorts = async (count: string | number, user: User | null): Promise<Short[]> => {
-    const url = "latest/shorts/" + count;
-    const data = await getApiContent(url, user).then(response =>
-      response.data)
-      .catch((error) => console.log(error));
-    return data;
-  }
-
-  useEffect(() => {
-    setLoading(true);
-    fetchLatestShorts(count, user).then(data => {
-      setData(data);
-      setLoading(false);
-    });
-  }, [count, user])
+  const { isLoading: loading, data } = useQuery({
+    queryKey: ['latest', 'shorts', count, user?.id],
+    queryFn: () => fetchLatestShorts(count, user),
+  });
 
   return (
     <>

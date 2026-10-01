@@ -49,10 +49,7 @@ export const WorkSearchPage = () => {
     //const [initials, setInitials]: [string[], (initialis: string[]) => void] = useState<string[]>([]);
     const [initial, setInitial] = useState("");
 
-    const [documentTitle] = useDocumentTitle("Kirjahaku");
-
-    if (documentTitle !== undefined)
-        document.title = documentTitle;
+    useDocumentTitle("Kirjahaku");
 
     const onSubmit: SubmitHandler<FormData> = data => {
         function search() {

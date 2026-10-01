@@ -54,6 +54,7 @@ export const AwardImportDialog = ({
     useEffect(() => {
         if (!visible) return;
         let active = true;
+        // oxlint-disable-next-line react/set-state-in-effect -- each opening starts a fresh preview and resets the editable selection
         setLoading(true);
         setPreview(null);
         setRows([]);

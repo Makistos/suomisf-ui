@@ -111,8 +111,15 @@ const emptyCondition: EditionOwnershipStatus = {
     user_id: null
 }
 
-export const EditionOwnership = ({ editionId, workId }: EditionOwnershipProps) => {
+export const EditionOwnership = (props: EditionOwnershipProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
+    if (!user) return <></>;
+    return <EditionOwnershipContent {...props} user={user} />;
+}
+
+// Split from EditionOwnership so the logged-out early return above doesn't
+// come before hooks (hooks must run unconditionally, in the same order).
+const EditionOwnershipContent = ({ editionId, workId, user }: EditionOwnershipProps & { user: User }) => {
     const [showInfoDialog, setShowInfoDialog] = useState(false);
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [condition, setCondition] = useState<EditionOwnershipStatus>(
@@ -121,10 +128,6 @@ export const EditionOwnership = ({ editionId, workId }: EditionOwnershipProps) =
     const [, setValue] = useState(0);
 
     const queryClient = useQueryClient();
-
-    if (!user) {
-        return <></>
-    }
 
     const updateStatus = (data: OwnershipFormData) => {
         const saveData: EditionOwnershipStatus = {

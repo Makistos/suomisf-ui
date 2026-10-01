@@ -13,10 +13,16 @@ interface EditionWishlistProps {
     workId?: number,
 }
 
-export const EditionWishlist = ({ editionId, workId }: EditionWishlistProps) => {
+export const EditionWishlist = (props: EditionWishlistProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
-    const queryClient = useQueryClient();
     if (!user) return <></>;
+    return <EditionWishlistContent {...props} user={user} />;
+}
+
+// Split from EditionWishlist so the logged-out early return above doesn't
+// come before hooks (hooks must run unconditionally, in the same order).
+const EditionWishlistContent = ({ editionId, workId, user }: EditionWishlistProps & { user: User }) => {
+    const queryClient = useQueryClient();
 
     const updateStatus = (value: boolean) => {
         let retval: Promise<HttpStatusResponse>;

@@ -53,19 +53,24 @@ const fetchShortAwarded = async (id: string | null, user: User): Promise<Awarded
     return response;
 }
 
-export const AwardedForm = ({ workId, personId, shortId: storyId, onClose }: AwardFormProps) => {
+export const AwardedForm = (props: AwardFormProps) => {
     const user = useMemo(() => getCurrenUser(), []);
+    const thisId = props.workId ? props.workId : props.personId ? props.personId : props.shortId;
+    if (!thisId || user === null) {
+        return <div>Invalid ID</div>
+    }
+    return <AwardedFormContent {...props} thisId={thisId} user={user} />;
+}
+
+// Split from AwardedForm so the validity check above doesn't come before
+// hooks (hooks must run unconditionally, in the same order).
+const AwardedFormContent = ({ workId, personId, onClose, thisId, user }: AwardFormProps & { thisId: string, user: User }) => {
     const itemType = workId ? "work" : personId ? "person" : "story";
     const typeId = workId ? 1 : personId ? 0 : 2;
-    const thisId = itemType == "work" ? workId : itemType == "person" ? personId : storyId;
     const [filteredAwards, setFilteredAwards] = useState([]);
     const [categories, setCategories] = useState<AwardCategory[]>([]);
     const toastRef = useRef<Toast>(null);
     const queryClient = useQueryClient();
-
-    if (!thisId || user === null) {
-        return <div>Invalid ID</div>
-    }
 
     const defaultValues = {
         id: 0,
@@ -87,7 +92,7 @@ export const AwardedForm = ({ workId, personId, shortId: storyId, onClose }: Awa
         }
         if (user)
             getCategories(user);
-    }, [user])
+    }, [user, itemType])
 
     // const categories = useQuery({
     //     queryKey: ['categories'],

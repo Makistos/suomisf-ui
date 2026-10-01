@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { Tag } from 'primereact/tag';
 import { Button } from 'primereact/button';
@@ -33,21 +33,42 @@ interface TagCountCompProps {
  */
 export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseFilter,
     maxCount }: TagsProps) => {
-    const [groupedTags, setGroupedTags] = useState<TagCount[]>([]);
     const [showAll, setShowAll] = useState(false);
-    const [, setSubgenres] = useState<SfTag[]>([]);
-    const [, setStyles] = useState<SfTag[]>([]);
-    const [, setLocations] = useState<SfTag[]>([]);
-    const [, setActors] = useState<SfTag[]>([]);
-    const [, setEras] = useState<SfTag[]>([]);
+
+    // Derived from props, so a memo rather than state set in an effect. Must
+    // run before the early return below: hooks can't be skipped conditionally.
+    const groupedTags = useMemo(() => {
+        if (!tags) return [];
+        const filterTags = (tag: SfTag) => {
+            if (tag === undefined) return false;
+            if (reverseFilter) {
+                return types ? tag.type ? !types.includes(tag.type.name) : true : true;
+            }
+            return types ? tag.type ? types.includes(tag.type.name) : true : true
+        }
+        // Count of each unique tag
+        const counts = tags.filter(tag => filterTags(tag))
+            .reduce((acc, currentValue: SfTag) => {
+                const tagName = currentValue.name;
+                if (!acc[tagName]) {
+                    acc[tagName] = { ...currentValue, count: 1 };
+                } else {
+                    acc[tagName].count++;
+                }
+                return acc;
+            }, {} as Record<string, TagCount>);
+        let grouped = Object.values(counts);
+        if (showOneCount) {
+            grouped = grouped.sort((a, b) => a.count > b.count ? -1 : 1);
+        }
+        if (maxCount) {
+            grouped = grouped.slice(0, maxCount);
+        }
+        return grouped;
+    }, [tags, types, reverseFilter, showOneCount, maxCount]);
 
     if (tags == undefined || tags.length === 0) {
         return <></>;
-    }
-
-    const filterTypes = (tags: SfTag[], type: string) => {
-        return tags.filter(tag => tag?.type?.name === type)
-            .map(tag => tag)
     }
 
     const sortTags = (a: TagCount, b: TagCount) => {
@@ -58,54 +79,6 @@ export const TagGroup = ({ tags, overflow, showOneCount, filter: types, reverseF
         return 1;
     }
 
-    const filterTags = (tag: SfTag) => {
-        if (tag === undefined) return false;
-        if (reverseFilter) {
-            return types ? tag.type ? !types.includes(tag.type.name) : true : true;
-        }
-        return types ? tag.type ? types.includes(tag.type.name) : true : true
-    }
-    useEffect(() => {
-        /**
-         * Calculates the count of each unique tag in the provided array.
-         *
-         * @return {Record<string, TagCount>} An object containing the count of each unique tag.
-         */
-        const countTags = () => {
-            let retval = tags.filter(
-                tag => filterTags(tag))
-                .reduce((acc, currentValue: SfTag) => {
-                    const tagName = currentValue.name;
-                    if (!acc[tagName]) {
-                        acc[tagName] = { ...currentValue, count: 1 };
-                    } else {
-                        acc[tagName].count++;
-                    }
-                    return acc;
-                }, {} as Record<string, TagCount>)
-            return retval;
-        }
-        if (tags) {
-            let groupedTags = [];
-            if (showOneCount) {
-                groupedTags = Object.entries(countTags())
-                    .sort((a, b) => a[1].count > b[1].count ? -1 : 1)
-                    .map(tag => tag[1]);
-            } else {
-                groupedTags = Object.entries(countTags())
-                    .map(tag => tag[1]);
-            }
-            if (maxCount) {
-                groupedTags = groupedTags.slice(0, maxCount)
-            }
-            setGroupedTags(groupedTags);
-            setSubgenres(filterTypes(tags, 'subgenre'))
-            setStyles(filterTypes(tags, 'style'))
-            setLocations(filterTypes(tags, 'location'))
-            setActors(filterTypes(tags, 'actor'))
-            setEras(filterTypes(tags, 'era'))
-        }
-    }, [tags])
 
 
     /**

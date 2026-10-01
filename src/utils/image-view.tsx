@@ -29,6 +29,9 @@ interface ImageViewProps {
 export const ImageView = ({ itemId, idx, images, saveFunc, deleteFunc, onUpload, idxCb, editionCount }: ImageViewProps) => {
     
     const queryClient = useQueryClient();
+    // Before the early return below: images can drop to none and come back
+    // (delete the only image, then upload), and hooks must not be skipped.
+    const cm = useRef<ContextMenu>(null);
 
     if (idx > images.length - 1) {
         idxCb(0);
@@ -44,8 +47,6 @@ export const ImageView = ({ itemId, idx, images, saveFunc, deleteFunc, onUpload,
     //     }
     //     return "";
     // }
-    const cm = useRef<ContextMenu>(null);
-
     // Use the passed editionCount if available, otherwise fall back to unique edition IDs from images
     const hasOnlyOneEdition = editionCount ? editionCount === 1 : (() => {
         const uniqueEditionIds = [...new Set(images.map(img => img.edition_id))];

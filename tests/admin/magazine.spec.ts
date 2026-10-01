@@ -19,14 +19,6 @@ async function createMagazine(adminPage: Page, name: string) {
     await expect(adminPage.getByText(name, { exact: true })).toBeVisible({ timeout: 20000 });
 }
 
-// Edit is not covered here: found a real, reproducible bug while writing
-// this spec - submitting the edit form fires a PUT to /api/magazines that
-// fails at the network layer (net::ERR_FAILED, confirmed via a
-// page.on('requestfailed') listener), even though the exact same request
-// shape succeeds fine via curl/Playwright's own APIRequestContext outside
-// the browser, and the identical POST (create) request from the same form
-// succeeds. Not root-caused - tracked separately below with test.fail().
-
 test('admin can create a magazine and add an issue to it', async ({ adminPage }) => {
     const name = `E2E_TEST_magazine_${Date.now()}`;
     await createMagazine(adminPage, name);
@@ -53,21 +45,20 @@ test('admin can delete a magazine that has no issues', async ({ adminPage }) => 
     const name = `E2E_TEST_magazine_${Date.now()}`;
     await createMagazine(adminPage, name);
 
-    // navigate(-1) on success - too racy to assert the toast reliably
-    // (same pattern seen on person/publisher/pubseries).
     const urlBeforeDelete = adminPage.url();
     await adminPage.locator('.fixed-dial .p-speeddial-button').click();
     await dialAction(adminPage, 'Poista').click();
     await adminPage.getByRole('button', { name: 'Kyllä' }).click();
     await expect(adminPage).not.toHaveURL(urlBeforeDelete, { timeout: 20000 });
+    // Shown through the app-level toast, so it survives navigate(-1)
+    await expect(adminPage.getByText('Lehti poistettu')).toBeVisible({ timeout: 20000 });
 });
 
-// Tracks the bug found above: editing an existing magazine fails to save.
-// test.fail() means this test *passing* (i.e. the bug being fixed) is what
-// should draw attention - Playwright reports it as a failure if that happens,
-// so it doesn't just rot silently once someone fixes magazine-form.tsx.
-test.fail('known bug: editing a magazine fails to save (PUT /api/magazines net::ERR_FAILED)', async ({ adminPage }) => {
-    const name = `E2E_TEST_magazine_editbug_${Date.now()}`;
+// Editing used to fail: the form sends publisher: null for a magazine
+// without a publisher, which crashed PUT /api/magazines (fixed in the
+// backend's update_magazine).
+test('admin can edit a magazine without a publisher', async ({ adminPage }) => {
+    const name = `E2E_TEST_magazine_edit_${Date.now()}`;
     const editedName = `${name}_edited`;
 
     await adminPage.goto('/magazines/6');

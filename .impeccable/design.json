@@ -1,0 +1,276 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-02T16:46:23+00:00",
+  "title": "Design System: SuomiSF",
+  "extensions": {
+    "colorMeta": {
+      "catalogue-indigo": {
+        "role": "primary",
+        "displayName": "Catalogue Indigo",
+        "canonical": "var(--primary-color) in mdc-light-indigo",
+        "tonalRamp": [
+          "#192048",
+          "#232d64",
+          "#2c397f",
+          "#36459a",
+          "#3f51b5",
+          "#8893d1",
+          "#d1d5ed",
+          "#f5f6fb"
+        ]
+      },
+      "catalogue-indigo-dark": {
+        "role": "primary",
+        "displayName": "Catalogue Indigo (dark theme periwinkle)",
+        "canonical": "var(--primary-color) in mdc-dark-indigo",
+        "tonalRamp": [
+          "#404357",
+          "#575c78",
+          "#6f7699",
+          "#878fb9",
+          "#9fa8da",
+          "#c3c9e8",
+          "#e8eaf6",
+          "#fafbfd"
+        ]
+      },
+      "indigo-highlight": {
+        "role": "primary",
+        "displayName": "Indigo Highlight",
+        "canonical": "var(--highlight-bg)"
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Ground",
+        "canonical": "var(--surface-ground)",
+        "tonalRamp": [
+          "#212121",
+          "#424242",
+          "#616161",
+          "#757575",
+          "#9e9e9e",
+          "#e0e0e0",
+          "#f5f5f5",
+          "#fafafa"
+        ]
+      },
+      "ground-dark": {
+        "role": "neutral",
+        "displayName": "Ground (dark theme)",
+        "canonical": "var(--surface-ground) in mdc-dark-indigo",
+        "tonalRamp": [
+          "#121212",
+          "#2a2a2a",
+          "#414141",
+          "#595959",
+          "#717171",
+          "#898989",
+          "#b8b8b8",
+          "#e7e7e7"
+        ]
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "Card",
+        "canonical": "var(--surface-card)"
+      },
+      "card-dark": {
+        "role": "neutral",
+        "displayName": "Card (dark theme)",
+        "canonical": "var(--surface-card) in mdc-dark-indigo"
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "var(--text-color)"
+      },
+      "ink-secondary": {
+        "role": "neutral",
+        "displayName": "Secondary Ink",
+        "canonical": "var(--text-color-secondary)"
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "var(--surface-border)"
+      },
+      "input-stroke": {
+        "role": "neutral",
+        "displayName": "Input Stroke"
+      },
+      "success-green": {
+        "role": "status",
+        "displayName": "Success Green",
+        "canonical": "var(--green-500)"
+      },
+      "danger-red": {
+        "role": "status",
+        "displayName": "Danger Red",
+        "canonical": "var(--red-500)"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Entity title on detail pages (e.g. a work's title); uppercase, Catalogue Indigo."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Front page site heading; sentence case, Catalogue Indigo."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Secondary titles such as a work's author line."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase section labels ('Genret', 'Asiasanat'), Secondary Ink."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Lists, tables, forms and metadata."
+      },
+      "body-prose": {
+        "displayName": "Body Prose",
+        "purpose": "Longer descriptive text in a ~860px reading column."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card-elevation",
+        "value": "rgba(0,0,0,0.08) 0 1px 8px 0, rgba(0,0,0,0.1) 0 3px 4px 0, rgba(0,0,0,0.1) 0 1px 4px -1px",
+        "purpose": "PrimeReact Card default; grouped content and chart panels."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "576px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "app",
+        "value": "960px"
+      },
+      {
+        "name": "lg",
+        "value": "992px"
+      },
+      {
+        "name": "xl",
+        "value": "1200px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Stock PrimeReact primary button; Catalogue Indigo, compact, sentence case.",
+      "html": "<button class=\"ds-btn-primary\">Tallenna</button>",
+      "css": ".ds-btn-primary { background: var(--primary-color, #3F51B5); color: var(--primary-color-text, #ffffff); border: 1px solid var(--primary-color, #3F51B5); border-radius: var(--border-radius, 4px); padding: 8px 10.5px; font: 500 14px Roboto, \"Helvetica Neue\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color .2s, box-shadow .2s; } .ds-btn-primary:hover { background: var(--primary-600, #36459a); border-color: var(--primary-600, #36459a); } .ds-btn-primary:focus-visible { outline: 2px solid var(--primary-color, #3F51B5); outline-offset: 2px; } .ds-btn-primary:active { background: var(--primary-700, #2c397f); }"
+    },
+    {
+      "name": "Text Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Secondary action inside forms and dialogs.",
+      "html": "<button class=\"ds-btn-text\">Peruuta</button>",
+      "css": ".ds-btn-text { background: transparent; color: var(--primary-color, #3F51B5); border: 1px solid transparent; border-radius: var(--border-radius, 4px); padding: 8px 10.5px; font: 500 14px Roboto, \"Helvetica Neue\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color .2s; } .ds-btn-text:hover { background: var(--highlight-bg, rgba(63,81,181,0.12)); } .ds-btn-text:focus-visible { outline: 2px solid var(--primary-color, #3F51B5); outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-text",
+      "description": "Outlined Material input with float label, used in all forms.",
+      "html": "<span class=\"ds-field\"><input class=\"ds-input\" id=\"ds-title\" placeholder=\" \" /><label for=\"ds-title\">Nimi</label></span>",
+      "css": ".ds-field { position: relative; display: inline-block; } .ds-input { background: var(--surface-card, #ffffff); color: var(--text-color, rgba(0,0,0,0.87)); border: 1px solid rgba(0,0,0,0.38); border-radius: var(--border-radius, 4px); padding: 12px; font: 400 16px Roboto, \"Helvetica Neue\", Helvetica, Arial, sans-serif; width: 16rem; transition: border-color .2s; } .ds-input:hover { border-color: var(--text-color, rgba(0,0,0,0.87)); } .ds-input:focus-visible { outline: none; border: 2px solid var(--primary-color, #3F51B5); padding: 11px; } .ds-field label { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-color-secondary, rgba(0,0,0,0.6)); font: 400 16px Roboto, \"Helvetica Neue\", Helvetica, Arial, sans-serif; pointer-events: none; transition: all .2s; } .ds-input:focus-visible + label, .ds-input:not(:placeholder-shown) + label { top: 0; font-size: 12px; background: var(--surface-card, #ffffff); padding: 0 4px; color: var(--primary-color, #3F51B5); }"
+    },
+    {
+      "name": "Menubar",
+      "kind": "nav",
+      "refersTo": "menubar",
+      "description": "Hairline-outlined main navigation with the SuomiSF wordmark.",
+      "html": "<nav class=\"ds-menubar\"><a class=\"ds-brand\" href=\"#\">SuomiSF</a><a class=\"ds-item\" href=\"#\">Kirjat</a><a class=\"ds-item\" href=\"#\">Lehdet</a><a class=\"ds-item\" href=\"#\">Novellit</a></nav>",
+      "css": ".ds-menubar { display: flex; align-items: center; gap: 4px; padding: 12px; border: 1px solid var(--surface-border, rgba(0,0,0,0.12)); border-radius: var(--border-radius, 4px); background: transparent; font: 400 16px Roboto, \"Helvetica Neue\", Helvetica, Arial, sans-serif; } .ds-brand { color: var(--primary-color, #3F51B5); font-weight: 700; text-decoration: none; padding: 0 12px 0 0; } .ds-item { color: var(--text-color, rgba(0,0,0,0.87)); text-decoration: none; padding: 12px; border-radius: var(--border-radius, 4px); transition: background-color .2s; } .ds-item:hover { background: var(--surface-hover, rgba(0,0,0,0.04)); } .ds-item:focus-visible { outline: 2px solid var(--primary-color, #3F51B5); outline-offset: -2px; }"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Pill-shaped compact value, e.g. aliases or selected items.",
+      "html": "<span class=\"ds-chip\">Outsider</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; background: var(--surface-border, rgba(0,0,0,0.12)); color: var(--text-color, rgba(0,0,0,0.87)); border-radius: 16px; padding: 0 12px; height: 32px; font: 400 14px Roboto, \"Helvetica Neue\", Helvetica, Arial, sans-serif; }"
+    },
+    {
+      "name": "Section Label + Tag",
+      "kind": "custom",
+      "refersTo": "tag-success",
+      "description": "Uppercase Roboto Slab section label over genre/keyword tags (dark text shown, since white-on-green fails contrast).",
+      "html": "<div class=\"ds-section\"><h3 class=\"ds-label\">Asiasanat</h3><span class=\"ds-tag\">avaruus</span> <span class=\"ds-tag\">dystopia</span></div>",
+      "css": ".ds-label { font: 700 14px/24px \"Roboto Slab\", serif; letter-spacing: .5px; text-transform: uppercase; color: var(--text-color-secondary, rgba(0,0,0,0.6)); margin: 0 0 8px; } .ds-tag { display: inline-block; background: #689f38; color: #1b2a0e; border-radius: var(--border-radius, 4px); padding: 4px 6.4px; font: 700 12px Roboto, \"Helvetica Neue\", Helvetica, Arial, sans-serif; }"
+    },
+    {
+      "name": "Content Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "PrimeReact Card with theme elevation, used for grouped content and chart panels.",
+      "html": "<div class=\"ds-card\"><h2 class=\"ds-card-title\">Teokset genreittäin</h2><p class=\"ds-card-body\">Tietokannassa on 7 195 teosta ja 10 379 painosta.</p></div>",
+      "css": ".ds-card { background: var(--surface-card, #ffffff); border-radius: var(--border-radius, 4px); padding: 16px 20px; box-shadow: rgba(0,0,0,0.08) 0 1px 8px 0, rgba(0,0,0,0.1) 0 3px 4px 0, rgba(0,0,0,0.1) 0 1px 4px -1px; max-width: 24rem; } .ds-card-title { font: 600 24px/1 \"Roboto Slab\", serif; color: var(--text-color, rgba(0,0,0,0.87)); margin: 0 0 12px; } .ds-card-body { font: 400 16px Roboto, \"Helvetica Neue\", Helvetica, Arial, sans-serif; color: var(--text-color, rgba(0,0,0,0.87)); margin: 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Card Catalogue",
+    "overview": "SuomiSF is a reference work, not a showcase. Like a library card catalogue, its job is to hold a great many exact facts, keep them in order and lead from one record to the next. The interface stays quiet so the record can speak: the dense bibliographic data, the cross-links and the book covers.\n\nThe system is stock PrimeReact on its Material \"mdc indigo\" theme, deliberately close to its defaults. Components are quiet and utilitarian. Density and scanability come before flourish, because the main users are admin editors entering data and bibliographers checking it. Identity sits in a few consistent details: Roboto Slab headings, the indigo page titles and the covers themselves. It does not come from custom decoration.\n\nLight and dark themes follow the visitor's system setting (`prefers-color-scheme`), switching between `mdc-light-indigo` and `mdc-dark-indigo`. Everything is coloured through the theme's CSS variables, so it changes with the theme.",
+    "keyCharacteristics": [
+      "Stock PrimeReact Material components; minimal custom styling",
+      "Roboto Slab for headings, Roboto for everything else",
+      "Catalogue Indigo used sparingly, for identity and navigation",
+      "Gently rounded 4px corners throughout; square-cornered covers",
+      "Dense, scannable layouts on a 1140px container",
+      "Automatic light and dark themes driven by theme variables"
+    ],
+    "rules": [
+      {
+        "name": "The Sparing Indigo Rule",
+        "body": "Catalogue Indigo marks identity and navigation: page titles, active tabs, links and primary actions. It is never a background for content areas or decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Theme Variable Rule",
+        "body": "Interface colours come from the theme's CSS variables (`--primary-color`, `--surface-*`, `--text-color*`), never from hex values, so both themes stay correct. The one exception is data-visualisation palettes in the stats charts.",
+        "section": "colors"
+      },
+      {
+        "name": "The Slab-for-Headings Rule",
+        "body": "Roboto Slab is for headings and section labels only; all data, forms and running text use Roboto.",
+        "section": "typography"
+      },
+      {
+        "name": "The Theme Elevation Rule",
+        "body": "Only the theme's own shadows are used. No custom shadows, glows or layered effects.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** use PrimeReact components with their theme defaults before writing custom CSS.",
+      "**Do** colour through theme variables (`--primary-color`, `--surface-card`, `--surface-border`, `--text-color`, `--text-color-secondary`) so both themes keep working.",
+      "**Do** use Catalogue Indigo for page titles, active states, links and primary actions only.",
+      "**Do** keep Roboto Slab for headings and the uppercase 14px section labels; use Roboto for everything else.",
+      "**Do** keep 4px corners on controls and square corners on covers.",
+      "**Do** make links inside running text distinguishable by more than colour (an underline, or at least 3:1 contrast against the surrounding text).",
+      "**Do** keep layouts dense and scannable; the main users enter and check data."
+    ],
+    "donts": [
+      "**Don't** hard-code hex colours in components; chart data palettes are the only exception.",
+      "**Don't** let links fall back to the browser's default blue (`#0000EE`); it currently happens in the main content area.",
+      "**Don't** add custom shadows, gradients or decorative effects; depth comes from the theme only.",
+      "**Don't** use white text on the light green success colour at small sizes (3.17:1).",
+      "**Don't** introduce a second icon set or another CSS framework; consolidate on what is already loaded."
+    ]
+  }
+}

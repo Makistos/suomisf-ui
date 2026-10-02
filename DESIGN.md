@@ -213,7 +213,7 @@ Stock PrimeReact Material components, used as they come. They are quiet and util
 
 ### Links
 - **Colour:** Catalogue Indigo everywhere (`a` inherits `--primary-color`), including links inside description HTML.
-- **In content:** no underline at rest, because pages are dense with links and underlining them all hurt readability (owner's decision). A 1px underline (offset 0.18em) appears on hover and keyboard focus.
+- **In content:** medium weight (500) and no underline at rest, because pages are dense with links and underlining them all hurt readability (owner's decision); the weight marks links for readers who can't tell the indigo from body text. Links inside bold text (`b`, `strong`, `th`, `dt`, `.font-bold`, `.font-semibold`) keep the surrounding weight. A 1px underline (offset 0.18em) appears on hover and keyboard focus.
 - **Never underlined:** links in headings and bylines, buttons, tabs, menu and paging links, cover-image links and tag chips.
 
 ### Covers (Signature Component)
@@ -227,7 +227,7 @@ Book cover images are the system's only ornament. They are square-cornered and u
 - **Do** use Catalogue Indigo for page titles, active states, links and primary actions only.
 - **Do** keep Roboto Slab for headings and the uppercase 14px section labels; use Roboto for everything else.
 - **Do** keep 4px corners on controls and square corners on covers.
-- **Do** give every content link a hover and focus underline; at rest, links are told apart by Catalogue Indigo alone.
+- **Do** give every content link a hover and focus underline; at rest, links are told apart by Catalogue Indigo and medium weight.
 - **Do** keep layouts dense and scannable; the main users enter and check data.
 
 ### Don't:

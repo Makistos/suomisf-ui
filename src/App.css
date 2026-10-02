@@ -132,10 +132,17 @@ a {
   color: var(--primary-color);
 }
 
-/* Links in content are told apart by colour at rest (pages are dense with
-   links, and underlining them all made the text hard to read) and get an
-   underline on hover and keyboard focus. Headings, bylines, buttons, tabs,
-   menus, paging, cover images and tag chips keep their own look. */
+/* Links in content are told apart at rest by colour and a medium weight
+   (pages are dense with links, and underlining them all made the text hard
+   to read; weight still marks them for readers who can't tell the indigo
+   from the text), and get an underline on hover and keyboard focus.
+   Headings, bylines, buttons, tabs, menus, paging, cover images and tag
+   chips keep their own look, and links inside bold text stay bold. */
+main a:not(.p-button, .p-tabview-nav-link, .p-menuitem-link, .p-paginator-page,
+  .p-speeddial-action, .image-accordion-cover-link):not(:has(img, .p-tag)):not(:is(h1, h2, h3, h4, h5, h6, .byline) a):not(:is(b, strong, th, dt, .font-bold, .font-semibold) a) {
+  font-weight: 500;
+}
+
 main a:not(.p-button, .p-tabview-nav-link, .p-menuitem-link, .p-paginator-page,
   .p-speeddial-action, .image-accordion-cover-link):not(:has(img, .p-tag)):not(:is(h1, h2, h3, h4, h5, h6, .byline) a):is(:hover, :focus-visible) {
   text-decoration-line: underline;
@@ -1138,7 +1145,6 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 }
 
 .home-alt-intro a {
-    text-decoration: underline;
     color: var(--primary-color);
 }
 

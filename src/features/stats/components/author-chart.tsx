@@ -347,6 +347,7 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
                     <div className="flex justify-content-center align-items-center gap-3 mb-3 flex-wrap">
                         <Dropdown
                             aria-label="Rooli (kansallisuudet)"
+                            ariaLabel="Rooli (kansallisuudet)"
                             value={nationalityRole}
                             options={nationalityRoleOptions}
                             optionLabel="label"
@@ -356,6 +357,7 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
                         />
                         <Dropdown
                             aria-label="Genre (kansallisuudet)"
+                            ariaLabel="Genre (kansallisuudet)"
                             value={nationalityGenre}
                             options={genreOptions}
                             optionLabel="label"
@@ -385,6 +387,7 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
                     <div className="flex justify-content-center align-items-center gap-3 mb-3 flex-wrap">
                         <Dropdown
                             aria-label="Rooli"
+                            ariaLabel="Rooli"
                             value={selectedRole}
                             options={roleOptions}
                             optionLabel="label"
@@ -394,6 +397,7 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
                         />
                         <Dropdown
                             aria-label="Genre"
+                            ariaLabel="Genre"
                             value={selectedGenre}
                             options={genreOptions}
                             optionLabel="label"

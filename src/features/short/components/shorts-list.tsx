@@ -106,6 +106,7 @@ export const ShortsList = ({ shorts, person, groupAuthors, groupRoles, listPubli
                 <div className="grid p-1">
                     <Dropdown value={orderField} options={sortOptions}
                         aria-label="Järjestys"
+                        ariaLabel="Järjestys"
                         onChange={(e) => setOrderField(e.value)}
                         optionLabel="name" optionValue="code"
                         className="small"

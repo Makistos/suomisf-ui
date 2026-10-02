@@ -49,7 +49,7 @@ export const ResetPasswordView = () => {
                                 Palautuslinkki puuttuu tai on virheellinen.
                                 Pyydä uusi linkki{' '}
                                 <Link to={`/forgot-password`}
-                                    className="text-blue-500 no-underline">
+                                    className="text-primary no-underline">
                                     tästä
                                 </Link>.
                             </p>
@@ -60,7 +60,7 @@ export const ResetPasswordView = () => {
                                     sisään uudella salasanalla.
                                 </p>
                                 <Link to={`/login`}
-                                    className="font-medium no-underline text-blue-500">
+                                    className="font-medium no-underline text-primary">
                                     Kirjaudu sisään
                                 </Link>
                             </div>

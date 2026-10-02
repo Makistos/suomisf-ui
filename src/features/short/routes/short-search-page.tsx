@@ -148,7 +148,7 @@ export const ShortSearchPage = () => {
                             {/* <label htmlFor="orig_name">Tyyppi</label> */}
                             <Controller name="type" control={control}
                                 render={({ field }) => (
-                                    <Dropdown aria-label="Tyyppi"
+                                    <Dropdown aria-label="Tyyppi" ariaLabel="Tyyppi"
                                         {...field}
                                         name="type"
                                         // methods={methods}
@@ -187,7 +187,7 @@ export const ShortSearchPage = () => {
                         <div className="field col mb-0">
                             <Controller name="magazine" control={control}
                                 render={({ field }) => (
-                                    <Dropdown aria-label="Lehti"
+                                    <Dropdown aria-label="Lehti" ariaLabel="Lehti"
                                         {...field}
                                         name="magazine"
                                         // methods={methods}

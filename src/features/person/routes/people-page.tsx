@@ -128,6 +128,7 @@ export const PeoplePage = () => {
         return (
             <Dropdown value={options.value} options={names}
                 aria-label="Suodata kansallisuuden mukaan"
+                ariaLabel="Suodata kansallisuuden mukaan"
                 onChange={(e) => options.filterApplyCallback(e.value)}
                 className="p-column-filter" showClear
             />

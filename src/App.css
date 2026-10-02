@@ -84,6 +84,51 @@ div.container {
 
 a {
   text-decoration: none;
+  /* Catalogue Indigo: links used to show the browser's default blue. */
+  color: var(--primary-color);
+}
+
+/* Links in content get a quiet underline so they're told apart from the
+   surrounding text by more than colour (WCAG 1.4.1; indigo vs body text is
+   only ~2.3:1). Headings, bylines, buttons, tabs, menus, paging, cover
+   images and tag chips keep their own look. */
+main a:not(.p-button, .p-tabview-nav-link, .p-menuitem-link, .p-paginator-page,
+  .p-speeddial-action, .image-accordion-cover-link):not(:has(img, .p-tag)):not(:is(h1, h2, h3, h4, h5, h6, .byline) a) {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+}
+
+main a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* The page shows the browser canvas (white, or dark under the dark
+   theme's color-scheme). Name it on body too, so anything reading body's
+   background (contrast checkers) sees the real colour. No visual change. */
+body {
+  background-color: Canvas;
+}
+
+/* Material's pink secondary button carries white text at 3.33:1; dark
+   text reads on both themes' pinks ("Linkit", stats panels). */
+.p-button.p-button-secondary:not(.p-button-outlined):not(.p-button-text) {
+  color: #212121;
+}
+
+/* Tag severities with white text fall short at their 12px size: success
+   (#689f38, 3.17:1), info (#2196f3, 3.12:1), danger (#f44336, 3.7:1).
+   Dark text reads on both themes' green and blue; danger keeps white text
+   on the theme's deeper red (5.4:1). */
+.p-tag.p-tag-success,
+.p-tag.p-tag-info {
+  color: #212121;
+}
+
+.p-tag.p-tag-danger {
+  background: var(--red-700);
+  color: #ffffff;
 }
 
 .p-menubar {
@@ -1056,7 +1101,7 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
 }
 
 .html-content a {
-    color: var(--blue-500, #2196f3);
+    color: var(--primary-color);
 }
 
 .html-content a:visited {

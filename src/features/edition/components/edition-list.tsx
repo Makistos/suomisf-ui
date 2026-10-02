@@ -111,6 +111,7 @@ export const EditionList = ({ editions, person, sort = "year" }: EditionListProp
         return (
             <Dropdown value={sorting} options={sortOptions}
                 aria-label="Järjestys"
+                ariaLabel="Järjestys"
                 onChange={(e) => setSorting(e.value)}
                 optionLabel="name" optionValue="code"
                 className="small"

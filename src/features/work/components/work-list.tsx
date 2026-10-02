@@ -125,6 +125,7 @@ export const WorkList = ({ works, personName = "", collaborationsLast = false,
             </div>
             <Dropdown value={orderField}
                 aria-label="Järjestys"
+                ariaLabel="Järjestys"
                 options={workSortOptions}
                 optionLabel="name"
                 optionValue="code"

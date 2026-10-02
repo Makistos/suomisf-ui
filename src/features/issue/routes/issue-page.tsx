@@ -90,12 +90,12 @@ const IssueInfo = ({ issue }: IssueInfoProps) => {
                         <span key={`editor-${contrib.person.id}-${index}`}>
                             <Link
                                 to={`/people/${contrib.person.id}`}
-                                className="no-underline text-primary hover:text-primary-700"
+                                className="text-primary hover:text-primary-700"
                             >
                                 {contrib.person.alt_name || contrib.person.name}
                             </Link>
                             {contrib.real_person?.id ? (
-                                <> (oik. <Link to={`/people/${contrib.real_person.id}`} className="no-underline text-primary hover:text-primary-700">{contrib.real_person.name}</Link>)</>
+                                <> (oik. <Link to={`/people/${contrib.real_person.id}`} className="text-primary hover:text-primary-700">{contrib.real_person.name}</Link>)</>
                             ) : null}
                             {contrib.description && ` (${contrib.description})`}
                             {!contrib.description && " (päätoimittaja)"}
@@ -110,12 +110,12 @@ const IssueInfo = ({ issue }: IssueInfoProps) => {
                         <span key={`cover-artist-${contrib.person.id}-${index}`}>
                             <Link
                                 to={`/people/${contrib.person.id}`}
-                                className="no-underline text-primary hover:text-primary-700"
+                                className="text-primary hover:text-primary-700"
                             >
                                 {contrib.person.alt_name || contrib.person.name}
                             </Link>
                             {contrib.real_person?.id ? (
-                                <> (oik. <Link to={`/people/${contrib.real_person.id}`} className="no-underline text-primary hover:text-primary-700">{contrib.real_person.name}</Link>)</>
+                                <> (oik. <Link to={`/people/${contrib.real_person.id}`} className="text-primary hover:text-primary-700">{contrib.real_person.name}</Link>)</>
                             ) : null}
                             {contrib.description && ` (${contrib.description})`}
                             {!contrib.description && " (kansikuva)"}

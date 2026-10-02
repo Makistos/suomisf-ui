@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-02T16:46:23+00:00",
+  "generatedAt": "2026-10-02T17:52:45+00:00",
   "title": "Design System: SuomiSF",
   "extensions": {
     "colorMeta": {
@@ -210,7 +210,7 @@
       "name": "Section Label + Tag",
       "kind": "custom",
       "refersTo": "tag-success",
-      "description": "Uppercase Roboto Slab section label over genre/keyword tags (dark text shown, since white-on-green fails contrast).",
+      "description": "Uppercase Roboto Slab section label over genre/keyword tags (success tags carry dark text).",
       "html": "<div class=\"ds-section\"><h3 class=\"ds-label\">Asiasanat</h3><span class=\"ds-tag\">avaruus</span> <span class=\"ds-tag\">dystopia</span></div>",
       "css": ".ds-label { font: 700 14px/24px \"Roboto Slab\", serif; letter-spacing: .5px; text-transform: uppercase; color: var(--text-color-secondary, rgba(0,0,0,0.6)); margin: 0 0 8px; } .ds-tag { display: inline-block; background: #689f38; color: #1b2a0e; border-radius: var(--border-radius, 4px); padding: 4px 6.4px; font: 700 12px Roboto, \"Helvetica Neue\", Helvetica, Arial, sans-serif; }"
     },
@@ -267,9 +267,9 @@
     ],
     "donts": [
       "**Don't** hard-code hex colours in components; chart data palettes are the only exception.",
-      "**Don't** let links fall back to the browser's default blue (`#0000EE`); it currently happens in the main content area.",
+      "**Don't** let links fall back to the browser's default blue (`#0000EE`) or a different blue; links are Catalogue Indigo.",
       "**Don't** add custom shadows, gradients or decorative effects; depth comes from the theme only.",
-      "**Don't** use white text on the light green success colour at small sizes (3.17:1).",
+      "**Don't** put white text on the light status colours (green, blue, pink) at small sizes; use dark text there.",
       "**Don't** introduce a second icon set or another CSS framework; consolidate on what is already loaded."
     ]
   }

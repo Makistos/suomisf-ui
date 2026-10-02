@@ -307,6 +307,7 @@ const OmnibusPicker = ({ source, saveCallback }: OmnibusPickerProps) => {
                         <span className="p-float-label mr-3">
                             <Dropdown
                                 aria-label="Teos"
+                                ariaLabel="Teos"
                                 name="works"
                                 options={personWorks}
                                 value={selectedWork}

@@ -658,6 +658,7 @@ export const ShortStoryChart = () => {
                     <div className="flex justify-content-center align-items-center gap-3 mb-3 flex-wrap">
                         <Dropdown
                             aria-label="Rooli (kansallisuudet)"
+                            ariaLabel="Rooli (kansallisuudet)"
                             value={nationalityRole}
                             options={storyRoleOptions}
                             optionLabel="label"
@@ -667,6 +668,7 @@ export const ShortStoryChart = () => {
                         />
                         <Dropdown
                             aria-label="Novellityyppi (kansallisuudet)"
+                            ariaLabel="Novellityyppi (kansallisuudet)"
                             value={nationalityStoryType}
                             options={storyTypeOptions}
                             optionLabel="label"
@@ -696,6 +698,7 @@ export const ShortStoryChart = () => {
                     <div className="flex justify-content-center align-items-center gap-3 mb-3 flex-wrap">
                         <Dropdown
                             aria-label="Rooli"
+                            ariaLabel="Rooli"
                             value={selectedRole}
                             options={storyRoleIdOptions}
                             optionLabel="label"
@@ -705,6 +708,7 @@ export const ShortStoryChart = () => {
                         />
                         <Dropdown
                             aria-label="Novellityyppi"
+                            ariaLabel="Novellityyppi"
                             value={selectedStoryType}
                             options={storyTypeIdOptions}
                             optionLabel="label"
@@ -772,6 +776,7 @@ export const ShortStoryChart = () => {
                     <div className="flex justify-content-center align-items-center gap-3 mb-3 flex-wrap">
                         <Dropdown
                             aria-label="Novellityyppi (vuosittain)"
+                            ariaLabel="Novellityyppi (vuosittain)"
                             value={yearChartStoryType}
                             options={storyTypeOptions}
                             optionLabel="label"

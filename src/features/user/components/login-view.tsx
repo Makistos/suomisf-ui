@@ -49,7 +49,7 @@ export const LoginView = () => {
                             <div className="text-center mb-5">
                                 <div className="text-900 text-3x1 font-medium mb-3" role="heading" aria-level={1}>Tervetuloa</div>
                                 <span className="text-600 font-medium line-height-3">Ei tunnusta?</span>
-                                <Link to={`/register`} className="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Luo tunnus!</Link>
+                                <Link to={`/register`} className="font-medium no-underline ml-2 text-primary cursor-pointer">Luo tunnus!</Link>
                             </div>
                             <div>
                                 <div className="field">
@@ -88,7 +88,7 @@ export const LoginView = () => {
                                     <span>Kirjaudu</span>
                                 </Button>
                                 <div className="text-center mt-3">
-                                    <Link to={`/forgot-password`} className="font-medium no-underline text-blue-500 cursor-pointer">Unohtuiko salasana?</Link>
+                                    <Link to={`/forgot-password`} className="font-medium no-underline text-primary cursor-pointer">Unohtuiko salasana?</Link>
                                 </div>
                             </div>
                         </div>

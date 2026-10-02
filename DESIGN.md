@@ -127,8 +127,8 @@ A restrained Material palette: one indigo accent on neutral grey surfaces, with 
 - **Input Stroke** (38% black): the outline of text inputs.
 
 ### Status
-- **Success Green**: `Tag` severity success. On white text it measures 3.17:1, below AA for its 12px text; a darker shade or dark text is needed.
-- **Danger Red**: destructive actions and errors only.
+- **Success Green**: `Tag` severity success, carrying dark text (white text measured only 3.17:1 at 12px).
+- **Danger Red**: destructive actions and errors only. Danger tags use the theme's deeper red (`--red-700`) so their white text passes 4.5:1.
 
 ### Named Rules
 **The Sparing Indigo Rule.** Catalogue Indigo marks identity and navigation: page titles, active tabs, links and primary actions. It is never a background for content areas or decoration.
@@ -192,7 +192,7 @@ Stock PrimeReact Material components, used as they come. They are quiet and util
 
 ### Tags
 - **Style:** PrimeReact `Tag`: 4px corners, 12px bold text, severity colours (genre and keyword tags).
-- **Note:** the white-on-green success tag fails contrast for 12px text.
+- **Contrast:** success and info tags use dark text and danger tags the deeper red, so every severity meets 4.5:1 at 12px in both themes.
 
 ### Cards / Containers
 - **Corner Style:** 4px
@@ -211,6 +211,11 @@ Stock PrimeReact Material components, used as they come. They are quiet and util
 - **Menubar:** a PrimeReact `Menubar` outlined with a hairline border and 4px corners, transparent in the light theme and card-grey in the dark. It holds the "SuomiSF" wordmark in Catalogue Indigo, Roboto 16px items, the account menu and the site search (an autocomplete with the "Vain nimet" checkbox inside the field).
 - **Tabs:** PrimeReact `TabView`. The active tab has Catalogue Indigo text, medium weight and an indigo underline.
 
+### Links
+- **Colour:** Catalogue Indigo everywhere (`a` inherits `--primary-color`), including links inside description HTML.
+- **In content:** a quiet underline (1px, offset 0.18em, 45% of the link colour) that turns solid on hover, so links are told apart by more than colour.
+- **Not underlined:** links in headings and bylines, buttons, tabs, menu and paging links, cover-image links and tag chips.
+
 ### Covers (Signature Component)
 Book cover images are the system's only ornament. They are square-cornered and unframed, typically 150px wide on detail pages (PrimeReact `Image` with preview), and laid out in rows on the front page and in cover views.
 
@@ -227,7 +232,7 @@ Book cover images are the system's only ornament. They are square-cornered and u
 
 ### Don't:
 - **Don't** hard-code hex colours in components; chart data palettes are the only exception.
-- **Don't** let links fall back to the browser's default blue (`#0000EE`); it currently happens in the main content area.
+- **Don't** let links fall back to the browser's default blue (`#0000EE`) or a different blue; links are Catalogue Indigo.
 - **Don't** add custom shadows, gradients or decorative effects; depth comes from the theme only.
-- **Don't** use white text on the light green success colour at small sizes (3.17:1).
+- **Don't** put white text on the light status colours (green, blue, pink) at small sizes; use dark text there.
 - **Don't** introduce a second icon set or another CSS framework; consolidate on what is already loaded.

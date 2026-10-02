@@ -450,6 +450,7 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
             </div>
             <Dropdown value={orderField}
                 aria-label="Järjestys"
+                ariaLabel="Järjestys"
                 options={workSortOptions}
                 optionLabel="name"
                 optionValue="code"

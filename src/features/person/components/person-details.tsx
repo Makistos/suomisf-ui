@@ -100,7 +100,7 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
                                     href={displayImage.descriptionUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-xs text-500 flex align-items-center gap-1 no-underline hover:text-primary"
+                                    className="text-xs text-600 flex align-items-center gap-1 no-underline hover:text-primary"
                                 >
                                     <i className="pi pi-image" style={{ fontSize: '0.75rem' }} />
                                     Wikimedia

@@ -174,6 +174,7 @@ export const PublisherChart = () => {
                 <div className="flex justify-content-center align-items-center gap-3 mb-3 flex-wrap">
                     <Dropdown
                         aria-label="Genre"
+                        ariaLabel="Genre"
                         value={selectedGenre}
                         options={genreOptions}
                         optionLabel="label"

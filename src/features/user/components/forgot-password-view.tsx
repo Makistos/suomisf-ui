@@ -46,7 +46,7 @@ export const ForgotPasswordView = () => {
                                     Tarkista sähköpostisi.
                                 </p>
                                 <Link to={`/login`}
-                                    className="font-medium no-underline text-blue-500">
+                                    className="font-medium no-underline text-primary">
                                     Takaisin kirjautumiseen
                                 </Link>
                             </div>
@@ -76,7 +76,7 @@ export const ForgotPasswordView = () => {
                                 </Button>
                                 <div className="text-center mt-3">
                                     <Link to={`/login`}
-                                        className="font-medium no-underline text-blue-500">
+                                        className="font-medium no-underline text-primary">
                                         Takaisin kirjautumiseen
                                     </Link>
                                 </div>

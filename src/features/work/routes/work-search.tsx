@@ -254,7 +254,7 @@ export const WorkSearchPage = () => {
                                 <div className="field grid md:col-4 sm:col-12 pr-3">
                                     <Controller name="nationality" control={control}
                                         render={({ field }) => (
-                                            <Dropdown options={nationalities.data} aria-label="Kansallisuus" placeholder="Kansallisuus" className="w-full"
+                                            <Dropdown options={nationalities.data} aria-label="Kansallisuus" ariaLabel="Kansallisuus" placeholder="Kansallisuus" className="w-full"
                                                 id={field.name} {...field} value={field.value}
                                                 optionLabel="name" optionValue="id" filter showClear
                                                 onChange={(e) => field.onChange(e.value)} />
@@ -263,7 +263,7 @@ export const WorkSearchPage = () => {
                                 <div className="field grid md:col-4 sm:col-12">
                                     <Controller name="type" control={control}
                                         render={({ field }) => (
-                                            <Dropdown options={worktypes.data} aria-label="Tyyppi" placeholder="Tyyppi" className="w-full"
+                                            <Dropdown options={worktypes.data} aria-label="Tyyppi" ariaLabel="Tyyppi" placeholder="Tyyppi" className="w-full"
                                                 id={field.name} {...field} value={field.value} showClear
                                                 optionLabel="name" optionValue="id"
                                                 onChange={(e) => field.onChange(e.value)} />

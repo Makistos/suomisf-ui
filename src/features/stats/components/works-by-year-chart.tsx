@@ -469,6 +469,7 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData, ownerId
                         <label>Alku:</label>
                         <Dropdown
                             aria-label="Alkuvuosi"
+                            ariaLabel="Alkuvuosi"
                             value={startYear}
                             options={yearOptions}
                             optionLabel="label"
@@ -481,6 +482,7 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData, ownerId
                         <label>Loppu:</label>
                         <Dropdown
                             aria-label="Loppuvuosi"
+                            ariaLabel="Loppuvuosi"
                             value={endYear}
                             options={yearOptions}
                             optionLabel="label"

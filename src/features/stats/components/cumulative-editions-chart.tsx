@@ -363,6 +363,7 @@ export const CumulativeEditionsChart = ({ data }: CumulativeEditionsChartProps) 
                         <label>Genre:</label>
                         <Dropdown
                             aria-label="Genre"
+                            ariaLabel="Genre"
                             value={showByGenre ? 'all' : selectedGenre}
                             options={genreOptions}
                             optionLabel="label"
@@ -376,6 +377,7 @@ export const CumulativeEditionsChart = ({ data }: CumulativeEditionsChartProps) 
                         <label>Alku:</label>
                         <Dropdown
                             aria-label="Alkuvuosi"
+                            ariaLabel="Alkuvuosi"
                             value={startYear}
                             options={yearOptions}
                             optionLabel="label"
@@ -388,6 +390,7 @@ export const CumulativeEditionsChart = ({ data }: CumulativeEditionsChartProps) 
                         <label>Loppu:</label>
                         <Dropdown
                             aria-label="Loppuvuosi"
+                            ariaLabel="Loppuvuosi"
                             value={endYear}
                             options={yearOptions}
                             optionLabel="label"

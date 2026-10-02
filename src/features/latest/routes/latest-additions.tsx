@@ -37,6 +37,7 @@ export const LatestAdditions = () => {
           <div className="mr-2">
             <Dropdown
                 aria-label="Näytettävät lisäykset"
+                ariaLabel="Näytettävät lisäykset"
               options={targets}
               value={target}
               optionLabel="name"
@@ -47,6 +48,7 @@ export const LatestAdditions = () => {
           <div>
             <Dropdown
                 aria-label="Lukumäärä"
+                ariaLabel="Lukumäärä"
               options={showcounts}
               value={count}
               placeholder="Luk"

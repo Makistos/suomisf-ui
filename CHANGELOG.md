@@ -3,6 +3,101 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-10-02 `8fc9d86` — Faster first paint and no layout shift on load
+First paint about 1 s sooner on a throttled phone connection. JavaScript needed before the first paint halved (378 KB → 194 KB gzipped): the menu's login, registration, new-work and new-person dialogs now load on demand, and the front page no longer pulls in the whole edition feature. Pages no longer jump while loading (front page CLS 0.27 → 0.03, tag page 0.37 → 0.01): the menubar is styled from the first paint, entity pages keep their width while data loads, and covers and portraits reserve their space. The light/dark theme switches by CSS alone; duplicate PrimeReact and PrimeFlex stylesheets removed. List and gallery thumbnails load lazily.
+
+## 2026-10-02 `bb235ce` — Link style and contrast
+Links are Catalogue Indigo with medium weight, underlined only on hover and keyboard focus. Better text contrast on tags and secondary buttons. (Through `5019b25`.)
+
+## 2026-10-02 `92849e4` — Error pages and accessibility fixes
+Entity pages show a clear "not found" or "loading failed" message with a retry button instead of an empty page; unknown URLs get a not-found page; requests are no longer retried for missing records. Alt text on images, accessible names for icon buttons, dropdowns and charts, a labelled main navigation, and the author line above titles is no longer a heading.
+
+## 2026-10-02 `c1c20f1` — Mobile fixes
+The menubar no longer makes pages wider than a phone screen, toasts fit narrow screens, and tag chips, letter buttons and the "Vain nimet" checkbox have larger tap targets on touch screens. Product and design documentation added (`PRODUCT.md`, `DESIGN.md`).
+
+## 2026-10-01 `d9ba822` — Legacy article pages removed
+The unlinked article pages were removed; articles still appear on tag, person and issue pages.
+
+## 2026-10-01 `9835d95` — Fix: app could go blank after deleting from a dialog
+Closing overlays on navigation removed elements React still owned, which could unmount the whole app. Delete confirmations now show through an app-wide toast. Contributor rows in edit forms no longer remount (and lose focus) on every keystroke (`32605f5`).
+
+## 2026-10-01 `84042cb` — Unit tests, linting and code quality
+Vitest unit tests for edition, work and shared utilities; oxlint replaces the ineffective ESLint setup, and all its findings were fixed (unused code, hook rules, effect dependencies, React compiler rules); 24 unused source files deleted. The E2E suite gained a page guard that fails on runtime errors, render loops and request storms. (Through `06441a7`.)
+
+## 2026-09-25 `bc277c4` — Winner-import source shown on award page
+
+## 2026-09-21 `b5a7e23` — Person page combines contributions by work
+Edited, translated, cover and illustration tabs list contributions per work like the authored-works list, keeping version (laitos) details, and tab counts are by work. (Through `9701855`.)
+
+## 2026-09-15 `05da6d5` — Front page random picks
+New "Bibliografiasta löytyy" section with one random book per genre category, shown in an image accordion that reveals genres, description and tags on hover. "Kokoelman laajuus" renamed "Bibliografian laajuus". (Through `b05ac94`.)
+
+## 2026-09-12 `c96a7d5` — Parent series shown with sub-series
+Work and person pages show a book series as "parent > sub-series". (Through `6e6ea14`.)
+
+## 2026-09-10 `52d7121` — Counts and percentages in visitor stats charts
+
+## 2026-09-05 `71cc70f` — Face detection library replaced
+The admin person-image picker scores portrait candidates by face count with `@mediapipe/tasks-vision` instead of the unmaintained face-api.js, removing a high-severity dependency vulnerability.
+
+## 2026-09-04 `006751b` — Fixes: original titles and stale tabs
+Original title and year are shown based on language rather than title equality, without a stray "()" when empty; the Muistilista tab no longer shows Omistetut data; the book series browser updates after a work's series is edited. (Through `adc894f`.)
+
+## 2026-09-03 `3bc2685` — More price sources and price editing
+Lukuhetki and Kampin kirjakauppa added as price sources; Oranssi Planeetta hidden. Stored price rows can be edited; edit and delete are shown only to admins and the person who added the row. Work page and price lists refresh after pricing changes. (Through `03e7411`.)
+
+## 2026-08-27 `db143ce` — Owners can price their own editions
+The pricing button moved into the edition ownership row.
+
+## 2026-08-25 `98af167` — Work list grouping and sorting
+Work lists (including the person page) have a group-by-author toggle and a sort-field dropdown. Book series and publisher series lists are alphabetical.
+
+## 2026-08-23 `350b0a3` — Framework upgrades and security fixes
+Vite 8, React Router 7, TypeScript 7 and React 19. The search dropdown no longer renders descriptions as HTML (XSS fix). (Through `d9b9e8e`.)
+
+## 2026-08-21 `65be8de` — End-to-end test suite
+Playwright tests against a disposable copy of the database, covering anonymous browsing, logged-in user actions and admin create/edit/delete for every entity type, plus a repeatable performance harness. (Through `855754b`.)
+
+## 2026-08-21 `d69fab0` — Code splitting and list performance
+Routes load on demand (main bundle 2.58 MB → 793 KB). Long list tables are paginated, cover grids lazy-load, and in-place sort bugs that reordered shared data were fixed. (Through `e8e6000`.)
+
+## 2026-08-19 `ba1a91c` — Chart legends drill down to filtered lists
+
+## 2026-08-11 `f2b5542` — Other owners panel for editions
+Edition ownership controls show who else owns the edition. Edition details lay out correctly on narrow screens.
+
+## 2026-07-29 `aac62e0` — Collection composition and per-year stats
+The Tilastot panel shows collection composition, a per-year chart and label counts, with drill-down scoped to the user. (Through `14e44e5`.)
+
+## 2026-07-28 `2bd5fa6` — Titles-only search
+A "Vain nimet" checkbox inside the main search box limits matching to titles and names. It is on by default and remembered. (Through `ba17c92`.)
+
+## 2026-07-27 `dc0ca88` — Price sources and sellers
+The work price picker has a source selector, and the seller is shown in the picker, prices table and collection value dialog. The work's "Muuta" note is shown separately from the description. (Through `d70fff4`.)
+
+## 2026-07-21 `47f2c6a` — Finnish user and admin guides
+`docs/KAYTTOOHJE.md` and `docs/ADMIN_GUIDE.md`.
+
+## 2026-07-20 `d0d907a` — Read books in suggestions and profile
+The suggestion wizard can hide books already read; the profile has a read-books view, and the open profile view is kept in the URL. (Through `5fdb72b`.)
+
+## 2026-07-19 `a6c6493` — Admin shortcuts for new works and people
+An admin menu creates works and people directly. People with no linked works can be deleted from their page.
+
+## 2026-07-17 `fbf2f91` — Work read status
+Logged-in users can mark a work read and give it a thumbs down, neutral or thumbs up. (Through `9588404`.)
+
+## 2026-07-15 `c6bd61e` — Tag page shorts split by type
+Each short story type (novelli, runo, artikkeli…) gets its own tab on the tag page. Award descriptions render as HTML on the awards list; the translation disclaimer is hidden for domestic awards.
+
+## 2026-07-10 `1c7ef78` — Award creation and winner import
+Admins can create awards and import winners from an external source, with a preview where each winner is matched before saving. (Through `d4422b2`.)
+
+## 2026-07-08 `b2978f2` — Autocomplete for link descriptions
+
+## 2026-07-07 `ce1c36e` — Password reset and registration email
+Users can reset a lost password by email, and registration asks for an email address.
+
 ## 2026-07-06 `247720f` — Book suggestion wizard
 New `/suggestions` page: a PrimeReact Stepper wizard that recommends books in refining steps — genre, subgenre & style, author's home country, original publication decade (including a pre-1900 bucket), length, and a final step with award-winning and owned-only switches plus subject/location/era/actor/list tags. Each selection live-refreshes a random ten matching works; option lists are constrained to the narrowed pool with per-tag match counts; a summary of the current selections shows under the stepper; award-winning books are marked with a trophy. Linked under the Muut menu and opens in a new tab. (Evolved through `73ea791`.)
 

@@ -132,20 +132,15 @@ a {
   color: var(--primary-color);
 }
 
-/* Links in content get a quiet underline so they're told apart from the
-   surrounding text by more than colour (WCAG 1.4.1; indigo vs body text is
-   only ~2.3:1). Headings, bylines, buttons, tabs, menus, paging, cover
-   images and tag chips keep their own look. */
+/* Links in content are told apart by colour at rest (pages are dense with
+   links, and underlining them all made the text hard to read) and get an
+   underline on hover and keyboard focus. Headings, bylines, buttons, tabs,
+   menus, paging, cover images and tag chips keep their own look. */
 main a:not(.p-button, .p-tabview-nav-link, .p-menuitem-link, .p-paginator-page,
-  .p-speeddial-action, .image-accordion-cover-link):not(:has(img, .p-tag)):not(:is(h1, h2, h3, h4, h5, h6, .byline) a) {
+  .p-speeddial-action, .image-accordion-cover-link):not(:has(img, .p-tag)):not(:is(h1, h2, h3, h4, h5, h6, .byline) a):is(:hover, :focus-visible) {
   text-decoration-line: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.18em;
-  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
-}
-
-main a:hover {
-  text-decoration-color: currentColor;
 }
 
 /* The page shows the browser canvas (white, or dark under the dark

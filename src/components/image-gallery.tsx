@@ -141,6 +141,7 @@ export const ImageGallery = ({
                     <Image
                         src={currentImage.url}
                         alt={alt}
+                        loading="lazy"
                         height={height}
                         className={className}
                         imageClassName={imageClassName}
@@ -215,6 +216,7 @@ export const ImageGallery = ({
                                         <img
                                             src={item.url}
                                             alt={`${alt} ${index + 1}`}
+                                            loading="lazy"
                                             style={{ width: '100%', maxHeight: '250px', objectFit: 'contain' }}
                                             className="border-round hover:opacity-80 transition-all transition-duration-200"
                                         />

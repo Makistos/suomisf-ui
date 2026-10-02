@@ -88,12 +88,12 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
             <div className="grid">
                 <div className="col-12 flex align-items-start gap-3 mt-3 p-0">
                     {displayImage && (
-                        <div className="flex flex-column gap-1 flex-shrink-0" style={{ maxWidth: '120px' }}>
+                        <div className="flex flex-column gap-1 flex-shrink-0" style={{ width: '120px' }}>
                             <img
                                 src={displayImage.url}
                                 alt={data.alt_name || data.name}
                                 title={[displayImage.credit?.replace(/<[^>]+>/g, ''), displayImage.license].filter(Boolean).join(' · ')}
-                                style={{ maxHeight: '160px', width: '100%', objectFit: 'cover', borderRadius: '4px' }}
+                                style={{ maxHeight: '160px', width: '100%', aspectRatio: 'auto 3 / 4', objectFit: 'cover', borderRadius: '4px' }}
                             />
                             {displayImage.descriptionUrl && (
                                 <a

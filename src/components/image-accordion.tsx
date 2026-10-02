@@ -98,6 +98,7 @@ export const ImageAccordion = ({ items, imageHeight = DEFAULT_IMAGE_HEIGHT }: Im
                             <img
                                 alt={item.imageAlt}
                                 src={item.imageSrc}
+                                loading="lazy"
                                 className="image-accordion-cover"
                                 style={{ height: `${imageHeight}px` }}
                             />

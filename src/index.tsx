@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
-import 'primereact/resources/primereact.min.css'
 
 import App from './App';
 import { GlobalToastProvider } from './components/global-toast';

@@ -520,6 +520,7 @@ export const ContributorEditionControl = ({
                                             <img
                                                 src={item.itemImageSrc}
                                                 alt={item.alt}
+                                                loading="lazy"
                                                 style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }}
                                                 className="border-round hover:opacity-80 transition-all transition-duration-200"
                                             />

@@ -8,7 +8,7 @@ import { Divider } from "primereact/divider";
 
 import { getApiContent } from "./services/user-service";
 import { getCurrenUser } from "./services/auth-service";
-import { Edition } from "./features/edition";
+import { Edition } from "./features/edition/types";
 import { ImageTooltip } from "./utils/image-tooltip";
 import { ImageAccordion, ImageAccordionItem } from "./components/image-accordion";
 
@@ -30,10 +30,12 @@ const StatBox = ({ label, value }: { label: string; value: number }) => (
   </dl>
 );
 
+// Same row container and typical cover width (2:3 at COVER_HEIGHT) as the
+// loaded covers, so the swap doesn't reflow the page.
 const CoverSkeleton = () => (
-  <div className="flex gap-3">
+  <div className="home-alt-covers">
     {Array.from({ length: LATEST_COUNT }).map((_, i) => (
-      <Skeleton key={i} width="90px" height={`${COVER_HEIGHT}px`} borderRadius="2px" />
+      <Skeleton key={i} width={`${Math.round(COVER_HEIGHT * 2 / 3)}px`} height={`${COVER_HEIGHT}px`} borderRadius="2px" />
     ))}
   </div>
 );

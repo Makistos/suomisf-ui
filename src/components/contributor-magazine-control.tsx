@@ -250,6 +250,7 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
                                                             <Image
                                                                 src={issue.images[0].image_src.startsWith('http') ? issue.images[0].image_src : `${import.meta.env.VITE_IMAGE_URL}${issue.images[0].image_src}`}
                                                                 alt={`${issue.magazine.name} ${issue.cover_number} kansi`}
+                                                                loading="lazy"
                                                                 width="64"
                                                                 height="80"
                                                                 className="border-round shadow-2 hover:shadow-4 transition-all transition-duration-200"
@@ -293,6 +294,7 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
                                             <img
                                                 src={item.itemImageSrc}
                                                 alt={item.alt}
+                                                loading="lazy"
                                                 style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }}
                                                 className="border-round hover:opacity-80 transition-all transition-duration-200"
                                             />

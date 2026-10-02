@@ -1,5 +1,6 @@
 import React from 'react';
-import { Edition, EditionString } from "../features/edition";
+import { Edition } from "../features/edition/types";
+import { EditionString } from "../features/edition/utils/edition-string";
 // import { ImageType } from "../types/image";
 // import { Work } from '../features/work';
 

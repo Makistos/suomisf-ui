@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, lazy, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Menubar } from 'primereact/menubar';
@@ -9,11 +9,22 @@ import { Dialog } from 'primereact/dialog';
 import { getCurrenUser } from '../services/auth-service';
 import { logout } from '../services/auth-service';
 import { getApiContent } from '../services/user-service';
-import { LoginView } from '../features/user';
-import { RegisterView } from '@features/user/components/register-view';
 import { classNames } from 'primereact/utils';
-import { WorkForm } from '../features/work/components/work-form';
-import { PersonForm } from '../features/person/components/person-form';
+import { ProgressSpinner } from 'primereact/progressspinner';
+
+// The menu is on every page, but these only open in its dialogs. Loading
+// them on demand keeps the forms (and their editors, tables and pickers)
+// out of the bundle every visitor downloads before the first paint.
+const LoginView = lazy(() => import('@features/user/components/login-view'));
+const RegisterView = lazy(() => import('@features/user/components/register-view').then(m => ({ default: m.RegisterView })));
+const WorkForm = lazy(() => import('../features/work/components/work-form').then(m => ({ default: m.WorkForm })));
+const PersonForm = lazy(() => import('../features/person/components/person-form').then(m => ({ default: m.PersonForm })));
+
+const dialogFallback = (
+    <div className="flex justify-content-center p-4">
+        <ProgressSpinner style={{ width: '3rem', height: '3rem' }} />
+    </div>
+);
 
 export default function MainMenu() {
     const user = useMemo(() => { return getCurrenUser() }, []);
@@ -406,12 +417,12 @@ export default function MainMenu() {
             <Dialog visible={loginVisible} onHide={() => onHide()}
                 breakpoints={{ '960px': '75vw', '640px': '100vw' }} style={{ width: '50vw' }}
             >
-                <LoginView />
+                <Suspense fallback={dialogFallback}><LoginView /></Suspense>
             </Dialog>
             <Dialog visible={registerVisible} onHide={() => onHide()}
                 breakpoints={{ '960px': '75vw', '640px': '100vw' }} style={{ width: '50vw' }}
             >
-                <RegisterView />
+                <Suspense fallback={dialogFallback}><RegisterView /></Suspense>
             </Dialog>
             {workFormVisible &&
                 <Dialog maximizable blockScroll
@@ -419,7 +430,7 @@ export default function MainMenu() {
                     header="Uusi teos" visible={true}
                     onHide={() => setWorkFormVisible(false)}
                 >
-                    <WorkForm workId={null} onSubmitCallback={workFormCallback} navigateOnSuccess={false} />
+                    <Suspense fallback={dialogFallback}><WorkForm workId={null} onSubmitCallback={workFormCallback} navigateOnSuccess={false} /></Suspense>
                 </Dialog>
             }
             {personFormVisible &&
@@ -428,7 +439,7 @@ export default function MainMenu() {
                     header="Uusi henkilö" visible={true}
                     onHide={() => setPersonFormVisible(false)}
                 >
-                    <PersonForm data={null} onSubmitCallback={personFormCallback} navigateOnSuccess={false} />
+                    <Suspense fallback={dialogFallback}><PersonForm data={null} onSubmitCallback={personFormCallback} navigateOnSuccess={false} /></Suspense>
                 </Dialog>
             }
 

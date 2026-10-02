@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fi">
 
 <head>
   <meta charset="utf-8" />
@@ -13,20 +13,16 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/primeicons/7.0.0/primeicons.css"
     integrity="sha512-TrpBJRPu1GwAu1cMDKEHnDbLCnciebxralpA806EEIdNpmbuCAi0hZRBdbNHVl2fgOW96lnYyLIPqY/iL2saNg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link id="theme-link" rel="stylesheet" />
-  <script>
-    (function () {
-      var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      var base = 'https://cdnjs.cloudflare.com/ajax/libs/primereact/10.6.4/resources/themes/';
-      document.getElementById('theme-link').href = base + (dark ? 'mdc-dark-indigo' : 'mdc-light-indigo') + '/theme.css';
-    })();
-  </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/primereact/10.6.4/resources/primereact.min.css"
-    integrity="sha512-sHmNQOF6Ht0VB933/8QO2V4Y95srbrSZYImCQ64CpaRqIveCp5KCc7Zbzt7LHDTF1/tBHgbdXwN9ggOBtr5Zjg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/primeflex/4.0.0/primeflex.min.css"
-    integrity="sha512-sl5UktE7YNdAMnjAvXBliT9iy2r+iCgjsbj4nOT3OBeY3TflWCNRvocwqQu7pST5IXO6YmycCDPZWF+k+NptMQ=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!--
+      Theme by system colour scheme. Static links with media queries are
+      render-blocking (the script that used to set the href was not, so the
+      page painted unstyled first and then jumped) and switch live when the
+      system setting changes, with no JavaScript.
+    -->
+  <link rel="stylesheet" media="(prefers-color-scheme: light)"
+    href="https://cdnjs.cloudflare.com/ajax/libs/primereact/10.6.4/resources/themes/mdc-light-indigo/theme.css" />
+  <link rel="stylesheet" media="(prefers-color-scheme: dark)"
+    href="https://cdnjs.cloudflare.com/ajax/libs/primereact/10.6.4/resources/themes/mdc-dark-indigo/theme.css" />
   <!--
       The PrimeReact theme's own @font-face rules for Roboto point at font
       files cdnjs no longer serves (404s in the console). Loading Google

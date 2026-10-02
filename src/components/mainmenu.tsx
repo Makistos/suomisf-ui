@@ -362,8 +362,10 @@ export default function MainMenu() {
         }
 
         return (
-            <div className="relative inline-block">
+            <div className="relative w-full">
                 <AutoComplete
+                    className="w-full"
+                    inputClassName="w-full"
                     placeholder="Etsi"
                     minLength={3}
                     onChange={(e) => setSelectedItem(e.value)}
@@ -384,7 +386,7 @@ export default function MainMenu() {
                     <Checkbox
                         inputId="searchTitlesOnly"
                         checked={titlesOnly}
-                        style={{ transform: 'scale(0.65)' }}
+                        className="search-titles-checkbox"
                         onChange={(e) => {
                             const val = !!e.checked;
                             setTitlesOnly(val);

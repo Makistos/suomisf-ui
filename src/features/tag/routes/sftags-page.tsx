@@ -44,11 +44,11 @@ export const SFTags = () => {
     const renderTags = (tags: SfTag[]) => {
         return tags.map((tag: SfTag) => {
             return (
-                <>
-                    <Link to={`/tags/${tag.id}`} key={tag.id}>{tag.name}</Link>&nbsp;
+                <React.Fragment key={tag.id}>
+                    <Link to={`/tags/${tag.id}`}>{tag.name}</Link>&nbsp;
                     ({tagCount(tag)})
-                    < br />
-                </>
+                    <br />
+                </React.Fragment>
             )
         })
     }

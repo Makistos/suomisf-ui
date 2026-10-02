@@ -79,6 +79,50 @@ a {
   width: 100%;
 }
 
+/* The search box's natural width (~277px) used to keep the menubar wider
+   than a phone screen, making every page scroll sideways. Let the end slot
+   shrink and the search fill whatever room is left; desktop is unchanged. */
+.p-menubar .p-menubar-end {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+/* PrimeReact's toast is a fixed 25rem (400px): wider than a phone, so it
+   was cut off at the left edge. */
+@media (max-width: 480px) {
+  .p-toast {
+    width: calc(100vw - 40px);
+  }
+}
+
+/* Touch screens: bring tag chips and the tag index links up to a
+   comfortable tap size (WCAG 2.5.8 asks for at least 24px). Mouse users
+   keep the denser layout. */
+/* "Vain nimet" checkbox inside the search box: shrunk to fit with a mouse,
+   full size on touch screens (scale(0.65) left a 12px target). */
+.search-titles-checkbox {
+  transform: scale(0.65);
+}
+
+@media (pointer: coarse) {
+  .search-titles-checkbox {
+    transform: none;
+  }
+
+  .initialsbutton {
+    min-height: 32px;
+  }
+
+  a > .p-tag {
+    padding: 6px 10px;
+  }
+
+  div.three-column a {
+    display: inline-block;
+    padding-block: 5px;
+  }
+}
+
 /* .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link .p-menuitem-text {
   color: rgba(255, 255, 255, .5)
 } */

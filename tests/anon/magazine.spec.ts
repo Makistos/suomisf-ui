@@ -4,10 +4,10 @@ test('Alienisti magazine page displays correct content', async ({ page }) => {
     // Navigate to specific magazine page
     await page.goto('/magazines/6');
 
-    // Check that the page headings exist
+    // Check the title heading and the publisher line (a byline, not a heading)
     await expect(page.getByRole('heading', { name: 'Alienisti' }))
         .toBeVisible({ timeout: 20000 });
-    await expect(page.getByRole('heading', { name: 'Jyväskylän Science Fiction Seura 42 ry' }))
+    await expect(page.locator('.byline', { hasText: 'Jyväskylän Science Fiction Seura 42 ry' }))
         .toBeVisible();
 
     // Wait for loading to complete

@@ -58,7 +58,7 @@ export const EditionsStats = ({ editions }: EditionsProps) => {
         <div>
             <p><b>Vanhin kirja: </b>{oldestEdition()}.</p>
             <p><b>Uusin kirja: </b>{newestEdition()}.</p>
-            <Chart type="doughnut"
+            <Chart ariaLabel="Painokset genreittäin" type="doughnut"
                 data={genres}
 
             />

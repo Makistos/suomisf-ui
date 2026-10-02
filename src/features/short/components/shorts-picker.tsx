@@ -364,6 +364,7 @@ const ShortsPicker = ({ source, saveCallback }: ShortsPickerProps) => {
             </span>
             <span className="p-float-label mr-3">
               <Dropdown
+                  inputId="shorts"
                 name="shorts"
                 options={personShorts}
                 value={selectedShort}

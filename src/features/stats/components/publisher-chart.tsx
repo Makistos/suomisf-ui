@@ -173,6 +173,7 @@ export const PublisherChart = () => {
                 <h2 className="mt-0 mb-4">Suurimmat kustantajat</h2>
                 <div className="flex justify-content-center align-items-center gap-3 mb-3 flex-wrap">
                     <Dropdown
+                        aria-label="Genre"
                         value={selectedGenre}
                         options={genreOptions}
                         optionLabel="label"
@@ -199,7 +200,7 @@ export const PublisherChart = () => {
                     </div>
                 ) : (
                     <div style={{ width: '1000px', height: '700px' }}>
-                        <Pie data={chartData} options={chartOptions} />
+                        <Pie role="img" aria-label="Suurimmat kustantajat" data={chartData} options={chartOptions} />
                     </div>
                 )}
                 <details className="mt-4 text-left">

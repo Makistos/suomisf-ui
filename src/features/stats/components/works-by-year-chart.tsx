@@ -452,8 +452,9 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData, ownerId
                 </div>
                 <div className="flex justify-content-center align-items-center gap-3 mb-3 flex-wrap">
                     <div className="flex align-items-center gap-2">
-                        <label>Kielet:</label>
+                        <label id="wby-languages">Kielet:</label>
                         <MultiSelect
+                            aria-labelledby="wby-languages"
                             value={selectedLanguages}
                             options={languageOptions}
                             optionLabel="label"
@@ -467,6 +468,7 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData, ownerId
                     <div className="flex align-items-center gap-2">
                         <label>Alku:</label>
                         <Dropdown
+                            aria-label="Alkuvuosi"
                             value={startYear}
                             options={yearOptions}
                             optionLabel="label"
@@ -478,6 +480,7 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData, ownerId
                     <div className="flex align-items-center gap-2">
                         <label>Loppu:</label>
                         <Dropdown
+                            aria-label="Loppuvuosi"
                             value={endYear}
                             options={yearOptions}
                             optionLabel="label"
@@ -495,7 +498,7 @@ export const WorksByYearChart = ({ finnishEditionData, originalYearData, ownerId
                     />
                 </div>
                 <div style={{ height: `${chartHeight}px` }}>
-                    <Bar data={chartData} options={chartOptions} />
+                    <Bar role="img" aria-label="Julkaisut vuosittain" data={chartData} options={chartOptions} />
                 </div>
                 <details className="mt-4 text-left">
                     <summary className="cursor-pointer text-500">Näytä data ({tableData.length} {viewMode === 'decade' ? 'vuosikymmentä' : 'vuotta'})</summary>

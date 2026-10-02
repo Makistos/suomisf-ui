@@ -119,7 +119,9 @@ export const OwnedBooks = ({ userId, listType }: OwnedBooksProps) => {
                 <div className="grid">
                     <div className="grid col-6 justify-content-start gap-2 mt-3">
                         <b>Kirjoja: </b> {renderedItems.length > 0 ? renderedItems.length : data?.length}
+                        <span id="owned-columns" className="p-hidden-accessible">Näytettävät sarakkeet</span>
                         {/* <MultiSelect value={selectedColumns}
+                            aria-labelledby="owned-columns"
                             onChange={(e) => onColumnSelect(e)}
                             options={cols}
                             optionLabel="header"

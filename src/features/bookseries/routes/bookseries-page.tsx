@@ -20,6 +20,7 @@ import { Card } from "primereact/card";
 import { TabPanel, TabView } from "primereact/tabview";
 import { GenreGroup } from "../../genre";
 import { Genre } from "../../genre/types";
+import { LoadError } from "@components/load-error";
 
 const baseURL = 'bookseries/';
 
@@ -52,11 +53,10 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
         const data = await getApiContent(url, user).then(response =>
             response.data
         )
-            .catch((error) => console.log(error));
         return data;
     }
 
-    const { isLoading, isError, data } = useQuery({
+    const { isLoading, data, error: loadError, refetch: reloadMain } = useQuery({
         queryKey: ["bookseries", thisId],
         queryFn: () => fetchBookseries(thisId, user),
         enabled: queryEnabled
@@ -119,10 +119,8 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
         queryClient.invalidateQueries({ queryKey: ['bookseries'] });
     }
 
-    
-
-    if (isError) {
-
+    if (loadError) {
+        return <LoadError error={loadError} notFoundTitle="Kirjasarjaa ei löytynyt" onRetry={() => reloadMain()} />;
     }
 
     return (

@@ -150,7 +150,7 @@ export const VisitorStats = () => {
                     />
                 </div>
                 <div style={{ height: '250px' }}>
-                    <Line
+                    <Line role="img" aria-label="Kävijät päivittäin"
                         data={dailyChartData}
                         options={{
                             responsive: true,
@@ -167,7 +167,7 @@ export const VisitorStats = () => {
                 <Card className="shadow-1" style={{ flex: '2 1 360px' }}>
                     <h3 className="mt-0 mb-3">Sijainnit (90 pv)</h3>
                     <div style={{ height: `${locationBarHeight}px` }}>
-                        <Bar
+                        <Bar role="img" aria-label="Kävijöiden sijainnit (90 pv)"
                             data={locationChartData}
                             options={{
                                 indexAxis: 'y',
@@ -184,7 +184,7 @@ export const VisitorStats = () => {
                     <Card className="shadow-1">
                         <h3 className="mt-0 mb-2">Laitetyyppi</h3>
                         <div style={{ height: '140px' }}>
-                            <Doughnut
+                            <Doughnut role="img" aria-label="Laitetyyppi"
                                 data={doughnutData(breakdown.data?.devices, DEVICE_LABELS)}
                                 options={doughnutOptions}
                             />
@@ -193,7 +193,7 @@ export const VisitorStats = () => {
                     <Card className="shadow-1">
                         <h3 className="mt-0 mb-2">Käyttöjärjestelmä</h3>
                         <div style={{ height: '170px' }}>
-                            <Doughnut
+                            <Doughnut role="img" aria-label="Käyttöjärjestelmä"
                                 data={doughnutData(breakdown.data?.os)}
                                 options={doughnutOptions}
                             />
@@ -207,7 +207,7 @@ export const VisitorStats = () => {
                 <Card className="shadow-1" style={{ flex: '1 1 300px' }}>
                     <h3 className="mt-0 mb-3">Selaimet (90 pv)</h3>
                     <div style={{ height: '260px' }}>
-                        <Bar
+                        <Bar role="img" aria-label="Selaimet (90 pv)"
                             data={{
                                 labels: breakdown.data?.browsers.map(b => b.label) ?? [],
                                 datasets: [{
@@ -229,7 +229,7 @@ export const VisitorStats = () => {
                 <Card className="shadow-1" style={{ flex: '1 1 300px' }}>
                     <h3 className="mt-0 mb-3">Operaattorit (90 pv)</h3>
                     <div style={{ height: '260px' }}>
-                        <Bar
+                        <Bar role="img" aria-label="Operaattorit (90 pv)"
                             data={{
                                 labels: breakdown.data?.operators.map(o => o.label) ?? [],
                                 datasets: [{

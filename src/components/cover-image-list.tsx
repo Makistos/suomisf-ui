@@ -13,6 +13,23 @@ interface CoverImageListProps {
     editions?: Edition[]
 }
 
+/** Editions that use the given cover image. */
+const hasImage = (editions: Edition[], image_src: string) => {
+    let retval: Edition[] = [];
+    if (editions) {
+        editions.map(edition => {
+            edition.images.map(image => {
+                if (image.image_src === image_src) {
+                    retval.push(edition);
+                }
+                return true;
+            })
+            return true;
+        })
+    }
+    return retval;
+}
+
 export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
 
     const updateImageDict = (editions: Edition[]) => {
@@ -57,22 +74,6 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
     const imageTooltip = (image: ImageType) => {
         let retval = (<div></div>);
 
-        const hasImage = (editions: Edition[], image_src: string) => {
-            let retval: Edition[] = [];
-            if (editions) {
-                editions.map(edition => {
-                    edition.images.map(image => {
-                        if (image.image_src === image_src) {
-                            retval.push(edition);
-                        }
-                        return true;
-                    })
-                    return true;
-                })
-            }
-            return retval;
-        }
-
         const toolTipText = (title: string, editions: Edition[]) => {
             if (editions.length > 0) {
                 retval = (
@@ -103,6 +104,18 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
             })
         }
         return retval;
+    }
+
+    /** Title of the work/edition a cover belongs to, for its alt text. */
+    const imageTitle = (image: ImageType): string => {
+        if (editions) {
+            const image_editions = hasImage(editions, image.image_src);
+            if (image_editions.length > 0) return image_editions[0].title;
+        }
+        for (const work of works ?? []) {
+            if (hasImage(work.editions, image.image_src).length > 0) return work.title;
+        }
+        return "";
     }
 
     const imageHeight = (edition_id: number, image_height: string | null): string => {
@@ -145,6 +158,7 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
                             <Image preview className={"p-1 image-" + image.id}
                                 height={imageHeight(image.edition_id ?? 0, image.size)}
                                 src={import.meta.env.VITE_IMAGE_URL + image.image_src}
+                                alt={imageTitle(image) ? `${imageTitle(image)}, kansikuva` : "Kansikuva"}
                                 key={"image-" + image.edition_id + "-" + image.id}
                                 loading="lazy"
                             />

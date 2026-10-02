@@ -508,6 +508,7 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                                 <div className="field col-12 md:col-4">
                                     <label className="block mb-1 text-sm">Lähde *</label>
                                     <Dropdown
+                                        aria-label="Hinnan lähde"
                                         value={form.source_id}
                                         options={sources ?? []}
                                         optionLabel="name"
@@ -529,6 +530,7 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                                 <div className="field col-12 md:col-4">
                                     <label className="block mb-1 text-sm">Kunto *</label>
                                     <Dropdown
+                                        aria-label="Kunto"
                                         value={form.condition}
                                         options={CONDITIONS}
                                         placeholder="Valitse kunto"

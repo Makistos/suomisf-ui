@@ -176,7 +176,7 @@ export const WorkSearchPage = () => {
                                                     className={classNames('w-full')}
                                                 />
                                             )} />
-                                        <label htmlFor="title" className={classNames({ 'p-error': errors })}>Alkukielinen nimi</label>
+                                        <label htmlFor="orig_name" className={classNames({ 'p-error': errors })}>Alkukielinen nimi</label>
                                     </span>
                                 </div>
                             </div>
@@ -189,7 +189,7 @@ export const WorkSearchPage = () => {
                                                     className={classNames('w-full')}
                                                 />
                                             )} />
-                                        <label htmlFor="title" className={classNames({ 'p-error': errors })}>Julkaistu aikaisintaan</label>
+                                        <label htmlFor="pubyear_first" className={classNames({ 'p-error': errors })}>Julkaistu aikaisintaan</label>
                                     </span>
                                 </div>
                                 <div className="field grid  md:col-6 sm:col-12">
@@ -200,7 +200,7 @@ export const WorkSearchPage = () => {
                                                     className={classNames('w-full')}
                                                 />
                                             )} />
-                                        <label htmlFor="title" className={classNames({ 'p-error': errors })}>Julkaistu viimeistään</label>
+                                        <label htmlFor="pubyear_last" className={classNames({ 'p-error': errors })}>Julkaistu viimeistään</label>
                                     </span>
                                 </div>
                             </div>
@@ -213,7 +213,7 @@ export const WorkSearchPage = () => {
                                                     className={classNames('w-full')}
                                                 />
                                             )} />
-                                        <label htmlFor="title" className={classNames({ 'p-error': errors })}>Painettu aikaisintaan</label>
+                                        <label htmlFor="printyear_first" className={classNames({ 'p-error': errors })}>Painettu aikaisintaan</label>
                                     </span>
                                 </div>
                                 <div className="field grid  md:col-6 sm:col-12">
@@ -223,7 +223,7 @@ export const WorkSearchPage = () => {
                                                 <InputText id={field.name} {...field}
                                                     className={classNames('w-full')} />
                                             )} />
-                                        <label htmlFor="title" className={classNames({ 'p-error': errors })}>Painettu viimeistään</label>
+                                        <label htmlFor="printyear_last" className={classNames({ 'p-error': errors })}>Painettu viimeistään</label>
                                     </span>
                                 </div>
                             </div>
@@ -231,7 +231,7 @@ export const WorkSearchPage = () => {
                                 <div className="field grid md:col-4 sm:col-12 pr-3">
                                     <Controller name="genre" control={control}
                                         render={({ field }) => (
-                                            <MultiSelect
+                                            <MultiSelect aria-label="Genret"
                                                 {...field}
                                                 optionLabel="name"
                                                 optionValue="id"
@@ -254,7 +254,7 @@ export const WorkSearchPage = () => {
                                 <div className="field grid md:col-4 sm:col-12 pr-3">
                                     <Controller name="nationality" control={control}
                                         render={({ field }) => (
-                                            <Dropdown options={nationalities.data} placeholder="Kansallisuus" className="w-full"
+                                            <Dropdown options={nationalities.data} aria-label="Kansallisuus" placeholder="Kansallisuus" className="w-full"
                                                 id={field.name} {...field} value={field.value}
                                                 optionLabel="name" optionValue="id" filter showClear
                                                 onChange={(e) => field.onChange(e.value)} />
@@ -263,7 +263,7 @@ export const WorkSearchPage = () => {
                                 <div className="field grid md:col-4 sm:col-12">
                                     <Controller name="type" control={control}
                                         render={({ field }) => (
-                                            <Dropdown options={worktypes.data} placeholder="Tyyppi" className="w-full"
+                                            <Dropdown options={worktypes.data} aria-label="Tyyppi" placeholder="Tyyppi" className="w-full"
                                                 id={field.name} {...field} value={field.value} showClear
                                                 optionLabel="name" optionValue="id"
                                                 onChange={(e) => field.onChange(e.value)} />

@@ -127,6 +127,7 @@ export const PeoplePage = () => {
         const names = countries.map((country) => country.name)
         return (
             <Dropdown value={options.value} options={names}
+                aria-label="Suodata kansallisuuden mukaan"
                 onChange={(e) => options.filterApplyCallback(e.value)}
                 className="p-column-filter" showClear
             />

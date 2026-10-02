@@ -26,6 +26,7 @@ import { selectId } from '@utils/select-id';
 import { Tooltip } from 'primereact/tooltip';
 import { SpeedDial } from 'primereact/speeddial';
 import { ContributionType } from '../../../types/contribution';
+import { LoadError } from "@components/load-error";
 
 
 export type IssueProps = {
@@ -154,7 +155,7 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
     } catch (e) {
         console.log(`${e} short`);
     }
-    const { isLoading, data } = useQuery({
+    const { isLoading, data, error: loadError, refetch: reloadMain } = useQuery({
         queryKey: ['issue', issueId],
         queryFn: () => getIssue(issueId !== undefined ? issueId : null, user),
         enabled: queryEnabled
@@ -288,6 +289,9 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
     ];
 
 
+    if (loadError) {
+        return <LoadError error={loadError} notFoundTitle="Numeroa ei löytynyt" onRetry={() => reloadMain()} />;
+    }
     if (!data) return null;
 
     return (
@@ -357,6 +361,7 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
                                         {(data.images.length > 0 && issueId) ?
                                             <ImageView
                                                 itemId={issueId}
+                                                alt={`${data.magazine.name} ${data.cover_number}, kansikuva`}
                                                 images={[...data.images].sort((a, b) => a.id - b.id)}
                                                 idx={imageIdx}
                                                 saveFunc={saveImage}

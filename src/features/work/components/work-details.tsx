@@ -118,11 +118,11 @@ export const WorkDetails = ({ work }: WorkProps) => {
             <div className="grid">
                 {work.contributions.filter(person => person.role.id === 1).length > 0 && (
                     <div className="grid col-12 mb-0 pb-0">
-                        <h2 className="mb-0 font-semibold">
+                        <p className="byline mb-0 font-semibold">
                             <LinkList path="people"
                                 separator=" &amp; "
                                 items={authors(work.contributions)} />
-                        </h2>
+                        </p>
                     </div>
                 )}
                 <div className="grid col-12 pt-0 mt-3 mb-2 pb-0">

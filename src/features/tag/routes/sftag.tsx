@@ -29,6 +29,7 @@ import { getShortTypes } from '@features/short/utils/get-short-types';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { Card } from 'primereact/card';
 import { isAdmin, User } from '@features/user';
+import { LoadError } from "@components/load-error";
 
 
 // Short story types that are articles rather than fiction (Artikkeli,
@@ -172,7 +173,7 @@ export const SFTag = (_props: SfTagProps) => {
         }
     ]
 
-    const { isLoading, data } = useQuery({
+    const { isLoading, data, error: loadError, refetch: reloadMain } = useQuery({
         queryKey: ['tags', params.tagid],
         queryFn: () => getTag(Number(params.tagid), user)
     })
@@ -193,6 +194,10 @@ export const SFTag = (_props: SfTagProps) => {
             toastRef.current?.show({ severity: 'error', summary: 'Tietojen tallentaminen epäonnistui', detail: message, life: 6000 });
         }
         onHide('displayChangeName');
+    }
+
+    if (loadError || (data && !data.id)) {
+        return <LoadError error={loadError} notFoundTitle="Asiasanaa ei löytynyt" onRetry={() => reloadMain()} />;
     }
 
     return (

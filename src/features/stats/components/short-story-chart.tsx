@@ -657,6 +657,7 @@ export const ShortStoryChart = () => {
                     <h3 className="mt-0 mb-3 text-center">Kansallisuudet</h3>
                     <div className="flex justify-content-center align-items-center gap-3 mb-3 flex-wrap">
                         <Dropdown
+                            aria-label="Rooli (kansallisuudet)"
                             value={nationalityRole}
                             options={storyRoleOptions}
                             optionLabel="label"
@@ -665,6 +666,7 @@ export const ShortStoryChart = () => {
                             className="w-auto"
                         />
                         <Dropdown
+                            aria-label="Novellityyppi (kansallisuudet)"
                             value={nationalityStoryType}
                             options={storyTypeOptions}
                             optionLabel="label"
@@ -679,7 +681,7 @@ export const ShortStoryChart = () => {
                         </div>
                     ) : nationalityChartData ? (
                         <div style={{ height: '400px' }}>
-                            <Pie data={nationalityChartData} options={nationalityChartOptions} />
+                            <Pie role="img" aria-label="Novellien kirjoittajien kansallisuudet" data={nationalityChartData} options={nationalityChartOptions} />
                         </div>
                     ) : (
                         <p className="text-500 text-center">Ei dataa</p>
@@ -693,6 +695,7 @@ export const ShortStoryChart = () => {
                     <h3 className="mt-0 mb-3 text-center">Tuotteliaimmat henkilöt (Top {personCount})</h3>
                     <div className="flex justify-content-center align-items-center gap-3 mb-3 flex-wrap">
                         <Dropdown
+                            aria-label="Rooli"
                             value={selectedRole}
                             options={storyRoleIdOptions}
                             optionLabel="label"
@@ -701,6 +704,7 @@ export const ShortStoryChart = () => {
                             className="w-auto"
                         />
                         <Dropdown
+                            aria-label="Novellityyppi"
                             value={selectedStoryType}
                             options={storyTypeIdOptions}
                             optionLabel="label"
@@ -767,6 +771,7 @@ export const ShortStoryChart = () => {
                     <h3 className="mt-0 mb-3 text-center">Novellit alkuperäisen kirjoitusvuoden mukaan</h3>
                     <div className="flex justify-content-center align-items-center gap-3 mb-3 flex-wrap">
                         <Dropdown
+                            aria-label="Novellityyppi (vuosittain)"
                             value={yearChartStoryType}
                             options={storyTypeOptions}
                             optionLabel="label"
@@ -774,7 +779,9 @@ export const ShortStoryChart = () => {
                             onChange={(e) => setYearChartStoryType(e.value)}
                             className="w-auto"
                         />
+                        <span id="ssc-languages" className="p-hidden-accessible">Kielet</span>
                         <MultiSelect
+                            aria-labelledby="ssc-languages"
                             value={yearChartLanguages}
                             options={languageOptions}
                             optionLabel="label"
@@ -793,7 +800,7 @@ export const ShortStoryChart = () => {
                         </div>
                     ) : yearChartData ? (
                         <div style={{ height: `${yearChartHeight}px` }}>
-                            <Bar data={yearChartData} options={yearChartOptions} />
+                            <Bar role="img" aria-label="Novellit alkuperäisen kirjoitusvuoden mukaan" data={yearChartData} options={yearChartOptions} />
                         </div>
                     ) : (
                         <p className="text-500 text-center">Ei dataa</p>

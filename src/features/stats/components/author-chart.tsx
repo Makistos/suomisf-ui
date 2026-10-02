@@ -346,6 +346,7 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
                     <h3 className="mt-0 mb-3 text-center">Kansallisuudet</h3>
                     <div className="flex justify-content-center align-items-center gap-3 mb-3 flex-wrap">
                         <Dropdown
+                            aria-label="Rooli (kansallisuudet)"
                             value={nationalityRole}
                             options={nationalityRoleOptions}
                             optionLabel="label"
@@ -354,6 +355,7 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
                             className="w-auto"
                         />
                         <Dropdown
+                            aria-label="Genre (kansallisuudet)"
                             value={nationalityGenre}
                             options={genreOptions}
                             optionLabel="label"
@@ -368,7 +370,7 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
                         </div>
                     ) : nationalityChartData ? (
                         <div style={{ height: '400px' }}>
-                            <Pie data={nationalityChartData} options={nationalityChartOptions} />
+                            <Pie role="img" aria-label="Tekijöiden kansallisuudet" data={nationalityChartData} options={nationalityChartOptions} />
                         </div>
                     ) : (
                         <p className="text-500 text-center">Ei dataa</p>
@@ -382,6 +384,7 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
                     <h3 className="mt-0 mb-3 text-center">Tuotteliaimmat henkilöt (Top {authorCount})</h3>
                     <div className="flex justify-content-center align-items-center gap-3 mb-3 flex-wrap">
                         <Dropdown
+                            aria-label="Rooli"
                             value={selectedRole}
                             options={roleOptions}
                             optionLabel="label"
@@ -390,6 +393,7 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
                             className="w-auto"
                         />
                         <Dropdown
+                            aria-label="Genre"
                             value={selectedGenre}
                             options={genreOptions}
                             optionLabel="label"

@@ -31,6 +31,7 @@ import { AwardedForm } from '@features/award/components/awarded-form';
 import { ContributorMagazineControl } from '@components/contributor-magazine-control';
 import { Issue } from '@features/issue';
 import { ContributionType } from '../../../types/contribution';
+import { LoadError } from "@components/load-error";
 
 const baseURL = "people/";
 
@@ -68,12 +69,11 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         const response = await getApiContent(url, user).then(response =>
             response.data
         )
-            .catch((error) => console.log(error));
         // console.log(response);
         return response;
     }
 
-    const { isLoading, data } = useQuery({
+    const { isLoading, data, error: loadError, refetch: reloadMain } = useQuery({
         queryKey: ["person", thisId],
         queryFn: () => fetchPerson(thisId, user),
         enabled: queryEnabled
@@ -300,6 +300,9 @@ export const PersonPage = ({ id }: PersonPageProps) => {
     //     console.log(data)
     // }
 
+    if (loadError) {
+        return <LoadError error={loadError} notFoundTitle="Henkilöä ei löytynyt" onRetry={() => reloadMain()} />;
+    }
     if (!data) return null;
 
     const person_ids = [...(data.aliases || []).map((a: any) => a.id), data.id];

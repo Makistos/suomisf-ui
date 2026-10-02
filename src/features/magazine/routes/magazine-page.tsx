@@ -17,6 +17,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { Card } from 'primereact/card';
 import { Image } from 'primereact/image';
+import { LoadError } from "@components/load-error";
 
 
 
@@ -58,7 +59,7 @@ export const MagazinePage = () => {
     const navigate = useNavigate();
     const showGlobalToast = useGlobalToast();
 
-    const { data } = useQuery({
+    const { data, error: loadError, refetch: reloadMain } = useQuery({
         queryKey: ['magazine', magazineId],
         queryFn: () => getMagazine(magazineId !== undefined ? magazineId : null, user),
         enabled: queryEnabled
@@ -149,6 +150,9 @@ export const MagazinePage = () => {
         queryClient.invalidateQueries({ queryKey: ['magazine', magazineId] });
     }
 
+    if (loadError) {
+        return <LoadError error={loadError} notFoundTitle="Lehteä ei löytynyt" onRetry={() => reloadMain()} />;
+    }
     if (!data) return null;
 
     console.log("Magazine data", data);
@@ -178,7 +182,7 @@ export const MagazinePage = () => {
                             <div className="grid pl-2 pr-2 pt-0">
                                 {data.publisher && (
                                     <div className="grid col-12 mb-0">
-                                        <h2 className='mb-0 font-semibold'>{data.publisher.name}</h2>
+                                        <p className='byline mb-0 font-semibold'>{data.publisher.name}</p>
                                     </div>
                                 )}
                                 <div className="grid col-12">

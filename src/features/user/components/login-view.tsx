@@ -47,7 +47,7 @@ export const LoginView = () => {
                     <div className="flex align-items-center justify-content-center mb-5">
                         <div className="surface-card">
                             <div className="text-center mb-5">
-                                <div className="text-900 text-3x1 font-medium mb-3">Tervetuloa</div>
+                                <div className="text-900 text-3x1 font-medium mb-3" role="heading" aria-level={1}>Tervetuloa</div>
                                 <span className="text-600 font-medium line-height-3">Ei tunnusta?</span>
                                 <Link to={`/register`} className="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Luo tunnus!</Link>
                             </div>

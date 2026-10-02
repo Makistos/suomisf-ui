@@ -36,6 +36,7 @@ export const LatestAdditions = () => {
         <div className="grid col-12 justify-content-center mt-5">
           <div className="mr-2">
             <Dropdown
+                aria-label="Näytettävät lisäykset"
               options={targets}
               value={target}
               optionLabel="name"
@@ -45,6 +46,7 @@ export const LatestAdditions = () => {
           </div>
           <div>
             <Dropdown
+                aria-label="Lukumäärä"
               options={showcounts}
               value={count}
               placeholder="Luk"

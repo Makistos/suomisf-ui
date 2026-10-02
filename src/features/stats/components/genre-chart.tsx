@@ -127,7 +127,7 @@ export const GenreChart = ({ data }: GenreChartProps) => {
             <Card className="shadow-2 text-center">
                 <h2 className="mt-0 mb-4">Teokset genreittäin</h2>
                 <div style={{ height: '600px', width: '600px' }}>
-                    <Pie data={chartData} options={chartOptions} />
+                    <Pie role="img" aria-label="Teokset genreittäin" data={chartData} options={chartOptions} />
                 </div>
             </Card>
 

@@ -236,7 +236,7 @@ export const UserCollectionCharts = ({ userId, genreData, comp, filterParam }: U
                 <div>
                     <div className="text-600 text-sm mb-2">Genret</div>
                     <div style={{ height: '320px' }}>
-                        <Chart type="pie" data={genres} options={genreChartOptions} style={{ height: '100%' }} />
+                        <Chart ariaLabel="Kokoelman genret" type="pie" data={genres} options={genreChartOptions} style={{ height: '100%' }} />
                     </div>
                 </div>
             )}
@@ -246,7 +246,7 @@ export const UserCollectionCharts = ({ userId, genreData, comp, filterParam }: U
                 <div>
                     <div className="text-600 text-sm mb-2">Kustantajat (10 yleisintä)</div>
                     <div style={{ height: '260px' }}>
-                        <Chart type="bar" data={pubChartData} options={pubChartOptions} style={{ height: '100%' }} />
+                        <Chart ariaLabel="Kokoelman kustantajat (10 yleisintä)" type="bar" data={pubChartData} options={pubChartOptions} style={{ height: '100%' }} />
                     </div>
                 </div>
             )}
@@ -257,7 +257,7 @@ export const UserCollectionCharts = ({ userId, genreData, comp, filterParam }: U
                     <div className="col-12 md:col-6">
                         <div className="text-600 text-sm mb-2">Alkukieli</div>
                         <div style={{ height: '220px' }}>
-                            <Chart type="doughnut" data={langChartData} options={langChartOptions} style={{ height: '100%' }} />
+                            <Chart ariaLabel="Kokoelman alkukielet" type="doughnut" data={langChartData} options={langChartOptions} style={{ height: '100%' }} />
                         </div>
                     </div>
                 )}
@@ -265,7 +265,7 @@ export const UserCollectionCharts = ({ userId, genreData, comp, filterParam }: U
                     <div className="col-12 md:col-6">
                         <div className="text-600 text-sm mb-2">Teostyypit</div>
                         <div style={{ height: '220px' }}>
-                            <Chart type="doughnut" data={typeChartData} options={typeChartOptions} style={{ height: '100%' }} />
+                            <Chart ariaLabel="Kokoelman teostyypit" type="doughnut" data={typeChartData} options={typeChartOptions} style={{ height: '100%' }} />
                         </div>
                     </div>
                 )}

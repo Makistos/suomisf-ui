@@ -217,7 +217,7 @@ export const CollectionStatsDialog = ({ userId, visible, onHide }: Props) => {
                         <div>
                             <div className="text-600 text-sm mb-2">Hintojen jakauma</div>
                             <div style={{ height: '180px' }}>
-                                <Chart type="bar" data={priceChartData} options={priceChartOptions} style={{ height: '100%' }} />
+                                <Chart ariaLabel="Hintojen jakauma" type="bar" data={priceChartData} options={priceChartOptions} style={{ height: '100%' }} />
                             </div>
                         </div>
                     )}

@@ -86,7 +86,7 @@ export const IssuesChart = ({ data }: IssuesChartProps) => {
             <Card className="shadow-2 text-center w-full">
                 <h2 className="mt-0 mb-4">Lehdet-numerot vuosittain</h2>
                 <div style={{ height: `${chartHeight}px` }}>
-                    <Bar data={chartData} options={chartOptions} />
+                    <Bar role="img" aria-label="Lehtien numerot vuosittain" data={chartData} options={chartOptions} />
                 </div>
             </Card>
         </div>

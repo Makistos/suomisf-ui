@@ -355,7 +355,9 @@ export const SuggestionPage = () => {
                             <p className="text-color-secondary">
                                 Mistä genrestä olet kiinnostunut?
                             </p>
+                            <span id="sug-genres" className="p-hidden-accessible">Genret</span>
                             <MultiSelect
+                                aria-labelledby="sug-genres"
                                 value={filters.genres}
                                 options={(genres.data ?? []).map(g => ({
                                     label: g.name, value: g.id,
@@ -395,8 +397,9 @@ export const SuggestionPage = () => {
 
                         <StepperPanel header="Alagenre & tyyli">
                             <div className="field">
-                                <label className="block mb-2">Alagenre</label>
+                                <label id="sug-subgenres" className="block mb-2">Alagenre</label>
                                 <MultiSelect
+                                    aria-labelledby="sug-subgenres"
                                     value={filters.subgenres}
                                     options={tagOptions(TAG_TYPE.ALAGENRE,
                                         filters.subgenres)}
@@ -408,8 +411,9 @@ export const SuggestionPage = () => {
                                     className="w-full" />
                             </div>
                             <div className="field mt-3">
-                                <label className="block mb-2">Tyyli</label>
+                                <label id="sug-styles" className="block mb-2">Tyyli</label>
                                 <MultiSelect
+                                    aria-labelledby="sug-styles"
                                     value={filters.styles}
                                     options={tagOptions(TAG_TYPE.TYYLI,
                                         filters.styles)}
@@ -430,7 +434,9 @@ export const SuggestionPage = () => {
                             <p className="text-color-secondary">
                                 Mistä maasta kirjailija on kotoisin?
                             </p>
+                            <span id="sug-nationalities" className="p-hidden-accessible">Kirjailijan kotimaa</span>
                             <MultiSelect
+                                aria-labelledby="sug-nationalities"
                                 value={filters.nationalities}
                                 options={countryOptions}
                                 onChange={(e) => updateFilter({
@@ -494,10 +500,11 @@ export const SuggestionPage = () => {
                             ] as [string, number, keyof Filters][])
                                 .map(([label, typeId, key]) => (
                                     <div className="field mt-3" key={key}>
-                                        <label className="block mb-2">
+                                        <label id={`sug-${key}-label`} className="block mb-2">
                                             {label}
                                         </label>
                                         <MultiSelect
+                                            aria-labelledby={`sug-${key}-label`}
                                             value={filters[key] as number[]}
                                             options={tagOptions(typeId,
                                                 filters[key] as number[])}

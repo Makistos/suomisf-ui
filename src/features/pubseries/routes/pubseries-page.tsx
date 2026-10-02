@@ -22,6 +22,7 @@ import { PubseriesForm } from "../components/pubseries-form";
 import { deletePubseries } from "@api/pubseries/delete-pubseries";
 import { GenreGroup } from "@features/genre";
 import { Genre } from "@features/genre/types";
+import { LoadError } from "@components/load-error";
 
 const baseURL = 'pubseries/';
 
@@ -74,11 +75,10 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
         const response = await getApiContent(url, user).then(response => {
             return response.data;
         })
-            .catch((error) => console.log(error));
         return response;
     }
 
-    const { isLoading, data } = useQuery({
+    const { isLoading, data, error: loadError, refetch: reloadMain } = useQuery({
         queryKey: ["pubseries", thisId],
         queryFn: () => fetchPubseries(thisId, user)
     });
@@ -115,6 +115,10 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
     const onDialogHide = () => {
         queryClient.invalidateQueries({ queryKey: ["pubseries", thisId] });
         setEditVisible(false);
+    }
+
+    if (loadError) {
+        return <LoadError error={loadError} notFoundTitle="Kustantajan sarjaa ei löytynyt" onRetry={() => reloadMain()} />;
     }
 
     return (

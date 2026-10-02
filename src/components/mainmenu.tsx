@@ -130,7 +130,10 @@ export default function MainMenu() {
             ]
         },
         {
-            label: userName(),
+            // Icon-only for visitors: the label is visually hidden but names the
+            // item for screen readers (PrimeReact uses it as aria-label).
+            label: 'Käyttäjätili',
+            className: 'icon-only-menuitem',
             icon: 'fa-solid fa-circle-user',
             items: [
                 {
@@ -399,7 +402,7 @@ export default function MainMenu() {
         );
     }
     return (
-        <div>
+        <nav aria-label="Päävalikko">
             <Dialog visible={loginVisible} onHide={() => onHide()}
                 breakpoints={{ '960px': '75vw', '640px': '100vw' }} style={{ width: '50vw' }}
             >
@@ -430,6 +433,6 @@ export default function MainMenu() {
             }
 
             <Menubar className="navbar-dark" model={user === null ? not_logged_items : logged_items} start={start} end={End} />
-        </div>
+        </nav>
     );
 }

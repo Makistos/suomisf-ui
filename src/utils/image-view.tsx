@@ -18,6 +18,8 @@ interface ImageViewProps {
     onUpload: (event: FileUploadHandlerEvent) => void,
     idxCb: (idx: number) => void,
     editionCount?: number, // Add this to know how many editions are being displayed
+    /** Alt text for the cover, e.g. the edition or issue it belongs to. */
+    alt?: string,
 }
 
 /**
@@ -26,7 +28,7 @@ interface ImageViewProps {
  * @param {ImageViewProps} edition - The edition object containing image data.
  * @return {JSX.Element} The rendered image view component.
  */
-export const ImageView = ({ itemId, idx, images, saveFunc, deleteFunc, onUpload, idxCb, editionCount }: ImageViewProps) => {
+export const ImageView = ({ itemId, idx, images, saveFunc, deleteFunc, onUpload, idxCb, editionCount, alt }: ImageViewProps) => {
     
     const queryClient = useQueryClient();
     // Before the early return below: images can drop to none and come back
@@ -120,15 +122,18 @@ export const ImageView = ({ itemId, idx, images, saveFunc, deleteFunc, onUpload,
         <div className="coverbox">
             <ContextMenu model={imageItems} ref={cm} />
             <Image className="pt-2" preview width="150px" src={import.meta.env.VITE_IMAGE_URL + images[idx].image_src}
+                alt={alt ?? "Kansikuva"}
                 onContextMenu={(e) => cm.current?.show(e)}
             />
             {idx > 0 && idx <= images.length - 1 &&
                 <Button className="coverbtn btnleft" icon="pi pi-chevron-left"
+                    aria-label="Edellinen kansikuva"
                     onClick={() => idxCb(idx - 1)}
                 ></Button>
             }
             {idx < images.length - 1 &&
                 <Button className="coverbtn btnright" icon="pi pi-chevron-right"
+                    aria-label="Seuraava kansikuva"
                     onClick={() => idxCb(idx + 1)}
                 ></Button>
             }

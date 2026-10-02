@@ -28,6 +28,7 @@ import { AwardedForm } from "@features/award/components/awarded-form"
 import { AwardList } from "@features/award"
 import { appearsIn } from "@utils/appears-in"
 import { removeDuplicateContributions } from "@utils/remove-duplicate-contributions"
+import { LoadError } from "@components/load-error";
 
 interface ShortPageProps {
     id: string | null
@@ -59,7 +60,7 @@ export const ShortPage = (props: ShortPageProps) => {
         const response = await getShort(thisId, user);
         return response
     }
-    const { isLoading, data } = useQuery({
+    const { isLoading, data, error: loadError, refetch: reloadMain } = useQuery({
         queryKey: ['short', thisId],
         queryFn: () => fetchShort(thisId, user),
         enabled: queryEnabled
@@ -167,6 +168,9 @@ export const ShortPage = (props: ShortPageProps) => {
         queryClient.invalidateQueries({ queryKey: ["short", thisId] });
     }
 
+    if (loadError) {
+        return <LoadError error={loadError} notFoundTitle="Novellia ei löytynyt" onRetry={() => reloadMain()} />;
+    }
     if (!data) return null;
 
     return (

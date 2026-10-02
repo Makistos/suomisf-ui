@@ -8,6 +8,17 @@ h6 {
   font-weight: bolder;
 }
 
+/* Author/publisher line above an entity title. Looks like an h2 but is
+   metadata, so it isn't one: the page's h1 stays the first heading. */
+.byline {
+  font-family: "Roboto Slab", serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 24px;
+  color: var(--text-color);
+  margin: 0.83em 0 0;
+}
+
 h1 {
   font-size: 2.5rem;
   line-height: 3rem;
@@ -82,6 +93,16 @@ a {
 /* The search box's natural width (~277px) used to keep the menubar wider
    than a phone screen, making every page scroll sideways. Let the end slot
    shrink and the search fill whatever room is left; desktop is unchanged. */
+/* Menu item shown as an icon only; its label stays for screen readers. */
+.icon-only-menuitem .p-menuitem-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 .p-menubar .p-menubar-end {
   flex: 0 1 auto;
   min-width: 0;

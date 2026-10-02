@@ -7,6 +7,7 @@ import 'primereact/resources/primereact.min.css'
 
 import App from './App';
 import { GlobalToastProvider } from './components/global-toast';
+import { LoadError } from './components/load-error';
 import reportWebVitals from './reportWebVitals';
 import HomeAlt from './home-alt';
 
@@ -85,7 +86,7 @@ root.render(
             <Route path="shorts/:itemId" element={<ShortPage id={null} />} />
             <Route path="tags" element={<SFTags />} />
             <Route path="tags/:tagid" element={<SFTag id={null} />} />
-            <Route path="/login" element={<LoginView />} />
+            <Route path="/login" element={<main className="all-content"><LoginView /></main>} />
             <Route path="/forgot-password" element={<ForgotPasswordView />} />
             <Route path="/reset-password" element={<ResetPasswordView />} />
             <Route path="/changes" element={<Changes />} />
@@ -96,12 +97,7 @@ root.render(
             <Route path="/suggestions" element={<SuggestionPage />} />
             <Route path="/home-alt" element={<HomeAlt />} />
             <Route path="/users/:itemId" element={<ProfilePage id={null} />} />
-            <Route path="*"
-              element={
-                <main style={{ padding: "3rem" }}>
-                  Sivua ei löydy. Tarkista osoite tai palaa <a href="/">etusivulle</a>.
-                </main>
-              } />
+            <Route path="*" element={<LoadError notFoundTitle="Sivua ei löydy" notFoundText="Tarkista osoite." />} />
           </Route>
         </Routes>
       </Suspense>

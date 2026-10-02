@@ -55,6 +55,7 @@ dev servers on `:3000`/`:5000` are never touched.
 | `nonfiction.spec.ts` | `/nonfiction` | List view loads; switching to "Kannet" lazy-loads cover images (`cover-image-list.tsx`). |
 | `stats.spec.ts` | `/stats` | Every tab renders a chart `<canvas>`, no console errors. |
 | `stats-filters.spec.ts` | `/stats` | Changing the role filter on the Teokset and Novellit tabs' top-people tables refetches and re-renders (header and rows follow the new role). |
+| `not-found.spec.ts` | missing ids, unknown route | A missing work, person or tag (the API answers 404, 400 and 200-with-`{}` respectively) and an unknown route each show their not-found heading and a link home, within 10 s (no retry delay on 4xx). |
 | `issue.spec.ts` | `/issues/:id` | Opens an Alienisti issue, steps Seuraava → Edellinen; the heading follows each step. |
 | `in-place-navigation.spec.ts` | `/works/63`, `/people/1429` | Following a link to another item of the same type (work → omnibus; pseudonym "Outsider" → real person → back) replaces the content — the page component stays mounted, so this catches effects that don't re-run on the new id. |
 | `latest.spec.ts` | `/latest` | Page loads with entries — deliberately doesn't assert specific titles, since "latest" is inherently a moving target. |

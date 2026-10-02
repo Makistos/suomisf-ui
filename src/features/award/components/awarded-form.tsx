@@ -260,6 +260,7 @@ const AwardedFormContent = ({ workId, personId, onClose, thisId, user }: AwardFo
                                                     return (
                                                         <span className='p-float-label'>
                                                             <Dropdown
+                                                                aria-label="Kategoria"
                                                                 options={categories}
                                                                 placeholder='Kategoria'
                                                                 // id={subField.state.value.id.toString()}

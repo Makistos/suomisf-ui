@@ -19,6 +19,7 @@ import { AwardImportDialog } from "../components/award-import-dialog";
 import { selectId } from "../../../utils";
 import { Column } from 'primereact/column';
 import { LinkList } from '@components/link-list';
+import { LoadError } from "@components/load-error";
 
 interface AwardPageProps {
     id: string | null
@@ -58,11 +59,10 @@ export const AwardPage = ({ id }: AwardPageProps) => {
         const url = "awards/" + id;
         const data = await getApiContent(url, user).then(response =>
             response.data)
-            .catch((error) => console.log(error));
         return data;
     }
 
-    const { isLoading, data } = useQuery({
+    const { isLoading, data, error: loadError, refetch: reloadMain } = useQuery({
         queryKey: ["award", awardId],
         queryFn: () => fetchAward(awardId),
     })
@@ -128,6 +128,9 @@ export const AwardPage = ({ id }: AwardPageProps) => {
         queryClient.invalidateQueries({ queryKey: ['award', awardId] });
     };
 
+    if (loadError) {
+        return <LoadError error={loadError} notFoundTitle="Palkintoa ei löytynyt" onRetry={() => reloadMain()} />;
+    }
     if (!data) return null;
 
     const dialItems = [

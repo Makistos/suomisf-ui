@@ -5,7 +5,8 @@ test('Work page loads and displays content, including part_of relations', async 
 
     await expect(page.getByRole('progressbar')).not.toBeVisible({ timeout: 20000 });
 
-    await expect(page.getByRole('heading', { name: 'Jules Verne' })).toBeVisible();
+    // Author line above the title: metadata, deliberately not a heading
+    await expect(page.locator('.byline', { hasText: 'Jules Verne' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Etelän tähti' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Genret' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Asiasanat' })).toBeVisible();

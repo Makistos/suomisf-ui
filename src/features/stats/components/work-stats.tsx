@@ -51,7 +51,7 @@ export const WorkStats = ({ works }: WorksProps) => {
                     maxCount={10} overflow={10} showOneCount={true} />
             </div>
             <div className="grid col-12 justify-content-center">
-                <Chart type="doughnut"
+                <Chart ariaLabel="Teokset genreittäin" type="doughnut"
                     data={genres} />
             </div>
         </div>

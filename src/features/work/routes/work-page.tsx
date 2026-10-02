@@ -6,6 +6,7 @@ import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
 import { Toast } from "primereact/toast";
 import { useGlobalToast } from "@components/global-toast";
+import { LoadError } from "@components/load-error";
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 import { FileUpload, FileUploadHandlerEvent } from "primereact/fileupload";
 import { Dialog } from "primereact/dialog";
@@ -74,6 +75,7 @@ function useEffectiveWorkId(
         data: fetchedWorkId,
         isLoading,
         error,
+        refetch,
     } = useQuery({
         queryKey: ['workIdFromEdition', resolvedWorkId],
         queryFn: async (): Promise<string> => {
@@ -94,7 +96,8 @@ function useEffectiveWorkId(
             workId: resolvedWorkId,
             isLoading: false,
             error: null,
-            highlightEditionId: null
+            highlightEditionId: null,
+            refetch,
         };
     }
 
@@ -103,7 +106,8 @@ function useEffectiveWorkId(
         workId: fetchedWorkId,
         isLoading,
         error,
-        highlightEditionId: isEditionId ? itemId : null
+        highlightEditionId: isEditionId ? itemId : null,
+        refetch,
     };
 }
 
@@ -160,6 +164,7 @@ const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, highlight
                     {edition.images.length > 0 ?
                         <ImageView
                             itemId={edition.id}
+                            alt={`${edition.title}, kansikuva`}
                             images={[...edition.images].sort((a, b) => a.id - b.id)}
                             idx={currIdx}
                             saveFunc={customSave}
@@ -192,6 +197,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
         isLoading: isResolvingWorkId,
         error: resolveError,
         highlightEditionId,
+        refetch: refetchWorkId,
     } = useEffectiveWorkId(id, editionId);
 
     
@@ -218,6 +224,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
         data: workData,
         isLoading: isLoadingWorkData,
         error: workDataError,
+        refetch: refetchWork,
     } = useQuery<Work>({
         queryKey: ['work', workId],
         queryFn: async () => {
@@ -466,8 +473,11 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
         return (<div>Ladataan teosta...</div>);
     }
 
-    if (resolveError || workDataError) {
-        return <div>Teoksen lataaminen epäonnistui</div>;
+    if (resolveError) {
+        return <LoadError error={resolveError} notFoundTitle="Painosta ei löytynyt" onRetry={() => refetchWorkId()} />;
+    }
+    if (workDataError) {
+        return <LoadError error={workDataError} notFoundTitle="Teosta ei löytynyt" onRetry={() => refetchWork()} />;
     }
 
     if (!workData) return null;

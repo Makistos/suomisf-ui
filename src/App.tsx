@@ -1,6 +1,7 @@
 import { useState, useEffect, StrictMode } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { isAxiosError } from 'axios';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const queryClient = new QueryClient({
@@ -12,6 +13,14 @@ const queryClient = new QueryClient({
       // otherwise defaults to 0. A minute is enough to absorb that without
       // meaningfully delaying genuinely stale data from refreshing.
       staleTime: 60 * 1000,
+      // A 4xx (missing record, bad id) won't succeed on retry; retrying it
+      // only delayed the not-found message by several seconds. Server and
+      // network errors still get the default three retries.
+      retry: (failureCount, error) => {
+        const status = isAxiosError(error) ? error.response?.status : undefined;
+        if (status !== undefined && status >= 400 && status < 500) return false;
+        return failureCount < 3;
+      },
     }
   }
 });

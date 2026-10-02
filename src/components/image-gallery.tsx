@@ -165,11 +165,13 @@ export const ImageGallery = ({
                         {/* Navigation arrows */}
                         <Button
                             icon="pi pi-chevron-left"
+                            aria-label="Edellinen kuva"
                             className="p-button-rounded p-button-sm bg-black-alpha-50 hover:bg-black-alpha-70"
                             onClick={prevImage}
                         />
                         <Button
                             icon="pi pi-chevron-right"
+                            aria-label="Seuraava kuva"
                             className="p-button-rounded p-button-sm bg-black-alpha-50 hover:bg-black-alpha-70"
                             onClick={nextImage}
                         />
@@ -178,6 +180,7 @@ export const ImageGallery = ({
                             <Button
                                 icon="pi pi-images"
                                 tooltip="Galleria"
+                                aria-label="Galleria"
                                 className="p-button-rounded p-button-sm bg-black-alpha-50 hover:bg-black-alpha-70 ml-2"
                                 onClick={() => {
                                     setCurrentIndex(-1); // Reset to show thumbnails first

@@ -141,14 +141,14 @@ export const ShortSearchPage = () => {
                                         <InputText id={field.name} {...field}
                                         />
                                     )} />
-                                <label htmlFor="title" className={classNames({ 'p-error': errors })}>Alkukielinen nimi</label>
+                                <label htmlFor="orig_name" className={classNames({ 'p-error': errors })}>Alkukielinen nimi</label>
                             </span>
                         </div>
                         <div className="field col mb-0">
-                            {/* <label htmlFor="title">Tyyppi</label> */}
+                            {/* <label htmlFor="orig_name">Tyyppi</label> */}
                             <Controller name="type" control={control}
                                 render={({ field }) => (
-                                    <Dropdown
+                                    <Dropdown aria-label="Tyyppi"
                                         {...field}
                                         name="type"
                                         // methods={methods}
@@ -171,7 +171,7 @@ export const ShortSearchPage = () => {
                                             keyfilter="pint"
                                         />
                                     )} />
-                                <label htmlFor="title" className="w-full">Julkaistu aikaisintaan</label>
+                                <label htmlFor="pubyear_first" className="w-full">Julkaistu aikaisintaan</label>
                             </span>
                         </div>
                         <div className="field col mb-0">
@@ -181,13 +181,13 @@ export const ShortSearchPage = () => {
                                         <InputText id={field.name} {...field}
                                             className="w-full" />
                                     )} />
-                                <label htmlFor="title" >Julkaistu viimeistään</label>
+                                <label htmlFor="pubyear_last" >Julkaistu viimeistään</label>
                             </span>
                         </div>
                         <div className="field col mb-0">
                             <Controller name="magazine" control={control}
                                 render={({ field }) => (
-                                    <Dropdown
+                                    <Dropdown aria-label="Lehti"
                                         {...field}
                                         name="magazine"
                                         // methods={methods}
@@ -214,7 +214,7 @@ export const ShortSearchPage = () => {
                                             className="align-items-center justify-content-center"
                                             checked={false} />
                                     )} />
-                                <label htmlFor="title" className="ml-2">Vain palkitut</label>
+                                <label htmlFor="awarded" className="ml-2">Vain palkitut</label>
                             </div>
                         </div>
                         <Button type="submit" className="w-full justify-content-center"

@@ -22,6 +22,7 @@ import { PublisherForm } from "../components/publisher-form";
 import { isDisabled } from "../../../components/forms/forms";
 import { Tooltip } from "primereact/tooltip";
 import { Card } from "primereact/card";
+import { LoadError } from "@components/load-error";
 
 const baseURL = 'publishers/';
 
@@ -54,11 +55,10 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
             //console.log(response.data);
             response.data
         )
-            .catch((error) => console.log(error));
         return data;
     }
 
-    const { isLoading, data } = useQuery({
+    const { isLoading, data, error: loadError, refetch: reloadMain } = useQuery({
         queryKey: ["publisher", thisId],
         queryFn: () => fetchPublisher(thisId, user),
         enabled: queryEnabled
@@ -142,6 +142,10 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
         setEditVisible(false);
     }
     
+
+    if (loadError) {
+        return <LoadError error={loadError} notFoundTitle="Kustantajaa ei löytynyt" onRetry={() => reloadMain()} />;
+    }
 
     return (
         <main className="publisher-page">

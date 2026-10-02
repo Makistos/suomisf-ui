@@ -346,8 +346,9 @@ export const CumulativeEditionsChart = ({ data }: CumulativeEditionsChartProps) 
                 <h2 className="mt-0 mb-4">Kumulatiiviset painokset</h2>
                 <div className="flex justify-content-center align-items-center gap-3 mb-3 flex-wrap">
                     <div className="flex align-items-center gap-2">
-                        <label>Kielet:</label>
+                        <label id="cum-languages">Kielet:</label>
                         <MultiSelect
+                            aria-labelledby="cum-languages"
                             value={selectedLanguages}
                             options={languageOptions}
                             optionLabel="label"
@@ -361,6 +362,7 @@ export const CumulativeEditionsChart = ({ data }: CumulativeEditionsChartProps) 
                     <div className="flex align-items-center gap-2">
                         <label>Genre:</label>
                         <Dropdown
+                            aria-label="Genre"
                             value={showByGenre ? 'all' : selectedGenre}
                             options={genreOptions}
                             optionLabel="label"
@@ -373,6 +375,7 @@ export const CumulativeEditionsChart = ({ data }: CumulativeEditionsChartProps) 
                     <div className="flex align-items-center gap-2">
                         <label>Alku:</label>
                         <Dropdown
+                            aria-label="Alkuvuosi"
                             value={startYear}
                             options={yearOptions}
                             optionLabel="label"
@@ -384,6 +387,7 @@ export const CumulativeEditionsChart = ({ data }: CumulativeEditionsChartProps) 
                     <div className="flex align-items-center gap-2">
                         <label>Loppu:</label>
                         <Dropdown
+                            aria-label="Loppuvuosi"
                             value={endYear}
                             options={yearOptions}
                             optionLabel="label"
@@ -415,7 +419,7 @@ export const CumulativeEditionsChart = ({ data }: CumulativeEditionsChartProps) 
                     </div>
                 ) : (
                     <div style={{ height: '400px' }}>
-                        <Line data={chartData} options={chartOptions} />
+                        <Line role="img" aria-label="Kumulatiiviset painokset" data={chartData} options={chartOptions} />
                     </div>
                 )}
             </Card>

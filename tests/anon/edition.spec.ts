@@ -7,7 +7,8 @@ test('Edition page shows the parent work with that edition highlighted', async (
 
     await expect(page.getByRole('progressbar')).not.toBeVisible({ timeout: 20000 });
 
-    await expect(page.getByRole('heading', { name: 'J. R. R. Tolkien' })).toBeVisible();
+    // Author line above the title: metadata, deliberately not a heading
+    await expect(page.locator('.byline', { hasText: 'J. R. R. Tolkien' })).toBeVisible();
     await expect(page.getByRole('heading', { name: /Lohikäärmevuori/ })).toBeVisible();
 
     // Work 1505 has 37 editions - exactly the requested one should be highlighted

@@ -9,5 +9,6 @@
   { "path": "/issues/1", "name": "issue", "area": "issue-page.tsx images mutating sort" },
   { "path": "/magazines/43", "name": "magazine-many-issues", "area": "magazine-page.tsx issues mutating sort (177 issues)" },
   { "path": "/shorts/4985", "name": "short-many-contributors", "area": "remove-duplicate-contributions.ts mutating sort, 4x/render (20 contributors)" },
-  { "path": "/changes", "name": "changes-log", "area": "unpaginated audit log table" }
+  { "path": "/changes", "name": "changes-log", "area": "unpaginated audit log table" },
+  { "path": "/tags/521", "name": "tag-large", "area": "largest API response (360 works, ~1.1 MB JSON)" }
 ]

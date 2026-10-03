@@ -55,3 +55,25 @@ Results accumulate in `results.json` (raw data) and get rendered to
 See `routes.json` — each entry names the specific pre-existing issue it
 exercises (e.g. `/magazines/43` has 177 issues, to stress
 `magazine-page.tsx`'s `data.issues.sort(...)` in-place mutation).
+
+## Network measurements of the deployed site
+
+`network.cjs` measures what a visitor's browser downloads from a deployed
+site (production by default), so it shows server-side changes such as
+nginx compression that the dev-server harness above can't see.
+
+```bash
+NODE_PATH=./node_modules node perf-tests/network.cjs <label> "what changed"
+# options: PERF_BASE_URL=https://… (default https://www.sf-bibliografia.fi)
+#          PERF_RUNS=3 (loads per route; the median is kept)
+```
+
+Each route in `routes.json` is loaded in a fresh context under two
+profiles: the machine's own connection, and a throttled phone (150 ms
+latency, 1.6 Mbps, 4x CPU). It records time to network idle, LCP, bytes
+on the wire (API separately, with decoded size and how many API responses
+were compressed) and the slowest API request. The app's pageview beacon is
+blocked so runs don't appear in the visitor analytics. Results accumulate
+in `network-results.json` and are rendered to `NETWORK.md`, with deltas
+against the first run. Numbers depend on the measuring machine's
+connection, so compare runs made from the same place.

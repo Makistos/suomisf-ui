@@ -4,35 +4,25 @@
 <head>
   <meta charset="utf-8" />
   <link rel="icon" href="/favicon.ico" />
-  <link rel="preconnect" href="https://fonts.gstatic.com">
 
   <!-- <link rel="stylesheet" href="https://unpkg.com/primeicons/primeicons.css" />
   <link rel="stylesheet" href="https://unpkg.com/primereact/resources/themes/bootstrap4-light-blue/theme.css" />
   <link rel="stylesheet" href="https://unpkg.com/primereact/resources/primereact.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/primeflex@2.0.0/primeflex.min.css" /> -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/primeicons/7.0.0/primeicons.css"
-    integrity="sha512-TrpBJRPu1GwAu1cMDKEHnDbLCnciebxralpA806EEIdNpmbuCAi0hZRBdbNHVl2fgOW96lnYyLIPqY/iL2saNg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!--
       Theme by system colour scheme. Static links with media queries are
       render-blocking (the script that used to set the href was not, so the
       page painted unstyled first and then jumped) and switch live when the
       system setting changes, with no JavaScript.
+      Served from our own build (the installed primereact package, with the
+      Roboto files the theme references) rather than cdnjs, so the site
+      doesn't need a third party to render. PrimeIcons and Roboto Slab are
+      imported in src/index.tsx.
     -->
   <link rel="stylesheet" media="(prefers-color-scheme: light)"
-    href="https://cdnjs.cloudflare.com/ajax/libs/primereact/10.6.4/resources/themes/mdc-light-indigo/theme.css" />
+    href="./node_modules/primereact/resources/themes/mdc-light-indigo/theme.css" />
   <link rel="stylesheet" media="(prefers-color-scheme: dark)"
-    href="https://cdnjs.cloudflare.com/ajax/libs/primereact/10.6.4/resources/themes/mdc-dark-indigo/theme.css" />
-  <!--
-      The PrimeReact theme's own @font-face rules for Roboto point at font
-      files cdnjs no longer serves (404s in the console). Loading Google
-      Fonts' Roboto in the weights the theme needs, after the theme
-      stylesheet, makes the browser prefer these working @font-face rules
-      instead (last matching @font-face rule wins) and avoids the dead
-      requests.
-    -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Slab&display=swap"
-    rel="stylesheet">
+    href="./node_modules/primereact/resources/themes/mdc-dark-indigo/theme.css" />
   <!-- <link rel="stylesheet" href="%PUBLIC_URL%/primeicons/primeicons.css" />
   <link id="theme-link" rel="stylesheet" href="%PUBLIC_URL%/resources/themes/bootstrap4-light-blue/theme.css">
   <link rel="stylesheet" href="%PUBLIC_URL%/resources/primereact.min.css" /> -->

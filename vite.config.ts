@@ -2,6 +2,23 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import viteTsconfigPaths from 'vite-tsconfig-paths'
+import { cpSync } from "node:fs";
+import { resolve } from "node:path";
+
+// index.html links the PrimeReact theme files from node_modules. Vite copies
+// those stylesheets to assets/ as they are, so their url("./fonts/...")
+// references point at assets/fonts/; put the theme's Roboto files there.
+// (Both mdc-*-indigo themes ship the same font files.)
+const themeFonts = () => ({
+  name: 'copy-primereact-theme-fonts',
+  apply: 'build' as const,
+  writeBundle(options: { dir?: string }) {
+    cpSync(
+      resolve(__dirname, 'node_modules/primereact/resources/themes/mdc-light-indigo/fonts'),
+      resolve(options.dir ?? 'build', 'assets/fonts'),
+      { recursive: true });
+  },
+});
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -11,6 +28,7 @@ export default defineConfig(({ mode }) => {
       react(),
       viteTsconfigPaths({
       }),
+      themeFonts(),
     ],
     build: {
       // Separate output dir so an e2e build never collides with a real

@@ -2,6 +2,9 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
+// Self-hosted instead of cdnjs / Google Fonts (see index.html).
+import 'primeicons/primeicons.css';
+import '@fontsource/roboto-slab/400.css';
 
 
 import App from './App';

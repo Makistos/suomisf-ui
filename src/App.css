@@ -1,3 +1,9 @@
+/* Layer order (also declared first thing in index.html, ahead of the
+   theme links, which is what counts): our base styles lose to PrimeReact's
+   layered theme and component styles, which lose to everything unlayered
+   (the rest of this file). */
+@layer suomisf-base, primereact;
+
 /* PrimeReact 10 injects component base styles from JS when a component
    first mounts, so the first paint showed an unstyled menubar (logo, menu
    button and search stacked, 56px taller) that then snapped flat: the
@@ -126,10 +132,16 @@ div.container {
   line-height: 24px;
 }
 
-a {
-  text-decoration: none;
-  /* Catalogue Indigo: links used to show the browser's default blue. */
-  color: var(--primary-color);
+/* Site-wide link defaults sit in a layer below PrimeReact's (declared at
+   the top of this file), so components that style their own anchors keep
+   their look: e.g. the SpeedDial admin actions' white icons, which an
+   unlayered `a { color }` had turned indigo. */
+@layer suomisf-base {
+  a {
+    text-decoration: none;
+    /* Catalogue Indigo: links used to show the browser's default blue. */
+    color: var(--primary-color);
+  }
 }
 
 /* Links in content are told apart at rest by colour and a medium weight

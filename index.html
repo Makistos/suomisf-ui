@@ -3,6 +3,11 @@
 
 <head>
   <meta charset="utf-8" />
+  <!-- Cascade layer order, before any stylesheet: the site's base link
+       styles (App.css) lose to PrimeReact's layered theme and component
+       styles. Layer order follows first mention, and the theme links below
+       declare @layer primereact. -->
+  <style>@layer suomisf-base, primereact;</style>
   <link rel="icon" href="/favicon.ico" />
 
   <!-- <link rel="stylesheet" href="https://unpkg.com/primeicons/primeicons.css" />

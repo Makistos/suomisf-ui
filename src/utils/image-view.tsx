@@ -7,6 +7,7 @@ import { getCurrenUser } from "@services/auth-service";
 import { Image } from "primereact/image";
 import { Button } from "primereact/button";
 import { FileUploadHandlerEvent } from "primereact/fileupload";
+import { coverUrl, thumbUrl } from "./cover-url";
 
 interface ImageViewProps {
     itemId: number | string,
@@ -121,7 +122,10 @@ export const ImageView = ({ itemId, idx, images, saveFunc, deleteFunc, onUpload,
     return (
         <div className="coverbox">
             <ContextMenu model={imageItems} ref={cm} />
-            <Image className="pt-2" preview width="150px" src={import.meta.env.VITE_IMAGE_URL + images[idx].image_src}
+            {/* A cover per edition on the work page: show the thumbnail,
+                open the full cover in the preview. */}
+            <Image className="pt-2" preview width="150px" src={thumbUrl(images[idx])}
+                zoomSrc={coverUrl(images[idx])}
                 alt={alt ?? "Kansikuva"}
                 onContextMenu={(e) => cm.current?.show(e)}
             />

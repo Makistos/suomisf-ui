@@ -19,6 +19,7 @@ import { getGenreIcon } from "../../genre/utils/genre-icons";
 import { Genre } from "../../genre";
 import { Country } from "../../../types/country";
 import { Work } from "../../work/types";
+import { thumbUrl } from "../../../utils/cover-url";
 
 // TagType ids in the database (select * from tagtype).
 const TAG_TYPE = {
@@ -588,7 +589,8 @@ export const SuggestionPage = () => {
 };
 
 const SuggestionCard = ({ work }: { work: Work }) => {
-    const cover = work.editions?.[0]?.images?.[0]?.image_src;
+    const coverImage = work.editions?.[0]?.images?.[0];
+    const cover = coverImage?.image_src ? thumbUrl(coverImage) : undefined;
     const genreIcons = (work.genres ?? []) as Genre[];
     return (
         <div className="col-12 sm:col-6 lg:col-4 xl:col-3">
@@ -599,7 +601,7 @@ const SuggestionCard = ({ work }: { work: Work }) => {
                 <div className="flex justify-content-center mb-3"
                     style={{ minHeight: "8rem" }}>
                     {cover ? (
-                        <img src={import.meta.env.VITE_IMAGE_URL + cover}
+                        <img src={cover}
                             alt={work.title}
                             style={{ maxHeight: "12rem", maxWidth: "100%" }} />
                     ) : (

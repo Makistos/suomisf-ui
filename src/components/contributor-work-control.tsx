@@ -17,6 +17,7 @@ import { editionIsWishlisted } from "@features/edition/utils/edition-is-wishlist
 import {
     renderContributorLink, compareWorksByField, workSortOptions, WorkSortField
 } from "@features/work/utils/group-works";
+import { thumbUrl } from "../utils/cover-url";
 
 interface ContributorWorkControlProps {
     /**
@@ -31,7 +32,7 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
     const [expandedTags, setExpandedTags] = useState<Set<number>>(new Set());
     const [showAllImagesGallery, setShowAllImagesGallery] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(-1);
-    const [currentWorkImages, setCurrentWorkImages] = useState<{ url: string; workTitle: string; version?: number; editionnum?: number }[]>([]);
+    const [currentWorkImages, setCurrentWorkImages] = useState<{ url: string; thumbUrl?: string; workTitle: string; version?: number; editionnum?: number }[]>([]);
     const [groupByAuthor, setGroupByAuthor] = useState<boolean>(true);
     const [orderField, setOrderField] = useState<WorkSortField>("Title");
 
@@ -84,10 +85,10 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
     
 
     // Get all images from all editions of a work
-    const getAllImagesFromWork = (work: Work): { url: string; version?: number; editionnum?: number }[] => {
+    const getAllImagesFromWork = (work: Work): { url: string; thumbUrl?: string; version?: number; editionnum?: number }[] => {
         if (!work.editions || work.editions.length === 0) return [];
 
-        const allImages: { url: string; version?: number; editionnum?: number }[] = [];
+        const allImages: { url: string; thumbUrl?: string; version?: number; editionnum?: number }[] = [];
         const seenUrls = new Set<string>();
 
         work.editions.forEach(edition => {
@@ -102,6 +103,7 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
                         seenUrls.add(imageUrl);
                         allImages.push({
                             url: imageUrl,
+                            thumbUrl: thumbUrl(img),
                             version: edition.version,
                             editionnum: typeof edition.editionnum === 'number' ? edition.editionnum : parseInt(String(edition.editionnum || 0))
                         });
@@ -116,7 +118,7 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
     // Get all images from all works for the gallery
 
     const allWorksImages = useMemo(() => {
-        const allImages: { url: string; workTitle: string; version?: number; editionnum?: number }[] = [];
+        const allImages: { url: string; thumbUrl?: string; workTitle: string; version?: number; editionnum?: number }[] = [];
         const seenUrls = new Set<string>();
 
         works.forEach(work => {
@@ -133,6 +135,7 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
                                 seenUrls.add(imageUrl);
                                 allImages.push({
                                     url: imageUrl,
+                                    thumbUrl: thumbUrl(img),
                                     workTitle: work.title,
                                     version: edition.version,
                                     editionnum: typeof edition.editionnum === 'number' ? edition.editionnum : parseInt(String(edition.editionnum || 0))
@@ -188,7 +191,7 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
     const galleryItems = useMemo(() => {
         return allWorksImages.map((item) => ({
             itemImageSrc: item.url,
-            thumbnailImageSrc: item.url,
+            thumbnailImageSrc: item.thumbUrl ?? item.url,
             alt: `${item.workTitle} kansi`,
             title: formatImageInfo(item)
         }));
@@ -198,7 +201,7 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
     const currentWorkGalleryItems = useMemo(() => {
         return currentWorkImages.map((item) => ({
             itemImageSrc: item.url,
-            thumbnailImageSrc: item.url,
+            thumbnailImageSrc: item.thumbUrl ?? item.url,
             alt: `${item.workTitle} kansi`,
             title: formatWorkImageInfo(item)
         }));
@@ -530,7 +533,7 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
                                     <div className="col-12 sm:col-6 md:col-4 lg:col-3 mb-3" key={index}>
                                         <div className="text-center cursor-pointer p-2" onClick={() => setCurrentImageIndex(index)}>
                                             <img
-                                                src={item.itemImageSrc}
+                                                src={item.thumbnailImageSrc}
                                                 alt={item.alt}
                                                 loading="lazy"
                                                 style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }}

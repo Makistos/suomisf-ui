@@ -7,6 +7,7 @@ import { Work } from '../features/work';
 import { ImageType } from '../types/image';
 //import { IMAGE_URL } from "../systemProps";
 import { Edition, EditionString } from "../features/edition";
+import { coverUrl, thumbUrl } from "../utils/cover-url";
 
 interface CoverImageListProps {
     works?: Work[],
@@ -157,7 +158,8 @@ export const CoverImageList = ({ works, editions }: CoverImageListProps) => {
                             </Tooltip>
                             <Image preview className={"p-1 image-" + image.id}
                                 height={imageHeight(image.edition_id ?? 0, image.size)}
-                                src={import.meta.env.VITE_IMAGE_URL + image.image_src}
+                                src={thumbUrl(image)}
+                                zoomSrc={coverUrl(image)}
                                 alt={imageTitle(image) ? `${imageTitle(image)}, kansikuva` : "Kansikuva"}
                                 key={"image-" + image.edition_id + "-" + image.id}
                                 loading="lazy"

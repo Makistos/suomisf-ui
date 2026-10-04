@@ -8,6 +8,7 @@ import { Contribution } from "../types/contribution";
 import { useState, useMemo } from "react";
 import { Issue } from "@features/issue";
 import { Link } from "react-router-dom";
+import { thumbUrl } from "../utils/cover-url";
 
 interface ContributorMagazineControlProps {
     /**
@@ -21,7 +22,7 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
     const [activeIndex, setActiveIndex] = useState(0);
     const [showAllImagesGallery, setShowAllImagesGallery] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(-1);
-    const [currentGalleryImages, setCurrentGalleryImages] = useState<{ url: string; issueTitle: string; year?: number; magazineName: string; coverNumber?: string }[]>([]);
+    const [currentGalleryImages, setCurrentGalleryImages] = useState<{ url: string; thumbUrl?: string; issueTitle: string; year?: number; magazineName: string; coverNumber?: string }[]>([]);
 
     // Group contributions by type
     const contributionsByType = useMemo(() => {
@@ -54,7 +55,7 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
 
     // Get images from issues for a specific contribution type
     const getImagesForContributionType = (typeData: { role: string, contributions: Array<{ issue: Issue, contribution: Contribution }> }) => {
-        const typeImages: { url: string; issueTitle: string; year?: number; magazineName: string; coverNumber?: string }[] = [];
+        const typeImages: { url: string; thumbUrl?: string; issueTitle: string; year?: number; magazineName: string; coverNumber?: string }[] = [];
         const seenUrls = new Set<string>();
 
         // Sort contributions first using the same logic as the display
@@ -97,6 +98,7 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
                     seenUrls.add(imageUrl);
                     typeImages.push({
                         url: imageUrl,
+                        thumbUrl: thumbUrl(firstImage),
                         issueTitle: issue.title || issue.cover_number,
                         year: issue.year,
                         magazineName: issue.magazine.name,
@@ -127,7 +129,7 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
     const galleryItems = useMemo(() => {
         return currentGalleryImages.map((item) => ({
             itemImageSrc: item.url,
-            thumbnailImageSrc: item.url,
+            thumbnailImageSrc: item.thumbUrl ?? item.url,
             alt: `${item.magazineName} ${item.issueTitle} kansi`,
             title: formatImageInfo(item)
         }));
@@ -292,7 +294,7 @@ export const ContributorMagazineControl = ({ issues, person }: ContributorMagazi
                                     <div className="col-12 sm:col-6 md:col-4 lg:col-3 mb-3" key={index}>
                                         <div className="text-center cursor-pointer p-2" onClick={() => setCurrentImageIndex(index)}>
                                             <img
-                                                src={item.itemImageSrc}
+                                                src={item.thumbnailImageSrc}
                                                 alt={item.alt}
                                                 loading="lazy"
                                                 style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }}

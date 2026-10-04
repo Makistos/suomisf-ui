@@ -12,7 +12,7 @@ interface ImageGalleryProps {
     /**
      * Array of image objects with metadata
      */
-    imageData?: { url: string; version?: number; editionnum?: number }[];
+    imageData?: { url: string; thumbUrl?: string; version?: number; editionnum?: number }[];
     /**
      * Alt text for the images
      */
@@ -58,7 +58,8 @@ export const ImageGallery = ({
     const [galleryVisible, setGalleryVisible] = useState(false);
 
     // Use imageData if provided, otherwise fall back to images for backward compatibility
-    const imageList = imageData || (images ? images.map(url => ({ url })) : []);
+    const imageList: { url: string; thumbUrl?: string; version?: number; editionnum?: number }[] =
+        imageData || (images ? images.map(url => ({ url })) : []);
 
     if (!imageList || imageList.length === 0) {
         return null;
@@ -99,7 +100,7 @@ export const ImageGallery = ({
 
     const galleryItems = imageList.map((item, index) => ({
         itemImageSrc: item.url,
-        thumbnailImageSrc: item.url,
+        thumbnailImageSrc: item.thumbUrl ?? item.url,
         alt: `${alt} ${index + 1}`,
         title: formatImageCounter(index)
     }));
@@ -139,7 +140,8 @@ export const ImageGallery = ({
                     onClick={onClick}
                 >
                     <Image
-                        src={currentImage.url}
+                        src={currentImage.thumbUrl ?? currentImage.url}
+                        zoomSrc={currentImage.url}
                         alt={alt}
                         loading="lazy"
                         height={height}
@@ -214,7 +216,7 @@ export const ImageGallery = ({
                                 <div className="col-3 mb-3" key={index}>
                                     <div className="text-center cursor-pointer" onClick={() => setCurrentIndex(index)}>
                                         <img
-                                            src={item.url}
+                                            src={item.thumbUrl ?? item.url}
                                             alt={`${alt} ${index + 1}`}
                                             loading="lazy"
                                             style={{ width: '100%', maxHeight: '250px', objectFit: 'contain' }}

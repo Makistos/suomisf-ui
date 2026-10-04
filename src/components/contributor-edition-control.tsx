@@ -12,6 +12,7 @@ import { ImageGallery } from ".";
 import { getCurrenUser } from "../services/auth-service";
 import { editionIsOwned } from "@features/edition/utils/edition-is-owned";
 import { editionIsWishlisted } from "@features/edition/utils/edition-is-wishlisted";
+import { thumbUrl } from "../utils/cover-url";
 
 interface ContributorEditionControlProps {
     /**
@@ -52,7 +53,7 @@ export const ContributorEditionControl = ({
     const [expandedTags, setExpandedTags] = useState<Set<number>>(new Set());
     const [showAllImagesGallery, setShowAllImagesGallery] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(-1);
-    const [currentWorkImages, setCurrentWorkImages] = useState<{ url: string; workTitle: string; version?: number; editionnum?: number }[]>([]);
+    const [currentWorkImages, setCurrentWorkImages] = useState<{ url: string; thumbUrl?: string; workTitle: string; version?: number; editionnum?: number }[]>([]);
 
     // Get current user for ownership checking
     const currentUser = getCurrenUser();
@@ -131,8 +132,8 @@ export const ContributorEditionControl = ({
     }, [editions, person, person_ids, collaborationsLast]);
 
     // Get all images from every (filtered) edition of a work
-    const getAllImagesFromWork = (workGroup: WorkEditionsGroup): { url: string; version?: number; editionnum?: number }[] => {
-        const allImages: { url: string; version?: number; editionnum?: number }[] = [];
+    const getAllImagesFromWork = (workGroup: WorkEditionsGroup): { url: string; thumbUrl?: string; version?: number; editionnum?: number }[] => {
+        const allImages: { url: string; thumbUrl?: string; version?: number; editionnum?: number }[] = [];
         const seenUrls = new Set<string>();
 
         workGroup.editions.forEach(edition => {
@@ -145,6 +146,7 @@ export const ContributorEditionControl = ({
                     seenUrls.add(imageUrl);
                     allImages.push({
                         url: imageUrl,
+                        thumbUrl: thumbUrl(img),
                         version: edition.version,
                         editionnum: typeof edition.editionnum === 'number' ? edition.editionnum : parseInt(String(edition.editionnum || 0))
                     });
@@ -158,7 +160,7 @@ export const ContributorEditionControl = ({
     // Get all images from every work for the "view all" gallery
 
     const allWorkImages = useMemo(() => {
-        const allImages: { url: string; workTitle: string; version?: number; editionnum?: number }[] = [];
+        const allImages: { url: string; thumbUrl?: string; workTitle: string; version?: number; editionnum?: number }[] = [];
         const seenUrls = new Set<string>();
 
         groupedEditions.forEach(group => {
@@ -216,7 +218,7 @@ export const ContributorEditionControl = ({
     const galleryItems = useMemo(() => {
         return allWorkImages.map((item) => ({
             itemImageSrc: item.url,
-            thumbnailImageSrc: item.url,
+            thumbnailImageSrc: item.thumbUrl ?? item.url,
             alt: `${item.workTitle} kansi`,
             title: formatImageInfo(item)
         }));
@@ -226,7 +228,7 @@ export const ContributorEditionControl = ({
     const currentWorkGalleryItems = useMemo(() => {
         return currentWorkImages.map((item) => ({
             itemImageSrc: item.url,
-            thumbnailImageSrc: item.url,
+            thumbnailImageSrc: item.thumbUrl ?? item.url,
             alt: `${item.workTitle} kansi`,
             title: formatWorkImageInfo(item)
         }));
@@ -518,7 +520,7 @@ export const ContributorEditionControl = ({
                                     <div className="col-12 sm:col-6 md:col-4 lg:col-3 mb-3" key={index}>
                                         <div className="text-center cursor-pointer p-2" onClick={() => setCurrentImageIndex(index)}>
                                             <img
-                                                src={item.itemImageSrc}
+                                                src={item.thumbnailImageSrc}
                                                 alt={item.alt}
                                                 loading="lazy"
                                                 style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }}

@@ -18,6 +18,7 @@ import { TabPanel, TabView } from 'primereact/tabview';
 import { Card } from 'primereact/card';
 import { Image } from 'primereact/image';
 import { LoadError } from "@components/load-error";
+import { coverUrl, thumbUrl } from "../../../utils/cover-url";
 
 
 
@@ -266,9 +267,8 @@ export const MagazinePage = () => {
                                                     <div className="p-1" key={issue.id}>
                                                         {issue.images?.[0] && (
                                                             <Image preview height="200px"
-                                                                src={issue.images[0].image_src.startsWith('http') ?
-                                                                    issue.images[0].image_src :
-                                                                    import.meta.env.VITE_IMAGE_URL + issue.images[0].image_src} alt={issue.cover_number}
+                                                                src={thumbUrl(issue.images[0])}
+                                                                zoomSrc={coverUrl(issue.images[0])} alt={issue.cover_number}
                                                                 loading="lazy" />
                                                         )}
                                                     </div>

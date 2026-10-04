@@ -10,6 +10,7 @@ import { getApiContent } from "./services/user-service";
 import { getCurrenUser } from "./services/auth-service";
 import { Edition } from "./features/edition/types";
 import { ImageTooltip } from "./utils/image-tooltip";
+import { thumbUrl } from "./utils/cover-url";
 import { ImageAccordion, ImageAccordionItem } from "./components/image-accordion";
 
 interface Statistics {
@@ -62,7 +63,7 @@ const CoverGrid = ({ editions, keyPrefix }: { editions: Edition[]; keyPrefix: st
               <img
                 alt={edition.title}
                 className={cls}
-                src={import.meta.env.VITE_IMAGE_URL + edition.images[0].image_src}
+                src={thumbUrl(edition.images[0])}
                 height={COVER_HEIGHT}
               />
             ) : (
@@ -113,7 +114,7 @@ export const HomeAlt = () => {
     () => randomPicks.map(edition => ({
       id: edition.id,
       imageSrc: edition.images.length > 0 && edition.images[0].image_src
-        ? import.meta.env.VITE_IMAGE_URL + edition.images[0].image_src
+        ? thumbUrl(edition.images[0])
         : null,
       imageAlt: edition.title,
       title: edition.work?.title ?? edition.title,

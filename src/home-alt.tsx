@@ -92,31 +92,13 @@ export const HomeAlt = () => {
         setLoading(true);
         const [statsResponse, latestResponse, randomResponse] = await Promise.all([
           getApiContent("frontpagedata", user),
-          getApiContent(`latest/editions/${LATEST_COUNT * 10}`, user),
+          // One cover per work, picked on the server (see /api/frontpage/latest).
+          getApiContent(`frontpage/latest?count=${LATEST_COUNT}`, user),
           getApiContent("frontpage/random", user),
         ]);
         setStats(statsResponse.data);
         setRandomPicks(randomResponse.data as Edition[]);
-        const editions = latestResponse.data as Edition[];
-        const workGroups = new Map<number, Edition[]>();
-        const groups: { positionId: number; edition: Edition }[] = [];
-        for (const edition of editions) {
-          const workId = edition.work?.id;
-          if (workId === undefined || workId === null) {
-            groups.push({ positionId: edition.id, edition });
-          } else {
-            if (!workGroups.has(workId)) workGroups.set(workId, []);
-            workGroups.get(workId)!.push(edition);
-          }
-        }
-        for (const groupEditions of workGroups.values()) {
-          const maxId = Math.max(...groupEditions.map(e => e.id));
-          const sorted = [...groupEditions].sort((a, b) => a.id - b.id);
-          const withCover = sorted.filter(e => e.images.length > 0 && e.images[0].image_src);
-          groups.push({ positionId: maxId, edition: withCover.length > 0 ? withCover[0] : sorted[0] });
-        }
-        groups.sort((a, b) => b.positionId - a.positionId);
-        setLatest(groups.slice(0, LATEST_COUNT).map(g => g.edition));
+        setLatest(latestResponse.data as Edition[]);
       } catch (e) {
         console.error(e);
         setError(true);

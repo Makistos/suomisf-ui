@@ -1,5 +1,6 @@
 import { test, expect } from '../fixtures/auth';
 import { Page } from '@playwright/test';
+import { selectOption } from '../fixtures/dropdown';
 
 const dialAction = (page: Page, label: string) =>
     page.locator(`a.p-speeddial-action[aria-label="${label}"]`);
@@ -20,10 +21,9 @@ test('admin can create, edit and delete an edition, and the owners panel appears
     await personInput.type('Verne', { delay: 100 });
     await expect(adminPage.locator('.p-autocomplete-item').first()).toBeVisible({ timeout: 10000 });
     await adminPage.locator('.p-autocomplete-item').first().click();
-    await createDialog.locator('.p-dropdown', { hasText: 'Rooli' }).click();
     // Edition-level contributor roles differ from work-level ones (no
     // "Kirjoittaja"/author here - that belongs to the work, not the print run).
-    await adminPage.getByRole('option', { name: 'Kääntäjä' }).click();
+    await selectOption(adminPage, createDialog.locator('.p-dropdown', { hasText: 'Rooli' }), 'Kääntäjä');
     await createDialog.getByRole('button', { name: 'Tallenna' }).click();
     await expect(adminPage.getByText('Tallentaminen onnistui')).toBeVisible({ timeout: 20000 });
 

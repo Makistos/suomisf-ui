@@ -1,5 +1,6 @@
 import { test, expect } from '../fixtures/auth';
 import { Page } from '@playwright/test';
+import { selectOption } from '../fixtures/dropdown';
 
 const dialAction = (page: Page, label: string) =>
     page.locator(`a.p-speeddial-action[aria-label="${label}"]`);
@@ -22,8 +23,7 @@ test('admin can create a new short story via the work shorts picker', async ({ a
     await shortDialog.locator('input[name="title"]').fill(title);
     // FormDropdown renders an empty label - this is the first .p-dropdown
     // in the form (type/"Tyyppi"), before the contributor role dropdown.
-    await shortDialog.locator('.p-dropdown').first().click();
-    await adminPage.getByRole('option', { name: 'Novelli', exact: true }).click();
+    await selectOption(adminPage, shortDialog.locator('.p-dropdown').first(), 'Novelli', { exact: true });
 
     // Contributor - same requirement as work creation (backend rejects an
     // empty contributor list).
@@ -32,8 +32,7 @@ test('admin can create a new short story via the work shorts picker', async ({ a
     await personInput.type('Verne', { delay: 100 });
     await expect(adminPage.locator('.p-autocomplete-item').first()).toBeVisible({ timeout: 10000 });
     await adminPage.locator('.p-autocomplete-item').first().click();
-    await shortDialog.locator('.p-dropdown', { hasText: 'Rooli' }).click();
-    await adminPage.getByRole('option', { name: 'Kirjoittaja' }).click();
+    await selectOption(adminPage, shortDialog.locator('.p-dropdown', { hasText: 'Rooli' }), 'Kirjoittaja');
 
     await shortDialog.getByRole('button', { name: 'Tallenna' }).click();
     await expect(shortDialog).not.toBeVisible({ timeout: 20000 });

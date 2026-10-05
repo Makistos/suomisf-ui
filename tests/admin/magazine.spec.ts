@@ -1,5 +1,6 @@
 import { test, expect } from '../fixtures/auth';
 import { Page } from '@playwright/test';
+import { selectOption } from '../fixtures/dropdown';
 
 const dialAction = (page: Page, label: string) =>
     page.locator(`a.p-speeddial-action[aria-label="${label}"]`);
@@ -12,8 +13,7 @@ async function createMagazine(adminPage: Page, name: string) {
     // Header is hardcoded "Muokkaa" regardless of create/edit mode.
     const createDialog = adminPage.getByRole('dialog').filter({ hasText: 'Muokkaa' });
     await createDialog.locator('input[name="name"]').fill(name);
-    await createDialog.locator('.p-dropdown').first().click();
-    await adminPage.getByRole('option', { name: 'Fanzine' }).click();
+    await selectOption(adminPage, createDialog.locator('.p-dropdown').first(), 'Fanzine');
     await createDialog.getByRole('button', { name: 'Tallenna' }).click();
     // A successful create navigates to /magazines/<new id>
     await expect(adminPage.getByText(name, { exact: true })).toBeVisible({ timeout: 20000 });
@@ -67,8 +67,7 @@ test('admin can edit a magazine without a publisher', async ({ adminPage }) => {
     await dialAction(adminPage, 'Uusi lehti').click();
     const createDialog = adminPage.getByRole('dialog').filter({ hasText: 'Muokkaa' });
     await createDialog.locator('input[name="name"]').fill(name);
-    await createDialog.locator('.p-dropdown').first().click();
-    await adminPage.getByRole('option', { name: 'Fanzine' }).click();
+    await selectOption(adminPage, createDialog.locator('.p-dropdown').first(), 'Fanzine');
     await createDialog.getByRole('button', { name: 'Tallenna' }).click();
     await expect(adminPage.getByText(name, { exact: true })).toBeVisible({ timeout: 20000 });
 

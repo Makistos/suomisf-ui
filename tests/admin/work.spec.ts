@@ -1,5 +1,6 @@
 import { test, expect } from '../fixtures/auth';
 import { Page, Locator } from '@playwright/test';
+import { selectOption } from '../fixtures/dropdown';
 
 const dialAction = (page: Page, label: string) =>
     page.locator(`a.p-speeddial-action[aria-label="${label}"]`);
@@ -10,8 +11,7 @@ async function fillFirstContributor(page: Page, dialog: Locator, personQuery: st
     await dialog.locator('input[placeholder="Henkilö"]').first().fill(personQuery);
     await expect(page.locator('.p-autocomplete-item').first()).toBeVisible({ timeout: 10000 });
     await page.locator('.p-autocomplete-item').first().click();
-    await dialog.locator('.p-dropdown', { hasText: 'Rooli' }).click();
-    await page.getByRole('option', { name: roleName }).click();
+    await selectOption(page, dialog.locator('.p-dropdown', { hasText: 'Rooli' }), roleName);
 }
 
 test('admin can create, edit and delete a work', async ({ adminPage }) => {
@@ -31,8 +31,7 @@ test('admin can create, edit and delete a work', async ({ adminPage }) => {
     await createDialog.locator('#pubyear input').fill('2024');
     // FormDropdown renders an empty <label> (no visible/associated text), so
     // this is the first .p-dropdown in the form - work_type ("Tyyppi").
-    await createDialog.locator('.p-dropdown').first().click();
-    await adminPage.getByRole('option', { name: 'Romaani' }).click();
+    await selectOption(adminPage, createDialog.locator('.p-dropdown').first(), 'Romaani');
     await fillFirstContributor(adminPage, createDialog, 'Verne', 'Kirjoittaja');
     await createDialog.getByRole('button', { name: 'Tallenna' }).click();
 

@@ -1,4 +1,5 @@
 import { test, expect, Page } from '../fixtures/guard';
+import { selectOption } from '../fixtures/dropdown';
 
 // Changing a chart's filter must refetch and re-render with the new
 // selection: catches memos/effects that keep showing the old data.
@@ -10,8 +11,7 @@ async function changeTopPeopleRole(page: Page, tab: string, endpoint: string, ro
     const firstBefore = await table.locator('tbody tr').first().textContent();
 
     const refetch = page.waitForRequest(req => req.url().includes(endpoint) && /role=/.test(req.url()));
-    await card.locator('.p-dropdown').first().click();
-    await page.getByRole('option', { name: roleLabel, exact: true }).click();
+    await selectOption(page, card.locator('.p-dropdown').first(), roleLabel, { exact: true });
     await refetch;
 
     await expect(table.locator('thead')).toContainText(roleLabel, { timeout: 20000 });

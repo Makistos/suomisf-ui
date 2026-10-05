@@ -1,5 +1,6 @@
 import { test, expect } from '../fixtures/auth';
 import { Page } from '@playwright/test';
+import { selectOption } from '../fixtures/dropdown';
 
 const dialAction = (page: Page, label: string) =>
     page.locator(`a.p-speeddial-action[aria-label="${label}"]`);
@@ -8,8 +9,7 @@ async function fillFirstContributor(page: Page, dialog: import('@playwright/test
     await dialog.locator('input[placeholder="Henkilö"]').first().fill(personQuery);
     await expect(page.locator('.p-autocomplete-item').first()).toBeVisible({ timeout: 10000 });
     await page.locator('.p-autocomplete-item').first().click();
-    await dialog.locator('.p-dropdown', { hasText: 'Rooli' }).click();
-    await page.getByRole('option', { name: roleName }).click();
+    await selectOption(page, dialog.locator('.p-dropdown', { hasText: 'Rooli' }), roleName);
 }
 
 test('an admin create shows up on the /changes audit log', async ({ adminPage }) => {
@@ -22,8 +22,7 @@ test('an admin create shows up on the /changes audit log', async ({ adminPage })
     const createDialog = adminPage.getByRole('dialog').filter({ hasText: 'Uusi teos' });
     await createDialog.locator('input[name="title"]').fill(title);
     await createDialog.locator('#pubyear input').fill('2024');
-    await createDialog.locator('.p-dropdown').first().click();
-    await adminPage.getByRole('option', { name: 'Romaani' }).click();
+    await selectOption(adminPage, createDialog.locator('.p-dropdown').first(), 'Romaani');
     await fillFirstContributor(adminPage, createDialog, 'Verne', 'Kirjoittaja');
     await createDialog.getByRole('button', { name: 'Tallenna' }).click();
     await expect(adminPage.getByRole('heading', { name: title })).toBeVisible({ timeout: 20000 });

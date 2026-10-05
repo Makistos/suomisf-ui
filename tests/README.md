@@ -103,13 +103,15 @@ rebuilt before the next run.
 | `pricing.spec.ts` | On `/works/10` (one edition): the "Hinnat" picker links a shop product, fetches its price and saves it, and the price shows in the edition's price dialog — the shop search and price fetch are answered by `page.route`, never the real shops; a price added by hand in the edition price dialog is listed. |
 | `omnibus.spec.ts` | Adds a work to an omnibus (`/works/11`) through "Muokkaa kokoomateosta", with an explanation; checks "Sisältää teokset", then removes it again. |
 | `site-stats.spec.ts` | `/stats` admin tabs: "Kävijät" charts render; the "Käynnit" page view log filters by path. |
+| `award-admin.spec.ts` | Creates a domestic award from `/awards` (listed under Kotimaiset) and renames it on its page; imports winners into Sidewise from a preview answered by `page.route` (sfadb.com is down) — only the new entry is pre-selected and saved, and the work appears among the winners. |
+| `kirjasampo-import.spec.ts` | On `/works/5`: Kirjasampo tags (answered by `page.route`) list without the author section, with "(luokka)" stripped and a film list turned into "elokuva"; one tag is skipped, the rest imported and shown on the work. |
 
 ## Coverage gaps
 
-- `kirjasampo-tag-import.tsx` (importing tags from Kirjasampo) isn't
-  covered — it depends on a live external service, so it was skipped
-  rather than mocked. (`pricing.spec.ts` shows the `page.route` pattern
-  for such services.)
+- External services (shops, Kirjasampo, award sources) are never called:
+  `pricing`, `kirjasampo-import` and `award-admin` answer those requests
+  with `page.route`. The face-detection image picker (face-api.js, to be
+  replaced) has no test.
 - `npm run test:e2e:coverage` (below) shows what else no test reaches.
 - Award-winner *ISFDB* import has no frontend UI yet at all (still
   design-stage per project memory), so there's nothing to test.

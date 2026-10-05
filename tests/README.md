@@ -66,6 +66,7 @@ dev servers on `:3000`/`:5000` are never touched.
 | `person-tabs.spec.ts` | `/people/368` | Johanna Sinisalo's tabs: edited books (edition list), short stories, series, magazine issues, awards. |
 | `register.spec.ts` | `/` | Registering through the account menu logs the new user in, and the password and tokens never reach the browser console; mismatched passwords block the request. |
 | `a11y.spec.ts` | 24 page types + register dialog | axe (WCAG 2.1 A/AA) finds no violations; see "Accessibility checks" below. |
+| `sanitize.spec.ts` | `/awards/27` | A description with a script, an `onerror` handler and a `javascript:` link (injected with `page.route`) renders its text but runs nothing (`safeHtml`, `src/utils/safe-html.ts`). |
 
 ## `tests/user/` — logged-in regular user (`Test User`)
 

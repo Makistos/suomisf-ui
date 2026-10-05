@@ -27,6 +27,7 @@ import { Tooltip } from 'primereact/tooltip';
 import { SpeedDial } from 'primereact/speeddial';
 import { ContributionType } from '../../../types/contribution';
 import { LoadError } from "@components/load-error";
+import { safeHtml } from "@utils/safe-html";
 
 
 export type IssueProps = {
@@ -130,7 +131,7 @@ const IssueInfo = ({ issue }: IssueInfoProps) => {
             </div>
             <div className="mt-2">
                 {issue.notes && issue.notes !== "" && (
-                    <div className="html-content" dangerouslySetInnerHTML={{ __html: issue.notes }} />
+                    <div className="html-content" dangerouslySetInnerHTML={safeHtml(issue.notes)} />
                 )}
             </div>
         </div>

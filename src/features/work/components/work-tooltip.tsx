@@ -9,6 +9,7 @@ import { AwardPanel } from "../../award";
 import { LinkPanel } from "../../../components/link-panel";
 import { WorkProps } from "../routes";
 import { Contribution } from '../../../types/contribution';
+import { safeHtml } from "@utils/safe-html";
 
 export const WorkTooltip = ({ work }: WorkProps) => {
 
@@ -124,7 +125,7 @@ export const WorkTooltip = ({ work }: WorkProps) => {
         </div>
         {work.description && (
           <div className="col-12">
-            <div dangerouslySetInnerHTML={{ __html: work.description }} />
+            <div dangerouslySetInnerHTML={safeHtml(work.description)} />
           </div>
         )}
       </div>

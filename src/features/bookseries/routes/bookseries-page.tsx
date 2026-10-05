@@ -21,6 +21,7 @@ import { TabPanel, TabView } from "primereact/tabview";
 import { GenreGroup } from "../../genre";
 import { Genre } from "../../genre/types";
 import { LoadError } from "@components/load-error";
+import { safeHtml } from "@utils/safe-html";
 
 const baseURL = 'bookseries/';
 
@@ -168,7 +169,7 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
                                                 <div className="mt-3">
                                                     <div
                                                         className="text-base line-height-3 html-content"
-                                                        dangerouslySetInnerHTML={{ __html: data.description }}
+                                                        dangerouslySetInnerHTML={safeHtml(data.description)}
                                                     />
                                                 </div>
                                             )}

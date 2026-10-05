@@ -19,6 +19,7 @@ import { Card } from 'primereact/card';
 import { Image } from 'primereact/image';
 import { LoadError } from "@components/load-error";
 import { coverUrl, thumbUrl } from "../../../utils/cover-url";
+import { safeHtml } from "@utils/safe-html";
 
 
 
@@ -198,7 +199,7 @@ export const MagazinePage = () => {
                                 <div className='col-12 p-0'>{data.issues?.length} numeroa.</div>
                                 <div className='col-12 p-0'>
                                     {data.description &&
-                                        <div className="html-content" dangerouslySetInnerHTML={{ __html: data.description }}></div>
+                                        <div className="html-content" dangerouslySetInnerHTML={safeHtml(data.description)}></div>
                                     }
                                 </div>
                             </div>

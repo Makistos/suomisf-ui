@@ -29,6 +29,7 @@ import { AwardList } from "@features/award"
 import { appearsIn } from "@utils/appears-in"
 import { removeDuplicateContributions } from "@utils/remove-duplicate-contributions"
 import { LoadError } from "@components/load-error";
+import { safeHtml } from "@utils/safe-html";
 
 interface ShortPageProps {
     id: string | null
@@ -205,7 +206,7 @@ export const ShortPage = (props: ShortPageProps) => {
                                         <ShortDetails short={data} />
                                         {data.notes && (
                                             <div className="mt-3 text-sm html-content"
-                                                dangerouslySetInnerHTML={{ __html: data.notes }}
+                                                dangerouslySetInnerHTML={safeHtml(data.notes)}
                                             />
                                         )}
                                     </div>

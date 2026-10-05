@@ -103,13 +103,15 @@ rebuilt before the next run.
 | `pricing.spec.ts` | On `/works/10` (one edition): the "Hinnat" picker links a shop product, fetches its price and saves it, and the price shows in the edition's price dialog — the shop search and price fetch are answered by `page.route`, never the real shops; a price added by hand in the edition price dialog is listed. |
 | `omnibus.spec.ts` | Adds a work to an omnibus (`/works/11`) through "Muokkaa kokoomateosta", with an explanation; checks "Sisältää teokset", then removes it again. |
 | `site-stats.spec.ts` | `/stats` admin tabs: "Kävijät" charts render; the "Käynnit" page view log filters by path. |
+| `award-admin.spec.ts` | Creates a domestic award from `/awards` (listed under Kotimaiset) and renames it on its page; imports winners into Sidewise from a preview answered by `page.route` (sfadb.com is down) — only the new entry is pre-selected and saved, and the work appears among the winners. |
+| `kirjasampo-import.spec.ts` | On `/works/5`: Kirjasampo tags (answered by `page.route`) list without the author section, with "(luokka)" stripped and a film list turned into "elokuva"; one tag is skipped, the rest imported and shown on the work. |
 
 ## Coverage gaps
 
-- `kirjasampo-tag-import.tsx` (importing tags from Kirjasampo) isn't
-  covered — it depends on a live external service, so it was skipped
-  rather than mocked. (`pricing.spec.ts` shows the `page.route` pattern
-  for such services.)
+- External services (shops, Kirjasampo, award sources) are never called:
+  `pricing`, `kirjasampo-import` and `award-admin` answer those requests
+  with `page.route`. The face-detection image picker (face-api.js, to be
+  replaced) has no test.
 - `npm run test:e2e:coverage` (below) shows what else no test reaches.
 - Award-winner *ISFDB* import has no frontend UI yet at all (still
   design-stage per project memory), so there's nothing to test.
@@ -120,7 +122,7 @@ rebuilt before the next run.
 sequential `playwright test` invocations rather than one concurrent run.
 The E2E backend runs with `--workers 16` (tuned up from gunicorn's default
 of 1 across this project). At these settings the suite is stable per run
-(65/65 in both browsers, 2026-10-05); the residual occasional flake is `ownership.spec.ts` or
+(68/68 in both browsers, 2026-10-05); the residual occasional flake is `ownership.spec.ts` or
 `profile.spec.ts` timing out mid-`Rating`-widget interaction under load —
 a re-run resolves it. See the git log for the tuning history if this
 degrades again as more specs get added.
@@ -146,6 +148,6 @@ can't be used for this: it only reports scripts of the page that is
 loaded when it is read, so a test that ends on another page loses
 everything before it.
 
-2026-10-05: 68.0 % of lines, 63.1 % of functions, 53.2 % of branches
+2026-10-05: 69.9 % of lines, 65.7 % of functions, 54.9 % of branches
 (was 58.6 / 53.0 / 44.5 before the search, history, person tab, pricing,
-omnibus, site stats and registration specs).
+omnibus, site stats, registration, award and import specs).

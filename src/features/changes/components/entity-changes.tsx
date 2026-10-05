@@ -132,7 +132,6 @@ export const EntityChanges = ({ entityId, entity }: WorkChangesProps) => {
         return data.action === "Päivitys";
     }
 
-    console.log(data)
     return (
         <>
             {

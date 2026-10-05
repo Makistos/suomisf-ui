@@ -65,6 +65,7 @@ dev servers on `:3000`/`:5000` are never touched.
 | `work-history.spec.ts` | `/works/3` | "Muutoshistoria" tab lists changes; an update row expands into field/old value rows; no delete column for visitors. |
 | `person-tabs.spec.ts` | `/people/368` | Johanna Sinisalo's tabs: edited books (edition list), short stories, series, magazine issues, awards. |
 | `register.spec.ts` | `/` | Registering through the account menu logs the new user in, and the password and tokens never reach the browser console; mismatched passwords block the request. |
+| `a11y.spec.ts` | 24 page types + register dialog | axe (WCAG 2.1 A/AA) finds no violations; see "Accessibility checks" below. |
 
 ## `tests/user/` — logged-in regular user (`Test User`)
 
@@ -77,6 +78,7 @@ dev servers on `:3000`/`:5000` are never touched.
 | `read-status.spec.ts` | Marks a work read+liked via the thumbs `SelectButton` on `/works/2`, confirms it appears under "Luetut". |
 | `profile.spec.ts` | After owning a book, confirms the profile's "Tilastoja" tab renders a chart and "Kokoelman arvo" dialog opens without error. |
 | `suggestion.spec.ts` | Walks the `/suggestions` stepper by skipping every step, confirms it reaches results. |
+| `a11y.spec.ts` | axe on a work page and the profile, logged in. |
 | `password-reset.spec.ts` | Full forgot/reset-password cycle without email: drives `/forgot-password` for real, mints a valid reset token via the backend's `mint_reset_token.py` (the token is a deterministic signed hash, not something that needs to be emailed), resets the password, logs in with it, then resets back to the original so it doesn't break other specs. Run separately (see above) — the password change would otherwise race every other `userPage`-fixture test. |
 
 ## `tests/admin/` — logged-in admin (`Test Admin`)
@@ -105,6 +107,7 @@ rebuilt before the next run.
 | `site-stats.spec.ts` | `/stats` admin tabs: "Kävijät" charts render; the "Käynnit" page view log filters by path. |
 | `award-admin.spec.ts` | Creates a domestic award from `/awards` (listed under Kotimaiset) and renames it on its page; imports winners into Sidewise from a preview answered by `page.route` (sfadb.com is down) — only the new entry is pre-selected and saved, and the work appears among the winners. |
 | `kirjasampo-import.spec.ts` | On `/works/5`: Kirjasampo tags (answered by `page.route`) list without the author section, with "(luokka)" stripped and a film list turned into "elokuva"; one tag is skipped, the rest imported and shown on the work. |
+| `a11y.spec.ts` | axe on the admin work page (SpeedDial), the work and new-edition dialogs, and the person form. |
 
 ## Coverage gaps
 
@@ -122,10 +125,29 @@ rebuilt before the next run.
 sequential `playwright test` invocations rather than one concurrent run.
 The E2E backend runs with `--workers 16` (tuned up from gunicorn's default
 of 1 across this project). At these settings the suite is stable per run
-(68/68 in both browsers, 2026-10-05); the residual occasional flake is `ownership.spec.ts` or
+(96/96 in both browsers, 2026-10-05); the residual occasional flake is `ownership.spec.ts` or
 `profile.spec.ts` timing out mid-`Rating`-widget interaction under load —
 a re-run resolves it. See the git log for the tuning history if this
 degrades again as more specs get added.
+
+## Accessibility checks
+
+`expectAccessible(page, { include? })` (`tests/fixtures/axe.ts`) runs axe
+with the WCAG 2.1 A and AA rules on the page as it is (after animations
+finish) and fails on any violation, listing rule, element and markup.
+Use it in new specs for new pages and dialogs. Two documented exceptions:
+
+- PrimeReact's Menubar puts `aria-level` on menu items, and Quill's
+  editor pickers have no names: library markup, filtered by exact match.
+- `link-in-text-block` is off: links inside text lines (e.g. the publisher
+  in "Otava 1990") differ from the text by colour only (1.1:1 where WCAG
+  wants 3:1), because links have no resting underline. Open decision.
+
+Most fixes are global, in `src/App.tsx`: Finnish `aria` labels and `close`
+in the PrimeReact locale (PrimeReact's own locales lack `close`,
+`expandLabel`, `collapseLabel`, `selectLabel`, `unselectLabel`), and
+`PrimeReact.pt` defaults that name spinners, the SpeedDial button, dialog
+maximise buttons and icon-only buttons with a tooltip.
 
 ## Frontend coverage from the E2E run
 

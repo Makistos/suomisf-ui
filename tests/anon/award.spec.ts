@@ -16,7 +16,9 @@ test('Apollo award page loads and displays data', async ({ page }) => {
         const table = page.getByRole('table');
         await expect(table).toBeVisible();
         const rowCount = await page.getByRole('row').count();
-        expect(rowCount).toBe(11); // 9 data rows + 2 header rows
+        // Column header + category group header + 8 winners (the empty group
+        // footer PrimeReact adds is hidden, see App.css).
+        expect(rowCount).toBe(10);
     }).toPass();
 
     // Verify first row content

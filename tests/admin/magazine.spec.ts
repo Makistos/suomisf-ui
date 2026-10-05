@@ -26,10 +26,10 @@ test('admin can create a magazine and add an issue to it', async ({ adminPage })
     await adminPage.locator('.fixed-dial .p-speeddial-button').click();
     await dialAction(adminPage, 'Uusi numero').click();
     const issueDialog = adminPage.getByRole('dialog').filter({ hasText: 'Uusi numero' });
-    await issueDialog.locator('#number input').fill('1');
+    await issueDialog.locator('input#number').fill('1');
     await issueDialog.locator('input[name="cover_number"]').fill('1/2026');
-    await issueDialog.locator('#count input').fill('1');
-    await issueDialog.locator('#year input').fill('2026');
+    await issueDialog.locator('input#count').fill('1');
+    await issueDialog.locator('input#year').fill('2026');
     await issueDialog.getByRole('button', { name: 'Tallenna' }).click();
     await expect(issueDialog).not.toBeVisible({ timeout: 20000 });
     await expect(adminPage.getByText('1 numeroa')).toBeVisible({ timeout: 20000 });

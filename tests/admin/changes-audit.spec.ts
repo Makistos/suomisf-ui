@@ -21,7 +21,7 @@ test('an admin create shows up on the /changes audit log', async ({ adminPage })
     await dialAction(adminPage, 'Uusi teos').click();
     const createDialog = adminPage.getByRole('dialog').filter({ hasText: 'Uusi teos' });
     await createDialog.locator('input[name="title"]').fill(title);
-    await createDialog.locator('#pubyear input').fill('2024');
+    await createDialog.locator('input#pubyear').fill('2024');
     await selectOption(adminPage, createDialog.locator('.p-dropdown').first(), 'Romaani');
     await fillFirstContributor(adminPage, createDialog, 'Verne', 'Kirjoittaja');
     await createDialog.getByRole('button', { name: 'Tallenna' }).click();

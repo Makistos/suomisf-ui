@@ -122,11 +122,20 @@ degrades again as more specs get added.
 npm run test:e2e:coverage     # Chromium, 4 workers
 ```
 
-Builds the E2E frontend with source maps, records which JavaScript each
-test page runs (`tests/fixtures/coverage.ts`, using monocart-coverage-reports)
-and writes `coverage/e2e/index.html` plus `coverage-summary.json`; a line
-and function total is printed at the end. Normal E2E runs don't record.
-Per-file line counts are the lines V8 maps back to source, so compare files
-by their percentages and uncovered counts rather than by size.
-First run (2026-10-05): 61.5 % of lines, 49.6 % of functions; 35 of 198
-source files are never loaded by any test.
+Builds the E2E frontend with Istanbul counters (`vite-plugin-istanbul`,
+only when `E2E_COVERAGE` is set) and collects `window.__coverage__` from
+every test page (`tests/fixtures/coverage.ts`); monocart-coverage-reports
+writes `coverage/e2e/index.html` plus `coverage-summary.json` and prints a
+summary. Every `src/` file is listed, those no test loads at 0 %. Normal
+E2E runs are not instrumented.
+
+Each page load has its own counters, which disappear with it, so the
+fixture hands them over on `beforeunload` (through a raw CDP binding:
+Playwright's `exposeFunction` and Chromium's `pagehide`/`unload` both drop
+the call) and again when the test ends. Chromium's built-in V8 coverage
+can't be used for this: it only reports scripts of the page that is
+loaded when it is read, so a test that ends on another page loses
+everything before it.
+
+2026-10-05: 58.6 % of lines, 53.0 % of functions, 44.5 % of branches;
+81 of 291 source files are never loaded by any test.

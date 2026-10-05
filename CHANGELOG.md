@@ -3,6 +3,30 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-10-06 `482a5a6` — Accessibility checks and fixes
+Every E2E run now checks pages and dialogs with axe (WCAG 2.1 A and AA). Fixes it led to: close buttons of dialogs, toasts and side panels had no name (PrimeReact has no text for them in any language); PrimeReact's own screen reader labels (paging, row expanders) were in English and are now Finnish; labels of edit form fields weren't connected to their inputs; spinners, the admin action button, dialog maximise buttons and icon-only add/remove buttons got names; the read-status buttons were announced as "[object Object]" (`3c04d1e`). Outlined pink buttons and price quality colours now have enough contrast in both light and dark mode.
+
+## 2026-10-05 `aa760de` — Passwords and tokens no longer logged
+Login and registration wrote the whole server response to the browser console, including the password sent and the access and refresh tokens; a failed token refresh logged the refresh token. Only the error message is logged now.
+
+## 2026-10-05 `79cbd18` — Test coverage measured and extended
+`npm run test:e2e:coverage` shows which frontend code the E2E tests reach. New tests for search, pricing (shops mocked), omnibus editing, change history, person page tabs, registration, visitor statistics, award editing and winner import, and Kirjasampo tag import: 96 tests per browser (was 54), 69.9 % of frontend lines reached (was 58.6 %). Unused statistics and comparison code removed. (Through `5a77c3d`.)
+
+## 2026-10-04 `04caba7` — Admin action button colours restored
+The admin action buttons (SpeedDial) had turned indigo with the new link colour; they have the theme's own colours again.
+
+## 2026-10-04 `115fc66` — Cover thumbnails
+Lists, galleries and the work and issue pages show 320 px WebP thumbnails (about 15 KB, was ~74 KB per cover); clicking a cover on a work or issue page opens the full image. Covers without a thumbnail fall back to the original. (Through `c2726c8`.)
+
+## 2026-10-04 `cf09cdb` — Theme, icons and fonts served from the site itself
+The PrimeReact theme, PrimeIcons and the Roboto fonts come from our own build instead of cdnjs and Google Fonts, so pages no longer depend on third parties to render.
+
+## 2026-10-04 `45068d7` — Lighter front page
+The front page's latest covers come from a dedicated endpoint: 1.9 KB instead of 254 KB.
+
+## 2026-10-03 `7f106c4` — Compression and production measurements
+`perf-tests/network.cjs` measures production page loads (results in `perf-tests/NETWORK.md`). With gzip turned on in nginx and the frontend changes above, the front page transfers 57 % less (3.1 MB → 1.3 MB) and its API data 96 % less; other pages 59–78 % less. (Through `1eab718`.)
+
 ## 2026-10-02 `8fc9d86` — Faster first paint and no layout shift on load
 First paint about 1 s sooner on a throttled phone connection. JavaScript needed before the first paint halved (378 KB → 194 KB gzipped): the menu's login, registration, new-work and new-person dialogs now load on demand, and the front page no longer pulls in the whole edition feature. Pages no longer jump while loading (front page CLS 0.27 → 0.03, tag page 0.37 → 0.01): the menubar is styled from the first paint, entity pages keep their width while data loads, and covers and portraits reserve their space. The light/dark theme switches by CSS alone; duplicate PrimeReact and PrimeFlex stylesheets removed. List and gallery thumbnails load lazily.
 

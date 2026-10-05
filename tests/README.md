@@ -122,7 +122,7 @@ rebuilt before the next run.
 sequential `playwright test` invocations rather than one concurrent run.
 The E2E backend runs with `--workers 16` (tuned up from gunicorn's default
 of 1 across this project). At these settings the suite is stable per run
-(65/65 in both browsers, 2026-10-05); the residual occasional flake is `ownership.spec.ts` or
+(68/68 in both browsers, 2026-10-05); the residual occasional flake is `ownership.spec.ts` or
 `profile.spec.ts` timing out mid-`Rating`-widget interaction under load —
 a re-run resolves it. See the git log for the tuning history if this
 degrades again as more specs get added.
@@ -148,6 +148,6 @@ can't be used for this: it only reports scripts of the page that is
 loaded when it is read, so a test that ends on another page loses
 everything before it.
 
-2026-10-05: 68.0 % of lines, 63.1 % of functions, 53.2 % of branches
+2026-10-05: 69.9 % of lines, 65.7 % of functions, 54.9 % of branches
 (was 58.6 / 53.0 / 44.5 before the search, history, person tab, pricing,
-omnibus, site stats and registration specs).
+omnibus, site stats, registration, award and import specs).

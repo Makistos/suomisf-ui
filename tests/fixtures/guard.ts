@@ -1,4 +1,5 @@
 import { test as base, expect, Page } from '@playwright/test';
+import { recordCoverage } from './coverage';
 
 // Same API request this many times within the window = treated as a
 // refetch/render loop. Real loops fire dozens of requests per second;
@@ -43,7 +44,9 @@ export function guardPage(page: Page): () => void {
 export const test = base.extend<{ page: Page }>({
     page: async ({ page }, use) => {
         const check = guardPage(page);
+        const saveCoverage = await recordCoverage(page);
         await use(page);
+        await saveCoverage();
         check();
     },
 });

@@ -1,8 +1,13 @@
 import fs from 'fs';
+import { CoverageReport } from 'monocart-coverage-reports';
+import { coverageEnabled, coverageOptions } from './fixtures/coverage';
 
 const PID_FILES = ['/tmp/gunicorn-e2e.pid', '/tmp/vite-preview-e2e.pid'];
 
 export default async function globalTeardown() {
+    if (coverageEnabled) {
+        await new CoverageReport(coverageOptions).generate();
+    }
     for (const pidFile of PID_FILES) {
         if (!fs.existsSync(pidFile)) continue;
         const pid = parseInt(fs.readFileSync(pidFile, 'utf8').trim(), 10);

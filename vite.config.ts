@@ -34,6 +34,8 @@ export default defineConfig(({ mode }) => {
       // Separate output dir so an e2e build never collides with a real
       // deployment build in build/.
       outDir: isE2e ? 'build-e2e' : 'build',
+      // Source maps let `npm run test:e2e:coverage` map coverage back to src/.
+      sourcemap: isE2e && !!process.env.E2E_COVERAGE,
     },
     server: {
       open: !isE2e,

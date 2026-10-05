@@ -115,3 +115,18 @@ per run; the residual occasional flake is `ownership.spec.ts` or
 `profile.spec.ts` timing out mid-`Rating`-widget interaction under load —
 a re-run resolves it. See the git log for the tuning history if this
 degrades again as more specs get added.
+
+## Frontend coverage from the E2E run
+
+```bash
+npm run test:e2e:coverage     # Chromium, 4 workers
+```
+
+Builds the E2E frontend with source maps, records which JavaScript each
+test page runs (`tests/fixtures/coverage.ts`, using monocart-coverage-reports)
+and writes `coverage/e2e/index.html` plus `coverage-summary.json`; a line
+and function total is printed at the end. Normal E2E runs don't record.
+Per-file line counts are the lines V8 maps back to source, so compare files
+by their percentages and uncovered counts rather than by size.
+First run (2026-10-05): 61.5 % of lines, 49.6 % of functions; 35 of 198
+source files are never loaded by any test.

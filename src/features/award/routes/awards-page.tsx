@@ -9,6 +9,7 @@ import { getCurrenUser } from '../../../services/auth-service';
 import { isAdmin } from '../../user';
 import { Award } from '../types';
 import { AwardForm } from '../components/award-form';
+import { safeHtml } from "@utils/safe-html";
 
 interface AwardInfoProps {
     award: Award
@@ -30,7 +31,7 @@ export const AwardDescription = ({ award }: AwardInfoProps) => {
             <h3><Link to={`/awards/${award.id}`}>{award.name}</Link></h3>
             {award.description && (
                 <div className="html-content"
-                    dangerouslySetInnerHTML={{ __html: award.description }} />
+                    dangerouslySetInnerHTML={safeHtml(award.description)} />
             )}
         </div>
     )

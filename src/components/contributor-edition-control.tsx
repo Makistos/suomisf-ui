@@ -13,6 +13,7 @@ import { getCurrenUser } from "../services/auth-service";
 import { editionIsOwned } from "@features/edition/utils/edition-is-owned";
 import { editionIsWishlisted } from "@features/edition/utils/edition-is-wishlisted";
 import { thumbUrl } from "../utils/cover-url";
+import { safeHtml } from "@utils/safe-html";
 
 interface ContributorEditionControlProps {
     /**
@@ -405,7 +406,7 @@ export const ContributorEditionControl = ({
                                         to={`/editions/${edition.id}`}
                                         className="no-underline text-primary hover:text-primary-700"
                                     >
-                                        <span dangerouslySetInnerHTML={{ __html: formatEdition(edition) }} />
+                                        <span dangerouslySetInnerHTML={safeHtml(formatEdition(edition))} />
                                     </Link>
                                 </div>
                             ))}

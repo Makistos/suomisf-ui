@@ -20,6 +20,7 @@ import { selectId } from "../../../utils";
 import { Column } from 'primereact/column';
 import { LinkList } from '@components/link-list';
 import { LoadError } from "@components/load-error";
+import { safeHtml } from "@utils/safe-html";
 
 interface AwardPageProps {
     id: string | null
@@ -176,7 +177,7 @@ export const AwardPage = ({ id }: AwardPageProps) => {
                                         <h1 className="text-4xl font-bold m-0">{data.name}</h1>
                                         {data.description && (
                                             <div className="mt-3 line-height-3 html-content"
-                                                dangerouslySetInnerHTML={{ __html: data.description }}
+                                                dangerouslySetInnerHTML={safeHtml(data.description)}
                                             />
                                         )}
                                         {!data.domestic && (

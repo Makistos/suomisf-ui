@@ -7,6 +7,7 @@ import { getCurrenUser } from "../../../services/auth-service"
 import { postApiContent } from "../../../services/user-service"
 import { isAdmin } from "../../user"
 import { Toast } from "primereact/toast"
+import { safeHtml } from "@utils/safe-html";
 
 interface PersonDetailsProps {
     person: Person
@@ -186,10 +187,10 @@ export const PersonDetails = ({ person: data }: PersonDetailsProps) => {
                 {
                     data.bio && (
                         <div className="grid col-12 pl-2 pb-0 mb-0 p-0">
-                            <div className="html-content" dangerouslySetInnerHTML={{ __html: data.bio }} />
+                            <div className="html-content" dangerouslySetInnerHTML={safeHtml(data.bio)} />
                             {data.bio_src && (
                                 <div className="book-attribution mt-0 col-12 text-right justify-content-end"
-                                    dangerouslySetInnerHTML={{ __html: data.bio_src }} />
+                                    dangerouslySetInnerHTML={safeHtml(data.bio_src)} />
                             )}
                         </div>
                     )

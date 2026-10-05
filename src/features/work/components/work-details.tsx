@@ -12,6 +12,7 @@ import { Work } from '../types';
 import { getApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { PersonBrief } from '../../person';
+import { safeHtml } from "@utils/safe-html";
 
 export const WorkDetails = ({ work }: WorkProps) => {
     const user = useMemo(() => getCurrenUser(), []);
@@ -221,10 +222,10 @@ export const WorkDetails = ({ work }: WorkProps) => {
                         <div className="col-12 p-0">
                             {work.description && (
                                 <div className="col-12 pb-0 mb-0 p-0">
-                                    <div className="html-content" dangerouslySetInnerHTML={{ __html: work.description }} />
+                                    <div className="html-content" dangerouslySetInnerHTML={safeHtml(work.description)} />
                                     {work.descr_attr && (
                                         <div className="book-attribution"
-                                            dangerouslySetInnerHTML={{ __html: work.descr_attr }} />
+                                            dangerouslySetInnerHTML={safeHtml(work.descr_attr)} />
                                     )}
                                 </div>
                             )}

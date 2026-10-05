@@ -30,6 +30,7 @@ import { TabPanel, TabView } from 'primereact/tabview';
 import { Card } from 'primereact/card';
 import { isAdmin, User } from '@features/user';
 import { LoadError } from "@components/load-error";
+import { safeHtml } from "@utils/safe-html";
 
 
 // Short story types that are articles rather than fiction (Artikkeli,
@@ -248,7 +249,7 @@ export const SFTag = (_props: SfTagProps) => {
                                             />
                                             {data.description && (
                                                 <div className="mt-3 line-height-3 html-content"
-                                                    dangerouslySetInnerHTML={{ __html: data.description }}>
+                                                    dangerouslySetInnerHTML={safeHtml(data.description)}>
                                                 </div>
                                             )}
                                         </div>

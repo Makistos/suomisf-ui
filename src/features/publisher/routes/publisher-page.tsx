@@ -23,6 +23,7 @@ import { isDisabled } from "../../../components/forms/forms";
 import { Tooltip } from "primereact/tooltip";
 import { Card } from "primereact/card";
 import { LoadError } from "@components/load-error";
+import { safeHtml } from "@utils/safe-html";
 
 const baseURL = 'publishers/';
 
@@ -184,7 +185,7 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
                                             )}
                                             {data.description && (
                                                 <div className="mt-3 line-height-3 html-content"
-                                                    dangerouslySetInnerHTML={{ __html: data.description }}>
+                                                    dangerouslySetInnerHTML={safeHtml(data.description)}>
                                                 </div>
                                             )}
                                             {/* Links section */}

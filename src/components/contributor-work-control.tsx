@@ -18,6 +18,7 @@ import {
     renderContributorLink, compareWorksByField, workSortOptions, WorkSortField
 } from "@features/work/utils/group-works";
 import { thumbUrl } from "../utils/cover-url";
+import { safeHtml } from "@utils/safe-html";
 
 interface ContributorWorkControlProps {
     /**
@@ -384,7 +385,7 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
                                                 to={`/editions/${edition.id}`}
                                                 className="no-underline text-primary hover:text-primary-700"
                                             >
-                                                <span dangerouslySetInnerHTML={{ __html: formatEdition(edition, work.title) }} />
+                                                <span dangerouslySetInnerHTML={safeHtml(formatEdition(edition, work.title))} />
                                             </Link>
                                         </div>
                                     ))

@@ -9,6 +9,7 @@ import { Genre } from "@features/genre/types";
 import { GenreGroup } from "@features/genre/components/genre-group";
 import { SfTag } from "@features/tag/types";
 import { TagGroup } from "@features/tag/components/sftag-group";
+import { safeHtml } from "@utils/safe-html";
 
 export interface ImageAccordionItem {
     id: number;
@@ -154,7 +155,7 @@ export const ImageAccordion = ({ items, imageHeight = DEFAULT_IMAGE_HEIGHT }: Im
                         {activeItem.description && (
                             <div
                                 className="image-accordion-details-description html-content"
-                                dangerouslySetInnerHTML={{ __html: activeItem.description }}
+                                dangerouslySetInnerHTML={safeHtml(activeItem.description)}
                             />
                         )}
                         {activeItem.tags && activeItem.tags.length > 0 && (

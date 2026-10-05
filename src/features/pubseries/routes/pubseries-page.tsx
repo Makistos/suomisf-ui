@@ -23,6 +23,7 @@ import { deletePubseries } from "@api/pubseries/delete-pubseries";
 import { GenreGroup } from "@features/genre";
 import { Genre } from "@features/genre/types";
 import { LoadError } from "@components/load-error";
+import { safeHtml } from "@utils/safe-html";
 
 const baseURL = 'pubseries/';
 
@@ -165,7 +166,7 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
                                                 <div className="mt-3">
                                                     <div
                                                         className="text-base line-height-3 html-content"
-                                                        dangerouslySetInnerHTML={{ __html: data.description }}
+                                                        dangerouslySetInnerHTML={safeHtml(data.description)}
                                                     />
                                                 </div>
                                             )}

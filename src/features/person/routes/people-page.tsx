@@ -115,7 +115,8 @@ export const PeoplePage = () => {
     const nameTemplate = (rowData: Person) => {
         return (
             <Link to={`/people/${rowData.id}`} key={rowData.id}>
-                {rowData.name}
+                {/* A person saved without a name still needs link text. */}
+                {rowData.name || `(nimetön, id ${rowData.id})`}
             </Link>
         )
     }

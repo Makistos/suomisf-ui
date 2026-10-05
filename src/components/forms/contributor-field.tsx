@@ -172,6 +172,7 @@ const ContributorRow = ({ id, index, contributionTarget, disabled, isLast, onAdd
                             )}
                             placeholder="Rooli"
                             tooltip="Rooli"
+                            aria-label="Rooli"
                             disabled={disabled}
                             focusInputRef={field.ref}
                         />
@@ -214,6 +215,7 @@ const ContributorRow = ({ id, index, contributionTarget, disabled, isLast, onAdd
                                 )}
                                 placeholder="Oikea henkilö"
                                 tooltip="Oikea henkilö"
+                                aria-label="Oikea henkilö"
                                 disabled={disabled}
                                 focusInputRef={field.ref}
                             />
@@ -252,11 +254,13 @@ const ContributorRow = ({ id, index, contributionTarget, disabled, isLast, onAdd
                     className="p-button-rounded p-button-text"
                     onClick={() => onRemove(index)}
                     icon="pi pi-minus"
+                    aria-label="Poista tekijä"
                     disabled={disabled}
                 />
                 {isLast && (
                     <Button type="button" className="p-button-rounded p-button-text"
                         icon="pi pi-plus"
+                        aria-label="Lisää tekijä"
                         onClick={onAdd}
                         disabled={disabled}
                     />

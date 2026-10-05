@@ -23,6 +23,7 @@ export const FormAutoComplete = ({ name, methods, label, labelClass, ...rest }: 
             <>
               <AutoComplete
                 {...field}
+                inputId={name}
                 field={rest.field ? rest.field : "name"}
                 delay={rest.delay ? rest.delay : 300}
                 minLength={rest.minLength ? rest.minLength : 2}

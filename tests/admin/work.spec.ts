@@ -28,7 +28,7 @@ test('admin can create, edit and delete a work', async ({ adminPage }) => {
     const createDialog = adminPage.getByRole('dialog').filter({ hasText: 'Uusi teos' });
     await createDialog.locator('input[name="title"]').fill(title);
     // FormInputNumber puts the id on the wrapping span, not the actual input.
-    await createDialog.locator('#pubyear input').fill('2024');
+    await createDialog.locator('input#pubyear').fill('2024');
     // FormDropdown renders an empty <label> (no visible/associated text), so
     // this is the first .p-dropdown in the form - work_type ("Tyyppi").
     await selectOption(adminPage, createDialog.locator('.p-dropdown').first(), 'Romaani');

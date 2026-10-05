@@ -24,7 +24,6 @@ export const RegisterView = () => {
     const [message, setMessage] = useState<string>("");
 
     const onSubmit: SubmitHandler<FormData> = (data) => {
-        console.log(data);
         setLoading(true);
         register(data.username, data.password, data.email).then(
             () => {

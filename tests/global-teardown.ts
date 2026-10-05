@@ -14,7 +14,15 @@ export default async function globalTeardown() {
         fs.rmSync(pidFile, { force: true });
         if (!pid) continue;
         try {
-            process.kill(pid, 'SIGTERM');
+            // Both servers are started detached, as process-group leaders.
+            // Signal the whole group: the frontend pid is npm's, and killing
+            // only that left the vite preview server under it running (one
+            // more orphan per run).
+            try {
+                process.kill(-pid, 'SIGTERM');
+            } catch {
+                process.kill(pid, 'SIGTERM');
+            }
             console.log(`[global-teardown] stopped process (pid ${pid}).`);
         } catch (err) {
             console.log(`[global-teardown] could not stop pid ${pid}: ${(err as Error).message}`);

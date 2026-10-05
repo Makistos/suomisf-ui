@@ -2,6 +2,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import viteTsconfigPaths from 'vite-tsconfig-paths'
+import istanbul from 'vite-plugin-istanbul';
 import { cpSync } from "node:fs";
 import { resolve } from "node:path";
 
@@ -23,19 +24,26 @@ const themeFonts = () => ({
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const isE2e = mode === 'e2e';
+  // `npm run test:e2e:coverage` builds the E2E frontend with Istanbul
+  // counters (window.__coverage__); tests/fixtures/coverage.ts collects them.
+  const e2eCoverage = isE2e && !!process.env.E2E_COVERAGE;
   return {
     plugins: [
       react(),
       viteTsconfigPaths({
       }),
       themeFonts(),
+      e2eCoverage && istanbul({
+        include: 'src/*',
+        exclude: ['node_modules', 'src/**/*.test.{ts,tsx}'],
+        extension: ['.ts', '.tsx'],
+        forceBuildInstrument: true,
+      }),
     ],
     build: {
       // Separate output dir so an e2e build never collides with a real
       // deployment build in build/.
       outDir: isE2e ? 'build-e2e' : 'build',
-      // Source maps let `npm run test:e2e:coverage` map coverage back to src/.
-      sourcemap: isE2e && !!process.env.E2E_COVERAGE,
     },
     server: {
       open: !isE2e,

@@ -61,13 +61,17 @@ dev servers on `:3000`/`:5000` are never touched.
 | `latest.spec.ts` | `/latest` | Page loads with entries — deliberately doesn't assert specific titles, since "latest" is inherently a moving target. |
 | `bookindex.spec.ts` | `/bookindex` | Page loads, an alphabet-letter filter (A–Ö buttons) returns matching results. |
 | `shortstoryindex.spec.ts` | `/shortstoryindex` | Page loads, a real author-name search returns results. |
+| `search.spec.ts` | `/` | Main-menu search: a title search ("Vain nimet" on, the default) gives one hit and opens the work; turning "Vain nimet" off widens the results and is remembered across a reload; a name search opens the person. |
+| `work-history.spec.ts` | `/works/3` | "Muutoshistoria" tab lists changes; an update row expands into field/old value rows; no delete column for visitors. |
+| `person-tabs.spec.ts` | `/people/368` | Johanna Sinisalo's tabs: edited books (edition list), short stories, series, magazine issues, awards. |
+| `register.spec.ts` | `/` | Registering through the account menu logs the new user in, and the password and tokens never reach the browser console; mismatched passwords block the request. |
 
 ## `tests/user/` — logged-in regular user (`Test User`)
 
 | Spec | What it does |
 |---|---|
 | `smoke.spec.ts` | Logs in via the fixture, confirms the nav shows the username and no "Ylläpito" (admin) menu. |
-| `auth.spec.ts` | Three cases: wrong password on the real `/login` form shows an inline error with no console error; correct credentials on the real form log the user in; logout (via the `userPage` fixture, then driving the nav's "Kirjaudu ulos" menu item) clears `localStorage` and the username disappears from the nav. |
+| `auth.spec.ts` | Three cases: wrong password on the real `/login` form shows an inline error with no console error; correct credentials on the real form log the user in (and nothing with the password or tokens is logged to the console); logout (via the `userPage` fixture, then driving the nav's "Kirjaudu ulos" menu item) clears `localStorage` and the username disappears from the nav. |
 | `no-admin-ui.spec.ts` | On a work page and a magazine page, confirms no `.fixed-dial` (admin SpeedDial) and no "Ylläpito" text anywhere. |
 | `ownership.spec.ts` | Marks an edition owned via the `Rating` widget on `/works/63`, confirms it appears under the profile's "Omistetut" tab. |
 | `read-status.spec.ts` | Marks a work read+liked via the thumbs `SelectButton` on `/works/2`, confirms it appears under "Luetut". |
@@ -96,12 +100,17 @@ rebuilt before the next run.
 | `tag.spec.ts` | No "create" UI — rename + delete on a tag pre-verified to have zero linked works/stories/articles. |
 | `shorts-picker.spec.ts` | Opens the "Muokkaa novelleja" picker on a 5-story collection, searches a person, adds one of their stories to the list (6 items), closes without saving. |
 | `changes-audit.spec.ts` | Creates a work, then confirms a matching `Uusi`-action entry by `Test Admin` appears via `GET /api/changes`. |
+| `pricing.spec.ts` | On `/works/10` (one edition): the "Hinnat" picker links a shop product, fetches its price and saves it, and the price shows in the edition's price dialog — the shop search and price fetch are answered by `page.route`, never the real shops; a price added by hand in the edition price dialog is listed. |
+| `omnibus.spec.ts` | Adds a work to an omnibus (`/works/11`) through "Muokkaa kokoomateosta", with an explanation; checks "Sisältää teokset", then removes it again. |
+| `site-stats.spec.ts` | `/stats` admin tabs: "Kävijät" charts render; the "Käynnit" page view log filters by path. |
 
 ## Coverage gaps
 
 - `kirjasampo-tag-import.tsx` (importing tags from Kirjasampo) isn't
   covered — it depends on a live external service, so it was skipped
-  rather than mocked.
+  rather than mocked. (`pricing.spec.ts` shows the `page.route` pattern
+  for such services.)
+- `npm run test:e2e:coverage` (below) shows what else no test reaches.
 - Award-winner *ISFDB* import has no frontend UI yet at all (still
   design-stage per project memory), so there's nothing to test.
 
@@ -110,8 +119,8 @@ rebuilt before the next run.
 `playwright.config.ts` caps `workers` at 8 and runs chromium/firefox as two
 sequential `playwright test` invocations rather than one concurrent run.
 The E2E backend runs with `--workers 16` (tuned up from gunicorn's default
-of 1 across this project). At these settings the suite is 43-44/44 stable
-per run; the residual occasional flake is `ownership.spec.ts` or
+of 1 across this project). At these settings the suite is stable per run
+(65/65 in both browsers, 2026-10-05); the residual occasional flake is `ownership.spec.ts` or
 `profile.spec.ts` timing out mid-`Rating`-widget interaction under load —
 a re-run resolves it. See the git log for the tuning history if this
 degrades again as more specs get added.
@@ -122,11 +131,21 @@ degrades again as more specs get added.
 npm run test:e2e:coverage     # Chromium, 4 workers
 ```
 
-Builds the E2E frontend with source maps, records which JavaScript each
-test page runs (`tests/fixtures/coverage.ts`, using monocart-coverage-reports)
-and writes `coverage/e2e/index.html` plus `coverage-summary.json`; a line
-and function total is printed at the end. Normal E2E runs don't record.
-Per-file line counts are the lines V8 maps back to source, so compare files
-by their percentages and uncovered counts rather than by size.
-First run (2026-10-05): 61.5 % of lines, 49.6 % of functions; 35 of 198
-source files are never loaded by any test.
+Builds the E2E frontend with Istanbul counters (`vite-plugin-istanbul`,
+only when `E2E_COVERAGE` is set) and collects `window.__coverage__` from
+every test page (`tests/fixtures/coverage.ts`); monocart-coverage-reports
+writes `coverage/e2e/index.html` plus `coverage-summary.json` and prints a
+summary. Every `src/` file is listed, those no test loads at 0 %. Normal
+E2E runs are not instrumented.
+
+Each page load has its own counters, which disappear with it, so the
+fixture hands them over on `beforeunload` (through a raw CDP binding:
+Playwright's `exposeFunction` and Chromium's `pagehide`/`unload` both drop
+the call) and again when the test ends. Chromium's built-in V8 coverage
+can't be used for this: it only reports scripts of the page that is
+loaded when it is read, so a test that ends on another page loses
+everything before it.
+
+2026-10-05: 68.0 % of lines, 63.1 % of functions, 53.2 % of branches
+(was 58.6 / 53.0 / 44.5 before the search, history, person tab, pricing,
+omnibus, site stats and registration specs).

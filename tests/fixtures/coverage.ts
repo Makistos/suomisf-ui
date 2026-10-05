@@ -1,49 +1,57 @@
-import fs from 'fs';
-import path from 'path';
 import type { Page } from '@playwright/test';
 import { CoverageReport, type CoverageReportOptions } from 'monocart-coverage-reports';
 
-/**
- * Frontend coverage from the E2E run (Chromium only).
- *
- * `npm run test:e2e:coverage` sets E2E_COVERAGE=1: the E2E build then has
- * source maps, each test page records which JavaScript ran, and
- * global-teardown writes the report to coverage/e2e/ (index.html, plus a
- * per-file summary on the console). Normal E2E runs are unaffected.
- */
 export const coverageEnabled = !!process.env.E2E_COVERAGE;
-
-// Tests run from the repository root (playwright.config.ts lives there).
-const BUILD_DIR = path.resolve(process.cwd(), 'build-e2e');
 
 export const coverageOptions: CoverageReportOptions = {
     name: 'SuomiSF frontend coverage (E2E)',
     outputDir: './coverage/e2e',
-    // Only our own bundle, then only our own sources from its source maps.
-    entryFilter: (entry) => entry.url.includes('/assets/') && entry.url.endsWith('.js'),
-    // Mapped paths come out relative to src/ ("App.tsx", "components/...").
-    sourceFilter: (sourcePath) => !sourcePath.includes('node_modules')
-        && !sourcePath.startsWith('\0') && !sourcePath.includes('vite/'),
-    sourcePath: (sourcePath) => `src/${sourcePath}`,
-    reports: [['v8'], ['console-summary', { metrics: ['lines', 'functions'] }], ['json-summary']],
+    // Files no test loads are listed too, as 0 %.
+    all: {
+        dir: ['./src'],
+        filter: { '**/*.test.*': false, '**/*.d.ts': false, '**/*.{ts,tsx}': true },
+    },
+    reports: [['html'], ['console-summary', { metrics: ['lines', 'functions', 'branches'] }], ['json-summary']],
 };
 
-/** Start recording on a page; the returned function stores the result. */
-export async function recordCoverage(page: Page): Promise<() => Promise<void>> {
+type CoverageWindow = Window & {
+    __coverage__?: unknown;
+    __e2eSaveCoverage?: (json: string) => void;
+};
+
+/**
+ * Collects the Istanbul counters (window.__coverage__) that the coverage
+ * build (`npm run test:e2e:coverage`, see vite.config.ts) puts in the page.
+ * Each document has its own counters and they vanish with it, so they are
+ * handed over on every beforeunload (reloads, full navigations, history
+ * steps across documents) and once more when the test ends. The hand-over
+ * is a raw CDP binding: Playwright's exposeFunction drops calls from a
+ * document that is being unloaded, and Chromium drops binding calls made
+ * in pagehide/unload. Chromium only. Returns the function that adds the
+ * counters to the report; a no-op when coverage is off.
+ */
+export async function recordCoverage(page: Page) {
     if (!coverageEnabled || page.context().browser()?.browserType().name() !== 'chromium') {
         return async () => {};
     }
-    await page.coverage.startJSCoverage({ resetOnNavigation: false });
-    return async () => {
-        const coverage = await page.coverage.stopJSCoverage();
-        // Attach each bundle's source map from the build folder rather than
-        // relying on the report tool to fetch it from the preview server.
-        const withMaps = coverage.map((entry) => {
-            const mapFile = path.join(BUILD_DIR, new URL(entry.url).pathname + '.map');
-            return fs.existsSync(mapFile)
-                ? { ...entry, sourceMap: JSON.parse(fs.readFileSync(mapFile, 'utf8')) }
-                : entry;
+    const snapshots: unknown[] = [];
+    const cdp = await page.context().newCDPSession(page);
+    cdp.on('Runtime.bindingCalled', (event) => {
+        if (event.name === '__e2eSaveCoverage') snapshots.push(JSON.parse(event.payload));
+    });
+    await cdp.send('Runtime.enable');
+    await cdp.send('Runtime.addBinding', { name: '__e2eSaveCoverage' });
+    await page.addInitScript(() => {
+        window.addEventListener('beforeunload', () => {
+            const w = window as CoverageWindow;
+            if (w.__coverage__) w.__e2eSaveCoverage?.(JSON.stringify(w.__coverage__));
         });
-        await new CoverageReport(coverageOptions).add(withMaps);
+    });
+    return async () => {
+        const last = await page.evaluate(() => (window as CoverageWindow).__coverage__)
+            .catch(() => undefined);
+        if (last) snapshots.push(last);
+        const report = new CoverageReport(coverageOptions);
+        for (const snapshot of snapshots) await report.add(snapshot as never);
     };
 }

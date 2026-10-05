@@ -13,7 +13,6 @@ export async function login(username: string, password: string) {
             'password': password
         })
         .then(async (response) => {
-            console.log("Login response: " + JSON.stringify(response, null, 2));
             if (response.data.access_token) {
                 const meResponse = await axios.get(baseURL + "me", {
                     headers: { 'Authorization': `Bearer ${response.data.access_token}` }
@@ -39,7 +38,6 @@ export const register = async (username: string, password: string,
             'email': email
         })
         .then((response) => {
-            console.log("Register response: " + JSON.stringify(response, null, 2));
             if (response.data.access_token) {
                 //console.log("access_token");
                 localStorage.setItem("user", JSON.stringify(response.data));
@@ -90,7 +88,8 @@ export const refreshAccessTokenFn = async () => {
         // console.log("token refreshed");
         return response;
     } catch (error) {
-        console.log("error refreshing token: " + JSON.stringify(error, null, 2));
+        // Not the error object itself: its config holds the refresh token.
+        console.log("error refreshing token: " + (error as Error).message);
         throw error;
     }
 }

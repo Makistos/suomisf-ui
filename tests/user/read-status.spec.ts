@@ -9,8 +9,11 @@ test('marking a work as read (liked) shows it under the profile read tab', async
     const readControl = userPage.locator('.work-read-select');
     await expect(readControl).toBeVisible();
 
-    // Three options: thumbs-down / neutral / thumbs-up - pick "liked"
-    await readControl.locator('.pi-thumbs-up').click();
+    // Three icon-only options, named for screen readers; pick "liked".
+    for (const name of ['En pitänyt', 'Ihan ok']) {
+        await expect(readControl.getByRole('button', { name })).toBeVisible();
+    }
+    await readControl.getByRole('button', { name: 'Pidin' }).click();
     await expect(readControl.locator('.p-highlight')).toBeVisible();
 
     const userId = await userPage.evaluate(() => JSON.parse(localStorage.getItem('user') || '{}').id);

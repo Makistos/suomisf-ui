@@ -59,6 +59,8 @@ export const WorkReadControl = ({ workId }: WorkReadControlProps) => {
                 onChange={onChange}
                 itemTemplate={itemTemplate}
                 optionValue="value"
+                // Names each button for screen readers (the template shows only an icon).
+                optionLabel="tooltip"
                 allowEmpty
                 className="work-read-select"
                 aria-label="Merkitse teos luetuksi ja arvioi se"

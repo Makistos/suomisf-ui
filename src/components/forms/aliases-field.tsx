@@ -70,6 +70,7 @@ export const AliasesField = ({ disabled }: AliasesFieldProps) => {
                         className="p-button-rounded p-button-text"
                         onClick={() => remove(index)}
                         icon="pi pi-minus"
+                        aria-label="Poista alias"
                         disabled={disabled}
                     />
                     {index === fields.length - 1 && (
@@ -77,6 +78,7 @@ export const AliasesField = ({ disabled }: AliasesFieldProps) => {
                             type="button"
                             className="p-button-rounded p-button-text"
                             icon="pi pi-plus"
+                            aria-label="Lisää alias"
                             onClick={() => append(emptyAlias)}
                             disabled={disabled}
                         />

@@ -20,6 +20,7 @@ export const FormMultiSelect = ({ name, methods, label, labelClass, ...rest }: F
           <>
             <MultiSelect
               {...field}
+              inputId={name}
               optionLabel={rest.optionLabel ? rest.optionLabel : "name"}
               display={rest.display ? rest.display : 'chip'}
               scrollHeight={rest.scrollHeight ? rest.scrollHeight : "400px"}

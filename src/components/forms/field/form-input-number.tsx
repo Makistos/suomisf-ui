@@ -21,7 +21,7 @@ export const FormInputNumber = ({ name, methods, rules, label, labelClass, ...re
         render={({ field, fieldState }) => (
           <>
             <InputNumber
-              id={field.name}
+              inputId={field.name}
               inputRef={field.ref}
               value={field.value}
               useGrouping={rest.useGrouping ? rest.useGrouping : false}

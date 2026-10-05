@@ -25,6 +25,10 @@ export const FormDropdown = ({ name, methods, label, rules, labelClass, ...rest 
               optionLabel={rest.optionLabel ? rest.optionLabel : "name"}
               className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
               tooltip={label}
+              // The float label is left empty here, so name the field (aria-label)
+              // and its arrow button (ariaLabel) directly.
+              aria-label={label}
+              ariaLabel={label}
               {...rest}
             />
             {formErrorMessage(field.name, methods.formState.errors)}

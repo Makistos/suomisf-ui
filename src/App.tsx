@@ -25,7 +25,7 @@ const queryClient = new QueryClient({
   }
 });
 
-import { locale, addLocale } from 'primereact/api';
+import PrimeReact, { locale, addLocale } from 'primereact/api';
 import 'primereact/resources/primereact.min.css'
 import "primeflex/primeflex.css";
 import "@fortawesome/fontawesome-free/css/all.css";
@@ -34,6 +34,93 @@ import './App.css';
 
 import MainMenu from './components/mainmenu';
 //import { useDocumentTitle } from './components/document-title';
+
+// Screen reader labels of PrimeReact's own controls (paginator, dialog
+// close, row expanders, ...). Without these the English ones are used.
+// A separate constant: PrimeReact's type lacks some keys it reads.
+const finnishAria = {
+  cancelEdit: 'Peruuta muokkaus',
+  close: 'Sulje',
+  collapseRow: 'Rivi suljettu',
+  editRow: 'Muokkaa riviä',
+  expandRow: 'Rivi avattu',
+  // DataTable's row group togglers and selection boxes ask for these,
+  // which PrimeReact's own locales lack (no name at all, in any language).
+  expandLabel: 'Avaa ryhmä',
+  collapseLabel: 'Sulje ryhmä',
+  selectLabel: 'Valitse rivi',
+  unselectLabel: 'Poista rivin valinta',
+  falseLabel: 'Epätosi',
+  filterConstraint: 'Suodatusehto',
+  filterOperator: 'Suodatusoperaattori',
+  firstPageLabel: 'Ensimmäinen sivu',
+  gridView: 'Ruudukkonäkymä',
+  hideFilterMenu: 'Piilota suodatusvalikko',
+  jumpToPageDropdownLabel: 'Siirry sivulle',
+  jumpToPageInputLabel: 'Siirry sivulle',
+  lastPageLabel: 'Viimeinen sivu',
+  listView: 'Luettelonäkymä',
+  moveAllToSource: 'Siirrä kaikki lähteeseen',
+  moveAllToTarget: 'Siirrä kaikki kohteeseen',
+  moveBottom: 'Siirrä viimeiseksi',
+  moveDown: 'Siirrä alas',
+  moveToSource: 'Siirrä lähteeseen',
+  moveToTarget: 'Siirrä kohteeseen',
+  moveTop: 'Siirrä ensimmäiseksi',
+  moveUp: 'Siirrä ylös',
+  navigation: 'Navigointi',
+  next: 'Seuraava',
+  nextPageLabel: 'Seuraava sivu',
+  nullLabel: 'Ei valittu',
+  pageLabel: 'Sivu {page}',
+  otpLabel: 'Anna kertakäyttösalasanan merkki {0}',
+  passwordHide: 'Piilota salasana',
+  passwordShow: 'Näytä salasana',
+  previous: 'Edellinen',
+  previousPageLabel: 'Edellinen sivu',
+  rotateLeft: 'Käännä vasemmalle',
+  rotateRight: 'Käännä oikealle',
+  rowsPerPageLabel: 'Rivejä sivulla',
+  saveEdit: 'Tallenna muokkaus',
+  scrollTop: 'Vieritä ylös',
+  selectAll: 'Kaikki valittu',
+  selectRow: 'Rivi valittu',
+  showFilterMenu: 'Näytä suodatusvalikko',
+  slide: 'Dia',
+  slideNumber: '{slideNumber}',
+  star: '1 tähti',
+  stars: '{star} tähteä',
+  trueLabel: 'Tosi',
+  unselectAll: 'Valinnat poistettu',
+  unselectRow: 'Rivin valinta poistettu',
+  zoomImage: 'Suurenna kuva',
+  zoomIn: 'Lähennä',
+  zoomOut: 'Loitonna',
+};
+
+// Screen reader fixes for PrimeReact components, set once for all uses.
+PrimeReact.pt = {
+  // Loading indicators have no text (44 places use ProgressSpinner).
+  progressspinner: { root: { 'aria-label': 'Ladataan' } },
+  progressbar: { root: { 'aria-label': 'Ladataan' } },
+  // An icon-only button with a tooltip is named by its tooltip.
+  button: {
+    root: (options) => {
+      const props = options?.props;
+      return !props || props.label || props['aria-label'] || typeof props.tooltip !== 'string'
+        ? {} : { 'aria-label': props.tooltip };
+    },
+  },
+  // The maximise button of dialogs has no label of its own.
+  dialog: { maximizableButton: { 'aria-label': 'Suurenna tai palauta' } },
+  speeddial: {
+    // The only SpeedDial use is the admin actions button.
+    button: { root: { 'aria-label': 'Ylläpitotoiminnot' } },
+    // PrimeReact makes both the list item and its link a menuitem, and
+    // points the item at an element that doesn't exist.
+    menuitem: { role: 'none', 'aria-controls': undefined },
+  },
+};
 
 function App() {
   const location = useLocation();
@@ -101,7 +188,11 @@ function App() {
     strong: 'Vahva',
     passwordPrompt: 'Syötä salasana',
     emptyFilterMessage: 'Ei tuloksia',
-    emptyMessage: 'Ei tuloksia'
+    emptyMessage: 'Ei tuloksia',
+    // Close buttons of dialogs, toasts, overlays etc. read this; no
+    // PrimeReact locale has it, so they had no name.
+    close: 'Sulje',
+    aria: finnishAria,
   });
 
   locale('fi');

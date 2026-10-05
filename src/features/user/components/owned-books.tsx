@@ -167,10 +167,10 @@ export const OwnedBooks = ({ userId, listType }: OwnedBooksProps) => {
     }
 
     const qualityColors: Record<string, string> = {
-        'Perfect': 'text-green-600',
-        'Good': 'text-blue-600',
-        'Decent': 'text-orange-500',
-        'Poor': 'text-red-500',
+        'Perfect': 'price-quality-perfect',
+        'Good': 'price-quality-good',
+        'Decent': 'price-quality-decent',
+        'Poor': 'price-quality-poor',
     }
 
     const qualityLabels: Record<string, string> = {

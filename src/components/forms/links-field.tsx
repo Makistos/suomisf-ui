@@ -122,11 +122,13 @@ export const LinksField = ({ id, disabled, linkType }: LinksFieldProps) => {
             className="p-button-rounded p-button-text"
             onClick={() => removeLink(index)}
             icon="pi pi-minus"
+            aria-label="Poista linkki"
             disabled={fields.length < 2 || disabled}
           />
           {index === fields.length - 1 && (
             <Button type="button" className="p-button-rounded p-button-text"
               icon="pi pi-plus"
+              aria-label="Lisää linkki"
               onClick={() => addEmptyLink()}
               disabled={disabled}
             />

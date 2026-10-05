@@ -21,9 +21,12 @@ export const FormTriStateCheckbox = ({ name, methods, label, labelClass, disable
           <>
             <TriStateCheckbox
               {...field}
-              id={field.name}
+              // Gives the inner <input> the id the label points at (the
+              // component's types lack inputId, which it does support).
+              pt={{ input: { id: field.name } }}
               value={field.value}
               tooltip={label}
+              aria-label={label}
               onChange={field.onChange}
               className={classNames({ 'p-invalid': fieldState.error })}
               disabled={disabled}

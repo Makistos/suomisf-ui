@@ -48,6 +48,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:password-reset": "playwright test --project=password-reset",
+    "test:e2e:coverage": "E2E_COVERAGE=1 playwright test --project=chromium --workers=4",
     "dev": "vite"
   },
   "browserslist": {
@@ -70,6 +71,7 @@
     "@types/react-dom": "^19.2.5",
     "@vitejs/plugin-react": "^6.1.1",
     "@vitest/coverage-v8": "^5.0.3",
+    "monocart-coverage-reports": "^2.13.0",
     "oxlint": "^1.86.0",
     "playwright": "^1.62.1",
     "vite": "^8.2.2",

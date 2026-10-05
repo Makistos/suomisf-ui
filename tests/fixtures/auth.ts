@@ -1,5 +1,6 @@
 import { Page } from '@playwright/test';
 import { test as base, expect, guardPage } from './guard';
+import { recordCoverage } from './coverage';
 
 const API_URL = 'http://localhost:5001/api/';
 
@@ -26,6 +27,7 @@ async function loginAs(username: string, password: string): Promise<StoredUser> 
 async function pageAs(browser: import('@playwright/test').Browser, user: StoredUser): Promise<Page> {
     const context = await browser.newContext();
     const page = await context.newPage();
+    (page as Page & { saveCoverage?: () => Promise<void> }).saveCoverage = await recordCoverage(page);
     // localStorage is origin-scoped, so a page needs to have navigated to the
     // app's origin at least once before it can be written to.
     await page.goto('/');
@@ -40,6 +42,7 @@ export const test = base.extend<{ adminPage: Page; userPage: Page }>({
         const page = await pageAs(browser, user);
         const check = guardPage(page);
         await use(page);
+        await (page as Page & { saveCoverage: () => Promise<void> }).saveCoverage();
         check();
         await page.close();
     },
@@ -48,6 +51,7 @@ export const test = base.extend<{ adminPage: Page; userPage: Page }>({
         const page = await pageAs(browser, user);
         const check = guardPage(page);
         await use(page);
+        await (page as Page & { saveCoverage: () => Promise<void> }).saveCoverage();
         check();
         await page.close();
     },

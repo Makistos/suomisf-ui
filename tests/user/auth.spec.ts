@@ -15,12 +15,16 @@ base('wrong password shows an inline error, no crash', async ({ page }) => {
 });
 
 base('correct credentials log the user in', async ({ page }) => {
+    const logged: string[] = [];
+    page.on('console', (msg) => logged.push(msg.text()));
     await page.goto('/login');
     await page.locator('#username').fill('Test User');
     await page.locator('#password').fill('testpassword123');
     await page.getByRole('button', { name: 'Kirjaudu' }).click();
 
     await expect(page.getByText('Test User')).toBeVisible({ timeout: 10000 });
+    // Login used to log the whole response: request body and tokens.
+    expect(logged.filter((text) => text.includes('testpassword123') || text.includes('access_token'))).toEqual([]);
 });
 
 authTest('logout clears the session', async ({ userPage }) => {

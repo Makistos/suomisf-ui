@@ -468,6 +468,7 @@ export const AuthorChart = ({ finnishEditionData, originalYearData }: AuthorChar
                 <WorksByYearChart
                     finnishEditionData={finnishEditionData}
                     originalYearData={originalYearData}
+                    enablePublisherGrouping
                 />
             </div>
 

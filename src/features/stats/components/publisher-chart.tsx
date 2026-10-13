@@ -35,7 +35,7 @@ interface PublisherCount {
 }
 
 // Genre names for the dropdown
-const genreOptions = [
+export const genreOptions = [
     { label: 'Kaikki genret', value: 'all' },
     { label: 'Science Fiction', value: 'SF' },
     { label: 'Fantasia', value: 'F' },
@@ -51,7 +51,7 @@ const genreOptions = [
 ];
 
 // Colors for publishers (cycle through these)
-const publisherColors = [
+export const publisherColors = [
     '#0958D7', '#D30031', '#31572C', '#7B2D8E', '#E67E22',
     '#E91E63', '#17A2B8', '#DAA520', '#6C757D', '#82C341',
     '#4A90D9', '#FF696D', '#9B59B6', '#A0522D', '#008B8B',

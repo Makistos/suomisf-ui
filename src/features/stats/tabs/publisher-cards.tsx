@@ -172,19 +172,21 @@ export const PublisherSpansCard = ({ rows }: { rows: PublisherYearCount[] | unde
     );
 };
 
+const PUBSERIES_COUNT = 20;
+
 export const PubseriesCard = ({ genre }: { genre: string }) => {
-    const data = useStatsQuery<PubseriesCounts>(`stats/pubseriescounts${statsParams({ genre })}`);
+    const data = useStatsQuery<PubseriesCounts>(`stats/pubseriescounts${statsParams({ genre, count: 'all' }, ['count'])}`);
     const d = data.data;
     const share = d?.editions ? d.in_series / d.editions * 100 : 0;
     return (
         <StatCard title="Kustantajasarjat"
             subtitle={d
-                ? `Painoksia sarjoittain, ${d.series.length} suurinta. ${fmt(d.in_series)} painosta ${fmt(d.editions)}:sta (${num(share)} %) kuuluu kustantajan sarjaan.`
+                ? `Painoksia sarjoittain, ${PUBSERIES_COUNT} suurinta. ${fmt(d.in_series)} painosta ${fmt(d.editions)}:sta (${num(share)} %) kuuluu kustantajan sarjaan.`
                 : 'Painoksia sarjoittain.'}>
             {!d ? <Loading /> : (
                 <RankedBarChart
                     items={d.series.map(s => ({ id: s.id, label: s.publisher_name ? `${s.name} (${s.publisher_name})` : s.name, count: s.editions }))}
-                    topN={d.series.length} showOthers={false} unit="painosta" itemHeader="Sarja"
+                    topN={PUBSERIES_COUNT} showOthers={false} unit="painosta" itemHeader="Sarja"
                     ariaLabel="Suurimmat kustantajasarjat"
                     nameTemplate={(item) => <Link to={`/pubseries/${item.id}`}>{item.label}</Link>} />
             )}

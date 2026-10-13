@@ -16,15 +16,15 @@ interface PublisherCount {
     total: number;
 }
 
-// The endpoint ranks this many publishers and sums the rest into "Muut".
-const FETCHED = 100;
+// The slider's upper end; the table lists every publisher.
+const MAX_SHOWN = 100;
 
 export const PublishersTab = () => {
     const [genre, setGenre] = useState('all');
     const [count, setCount] = useState(20);
     const [drilldown, setDrilldown] = useState<Drilldown | null>(null);
     const genreIds = useGenreIds();
-    const publishers = useStatsQuery<PublisherCount[]>(`stats/publishercounts?count=${FETCHED}`);
+    const publishers = useStatsQuery<PublisherCount[]>('stats/publishercounts?count=all');
     const byYear = useStatsQuery<PublisherYearCount[]>(`stats/publishersbyyear${genreParam(genre)}`);
 
     const { items, rest } = useMemo(() => {
@@ -55,7 +55,7 @@ export const PublishersTab = () => {
                                 <span id="publisher-count-label" className="text-sm">Kustantajia: {count}</span>
                                 <Slider aria-labelledby="publisher-count-label" value={count}
                                     onChange={(e) => setCount(e.value as number)}
-                                    min={10} max={FETCHED} step={10} className="w-8rem" />
+                                    min={10} max={MAX_SHOWN} step={10} className="w-8rem" />
                             </div>
                         }
                     >

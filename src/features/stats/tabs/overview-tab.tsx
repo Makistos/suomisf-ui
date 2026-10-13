@@ -38,7 +38,7 @@ export const OverviewTab = () => {
                 { label: 'Painoksia', value: m.total_editions },
                 { label: 'Novelleja', value: m.total_stories },
                 { label: 'Henkilöitä', value: m.total_people },
-                { label: 'Kustantajia', value: m.total_publishers },
+                { label: 'Kustantajia', value: m.total_publishers, note: 'joilla ainakin yksi painos' },
                 { label: 'Lehtiä', value: m.total_magazines, note: `${fmt(m.total_issues)} numeroa` },
                 { label: 'Palkintoja', value: m.total_awarded, note: 'myönnettyä palkintoa' },
                 {

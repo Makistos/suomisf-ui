@@ -3,6 +3,15 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-10-13 `84d360a` — User stats publisher chart filterable by genre
+The publisher chart in a user's collection and read statistics is a pie chart like the one on the statistics page, with the same genre selector and slider for how many publishers to show (10–100). Clicking a publisher lists its works.
+
+## 2026-10-12 `2e04b80` — Publications per year by publisher
+The "Julkaisut vuosittain" chart on the statistics page can group Finnish editions by publisher as well as by original language. Each work counts once per publisher, in the year of that publisher's first edition, so reprints are left out but versions from other publishers are counted. The 10, 20, 30 or 50 biggest publishers are shown separately and the rest as "Muut", or any publishers can be picked by hand; clicking one in the data table lists the works.
+
+## 2026-10-06 `2a3548e` — Stored HTML sanitised before rendering
+Descriptions, bios and notes written in the admin editor were rendered to every visitor as is, and a known flaw in the Quill editor could let crafted pasted HTML store a script. All 17 places now clean the HTML with DOMPurify first: scripts, event handlers and `javascript:` links are removed, formatting and links kept.
+
 ## 2026-10-06 `482a5a6` — Accessibility checks and fixes
 Every E2E run now checks pages and dialogs with axe (WCAG 2.1 A and AA). Fixes it led to: close buttons of dialogs, toasts and side panels had no name (PrimeReact has no text for them in any language); PrimeReact's own screen reader labels (paging, row expanders) were in English and are now Finnish; labels of edit form fields weren't connected to their inputs; spinners, the admin action button, dialog maximise buttons and icon-only add/remove buttons got names; the read-status buttons were announced as "[object Object]" (`3c04d1e`). Outlined pink buttons and price quality colours now have enough contrast in both light and dark mode.
 

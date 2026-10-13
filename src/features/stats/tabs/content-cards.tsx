@@ -82,15 +82,17 @@ const tagTypeOptions = (types: TagCounts['types']) => [
     ...types.map(t => ({ label: t.name, value: t.id })),
 ];
 
+const TAG_COUNT = 30;
+
 export const TagsCard = () => {
     const [type, setType] = useState<number | 'all'>('all');
-    const data = useStatsQuery<TagCounts>(`stats/tagcounts${statsParams({ type })}`);
+    const data = useStatsQuery<TagCounts>(`stats/tagcounts${statsParams({ type, count: 'all' }, ['count'])}`);
     const items = useMemo((): RankedItem[] =>
         (data.data?.tags ?? []).map(t => ({ id: t.id, label: t.name, count: t.count })), [data.data]);
 
     return (
         <StatCard title="Yleisimmät asiasanat"
-            subtitle="Teoksia asiasanan mukaan, 30 yleisintä."
+            subtitle={`Teoksia asiasanan mukaan, ${TAG_COUNT} yleisintä.`}
             controls={
                 <div className="flex align-items-center gap-2">
                     <label htmlFor="tag-type">Tyyppi:</label>
@@ -101,7 +103,7 @@ export const TagsCard = () => {
             }
         >
             {!data.data ? <Loading /> : (
-                <RankedBarChart items={items} topN={items.length} showOthers={false} unit="teosta"
+                <RankedBarChart items={items} topN={TAG_COUNT} showOthers={false} unit="teosta"
                     itemHeader="Asiasana" ariaLabel="Yleisimmät asiasanat"
                     nameTemplate={(item) => <Link to={`/tags/${item.id}`}>{item.label}</Link>} />
             )}
@@ -151,14 +153,16 @@ export const TagDecadesCard = () => {
     );
 };
 
+const SERIES_COUNT = 20;
+
 export const LongestSeriesCard = () => {
-    const data = useStatsQuery<BookseriesStats>('stats/bookseries');
+    const data = useStatsQuery<BookseriesStats>('stats/bookseries?count=all');
     return (
-        <StatCard title="Pisimmät kirjasarjat" subtitle="Kirjasarjat, joihin kuuluu eniten teoksia.">
+        <StatCard title="Pisimmät kirjasarjat" subtitle={`Teoksia kirjasarjoittain, ${SERIES_COUNT} pisintä.`}>
             {!data.data ? <Loading /> : (
                 <RankedBarChart
                     items={data.data.longest.map(s => ({ id: s.id, label: s.name, count: s.works }))}
-                    topN={data.data.longest.length} showOthers={false} unit="teosta" itemHeader="Kirjasarja"
+                    topN={SERIES_COUNT} showOthers={false} unit="teosta" itemHeader="Kirjasarja"
                     ariaLabel="Pisimmät kirjasarjat"
                     nameTemplate={(item) => <Link to={`/bookseries/${item.id}`}>{item.label}</Link>} />
             )}
@@ -168,7 +172,7 @@ export const LongestSeriesCard = () => {
 
 export const SeriesShareCard = () => {
     const theme = useChartTheme();
-    const data = useStatsQuery<BookseriesStats>('stats/bookseries');
+    const data = useStatsQuery<BookseriesStats>('stats/bookseries?count=all');
     const decades = DECADES;
     const { inSeries, total } = useMemo(() => {
         const s = new Map<number, number>();

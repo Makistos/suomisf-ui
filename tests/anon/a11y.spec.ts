@@ -23,6 +23,7 @@ const PAGES: [string, RegExp | string][] = [
     ['/stats?tab=kustantajat', 'Suurimmat kustantajat'],
     ['/stats?tab=novellit', 'Novellit vuosittain'],
     ['/stats?tab=lehdet', 'Lehdet vuosittain'],
+    ['/stats?tab=kirjat', 'Sivumäärät'],
     ['/latest', ''],
     ['/publishers', ''],
     ['/bookseries', 'Kirjasarjat'],

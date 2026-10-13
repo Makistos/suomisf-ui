@@ -9,7 +9,7 @@ test('Stats page renders every tab without errors', async ({ page }) => {
     // Overview: headline tiles, no chart.
     await expect(page.getByText('Teoksia', { exact: true })).toBeVisible({ timeout: 20000 });
 
-    for (const tabName of ['Julkaisut ajassa', 'Sisältö', 'Henkilöt', 'Kustantajat', 'Novellit', 'Lehdet']) {
+    for (const tabName of ['Julkaisut ajassa', 'Sisältö', 'Henkilöt', 'Kustantajat', 'Novellit', 'Lehdet', 'Kirjat esineinä']) {
         await page.getByRole('tab', { name: tabName }).click();
         await expect(page.locator('.p-tabview-panel canvas').first()).toBeVisible({ timeout: 20000 });
     }
@@ -31,4 +31,24 @@ test('admin-only tabs are hidden from visitors', async ({ page }) => {
     await expect(page.getByRole('tab', { name: 'Yleiskatsaus' })).toBeVisible();
     await expect(page.getByRole('tab', { name: 'Kävijät' })).toHaveCount(0);
     await expect(page.getByRole('tab', { name: 'Käynnit' })).toHaveCount(0);
+});
+
+test('edition and work statistics show up in their tabs', async ({ page }) => {
+    await page.goto('/stats?tab=julkaisut');
+    for (const heading of ['Painokset vuosittain', 'Suomennosviive', 'Suomennosviive vuosikymmenittäin', 'Kotimaisten osuus']) {
+        await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible({ timeout: 20000 });
+    }
+
+    await page.goto('/stats?tab=sisalto');
+    for (const heading of ['Painoksia teosta kohden', 'Eniten painetut', 'Uudelleensuomennokset', 'Uudelleen suomennetut teokset']) {
+        await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible({ timeout: 20000 });
+    }
+
+    await page.goto('/stats?tab=kirjat');
+    for (const heading of ['Sivumäärät', 'Korkeus', 'Sivumäärä vuosittain', 'Sidosasu', 'Paksuimmat']) {
+        await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible({ timeout: 20000 });
+    }
+    // Decades switch the page-count card to decades.
+    await page.getByRole('group', { name: 'Suodattimet' }).getByText('Vuosikymmenittäin').click();
+    await expect(page.getByRole('heading', { name: 'Sivumäärä vuosikymmenittäin' })).toBeVisible();
 });

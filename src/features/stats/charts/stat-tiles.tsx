@@ -9,11 +9,15 @@ export interface StatTile {
 
 const fmt = (n: number) => n.toLocaleString('fi-FI');
 
-// Headline figures as a row of tiles.
-export const StatTiles = ({ tiles }: { tiles: StatTile[] }) => (
+// Headline figures as a row of tiles. `columnClass` sets the tile width
+// (PrimeFlex grid classes); the default suits a full-width row.
+export const StatTiles = ({ tiles, columnClass = 'col-6 md:col-4 lg:col-3' }: {
+    tiles: StatTile[];
+    columnClass?: string;
+}) => (
     <div className="grid">
         {tiles.map(t => (
-            <div key={t.label} className="col-6 md:col-4 lg:col-3">
+            <div key={t.label} className={columnClass}>
                 <div className="surface-card shadow-1 border-round p-3 h-full">
                     <div className="text-sm text-600 mb-1">{t.label}</div>
                     <div className="text-3xl font-bold">{fmt(t.value)}</div>

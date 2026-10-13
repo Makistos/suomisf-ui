@@ -27,6 +27,8 @@ import {
     useGenreIds, useStatsQuery, yearBounds, yearSpanLabel, ChartTheme, DataView,
 } from '../charts';
 
+import { DomesticShareCard, EditionTypesCard, TranslationLagCards } from './edition-history-cards';
+
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 const fmt = (n: number) => n.toLocaleString('fi-FI');
@@ -123,6 +125,13 @@ export const PublicationsTab = () => {
                     />
                 </div>
                 <div className="col-12">
+                    <EditionTypesCard theme={theme} genre={genre} range={activeRange}
+                        onFirstEditions={(years) => drill(
+                            `Ensipainokset ${yearSpanLabel(years.min, years.max)}`,
+                            { edition_year_min: years.min, edition_year_max: years.max })}
+                    />
+                </div>
+                <div className="col-12">
                     <OriginalsCard
                         theme={theme}
                         rows={fromLanguages(originals.data)}
@@ -135,6 +144,10 @@ export const PublicationsTab = () => {
                 <div className="col-12">
                     <ComparisonCard theme={theme} range={activeRange}
                         firstEditions={firstEditions.data} originals={originals.data} />
+                </div>
+                <TranslationLagCards genre={genre} range={activeRange} />
+                <div className="col-12">
+                    <DomesticShareCard theme={theme} range={activeRange} firstEditions={firstEditions.data} />
                 </div>
                 <div className="col-12">
                     <PublisherHeatmapCard

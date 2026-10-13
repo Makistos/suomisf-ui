@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { getApiContent } from '../../../services/user-service';
 import { getCurrenUser } from '../../../services/auth-service';
 import { Genre } from '../../genre';
@@ -37,13 +37,15 @@ export const fromPublishers = (data: PublisherYearCount[] = []): GroupYearCount[
 export const fromMagazines = (data: MagazineYearCount[] = []): GroupYearCount[] =>
     data.map(d => ({ year: d.year, count: d.count, group_id: d.magazine_id, group_name: d.magazine_name }));
 
-// GET /api/<path>, cached by path.
+// GET /api/<path>, cached by path. While a changed filter loads, the
+// previous result stays on screen instead of a spinner.
 export const useStatsQuery = <T,>(path: string, enabled = true) => {
     const user = useMemo(() => getCurrenUser(), []);
     return useQuery<T>({
         queryKey: ['stats', path],
         queryFn: async () => (await getApiContent(path, user)).data,
         enabled,
+        placeholderData: keepPreviousData,
     });
 };
 
@@ -73,4 +75,76 @@ export const groupTotals = (rows: GroupYearCount[]) => {
     return Array.from(totals.entries())
         .map(([name, t]) => ({ name, id: t.id, total: t.total }))
         .sort((a, b) => b.total - a.total);
+};
+
+export interface TranslationLag {
+    total: number;
+    median: number | null;
+    histogram: { lag: number; count: number }[];
+    by_decade: { decade: number; count: number; q1: number; median: number; q3: number }[];
+}
+
+export interface EditionTypeYear {
+    year: number;
+    first: number;
+    new_version: number;
+    reprint: number;
+}
+
+export interface WorkListEntry {
+    work_id: number;
+    title: string;
+    author: string | null;
+    year: number | null;
+}
+
+export interface EditionsPerWork {
+    histogram: { editions: number; works: number }[];
+    top: (WorkListEntry & { editions: number })[];
+}
+
+export interface Retranslations {
+    translated_works: number;
+    retranslated_works: number;
+    by_year: { year: number; count: number }[];
+    works: (WorkListEntry & { translations: { year: number; translators: string[] }[] })[];
+}
+
+export interface BindingYearCount {
+    year: number;
+    count: number;
+    binding_id: number | null;
+    binding_name: string | null;
+}
+
+export interface QuartileYear {
+    year: number;
+    count: number;
+    q1: number;
+    median: number;
+    q3: number;
+}
+
+export interface PageHistogram {
+    bucket: number;
+    histogram: { pages: number; count: number }[];
+    thickest: (WorkListEntry & { edition_id: number; pages: number })[];
+}
+
+export interface SizeCount {
+    size: number;
+    count: number;
+}
+
+export const fromBindings = (data: BindingYearCount[] = []): GroupYearCount[] =>
+    data.map(d => ({ year: d.year, count: d.count, group_id: d.binding_id, group_name: d.binding_name }));
+
+// Query string from optional parameters ('all' and undefined are left out).
+export const statsParams = (params: Record<string, string | number | undefined>) => {
+    const p = new URLSearchParams();
+    Object.entries(params).forEach(([k, v]) => {
+        if (v !== undefined && v !== 'all') p.append(k, String(v));
+    });
+    const query = p.toString();
+    return query ? `?${query}` : '';
 };

@@ -9,3 +9,5 @@ export * from './heatmap';
 export * from './drilldown-dialogs';
 export * from './stats-data';
 export * from './collection-years-card';
+export * from './histogram';
+export * from './median-band-line';

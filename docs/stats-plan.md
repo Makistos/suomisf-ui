@@ -1,6 +1,6 @@
 # Statistics page: chart review and implementation plan
 
-Status: phases 0–1 implemented 2026-10-13 (branch `stats-redesign` in both repos); see section 5. Covers the general statistics page
+Status: phases 0–2 implemented 2026-10-13 (branch `stats-redesign` in both repos); see section 5. Covers the general statistics page
 (`src/features/stats`) and the stats endpoints in `../suomisf/app/api_stats.py`
 / `impl_stats.py`. User statistics reuse the same components where noted.
 
@@ -203,3 +203,28 @@ Differences from the plan:
 - The 10/20/30/50 biggest-publishers choice moved to the publisher heatmap;
   the stacked chart shows the 7 biggest + Muut.
 - Default year range starts at 1900 (earlier years selectable).
+
+Phase 2 is done:
+
+- Backend endpoints (all take `?genre=`): `translationlag` (`start`/`end`
+  limit the Finnish edition year), `editiontypes`, `editionsperwork`,
+  `retranslations`, `bindingsbyyear`, `pagesbyyear` (`by=decade`),
+  `pagehistogram` and `sizehistogram` (`start`/`end`). All under 30 ms, so
+  no caching.
+- New chart pieces: `Histogram` (labelled, possibly uneven bins) and
+  `MedianBandLine` (median + quartile band).
+- Julkaisut ajassa: Painokset vuosittain (first / new version / reprint),
+  Suomennosviive (histogram) and its median by decade, Kotimaisten osuus.
+- Sisältö: Painoksia teosta kohden, Eniten painetut, Uudelleensuomennokset
+  (summary + new translations by decade) and a table of retranslated works.
+- New tab Kirjat esineinä (`?tab=kirjat`): page and height histograms, page
+  count median by year/decade, binding by year, thickest editions.
+
+Differences from the plan:
+
+- A retranslation is detected from translators, not `version`: a work's
+  editions that share a translator form one translation; two or more
+  translations = retranslated (123 works).
+- Kirjat esineinä counts every printing, reprints included.
+- Data notes: several editions have a year-like page count (2 008–2 018
+  pages) and one has 3 602; they top the Paksuimmat table.

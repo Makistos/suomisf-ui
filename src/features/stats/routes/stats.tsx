@@ -1,160 +1,63 @@
-// Display various charts and lists of some interesting statistics regarding the dataset.
-// Each chart has its own backend function starting with string /api/stats/ and they are located
-// in the src/api/stats folder.
+// Statistics about the bibliography, arranged by the question asked
+// (overview, publishing over time, content, people, publishers, stories,
+// magazines). Each tab fetches its own data from /api/stats/* when opened;
+// shared chart pieces are in ../charts. The plan is in docs/stats-plan.md.
 
 import { TabView, TabPanel } from 'primereact/tabview';
-import { ProgressSpinner } from 'primereact/progressspinner';
-import { useQuery } from '@tanstack/react-query';
-import { getApiContent } from '../../../services/user-service';
+import { useSearchParams } from 'react-router-dom';
 import { getCurrenUser } from '../../../services/auth-service';
-import { GenreChart } from '../components/genre-chart';
-import { PublisherChart } from '../components/publisher-chart';
-import { IssuesChart } from '../components/issues-chart';
-import { AuthorChart } from '../components/author-chart';
-import { ShortStoryChart } from '../components/short-story-chart';
+import { isAdmin } from '../../user';
+import { OverviewTab } from '../tabs/overview-tab';
+import { PublicationsTab } from '../tabs/publications-tab';
+import { ContentTab } from '../tabs/content-tab';
+import { PeopleTab } from '../tabs/people-tab';
+import { PublishersTab } from '../tabs/publishers-tab';
+import { StoriesTab } from '../tabs/stories-tab';
+import { MagazinesTab } from '../tabs/magazines-tab';
 import { VisitorStats } from '../components/visitor-stats';
 import { PageviewTable } from '../components/pageview-table';
 
-interface GenreCounts {
-    [key: string]: number;
+interface StatsTab {
+    key: string;
+    header: string;
+    content: () => React.JSX.Element;
+    adminOnly?: boolean;
 }
 
-interface YearCount {
-    year: number;
-    count: number;
-    language_id: number | null;
-    language_name: string | null;
-}
-
-interface IssueYearCount {
-    year: number;
-    count: number;
-}
-
-interface MiscStats {
-    total_pages: number;
-    stack_height_meters: number;
-    hardback_count: number;
-    paperback_count: number;
-    total_editions: number;
-    total_works: number;
-}
+const TABS: StatsTab[] = [
+    { key: 'yleiskatsaus', header: 'Yleiskatsaus', content: () => <OverviewTab /> },
+    { key: 'julkaisut', header: 'Julkaisut ajassa', content: () => <PublicationsTab /> },
+    { key: 'sisalto', header: 'Sisältö', content: () => <ContentTab /> },
+    { key: 'henkilot', header: 'Henkilöt', content: () => <PeopleTab /> },
+    { key: 'kustantajat', header: 'Kustantajat', content: () => <PublishersTab /> },
+    { key: 'novellit', header: 'Novellit', content: () => <StoriesTab /> },
+    { key: 'lehdet', header: 'Lehdet', content: () => <MagazinesTab /> },
+    { key: 'kavijat', header: 'Kävijät', content: () => <VisitorStats />, adminOnly: true },
+    { key: 'kaynnit', header: 'Käynnit', content: () => <PageviewTable />, adminOnly: true },
+];
 
 export const StatsPage = () => {
     const user = getCurrenUser();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const tabs = TABS.filter(t => !t.adminOnly || isAdmin(user));
 
-    // Fetch all statistics data
-    const genreCounts = useQuery<GenreCounts>({
-        queryKey: ['stats', 'genrecounts'],
-        queryFn: async () => {
-            const response = await getApiContent('stats/genrecounts', user);
-            return response.data;
-        }
-    });
-
-    const worksByYear = useQuery<YearCount[]>({
-        queryKey: ['stats', 'worksbyyear'],
-        queryFn: async () => {
-            const response = await getApiContent('stats/worksbyyear', user);
-            return response.data;
-        }
-    });
-
-    const origWorksByYear = useQuery<YearCount[]>({
-        queryKey: ['stats', 'origworksbyyear'],
-        queryFn: async () => {
-            const response = await getApiContent('stats/origworksbyyear', user);
-            return response.data;
-        }
-    });
-
-    const miscStats = useQuery<MiscStats>({
-        queryKey: ['stats', 'misc'],
-        queryFn: async () => {
-            const response = await getApiContent('stats/misc', user);
-            return response.data;
-        }
-    });
-
-    const issuesPerYear = useQuery<IssueYearCount[]>({
-        queryKey: ['stats', 'issuesperyear'],
-        queryFn: async () => {
-            const response = await getApiContent('stats/issuesperyear', user);
-            return response.data;
-        }
-    });
-
-    const isLoading = genreCounts.isLoading ||
-        worksByYear.isLoading || origWorksByYear.isLoading ||
-        miscStats.isLoading || issuesPerYear.isLoading;
-
-    if (isLoading) {
-        return (
-            <main className="all-content">
-                <ProgressSpinner />
-            </main>
-        );
-    }
+    // The open tab is in the URL (?tab=...), so links can point at it.
+    const active = Math.max(0, tabs.findIndex(t => t.key === searchParams.get('tab')));
 
     return (
         <main className="all-content">
             <h1 className="title">Tilastoja</h1>
-
-            {/* Misc stats overview cards */}
-            <p>Tietokannassa on&nbsp;
-                {miscStats.data?.total_works?.toLocaleString('fi-FI')}&nbsp;
-                teosta ja&nbsp;
-                {miscStats.data?.total_editions?.toLocaleString('fi-FI')}&nbsp;
-                painosta. Kannasta puuttuu vielä paljon painoksia, mutta
-                kannassa olevissa painoksissa on yhteensä&nbsp;
-                {miscStats.data?.total_pages?.toLocaleString('fi-FI')}&nbsp;
-                sivua, ja ne muodostaisivat&nbsp;
-                {Math.round(miscStats.data?.stack_height_meters ?? 0).toLocaleString('fi-FI')}&nbsp;
-                metriä korkean pinon. Ensipainoksista&nbsp;
-                {miscStats.data?.hardback_count?.toLocaleString('fi-FI')}&nbsp;
-                oli kovakantisia ja&nbsp;
-                {miscStats.data?.paperback_count?.toLocaleString('fi-FI')}&nbsp;
-                pehmytkantisia.
-            </p>
-
-            {/* Tabbed charts section */}
             <div className="mx-3">
-                <TabView>
-                    <TabPanel header="Genret">
-                        {genreCounts.data && <GenreChart data={genreCounts.data} />}
-                    </TabPanel>
-
-                    <TabPanel header="Teokset">
-                        {worksByYear.data && origWorksByYear.data && (
-                            <AuthorChart
-                                finnishEditionData={worksByYear.data}
-                                originalYearData={origWorksByYear.data}
-                            />
-                        )}
-                    </TabPanel>
-
-                    <TabPanel header="Kustantajat">
-                        <PublisherChart />
-                    </TabPanel>
-
-                    <TabPanel header="Lehdet">
-                        {issuesPerYear.data && <IssuesChart data={issuesPerYear.data} />}
-                    </TabPanel>
-
-                    <TabPanel header="Novellit">
-                        <ShortStoryChart />
-                    </TabPanel>
-
-                    {user?.role === 'admin' && (
-                        <TabPanel header="Kävijät">
-                            <VisitorStats />
+                <TabView
+                    activeIndex={active}
+                    onTabChange={(e) => setSearchParams({ tab: tabs[e.index].key }, { replace: true })}
+                    scrollable
+                >
+                    {tabs.map(t => (
+                        <TabPanel key={t.key} header={t.header}>
+                            {t.content()}
                         </TabPanel>
-                    )}
-                    {user?.role === 'admin' && (
-                        <TabPanel header="Käynnit">
-                            <PageviewTable />
-                        </TabPanel>
-                    )}
+                    ))}
                 </TabView>
             </div>
         </main>

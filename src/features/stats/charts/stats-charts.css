@@ -1,0 +1,95 @@
+/* Heatmap: rows x columns of cells shaded from the card surface towards the
+   theme's primary colour, so it follows the light/dark theme. */
+.heatmap-scroll {
+  overflow-x: auto;
+}
+
+.heatmap {
+  border-collapse: separate;
+  border-spacing: 2px;
+  font-size: 0.8125rem;
+}
+
+.heatmap th {
+  font-weight: 400;
+  color: var(--text-color-secondary);
+  white-space: nowrap;
+}
+
+.heatmap th[scope="row"] {
+  text-align: right;
+  padding-right: 0.5rem;
+  color: var(--text-color);
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.heatmap thead th {
+  font-variant-numeric: tabular-nums;
+  padding-bottom: 0.25rem;
+}
+
+.heatmap thead th.heatmap-vertical {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align: left;
+}
+
+.heatmap td {
+  padding: 0;
+}
+
+.heatmap-cell {
+  display: block;
+  width: 100%;
+  min-width: 1.75rem;
+  height: 1.5rem;
+  border: 0;
+  border-radius: 3px;
+  padding: 0;
+  cursor: default;
+}
+
+.heatmap-cell.heatmap-empty {
+  background: var(--surface-ground);
+}
+
+.heatmap-cell.heatmap-clickable {
+  cursor: pointer;
+}
+
+.heatmap-cell:focus-visible,
+.heatmap-cell:hover {
+  outline: 2px solid var(--text-color);
+  outline-offset: 1px;
+}
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--text-color-secondary);
+}
+
+.heatmap-legend-bar {
+  width: 10rem;
+  height: 0.625rem;
+  border-radius: 3px;
+  background: linear-gradient(to right,
+    color-mix(in srgb, var(--primary-color) 22%, var(--surface-card)),
+    var(--primary-color));
+}
+
+.heatmap-readout {
+  min-height: 1.25rem;
+  font-size: 0.875rem;
+  color: var(--text-color);
+}
+
+@media (max-width: 640px) {
+  .heatmap th[scope="row"] {
+    max-width: 8rem;
+  }
+}

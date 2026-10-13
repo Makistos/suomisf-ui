@@ -7,7 +7,7 @@ const GenreColors: { [key: string]: string; } = {
     nK: "#FF696D",
     Paleof: "#9B59B6",
     PF: "#7B2D8E",
-    VH: "#E67E22",
+    VEH: "#E67E22",
     Utopia: "#DAA520",
     lSF: "#7EC8E3",
     satu: "#E91E63",

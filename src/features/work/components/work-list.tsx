@@ -11,7 +11,7 @@ import {
 } from "../utils/group-works";
 import { WorkSummary } from "./work-summary";
 import { CoverImageList } from "../../../components/cover-image-list";
-import { WorkStatsPanel } from "../../stats";
+import { WorkStatsPanel } from "../../stats/components/work-stats-panel";
 
 import { Work } from "../types";
 import { Toolbar } from "primereact/toolbar";

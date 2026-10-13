@@ -3,6 +3,9 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-10-13 `dc19b34` — Statistics tabs wrap instead of scrolling
+The statistics page's eleven tabs no longer scroll sideways behind arrow buttons: they wrap onto a second line (or more on a phone), and the selected tab is underlined wherever it sits.
+
 ## 2026-10-13 `9abf685` — Statistics page redesigned
 The statistics page is arranged by question in eleven tabs: Yleiskatsaus, Julkaisut ajallisesti, Sisältö, Henkilöt, Kustantajat, Novellit, Lehdet, Kirjat esineinä, Palkinnot, the new public Kattavuus, and the unchanged admin tabs Kävijät and Käynnit. The open tab is in the address (`?tab=…`), so links can point at it. Time runs left to right with every year on the axis; rankings are sorted bars instead of pies; many publishers, magazines, genres or tags are shown as heatmaps instead of dozens of stacked colours. Colours come from a palette checked for colour blindness, stay with the same language, publisher or nationality whatever the filters, and follow the dark theme. Every chart has a "Näytä data" table, and most can be clicked to list the works or stories behind them.
 

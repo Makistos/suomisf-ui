@@ -3,6 +3,9 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-10-13 `bcb7330` — Statistics tabs fit one row
+The first statistics tab is now called "Yleistä" (was "Yleiskatsaus") and the tabs are a little narrower, so all of them fit on one line on a desktop screen; they still wrap on narrower screens.
+
 ## 2026-10-13 `dc19b34` — Statistics tabs wrap instead of scrolling
 The statistics page's eleven tabs no longer scroll sideways behind arrow buttons: they wrap onto a second line (or more on a phone), and the selected tab is underlined wherever it sits.
 

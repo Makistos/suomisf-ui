@@ -17,6 +17,9 @@
 .stats-tabs .p-tabview-nav li .p-tabview-nav-link {
   border-width: 0;
   margin: 0;
+  /* Narrower than the theme's 1.5rem, so all tabs fit one desktop row. */
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .stats-tabs .p-tabview-nav li.p-highlight .p-tabview-nav-link {

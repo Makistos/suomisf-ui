@@ -24,6 +24,7 @@ const PAGES: [string, RegExp | string][] = [
     ['/stats?tab=novellit', 'Novellit vuosittain'],
     ['/stats?tab=lehdet', 'Lehdet vuosittain'],
     ['/stats?tab=kirjat', 'Sivumäärät'],
+    ['/stats?tab=palkinnot', 'Palkitut palkinnoittain'],
     ['/latest', ''],
     ['/publishers', ''],
     ['/bookseries', 'Kirjasarjat'],

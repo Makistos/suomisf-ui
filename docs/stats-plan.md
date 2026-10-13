@@ -1,6 +1,6 @@
 # Statistics page: chart review and implementation plan
 
-Status: phases 0–4 implemented 2026-10-13 (branch `stats-redesign` in both repos); see section 5. Covers the general statistics page
+Status: phases 0–5 implemented 2026-10-13 (branch `stats-redesign` in both repos); see section 5. Covers the general statistics page
 (`src/features/stats`) and the stats endpoints in `../suomisf/app/api_stats.py`
 / `impl_stats.py`. User statistics reuse the same components where noted.
 
@@ -284,3 +284,19 @@ Differences from the plan:
   tie).
 - Data note: edition 10483 (Heureka ja muita kirjoituksia, Basam Books)
   has year 1848, which stretches Basam's span back to 1848.
+
+Phase 5 is done:
+
+- Backend: `awardcounts`, `awardlag` (foreign awards → first Finnish
+  publication, works and stories), `topawarded`.
+- Palkinnot tab (`?tab=palkinnot`): Palkitut palkinnoittain (all /
+  foreign / domestic), Palkituimmat kirjailijat, Palkinnosta suomennokseen
+  (histogram, "ennen" bin for negative delays), Viive palkinnoittain
+  (table with quartile bars, scale clamped to −10…20 years).
+
+Differences from the plan:
+
+- "Suomennettujen osuus palkinnoittain" is not possible: `awarded` only
+  holds winners that are in the bibliography (the importer saves matched
+  works and stories), so untranslated winners are unknown. The tab says
+  so; "Palkitut palkinnoittain" takes its place.

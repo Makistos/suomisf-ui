@@ -250,3 +250,30 @@ export interface MagazineContentCount {
     storytype_id: number | null;
     storytype_name: string | null;
 }
+
+export interface AwardCount {
+    id: number;
+    name: string;
+    domestic: boolean | null;
+    works: number;
+    stories: number;
+    people: number;
+    total: number;
+}
+
+export interface AwardLag {
+    total: number;
+    median: number | null;
+    lags: { lag: number; count: number }[];
+    by_award: { id: number; name: string; count: number; q1: number; median: number; q3: number }[];
+}
+
+export interface AwardedPerson {
+    id: number;
+    name: string;
+    alt_name: string | null;
+    awards: number;
+    personal: number;
+    works: number;
+    stories: number;
+}

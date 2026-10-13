@@ -3,6 +3,11 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-10-13 `9abf685` — Statistics page redesigned
+The statistics page is arranged by question in eleven tabs: Yleiskatsaus, Julkaisut ajallisesti, Sisältö, Henkilöt, Kustantajat, Novellit, Lehdet, Kirjat esineinä, Palkinnot, the new public Kattavuus, and the unchanged admin tabs Kävijät and Käynnit. The open tab is in the address (`?tab=…`), so links can point at it. Time runs left to right with every year on the axis; rankings are sorted bars instead of pies; many publishers, magazines, genres or tags are shown as heatmaps instead of dozens of stacked colours. Colours come from a palette checked for colour blindness, stay with the same language, publisher or nationality whatever the filters, and follow the dark theme. Every chart has a "Näytä data" table, and most can be clicked to list the works or stories behind them.
+
+New statistics include: headline figures; first editions vs new versions vs reprints; years from original to Finnish edition, and from a foreign award to the Finnish edition; retranslated works with their translators; editions per work and the most printed works; page counts, heights and bindings; nationalities over time, birth decades and translators by source language, for books, stories or both together; work types, genres and tags by decade, book series and publisher series; active publishers, the five biggest publishers' share, and publisher and magazine timelines; where stories first appeared (magazine, collection or anthology); award winners and the most awarded writers; and how complete each kind of record is. The publishers-by-year choice of 10/20/30/50 publishers moved to the publisher heatmap. Fixed: the Vaihtoehtohistoria genre had no colour, and the top people list was empty for book translators, cover artists and illustrators. (Through `61cfffd`.)
+
 ## 2026-10-13 `84d360a` — User stats publisher chart filterable by genre
 The publisher chart in a user's collection and read statistics is a pie chart like the one on the statistics page, with the same genre selector and slider for how many publishers to show (10–100). Clicking a publisher lists its works.
 

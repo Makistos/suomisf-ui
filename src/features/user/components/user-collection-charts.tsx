@@ -1,5 +1,7 @@
 import { Chart } from "primereact/chart";
 import { Dialog } from "primereact/dialog";
+import { Dropdown } from "primereact/dropdown";
+import { Slider } from "primereact/slider";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { ChartData } from "chart.js";
 import { useMemo, useState } from "react";
@@ -8,6 +10,7 @@ import { getApiContent } from "@services/user-service";
 import { getCurrenUser } from "@services/auth-service";
 import { getGenreColors } from "../../genre";
 import { WorksByYearChart } from "../../stats/components/works-by-year-chart";
+import { genreOptions, publisherColors } from "../../stats/components/publisher-chart";
 import { WorkList } from "@features/work/components/work-list";
 import { Work } from "@features/work/types";
 
@@ -35,6 +38,11 @@ export interface DistItem {
     count: number;
 }
 
+export interface PublisherDistItem extends DistItem {
+    // Counts per genre abbreviation; a book counts in each of its genres.
+    genres?: Record<string, number>;
+}
+
 export interface YearCount {
     year: number;
     count: number;
@@ -43,7 +51,7 @@ export interface YearCount {
 }
 
 export interface CollectionComposition {
-    publisher_distribution: DistItem[];
+    publisher_distribution: PublisherDistItem[];
     language_distribution: DistItem[];
     worktype_distribution: DistItem[];
     short_story_count: number;
@@ -72,6 +80,9 @@ export const UserCollectionCharts = ({ userId, genreData, comp, filterParam }: U
     const [languageDialogFilter, setLanguageDialogFilter] = useState<DistItem | null>(null);
     const [worktypeDialogFilter, setWorktypeDialogFilter] = useState<DistItem | null>(null);
     const [genreDialogFilter, setGenreDialogFilter] = useState<GenreData | null>(null);
+    const [pubGenre, setPubGenre] = useState<string>('all');
+    const [pubCount, setPubCount] = useState<number>(10);
+    const [publisherDialogFilter, setPublisherDialogFilter] = useState<DistItem | null>(null);
 
     const genres = useMemo<ChartData>(() => ({
         labels: genreData.map(g => g.name + ' (' + g.count + ')'),
@@ -180,28 +191,62 @@ export const UserCollectionCharts = ({ userId, genreData, comp, filterParam }: U
         enabled: worktypeDialogFilter !== null
     });
 
+    // Publishers ranked by count in the selected genre.
+    const genrePublishers = useMemo(() => (comp?.publisher_distribution ?? [])
+        .map(p => ({ ...p, count: pubGenre === 'all' ? p.count : (p.genres?.[pubGenre] ?? 0) }))
+        .filter(p => p.count > 0)
+        .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)),
+    [comp?.publisher_distribution, pubGenre]);
+    const shownPublishers = useMemo(() => genrePublishers.slice(0, pubCount),
+        [genrePublishers, pubCount]);
+    // Slider stops at the first step covering every publisher.
+    const pubCountMax = Math.min(100, Math.max(10,
+        Math.ceil((comp?.publisher_distribution?.length ?? 0) / 10) * 10));
+
     const pubChartData = useMemo(() => {
-        const d = comp?.publisher_distribution?.slice(0, 10);
-        if (!d || d.length === 0) return null;
+        if (shownPublishers.length === 0) return null;
+        const colors = shownPublishers.map((_, i) => publisherColors[i % publisherColors.length]);
         return {
-            labels: d.map(p => p.name),
+            labels: shownPublishers.map(p => `${p.name} (${p.count.toLocaleString('fi-FI')})`),
             datasets: [{
-                label: 'Kirjoja',
-                data: d.map(p => p.count),
-                backgroundColor: 'rgba(59, 130, 246, 0.6)',
-                borderColor: 'rgba(59, 130, 246, 1)',
-                borderWidth: 1,
-                borderRadius: 4,
+                data: shownPublishers.map(p => p.count),
+                backgroundColor: colors,
+                hoverBackgroundColor: colors.map(c => c + 'CC'),
             }],
         };
-    }, [comp?.publisher_distribution]);
-    const pubChartOptions = {
-        indexAxis: 'y' as const,
-        plugins: { legend: { display: false } },
-        scales: { x: { beginAtZero: true, ticks: { precision: 0 } } },
+    }, [shownPublishers]);
+    const pubChartOptions = useMemo(() => ({
+        plugins: {
+            legend: {
+                position: 'bottom' as const,
+                labels: { usePointStyle: true },
+                onClick: (_event: unknown, legendItem: { index?: number }) => {
+                    const item = shownPublishers[legendItem.index ?? -1];
+                    if (item?.id) {
+                        setPublisherDialogFilter(item);
+                    }
+                },
+            },
+        },
         responsive: true,
         maintainAspectRatio: false,
-    };
+    }), [shownPublishers]);
+
+    const pubGenreId = pubGenre === 'all'
+        ? undefined
+        : genreData.find(g => g.abbr === pubGenre)?.id;
+    const publisherWorksQuery = useQuery<Work[]>({
+        queryKey: ['user', userId, filterParam, 'stats', 'filterworks', 'publisher', publisherDialogFilter?.id, pubGenreId],
+        queryFn: async () => {
+            const params = new URLSearchParams();
+            params.append(filterParam, userId);
+            params.append('publisher', String(publisherDialogFilter?.id));
+            if (pubGenreId) params.append('genre', String(pubGenreId));
+            const response = await getApiContent(`stats/filterworks?${params.toString()}`, user);
+            return response.data;
+        },
+        enabled: publisherDialogFilter !== null
+    });
 
     const hasGenres = genreData.length > 0;
 
@@ -242,12 +287,40 @@ export const UserCollectionCharts = ({ userId, genreData, comp, filterParam }: U
             )}
 
             {/* Publishers */}
-            {pubChartData && (
+            {comp && comp.publisher_distribution.length > 0 && (
                 <div>
-                    <div className="text-600 text-sm mb-2">Kustantajat (10 yleisintä)</div>
-                    <div style={{ height: '260px' }}>
-                        <Chart ariaLabel="Kokoelman kustantajat (10 yleisintä)" type="bar" data={pubChartData} options={pubChartOptions} style={{ height: '100%' }} />
+                    <div className="text-600 text-sm mb-2">Kustantajat</div>
+                    <div className="flex align-items-center gap-3 mb-2 flex-wrap">
+                        <Dropdown
+                            ariaLabel="Kustantajien genre"
+                            value={pubGenre}
+                            options={genreOptions}
+                            optionLabel="label"
+                            optionValue="value"
+                            onChange={(e) => setPubGenre(e.value)}
+                            className="w-auto"
+                        />
+                        <div className="flex align-items-center gap-2">
+                            <span className="text-sm">Määrä: {pubCount}</span>
+                            <Slider
+                                aria-label="Kustantajien määrä"
+                                value={pubCount}
+                                onChange={(e) => setPubCount(e.value as number)}
+                                min={10}
+                                max={pubCountMax}
+                                step={10}
+                                disabled={pubCountMax <= 10}
+                                className="w-8rem"
+                            />
+                        </div>
                     </div>
+                    {pubChartData ? (
+                        <div style={{ height: `${Math.max(400, 300 + Math.ceil(shownPublishers.length / 4) * 20)}px` }}>
+                            <Chart ariaLabel={`Kokoelman kustantajat (${pubCount} yleisintä)`} type="pie" data={pubChartData} options={pubChartOptions} style={{ height: '100%' }} />
+                        </div>
+                    ) : (
+                        <p className="text-500">Ei kustantajia tässä genressä</p>
+                    )}
                 </div>
             )}
 
@@ -280,6 +353,25 @@ export const UserCollectionCharts = ({ userId, genreData, comp, filterParam }: U
                     readUserId={filterParam === 'read' ? userId : undefined}
                 />
             )}
+
+            {/* Dialog for works filtered by publisher */}
+            <Dialog
+                header={publisherDialogFilter ? `${publisherDialogFilter.name} (${publisherDialogFilter.count})` : ''}
+                visible={publisherDialogFilter !== null}
+                onHide={() => setPublisherDialogFilter(null)}
+                style={{ width: '80vw', maxHeight: '90vh' }}
+                maximizable
+            >
+                {publisherWorksQuery.isLoading ? (
+                    <div className="flex justify-content-center p-4">
+                        <ProgressSpinner style={{ width: '50px', height: '50px' }} />
+                    </div>
+                ) : publisherWorksQuery.data && publisherWorksQuery.data.length > 0 ? (
+                    <WorkList works={publisherWorksQuery.data} />
+                ) : (
+                    <p className="text-500">Ei tuloksia</p>
+                )}
+            </Dialog>
 
             {/* Dialog for works filtered by original language */}
             <Dialog

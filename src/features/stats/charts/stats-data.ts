@@ -250,3 +250,40 @@ export interface MagazineContentCount {
     storytype_id: number | null;
     storytype_name: string | null;
 }
+
+export interface AwardCount {
+    id: number;
+    name: string;
+    domestic: boolean | null;
+    works: number;
+    stories: number;
+    people: number;
+    total: number;
+}
+
+export interface AwardLag {
+    total: number;
+    median: number | null;
+    lags: { lag: number; count: number }[];
+    by_award: { id: number; name: string; count: number; q1: number; median: number; q3: number }[];
+}
+
+export interface AwardedPerson {
+    id: number;
+    name: string;
+    alt_name: string | null;
+    awards: number;
+    personal: number;
+    works: number;
+    stories: number;
+}
+
+export interface Coverage {
+    editions: { total: number; image: number; pages: number; isbn: number; size: number; binding: number; verified: number };
+    works: {
+        total: number; description: number; tags: number; genre: number; orig_year: number; language: number;
+        translated_works: number; translator: number;
+    };
+    people: { total: number; birth_year: number; nationality: number; image: number; bio: number };
+    stories: { total: number; year: number; language: number };
+}

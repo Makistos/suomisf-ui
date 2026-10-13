@@ -1,6 +1,6 @@
 # Statistics page: chart review and implementation plan
 
-Status: phases 0–4 implemented 2026-10-13 (branch `stats-redesign` in both repos); see section 5. Covers the general statistics page
+Status: all phases (0–6) implemented 2026-10-13 (branch `stats-redesign` in both repos); see section 5. Covers the general statistics page
 (`src/features/stats`) and the stats endpoints in `../suomisf/app/api_stats.py`
 / `impl_stats.py`. User statistics reuse the same components where noted.
 
@@ -284,3 +284,38 @@ Differences from the plan:
   tie).
 - Data note: edition 10483 (Heureka ja muita kirjoituksia, Basam Books)
   has year 1848, which stretches Basam's span back to 1848.
+
+Phase 5 is done:
+
+- Backend: `awardcounts`, `awardlag` (foreign awards → first Finnish
+  publication, works and stories), `topawarded`.
+- Palkinnot tab (`?tab=palkinnot`): Palkitut palkinnoittain (all /
+  foreign / domestic), Palkituimmat kirjailijat, Palkinnosta suomennokseen
+  (histogram, "ennen" bin for negative delays), Viive palkinnoittain
+  (table with quartile bars, scale clamped to −10…20 years).
+
+Differences from the plan:
+
+- "Suomennettujen osuus palkinnoittain" is not possible: `awarded` only
+  holds winners that are in the bibliography (the importer saves matched
+  works and stories), so untranslated winners are unknown. The tab says
+  so; "Palkitut palkinnoittain" takes its place.
+
+Phase 6 is done:
+
+- Backend: `coverage` (editions, works, people, stories: total and how
+  many have each detail).
+- Public Kattavuus tab (`?tab=kattavuus`) with a meter per detail.
+  Meters never round an incomplete share up to 100 % (or a non-zero one
+  down to 0 %).
+
+Differences from the plan:
+
+- "Most owned works" is not built: only 4 users have collections, so even
+  a list limited to works owned by 3+ users would reveal what individual
+  users own.
+- Data note: 5 584 `personimage` rows have an empty `src`; they are not
+  counted as pictures (1 945 people, 25 %, have one).
+
+Open: with 11 tabs the tab bar scrolls at desktop width; tab names were
+to be revisited once all tabs exist (decision 3).

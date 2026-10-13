@@ -9,7 +9,7 @@ test('Stats page renders every tab without errors', async ({ page }) => {
     // Overview: headline tiles, no chart.
     await expect(page.getByText('Teoksia', { exact: true })).toBeVisible({ timeout: 20000 });
 
-    for (const tabName of ['Julkaisut ajallisesti', 'Sisältö', 'Henkilöt', 'Kustantajat', 'Novellit', 'Lehdet', 'Kirjat esineinä']) {
+    for (const tabName of ['Julkaisut ajallisesti', 'Sisältö', 'Henkilöt', 'Kustantajat', 'Novellit', 'Lehdet', 'Kirjat esineinä', 'Palkinnot']) {
         await page.getByRole('tab', { name: tabName }).click();
         await expect(page.locator('.p-tabview-panel canvas').first()).toBeVisible({ timeout: 20000 });
     }
@@ -65,11 +65,12 @@ test('people and content statistics show up in their tabs', async ({ page }) => 
     }
 });
 
-test('publisher, story and magazine statistics show up in their tabs', async ({ page }) => {
+test('publisher, story, magazine and award statistics show up in their tabs', async ({ page }) => {
     const tabs: [string, string[]][] = [
         ['kustantajat', ['Aktiiviset kustantajat', 'Keskittyminen', 'Kustantajien toiminta-ajat', 'Kustantajasarjat']],
         ['novellit', ['Julkaisukanavat', 'Tekstityypit']],
         ['lehdet', ['Lehtien sisältö vuosittain', 'Lehtien ilmestymisajat', 'Tekstit lehdittäin']],
+        ['palkinnot', ['Palkitut palkinnoittain', 'Palkituimmat kirjailijat', 'Palkinnosta suomennokseen', 'Viive palkinnoittain']],
     ];
     for (const [tab, headings] of tabs) {
         await page.goto(`/stats?tab=${tab}`);
@@ -77,4 +78,13 @@ test('publisher, story and magazine statistics show up in their tabs', async ({ 
             await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible({ timeout: 20000 });
         }
     }
+});
+
+test('coverage tab shows a meter for each recorded detail', async ({ page }) => {
+    await page.goto('/stats?tab=kattavuus');
+    for (const heading of ['Painokset', 'Teokset', 'Henkilöt', 'Novellit']) {
+        await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible({ timeout: 20000 });
+    }
+    await expect(page.getByRole('meter', { name: 'Kansikuva' })).toBeVisible();
+    await expect(page.getByRole('meter', { name: 'Syntymävuosi' })).toBeVisible();
 });

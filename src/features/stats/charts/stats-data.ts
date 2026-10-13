@@ -221,3 +221,32 @@ export interface BookseriesStats {
     longest: { id: number; name: string; works: number }[];
     by_year: { year: number; total: number; in_series: number }[];
 }
+
+export interface PubseriesCounts {
+    editions: number;
+    in_series: number;
+    series: { id: number; name: string; publisher_id: number | null; publisher_name: string | null; editions: number }[];
+}
+
+export interface StoryChannelCount {
+    year: number;
+    channel: 'magazine' | 'collection' | 'anthology';
+    count: number;
+}
+
+export interface MagazineStats {
+    id: number;
+    name: string;
+    type: string | null;
+    first: number | null;
+    last: number | null;
+    issues: number;
+    stories: number;
+}
+
+export interface MagazineContentCount {
+    year: number;
+    count: number;
+    storytype_id: number | null;
+    storytype_name: string | null;
+}

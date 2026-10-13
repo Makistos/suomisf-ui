@@ -1,6 +1,6 @@
 # Statistics page: chart review and implementation plan
 
-Status: phases 0–3 implemented 2026-10-13 (branch `stats-redesign` in both repos); see section 5. Covers the general statistics page
+Status: phases 0–4 implemented 2026-10-13 (branch `stats-redesign` in both repos); see section 5. Covers the general statistics page
 (`src/features/stats`) and the stats endpoints in `../suomisf/app/api_stats.py`
 / `impl_stats.py`. User statistics reuse the same components where noted.
 
@@ -258,3 +258,29 @@ Differences from the plan:
 - Genre groups now use colour slots 0–5 in stacking order (Fantasia's
   green sat next to Kauhu's red, which colour-blind readers can't tell
   apart); the cumulative chart changes colour accordingly.
+
+Phase 4 is done:
+
+- Backend: `pubseriescounts` (genre), `storychannels` (storytype),
+  `magazinestats`, `magazinecontents`. All under 120 ms.
+- New chart piece: `Timeline` (floating bars on a year axis).
+- Kustantajat: Aktiiviset kustantajat, Keskittyminen (5 biggest per
+  decade), Kustantajien toiminta-ajat (30 biggest), Kustantajasarjat.
+- Novellit: Julkaisukanavat (magazine / collection / anthology by year of
+  first Finnish appearance), Tekstityypit.
+- Lehdet: Lehtien sisältö vuosittain (by text type), Lehtien
+  ilmestymisajat, Tekstit lehdittäin.
+
+Differences from the plan:
+
+- `publisherspans`, `activepublishers` and `publisherconcentration` are
+  computed in the frontend from `publishersbyyear`, so they count works by
+  the year a publisher first published them (reprint-only years don't
+  count as activity).
+- `articlesbyyear` became `magazinecontents`: articles are not linked to
+  issues; magazine articles are stories of type Artikkeli.
+- An anthology is a book whose stories have more than one author; a
+  story's channel is where it first appeared (magazine wins a same-year
+  tie).
+- Data note: edition 10483 (Heureka ja muita kirjoituksia, Basam Books)
+  has year 1848, which stretches Basam's span back to 1848.

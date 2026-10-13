@@ -1,7 +1,10 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { SelectButton } from 'primereact/selectbutton';
 import {
-    FilterBar, Heatmap, HeatmapRow, MagazineYearCount, StatCard, YearColumnsChart, YearRange,
+    FilterBar, Heatmap, HeatmapRow, MagazineContentCount, MagazineStats, MagazineYearCount,
+    RankedBarChart, Series, StatCard, Timeline, TimelineItem, YearColumnsChart, YearRange,
     YearRangeFilter, bucketOf, bucketsIn, fromMagazines, groupTotals, useChartTheme,
     useStatsQuery, yearBounds,
 } from '../charts';
@@ -89,6 +92,80 @@ export const MagazinesTab = () => {
                         )}
                     </StatCard>
                 </div>
+                <div className="col-12">
+                    <ContentsCard range={activeRange} />
+                </div>
+                <MagazineCards />
+            </div>
+        </>
+    );
+};
+
+const shareOptions = [
+    { label: 'Määrä', value: false },
+    { label: 'Osuus', value: true },
+];
+
+// Story types with their own colour in the contents chart; the rest are
+// "Muut".
+const CONTENT_TYPES = ['Novelli', 'Artikkeli', 'Raapale', 'Runo'];
+
+const ContentsCard = ({ range }: { range: YearRange }) => {
+    const theme = useChartTheme();
+    const [share, setShare] = useState(false);
+    const data = useStatsQuery<MagazineContentCount[]>('stats/magazinecontents');
+    const rows = useMemo(() => (data.data ?? []).map(d => ({
+        year: d.year, count: d.count, group_id: d.storytype_id, group_name: d.storytype_name,
+    })), [data.data]);
+    const series: Series[] = CONTENT_TYPES.map((t, i) => ({ key: t, label: t, color: theme.series[i], id: null }));
+
+    return (
+        <StatCard title="Lehtien sisältö vuosittain"
+            subtitle="Lehdissä julkaistuja tekstejä tyypin mukaan (novellit, artikkelit, raapaleet…). Lehtien artikkelit on tallennettu tekstityypillä Artikkeli."
+            controls={
+                <SelectButton aria-label="Määrä vai osuus" value={share} options={shareOptions}
+                    optionLabel="label" optionValue="value" allowEmpty={false}
+                    onChange={(e) => setShare(e.value)} />
+            }>
+            {!data.data ? <div className="flex justify-content-center p-4"><ProgressSpinner /></div> : (
+                <YearColumnsChart rows={rows} range={range} series={series} showOthers
+                    othersColor={theme.other} share={share} unit="tekstiä" axisTitle="Tekstejä"
+                    ariaLabel="Lehtien sisältö vuosittain" />
+            )}
+        </StatCard>
+    );
+};
+
+// Magazine spans and story counts; not limited by the year filter.
+const MagazineCards = () => {
+    const data = useStatsQuery<MagazineStats[]>('stats/magazinestats');
+    const spans = useMemo((): TimelineItem[] => (data.data ?? [])
+        .filter(m => m.first !== null && m.last !== null)
+        .map(m => ({ id: m.id, label: m.name, start: m.first!, end: m.last!, count: m.issues }))
+        .sort((a, b) => a.start - b.start || a.end - b.end), [data.data]);
+    const stories = useMemo(() => (data.data ?? [])
+        .map(m => ({ id: m.id, label: m.name, count: m.stories })), [data.data]);
+    const link = (item: { id: number | null; label: string }) => <Link to={`/magazines/${item.id}`}>{item.label}</Link>;
+
+    return (
+        <>
+            <div className="col-12 lg:col-7">
+                <StatCard title="Lehtien ilmestymisajat"
+                    subtitle="Ensimmäisen ja viimeisen numeron vuosi, aloitusvuoden järjestyksessä. Koko historia, aikavälisuodatin ei vaikuta tähän.">
+                    {!data.data ? <div className="flex justify-content-center p-4"><ProgressSpinner /></div> : (
+                        <Timeline items={spans} unit="numeroa" countHeader="Numeroita" itemHeader="Lehti"
+                            ariaLabel="Lehtien ilmestymisajat" nameTemplate={link} />
+                    )}
+                </StatCard>
+            </div>
+            <div className="col-12 lg:col-5">
+                <StatCard title="Tekstit lehdittäin"
+                    subtitle="Eri tekstejä (novelleja, artikkeleita…) lehdittäin, koko historia.">
+                    {!data.data ? <div className="flex justify-content-center p-4"><ProgressSpinner /></div> : (
+                        <RankedBarChart items={stories} topN={20} unit="tekstiä" itemHeader="Lehti"
+                            ariaLabel="Tekstit lehdittäin" nameTemplate={link} />
+                    )}
+                </StatCard>
             </div>
         </>
     );

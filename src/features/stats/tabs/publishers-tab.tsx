@@ -4,8 +4,9 @@ import { Slider } from 'primereact/slider';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import {
     Drilldown, FilterBar, GENRE_NAMES, OTHERS_LABEL, RankedBarChart, StatCard,
-    WorksDrilldownDialog, genreOptions, useGenreIds, useStatsQuery,
+    PublisherYearCount, WorksDrilldownDialog, genreOptions, genreParam, useGenreIds, useStatsQuery,
 } from '../charts';
+import { ActivePublishersCard, ConcentrationCard, PubseriesCard, PublisherSpansCard } from './publisher-cards';
 
 interface PublisherCount {
     id: number | null;
@@ -24,6 +25,7 @@ export const PublishersTab = () => {
     const [drilldown, setDrilldown] = useState<Drilldown | null>(null);
     const genreIds = useGenreIds();
     const publishers = useStatsQuery<PublisherCount[]>(`stats/publishercounts?count=${FETCHED}`);
+    const byYear = useStatsQuery<PublisherYearCount[]>(`stats/publishersbyyear${genreParam(genre)}`);
 
     const { items, rest } = useMemo(() => {
         const countIn = (p: PublisherCount) => genre === 'all' ? p.total : (p.genres[genre] ?? 0);
@@ -79,6 +81,18 @@ export const PublishersTab = () => {
                             />
                         )}
                     </StatCard>
+                </div>
+                <div className="col-12 lg:col-6">
+                    <ActivePublishersCard rows={byYear.data} />
+                </div>
+                <div className="col-12 lg:col-6">
+                    <ConcentrationCard rows={byYear.data} />
+                </div>
+                <div className="col-12">
+                    <PublisherSpansCard rows={byYear.data} />
+                </div>
+                <div className="col-12 lg:col-10">
+                    <PubseriesCard genre={genre} />
                 </div>
             </div>
             <WorksDrilldownDialog drilldown={drilldown} onHide={() => setDrilldown(null)} />

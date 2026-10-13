@@ -5,8 +5,9 @@ import { SelectButton } from 'primereact/selectbutton';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import {
     COLOURED_LANGUAGES, DEFAULT_START_YEAR, Drilldown, FilterBar, GroupYearCount, LANGUAGE_SLOTS,
-    OTHERS_LABEL, Series, StatCard, StoriesDrilldownDialog, YearColumnsChart, YearRange,
-    YearRangeFilter, useChartTheme, useStatsQuery, yearBounds, yearSpanLabel,
+    OTHERS_LABEL, RankedBarChart, Series, StatCard, StoriesDrilldownDialog, StoryChannelCount,
+    YearColumnsChart, YearRange, YearRangeFilter, statsParams, useChartTheme, useStatsQuery, yearBounds,
+    yearSpanLabel,
 } from '../charts';
 import { STORY_TYPE_PLURALS, STORY_TYPE_UNITS } from './people-tab';
 
@@ -119,8 +120,78 @@ export const StoriesTab = () => {
                         />
                     </StatCard>
                 </div>
+                <div className="col-12">
+                    <ChannelsCard storyType={storyType} range={activeRange} unit={unit}
+                        plural={plural.charAt(0).toUpperCase() + plural.slice(1)} />
+                </div>
+                <div className="col-12 lg:col-6">
+                    <StoryTypesCard data={data.data} range={activeRange} />
+                </div>
             </div>
             <StoriesDrilldownDialog drilldown={drilldown} onHide={() => setDrilldown(null)} />
         </>
+    );
+};
+
+const CHANNELS = [
+    { key: 'magazine', label: 'Lehti' },
+    { key: 'collection', label: 'Kokoelma' },
+    { key: 'anthology', label: 'Antologia' },
+] as const;
+
+// Where stories first appeared in Finnish.
+const ChannelsCard = ({ storyType, range, unit, plural }: {
+    storyType: number | 'all';
+    range: YearRange;
+    unit: string;
+    plural: string;
+}) => {
+    const theme = useChartTheme();
+    const [share, setShare] = useState(false);
+    const data = useStatsQuery<StoryChannelCount[]>(`stats/storychannels${statsParams({ storytype: storyType })}`);
+    const rows = useMemo((): GroupYearCount[] => (data.data ?? []).map(d => ({
+        year: d.year, count: d.count, group_id: null, group_name: d.channel,
+    })), [data.data]);
+    const series: Series[] = CHANNELS.map((c, i) => ({ key: c.key, label: c.label, color: theme.series[i], id: null }));
+
+    return (
+        <StatCard
+            title="Julkaisukanavat"
+            subtitle="Missä teksti julkaistiin ensimmäisen kerran suomeksi: lehdessä, yhden kirjoittajan kokoelmassa vai useamman kirjoittajan antologiassa. Vuosi on ensijulkaisun vuosi, ei kirjoitusvuosi."
+            controls={
+                <SelectButton aria-label="Määrä vai osuus (julkaisukanavat)" value={share} options={countShareOptions}
+                    optionLabel="label" optionValue="value" allowEmpty={false}
+                    onChange={(e) => setShare(e.value)} />
+            }
+        >
+            {!data.data ? <div className="flex justify-content-center p-4"><ProgressSpinner /></div> : (
+                <YearColumnsChart rows={rows} range={range} series={series} showOthers={false}
+                    othersColor={theme.other} share={share} unit={unit} axisTitle={plural}
+                    ariaLabel="Novellit julkaisukanavittain" />
+            )}
+        </StatCard>
+    );
+};
+
+// Texts by type in the chosen years (by year of writing).
+const StoryTypesCard = ({ data, range }: { data: StoryYearCount[]; range: YearRange }) => {
+    const items = useMemo(() => {
+        const totals = new Map<number, { id: number; label: string; count: number }>();
+        data.forEach(d => {
+            if (d.storytype_id === null || d.year < range.start || d.year > range.end) return;
+            const t = totals.get(d.storytype_id)
+                ?? { id: d.storytype_id, label: d.storytype_name ?? '', count: 0 };
+            t.count += d.count;
+            totals.set(d.storytype_id, t);
+        });
+        return [...totals.values()].map(t => ({ ...t, label: t.label.charAt(0).toUpperCase() + t.label.slice(1) }));
+    }, [data, range]);
+
+    return (
+        <StatCard title="Tekstityypit"
+            subtitle="Tekstejä tyypin mukaan valitulla aikavälillä (kirjoitusvuoden mukaan). Tyyppisuodatin ei vaikuta tähän.">
+            <RankedBarChart items={items} topN={items.length} showOthers={false} unit="tekstiä"
+                itemHeader="Tyyppi" ariaLabel="Tekstit tyypeittäin" />
+        </StatCard>
     );
 };

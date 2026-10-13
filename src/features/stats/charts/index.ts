@@ -11,3 +11,4 @@ export * from './stats-data';
 export * from './collection-years-card';
 export * from './histogram';
 export * from './median-band-line';
+export * from './timeline';

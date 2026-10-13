@@ -64,3 +64,17 @@ test('people and content statistics show up in their tabs', async ({ page }) => 
         await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible({ timeout: 20000 });
     }
 });
+
+test('publisher, story and magazine statistics show up in their tabs', async ({ page }) => {
+    const tabs: [string, string[]][] = [
+        ['kustantajat', ['Aktiiviset kustantajat', 'Keskittyminen', 'Kustantajien toiminta-ajat', 'Kustantajasarjat']],
+        ['novellit', ['Julkaisukanavat', 'Tekstityypit']],
+        ['lehdet', ['Lehtien sisältö vuosittain', 'Lehtien ilmestymisajat', 'Tekstit lehdittäin']],
+    ];
+    for (const [tab, headings] of tabs) {
+        await page.goto(`/stats?tab=${tab}`);
+        for (const heading of headings) {
+            await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible({ timeout: 20000 });
+        }
+    }
+});

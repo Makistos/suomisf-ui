@@ -20,6 +20,7 @@ import { AwardsTab } from '../tabs/awards-tab';
 import { CoverageTab } from '../tabs/coverage-tab';
 import { VisitorStats } from '../components/visitor-stats';
 import { PageviewTable } from '../components/pageview-table';
+import './stats-page.css';
 
 interface StatsTab {
     key: string;
@@ -58,7 +59,7 @@ export const StatsPage = () => {
                 <TabView
                     activeIndex={active}
                     onTabChange={(e) => setSearchParams({ tab: tabs[e.index].key }, { replace: true })}
-                    scrollable
+                    className="stats-tabs"
                 >
                     {tabs.map(t => (
                         <TabPanel key={t.key} header={t.header}>

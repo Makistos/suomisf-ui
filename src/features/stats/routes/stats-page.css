@@ -1,0 +1,24 @@
+/* The tab row wraps onto several lines instead of scrolling sideways.
+   The theme marks the active tab with one sliding ink bar along the
+   bottom of the row, which can't follow a tab onto another line, so the
+   active tab gets its own underline instead, and one rule runs under the
+   whole block of tabs. */
+.stats-tabs .p-tabview-nav {
+  flex-wrap: wrap;
+  border-width: 0 0 1px 0;
+  border-style: solid;
+  border-color: var(--surface-border);
+}
+
+.stats-tabs .p-tabview-nav .p-tabview-ink-bar {
+  display: none;
+}
+
+.stats-tabs .p-tabview-nav li .p-tabview-nav-link {
+  border-width: 0;
+  margin: 0;
+}
+
+.stats-tabs .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  box-shadow: inset 0 -2px 0 var(--primary-color);
+}

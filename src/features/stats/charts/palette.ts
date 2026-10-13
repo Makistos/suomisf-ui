@@ -39,6 +39,19 @@ export const LANGUAGE_SLOTS: Record<string, number> = {
 
 export const COLOURED_LANGUAGES = Object.keys(LANGUAGE_SLOTS);
 
+// Nationalities with their own colour, in slot order (most common first).
+// Every other nationality is drawn as "Muut".
+export const NATIONALITY_SLOTS: Record<string, number> = {
+    'Yhdysvallat': 0,
+    'Suomi': 1,
+    'Iso-Britannia': 2,
+    'Ruotsi': 3,
+    'Saksa': 4,
+    'Ranska': 5,
+};
+
+export const COLOURED_NATIONALITIES = Object.keys(NATIONALITY_SLOTS);
+
 // Genres shown in the statistics, with Finnish names.
 export const GENRE_NAMES: Record<string, string> = {
     'SF': 'Science Fiction',
@@ -60,12 +73,14 @@ export const genreOptions = [
 ];
 
 // Genres combined into groups (adult, youth and children's versions
-// together), each with a fixed colour slot.
+// together), each with a fixed colour slot. Slots follow the list order,
+// which is also the stacking order, so neighbouring groups keep the
+// validated colour-blind separation.
 export const GENRE_GROUPS = [
     { key: 'SF', label: 'Science Fiction', slot: 0, genres: ['SF', 'nSF', 'lSF'] },
-    { key: 'F', label: 'Fantasia', slot: 5, genres: ['F', 'nF', 'lF'] },
-    { key: 'K', label: 'Kauhu', slot: 7, genres: ['K', 'nK'] },
-    { key: 'PF', label: 'Poliittinen fiktio', slot: 6, genres: ['PF'] },
-    { key: 'VEH', label: 'Vaihtoehtohistoria', slot: 1, genres: ['VEH'] },
-    { key: 'rajatap', label: 'Rajatapaus', slot: 3, genres: ['rajatap'] },
+    { key: 'F', label: 'Fantasia', slot: 1, genres: ['F', 'nF', 'lF'] },
+    { key: 'K', label: 'Kauhu', slot: 2, genres: ['K', 'nK'] },
+    { key: 'PF', label: 'Poliittinen fiktio', slot: 3, genres: ['PF'] },
+    { key: 'VEH', label: 'Vaihtoehtohistoria', slot: 4, genres: ['VEH'] },
+    { key: 'rajatap', label: 'Rajatapaus', slot: 5, genres: ['rajatap'] },
 ];

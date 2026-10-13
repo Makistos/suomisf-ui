@@ -23,7 +23,7 @@ import {
     GroupYearCount, Heatmap, HeatmapRow, LANGUAGE_SLOTS, LanguageYearCount, MAX_SERIES, OTHERS_LABEL,
     PublisherYearCount, Series, StatCard, WorksDrilldownDialog, YearColumnsChart, YearRange,
     YearRangeFilter, axisColours, baseChartOptions, bucketLabel, bucketOf, bucketYears, bucketsIn,
-    fromLanguages, fromPublishers, genreOptions, genreParam, groupTotals, useChartTheme,
+    GenreYearCount, fromLanguages, fromPublishers, genreOptions, genreParam, groupTotals, useChartTheme,
     useGenreIds, useStatsQuery, yearBounds, yearSpanLabel, ChartTheme, DataView,
 } from '../charts';
 
@@ -77,6 +77,7 @@ export const PublicationsTab = () => {
     const originals = useStatsQuery<LanguageYearCount[]>(`stats/origworksbyyear${genreParam(genre)}`);
     const publishers = useStatsQuery<PublisherYearCount[]>(`stats/publishersbyyear${genreParam(genre)}`);
     const allPublishers = useStatsQuery<PublisherYearCount[]>('stats/publishersbyyear');
+    const genresByYear = useStatsQuery<GenreYearCount[]>('stats/genresbyyear');
 
     const bounds = useMemo(
         () => yearBounds(firstEditions.data ?? [], originals.data ?? []),
@@ -115,6 +116,8 @@ export const PublicationsTab = () => {
                         publishers={fromPublishers(publishers.data)}
                         publisherRanking={groupTotals(fromPublishers(allPublishers.data)).map(p => p.name)}
                         publishersLoading={publishers.isLoading || allPublishers.isLoading}
+                        genres={genresByYear.data}
+                        genreFiltered={genre !== 'all'}
                         range={activeRange}
                         onLanguage={(years, s) => drill(
                             `${s.label}, ${yearSpanLabel(years.min, years.max)} · suomenkieliset ensipainokset`,
@@ -175,20 +178,37 @@ interface FirstEditionsCardProps {
     publishers: GroupYearCount[];
     publisherRanking: string[];
     publishersLoading: boolean;
+    genres: GenreYearCount[] | undefined;
+    // A genre filter is on: grouping by genre is not offered.
+    genreFiltered: boolean;
     range: YearRange;
     onLanguage: (years: { min: number; max: number }, s: Series) => void;
     onPublisher: (years: { min: number; max: number }, s: Series) => void;
 }
 
-const groupByOptions = [
+type GroupBy = 'language' | 'publisher' | 'genre';
+
+const groupByOptions: { label: string; value: GroupBy }[] = [
     { label: 'Kielet', value: 'language' },
     { label: 'Kustantajat', value: 'publisher' },
+    { label: 'Genret', value: 'genre' },
 ];
 
+// Genre rows folded into genre groups (adult, youth and children's genres
+// together). A work in two genres of a group counts twice.
+const fromGenreGroups = (data: GenreYearCount[] = []): GroupYearCount[] => data.flatMap(d => {
+    const group = GENRE_GROUPS.find(g => g.genres.includes(d.genre_abbr));
+    return group ? [{ year: d.year, count: d.count, group_id: null, group_name: group.key }] : [];
+});
+
 const FirstEditionsCard = ({
-    theme, languages, publishers, publisherRanking, publishersLoading, range, onLanguage, onPublisher,
+    theme, languages, publishers, publisherRanking, publishersLoading, genres, genreFiltered, range,
+    onLanguage, onPublisher,
 }: FirstEditionsCardProps) => {
-    const [groupBy, setGroupBy] = useState<'language' | 'publisher'>('language');
+    const [chosenGroupBy, setGroupBy] = useState<GroupBy>('language');
+    const groupBy = genreFiltered && chosenGroupBy === 'genre' ? 'language' : chosenGroupBy;
+    const byGenre = groupBy === 'genre';
+    const genreRows = useMemo(() => fromGenreGroups(genres), [genres]);
     const [share, setShare] = useState(false);
     const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
     const [selectedPublishers, setSelectedPublishers] = useState<string[]>([]);
@@ -199,27 +219,32 @@ const FirstEditionsCard = ({
         () => groupTotals(inRange(publishers, range)).map(p => ({ label: p.name, value: p.name })),
         [publishers, range]);
 
-    const series = byPublisher
-        ? publisherSeries(theme, publisherRanking, publisherIds, selectedPublishers)
-        : languageSeries(theme, languages, selectedLanguages.filter(l => l !== OTHERS_LABEL));
-    const showOthers = byPublisher
+    const series = byGenre
+        ? GENRE_GROUPS.map(g => ({ key: g.key, label: g.label, color: theme.series[g.slot], id: null }))
+        : byPublisher
+            ? publisherSeries(theme, publisherRanking, publisherIds, selectedPublishers)
+            : languageSeries(theme, languages, selectedLanguages.filter(l => l !== OTHERS_LABEL));
+    const showOthers = byGenre ? false : byPublisher
         ? selectedPublishers.length === 0
         : selectedLanguages.length === 0 || selectedLanguages.includes(OTHERS_LABEL);
 
     return (
         <StatCard
             title="Ensipainokset vuosittain"
-            subtitle={byPublisher
+            subtitle={byGenre
+                ? 'Teoksia genreryhmän ja ensimmäisen suomenkielisen painoksen vuoden mukaan. Genreryhmä yhdistää aikuisten, nuorten ja lasten genren; teos lasketaan jokaiseen genreensä.'
+                : byPublisher
                 ? 'Teoksia. Teos lasketaan kerran kullekin kustantajalle, sen ensimmäisen painoksen vuodelle; saman kustantajan uusintapainokset eivät lisää lukua.'
                 : 'Suomenkielisiä ensipainoksia alkuperäiskielen mukaan.'}
             controls={<>
-                <SelectButton aria-label="Ryhmittely" value={groupBy} options={groupByOptions}
+                <SelectButton aria-label="Ryhmittely" value={groupBy}
+                    options={genreFiltered ? groupByOptions.filter(o => o.value !== 'genre') : groupByOptions}
                     optionLabel="label" optionValue="value" allowEmpty={false}
                     onChange={(e) => setGroupBy(e.value)} />
                 <SelectButton aria-label="Määrä vai osuus" value={share} options={countShareOptions}
                     optionLabel="label" optionValue="value" allowEmpty={false}
                     onChange={(e) => setShare(e.value)} />
-                {byPublisher ? (
+                {byGenre ? null : byPublisher ? (
                     <MultiSelect aria-label="Kustantajat" value={selectedPublishers} options={publisherOptions} optionLabel="label" optionValue="value"
                         onChange={(e) => setSelectedPublishers(e.value)} filter display="chip"
                         selectionLimit={MAX_SERIES} showSelectAll={false} loading={publishersLoading}
@@ -231,21 +256,21 @@ const FirstEditionsCard = ({
                 )}
             </>}
         >
-            {byPublisher && publishersLoading ? (
+            {(byPublisher && publishersLoading) || (byGenre && !genres) ? (
                 <div className="flex justify-content-center p-4"><ProgressSpinner /></div>
             ) : (
                 <YearColumnsChart
-                    rows={byPublisher ? publishers : languages}
+                    rows={byGenre ? genreRows : byPublisher ? publishers : languages}
                     range={range}
                     series={series}
                     showOthers={showOthers}
                     othersColor={theme.other}
                     share={share}
-                    unit={byPublisher ? 'teosta' : 'ensipainosta'}
-                    axisTitle={byPublisher ? 'Teoksia' : 'Ensipainoksia'}
+                    unit={byPublisher || byGenre ? 'teosta' : 'ensipainosta'}
+                    axisTitle={byPublisher || byGenre ? 'Teoksia' : 'Ensipainoksia'}
                     ariaLabel="Ensipainokset vuosittain"
                     onSelect={(years, s) => {
-                        if (!s?.id) return;
+                        if (!s?.id || byGenre) return;
                         (byPublisher ? onPublisher : onLanguage)(years, s);
                     }}
                 />

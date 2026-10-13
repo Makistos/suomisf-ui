@@ -139,12 +139,85 @@ export interface SizeCount {
 export const fromBindings = (data: BindingYearCount[] = []): GroupYearCount[] =>
     data.map(d => ({ year: d.year, count: d.count, group_id: d.binding_id, group_name: d.binding_name }));
 
-// Query string from optional parameters ('all' and undefined are left out).
-export const statsParams = (params: Record<string, string | number | undefined>) => {
+// Query string from optional parameters. Undefined values are left out, and
+// so is 'all' (a filter's "no filter" value) except for keys in `keepAll`.
+export const statsParams = (params: Record<string, string | number | undefined>, keepAll: string[] = []) => {
     const p = new URLSearchParams();
     Object.entries(params).forEach(([k, v]) => {
-        if (v !== undefined && v !== 'all') p.append(k, String(v));
+        if (v !== undefined && (v !== 'all' || keepAll.includes(k))) p.append(k, String(v));
     });
     const query = p.toString();
     return query ? `?${query}` : '';
 };
+
+export type Material = 'books' | 'stories' | 'all';
+
+export interface NationalityPeople {
+    nationality_id: number | null;
+    nationality: string | null;
+    people: number;
+    items: number;
+}
+
+export interface Contributor {
+    id: number;
+    name: string;
+    alt_name: string | null;
+    nationality: string | null;
+    count: number;
+}
+
+export interface NationalityDecadeCount {
+    year: number;
+    count: number;
+    nationality_id: number | null;
+    nationality: string | null;
+}
+
+export interface BirthDecades {
+    people: number;
+    with_birth_year: number;
+    decades: { decade: number; count: number }[];
+}
+
+export interface TranslatorLanguage {
+    person_id: number;
+    name: string;
+    alt_name: string | null;
+    language_id: number | null;
+    language_name: string | null;
+    count: number;
+}
+
+export const fromNationalities = (data: NationalityDecadeCount[] = []): GroupYearCount[] =>
+    data.map(d => ({ year: d.year, count: d.count, group_id: d.nationality_id, group_name: d.nationality }));
+
+export interface NamedCount {
+    id: number;
+    name: string;
+    count: number;
+}
+
+export interface TagCounts {
+    types: { id: number; name: string }[];
+    tags: NamedCount[];
+}
+
+export interface TagDecadeCount {
+    year: number;
+    count: number;
+    tag_id: number;
+    tag_name: string;
+}
+
+export interface GenreYearCount {
+    year: number;
+    count: number;
+    genre_id: number;
+    genre_abbr: string;
+}
+
+export interface BookseriesStats {
+    longest: { id: number; name: string; works: number }[];
+    by_year: { year: number; total: number; in_series: number }[];
+}

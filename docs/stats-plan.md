@@ -1,6 +1,6 @@
 # Statistics page: chart review and implementation plan
 
-Status: phases 0–2 implemented 2026-10-13 (branch `stats-redesign` in both repos); see section 5. Covers the general statistics page
+Status: phases 0–3 implemented 2026-10-13 (branch `stats-redesign` in both repos); see section 5. Covers the general statistics page
 (`src/features/stats`) and the stats endpoints in `../suomisf/app/api_stats.py`
 / `impl_stats.py`. User statistics reuse the same components where noted.
 
@@ -63,7 +63,7 @@ text and grid on the dark theme, as no chart reads the theme's CSS variables.
 | Tab | Cards (statistic → form) |
 |---|---|
 | **Yleiskatsaus** | Stat tiles: teoksia, painoksia, novelleja, henkilöitä, kustantajia, lehtinumeroita, palkintoja; sivuja yhteensä / pinon korkeus · Kovakantisten osuus (meter) |
-| **Julkaisut ajassa** | Ensipainokset vuosittain (columns; group by kieli / kustantaja / genre) · Alkuteokset vuosittain (columns by language) · Suomennosviive: jakauma (histogram) · Suomennosviive: mediaani vuosikymmenittäin (line + band) · Kotimaisten osuus vuosittain (% line) · Uudet vs. uusintapainokset (stacked columns) · Kumulatiiviset ensipainokset (line) · Kustantajat × vuosikymmen (heatmap, replaces 50-colour stacks) |
+| **Julkaisut ajallisesti** | Ensipainokset vuosittain (columns; group by kieli / kustantaja / genre) · Alkuteokset vuosittain (columns by language) · Suomennosviive: jakauma (histogram) · Suomennosviive: mediaani vuosikymmenittäin (line + band) · Kotimaisten osuus vuosittain (% line) · Uudet vs. uusintapainokset (stacked columns) · Kumulatiiviset ensipainokset (line) · Kustantajat × vuosikymmen (heatmap, replaces 50-colour stacks) |
 | **Sisältö** | Teokset genreittäin (horizontal bars) · Genret vuosikymmenittäin (heatmap) · Teostyypit (bars) · Yleisimmät asiasanat per tyyppi (bars with tag-type selector) · Alagenret vuosikymmenittäin (heatmap) · Kirjasarjat: pisimmät (table + bars) · Sarjaan kuuluvien osuus (% line) · Painosmäärät per teos (histogram 1/2/3/4/5+) · Eniten painetut (table) · Uudelleensuomennokset (count + table) |
 | **Henkilöt** (material switch Kirjat / Novellit / Kaikki) | Henkilöt kansallisuuksittain (bars) · Teokset tekijän kansallisuuden mukaan (bars) · Kansallisuudet vuosikymmenittäin (100 % stacked columns, top 6 + Muut) · Tuotteliaimmat (table with inline bars; role filter, "Kaikki roolit" removed or renamed to "Kaikki roolit yhteensä") · Kääntäjät lähdekielittäin (heatmap translator × language, top 20) · Kirjoittajat syntymävuosikymmenittäin (columns, with coverage note) |
 | **Kustantajat** | Suurimmat kustantajat (bars, top N + Muut, genre filter) · Aktiiviset kustantajat vuosittain (line) · Keskittyminen: 5 suurimman osuus (% line) · Kustantajien toiminta-ajat (timeline, top 30) · Kustantajasarjat (bars, coverage note: 22 % of editions) |
@@ -76,7 +76,7 @@ text and grid on the dark theme, as no chart reads the theme's CSS variables.
 Where today's statistics go (numbers from the earlier review):
 1–5 → Yleiskatsaus tiles · 6 → Sisältö · 7, 8, 15, 16 → Henkilöt (material
 switch replaces the duplicate code in `short-story-chart.tsx`) · 9, 10, 12 →
-Julkaisut ajassa as separate cards · 11 replaced by the translation-delay cards
+Julkaisut ajallisesti as separate cards · 11 replaced by the translation-delay cards
 (the old comparison stays available as a toggle on the first-editions card) ·
 13 → Kustantajat · 14 → Lehdet · 17 → Novellit.
 
@@ -213,7 +213,7 @@ Phase 2 is done:
   no caching.
 - New chart pieces: `Histogram` (labelled, possibly uneven bins) and
   `MedianBandLine` (median + quartile band).
-- Julkaisut ajassa: Painokset vuosittain (first / new version / reprint),
+- Julkaisut ajallisesti: Painokset vuosittain (first / new version / reprint),
   Suomennosviive (histogram) and its median by decade, Kotimaisten osuus.
 - Sisältö: Painoksia teosta kohden, Eniten painetut, Uudelleensuomennokset
   (summary + new translations by decade) and a table of retranslated works.
@@ -228,3 +228,33 @@ Differences from the plan:
 - Kirjat esineinä counts every printing, reprints included.
 - Data notes: several editions have a year-like page count (2 008–2 018
   pages) and one has 3 602; they top the Paksuimmat table.
+
+Phase 3 is done:
+
+- Backend (people endpoints take `material=books|stories|all`, `role`,
+  `genre`, `storytype`): `contributornationalities`, `topcontributors`,
+  `nationalitiesbydecade`, `birthdecades`, `translatorlanguages`; content:
+  `worktypecounts`, `genresbyyear`, `tagcounts`, `tagsbydecade`,
+  `bookseries`. All under 200 ms.
+- People counts now include edition-level roles (translator, cover artist,
+  illustrator). The old `personcounts`/`nationalitycounts` only looked at
+  work contributors, so the book translator list was empty; the frontend no
+  longer uses them. `filterworks?nationality=` uses the same base, so a
+  clicked bar lists the same works it counts.
+- Henkilöt: Kirjat / Novellit / Kaikki; one role filter for the whole tab
+  (Kaikki roolit counts any role). Cards: Kansallisuudet (people or
+  works), Tuotteliaimmat, Kansallisuudet vuosikymmenittäin (6 fixed
+  nationality colours + Muut), Syntymävuosikymmenet (with coverage),
+  Kääntäjät lähdekielittäin (heatmap).
+- Sisältö: Teostyypit, Genret vuosikymmenittäin, Yleisimmät asiasanat
+  (tag type selector), Asiasanat vuosikymmenittäin (default Alagenre),
+  Pisimmät kirjasarjat, Sarjaan kuuluvien osuus.
+- Julkaisut ajallisesti: first editions can be grouped by genre group.
+
+Differences from the plan:
+
+- Tuotteliaimmat follows the tab's role filter instead of its own role
+  dropdown.
+- Genre groups now use colour slots 0–5 in stacking order (Fantasia's
+  green sat next to Kauhu's red, which colour-blind readers can't tell
+  apart); the cumulative chart changes colour accordingly.

@@ -1,4 +1,4 @@
-// Cards for the Julkaisut ajassa tab built on edition data: first
+// Cards for the Julkaisut ajallisesti tab built on edition data: first
 // editions vs new versions vs reprints, translation delay, and the share
 // of Finnish originals.
 

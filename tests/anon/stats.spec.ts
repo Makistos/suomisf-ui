@@ -9,7 +9,7 @@ test('Stats page renders every tab without errors', async ({ page }) => {
     // Overview: headline tiles, no chart.
     await expect(page.getByText('Teoksia', { exact: true })).toBeVisible({ timeout: 20000 });
 
-    for (const tabName of ['Julkaisut ajassa', 'Sisältö', 'Henkilöt', 'Kustantajat', 'Novellit', 'Lehdet', 'Kirjat esineinä']) {
+    for (const tabName of ['Julkaisut ajallisesti', 'Sisältö', 'Henkilöt', 'Kustantajat', 'Novellit', 'Lehdet', 'Kirjat esineinä']) {
         await page.getByRole('tab', { name: tabName }).click();
         await expect(page.locator('.p-tabview-panel canvas').first()).toBeVisible({ timeout: 20000 });
     }
@@ -51,4 +51,16 @@ test('edition and work statistics show up in their tabs', async ({ page }) => {
     // Decades switch the page-count card to decades.
     await page.getByRole('group', { name: 'Suodattimet' }).getByText('Vuosikymmenittäin').click();
     await expect(page.getByRole('heading', { name: 'Sivumäärä vuosikymmenittäin' })).toBeVisible();
+});
+
+test('people and content statistics show up in their tabs', async ({ page }) => {
+    await page.goto('/stats?tab=henkilot');
+    for (const heading of ['Kansallisuudet', 'Tuotteliaimmat henkilöt (10)', 'Kansallisuudet vuosikymmenittäin', 'Syntymävuosikymmenet', 'Kääntäjät lähdekielittäin']) {
+        await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible({ timeout: 20000 });
+    }
+
+    await page.goto('/stats?tab=sisalto');
+    for (const heading of ['Teostyypit', 'Genret vuosikymmenittäin', 'Yleisimmät asiasanat', 'Pisimmät kirjasarjat', 'Asiasanat vuosikymmenittäin', 'Sarjaan kuuluvien osuus']) {
+        await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible({ timeout: 20000 });
+    }
 });

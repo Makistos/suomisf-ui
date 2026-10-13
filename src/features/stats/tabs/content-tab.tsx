@@ -9,6 +9,10 @@ import {
     useChartTheme, useGenreIds, useStatsQuery, yearBounds,
 } from '../charts';
 
+import {
+    GenreDecadesCard, LongestSeriesCard, SeriesShareCard, TagDecadesCard, TagsCard, WorkTypesCard,
+} from './content-cards';
+
 const fmt = (n: number) => n.toLocaleString('fi-FI');
 
 const Loading = () => <div className="flex justify-content-center p-4"><ProgressSpinner /></div>;
@@ -56,6 +60,24 @@ export const ContentTab = () => {
                         }}
                     />
                 </StatCard>
+            </div>
+            <div className="col-12 lg:col-6">
+                <WorkTypesCard />
+            </div>
+            <div className="col-12">
+                <GenreDecadesCard />
+            </div>
+            <div className="col-12 lg:col-6">
+                <TagsCard />
+            </div>
+            <div className="col-12 lg:col-6">
+                <LongestSeriesCard />
+            </div>
+            <div className="col-12">
+                <TagDecadesCard />
+            </div>
+            <div className="col-12 lg:col-6">
+                <SeriesShareCard />
             </div>
             <EditionsPerWorkCards />
             <RetranslationsCards />
@@ -133,21 +155,21 @@ const RetranslationsCards = () => {
                     {!d ? <Loading /> : (
                         <>
                             <StatTiles tiles={[
-                                { label: 'Uudelleen suomennettuja teoksia', value: d.retranslated_works,
-                                    note: `${share.toLocaleString('fi-FI', { maximumFractionDigits: 1 })} % teoksista, joiden kääntäjä tiedetään` },
-                                { label: 'Uusia suomennoksia', value: rows.reduce((sum, r) => sum + r.count, 0),
-                                    note: 'teoksen toinen tai myöhempi suomennos' },
+                                { label: 'Teoksia, jotka on suomennettu uudelleen', value: d.retranslated_works,
+                                    note: `Teos lasketaan kerran, vaikka suomennoksia olisi useita. ${share.toLocaleString('fi-FI', { maximumFractionDigits: 1 })} % teoksista, joiden kääntäjä tiedetään.` },
+                                { label: 'Uusintasuomennoksia yhteensä', value: rows.reduce((sum, r) => sum + r.count, 0),
+                                    note: 'Teosten toiset, kolmannet jne. suomennokset; ensimmäistä ei lasketa. Yhdeksän kertaa suomennettu teos tuo luvun 8.' },
                             ]} columnClass="col-6" />
-                            <h4 className="mb-2">Uudet suomennokset vuosikymmenittäin</h4>
+                            <h4 className="mb-2">Uusintasuomennokset vuosikymmenittäin</h4>
                             <YearColumnsChart
                                 rows={rows}
                                 range={range}
-                                series={[{ key: '*', label: 'Uudet suomennokset', color: theme.series[0], id: null }]}
+                                series={[{ key: '*', label: 'Uusintasuomennokset', color: theme.series[0], id: null }]}
                                 showOthers={false}
                                 othersColor={theme.other}
-                                unit="suomennosta"
-                                axisTitle="Suomennoksia"
-                                ariaLabel="Uudet suomennokset vuosikymmenittäin"
+                                unit="uusintasuomennosta"
+                                axisTitle="Uusintasuomennoksia"
+                                ariaLabel="Uusintasuomennokset vuosikymmenittäin"
                             />
                         </>
                     )}

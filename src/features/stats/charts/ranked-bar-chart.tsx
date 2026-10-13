@@ -45,6 +45,12 @@ interface RankedBarChartProps {
 
 const fmt = (n: number) => n.toLocaleString('fi-FI');
 
+// Longer bar labels are shortened on the axis; the tooltip and table show
+// them in full.
+const LABEL_MAX = 28;
+const shorten = (label: string) =>
+    label.length > LABEL_MAX ? `${label.slice(0, LABEL_MAX - 1).trimEnd()}…` : label;
+
 // Writes each bar's value just past its end, in the theme's text colour.
 const valueLabels = (colour: string): Plugin<'bar'> => ({
     id: 'valueLabels',
@@ -122,6 +128,7 @@ export const RankedBarChart = ({
                 tooltip: {
                     ...base.plugins.tooltip,
                     callbacks: {
+                        title: (items: TooltipItem<'bar'>[]) => shown[items[0]?.dataIndex ?? 0]?.label ?? '',
                         label: (ctx: TooltipItem<'bar'>) => {
                             const value = ctx.parsed.x ?? 0;
                             const share = (value / Math.max(1, total) * 100)
@@ -134,7 +141,8 @@ export const RankedBarChart = ({
             scales: {
                 x: { ...axisColours(theme), beginAtZero: true, suggestedMax: max, position: 'top' as const },
                 y: { ...axisColours(theme), grid: { display: false },
-                    ticks: { ...axisColours(theme).ticks, color: theme.text, autoSkip: false } },
+                    ticks: { ...axisColours(theme).ticks, color: theme.text, autoSkip: false,
+                        callback: (_v: string | number, i: number) => shorten(shown[i]?.label ?? '') } },
             },
         };
     }, [theme, shown, total, unit, onSelect]);

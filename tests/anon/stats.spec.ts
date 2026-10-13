@@ -28,7 +28,7 @@ test('the open tab is kept in the URL', async ({ page }) => {
 
 test('admin-only tabs are hidden from visitors', async ({ page }) => {
     await page.goto('/stats');
-    await expect(page.getByRole('tab', { name: 'Yleiskatsaus' })).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Yleistä' })).toBeVisible();
     await expect(page.getByRole('tab', { name: 'Kävijät' })).toHaveCount(0);
     await expect(page.getByRole('tab', { name: 'Käynnit' })).toHaveCount(0);
 });

@@ -30,7 +30,7 @@ interface StatsTab {
 }
 
 const TABS: StatsTab[] = [
-    { key: 'yleiskatsaus', header: 'Yleiskatsaus', content: () => <OverviewTab /> },
+    { key: 'yleiskatsaus', header: 'Yleistä', content: () => <OverviewTab /> },
     { key: 'julkaisut', header: 'Julkaisut ajallisesti', content: () => <PublicationsTab /> },
     { key: 'sisalto', header: 'Sisältö', content: () => <ContentTab /> },
     { key: 'henkilot', header: 'Henkilöt', content: () => <PeopleTab /> },

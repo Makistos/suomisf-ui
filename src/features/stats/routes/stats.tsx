@@ -1,8 +1,8 @@
 // Statistics about the bibliography, arranged by the question asked
 // (overview, publishing over time, content, people, publishers, stories,
-// magazines, books as objects, awards). Each tab fetches its own data from
-// /api/stats/* when opened; shared chart pieces are in ../charts. The plan
-// is in docs/stats-plan.md.
+// magazines, books as objects, awards, data coverage). Each tab fetches its
+// own data from /api/stats/* when opened; shared chart pieces are in
+// ../charts. The plan is in docs/stats-plan.md.
 
 import { TabView, TabPanel } from 'primereact/tabview';
 import { useSearchParams } from 'react-router-dom';
@@ -17,6 +17,7 @@ import { StoriesTab } from '../tabs/stories-tab';
 import { MagazinesTab } from '../tabs/magazines-tab';
 import { BooksTab } from '../tabs/books-tab';
 import { AwardsTab } from '../tabs/awards-tab';
+import { CoverageTab } from '../tabs/coverage-tab';
 import { VisitorStats } from '../components/visitor-stats';
 import { PageviewTable } from '../components/pageview-table';
 
@@ -37,6 +38,7 @@ const TABS: StatsTab[] = [
     { key: 'lehdet', header: 'Lehdet', content: () => <MagazinesTab /> },
     { key: 'kirjat', header: 'Kirjat esineinä', content: () => <BooksTab /> },
     { key: 'palkinnot', header: 'Palkinnot', content: () => <AwardsTab /> },
+    { key: 'kattavuus', header: 'Kattavuus', content: () => <CoverageTab /> },
     { key: 'kavijat', header: 'Kävijät', content: () => <VisitorStats />, adminOnly: true },
     { key: 'kaynnit', header: 'Käynnit', content: () => <PageviewTable />, adminOnly: true },
 ];

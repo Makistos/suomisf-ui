@@ -79,3 +79,12 @@ test('publisher, story, magazine and award statistics show up in their tabs', as
         }
     }
 });
+
+test('coverage tab shows a meter for each recorded detail', async ({ page }) => {
+    await page.goto('/stats?tab=kattavuus');
+    for (const heading of ['Painokset', 'Teokset', 'Henkilöt', 'Novellit']) {
+        await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible({ timeout: 20000 });
+    }
+    await expect(page.getByRole('meter', { name: 'Kansikuva' })).toBeVisible();
+    await expect(page.getByRole('meter', { name: 'Syntymävuosi' })).toBeVisible();
+});

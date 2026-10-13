@@ -31,7 +31,10 @@ export const StatTiles = ({ tiles, columnClass = 'col-6 md:col-4 lg:col-3' }: {
 // A share against a whole, e.g. hardbacks among first editions.
 export const Meter = ({ label, part, whole, note }: { label: string; part: number; whole: number; note?: ReactNode }) => {
     const percent = whole ? (part / whole) * 100 : 0;
-    const shown = percent.toLocaleString('fi-FI', { maximumFractionDigits: 1 });
+    // Never round an incomplete share up to 100 % or a non-zero one down to 0 %.
+    const rounded = Math.round(percent * 10) / 10;
+    const capped = part < whole && rounded >= 100 ? 99.9 : part > 0 && rounded <= 0 ? 0.1 : rounded;
+    const shown = capped.toLocaleString('fi-FI', { maximumFractionDigits: 1 });
     return (
         <div>
             <div className="flex justify-content-between mb-1">

@@ -277,3 +277,13 @@ export interface AwardedPerson {
     works: number;
     stories: number;
 }
+
+export interface Coverage {
+    editions: { total: number; image: number; pages: number; isbn: number; size: number; binding: number; verified: number };
+    works: {
+        total: number; description: number; tags: number; genre: number; orig_year: number; language: number;
+        translated_works: number; translator: number;
+    };
+    people: { total: number; birth_year: number; nationality: number; image: number; bio: number };
+    stories: { total: number; year: number; language: number };
+}

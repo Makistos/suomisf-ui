@@ -9,8 +9,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getApiContent } from "@services/user-service";
 import { getCurrenUser } from "@services/auth-service";
 import { getGenreColors } from "../../genre";
-import { WorksByYearChart } from "../../stats/components/works-by-year-chart";
-import { genreOptions, publisherColors } from "../../stats/components/publisher-chart";
+import { CollectionYearsCard } from "../../stats/charts/collection-years-card";
+import { genreOptions } from "../../stats/charts/palette";
 import { WorkList } from "@features/work/components/work-list";
 import { Work } from "@features/work/types";
 
@@ -74,6 +74,16 @@ interface UserCollectionChartsProps {
     // for the owned collection, "read" for works marked read.
     filterParam: 'owner' | 'read';
 }
+
+// Colours for the publisher pie (cycle through these)
+const publisherColors = [
+    '#0958D7', '#D30031', '#31572C', '#7B2D8E', '#E67E22',
+    '#E91E63', '#17A2B8', '#DAA520', '#6C757D', '#82C341',
+    '#4A90D9', '#FF696D', '#9B59B6', '#A0522D', '#008B8B',
+    '#21D011', '#7EC8E3', '#2C3E50', '#F39C12', '#1ABC9C',
+    '#8E44AD', '#C0392B', '#27AE60', '#2980B9', '#D35400',
+    '#16A085', '#E74C3C', '#3498DB', '#9B59B6', '#34495E',
+];
 
 export const UserCollectionCharts = ({ userId, genreData, comp, filterParam }: UserCollectionChartsProps) => {
     const user = useMemo(() => getCurrenUser(), []);
@@ -346,11 +356,11 @@ export const UserCollectionCharts = ({ userId, genreData, comp, filterParam }: U
 
             {/* Publications per year */}
             {comp && comp.editions_by_year.length > 0 && (
-                <WorksByYearChart
+                <CollectionYearsCard
                     finnishEditionData={comp.editions_by_year}
                     originalYearData={comp.origworks_by_year}
-                    ownerId={filterParam === 'owner' ? userId : undefined}
-                    readUserId={filterParam === 'read' ? userId : undefined}
+                    filterParam={filterParam}
+                    userId={userId}
                 />
             )}
 

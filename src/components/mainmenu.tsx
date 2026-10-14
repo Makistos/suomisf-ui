@@ -243,7 +243,8 @@ export default function MainMenu() {
             icon: 'fa-solid fa-circle-user',
             items: [
                 {
-                    label: 'Lista'
+                    label: 'Käyttäjät',
+                    url: '/users'
                 },
                 {
                     label: 'Omat tiedot',

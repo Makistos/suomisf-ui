@@ -43,6 +43,7 @@ const Changes = lazy(() => import('./features/changes/routes/changes-page').then
 const LatestAdditions = lazy(() => import('./features/latest/routes/latest-additions').then(m => ({ default: m.LatestAdditions })));
 const FAQ = lazy(() => import('./faq').then(m => ({ default: m.FAQ })));
 const ProfilePage = lazy(() => import('@features/user/routes/profile-page'));
+const UsersPage = lazy(() => import('@features/user/routes/users-page').then(m => ({ default: m.UsersPage })));
 const ShortPage = lazy(() => import('@features/short/routes/short-page').then(m => ({ default: m.ShortPage })));
 const WorksByType = lazy(() => import('@features/work/routes/works-by-type').then(m => ({ default: m.WorksByType })));
 const StatsPage = lazy(() => import('@features/stats').then(m => ({ default: m.StatsPage })));
@@ -98,6 +99,7 @@ root.render(
             <Route path="/stats" element={<StatsPage />} />
             <Route path="/suggestions" element={<SuggestionPage />} />
             <Route path="/home-alt" element={<HomeAlt />} />
+            <Route path="/users" element={<UsersPage />} />
             <Route path="/users/:itemId" element={<ProfilePage id={null} />} />
             <Route path="*" element={<LoadError notFoundTitle="Sivua ei löydy" notFoundText="Tarkista osoite." />} />
           </Route>

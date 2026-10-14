@@ -191,6 +191,11 @@ body {
 
 .p-menubar {
   width: 100%;
+  /* Lift the menu's dropdowns above page content that makes its own
+     layer, such as a scrollable DataTable's sticky header (z-index 1, later
+     in the page). Stays below dialogs and overlays (z-index 1000+). */
+  position: relative;
+  z-index: 20;
 }
 
 /* The search box's natural width (~277px) used to keep the menubar wider

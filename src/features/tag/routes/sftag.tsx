@@ -49,8 +49,9 @@ const MergeTagsDialog = ({ tagId, user, onDone }:
     const { control, handleSubmit } = useForm<Record<string, TagTypeInfo>>();
     const [filteredTags, setFilteredTags] = useState<any>(null);
     const mergeTagsSubmit: SubmitHandler<Record<string, TagTypeInfo>> = (data) => {
-        const source = Number(data.name.id);
-        if (source && tagId) {
+        const source = Number(data.name?.id);
+        // Merging a tag into itself would delete it and all its links.
+        if (source && tagId && source !== Number(tagId)) {
             mergeTags(Number(tagId), source, user);
         }
         onDone();
@@ -59,7 +60,9 @@ const MergeTagsDialog = ({ tagId, user, onDone }:
     async function getTags(query: string) {
         try {
             const response = await filterTags(query, user);
-            setFilteredTags(response);
+            // The tag can't be merged with itself, so it is not offered.
+            setFilteredTags(response.filter(
+                (tag: TagTypeInfo) => tag.id !== Number(tagId)));
         } catch (e) {
             console.error(e);
         }
@@ -96,7 +99,7 @@ const MergeTagsDialog = ({ tagId, user, onDone }:
                         <Controller name="name" control={control}
                             render={({ field, fieldState }) => (
                                 <AutoComplete
-                                    id={field.name}
+                                    inputId={field.name}
                                     value={field.value}
                                     field="name"
                                     onChange={(e) => field.onChange(e.value)}

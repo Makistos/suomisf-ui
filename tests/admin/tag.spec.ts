@@ -32,3 +32,22 @@ test('admin can rename and delete a tag with no linked content', async ({ adminP
     await dialAction(adminPage, 'Poista').click();
     await expect(adminPage).not.toHaveURL(urlBeforeDelete, { timeout: 20000 });
 });
+
+// Merging a tag into itself deleted the tag and every link to it, so the
+// merge search must not offer the tag whose page it is on. Nothing is
+// submitted here.
+test('tag merge search does not offer the tag itself', async ({ adminPage }) => {
+    await adminPage.goto('/tags/6');
+    await expect(adminPage.getByRole('heading', { name: 'avaruus', exact: true })).toBeVisible({ timeout: 20000 });
+
+    await adminPage.locator('.fixed-dial .p-speeddial-button').click();
+    await dialAction(adminPage, 'Yhdistä').click();
+    const mergeDialog = adminPage.getByRole('dialog').filter({ hasText: 'Yhdistä asiasana' });
+    await mergeDialog.getByLabel('Yhdistettävä asiasana').pressSequentially('avaruus');
+
+    const options = adminPage.getByRole('option');
+    // Other tags containing the word are offered...
+    await expect(options.filter({ hasText: 'avaruusooppera' })).toBeVisible({ timeout: 20000 });
+    // ...but not "avaruus" itself.
+    await expect(options.filter({ hasText: /^avaruus$/ })).toHaveCount(0);
+});

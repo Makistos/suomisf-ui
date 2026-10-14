@@ -8,6 +8,7 @@ import { getCurrenUser } from "@services/auth-service";
 export interface ReadWork {
     work_id: number;
     opinion: number | null; // -1 didn't like, 0 it was ok, 1 liked, null none
+    description: string | null; // the user's own note on the work
     title: string;
     author_str: string;
     pubyear: number;
@@ -34,30 +35,43 @@ export const useReadWorks = () => {
     });
 
     const readMap = new Map<number, number | null>();
-    (query.data ?? []).forEach(w => readMap.set(w.work_id, w.opinion));
+    const notes = new Map<number, string | null>();
+    (query.data ?? []).forEach(w => {
+        readMap.set(w.work_id, w.opinion);
+        notes.set(w.work_id, w.description);
+    });
 
     const invalidate = () =>
         queryClient.invalidateQueries({ queryKey: ["readworks", userId] });
 
-    /** Mark a work read (or update its opinion). */
-    const setRead = async (workId: number, opinion: number | null) => {
+    /**
+     * Mark a work read (or update its opinion). Pass description to set the
+     * note; leave it out to keep the current one.
+     */
+    const setRead = async (workId: number, opinion: number | null, description?: string) => {
+        const note = description === undefined ? undefined : (description.trim() || null);
         // Optimistic: update the cache synchronously so the UI redraws at
         // once instead of waiting for the request and refetch.
         queryClient.setQueryData<ReadWork[]>(["readworks", userId], (old) => {
             const list = old ? [...old] : [];
             const idx = list.findIndex(w => w.work_id === workId);
             if (idx >= 0) {
-                list[idx] = { ...list[idx], opinion };
+                list[idx] = {
+                    ...list[idx], opinion,
+                    ...(note === undefined ? {} : { description: note }),
+                };
                 return list;
             }
             return [...list, {
-                work_id: workId, opinion,
+                work_id: workId, opinion, description: note ?? null,
                 title: "", author_str: "", pubyear: 0,
             }];
         });
         try {
-            await postApiContent("works/read",
-                { work_id: workId, user_id: userId, opinion }, user);
+            await postApiContent("works/read", {
+                work_id: workId, user_id: userId, opinion,
+                ...(note === undefined ? {} : { description: note ?? "" }),
+            }, user);
         } catch (err) {
             console.error("Failed to set read status", err);
         }
@@ -82,6 +96,7 @@ export const useReadWorks = () => {
         isLoading: query.isLoading,
         isRead: (id: number) => readMap.has(id),
         opinionOf: (id: number) => readMap.get(id) ?? null,
+        descriptionOf: (id: number) => notes.get(id) ?? null,
         setRead,
         unsetRead,
     };

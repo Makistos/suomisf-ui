@@ -9,6 +9,21 @@ import { LogItem } from "../types";
 import { getApiContent } from "../../../services/user-service";
 import { useState } from "react";
 
+// Page of each logged table (log.table_name), by its route in index.tsx.
+const tablePaths: Record<string, string> = {
+  "Teos": "works",
+  "Painos": "editions",
+  "Henkilö": "people",
+  "Novelli": "shorts",
+  "Kustantaja": "publishers",
+  "Kirjasarja": "bookseries",
+  "Julkaisusarja": "pubseries",
+  "Lehti": "magazines",
+  "Irtonumero": "issues",
+  "Asiasana": "tags",
+  "Palkinto": "awards",
+};
+
 export const Changes = () => {
   const [expandedRows, setExpandedRows] = useState<DataTableExpandedRows | LogItem[]>([]);
 
@@ -28,27 +43,16 @@ export const Changes = () => {
   });
 
   const linkTemplate = (rowData: LogItem) => {
-    if (rowData.table_name === "Teos") {
-      return (
-        <Link to={`/works/${rowData.table_id}`} key={rowData.table_id}>
-          {rowData.object_name}
-        </Link>
-      )
+    const path = tablePaths[rowData.table_name];
+    // A deleted row has no page left to link to.
+    if (!path || rowData.action === "Poisto") {
+      return rowData.object_name;
     }
-    if (rowData.table_name === "Painos") {
-      return (
-        <Link to={`/editions/${rowData.table_id}`} key={rowData.table_id}>
-          {rowData.object_name}
-        </Link>
-      )
-    }
-    if (rowData.table_name === "Henkilö") {
-      return (
-        <Link to={`/people/${rowData.table_id}`} key={rowData.table_id}>
-          {rowData.object_name}
-        </Link>
-      )
-    }
+    return (
+      <Link to={`/${path}/${rowData.table_id}`} key={rowData.table_id}>
+        {rowData.object_name}
+      </Link>
+    )
   }
 
   const headerTemplate = (data: LogItem) => {

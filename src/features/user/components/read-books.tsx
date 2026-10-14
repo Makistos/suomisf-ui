@@ -15,6 +15,7 @@ import { getCurrenUser } from "@services/auth-service";
 interface ReadBook {
     work_id: number;
     opinion: number | null;
+    description: string | null;
     title: string;
     author_str: string;
     pubyear: number;
@@ -85,7 +86,7 @@ export const ReadBooks = ({ userId }: ReadBooksProps) => {
                 size="small"
                 loading={isLoading}
                 filters={filters}
-                globalFilterFields={["author_str", "title"]}
+                globalFilterFields={["author_str", "title", "description"]}
                 header={header}
                 emptyMessage="Ei luettuja teoksia"
                 paginator
@@ -102,6 +103,7 @@ export const ReadBooks = ({ userId }: ReadBooksProps) => {
                 <Column field="opinion" header="Arvio"
                     body={opinionTemplate} sortable
                     style={{ width: "5rem", textAlign: "center" }} />
+                <Column field="description" header="Kuvaus" sortable />
             </DataTable>
         </div>
     );

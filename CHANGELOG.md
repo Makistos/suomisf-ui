@@ -3,6 +3,18 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-10-14 `36b0eac` — User list
+The "Lista" item in the user menu did nothing. It is now "Käyttäjät" and opens a list of all users with how many editions each owns and has on their wishlist, how many works they have read, and whether they are an admin; names link to the users' pages, and the list can be sorted and searched. Also fixed: menu dropdowns were drawn under a scrollable table's header row.
+
+## 2026-10-14 `0747252` — Change history links every record type
+The change history (Muutokset) links short stories, publishers, book series, publisher series, magazines, issues, tags and awards to their pages, not only works, editions and people. Deleted records are shown without a link.
+
+## 2026-10-14 `30ed15c` — Notes on read works
+Marking a work read opens a dialog for an optional note ("Lisätietoja", up to 500 characters), like the condition dialog of an owned edition. A button next to the thumbs edits the note later and shows it as a tooltip, and the read books list has a "Kuvaus" column that the search also covers.
+
+## 2026-10-13 `bf188f0` — "Näytä kaikki" shows every row
+The "Näytä kaikki" tables on the statistics page showed only the top 100 publishers, tags and series; they now list all of them (e.g. 475 publishers). The publisher count on the overview counts publishers with at least one edition, so it matches the list.
+
 ## 2026-10-13 `bcb7330` — Statistics tabs fit one row
 The first statistics tab is now called "Yleistä" (was "Yleiskatsaus") and the tabs are a little narrower, so all of them fit on one line on a desktop screen; they still wrap on narrower screens.
 

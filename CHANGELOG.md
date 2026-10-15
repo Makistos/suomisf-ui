@@ -3,6 +3,9 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-10-14 `b6ebb10` — A tag can't be merged into itself
+The merge dialog on a tag page offered the tag itself in its search, and merging a tag with itself deleted the tag and all its links. The tag is no longer offered, and the backend refuses such a merge.
+
 ## 2026-10-14 `36b0eac` — User list
 The "Lista" item in the user menu did nothing. It is now "Käyttäjät" and opens a list of all users with how many editions each owns and has on their wishlist, how many works they have read, and whether they are an admin; names link to the users' pages, and the list can be sorted and searched. Also fixed: menu dropdowns were drawn under a scrollable table's header row.
 

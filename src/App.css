@@ -202,7 +202,7 @@ body {
    than a phone screen, making every page scroll sideways. Let the end slot
    shrink and the search fill whatever room is left; desktop is unchanged. */
 /* Menu item shown as an icon only; its label stays for screen readers. */
-.icon-only-menuitem .p-menuitem-text {
+.icon-only-menuitem > .p-menuitem-content .p-menuitem-text {
   position: absolute;
   width: 1px;
   height: 1px;

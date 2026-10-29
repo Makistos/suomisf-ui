@@ -420,7 +420,7 @@ export default function MainMenu() {
             >
                 <Suspense fallback={dialogFallback}><LoginView /></Suspense>
             </Dialog>
-            <Dialog visible={registerVisible} onHide={() => onHide()}
+            <Dialog visible={registerVisible} onHide={() => setRegisterVisible(false)}
                 breakpoints={{ '960px': '75vw', '640px': '100vw' }} style={{ width: '50vw' }}
             >
                 <Suspense fallback={dialogFallback}><RegisterView /></Suspense>

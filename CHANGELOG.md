@@ -3,6 +3,12 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-10-29 `ef0c4ff` — Kirjasampo tag import date
+Saving the "Tuo Kirjasampo-asiasanat" dialog records the date on the work. The work page and the front page's "Bibliografiasta löytyy" popups show "Tuotu Kirjasamposta" with the date under the tags, and admins have a "Kirjasampo-asiasanat tuomatta" button in the random incomplete work view that finds works with a Kirjasampo link whose tags have not been imported.
+
+## 2026-10-29 `d6394d5` — Account menu labels and register dialog
+When logged out, the account menu's "Kirjaudu" and "Rekisteröidy" items showed no text, and the register dialog's close button did nothing. Both fixed.
+
 ## 2026-10-14 `b6ebb10` — A tag can't be merged into itself
 The merge dialog on a tag page offered the tag itself in its search, and merging a tag with itself deleted the tag and all its links. The tag is no longer offered, and the backend refuses such a merge.
 

@@ -12,6 +12,7 @@ import { CollectionStatsDialog } from '../components/collection-stats-dialog';
 import { getApiContent, postApiContent } from '@services/user-service';
 import { useQuery } from '@tanstack/react-query';
 import { User } from '../types';
+import { isAdmin } from '../utils/is-admin';
 import { Contribution } from '../../../types/contribution';
 
 interface UserPageProps {
@@ -88,11 +89,13 @@ const ProfilePage = ({ id }: UserPageProps) => {
         setCurrentContent(3);
     };
 
-    const handleFormSubmit = async () => {
+    // fieldsOverride replaces the checkbox selection (used by the
+    // Kirjasampo button, which searches on its own criterion only).
+    const handleFormSubmit = async (fieldsOverride?: string[]) => {
         setIsLoadingRandomWork(true);
         try {
             // Build the missing_fields array based on checked checkboxes
-            const missingFields: string[] = [];
+            let missingFields: string[] = [];
             if (formData.description) missingFields.push('description');
             if (formData.tags) missingFields.push('tags');
             if (formData.genres) missingFields.push('genres');
@@ -103,6 +106,7 @@ const ProfilePage = ({ id }: UserPageProps) => {
             if (formData.size) missingFields.push('size');
             if (formData.binding) missingFields.push('binding');
             if (formData.image) missingFields.push('image');
+            if (fieldsOverride) missingFields = fieldsOverride;
 
             const requestBody = {
                 count: formData.count,
@@ -312,8 +316,19 @@ const ProfilePage = ({ id }: UserPageProps) => {
                             label="Hae teoksia"
                             icon="pi pi-search"
                             loading={isLoadingRandomWork}
-                            onClick={handleFormSubmit}
+                            onClick={() => handleFormSubmit()}
                         />
+                        {isAdmin(currentUser) && (
+                            <Button
+                                label="Kirjasampo-asiasanat tuomatta"
+                                icon="pi pi-tags"
+                                severity="secondary"
+                                tooltip="Teokset, joilla on Kirjasampo-linkki mutta joihin ei ole tuotu Kirjasampo-asiasanoja"
+                                tooltipOptions={{ position: 'top' }}
+                                loading={isLoadingRandomWork}
+                                onClick={() => handleFormSubmit(['kirjasampo_tags'])}
+                            />
+                        )}
                     </div>
 
                     {randomWorkResults.length > 0 && (

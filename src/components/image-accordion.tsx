@@ -9,6 +9,7 @@ import { Genre } from "@features/genre/types";
 import { GenreGroup } from "@features/genre/components/genre-group";
 import { SfTag } from "@features/tag/types";
 import { TagGroup } from "@features/tag/components/sftag-group";
+import { KirjasampoImportedNote } from "@features/tag/components/kirjasampo-imported-note";
 import { safeHtml } from "@utils/safe-html";
 
 export interface ImageAccordionItem {
@@ -20,6 +21,8 @@ export interface ImageAccordionItem {
     description?: string;
     genres?: Genre[];
     tags?: SfTag[];
+    // When Kirjasampo tags were last imported (ISO timestamp), if ever.
+    kirjasampoImported?: string | null;
     linkTo: string;
 }
 
@@ -161,6 +164,11 @@ export const ImageAccordion = ({ items, imageHeight = DEFAULT_IMAGE_HEIGHT }: Im
                         {activeItem.tags && activeItem.tags.length > 0 && (
                             <div className="mt-2">
                                 <TagGroup tags={activeItem.tags} overflow={5} showOneCount />
+                            </div>
+                        )}
+                        {activeItem.kirjasampoImported && (
+                            <div className="mt-2">
+                                <KirjasampoImportedNote imported={activeItem.kirjasampoImported} />
                             </div>
                         )}
                     </div>

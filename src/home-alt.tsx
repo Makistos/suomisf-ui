@@ -122,6 +122,7 @@ export const HomeAlt = () => {
       description: edition.work?.description,
       genres: edition.work?.genres,
       tags: edition.work?.tags,
+      kirjasampoImported: edition.work?.kirjasampo_imported,
       linkTo: `/editions/${edition.id}`,
     })),
     [randomPicks]

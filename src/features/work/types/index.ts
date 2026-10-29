@@ -42,6 +42,7 @@ export interface Work {
     editions: Edition[],
     id: number,
     imported_string: string,
+    kirjasampo_imported?: string | null,
     language_name: Language,
     links: LinkType[],
     misc: string,

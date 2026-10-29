@@ -38,7 +38,7 @@ import { ImageView } from "@utils/image-view";
 import { appearsIn } from "@utils/appears-in"
 import { Card } from "primereact/card";
 import { TabView, TabPanel } from "primereact/tabview";
-import { TagGroup, KirjasampoTagImport } from "@features/tag";
+import { TagGroup, KirjasampoTagImport, KirjasampoImportedNote } from "@features/tag";
 import { GenreGroup } from "@features/genre";
 import { AwardList } from "@features/award";
 import { AwardedForm } from "@features/award/components/awarded-form";
@@ -563,6 +563,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                                                         overflow={5}
                                                         showOneCount
                                                     />
+                                                    <KirjasampoImportedNote imported={workData.kirjasampo_imported} />
                                                 </div>
                                             )}
                                             <KirjasampoTagImport

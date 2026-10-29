@@ -8,6 +8,7 @@ import { Divider } from "primereact/divider";
 
 import { getApiContent } from "./services/user-service";
 import { getCurrenUser } from "./services/auth-service";
+import { isAdmin } from "./features/user/utils/is-admin";
 import { Edition } from "./features/edition/types";
 import { ImageTooltip } from "./utils/image-tooltip";
 import { thumbUrl } from "./utils/cover-url";
@@ -122,10 +123,11 @@ export const HomeAlt = () => {
       description: edition.work?.description,
       genres: edition.work?.genres,
       tags: edition.work?.tags,
-      kirjasampoImported: edition.work?.kirjasampo_imported,
+      // Admin-only: tells which works still need a Kirjasampo tag import.
+      kirjasampoImported: isAdmin(user) ? edition.work?.kirjasampo_imported : null,
       linkTo: `/editions/${edition.id}`,
     })),
-    [randomPicks]
+    [randomPicks, user]
   );
 
   return (

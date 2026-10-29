@@ -563,7 +563,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                                                         overflow={5}
                                                         showOneCount
                                                     />
-                                                    <KirjasampoImportedNote imported={workData.kirjasampo_imported} />
+                                                    {isAdmin(user) && <KirjasampoImportedNote imported={workData.kirjasampo_imported} />}
                                                 </div>
                                             )}
                                             <KirjasampoTagImport

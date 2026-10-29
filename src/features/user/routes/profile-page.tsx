@@ -50,7 +50,8 @@ const ProfilePage = ({ id }: UserPageProps) => {
         }, { replace: true });
     };
     const [collectionStatsVisible, setCollectionStatsVisible] = useState(false);
-    const [isLoadingRandomWork, setIsLoadingRandomWork] = useState<boolean>(false);
+    // Which search button is running, so only that one shows a spinner.
+    const [loadingSearch, setLoadingSearch] = useState<'fields' | 'kirjasampo' | null>(null);
     const [randomWorkResults, setRandomWorkResults] = useState<any[]>([]);
     const [randomWorkTotal, setRandomWorkTotal] = useState<number | null>(null);
     const [formData, setFormData] = useState<RandomWorkFormData>({
@@ -92,7 +93,7 @@ const ProfilePage = ({ id }: UserPageProps) => {
     // fieldsOverride replaces the checkbox selection (used by the
     // Kirjasampo button, which searches on its own criterion only).
     const handleFormSubmit = async (fieldsOverride?: string[]) => {
-        setIsLoadingRandomWork(true);
+        setLoadingSearch(fieldsOverride ? 'kirjasampo' : 'fields');
         try {
             // Build the missing_fields array based on checked checkboxes
             let missingFields: string[] = [];
@@ -131,7 +132,7 @@ const ProfilePage = ({ id }: UserPageProps) => {
         } catch (error) {
             console.error('Error fetching random incomplete work:', error);
         } finally {
-            setIsLoadingRandomWork(false);
+            setLoadingSearch(null);
         }
     };
 
@@ -315,7 +316,8 @@ const ProfilePage = ({ id }: UserPageProps) => {
                         <Button
                             label="Hae teoksia"
                             icon="pi pi-search"
-                            loading={isLoadingRandomWork}
+                            loading={loadingSearch === 'fields'}
+                            disabled={loadingSearch !== null}
                             onClick={() => handleFormSubmit()}
                         />
                         {isAdmin(currentUser) && (
@@ -325,7 +327,8 @@ const ProfilePage = ({ id }: UserPageProps) => {
                                 severity="secondary"
                                 tooltip="Teokset, joilla on Kirjasampo-linkki mutta joihin ei ole tuotu Kirjasampo-asiasanoja"
                                 tooltipOptions={{ position: 'top' }}
-                                loading={isLoadingRandomWork}
+                                loading={loadingSearch === 'kirjasampo'}
+                                disabled={loadingSearch !== null}
                                 onClick={() => handleFormSubmit(['kirjasampo_tags'])}
                             />
                         )}

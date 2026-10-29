@@ -207,7 +207,7 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
                 ) : !fetched ? (
                     <div className="flex flex-column align-items-center gap-3 p-4">
                         <p className="text-color-secondary m-0">
-                            Hae asiasanat Kirjasamposta ja tarkista ne ennen tallennusta.
+                            Hae asiasanat Kirjasammosta ja tarkista ne ennen tallennusta.
                         </p>
                         <Button
                             label="Hae asiasanat"

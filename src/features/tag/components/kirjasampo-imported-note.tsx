@@ -15,10 +15,10 @@ export const KirjasampoImportedNote = ({ imported, className }: KirjasampoImport
     return (
         <span
             className={`text-xs text-color-secondary${className ? ` ${className}` : ''}`}
-            title="Asiasanat on tuotu Kirjasamposta"
+            title="Asiasanat on tuotu Kirjasammosta"
         >
             <i className="pi pi-check-circle mr-1" style={{ fontSize: '0.75rem' }} />
-            Tuotu Kirjasamposta <span className="white-space-nowrap">{date}</span>
+            Tuotu Kirjasammosta <span className="white-space-nowrap">{date}</span>
         </span>
     );
 };

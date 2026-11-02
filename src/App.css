@@ -1169,6 +1169,14 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     opacity: 0.8;
 }
 
+/* Clipped long text (CollapsibleHtml); the mask fades it out without
+   depending on the background colour behind it. */
+.collapsible-html-collapsed {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent);
+    mask-image: linear-gradient(to bottom, #000 70%, transparent);
+}
+
 .html-content a {
     color: var(--primary-color);
 }

@@ -3,6 +3,12 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-02 `b71eda3` — Front page popups work on phones
+Tapping a cover under "Bibliografiasta löytyy" did nothing on touch screens (e.g. Firefox on Android), so the popup could not be opened and the work could not be reached. Now the first tap opens the popup, tapping its cover opens the edition and tapping elsewhere closes it. The popups also work with the keyboard: Tab moves from cover to cover.
+
+## 2026-11-02 `00d5ac8` — Long work descriptions collapsed
+A work description longer than about eight lines is shown shortened with a fade; clicking the text or "Näytä koko kuvaus" shows the rest, and clicking again shortens it.
+
 ## 2026-10-29 `ef0c4ff`, `50237c4` — Kirjasampo tag import date
 Saving the "Tuo Kirjasampo-asiasanat" dialog records the date on the work. For admins, the work page and the front page's "Bibliografiasta löytyy" popups show "Tuotu Kirjasammosta" with the date under the tags, and there is a "Kirjasampo-asiasanat tuomatta" button in the random incomplete work view that finds works with a Kirjasampo link whose tags have not been imported.
 

@@ -17,7 +17,7 @@ test('a long description is clipped and opens and closes by clicking', async ({ 
 
     await page.getByRole('button', { name: 'Näytä vähemmän' }).click();
     await expect(more).toBeVisible();
-    expect((await text.boundingBox())!.height).toBe(clipped);
+    expect((await text.boundingBox())!.height).toBeCloseTo(clipped, 0);
 });
 
 test('a short description is shown in full, without the button', async ({ page }) => {

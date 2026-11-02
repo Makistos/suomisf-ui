@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Menubar } from 'primereact/menubar';
@@ -9,8 +9,10 @@ import { Dialog } from 'primereact/dialog';
 import { getCurrenUser } from '../services/auth-service';
 import { logout } from '../services/auth-service';
 import { getApiContent } from '../services/user-service';
-import { classNames } from 'primereact/utils';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import {
+    SEARCH_MIN_LENGTH, SearchItem, searchItemIcon, searchItemPath, searchItemText, searchResultsPath,
+} from '@features/search/utils/search-items';
 
 // The menu is on every page, but these only open in its dialogs. Loading
 // them on demand keeps the forms (and their editors, tables and pickers)
@@ -36,6 +38,9 @@ export default function MainMenu() {
     const [titlesOnly, setTitlesOnly] = useState<boolean>(
         () => localStorage.getItem('searchTitlesOnly') !== '0');
     const [lastQuery, setLastQuery] = useState<string>('');
+    // Term just sent to the results page with Enter: its suggestion search
+    // (debounced, so it may still be pending) must not pop up over the page.
+    const submittedTerm = useRef<string | null>(null);
     const [loginVisible, setLoginVisible] = useState(false);
     const [registerVisible, setRegisterVisible] = useState(false);
     const [workFormVisible, setWorkFormVisible] = useState(false);
@@ -45,7 +50,7 @@ export default function MainMenu() {
 
     // Re-run the current search when the titles-only toggle changes.
     useEffect(() => {
-        if (lastQuery.trim().length >= 3) {
+        if (lastQuery.trim().length >= SEARCH_MIN_LENGTH) {
             getApiContent("search/" + lastQuery + (titlesOnly ? "?titles=1" : ""), user)
                 .then(r => setFilteredItems(r.data))
                 .catch(() => { });
@@ -272,123 +277,63 @@ export default function MainMenu() {
             setFilteredItems(response.data);
         }
         const searchItems = (event: any) => {
+            if (submittedTerm.current === event.query) {
+                // New (empty) suggestions end the AutoComplete's loading spinner.
+                setFilteredItems([]);
+                return;
+            }
             setLastQuery(event.query);
             getResults(event.query);
         };
 
-        const searchText = (str: string) => {
-            if (str.length > 300) {
-                str = str.slice(0, 298);
-                str = str + "...";
-            }
-            let tmp = document.createElement("DIV");
-            tmp.innerHTML = str;
-            return tmp.textContent || tmp.innerText || "";
-        }
-        const itemIcon = (itemType: string) => {
-            switch (itemType) {
-                case 'work':
-                    return <i className={classNames('fa', 'fa-book')}></i>
-                case 'edition':
-                    return <i className={classNames('fa', 'fa-book-bookmark')}></i>
-                case 'person':
-                    return <i className={classNames('fa', 'fa-user')}></i>
-                case 'shortstory':
-                    return <i className={classNames('fa', 'fa-scroll')}></i>
-                case 'award':
-                    return <i className={classNames('fa', 'fa-trophy')}></i>
-                case 'tag':
-                    return <i className={classNames('fa', 'fa-tag')}></i>
-                case 'magazine':
-                    return <i className={classNames('fa', 'fa-newspaper')}></i>
-                case 'issue':
-                    return <i className={classNames('fa', 'fa-file')}></i>
-                case 'publisher':
-                    return <i className={classNames('fa', 'fa-building')}></i>
-                case 'bookseries':
-                    return <i className={classNames('fa', 'fa-list')}></i>
-                case 'pubseries':
-                    return <i className={classNames('fa', 'fa-list-ol')}></i>
-                default:
-                    return <i className={classNames('fa', 'fa-question')}></i>
-            }
-        }
+        const itemTemplate = (item: SearchItem) => (
+            <div className="searchItem">
+                <i className={`fa ${searchItemIcon(item.type)}`}></i>&nbsp;
+                <span className="searchItemHeader">{item.header}</span>
+                {item.author && (
+                    <span className="searchItemAuthor">
+                        :&nbsp;{item.author}
+                    </span>
+                )}
+                {item.description && (
+                    <div className="searchItemContents">
+                        {searchItemText(item.description)}
+                    </div>
+                )}
+            </div>
+        );
 
-        const itemTemplate = (item: any) => {
-            const truncateDescription = (desc: string) => {
-                const plainText = searchText(desc);
-                return plainText.length > 200 ? plainText.slice(0, 200) + '...' : plainText;
-            };
-
-            return (
-                <div className="searchItem">
-                    {itemIcon(item.type)}&nbsp;
-                    <span className="searchItemHeader">{item.header}</span>
-                    {item.author && (
-                        <>
-                            <span className="searchItemAuthor">
-                                :&nbsp;{item.author}
-                            </span>
-                        </>
-                    )}
-                    {item.description && (
-                        <div className="searchItemContents">
-                            {truncateDescription(item.description)}
-                        </div>
-                    )}
-                </div >
-            )
-        }
-
-        const selectItem = (item: any) => {
-            let target = import.meta.env.VITE_SITE_URL;
-            switch (item.type) {
-                case 'work':
-                    target = target + 'works/';
-                    break;
-                case 'edition':
-                    target = target + 'editions/';
-                    break;
-                case 'person':
-                    target = target + 'people/';
-                    break;
-                case 'shortstory':
-                    target = target + 'shorts/';
-                    break;
-                case 'award':
-                    target = target + 'awards/';
-                    break;
-                case 'tag':
-                    target = target + 'tags/';
-                    break;
-                case 'magazine':
-                    target = target + 'magazines/';
-                    break;
-                case 'issue':
-                    target = target + 'issues/';
-                    break;
-                case 'publisher':
-                    target = target + 'publishers/';
-                    break;
-                case 'bookseries':
-                    target = target + 'bookseries/';
-                    break;
-                case 'pubseries':
-                    target = target + 'pubseries/';
-                    break;
-            }
-            window.open(target + item.id, "_self");
+        const selectItem = (item: SearchItem) => {
+            const path = searchItemPath(item);
+            if (path) window.open(import.meta.env.VITE_SITE_URL + path.slice(1), "_self");
             setSelectedItem(null);
         }
 
+        // Enter on typed text (not on a highlighted suggestion, which the
+        // AutoComplete opens itself and marks with preventDefault) opens the
+        // full results page.
+        const onSearchKeyDown = (e: React.KeyboardEvent) => {
+            if (e.key !== 'Enter' || e.defaultPrevented) return;
+            const term = typeof selectedItem === 'string' ? selectedItem.trim() : '';
+            if (term.length < SEARCH_MIN_LENGTH) return;
+            e.preventDefault();
+            submittedTerm.current = term;
+            setSelectedItem(null);
+            setFilteredItems(null);
+            navigate(searchResultsPath(term, titlesOnly));
+        };
+
         return (
-            <div className="relative w-full">
+            <div className="relative w-full" onKeyDown={onSearchKeyDown}>
                 <AutoComplete
                     className="w-full"
                     inputClassName="w-full"
                     placeholder="Etsi"
-                    minLength={3}
-                    onChange={(e) => setSelectedItem(e.value)}
+                    minLength={SEARCH_MIN_LENGTH}
+                    onChange={(e) => {
+                        if (typeof e.value === 'string') submittedTerm.current = null;
+                        setSelectedItem(e.value);
+                    }}
                     onSelect={(e) => selectItem(e.value)}
                     completeMethod={searchItems}
                     value={selectedItem}

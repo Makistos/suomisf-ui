@@ -61,13 +61,13 @@ dev servers on `:3000`/`:5000` are never touched.
 | `latest.spec.ts` | `/latest` | Page loads with entries — deliberately doesn't assert specific titles, since "latest" is inherently a moving target. |
 | `bookindex.spec.ts` | `/bookindex` | Page loads, an alphabet-letter filter (A–Ö buttons) returns matching results. |
 | `shortstoryindex.spec.ts` | `/shortstoryindex` | Page loads, a real author-name search returns results. |
-| `search.spec.ts` | `/` | Main-menu search: a title search ("Vain nimet" on, the default) gives one hit and opens the work; turning "Vain nimet" off widens the results and is remembered across a reload; a name search opens the person. |
+| `search.spec.ts` | `/` | Main-menu search: a title search ("Vain nimet" on, the default) gives one hit and opens the work; turning "Vain nimet" off widens the results and is remembered across a reload; a name search opens the person. Enter in the search bar opens `/search` with every hit (more than the 50 suggestions) grouped by type with jump links, the pending suggestions don't pop up over it, and a hit opens its page; the page's own "Vain nimet" toggle refetches; Enter on a too short term or on a highlighted suggestion doesn't open the page. |
 | `work-history.spec.ts` | `/works/3` | "Muutoshistoria" tab lists changes; an update row expands into field/old value rows; no delete column for visitors. |
 | `person-tabs.spec.ts` | `/people/368` | Johanna Sinisalo's tabs: edited books (edition list), short stories, series, magazine issues, awards. |
 | `register.spec.ts` | `/` | Registering through the account menu logs the new user in, and the password and tokens never reach the browser console; mismatched passwords block the request; the account menu's "Kirjaudu"/"Rekisteröidy" labels are visible text (not only accessible names); the register dialog closes from its close button. |
 | `front-page-popups.spec.ts` | `/` | "Bibliografiasta löytyy" covers (`ImageAccordion`): on a touch screen the first tap opens the panel, a tap on the panel's cover opens the edition and a tap outside closes it; mouse hover opens and leaving closes; Tab goes from cover to cover with each panel open and Enter opens the edition. |
 | `work-description.spec.ts` | `/works/6790`, `/works/53` | A long description is clipped and opens/closes by clicking it or "Näytä vähemmän" (`CollapsibleHtml`); a short one has no button. |
-| `a11y.spec.ts` | 24 page types + register dialog | axe (WCAG 2.1 A/AA) finds no violations; see "Accessibility checks" below. |
+| `a11y.spec.ts` | 25 page types + register dialog | axe (WCAG 2.1 A/AA) finds no violations; see "Accessibility checks" below. |
 | `sanitize.spec.ts` | `/awards/27` | A description with a script, an `onerror` handler and a `javascript:` link (injected with `page.route`) renders its text but runs nothing (`safeHtml`, `src/utils/safe-html.ts`). |
 
 ## `tests/user/` — logged-in regular user (`Test User`)

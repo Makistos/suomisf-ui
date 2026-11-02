@@ -36,6 +36,7 @@ const PAGES: [string, RegExp | string][] = [
     ['/faq', ''],
     ['/login', ''],
     ['/nonfiction', ''],
+    ['/search?q=maailma&titles=1', 'Haku: maailma'],
 ];
 
 for (const [path, heading] of PAGES) {

@@ -42,3 +42,21 @@ test('registration needs the password twice, the same', async ({ page }) => {
     await expect(dialog.locator('#password2')).toHaveClass(/p-invalid/);
     expect(registerCalls).toBe(0);
 });
+
+test('the account menu shows its item labels to visitors', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('menuitem', { name: 'Käyttäjätili' }).click();
+    // The labels must be visible text, not only accessible names: the
+    // top-level item's screen-reader-only label once hid them too.
+    for (const label of ['Kirjaudu', 'Rekisteröidy']) {
+        const item = page.getByRole('menuitem', { name: label });
+        await expect(item.getByText(label, { exact: true })).toBeVisible();
+        expect((await item.getByText(label, { exact: true }).boundingBox())!.width).toBeGreaterThan(20);
+    }
+});
+
+test('the register dialog closes from its close button', async ({ page }) => {
+    const dialog = await openRegister(page);
+    await dialog.getByRole('button', { name: /close|sulje/i }).click();
+    await expect(dialog).toHaveCount(0);
+});

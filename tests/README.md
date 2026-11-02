@@ -64,7 +64,9 @@ dev servers on `:3000`/`:5000` are never touched.
 | `search.spec.ts` | `/` | Main-menu search: a title search ("Vain nimet" on, the default) gives one hit and opens the work; turning "Vain nimet" off widens the results and is remembered across a reload; a name search opens the person. |
 | `work-history.spec.ts` | `/works/3` | "Muutoshistoria" tab lists changes; an update row expands into field/old value rows; no delete column for visitors. |
 | `person-tabs.spec.ts` | `/people/368` | Johanna Sinisalo's tabs: edited books (edition list), short stories, series, magazine issues, awards. |
-| `register.spec.ts` | `/` | Registering through the account menu logs the new user in, and the password and tokens never reach the browser console; mismatched passwords block the request. |
+| `register.spec.ts` | `/` | Registering through the account menu logs the new user in, and the password and tokens never reach the browser console; mismatched passwords block the request; the account menu's "Kirjaudu"/"Rekisteröidy" labels are visible text (not only accessible names); the register dialog closes from its close button. |
+| `front-page-popups.spec.ts` | `/` | "Bibliografiasta löytyy" covers (`ImageAccordion`): on a touch screen the first tap opens the panel, a tap on the panel's cover opens the edition and a tap outside closes it; mouse hover opens and leaving closes; Tab goes from cover to cover with each panel open and Enter opens the edition. |
+| `work-description.spec.ts` | `/works/6790`, `/works/53` | A long description is clipped and opens/closes by clicking it or "Näytä vähemmän" (`CollapsibleHtml`); a short one has no button. |
 | `a11y.spec.ts` | 24 page types + register dialog | axe (WCAG 2.1 A/AA) finds no violations; see "Accessibility checks" below. |
 | `sanitize.spec.ts` | `/awards/27` | A description with a script, an `onerror` handler and a `javascript:` link (injected with `page.route`) renders its text but runs nothing (`safeHtml`, `src/utils/safe-html.ts`). |
 
@@ -78,6 +80,7 @@ dev servers on `:3000`/`:5000` are never touched.
 | `ownership.spec.ts` | Marks an edition owned via the `Rating` widget on `/works/63`, confirms it appears under the profile's "Omistetut" tab. |
 | `read-status.spec.ts` | Marks a work read+liked via the thumbs `SelectButton` on `/works/2`, confirms it appears under "Luetut". |
 | `profile.spec.ts` | After owning a book, confirms the profile's "Tilastoja" tab renders a chart and "Kokoelman arvo" dialog opens without error. |
+| `admin-page-access.spec.ts` | `/admin` shows "Ei käyttöoikeutta" and none of the tools to a regular user and to an anonymous visitor; the profile page no longer has the "Satunnainen keskeneräinen teos" search. |
 | `suggestion.spec.ts` | Walks the `/suggestions` stepper by skipping every step, confirms it reaches results. |
 | `a11y.spec.ts` | axe on a work page and the profile, logged in. |
 | `password-reset.spec.ts` | Full forgot/reset-password cycle without email: drives `/forgot-password` for real, mints a valid reset token via the backend's `mint_reset_token.py` (the token is a deterministic signed hash, not something that needs to be emailed), resets the password, logs in with it, then resets back to the original so it doesn't break other specs. Run separately (see above) — the password change would otherwise race every other `userPage`-fixture test. |
@@ -107,7 +110,8 @@ rebuilt before the next run.
 | `omnibus.spec.ts` | Adds a work to an omnibus (`/works/11`) through "Muokkaa kokoomateosta", with an explanation; checks "Sisältää teokset", then removes it again. |
 | `site-stats.spec.ts` | `/stats` admin tabs: "Kävijät" charts render; the "Käynnit" page view log filters by path. |
 | `award-admin.spec.ts` | Creates a domestic award from `/awards` (listed under Kotimaiset) and renames it on its page; imports winners into Sidewise from a preview answered by `page.route` (sfadb.com is down) — only the new entry is pre-selected and saved, and the work appears among the winners. |
-| `kirjasampo-import.spec.ts` | On `/works/5`: Kirjasampo tags (answered by `page.route`) list without the author section, with "(luokka)" stripped and a film list turned into "elokuva"; one tag is skipped, the rest imported and shown on the work. |
+| `kirjasampo-import.spec.ts` | On `/works/5`: Kirjasampo tags (answered by `page.route`) list without the author section, with "(luokka)" stripped and a film list turned into "elokuva"; one tag is skipped, the rest imported and shown on the work. Saving sets the work's `kirjasampo_imported`, and "Tuotu Kirjasammosta <date>" shows to the admin but not to an anonymous visitor. |
+| `admin-tools.spec.ts` | `/admin` (opened from Ylläpito → Ylläpitotyökalut): the incomplete-work search with "Kuvaus" lists works that have no description; the Kirjasampo search lists works with a Kirjasampo link and no import date (both checked via the API); on "Teosten linkkien lähteet" a mistyped source (links added to work 21, or 22 in Firefox, through the API) is expanded, combined into the right one and then deleted with its links — the work's other links stay, the change is in its history, and its links are put back afterwards. |
 | `a11y.spec.ts` | axe on the admin work page (SpeedDial), the work and new-edition dialogs, and the person form. |
 
 ## Coverage gaps

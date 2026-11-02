@@ -235,6 +235,11 @@ export default function MainMenu() {
                     command: () => {
                         setPersonFormVisible(true);
                     }
+                },
+                {
+                    label: 'Ylläpitotyökalut',
+                    icon: 'fa-solid fa-list-check',
+                    url: '/admin'
                 }
             ]
         }] : []),

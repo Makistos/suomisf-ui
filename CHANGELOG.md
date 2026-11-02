@@ -3,6 +3,9 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-02 `fc56e8f` — Search results page
+Pressing Enter in the main menu's search bar after typing at least three characters opens a page with all the results (up to 500, not just the 50 suggestions), grouped into works, editions, short stories, people and so on, with links to jump to each group and its own "Vain nimet" setting. Choosing a highlighted suggestion with Enter still opens that item directly.
+
 ## 2026-11-02 `6b06111` — Admin page
 A new admin-only page, Ylläpito → Ylläpitotyökalut (`/admin`), gathers miscellaneous admin tasks: the "Satunnainen keskeneräinen teos" search (moved from the profile page), a separate "Kirjasampo-asiasanat tuomatta" search, and "Teosten linkkien lähteet", which lists every work link source with link and work counts so mistyped sources (e.g. "Kansallikirjasto", "Risinsgshadow") can be renamed, combined into the right one or deleted with their links.
 

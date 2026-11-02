@@ -3,6 +3,12 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-02 `6b06111` — Admin page
+A new admin-only page, Ylläpito → Ylläpitotyökalut (`/admin`), gathers miscellaneous admin tasks: the "Satunnainen keskeneräinen teos" search (moved from the profile page), a separate "Kirjasampo-asiasanat tuomatta" search, and "Teosten linkkien lähteet", which lists every work link source with link and work counts so mistyped sources (e.g. "Kansallikirjasto", "Risinsgshadow") can be renamed, combined into the right one or deleted with their links.
+
+## 2026-11-02 `d91755e` — Tests for recent features
+Unit tests for the collapsed descriptions, the front page popups on touch and mouse, the admin tools and the Kirjasampo import note, and E2E tests for the admin page, the popups on touch, mouse and keyboard, the account menu labels and the register dialog.
+
 ## 2026-11-02 `b71eda3` — Front page popups work on phones
 Tapping a cover under "Bibliografiasta löytyy" did nothing on touch screens (e.g. Firefox on Android), so the popup could not be opened and the work could not be reached. Now the first tap opens the popup, tapping its cover opens the edition and tapping elsewhere closes it. The popups also work with the keyboard: Tab moves from cover to cover.
 

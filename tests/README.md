@@ -97,7 +97,7 @@ rebuilt before the next run.
 | `work.spec.ts` | Full create → edit → delete cycle for a Work via the page SpeedDial, including filling a required contributor. |
 | `edition.spec.ts` | Create an edition under an existing work, verify `edition-owners-panel.tsx` only appears once a *different* user (via a direct API call as `Test User`) owns it, then edit and delete. |
 | `person.spec.ts` | Create → edit → delete a person. |
-| `publisher.spec.ts` | No "create" UI exists for publishers — edit + delete only, on a publisher pre-verified (direct DB query) to have zero linked editions/magazines/series. |
+| `publisher.spec.ts` | No "create" UI exists for publishers — creates an unlinked publisher through the API, then edits and deletes it in the UI (every existing publisher has editions, magazines or series). |
 | `pubseries.spec.ts` | Same pattern as publisher: no create UI, edit + delete on a linkage-free series. |
 | `award.spec.ts` | No "create new award" UI — adds and removes an award-*winner* entry (a work receiving the Hugo) via the work page's "Palkinnot" dialog. |
 | `bookseries.spec.ts` | Full create → edit → delete cycle. |

@@ -6,20 +6,25 @@ const dialAction = (page: Page, label: string) =>
 
 // There's no "create new publisher" UI anywhere in the app (checked: no
 // dial item, no route, no form invoked with a null publisher) - the
-// SpeedDial only offers Muokkaa/Poista for the current one. So this covers
-// edit + delete on an existing, safely-deletable publisher rather than the
-// usual create-first cycle. Publisher 52 ("Egmont Kustannus / Kirjalito")
-// was picked by querying Postgres directly for zero edition/magazine/
-// pubseries rows referencing it - the publisher API response's own
-// `magazines`/`series` fields aren't reliable for this (found one, id 6,
-// where the API said magazines: [] but a real FK-referencing row existed,
-// which made the delete fail server-side despite the frontend's identical
-// "no linked content" check saying it should be safe).
+// SpeedDial only offers Muokkaa/Poista for the current one. So the test
+// creates a publisher through the API (which nothing references yet, so it
+// can be deleted) and covers edit + delete in the UI. A fixed existing
+// publisher can't be used: every one in the data now has editions,
+// magazines or series (the one picked before, 52, has been removed).
 test('admin can edit and delete a publisher with no linked content', async ({ adminPage }) => {
-    const editedName = `E2E_TEST_publisher_${Date.now()}`;
+    const stamp = Date.now();
+    const editedName = `E2E_TEST_publisher_${stamp}`;
 
-    await adminPage.goto('/publishers/52');
-    await expect(adminPage.getByRole('progressbar')).not.toBeVisible({ timeout: 20000 });
+    const token = await adminPage.evaluate(() => JSON.parse(localStorage.getItem('user') ?? '{}').access_token);
+    const created = await adminPage.request.post('http://localhost:5001/api/publishers', {
+        headers: { Authorization: `Bearer ${token}` },
+        data: { data: { name: `E2E_TEST_new_${stamp}`, fullname: `E2E_TEST_new_${stamp} Oy` } },
+    });
+    expect(created.status()).toBe(201);
+    const id = Number(await created.json());
+
+    await adminPage.goto(`/publishers/${id}`);
+    await expect(adminPage.getByRole('heading', { name: `E2E_TEST_new_${stamp}` })).toBeVisible({ timeout: 20000 });
 
     // Edit
     await adminPage.locator('.fixed-dial .p-speeddial-button').click();
@@ -34,5 +39,7 @@ test('admin can edit and delete a publisher with no linked content', async ({ ad
     await dialAction(adminPage, 'Poista').click();
     await adminPage.getByRole('button', { name: 'Kyllä' }).click();
     // navigate(-1) on success - too racy to assert the toast reliably.
-    await expect(adminPage).not.toHaveURL(/\/publishers\/52$/, { timeout: 20000 });
+    await expect(adminPage).not.toHaveURL(new RegExp(`/publishers/${id}$`), { timeout: 20000 });
+    const gone = await adminPage.request.get(`http://localhost:5001/api/publishers/${id}`);
+    expect(await gone.text()).toContain('ei ole olemassa');
 });

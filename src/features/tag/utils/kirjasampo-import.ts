@@ -48,6 +48,7 @@ export const SECTION_TAG_TYPES: Record<string, string> = {
     'Tapahtumapaikat': 'Paikka',
     'Konkreettiset tapahtumapaikat': 'Paikka',
     'Tapahtuma-aika': 'Aika',
+    'Tarkka aika': 'Aika',
 };
 export const DEFAULT_TAG_TYPE = 'Aihe';
 

@@ -61,10 +61,11 @@ describe('previewRows', () => {
             { section: 'Tapahtumapaikat', items: [item('luolat')] },
             { section: 'Konkreettiset tapahtumapaikat', items: [item('japani')] },
             { section: 'Tapahtuma-aika', items: [item('kivikausi')] },
+            { section: 'Tarkka aika', items: [item('1920-luku')] },
             { section: 'Kirjallisuudenlaji', items: [item('paleofiktio')] },
         ], TYPES);
         expect(list.map(r => [r.name, r.typeId])).toEqual([
-            ['parantajat', 4], ['luolat', 5], ['japani', 5], ['kivikausi', 6], ['paleofiktio', AIHE],
+            ['parantajat', 4], ['luolat', 5], ['japani', 5], ['kivikausi', 6], ['1920-luku', 6], ['paleofiktio', AIHE],
         ]);
     });
 

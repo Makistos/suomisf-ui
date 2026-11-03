@@ -3,6 +3,9 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-03 `7b981fb`, `0aa28ca` — Kirjasampo tag import reworked
+The "Tuo Kirjasampo-asiasanat" dialog lists the tags grouped by Kirjasampo section and leaves out sections that aren't tags (now also recommendations, awards and links). Each tag shows the local tag it will be saved as and that tag's type in the same colours as elsewhere; a new tag gets a type picker that defaults by section (Toimija for people, Paikka for places, Aika for times, otherwise Aihe), and tags the work already has are marked. Saving when every tag is skipped, or the page has none, is "Merkitse tuoduksi" and still records the import date, which now also shows on a work without tags. A failed save is no longer reported as a success. The search results page heads short stories "Novellit ja artikkelit" (`ebebc5d`).
+
 ## 2026-11-02 `fc56e8f` — Search results page
 Pressing Enter in the main menu's search bar after typing at least three characters opens a page with all the results (up to 500, not just the 50 suggestions), grouped into works, editions, short stories, people and so on, with links to jump to each group and its own "Vain nimet" setting. Choosing a highlighted suggestion with Enter still opens that item directly.
 

@@ -18,7 +18,7 @@ interface SearchItemType {
 export const SEARCH_ITEM_TYPES: Record<string, SearchItemType> = {
     work: { path: "works", icon: "fa-book", label: "Teokset" },
     edition: { path: "editions", icon: "fa-book-bookmark", label: "Painokset" },
-    shortstory: { path: "shorts", icon: "fa-scroll", label: "Novellit" },
+    shortstory: { path: "shorts", icon: "fa-scroll", label: "Novellit ja artikkelit" },
     person: { path: "people", icon: "fa-user", label: "Henkilöt" },
     magazine: { path: "magazines", icon: "fa-newspaper", label: "Lehdet" },
     issue: { path: "issues", icon: "fa-file", label: "Lehtien numerot" },

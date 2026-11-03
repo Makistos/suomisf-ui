@@ -555,14 +555,18 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                                                 />
                                             </div>
 
-                                            {workData.tags && workData.tags.length > 0 && (
+                                            {/* An import that brought no tags still shows its date to admins. */}
+                                            {((workData.tags?.length ?? 0) > 0
+                                                || (isAdmin(user) && workData.kirjasampo_imported)) && (
                                                 <div className="flex flex-column gap-2">
                                                     <h3 className="text-sm uppercase text-600 m-0">Asiasanat</h3>
-                                                    <TagGroup
-                                                        tags={workData.tags}
-                                                        overflow={5}
-                                                        showOneCount
-                                                    />
+                                                    {(workData.tags?.length ?? 0) > 0 && (
+                                                        <TagGroup
+                                                            tags={workData.tags}
+                                                            overflow={5}
+                                                            showOneCount
+                                                        />
+                                                    )}
                                                     {isAdmin(user) && <KirjasampoImportedNote imported={workData.kirjasampo_imported} />}
                                                 </div>
                                             )}

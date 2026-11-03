@@ -1,27 +1,31 @@
-import React, { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { AutoComplete } from 'primereact/autocomplete';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { Dropdown } from 'primereact/dropdown';
 import { InputSwitch } from 'primereact/inputswitch';
+import { Tag } from 'primereact/tag';
 import { Toast } from 'primereact/toast';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 import { Work } from '@features/work/types';
-import { SfTag } from '../types';
+import { SfTag, TagType } from '../types';
 import { User, isAdmin } from '@features/user';
 import { getApiContent, postApiContent } from '@services/user-service';
 import { filterTags } from '@api/tag/filter-tags';
+import { getTagTypes } from '@api/tag/get-tag-types';
+import { tagTypeToClass, tagTypeToSeverity } from './tag-type-to-severity';
+import {
+    ImportRow, PreviewGroup, importItems, isNewTag, previewRows,
+} from '../utils/kirjasampo-import';
 
-interface LocalTagValue {
-    id: number;
-    name: string;
-}
-
-interface TagRow {
-    kirjasampoName: string;
-    localTag: LocalTagValue | string;
-    skip: boolean;
-}
+/** A tag type coloured as on tag pages and tag lists. */
+const TypePill = ({ type }: { type: TagType }) => {
+    const tag = { id: 0, name: type.name, type_id: type.id, type };
+    return <Tag value={type.name} severity={tagTypeToSeverity(tag)} className={tagTypeToClass(tag)} />;
+};
 
 interface KirjasampoTagImportProps {
     work: Work;
@@ -34,7 +38,8 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
     const [loading, setLoading] = useState(false);
     const [fetched, setFetched] = useState(false);
     const [saving, setSaving] = useState(false);
-    const [rows, setRows] = useState<TagRow[]>([]);
+    const [rows, setRows] = useState<ImportRow[]>([]);
+    const [tagTypes, setTagTypes] = useState<TagType[]>([]);
     const [suggestions, setSuggestions] = useState<SfTag[]>([]);
     const toastRef = useRef<Toast>(null);
 
@@ -44,7 +49,7 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
             return;
         }
         try {
-            const tags = await filterTags(e.query, user);
+            const tags = await filterTags(encodeURIComponent(e.query), user);
             setSuggestions(tags);
         } catch {
             setSuggestions([]);
@@ -62,47 +67,16 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
         setDialogVisible(true);
     };
 
-    const SKIPPED_SECTIONS = ['Tekijä', 'Päähenkilöt', 'Alkukieli', 'julkaisut'];
-    const SECTION_OVERRIDES: Record<string, string> = { 'Elokuvat': 'elokuva' };
-
-    const stripParens = (name: string) => name.replace(/\s*\(.*?\)\s*/g, '').trim();
-
     const fetchTags = async () => {
         setLoading(true);
         try {
-            const [tagsRes, mappingsRes] = await Promise.all([
-                getApiContent(`kirjasampo/tags?url=${encodeURIComponent(kirjasampoLink.link)}`, user),
-                getApiContent('tags/import/mappings', user),
+            const [previewRes, types] = await Promise.all([
+                getApiContent(`work/${work.id}/tags/import/preview`, user),
+                getTagTypes(user),
             ]);
-
-            const tagSections: Record<string, string[]> = tagsRes.data;
-            const mappings = mappingsRes.data;
-            const omitSet = new Set<string>(
-                (mappings.omit ?? []).map((n: string) => n.toLowerCase())
-            );
-            const replaceMap = new Map<string, { tag_id: number; tag_name: string }>(
-                (mappings.replace ?? []).map((r: any) => [r.name.toLowerCase(), { tag_id: r.tag_id, tag_name: r.tag_name }])
-            );
-
-            const allNames = Object.entries(tagSections)
-                .filter(([section]) => !SKIPPED_SECTIONS.includes(section))
-                .flatMap(([section, tags]) =>
-                    section in SECTION_OVERRIDES
-                        ? (tags.length > 0 ? [SECTION_OVERRIDES[section]] : [])
-                        : tags.map(stripParens)
-                );
-            const uniqueNames = [...new Set(allNames)];
-
-            const newRows: TagRow[] = uniqueNames.map(name => {
-                const rep = replaceMap.get(name.toLowerCase());
-                return {
-                    kirjasampoName: name,
-                    localTag: rep ? { id: rep.tag_id, name: rep.tag_name } : { id: 0, name },
-                    skip: omitSet.has(name.toLowerCase()),
-                };
-            });
-
-            setRows(newRows);
+            const groups: PreviewGroup[] = previewRes.data;
+            setTagTypes(types);
+            setRows(previewRows(groups, types));
             setFetched(true);
         } catch {
             toastRef.current?.show({ severity: 'error', summary: 'Virhe', detail: 'Asiasanojen haku epäonnistui' });
@@ -111,49 +85,27 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
         }
     };
 
-    const updateRow = (idx: number, updates: Partial<TagRow>) => {
-        setRows(prev => prev.map((row, i) => i === idx ? { ...row, ...updates } : row));
-    };
-
-    const resolveItem = async (row: TagRow) => {
-        if (row.skip) {
-            return { name: row.kirjasampoName, id: null, action: 'omit' };
-        }
-        const local = row.localTag;
-        const localId = typeof local === 'object' ? local.id : 0;
-        const localName = (typeof local === 'object' ? local.name : local as string).trim();
-
-        // User picked an existing tag from suggestions with a different name → replace + store mapping
-        if (localId > 0 && localName !== row.kirjasampoName) {
-            return { name: row.kirjasampoName, id: localId, action: 'replace' };
-        }
-
-        // User typed a different name without selecting from dropdown →
-        // look up by name so we get the id and can store the replace mapping
-        if (localId === 0 && localName && localName !== row.kirjasampoName) {
-            try {
-                const matches = await filterTags(encodeURIComponent(localName), user);
-                const exact = matches.find(
-                    t => t.name.toLowerCase() === localName.toLowerCase()
-                );
-                if (exact) {
-                    return { name: row.kirjasampoName, id: exact.id, action: 'replace' };
-                }
-            } catch (e) {
-                console.error('resolveItem lookup failed for', localName, e);
-            }
-            return { name: localName, id: null, action: 'add' };
-        }
-
-        return { name: localName || row.kirjasampoName, id: null, action: 'add' };
+    // A name can be in several sections; its rows change together.
+    const updateName = (name: string, updates: Partial<ImportRow>) => {
+        setRows(prev => prev.map(row => row.name === name ? { ...row, ...updates } : row));
     };
 
     const handleSave = async () => {
         setSaving(true);
         try {
-            const items = await Promise.all(rows.map(resolveItem));
-            await postApiContent(`work/${work.id}/tags/import`, items, user);
-            toastRef.current?.show({ severity: 'success', summary: 'Asiasanat tuotu' });
+            const response = await postApiContent(`work/${work.id}/tags/import`, importItems(rows), user);
+            // postApiContent reports HTTP errors in the status rather than throwing.
+            if (response.status !== 200) throw new Error(response.response);
+            const results = response.response as unknown as { name: string; status: string }[];
+            const failed = results.filter(r => r.status === 'error');
+            if (failed.length > 0) {
+                toastRef.current?.show({
+                    severity: 'warn', summary: 'Osa asiasanoista jäi tuomatta',
+                    detail: failed.map(r => r.name).join(', '),
+                });
+            } else {
+                toastRef.current?.show({ severity: 'success', summary: 'Asiasanat tuotu' });
+            }
             setDialogVisible(false);
             onImported?.();
         } catch {
@@ -162,6 +114,66 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
             setSaving(false);
         }
     };
+
+    // Nothing to add: saving just records that the work was checked.
+    const nothingToImport = rows.every(row => row.skip);
+
+    const nameBody = (row: ImportRow) => (
+        <span className="text-sm" title={row.rawName !== row.name ? row.rawName : undefined}>
+            {row.name}
+        </span>
+    );
+
+    const onWorkBody = (row: ImportRow) => row.onWork ? (
+        <i className="pi pi-check text-green-600" title="Teoksella on jo tämä asiasana"
+            aria-label="Teoksella on jo tämä asiasana" role="img" />
+    ) : null;
+
+    const localTagBody = (row: ImportRow) => (
+        <AutoComplete
+            value={row.localTag}
+            field="name"
+            suggestions={suggestions}
+            completeMethod={searchTags}
+            onChange={e => updateName(row.name, { localTag: e.value })}
+            disabled={row.skip}
+            aria-label={`Asiasana tietokannassa: ${row.name}`}
+            inputClassName="w-full"
+            className="w-full"
+        />
+    );
+
+    const typeBody = (row: ImportRow) => {
+        if (!isNewTag(row)) {
+            const type = typeof row.localTag === 'object' ? row.localTag.type : null;
+            return type ? <TypePill type={type} /> : null;
+        }
+        return (
+            <div className="flex align-items-center gap-2">
+                <Dropdown
+                    value={row.typeId}
+                    options={tagTypes}
+                    optionLabel="name"
+                    optionValue="id"
+                    itemTemplate={(type: TagType) => <TypePill type={type} />}
+                    valueTemplate={(type: TagType | null) => type ? <TypePill type={type} /> : null}
+                    onChange={e => updateName(row.name, { typeId: e.value })}
+                    disabled={row.skip}
+                    aria-label={`Tyyppi: ${row.name}`}
+                    className="w-full"
+                />
+                <Tag value="Uusi" className="surface-300 text-color" title="Uusi asiasana" />
+            </div>
+        );
+    };
+
+    const skipBody = (row: ImportRow) => (
+        <InputSwitch
+            checked={row.skip}
+            onChange={e => updateName(row.name, { skip: !!e.value })}
+            aria-label={`Ohita ${row.name}`}
+        />
+    );
 
     const footer = (
         <div className="flex justify-content-end gap-2">
@@ -172,11 +184,11 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
                 onClick={() => setDialogVisible(false)}
             />
             <Button
-                label="Tallenna"
-                icon="pi pi-save"
+                label={nothingToImport ? 'Merkitse tuoduksi' : 'Tallenna'}
+                icon={nothingToImport ? 'pi pi-check' : 'pi pi-save'}
                 onClick={handleSave}
                 loading={saving}
-                disabled={!fetched || rows.length === 0}
+                disabled={!fetched}
             />
         </div>
     );
@@ -218,39 +230,27 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
                 ) : rows.length === 0 ? (
                     <p className="text-center text-color-secondary">Ei asiasanoja löydetty.</p>
                 ) : (
-                    <div>
-                        <div className="grid font-bold pb-2 border-bottom-1 surface-border text-sm text-600 uppercase">
-                            <div className="col-5">Kirjasampo-asiasana</div>
-                            <div className="col-5">Asiasana tietokannassa</div>
-                            <div className="col-2 text-center">Ohita</div>
-                        </div>
-                        {rows.map((row, idx) => (
-                            <div
-                                key={row.kirjasampoName}
-                                className={`grid align-items-center py-1 border-bottom-1 surface-border${row.skip ? ' opacity-50' : ''}`}
-                            >
-                                <div className="col-5 text-sm">{row.kirjasampoName}</div>
-                                <div className="col-5">
-                                    <AutoComplete
-                                        value={row.localTag}
-                                        field="name"
-                                        suggestions={suggestions}
-                                        completeMethod={searchTags}
-                                        onChange={e => updateRow(idx, { localTag: e.value })}
-                                        disabled={row.skip}
-                                        inputClassName="w-full"
-                                        className="w-full"
-                                    />
-                                </div>
-                                <div className="col-2 flex justify-content-center">
-                                    <InputSwitch
-                                        checked={row.skip}
-                                        onChange={e => updateRow(idx, { skip: !!e.value })}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    <DataTable
+                        value={rows}
+                        dataKey="key"
+                        rowGroupMode="subheader"
+                        groupRowsBy="section"
+                        rowGroupHeaderTemplate={(row: ImportRow) => <span className="font-bold">{row.section}</span>}
+                        rowClassName={(row: ImportRow) => ({ 'opacity-50': row.skip })}
+                        size="small"
+                        // For the column titles; App.css stacks the cells on
+                        // narrow screens (PrimeReact adds its stack styles only
+                        // when the breakpoint changes after mounting).
+                        responsiveLayout="stack"
+                        className="kirjasampo-import-table"
+                    >
+                        <Column header="Kirjasampo-asiasana" body={nameBody} style={{ width: '28%' }} />
+                        <Column header="Teoksessa" body={onWorkBody} bodyClassName="kirjasampo-on-work text-center"
+                            headerClassName="kirjasampo-on-work" style={{ width: '7%' }} />
+                        <Column header="Asiasana tietokannassa" body={localTagBody} style={{ width: '33%' }} />
+                        <Column header="Tyyppi" body={typeBody} style={{ width: '22%' }} />
+                        <Column header="Ohita" body={skipBody} style={{ width: '10%' }} />
+                    </DataTable>
                 )}
             </Dialog>
         </>

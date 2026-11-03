@@ -1518,3 +1518,40 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
   .price-quality-decent { color: var(--orange-400); }
   .price-quality-poor { color: var(--red-400); }
 }
+
+/* Kirjasampo tag import table: one cell per line on narrow screens, each
+   with its column title (DataTable responsiveLayout="stack"). */
+@media screen and (max-width: 640px) {
+    .kirjasampo-import-table .p-datatable-thead > tr > th {
+        display: none;
+    }
+    .kirjasampo-import-table .p-datatable-tbody > tr:not(.p-rowgroup-header) > td {
+        display: flex;
+        width: 100% !important;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        border: 0 none;
+    }
+    .kirjasampo-import-table .p-datatable-tbody > tr:not(.p-rowgroup-header) > td:last-child {
+        border-bottom: 1px solid var(--surface-border);
+    }
+    /* Only tags already on the work have a mark to show. */
+    .kirjasampo-import-table .p-datatable-tbody > tr > td.kirjasampo-on-work:not(:has(i)) {
+        display: none;
+    }
+    .kirjasampo-import-table .p-datatable-tbody > tr > td > .p-column-title {
+        display: block;
+        flex-shrink: 0;
+        font-weight: 600;
+    }
+    .kirjasampo-import-table .p-datatable-tbody > tr > td > :not(.p-column-title) {
+        min-width: 0;
+        max-width: 65%;
+    }
+    /* The tag and type inputs fill the line; chips and switches don't. */
+    .kirjasampo-import-table .p-datatable-tbody > tr > td > .p-autocomplete,
+    .kirjasampo-import-table .p-datatable-tbody > tr > td > div.flex {
+        flex: 1 1 auto;
+    }
+}

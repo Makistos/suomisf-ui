@@ -19,6 +19,8 @@ import { SfTagForm } from '../components/sftag-form';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Toast } from 'primereact/toast';
 import { getTag } from '@api/tag/get-tag';
+import { getSimilarTags } from '@api/tag/get-similar-tags';
+import { TagGroup } from '../components/sftag-group';
 import { mergeTags } from '@api/tag/merge-tags';
 import { Tag } from 'primereact/tag';
 import { tagTypeToClass, tagTypeToSeverity } from '../components/tag-type-to-severity';
@@ -181,6 +183,10 @@ export const SFTag = (_props: SfTagProps) => {
         queryKey: ['tags', params.tagid],
         queryFn: () => getTag(Number(params.tagid), user)
     })
+    const { data: similarTags } = useQuery({
+        queryKey: ['tags', params.tagid, 'similar'],
+        queryFn: () => getSimilarTags(Number(params.tagid), user)
+    })
 
     const deleteTagFunc = () => {
         if (data) {
@@ -253,6 +259,14 @@ export const SFTag = (_props: SfTagProps) => {
                                             {data.description && (
                                                 <div className="mt-3 line-height-3 html-content"
                                                     dangerouslySetInnerHTML={safeHtml(data.description)}>
+                                                </div>
+                                            )}
+                                            {similarTags && similarTags.length > 0 && (
+                                                <div className="mt-4">
+                                                    <h2 className="text-sm uppercase text-600 mt-0 mb-2">
+                                                        Samankaltaiset asiasanat
+                                                    </h2>
+                                                    <TagGroup tags={similarTags} overflow={12} showOneCount={false} />
                                                 </div>
                                             )}
                                         </div>

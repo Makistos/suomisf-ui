@@ -48,7 +48,7 @@ dev servers on `:3000`/`:5000` are never touched.
 | `changes.spec.ts` | `/changes` | Audit log table loads and paginates. |
 | `faq.spec.ts` | `/faq` | Page loads with content. |
 | `tags.spec.ts` | `/tags` | All category headings present, specific tag names found within their category with a sane count. |
-| `tag.spec.ts` | `/tags/521` | "dystopia" tag: description, Teokset/Novelleja/Artikkeleita headings, a known linked work's author heading (large tag, 300+ works — rendering-scale check). |
+| `tag.spec.ts` | `/tags/521` | "dystopia" tag: description, Teokset/Novelleja/Artikkeleita headings, a known linked work's author heading (large tag, 300+ works — rendering-scale check). "eurooppa" (`/tags/937`) lists its suggested similar tags, 12 and the rest behind "+"; "dystopia" has none, so no such section. |
 | `work.spec.ts` | `/works/63` | Title/author headings, genres/tags sections, and the "Myös teoksessa" omnibus relation (exercises the `part_of` sort fixed earlier this project). |
 | `edition.spec.ts` | `/editions/1731` | `/editions/:id` shares `WorkPage` with `/works/:id` but loads via the parent work and highlights the requested edition — checks exactly one `.highlighted-edition`. |
 | `short.spec.ts` | `/shorts/4985` | Title/author, and a short with 20 translators all rendered (exercises `remove-duplicate-contributions.ts`). |

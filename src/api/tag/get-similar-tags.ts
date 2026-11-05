@@ -2,7 +2,9 @@ import { SfTag } from "@features/tag";
 import { User } from "@features/user";
 import { getApiContent, postApiContent } from "@services/user-service";
 
-export type SimilarReason = "baseform" | "spelling" | "place" | "name" | "usage" | "manual";
+export type SimilarReason = "baseform" | "spelling" | "place" | "name" | "usage" | "manual"
+    // Finto's KOKO ontology: the same concept, or concepts linked as related.
+    | "concept" | "concept_related";
 
 export type SimilarTag = SfTag & {
     kind: "duplicate" | "related";

@@ -23,6 +23,7 @@ beforeEach(() => {
     similar = [
         { id: 2, name: "robotit", type: type(1), kind: "duplicate", reason: "baseform" },
         { id: 3, name: "kyborgit", type: type(1), kind: "related", reason: "manual" },
+        { id: 5, name: "androidit", type: type(1), kind: "related", reason: "concept" },
     ];
     api.getApiContent.mockImplementation(async (url: string) => {
         if (url === "tags/1/similar") return { data: similar };
@@ -64,6 +65,7 @@ describe("SimilarTagsEditor", () => {
         await renderLoaded();
         expect(item("robotit").textContent).toContain("Kaksoiskappale, sama perusmuoto");
         expect(item("kyborgit").textContent).toContain("Liittyvä, lisätty käsin");
+        expect(item("androidit").textContent).toContain("Liittyvä, sama käsite");
         expect(item("robotit").querySelector("a")?.getAttribute("href")).toBe("/tags/2");
     });
 

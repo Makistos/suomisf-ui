@@ -8,4 +8,6 @@ export const SIMILAR_REASONS: Record<SimilarReason, string> = {
     name: "Samankaltainen nimi",
     usage: "Käytetään yhdessä",
     manual: "Lisätty käsin",
+    concept: "Sama käsite",
+    concept_related: "Liittyvä käsite",
 };

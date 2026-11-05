@@ -21,6 +21,7 @@ import { Toast } from 'primereact/toast';
 import { getTag } from '@api/tag/get-tag';
 import { getSimilarTags } from '@api/tag/get-similar-tags';
 import { TagGroup } from '../components/sftag-group';
+import { SimilarTagsEditor } from '../components/similar-tags-editor';
 import { mergeTags } from '@api/tag/merge-tags';
 import { Tag } from 'primereact/tag';
 import { tagTypeToClass, tagTypeToSeverity } from '../components/tag-type-to-severity';
@@ -335,6 +336,10 @@ export const SFTag = (_props: SfTagProps) => {
                         >
                             <SfTagForm tagId={(data && data.id) ? data.id : null}
                                 onSubmitCallback={onTagSubmit} />
+                            {/* Saved as soon as changed, not with the form above. */}
+                            <div className="mt-5 pt-4 border-top-1 surface-border">
+                                <SimilarTagsEditor tagId={data.id} />
+                            </div>
                         </Dialog>
                         <Dialog
                             header="Yhdistä asiasana" visible={displayMerge} onHide={() => onHide('displayMerge')}

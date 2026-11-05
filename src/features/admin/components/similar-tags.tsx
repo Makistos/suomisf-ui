@@ -15,6 +15,8 @@ import { Toast } from "primereact/toast";
 import { getCurrenUser } from "@services/auth-service";
 import { getApiContent, postApiContent } from "@services/user-service";
 import { mergeTags } from "@api/tag/merge-tags";
+import { SimilarReason } from "@api/tag/get-similar-tags";
+import { SIMILAR_REASONS } from "@features/tag/utils/similar-reasons";
 import { SfTag, TagType } from "@features/tag/types";
 import { tagTypeToClass, tagTypeToSeverity } from "@features/tag/components/tag-type-to-severity";
 
@@ -26,13 +28,12 @@ interface SimilarTag {
     uses: number;
 }
 
-type Reason = "baseform" | "spelling" | "place" | "name" | "usage";
 
 interface SimilarPair {
     tag_a: SimilarTag;
     tag_b: SimilarTag;
     kind: "duplicate" | "related";
-    reason: Reason;
+    reason: SimilarReason;
     name_score: number | null;
     containment: number | null;
     shared: number;
@@ -57,13 +58,7 @@ const VIEWS: { label: string; value: View }[] = [
     { label: "Hylätyt", value: "dismissed" },
 ];
 
-export const REASONS: Record<Reason, string> = {
-    baseform: "Sama perusmuoto",
-    spelling: "Kirjoitusasu",
-    place: "Paikka",
-    name: "Samankaltainen nimi",
-    usage: "Käytetään yhdessä",
-};
+const REASONS = SIMILAR_REASONS;
 
 const SIMILAR_KEY = ["tags-similar"];
 

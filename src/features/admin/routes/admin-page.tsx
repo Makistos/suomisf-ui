@@ -9,7 +9,8 @@ import { KirjasampoUnimportedWorks } from "../components/kirjasampo-unimported-w
 import { WorkLinkSources } from "../components/work-link-sources";
 import { SimilarTags } from "../components/similar-tags";
 
-/** Miscellaneous admin tasks, one card per task. Admins only. */
+/** Miscellaneous admin tasks, one card per task. Admins only. The link
+ * sources card stays last: new cards go above it. */
 export const AdminPage = () => {
     const user = useMemo(() => getCurrenUser(), []);
 
@@ -27,11 +28,11 @@ export const AdminPage = () => {
                 <Card title="Kirjasampo-asiasanat tuomatta">
                     <KirjasampoUnimportedWorks />
                 </Card>
-                <Card title="Teosten linkkien lähteet">
-                    <WorkLinkSources />
-                </Card>
                 <Card title="Samankaltaiset asiasanat">
                     <SimilarTags />
+                </Card>
+                <Card title="Teosten linkkien lähteet">
+                    <WorkLinkSources />
                 </Card>
             </div>
         </main>

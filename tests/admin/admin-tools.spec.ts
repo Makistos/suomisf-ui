@@ -38,10 +38,13 @@ test('the admin page opens from the Ylläpito menu', async ({ adminPage }) => {
     await adminPage.getByRole('menuitem', { name: 'Ylläpitotyökalut' }).click();
     await expect(adminPage).toHaveURL(/\/admin$/);
     await expect(adminPage.getByRole('heading', { name: 'Ylläpito', level: 1 })).toBeVisible();
-    for (const title of ['Satunnainen keskeneräinen teos', 'Kirjasampo-asiasanat tuomatta', 'Teosten linkkien lähteet',
-        'Samankaltaiset asiasanat']) {
+    const titles = ['Satunnainen keskeneräinen teos', 'Kirjasampo-asiasanat tuomatta', 'Samankaltaiset asiasanat',
+        'Teosten linkkien lähteet'];
+    for (const title of titles) {
         await expect(card(adminPage, title)).toBeVisible();
     }
+    // In this order; the link sources card is always last.
+    await expect(adminPage.locator('.p-card-title')).toHaveText(titles);
 });
 
 test('random incomplete works lack the chosen data', async ({ adminPage }) => {

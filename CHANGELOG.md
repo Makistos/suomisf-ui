@@ -3,6 +3,9 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-06 `26f762b` — Similar tags from Finto
+Similar tags found through Finto's KOKO ontology show their reason on the admin card, the tag edit dialog and in tooltips: "Sama käsite" (synonyms such as "aaveet" – "kummitukset") and "Liittyvä käsite".
+
 ## 2026-11-05 `b6addd0` — Similar tags in the tag edit dialog
 The tag page's Muokkaa dialog has a "Samankaltaiset asiasanat" section for admins: the tag's similar tags with their kind and reason, each removable (a suggestion is dismissed so it isn't suggested again, a link made by hand is deleted), and a search field for adding any tag as related. Changes are saved at once and show on the tag page; on the admin card such pairs read "Lisätty käsin".
 

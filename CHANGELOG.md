@@ -3,6 +3,9 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-05 `98f6b14` — Similar tags on the admin page
+A new "Samankaltaiset asiasanat" card on `/admin` lists the tag pairs the backend's tag similarity job suggests: probable duplicates (same base form, spelling variant, the same place), related tags (similar name, used together, a place and the place it lies in) and dismissed pairs. Each row shows both tags in their type colours with use counts, the reason and the score. "Yhdistä" merges the less used tag into the other (the direction can be swapped), and "Eri asiasanat" dismisses the pair so it isn't suggested again; dismissed pairs can be restored.
+
 ## 2026-11-03 `7b981fb`, `0aa28ca`, `99a9a4a` — Kirjasampo tag import reworked
 The "Tuo Kirjasampo-asiasanat" dialog lists the tags grouped by Kirjasampo section and leaves out sections that aren't tags (now also recommendations, awards and links). Each tag shows the local tag it will be saved as and that tag's type in the same colours as elsewhere; a new tag gets a type picker that defaults by section (Toimija for people, Paikka for places, Aika for times and dates, otherwise Aihe), and tags the work already has are marked. Saving when every tag is skipped, or the page has none, is "Merkitse tuoduksi" and still records the import date, which now also shows on a work without tags. A failed save is no longer reported as a success. The search results page heads short stories "Novellit ja artikkelit" (`ebebc5d`).
 

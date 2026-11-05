@@ -7,6 +7,7 @@ import { LoadError } from "@components/load-error";
 import { RandomIncompleteWorks } from "../components/random-incomplete-works";
 import { KirjasampoUnimportedWorks } from "../components/kirjasampo-unimported-works";
 import { WorkLinkSources } from "../components/work-link-sources";
+import { SimilarTags } from "../components/similar-tags";
 
 /** Miscellaneous admin tasks, one card per task. Admins only. */
 export const AdminPage = () => {
@@ -28,6 +29,9 @@ export const AdminPage = () => {
                 </Card>
                 <Card title="Teosten linkkien lähteet">
                     <WorkLinkSources />
+                </Card>
+                <Card title="Samankaltaiset asiasanat">
+                    <SimilarTags />
                 </Card>
             </div>
         </main>

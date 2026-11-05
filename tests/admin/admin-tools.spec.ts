@@ -38,7 +38,8 @@ test('the admin page opens from the Ylläpito menu', async ({ adminPage }) => {
     await adminPage.getByRole('menuitem', { name: 'Ylläpitotyökalut' }).click();
     await expect(adminPage).toHaveURL(/\/admin$/);
     await expect(adminPage.getByRole('heading', { name: 'Ylläpito', level: 1 })).toBeVisible();
-    for (const title of ['Satunnainen keskeneräinen teos', 'Kirjasampo-asiasanat tuomatta', 'Teosten linkkien lähteet']) {
+    for (const title of ['Satunnainen keskeneräinen teos', 'Kirjasampo-asiasanat tuomatta', 'Teosten linkkien lähteet',
+        'Samankaltaiset asiasanat']) {
         await expect(card(adminPage, title)).toBeVisible();
     }
 });
@@ -137,4 +138,33 @@ test('a mistyped link source is combined into the right one and then deleted', a
     } finally {
         await setLinks(adminPage, headers, WORK_ID, original);
     }
+});
+
+test('a suggested duplicate tag pair is dismissed and restored', async ({ adminPage, browserName }) => {
+    test.setTimeout(90000);
+    await adminPage.goto('/admin');
+    const similar = card(adminPage, 'Samankaltaiset asiasanat');
+    await expect(similar.getByText(/Päivitetty/)).toBeVisible({ timeout: 20000 });
+
+    // Whichever pair the copied job results list first (second in Firefox,
+    // so parallel runs don't race on one pair).
+    const first = similar.locator('tbody tr').nth(browserName === 'firefox' ? 1 : 0);
+    const [nameA, nameB] = await first.locator('td .p-tag').allTextContents();
+    expect(nameA && nameB).toBeTruthy();
+    const pairRow = similar.locator('tbody tr')
+        .filter({ hasText: nameA }).filter({ hasText: nameB });
+
+    await similar.getByPlaceholder('Hae asiasanaa...').fill(nameA);
+    await pairRow.getByRole('button', { name: 'Eri asiasanat' }).click();
+    await expect(adminPage.getByText('Merkitty eri asiasanoiksi')).toBeVisible({ timeout: 20000 });
+    await expect(pairRow).toHaveCount(0);
+
+    await similar.getByText('Hylätyt', { exact: true }).click();
+    await expect(pairRow).toContainText('Test Admin', { timeout: 20000 });
+    await pairRow.getByRole('button', { name: 'Palauta' }).click();
+    await expect(adminPage.getByText('Palautettu')).toBeVisible({ timeout: 20000 });
+    await expect(pairRow).toHaveCount(0);
+
+    await similar.getByText('Kaksoiskappaleet', { exact: true }).click();
+    await expect(pairRow).toBeVisible({ timeout: 20000 });
 });

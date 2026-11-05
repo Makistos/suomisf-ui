@@ -1555,3 +1555,11 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
         flex: 1 1 auto;
     }
 }
+
+/* Table columns left out on phones (below PrimeFlex's md breakpoint, which
+   has no table-cell display class to undo "hidden" with). */
+@media screen and (max-width: 767px) {
+    .wide-only {
+        display: none;
+    }
+}

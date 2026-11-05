@@ -3,6 +3,9 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-05 `b9b93c7` — Similar tags on the tag page
+A tag's page lists "Samankaltaiset asiasanat" under its description: the tags the similarity job suggests for it (probable duplicates first, then related tags such as the countries of a continent), leaving out pairs an admin has dismissed. The first 12 are shown and the rest behind a "+" button; a tag with no suggestions has no such section.
+
 ## 2026-11-05 `98f6b14` — Similar tags on the admin page
 A new "Samankaltaiset asiasanat" card on `/admin` lists the tag pairs the backend's tag similarity job suggests: probable duplicates (same base form, spelling variant, the same place), related tags (similar name, used together, a place and the place it lies in) and dismissed pairs. Each row shows both tags in their type colours with use counts, the reason and the score. "Yhdistä" merges the less used tag into the other (the direction can be swapped), and "Eri asiasanat" dismisses the pair so it isn't suggested again; dismissed pairs can be restored.
 

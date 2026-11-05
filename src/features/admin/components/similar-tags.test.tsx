@@ -27,10 +27,13 @@ const ROBOTS = tag(2, "robotit", 40);
 const USA = tag(3, "usa", 5, 5);
 const US = tag(4, "yhdysvallat", 2, 5);
 const AI = tag(5, "tekoäly", 30);
+const SOUND = tag(6, "ääni", 4);
+const SOUNDS = tag(7, "äänet", 1);
 
 const DUPLICATES = [
     pair(ROBOT, ROBOTS, { kind: "duplicate", reason: "baseform", name_score: 0.97 }),
     pair(USA, US, { kind: "duplicate", reason: "place" }),
+    pair(SOUND, SOUNDS, { kind: "duplicate", reason: "baseform", name_score: 0.9 }),
 ];
 const RELATED = [
     pair(ROBOTS, AI, { kind: "related", reason: "usage", containment: 0.93, shared: 12 }),
@@ -48,7 +51,8 @@ beforeEach(() => {
             "tags/similar?status=dismissed": DISMISSED,
         }[url];
         if (!pairs) throw new Error(`unexpected GET ${url}`);
-        return { data: { updated: "2026-11-05T09:00:00+00:00", pairs } };
+        return { data: { updated: "2026-11-05T09:00:00+00:00", pairs,
+            counts: { duplicate: DUPLICATES.length, related: RELATED.length, dismissed: DISMISSED.length } } };
     });
     api.postApiContent.mockResolvedValue({ response: {}, status: 200 });
 });
@@ -70,7 +74,8 @@ const renderLoaded = async () => {
 };
 
 const showView = async (label: string, rowLabel: string) => {
-    click(byText(label).find(el => el.closest(".p-selectbutton"))!);
+    click([...document.querySelectorAll(".p-selectbutton .p-button")]
+        .find(el => el.textContent?.startsWith(label))!);
     await waitFor(() => row(rowLabel));
 };
 
@@ -83,9 +88,28 @@ describe("SimilarTags", () => {
         expect(cells).toEqual([
             ["robotti3robotit40Sama perusmuoto", "Sama perusmuoto", "0.97"],
             ["usa5yhdysvallat2Paikka", "Paikka", ""],
+            ["ääni4äänet1Sama perusmuoto", "Sama perusmuoto", "0.90"],
         ]);
         expect(row("robotti").querySelector("a")?.getAttribute("href")).toBe("/tags/1");
         expect(document.body.textContent).toContain("Päivitetty");
+    });
+
+    it("shows how many pairs each view has", async () => {
+        await renderLoaded();
+        expect([...document.querySelectorAll(".p-selectbutton .p-button")].map(b => b.textContent))
+            .toEqual(["Kaksoiskappaleet (3)", "Liittyvät (1)", "Hylätyt (1)"]);
+    });
+
+    it("sorts by tag name in Finnish order", async () => {
+        await renderLoaded();
+        const firstTags = () => [...document.querySelectorAll("tbody tr")]
+            .map(tr => tr.querySelector(".p-tag")?.textContent);
+        const header = [...document.querySelectorAll("th")].find(th => th.textContent?.includes("Asiasanat"))!;
+        click(header);
+        // "ääni" after "usa", not next to "a".
+        await waitFor(() => expect(firstTags()).toEqual(["robotti", "usa", "ääni"]));
+        click(header);
+        await waitFor(() => expect(firstTags()).toEqual(["ääni", "usa", "robotti"]));
     });
 
     it("switches to related pairs, with the scores in a tooltip", async () => {

@@ -148,6 +148,11 @@ test('a suggested duplicate tag pair is dismissed and restored', async ({ adminP
     await adminPage.goto('/admin');
     const similar = card(adminPage, 'Samankaltaiset asiasanat');
     await expect(similar.getByText(/Päivitetty/)).toBeVisible({ timeout: 20000 });
+    // Each view button shows its count.
+    for (const view of ['Kaksoiskappaleet', 'Liittyvät', 'Hylätyt']) {
+        await expect(similar.locator('.p-selectbutton .p-button', { hasText: view }))
+            .toHaveText(new RegExp(`^${view} \\(\\d+\\)$`));
+    }
 
     // Whichever pair the copied job results list first (second in Firefox,
     // so parallel runs don't race on one pair).
@@ -162,12 +167,28 @@ test('a suggested duplicate tag pair is dismissed and restored', async ({ adminP
     await expect(adminPage.getByText('Merkitty eri asiasanoiksi')).toBeVisible({ timeout: 20000 });
     await expect(pairRow).toHaveCount(0);
 
-    await similar.getByText('Hylätyt', { exact: true }).click();
+    await similar.locator('.p-selectbutton .p-button', { hasText: 'Hylätyt' }).click();
     await expect(pairRow).toContainText('Test Admin', { timeout: 20000 });
     await pairRow.getByRole('button', { name: 'Palauta' }).click();
     await expect(adminPage.getByText('Palautettu')).toBeVisible({ timeout: 20000 });
     await expect(pairRow).toHaveCount(0);
 
-    await similar.getByText('Kaksoiskappaleet', { exact: true }).click();
+    await similar.locator('.p-selectbutton .p-button', { hasText: 'Kaksoiskappaleet' }).click();
     await expect(pairRow).toBeVisible({ timeout: 20000 });
+});
+
+test('suggested tag pairs sort by tag name in Finnish order', async ({ adminPage }) => {
+    await adminPage.goto('/admin');
+    const similar = card(adminPage, 'Samankaltaiset asiasanat');
+    await expect(similar.getByText(/Päivitetty/)).toBeVisible({ timeout: 20000 });
+    const firstTags = () => similar.locator('tbody tr td:first-child .p-tag').first().textContent();
+    await similar.getByRole('columnheader', { name: /Asiasanat/ }).click();
+    const ascending = await firstTags();
+    await similar.getByRole('columnheader', { name: /Asiasanat/ }).click();
+    await expect(async () => {
+        const descending = await firstTags();
+        expect(descending).not.toBe(ascending);
+        // The last name in Finnish order comes first.
+        expect(new Intl.Collator('fi').compare(descending!, ascending!)).toBeGreaterThan(0);
+    }).toPass({ timeout: 20000 });
 });

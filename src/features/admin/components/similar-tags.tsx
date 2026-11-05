@@ -1,8 +1,8 @@
 import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
+import { Column, ColumnSortEvent } from "primereact/column";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
@@ -42,15 +42,18 @@ interface SimilarPair {
     decided_at: string | null;
 }
 
+type View = "duplicate" | "related" | "dismissed";
+
 interface SimilarResponse {
     // Newest write of the job, null if it has never run.
     updated: string | null;
+    // Pairs in each view, whichever view was asked for.
+    counts: Record<View, number>;
     pairs: SimilarPair[];
 }
 
 type PairRow = SimilarPair & { key: string; score: number | null; names: string };
 
-type View = "duplicate" | "related" | "dismissed";
 
 const VIEWS: { label: string; value: View }[] = [
     { label: "Kaksoiskappaleet", value: "duplicate" },
@@ -64,6 +67,14 @@ const SIMILAR_KEY = ["tags-similar"];
 
 // Columns left out on phones.
 const WIDE_ONLY = { className: "wide-only", headerClassName: "wide-only" };
+
+const finnish = new Intl.Collator("fi");
+
+/** By the first tag's name, then the second's, in Finnish order (å, ä, ö
+ * after z). */
+const sortByName = (e: ColumnSortEvent) => [...e.data].sort((a: PairRow, b: PairRow) =>
+    (e.order ?? 1) * (finnish.compare(a.tag_a.name, b.tag_a.name)
+        || finnish.compare(a.tag_b.name, b.tag_b.name)));
 
 const query = (view: View) =>
     view === "dismissed" ? "tags/similar?status=dismissed" : `tags/similar?kind=${view}`;
@@ -107,11 +118,18 @@ export const SimilarTags = () => {
     const [merging, setMerging] = useState<{ keep: SimilarTag; remove: SimilarTag } | null>(null);
     const [busy, setBusy] = useState(false);
 
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, isPlaceholderData } = useQuery({
         queryKey: [...SIMILAR_KEY, view],
         queryFn: async (): Promise<SimilarResponse> =>
             getApiContent(query(view), user).then(response => response.data),
+        // Keeps the counts on the buttons while another view loads.
+        placeholderData: keepPreviousData,
     });
+
+    const viewOptions = VIEWS.map(v => ({
+        ...v,
+        label: data?.counts ? `${v.label} (${data.counts[v.value]})` : v.label,
+    }));
 
     const rows: PairRow[] = useMemo(() => (data?.pairs ?? []).map(p => ({
         ...p,
@@ -162,7 +180,7 @@ export const SimilarTags = () => {
 
     const header = (
         <div className="flex justify-content-between align-items-center flex-wrap gap-2">
-            <SelectButton value={view} options={VIEWS} allowEmpty={false}
+            <SelectButton value={view} options={viewOptions} allowEmpty={false}
                 onChange={e => setView(e.value as View)} />
             <IconField iconPosition="left">
                 <InputIcon className="pi pi-search" />
@@ -203,7 +221,8 @@ export const SimilarTags = () => {
             <DataTable
                 value={rows}
                 dataKey="key"
-                loading={isLoading}
+                // The previous view's rows are shown while the next loads.
+                loading={isLoading || isPlaceholderData}
                 header={header}
                 size="small"
                 stripedRows
@@ -213,7 +232,8 @@ export const SimilarTags = () => {
                 rows={25}
                 emptyMessage={view === "dismissed" ? "Ei hylättyjä ehdotuksia." : "Ei ehdotuksia."}
             >
-                <Column header="Asiasanat" body={(row: PairRow) => (
+                <Column header="Asiasanat" field="names" sortable sortFunction={sortByName}
+                    body={(row: PairRow) => (
                     // The first tag has a fixed width so the second lines up on
                     // wide screens; on a phone the second wraps below it.
                     <div className="flex flex-wrap align-items-center column-gap-3 row-gap-2">

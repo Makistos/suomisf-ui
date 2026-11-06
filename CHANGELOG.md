@@ -3,6 +3,9 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-06 `a8a2e32` — Similar tags: mark a duplicate as related
+On the "Samankaltaiset asiasanat" card a suggested duplicate can be marked as only related ("Merkitse liittyväksi"), and a related pair as a duplicate. The pair moves to the other view and the similarity job keeps it there.
+
 ## 2026-11-06 `88059c7` — Similar tags card: counts and sorting
 The "Samankaltaiset asiasanat" card's Kaksoiskappaleet, Liittyvät and Hylätyt buttons show how many pairs each has, and the Asiasanat column can be sorted by tag name (Finnish order, so å, ä and ö come after z).
 

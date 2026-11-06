@@ -19,7 +19,7 @@ const tag = (id: number, name: string, uses: number, typeId = 1) =>
 
 const pair = (a: ReturnType<typeof tag>, b: ReturnType<typeof tag>, extra: object) => ({
     tag_a: a, tag_b: b, name_score: null, containment: null, shared: 0,
-    status: "new", decided_by: null, decided_at: null, ...extra,
+    status: "new", decided_by: null, decided_at: null, checked: false, ...extra,
 });
 
 const ROBOT = tag(1, "robotti", 3);
@@ -32,7 +32,7 @@ const SOUNDS = tag(7, "äänet", 1);
 
 const DUPLICATES = [
     pair(ROBOT, ROBOTS, { kind: "duplicate", reason: "baseform", name_score: 0.97 }),
-    pair(USA, US, { kind: "duplicate", reason: "place" }),
+    pair(USA, US, { kind: "duplicate", reason: "place", checked: true }),
     pair(SOUND, SOUNDS, { kind: "duplicate", reason: "baseform", name_score: 0.9 }),
 ];
 const RELATED = [
@@ -127,6 +127,26 @@ describe("SimilarTags", () => {
         // The list is reloaded afterwards.
         await waitFor(() => expect(api.getApiContent.mock.calls
             .filter(([u]) => u === "tags/similar?kind=duplicate")).toHaveLength(2));
+    });
+
+    it("marks a pair checked, or takes the mark off", async () => {
+        await renderLoaded();
+        expect(button("Tarkistettu", row("robotti"))?.getAttribute("aria-pressed")).toBe("false");
+        expect(button("Tarkistettu", row("usa"))?.getAttribute("aria-pressed")).toBe("true");
+        click(button("Tarkistettu", row("robotti")));
+        await waitFor(() => expect(api.postApiContent).toHaveBeenCalledWith(
+            "tags/similar/check", { tag_a: 1, tag_b: 2, checked: true }, expect.anything()));
+        click(button("Tarkistettu", row("usa")));
+        await waitFor(() => expect(api.postApiContent).toHaveBeenCalledWith(
+            "tags/similar/check", { tag_a: 3, tag_b: 4, checked: false }, expect.anything()));
+    });
+
+    it("hides checked pairs when asked", async () => {
+        await renderLoaded();
+        expect(document.body.textContent).toContain("Piilota tarkistetut (1)");
+        click(document.querySelector("#similar-hide-checked"));
+        await waitFor(() => expect(byText("usa").filter(el => el.closest("tbody tr"))).toHaveLength(0));
+        expect(row("robotti")).toBeTruthy();
     });
 
     it("marks a duplicate as only related", async () => {

@@ -9,6 +9,7 @@ import { InputText } from "primereact/inputtext";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { SelectButton } from "primereact/selectbutton";
+import { Checkbox } from "primereact/checkbox";
 import { Tag } from "primereact/tag";
 import { Toast } from "primereact/toast";
 
@@ -40,6 +41,8 @@ interface SimilarPair {
     status: "new" | "dismissed";
     decided_by: string | null;
     decided_at: string | null;
+    // Marked correct by an admin.
+    checked: boolean;
 }
 
 type View = "duplicate" | "related" | "dismissed";
@@ -114,6 +117,7 @@ export const SimilarTags = () => {
     const toastRef = useRef<Toast>(null);
     const [view, setView] = useState<View>("duplicate");
     const [filter, setFilter] = useState("");
+    const [hideChecked, setHideChecked] = useState(false);
     // The pair being merged: keep is merged into, remove goes away.
     const [merging, setMerging] = useState<{ keep: SimilarTag; remove: SimilarTag } | null>(null);
     const [busy, setBusy] = useState(false);
@@ -131,12 +135,14 @@ export const SimilarTags = () => {
         label: data?.counts ? `${v.label} (${data.counts[v.value]})` : v.label,
     }));
 
-    const rows: PairRow[] = useMemo(() => (data?.pairs ?? []).map(p => ({
+    const allRows: PairRow[] = useMemo(() => (data?.pairs ?? []).map(p => ({
         ...p,
         key: `${p.tag_a.id}-${p.tag_b.id}`,
         score: p.name_score ?? p.containment,
         names: `${p.tag_a.name} ${p.tag_b.name}`,
     })), [data]);
+    const checkedCount = allRows.filter(r => r.checked).length;
+    const rows = hideChecked && view !== "dismissed" ? allRows.filter(r => !r.checked) : allRows;
 
     const refresh = () => queryClient.invalidateQueries({ queryKey: SIMILAR_KEY });
 
@@ -149,6 +155,16 @@ export const SimilarTags = () => {
                 summary: action === "dismiss" ? "Merkitty eri asiasanoiksi" : "Palautettu",
                 detail: `${pair.tag_a.name} – ${pair.tag_b.name}`,
             });
+            await refresh();
+        } catch {
+            toastRef.current?.show({ severity: "error", summary: "Virhe", detail: "Tallennus epäonnistui." });
+        }
+    };
+
+    const setChecked = async (pair: SimilarPair, checked: boolean) => {
+        try {
+            await postApiContent("tags/similar/check",
+                { tag_a: pair.tag_a.id, tag_b: pair.tag_b.id, checked }, user);
             await refresh();
         } catch {
             toastRef.current?.show({ severity: "error", summary: "Virhe", detail: "Tallennus epäonnistui." });
@@ -198,6 +214,13 @@ export const SimilarTags = () => {
         <div className="flex justify-content-between align-items-center flex-wrap gap-2">
             <SelectButton value={view} options={viewOptions} allowEmpty={false}
                 onChange={e => setView(e.value as View)} />
+            {view !== "dismissed" && (
+                <div className="flex align-items-center gap-2">
+                    <Checkbox inputId="similar-hide-checked" checked={hideChecked}
+                        onChange={e => setHideChecked(!!e.checked)} />
+                    <label htmlFor="similar-hide-checked">Piilota tarkistetut ({checkedCount})</label>
+                </div>
+            )}
             <IconField iconPosition="left">
                 <InputIcon className="pi pi-search" />
                 <InputText value={filter} onChange={e => setFilter(e.target.value)}
@@ -214,6 +237,12 @@ export const SimilarTags = () => {
                     onClick={() => decide(row, "restore")} />
             ) : (
                 <>
+                    <Button icon={row.checked ? "pi pi-check-circle" : "pi pi-check"} rounded text
+                        severity={row.checked ? "success" : "secondary"}
+                        aria-label="Tarkistettu" aria-pressed={row.checked}
+                        tooltip={row.checked ? "Tarkistettu; poista merkintä" : "Merkitse tarkistetuksi"}
+                        tooltipOptions={{ position: "left" }}
+                        onClick={() => setChecked(row, !row.checked)} />
                     <Button icon="pi pi-link" rounded text aria-label="Yhdistä"
                         tooltip="Yhdistä asiasanat" tooltipOptions={{ position: "left" }}
                         onClick={() => openMerge(row)} />
@@ -276,7 +305,7 @@ export const SimilarTags = () => {
                 {view === "dismissed" && <Column header="Hylännyt" style={{ width: "12rem" }} {...WIDE_ONLY}
                     body={(row: PairRow) => row.decided_by &&
                         `${row.decided_by}${row.decided_at ? `, ${formatDate(row.decided_at)}` : ""}`} />}
-                <Column style={{ width: "9rem" }} body={actions} />
+                <Column style={{ width: "11.5rem" }} body={actions} />
             </DataTable>
 
             <Dialog

@@ -217,3 +217,26 @@ test('a suggested duplicate is marked related and back', async ({ adminPage, bro
     await view('Kaksoiskappaleet').click();
     await expect(pairRow).toBeVisible({ timeout: 20000 });
 });
+
+test('a suggested pair is marked checked and hidden', async ({ adminPage, browserName }) => {
+    test.setTimeout(90000);
+    await adminPage.goto('/admin');
+    const similar = card(adminPage, 'Samankaltaiset asiasanat');
+    await expect(similar.getByText(/Päivitetty/)).toBeVisible({ timeout: 20000 });
+
+    // Rows the other tests don't use, one per browser.
+    const row = similar.locator('tbody tr').nth(browserName === 'firefox' ? 5 : 4);
+    const [nameA, nameB] = await row.locator('td .p-tag').allTextContents();
+    const pairRow = similar.locator('tbody tr').filter({ hasText: nameA }).filter({ hasText: nameB });
+    const check = pairRow.getByRole('button', { name: 'Tarkistettu' });
+    await expect(check).toHaveAttribute('aria-pressed', 'false');
+    await check.click();
+    await expect(check).toHaveAttribute('aria-pressed', 'true', { timeout: 20000 });
+
+    const hide = similar.getByLabel(/Piilota tarkistetut/);
+    await hide.check();
+    await expect(pairRow).toHaveCount(0);
+    await hide.uncheck();
+    await check.click();
+    await expect(check).toHaveAttribute('aria-pressed', 'false', { timeout: 20000 });
+});

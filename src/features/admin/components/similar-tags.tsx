@@ -155,6 +155,22 @@ export const SimilarTags = () => {
         }
     };
 
+    /** Move a pair to the other kind; the job keeps it there. */
+    const setKind = async (pair: SimilarPair, kind: SimilarPair["kind"]) => {
+        try {
+            await postApiContent("tags/similar/kind",
+                { tag_a: pair.tag_a.id, tag_b: pair.tag_b.id, kind }, user);
+            toastRef.current?.show({
+                severity: "success",
+                summary: kind === "related" ? "Merkitty liittyväksi" : "Merkitty kaksoiskappaleeksi",
+                detail: `${pair.tag_a.name} – ${pair.tag_b.name}`,
+            });
+            await refresh();
+        } catch {
+            toastRef.current?.show({ severity: "error", summary: "Virhe", detail: "Tallennus epäonnistui." });
+        }
+    };
+
     const openMerge = (pair: SimilarPair) => {
         // Keep the more used tag by default.
         const [keep, remove] = pair.tag_b.uses > pair.tag_a.uses
@@ -201,6 +217,15 @@ export const SimilarTags = () => {
                     <Button icon="pi pi-link" rounded text aria-label="Yhdistä"
                         tooltip="Yhdistä asiasanat" tooltipOptions={{ position: "left" }}
                         onClick={() => openMerge(row)} />
+                    {row.kind === "duplicate" ? (
+                        <Button icon="pi pi-arrow-right" rounded text aria-label="Merkitse liittyväksi"
+                            tooltip="Ei kaksoiskappale, vain liittyvä" tooltipOptions={{ position: "left" }}
+                            onClick={() => setKind(row, "related")} />
+                    ) : (
+                        <Button icon="pi pi-arrow-left" rounded text aria-label="Merkitse kaksoiskappaleeksi"
+                            tooltip="Kaksoiskappale" tooltipOptions={{ position: "left" }}
+                            onClick={() => setKind(row, "duplicate")} />
+                    )}
                     <Button icon="pi pi-times" rounded text severity="secondary" aria-label="Eri asiasanat"
                         tooltip={row.kind === "duplicate" ? "Eri asiasanat" : "Eivät liity toisiinsa"}
                         tooltipOptions={{ position: "left" }}
@@ -251,7 +276,7 @@ export const SimilarTags = () => {
                 {view === "dismissed" && <Column header="Hylännyt" style={{ width: "12rem" }} {...WIDE_ONLY}
                     body={(row: PairRow) => row.decided_by &&
                         `${row.decided_by}${row.decided_at ? `, ${formatDate(row.decided_at)}` : ""}`} />}
-                <Column style={{ width: "6rem" }} body={actions} />
+                <Column style={{ width: "9rem" }} body={actions} />
             </DataTable>
 
             <Dialog

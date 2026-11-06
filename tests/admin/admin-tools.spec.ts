@@ -192,3 +192,28 @@ test('suggested tag pairs sort by tag name in Finnish order', async ({ adminPage
         expect(new Intl.Collator('fi').compare(descending!, ascending!)).toBeGreaterThan(0);
     }).toPass({ timeout: 20000 });
 });
+
+test('a suggested duplicate is marked related and back', async ({ adminPage, browserName }) => {
+    test.setTimeout(90000);
+    await adminPage.goto('/admin');
+    const similar = card(adminPage, 'Samankaltaiset asiasanat');
+    await expect(similar.getByText(/Päivitetty/)).toBeVisible({ timeout: 20000 });
+    const view = (name: string) => similar.locator('.p-selectbutton .p-button', { hasText: name });
+
+    // Rows the dismiss test doesn't use, one per browser.
+    const row = similar.locator('tbody tr').nth(browserName === 'firefox' ? 3 : 2);
+    const [nameA, nameB] = await row.locator('td .p-tag').allTextContents();
+    const pairRow = similar.locator('tbody tr').filter({ hasText: nameA }).filter({ hasText: nameB });
+    await similar.getByPlaceholder('Hae asiasanaa...').fill(nameA);
+
+    await pairRow.getByRole('button', { name: 'Merkitse liittyväksi' }).click();
+    await expect(adminPage.getByText('Merkitty liittyväksi')).toBeVisible({ timeout: 20000 });
+    await expect(pairRow).toHaveCount(0);
+
+    await view('Liittyvät').click();
+    await pairRow.getByRole('button', { name: 'Merkitse kaksoiskappaleeksi' }).click({ timeout: 20000 });
+    await expect(adminPage.getByText('Merkitty kaksoiskappaleeksi')).toBeVisible({ timeout: 20000 });
+
+    await view('Kaksoiskappaleet').click();
+    await expect(pairRow).toBeVisible({ timeout: 20000 });
+});

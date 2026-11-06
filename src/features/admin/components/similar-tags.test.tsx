@@ -129,12 +129,30 @@ describe("SimilarTags", () => {
             .filter(([u]) => u === "tags/similar?kind=duplicate")).toHaveLength(2));
     });
 
+    it("marks a duplicate as only related", async () => {
+        await renderLoaded();
+        click(button("Merkitse liittyväksi", row("robotti")));
+        await waitFor(() => expect(api.postApiContent).toHaveBeenCalledWith(
+            "tags/similar/kind", { tag_a: 1, tag_b: 2, kind: "related" }, expect.anything()));
+        await waitFor(() => expect(document.body.textContent).toContain("Merkitty liittyväksi"));
+    });
+
+    it("marks a related pair as a duplicate", async () => {
+        await renderLoaded();
+        await showView("Liittyvät", "tekoäly");
+        expect(button("Merkitse liittyväksi")).toBeNull();
+        click(button("Merkitse kaksoiskappaleeksi", row("tekoäly")));
+        await waitFor(() => expect(api.postApiContent).toHaveBeenCalledWith(
+            "tags/similar/kind", { tag_a: 2, tag_b: 5, kind: "duplicate" }, expect.anything()));
+    });
+
     it("lists dismissed pairs with who dismissed them, and restores one", async () => {
         await renderLoaded();
         await showView("Hylätyt", "tekoäly");
         expect(row("tekoäly").textContent).toContain("Liittyvä");
         expect(row("tekoäly").textContent).toContain("admin, ");
         expect(button("Eri asiasanat")).toBeNull();
+        expect(button("Merkitse kaksoiskappaleeksi")).toBeNull();
         click(button("Palauta", row("tekoäly")));
         await waitFor(() => expect(api.postApiContent).toHaveBeenCalledWith(
             "tags/similar/restore", { tag_a: 1, tag_b: 5 }, expect.anything()));

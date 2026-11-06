@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-    ImportRow, PreviewGroup, importItems, isNewTag, previewRows, sectionTypeId,
+    ADDED_SECTION, ImportRow, PreviewGroup, addedRow, importItems, isNewTag, previewRows, sectionTypeId,
 } from './kirjasampo-import';
 
 const AIHE = 1;
@@ -124,5 +124,30 @@ describe('importItems', () => {
 
     it('sends nothing for an empty table', () => {
         expect(importItems([])).toEqual([]);
+    });
+
+    it('leaves out a name skipped for this work only, storing nothing', () => {
+        const list = update(rows(), 'uusi', { skipHere: true });
+        expect(importItems(list).map(i => i.name)).toEqual(['avaruus', 'ohitettu', 'kehitys']);
+        // Skipped here in one section, kept in the other: still added.
+        const oneHere = rows().map(r => r.key === row(rows(), 'Henkilöt, toimijat', 'uusi').key
+            ? { ...r, skipHere: true } : r);
+        expect(importItems(oneHere).find(i => i.name === 'uusi')?.action).toBe('add');
+    });
+});
+
+describe('addedRow', () => {
+    it('adds an existing tag by name', () => {
+        const added = addedRow({ id: 9, name: 'avaruusolennot', type: null }, TYPES, true);
+        expect(added).toMatchObject({ section: ADDED_SECTION, name: 'avaruusolennot', onWork: true,
+            skip: false, skipHere: false });
+        expect(isNewTag(added)).toBe(false);
+        expect(importItems([added])).toEqual([{ name: 'avaruusolennot', id: null, action: 'add' }]);
+    });
+
+    it('adds a typed name as a new Aihe tag', () => {
+        const added = addedRow('  uusi aihe ', TYPES, false);
+        expect(isNewTag(added)).toBe(true);
+        expect(importItems([added])).toEqual([{ name: 'uusi aihe', id: null, action: 'add', type_id: AIHE }]);
     });
 });

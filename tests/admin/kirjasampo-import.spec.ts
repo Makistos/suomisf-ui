@@ -8,6 +8,8 @@ const API_URL = 'http://localhost:5001/api/';
 const WORK_ID = 5;
 const ALL_SKIPPED_WORK_ID = 6;
 const EMPTY_WORK_ID = 56;
+// "Rautakellojen arvoitus": skipping for this work only, adding by hand.
+const SKIP_HERE_WORK_ID = 19;
 
 type PreviewTag = { id: number; name: string; type: { id: number; name: string } | null };
 
@@ -92,7 +94,7 @@ test('admin imports Kirjasampo tags, choosing a type and skipping one', async ({
     await adminPage.getByRole('option', { name: 'Paikka' }).click();
     await expect(row(1, added).locator('.p-dropdown')).toContainText('Paikka');
 
-    await row(0, skipped).locator('.p-inputswitch').click();
+    await row(0, skipped).getByRole('switch', { name: `Ohita aina ${skipped}` }).click();
     await expect(dialog.getByRole('button', { name: 'Tallenna' })).toBeVisible();
 
     const body = await saveAndCheckDate(adminPage, WORK_ID, 'Tallenna');
@@ -128,7 +130,8 @@ test('skipping every tag still marks the work imported', async ({ adminPage }) =
 
     const dialog = await openDialog(adminPage, ALL_SKIPPED_WORK_ID);
     for (const name of names) {
-        await dialog.locator('tbody tr', { hasText: name }).locator('.p-inputswitch').click();
+        await dialog.locator('tbody tr', { hasText: name }).getByRole('switch', { name: `Ohita aina ${name}` })
+            .click();
     }
     const body = await saveAndCheckDate(adminPage, ALL_SKIPPED_WORK_ID, 'Merkitse tuoduksi');
     expect(body).toEqual(names.map(name => ({ name, id: null, action: 'omit' })));
@@ -145,4 +148,47 @@ test('a Kirjasampo page without tags can be marked imported', async ({ adminPage
 
     // The work still has no tags, but the admin sees the import date.
     await expect(adminPage.getByText(/^Tuotu Kirjasammosta /)).toBeVisible({ timeout: 20000 });
+});
+
+test('a tag is skipped for this work only, and another added by hand', async ({ adminPage }) => {
+    const stamp = Date.now();
+    const here = `e2e_test_here_${stamp}`;
+    const kept = `e2e_test_kept_${stamp}`;
+    const typed = `e2e_test_typed_${stamp}`;
+    await mockPreview(adminPage, [{ section: 'Aiheet ja teemat', items: [newItem(here), newItem(kept)] }]);
+
+    const dialog = await openDialog(adminPage, SKIP_HERE_WORK_ID);
+    const row = (name: string) => dialog.locator('tbody tr', { hasText: name });
+    await row(here).getByRole('switch', { name: `Ohita tästä teoksesta ${here}` }).click({ timeout: 20000 });
+    // Skipping for good turns the other off and can't be combined.
+    await row(kept).getByRole('switch', { name: `Ohita aina ${kept}` }).click();
+    await expect(row(kept).getByRole('switch', { name: `Ohita tästä teoksesta ${kept}` })).toBeDisabled();
+    await row(kept).getByRole('switch', { name: `Ohita aina ${kept}` }).click();
+
+    // An existing tag and a new one, added by hand.
+    const add = dialog.getByLabel('Lisää asiasana');
+    await add.pressSequentially('avaruus', { delay: 20 });
+    await adminPage.locator('.p-autocomplete-item', { hasText: /^avaruus$/ }).click({ timeout: 20000 });
+    await dialog.getByRole('button', { name: 'Lisää', exact: true }).click();
+    await add.fill(typed);
+    await dialog.getByRole('button', { name: 'Lisää', exact: true }).click();
+    await expect(dialog.locator('.p-rowgroup-header')).toHaveText(['Aiheet ja teemat', 'Lisätyt']);
+    await expect(row(typed).getByText('Uusi')).toBeVisible();
+
+    const body = await saveAndCheckDate(adminPage, SKIP_HERE_WORK_ID, 'Tallenna');
+    expect(body).toEqual([
+        { name: kept, id: null, action: 'add', type_id: 1 },
+        { name: 'avaruus', id: null, action: 'add' },
+        { name: typed, id: null, action: 'add', type_id: 1 },
+    ]);
+    const work = await (await adminPage.request.get(`${API_URL}works/${SKIP_HERE_WORK_ID}`)).json();
+    const names = work.tags.map((t: PreviewTag) => t.name);
+    expect(names).toEqual(expect.arrayContaining([kept, 'avaruus', typed]));
+    expect(names).not.toContain(here);
+    // Nothing was stored for the tag skipped here only.
+    const mapping = await (await adminPage.request.get(`${API_URL}tags/import/mappings`, {
+        headers: { Authorization: `Bearer ${await adminPage.evaluate(
+            () => JSON.parse(localStorage.getItem('user') ?? '{}').access_token)}` },
+    })).json();
+    expect(JSON.stringify(mapping)).not.toContain(here);
 });

@@ -32,7 +32,10 @@ export interface ImportRow {
     localTag: PreviewTag | string;
     // Type for a new tag.
     typeId: number;
+    // Never import this name (stored, for every work).
     skip: boolean;
+    // Not for this work only; nothing is stored.
+    skipHere: boolean;
 }
 
 export interface ImportItem {
@@ -51,6 +54,8 @@ export const SECTION_TAG_TYPES: Record<string, string> = {
     'Tarkka aika': 'Aika',
 };
 export const DEFAULT_TAG_TYPE = 'Aihe';
+// Section of the tags an admin adds to the import by hand.
+export const ADDED_SECTION = 'Lisätyt';
 
 /** Id of the default type for a new tag from a section. */
 export const sectionTypeId = (section: string, types: TagType[]) => {
@@ -84,28 +89,52 @@ export const previewRows = (groups: PreviewGroup[], types: TagType[]): ImportRow
             : item.match ?? item.name,
         typeId: nameTypes.get(item.name)!,
         skip: item.mapping?.action === 'omit',
+        skipHere: false,
     })));
+};
+
+/** A row for a tag added by hand: an existing tag, or a new name. */
+export const addedRow = (tag: PreviewTag | string, types: TagType[], onWork: boolean): ImportRow => {
+    const name = typeof tag === 'string' ? tag.trim() : tag.name;
+    return {
+        key: `${ADDED_SECTION}\u0000${name}`,
+        section: ADDED_SECTION,
+        name,
+        rawName: name,
+        onWork,
+        localTag: typeof tag === 'string' ? name : tag,
+        typeId: sectionTypeId(ADDED_SECTION, types),
+        skip: false,
+        skipHere: false,
+    };
 };
 
 /**
  * Import items to post for the rows, one per name. A name is omitted
- * only when all of its rows are skipped; otherwise the first kept row
- * decides.
+ * (stored) only when all of its rows are skipped, and left out when they
+ * are skipped for this work only; otherwise the first kept row decides.
  */
 export const importItems = (rows: ImportRow[]): ImportItem[] => {
     const byName = new Map<string, ImportRow[]>();
     for (const row of rows) {
         byName.set(row.name, [...(byName.get(row.name) ?? []), row]);
     }
-    return [...byName.entries()].map(([name, nameRows]): ImportItem => {
-        const kept = nameRows.find(row => !row.skip);
-        if (!kept) return { name, id: null, action: 'omit' };
-        const local = kept.localTag;
-        if (typeof local === 'object') {
-            return local.name.toLowerCase() === name.toLowerCase()
-                ? { name, id: null, action: 'add' }
-                : { name, id: local.id, action: 'replace' };
+    return [...byName.entries()].flatMap(([name, nameRows]): ImportItem[] => {
+        const kept = nameRows.find(row => !row.skip && !row.skipHere);
+        if (!kept) {
+            return nameRows.some(row => row.skip) ? [{ name, id: null, action: 'omit' }] : [];
         }
-        return { name: local.trim() || name, id: null, action: 'add', type_id: kept.typeId };
+        return [importItem(name, kept)];
     });
+};
+
+/** The item for a name, from the row that decides it. */
+const importItem = (name: string, kept: ImportRow): ImportItem => {
+    const local = kept.localTag;
+    if (typeof local === 'object') {
+        return local.name.toLowerCase() === name.toLowerCase()
+            ? { name, id: null, action: 'add' }
+            : { name, id: local.id, action: 'replace' };
+    }
+    return { name: local.trim() || name, id: null, action: 'add', type_id: kept.typeId };
 };

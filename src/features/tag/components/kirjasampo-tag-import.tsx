@@ -18,7 +18,7 @@ import { filterTags } from '@api/tag/filter-tags';
 import { getTagTypes } from '@api/tag/get-tag-types';
 import { tagTypeToClass, tagTypeToSeverity } from './tag-type-to-severity';
 import {
-    ImportRow, PreviewGroup, importItems, isNewTag, previewRows,
+    ADDED_SECTION, ImportRow, PreviewGroup, addedRow, importItems, isNewTag, previewRows,
 } from '../utils/kirjasampo-import';
 
 /** A tag type coloured as on tag pages and tag lists. */
@@ -41,6 +41,8 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
     const [rows, setRows] = useState<ImportRow[]>([]);
     const [tagTypes, setTagTypes] = useState<TagType[]>([]);
     const [suggestions, setSuggestions] = useState<SfTag[]>([]);
+    // A tag to add by hand: one picked from the list, or a typed new name.
+    const [toAdd, setToAdd] = useState<SfTag | string | null>(null);
     const toastRef = useRef<Toast>(null);
 
     const searchTags = useCallback(async (e: { query: string }) => {
@@ -90,6 +92,20 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
         setRows(prev => prev.map(row => row.name === name ? { ...row, ...updates } : row));
     };
 
+    const addTag = () => {
+        const name = (typeof toAdd === 'string' ? toAdd : toAdd?.name ?? '').trim();
+        if (!toAdd || !name) return;
+        if (rows.some(row => row.name.toLowerCase() === name.toLowerCase())) {
+            toastRef.current?.show({ severity: 'info', summary: 'Asiasana on jo listalla', detail: name });
+            return;
+        }
+        const workTags = (work.tags ?? []) as SfTag[];
+        const tag = typeof toAdd === 'string' ? name : { id: toAdd.id, name: toAdd.name, type: toAdd.type ?? null };
+        const onWork = typeof toAdd !== 'string' && workTags.some(t => t.id === toAdd.id);
+        setRows(prev => [...prev, addedRow(tag, tagTypes, onWork)]);
+        setToAdd(null);
+    };
+
     const handleSave = async () => {
         setSaving(true);
         try {
@@ -116,7 +132,7 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
     };
 
     // Nothing to add: saving just records that the work was checked.
-    const nothingToImport = rows.every(row => row.skip);
+    const nothingToImport = rows.every(row => row.skip || row.skipHere);
 
     const nameBody = (row: ImportRow) => (
         <span className="text-sm" title={row.rawName !== row.name ? row.rawName : undefined}>
@@ -136,7 +152,7 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
             suggestions={suggestions}
             completeMethod={searchTags}
             onChange={e => updateName(row.name, { localTag: e.value })}
-            disabled={row.skip}
+            disabled={row.skip || row.skipHere}
             aria-label={`Asiasana tietokannassa: ${row.name}`}
             inputClassName="w-full"
             className="w-full"
@@ -158,7 +174,7 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
                     itemTemplate={(type: TagType) => <TypePill type={type} />}
                     valueTemplate={(type: TagType | null) => type ? <TypePill type={type} /> : null}
                     onChange={e => updateName(row.name, { typeId: e.value })}
-                    disabled={row.skip}
+                    disabled={row.skip || row.skipHere}
                     aria-label={`Tyyppi: ${row.name}`}
                     className="w-full"
                 />
@@ -167,12 +183,49 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
         );
     };
 
-    const skipBody = (row: ImportRow) => (
+    // Skipped for good: stored, so the name is never imported again. Not
+    // for a tag added by hand, which isn't a Kirjasampo name.
+    const skipBody = (row: ImportRow) => row.section === ADDED_SECTION ? null : (
         <InputSwitch
             checked={row.skip}
-            onChange={e => updateName(row.name, { skip: !!e.value })}
-            aria-label={`Ohita ${row.name}`}
+            onChange={e => updateName(row.name, { skip: !!e.value, skipHere: false })}
+            aria-label={`Ohita aina ${row.name}`}
+            tooltip="Ei tuoda mihinkään teokseen"
+            tooltipOptions={{ position: 'left' }}
         />
+    );
+
+    // Skipped for this work only: nothing is stored.
+    const skipHereBody = (row: ImportRow) => (
+        <InputSwitch
+            checked={row.skipHere}
+            onChange={e => updateName(row.name, { skipHere: !!e.value })}
+            disabled={row.skip}
+            aria-label={`Ohita tästä teoksesta ${row.name}`}
+            tooltip="Ei tuoda tähän teokseen"
+            tooltipOptions={{ position: 'left' }}
+        />
+    );
+
+    const addControls = (
+        <div className="mt-3">
+            <label htmlFor="kirjasampo-add-tag" className="block font-bold mb-2">Lisää asiasana</label>
+            <div className="flex gap-2">
+                <AutoComplete
+                    inputId="kirjasampo-add-tag"
+                    value={toAdd}
+                    field="name"
+                    suggestions={suggestions}
+                    completeMethod={searchTags}
+                    onChange={e => setToAdd(e.value)}
+                    placeholder="Hae asiasanaa tai kirjoita uusi"
+                    className="flex-1"
+                    inputClassName="w-full"
+                />
+                <Button label="Lisää" icon="pi pi-plus" onClick={addTag}
+                    disabled={!toAdd || !(typeof toAdd === 'string' ? toAdd.trim() : toAdd.name)} />
+            </div>
+        </div>
     );
 
     const footer = (
@@ -227,16 +280,18 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
                             onClick={fetchTags}
                         />
                     </div>
-                ) : rows.length === 0 ? (
-                    <p className="text-center text-color-secondary">Ei asiasanoja löydetty.</p>
                 ) : (
+                    <>
+                    {rows.length === 0 ? (
+                    <p className="text-center text-color-secondary">Ei asiasanoja löydetty.</p>
+                    ) : (
                     <DataTable
                         value={rows}
                         dataKey="key"
                         rowGroupMode="subheader"
                         groupRowsBy="section"
                         rowGroupHeaderTemplate={(row: ImportRow) => <span className="font-bold">{row.section}</span>}
-                        rowClassName={(row: ImportRow) => ({ 'opacity-50': row.skip })}
+                        rowClassName={(row: ImportRow) => ({ 'opacity-50': row.skip || row.skipHere })}
                         size="small"
                         // For the column titles; App.css stacks the cells on
                         // narrow screens (PrimeReact adds its stack styles only
@@ -244,13 +299,17 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
                         responsiveLayout="stack"
                         className="kirjasampo-import-table"
                     >
-                        <Column header="Kirjasampo-asiasana" body={nameBody} style={{ width: '28%' }} />
+                        <Column header="Kirjasampo-asiasana" body={nameBody} style={{ width: '25%' }} />
                         <Column header="Teoksessa" body={onWorkBody} bodyClassName="kirjasampo-on-work text-center"
                             headerClassName="kirjasampo-on-work" style={{ width: '7%' }} />
-                        <Column header="Asiasana tietokannassa" body={localTagBody} style={{ width: '33%' }} />
-                        <Column header="Tyyppi" body={typeBody} style={{ width: '22%' }} />
-                        <Column header="Ohita" body={skipBody} style={{ width: '10%' }} />
+                        <Column header="Asiasana tietokannassa" body={localTagBody} style={{ width: '30%' }} />
+                        <Column header="Tyyppi" body={typeBody} style={{ width: '20%' }} />
+                        <Column header="Ohita tästä" body={skipHereBody} style={{ width: '9%' }} />
+                        <Column header="Ohita aina" body={skipBody} style={{ width: '9%' }} />
                     </DataTable>
+                    )}
+                    {addControls}
+                    </>
                 )}
             </Dialog>
         </>

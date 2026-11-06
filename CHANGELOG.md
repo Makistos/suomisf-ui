@@ -3,6 +3,11 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-06 `5bb89cc`, `7927eb3`, `d8cb921` — Kirjasampo import and similar tags updates
+- The Kirjasampo import dialog has "Ohita tästä" next to "Ohita aina" (the old "Ohita"): the tag isn't added to this work and isn't put on the ignored list. "Lisää asiasana" under the table adds any existing tag or a new one to the import.
+- On the "Samankaltaiset asiasanat" card a ✓ button marks a suggestion as checked, and "Piilota tarkistetut" hides the checked ones.
+- A tag page with similar tags has "Näytä myös samankaltaisten asiasanojen teokset", listing the similar tags' works too, each once, with the tags each matched.
+
 ## 2026-11-06 `a8a2e32` — Similar tags: mark a duplicate as related
 On the "Samankaltaiset asiasanat" card a suggested duplicate can be marked as only related ("Merkitse liittyväksi"), and a related pair as a duplicate. The pair moves to the other view and the similarity job keeps it there.
 

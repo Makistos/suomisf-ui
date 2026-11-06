@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 
 import { Tooltip } from "primereact/tooltip";
+import { Tag } from "primereact/tag";
 
 import { OtherEdition } from "../../edition";
 import { GenreList } from "../../genre";
@@ -12,6 +13,8 @@ import { isForeign } from '../utils/is-foreign';
 import { editionIsOwned } from '@features/edition/utils/edition-is-owned';
 import { editionIsWishlisted } from '@features/edition/utils/edition-is-wishlisted';
 import { getCurrenUser } from '@services/auth-service';
+import { SfTag } from '@features/tag/types';
+import { tagTypeToClass, tagTypeToSeverity } from '@features/tag/components/tag-type-to-severity';
 
 export const WorkSummary = React.memo(({ work, detailLevel, authorPrefix }: WorkProps) => {
     const user = useMemo(() => getCurrenUser(), [])
@@ -24,6 +27,7 @@ export const WorkSummary = React.memo(({ work, detailLevel, authorPrefix }: Work
         + " work-oneliner mb-0";
 
     const firstEdition = work.editions?.[0];
+    const matchedTags = work.matched_tags as SfTag[] | undefined;
     const translators = firstEdition?.contributions?.filter(c => c.role.id === 2) ?? [];
 
     const realAuthors = (work.contributions ?? [])
@@ -148,6 +152,17 @@ export const WorkSummary = React.memo(({ work, detailLevel, authorPrefix }: Work
                 {metaItems.length > 0 && (
                     <div className="text-sm text-700 font-medium">
                         {metaItems}
+                    </div>
+                )}
+                {/* Set when listed with a tag's similar tags: which matched. */}
+                {matchedTags && matchedTags.length > 0 && (
+                    <div className="flex flex-wrap align-items-center gap-1 text-sm mt-1">
+                        {matchedTags.map(tag => (
+                            <Link key={tag.id} to={`/tags/${tag.id}`} title={tag.type?.name}>
+                                <Tag value={tag.name} severity={tagTypeToSeverity(tag)}
+                                    className={`text-xs ${tagTypeToClass(tag) ?? ''}`} />
+                            </Link>
+                        ))}
                     </div>
                 )}
             </div>

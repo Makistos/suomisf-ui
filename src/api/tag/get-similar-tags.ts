@@ -1,5 +1,6 @@
 import { SfTag } from "@features/tag";
 import { User } from "@features/user";
+import { Work } from "@features/work/types";
 import { getApiContent, postApiContent } from "@services/user-service";
 
 export type SimilarReason = "baseform" | "spelling" | "place" | "name" | "usage" | "manual"
@@ -28,3 +29,8 @@ export const addSimilarTag = (tagId: number, otherId: number, user: User | null)
  * a pair linked by hand is deleted. */
 export const removeSimilarTag = (tagId: number, otherId: number, user: User | null) =>
     postApiContent("tags/similar/dismiss", { tag_a: tagId, tag_b: otherId }, user);
+
+/** The works of a tag and of its similar tags, each once, with the tags
+ * it matched (matched_tags: the tag itself first). */
+export const getSimilarTagWorks = async (id: number, user: User | null): Promise<Work[]> =>
+    (await getApiContent(`tags/${id}/similar/works`, user)).data;

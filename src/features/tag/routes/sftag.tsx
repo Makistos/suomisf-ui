@@ -19,7 +19,8 @@ import { SfTagForm } from '../components/sftag-form';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Toast } from 'primereact/toast';
 import { getTag } from '@api/tag/get-tag';
-import { getSimilarTags } from '@api/tag/get-similar-tags';
+import { getSimilarTagWorks, getSimilarTags } from '@api/tag/get-similar-tags';
+import { Checkbox } from 'primereact/checkbox';
 import { TagGroup } from '../components/sftag-group';
 import { SimilarTagsEditor } from '../components/similar-tags-editor';
 import { mergeTags } from '@api/tag/merge-tags';
@@ -188,6 +189,13 @@ export const SFTag = (_props: SfTagProps) => {
         queryKey: ['tags', params.tagid, 'similar'],
         queryFn: () => getSimilarTags(Number(params.tagid), user)
     })
+    // Works of the similar tags too, each once, with the tags they match.
+    const [withSimilar, setWithSimilar] = useState(false);
+    const { data: similarWorks, isLoading: similarWorksLoading } = useQuery({
+        queryKey: ['tags', params.tagid, 'similar', 'works'],
+        queryFn: () => getSimilarTagWorks(Number(params.tagid), user),
+        enabled: withSimilar,
+    })
 
     const deleteTagFunc = () => {
         if (data) {
@@ -304,7 +312,19 @@ export const SFTag = (_props: SfTagProps) => {
                                 {[
                                     <TabPanel key="works" header="Teokset" leftIcon="pi pi-book">
                                         <div className="card min-w-full">
-                                            {data.works &&
+                                            {similarTags && similarTags.length > 0 && (
+                                                <div className="flex align-items-center gap-2 mb-3">
+                                                    <Checkbox inputId="tag-with-similar" checked={withSimilar}
+                                                        onChange={e => setWithSimilar(!!e.checked)} />
+                                                    <label htmlFor="tag-with-similar">
+                                                        Näytä myös samankaltaisten asiasanojen teokset
+                                                    </label>
+                                                </div>
+                                            )}
+                                            {withSimilar ? (
+                                                similarWorksLoading ? <ProgressSpinner /> :
+                                                    similarWorks && <WorkList works={similarWorks} />
+                                            ) : data.works &&
                                                 <WorkList works={data?.works} />
                                             }
                                         </div>

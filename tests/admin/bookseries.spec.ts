@@ -13,25 +13,25 @@ test('admin can create, edit and delete a bookseries', async ({ adminPage }) => 
 
     await adminPage.locator('.fixed-dial .p-speeddial-button').click();
     await dialAction(adminPage, 'Uusi kirjasarja').click();
-    // The dialog header is hardcoded to "Sarjan muokkaus" regardless of
-    // create/edit mode (setFormHeader is called but never actually used) -
-    // cosmetic, not fixed here.
-    const createDialog = adminPage.getByRole('dialog').filter({ hasText: 'Sarjan muokkaus' });
+    const createDialog = adminPage.getByRole('dialog').filter({ hasText: 'Uusi kirjasarja' });
     await createDialog.locator('input[name="name"]').fill(name);
     await createDialog.getByRole('button', { name: 'Tallenna' }).click();
     await expect(adminPage.getByRole('heading', { name })).toBeVisible({ timeout: 20000 });
+    // A new series, not series 1 renamed (the form used to get the page's series).
+    await expect(adminPage).not.toHaveURL(/\/bookseries\/1$/);
 
     // Edit
     await adminPage.locator('.fixed-dial .p-speeddial-button').click();
     await dialAction(adminPage, 'Muokkaa').click();
-    const editDialog = adminPage.getByRole('dialog').filter({ hasText: 'Sarjan muokkaus' });
+    const editDialog = adminPage.getByRole('dialog').filter({ hasText: 'Muokkaa kirjasarjaa' });
     await editDialog.locator('input[name="name"]').fill(editedName);
     await editDialog.getByRole('button', { name: 'Tallenna' }).click();
     await expect(adminPage.getByRole('heading', { name: editedName })).toBeVisible({ timeout: 20000 });
 
-    // Delete - no confirmation dialog, deletes immediately on click.
+    // Delete - asks for confirmation, then navigate(-1) on success.
     const urlBeforeDelete = adminPage.url();
     await adminPage.locator('.fixed-dial .p-speeddial-button').click();
     await dialAction(adminPage, 'Poista').click();
+    await adminPage.getByRole('button', { name: 'Kyllä' }).click();
     await expect(adminPage).not.toHaveURL(urlBeforeDelete, { timeout: 20000 });
 });

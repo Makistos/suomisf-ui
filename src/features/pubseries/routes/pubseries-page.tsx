@@ -8,6 +8,7 @@ import { Dialog } from "primereact/dialog";
 import { SpeedDial } from "primereact/speeddial";
 import { Tooltip } from "primereact/tooltip";
 import { Toast } from "primereact/toast";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Card } from "primereact/card";
 import { TabView, TabPanel } from "primereact/tabview";
 
@@ -49,6 +50,19 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
         console.log(`${e} bookseries`);
     }
 
+    const fetchPubseries = async (id: string, user: User | null): Promise<Pubseries> => {
+        const url = baseURL + id;
+        const response = await getApiContent(url, user).then(response => {
+            return response.data;
+        })
+        return response;
+    }
+
+    const { isLoading, data, error: loadError, refetch: reloadMain } = useQuery({
+        queryKey: ["pubseries", thisId],
+        queryFn: () => fetchPubseries(thisId, user)
+    });
+
     const dialItems = [
         {
             label: 'Muokkaa',
@@ -64,25 +78,23 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
         {
             label: 'Poista',
             icon: 'pi pi-fw pi-trash',
+            // The backend refuses a series that still has editions.
+            disabled: !data || (data.editions?.length ?? 0) > 0,
             command: () => {
-                if (data) {
-                    mutate(data.id);
-                }
+                confirmDialog({
+                    message: 'Haluatko varmasti poistaa sarjan?',
+                    header: 'Varmistus',
+                    icon: 'pi pi-exclamation-triangle',
+                    acceptClassName: 'p-button-danger',
+                    accept: () => {
+                        if (data) {
+                            mutate(data.id);
+                        }
+                    },
+                })
             }
         }
     ]
-    const fetchPubseries = async (id: string, user: User | null): Promise<Pubseries> => {
-        const url = baseURL + id;
-        const response = await getApiContent(url, user).then(response => {
-            return response.data;
-        })
-        return response;
-    }
-
-    const { isLoading, data, error: loadError, refetch: reloadMain } = useQuery({
-        queryKey: ["pubseries", thisId],
-        queryFn: () => fetchPubseries(thisId, user)
-    });
 
     useEffect(() => {
         if (data !== undefined)
@@ -97,7 +109,11 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
             
             if (data.status === 200) {
                 navigate(-1);
-
+            } else {
+                toastRef.current?.show({
+                    severity: 'error', summary: 'Sarjan poisto ei onnistunut',
+                    detail: data.response, life: 6000
+                });
             }
         },
         onError: (error: any) => {
@@ -125,6 +141,7 @@ export const PubseriesPage = ({ id }: PubseriesPageProps) => {
     return (
         <main className="pubseries-page">
             <Toast ref={toastRef} />
+            <ConfirmDialog />
 
             {isAdmin(user) && (
                 <>

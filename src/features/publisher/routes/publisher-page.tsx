@@ -107,10 +107,12 @@ export const PublisherPage = ({ id }: PublisherPageProps) => {
         {
             label: 'Poista',
             icon: 'fa-solid fa-trash',
-            disabled: isDisabled(user, isLoading) &&
-                !(data !== undefined && data !== null &&
-                    data.editions !== null && data.editions.length === 0 &&
-                    data.magazines !== null && data.magazines.length === 0),
+            // The database refuses the delete while editions, magazines or
+            // publisher's series refer to the publisher.
+            disabled: isDisabled(user, isLoading) || !data ||
+                (data.editions?.length ?? 0) > 0 ||
+                (data.magazines?.length ?? 0) > 0 ||
+                (data.series?.length ?? 0) > 0,
             command: () => {
                 confirmDialog({
                     message: 'Haluatko varmasti poistaa kustantajan?',

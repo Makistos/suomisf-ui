@@ -22,9 +22,10 @@ test('admin can edit and delete a pubseries with no linked editions', async ({ a
     await editDialog.getByRole('button', { name: 'Tallenna' }).click();
     await expect(adminPage.getByRole('heading', { name: editedName })).toBeVisible({ timeout: 20000 });
 
-    // Delete - no confirmation dialog, no toast; navigate(-1) on success.
+    // Delete - asks for confirmation, then navigate(-1) on success.
     const urlBeforeDelete = adminPage.url();
     await adminPage.locator('.fixed-dial .p-speeddial-button').click();
     await dialAction(adminPage, 'Poista').click();
+    await adminPage.getByRole('button', { name: 'Kyllä' }).click();
     await expect(adminPage).not.toHaveURL(urlBeforeDelete, { timeout: 20000 });
 });

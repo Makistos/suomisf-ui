@@ -5,6 +5,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Tooltip } from "primereact/tooltip";
 import { SpeedDial } from "primereact/speeddial";
 import { Toast } from "primereact/toast";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Dialog } from "primereact/dialog";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -34,10 +35,11 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
     const params = useParams();
     const user = getCurrenUser();
     const [, setDocumentTitle] = useDocumentTitle("");
-    const [, setFormData] = useState<Bookseries | null>(null);
+    // null = "Uusi kirjasarja": the form creates instead of editing this one.
+    const [formData, setFormData] = useState<Bookseries | null>(null);
     const [isFormVisible, setIsFormVisible] = useState(false);
     const [queryEnabled, setQueryEnabled] = useState(true)
-    const [, setFormHeader] = useState("")
+    const [formHeader, setFormHeader] = useState("")
 
     const toast = useRef<Toast>(null);
     const navigate = useNavigate();
@@ -93,12 +95,28 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
         {
             label: 'Poista',
             icon: 'pi pi-trash',
+            // The backend refuses a series that still has works.
+            disabled: !data || (data.works?.length ?? 0) > 0,
             command: () => {
-                if (data) {
-                    deleteApiContent('bookseries/' + data.id);
-                    queryClient.invalidateQueries({ queryKey: ['bookseries'] });
-                    navigate(-1);
-                }
+                confirmDialog({
+                    message: 'Haluatko varmasti poistaa kirjasarjan?',
+                    header: 'Varmistus',
+                    icon: 'pi pi-exclamation-triangle',
+                    acceptClassName: 'p-button-danger',
+                    accept: async () => {
+                        if (!data) return;
+                        const result = await deleteApiContent('bookseries/' + data.id);
+                        if (result.status === 200) {
+                            queryClient.invalidateQueries({ queryKey: ['bookseries'] });
+                            navigate(-1);
+                        } else {
+                            toast.current?.show({
+                                severity: 'error', summary: 'Kirjasarjan poisto ei onnistunut',
+                                detail: result.response, life: 6000
+                            });
+                        }
+                    },
+                })
             }
         }
     ]
@@ -127,6 +145,7 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
     return (
         <main className="bookseries-page">
             <Toast ref={toast} />
+            <ConfirmDialog />
 
             {isAdmin(user) && (
                 <>
@@ -261,12 +280,12 @@ export const BookseriesPage = ({ id }: BookseriesPageProps) => {
                         <Dialog
                             visible={isFormVisible}
                             onHide={onDialogHide}
-                            header="Sarjan muokkaus"
+                            header={formHeader}
                             maximizable
                             blockScroll
                             className="w-full xl:w-6"
                         >
-                            <BookseriesForm data={data} onSubmitCallback={onDialogHide} />
+                            <BookseriesForm data={formData} onSubmitCallback={onDialogHide} />
                         </Dialog>
                     </div>
                 )

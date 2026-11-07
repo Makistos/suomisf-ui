@@ -3,6 +3,9 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-07 `0820aa8` — Bookseries and publisher pages: creating and deleting
+- "Uusi kirjasarja" on a bookseries page now creates a new series. It used to open the current series in the form, so saving renamed it.
+- Deleting a bookseries or a publisher's series asks for confirmation and shows why if the delete fails. Poista is disabled while the series has works or editions, and on a publisher page while it has editions, magazines or series.
 ## 2026-11-07 `0534433` — Form layout fixes
 - Checkbox labels in forms (Kansipaperi, Ylivetokannet, Tarkastettu, Kotimainen, Tärkeä) no longer overlap their boxes.
 - Number fields fill their column instead of overflowing it (e.g. "Kirjasarjan järjestys" in the work form).

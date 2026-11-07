@@ -20,7 +20,9 @@ export const FormCheckbox = ({ name, methods, label, labelClass, ...rest }: Form
    * value.
    */
   return (
-    <span className="p-float-label">
+    // A plain row, not p-float-label: a float label is laid over its control,
+    // which put the text on top of the box.
+    <div className="flex align-items-center gap-2">
       <Controller
         name={name}
         control={methods.control}
@@ -32,7 +34,7 @@ export const FormCheckbox = ({ name, methods, label, labelClass, ...rest }: Form
               inputRef={field.ref}
               onChange={(e) => field.onChange(e.checked)}
               tooltip={label}
-              className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+              className={classNames({ 'p-invalid': fieldState.error })}
               {...rest}
               checked={field.value}
             />
@@ -40,8 +42,8 @@ export const FormCheckbox = ({ name, methods, label, labelClass, ...rest }: Form
           </>
         )}
       />
-      <label htmlFor={name} className={labelClass ? labelClass : ""}>{label}</label>
-    </span>
+      {label && <label htmlFor={name} className={labelClass ? labelClass : ""}>{label}</label>}
+    </div>
 
   )
 }

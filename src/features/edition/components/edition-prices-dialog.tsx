@@ -399,27 +399,30 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                                 rows={25}
                                 size="small"
                                 stripedRows={false}
+                                // Scrolls sideways on narrow screens instead of
+                                // pushing the action buttons out of the dialog.
+                                scrollable
                                 emptyMessage="Ei hintoja"
                             >
                                 <Column
                                     header="Lähde"
                                     body={sourceBody}
-                                    style={{ minWidth: '8rem' }}
+                                    style={{ minWidth: '7rem' }}
                                 />
                                 <Column
                                     header="Myyjä"
                                     body={sellerBody}
-                                    style={{ minWidth: '8rem' }}
+                                    style={{ minWidth: '7rem' }}
                                 />
                                 <Column
                                     header="Kunto"
                                     body={(row, opts) => conditionBody(row, opts.rowIndex)}
-                                    style={{ minWidth: '8rem' }}
+                                    style={{ minWidth: '5rem' }}
                                 />
                                 <Column
                                     header="Hinta"
                                     body={priceBody}
-                                    style={{ minWidth: '6rem' }}
+                                    style={{ minWidth: '5rem' }}
                                 />
                                 <Column
                                     header="Ilmoitus"
@@ -429,12 +432,17 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                                 <Column
                                     header="Päivitetty"
                                     body={(row: PriceRow) => formatDate(row.last_updated)}
-                                    style={{ minWidth: '7rem' }}
+                                    style={{ minWidth: '6rem' }}
                                 />
                                 <Column
                                     header="Haettu"
                                     body={(row: PriceRow) => formatDate(row.date_fetched)}
-                                    style={{ minWidth: '7rem' }}
+                                    style={{ minWidth: '6rem' }}
+                                />
+                                <Column
+                                    header="Lisännyt"
+                                    body={(row: PriceRow) => row.added_by_name || '—'}
+                                    style={{ minWidth: '6rem' }}
                                 />
                                 <Column
                                     body={(row: PriceRow) => (
@@ -458,11 +466,6 @@ export const EditionPricesDialog = ({ edition, workTitle, visible, onHide }: Pro
                                         )
                                     )}
                                     style={{ width: '5.5rem' }}
-                                />
-                                <Column
-                                    header="Lisännyt"
-                                    body={(row: PriceRow) => row.added_by_name || '—'}
-                                    style={{ minWidth: '7rem' }}
                                 />
                             </DataTable>
                         </>

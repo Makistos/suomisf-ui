@@ -28,6 +28,9 @@ export const FormInputNumber = ({ name, methods, rules, label, labelClass, ...re
               onBlur={field.onBlur}
               onValueChange={(e) => field.onChange(e.value)}
               className={classNames({ 'p-invalid': fieldState.error }, "w-full")}
+              // The wrapper alone being w-full left the <input> at its
+              // default width, overflowing narrow columns.
+              inputClassName="w-full"
               {...rest}
             />
             {formErrorMessage(field.name, methods.formState.errors)}

@@ -343,23 +343,19 @@ const FormObject = ({ onSubmit, data, work, disabled, bindings }: FormObjectProp
                 />
               </div>
             </div>
-            <div className="grid col-12 mt-3">
-              <div className='field col-2 p-2'>
-                <FormTriStateCheckbox
-                  name="dustcover"
-                  label="Kansipaperi"
-                  methods={methods}
-                  disabled={disabled}
-                />
-              </div>
-              <div className='field col-2 p-2'>
-                <FormTriStateCheckbox
-                  name="coverimage"
-                  label="Ylivetokannet"
-                  methods={methods}
-                  disabled={disabled}
-                />
-              </div>
+            <div className="col-12 mt-3 p-2 flex flex-wrap gap-5">
+              <FormTriStateCheckbox
+                name="dustcover"
+                label="Kansipaperi"
+                methods={methods}
+                disabled={disabled}
+              />
+              <FormTriStateCheckbox
+                name="coverimage"
+                label="Ylivetokannet"
+                methods={methods}
+                disabled={disabled}
+              />
             </div>
             <div className="field col-12 p-2">
               <FormInputText

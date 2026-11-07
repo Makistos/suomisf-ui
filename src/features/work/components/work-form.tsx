@@ -292,7 +292,7 @@ const FormObject = ({ onSubmit, data, types }: FormObjectProps) => {
               <FormTagAutoComplete
                 name="tags"
                 methods={methods}
-                label="Asiassanat"
+                label="Asiasanat"
                 completeMethod={filterTags}
                 suggestions={filteredTags}
                 forceSelection={false}

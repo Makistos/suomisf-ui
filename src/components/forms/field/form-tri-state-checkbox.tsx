@@ -13,7 +13,9 @@ interface FormTristateCheckboxProps extends TriStateCheckboxProps {
 export const FormTriStateCheckbox = ({ name, methods, label, labelClass, disabled }: FormTristateCheckboxProps) => {
 
   return (
-    <span className="p-float-label">
+    // A plain row, not p-float-label: a float label is laid over its control,
+    // which put the text on top of the box.
+    <div className="flex align-items-center gap-2">
       <Controller
         name={name}
         control={methods.control}
@@ -36,6 +38,6 @@ export const FormTriStateCheckbox = ({ name, methods, label, labelClass, disable
         )}
       />
       <label htmlFor={name} className={labelClass ? labelClass : ""}>{label}</label>
-    </span>
+    </div>
   )
 }

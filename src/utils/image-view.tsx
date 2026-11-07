@@ -1,12 +1,13 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { ImageType } from "../types/image";
-import { useRef } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { ContextMenu } from "primereact/contextmenu";
 import { isAdmin } from "@features/user";
 import { getCurrenUser } from "@services/auth-service";
 import { Image } from "primereact/image";
 import { Button } from "primereact/button";
 import { FileUploadHandlerEvent } from "primereact/fileupload";
+import { ConfirmPopup } from "primereact/confirmpopup";
 import { coverUrl, thumbUrl } from "./cover-url";
 
 interface ImageViewProps {
@@ -35,6 +36,11 @@ export const ImageView = ({ itemId, idx, images, saveFunc, deleteFunc, onUpload,
     // Before the early return below: images can drop to none and come back
     // (delete the only image, then upload), and hooks must not be skipped.
     const cm = useRef<ContextMenu>(null);
+    // Kept in the DOM: iOS Safari doesn't reliably fire change on a
+    // detached <input type="file">.
+    const fileInput = useRef<HTMLInputElement>(null);
+    // The delete button the confirmation popup points at; null = closed.
+    const [confirmTarget, setConfirmTarget] = useState<HTMLElement | null>(null);
 
     if (idx > images.length - 1) {
         idxCb(0);
@@ -56,54 +62,55 @@ export const ImageView = ({ itemId, idx, images, saveFunc, deleteFunc, onUpload,
         return uniqueEditionIds.length === 1;
     })();
 
+    const admin = isAdmin(getCurrenUser());
+    const canAdd = admin && hasOnlyOneEdition;
+
+    const onFileChosen = (e: ChangeEvent<HTMLInputElement>) => {
+        const target = e.target;
+        if (target.files && target.files.length > 0) {
+            const file = target.files[0];
+            // Create a FileUploadFile object that matches PrimeReact's interface
+            const fileUploadFile = Object.assign(file, {
+                objectURL: URL.createObjectURL(file)
+            });
+
+            // Create a mock FileUploadHandlerEvent
+            const mockEvent: FileUploadHandlerEvent = {
+                files: [fileUploadFile],
+                options: {
+                    clear: () => { },
+                    props: {}
+                }
+            };
+
+            if (saveFunc) {
+                saveFunc(mockEvent);
+            } else if (onUpload) {
+                onUpload(mockEvent);
+            }
+            queryClient.invalidateQueries();
+        }
+        // Let the same file be picked again, e.g. after a failed upload.
+        target.value = '';
+    };
+
+    const deleteCurrent = () => {
+        deleteFunc(itemId, images[idx].id);
+        queryClient.invalidateQueries();
+    };
+
     const imageItems = [
         {
             label: 'Lisää kuva',
             icon: 'pi pi-plus',
-            command: () => {
-                // Create a temporary file input
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.onchange = (e) => {
-                    const target = e.target as HTMLInputElement;
-                    if (target.files && target.files.length > 0) {
-                        const file = target.files[0];
-                        // Create a FileUploadFile object that matches PrimeReact's interface
-                        const fileUploadFile = Object.assign(file, {
-                            objectURL: URL.createObjectURL(file)
-                        });
-
-                        // Create a mock FileUploadHandlerEvent
-                        const mockEvent: FileUploadHandlerEvent = {
-                            files: [fileUploadFile],
-                            options: {
-                                clear: () => { },
-                                props: {}
-                            }
-                        };
-
-                        if (saveFunc) {
-                            saveFunc(mockEvent);
-                        } else if (onUpload) {
-                            onUpload(mockEvent);
-                        }
-                        queryClient.invalidateQueries();
-                    }
-                };
-                input.click();
-            },
-            visible: isAdmin(getCurrenUser()) && hasOnlyOneEdition
+            command: () => fileInput.current?.click(),
+            visible: canAdd
         },
         {
             label: 'Poista kuva',
             icon: 'pi pi-trash',
-            command: () => {
-                console.log("ImageView: delete image", images);
-                deleteFunc(itemId, images[idx].id);
-                queryClient.invalidateQueries();
-            },
-            visible: isAdmin(getCurrenUser())
+            command: deleteCurrent,
+            visible: admin
         },
         {
             label: 'Kopioi osoite',
@@ -122,6 +129,10 @@ export const ImageView = ({ itemId, idx, images, saveFunc, deleteFunc, onUpload,
     return (
         <div className="coverbox">
             <ContextMenu model={imageItems} ref={cm} />
+            {canAdd &&
+                <input ref={fileInput} type="file" accept="image/*" hidden
+                    onChange={onFileChosen} />
+            }
             {/* A cover per edition on the work page: show the thumbnail,
                 open the full cover in the preview. */}
             <Image className="pt-2" preview width="150px" src={thumbUrl(images[idx])}
@@ -140,6 +151,27 @@ export const ImageView = ({ itemId, idx, images, saveFunc, deleteFunc, onUpload,
                     aria-label="Seuraava kansikuva"
                     onClick={() => idxCb(idx + 1)}
                 ></Button>
+            }
+            {/* Touch screens have no right-click menu (iOS doesn't open it
+                on long press), so admins get the same actions as buttons. */}
+            {admin &&
+                <div className="cover-touch-actions">
+                    {canAdd &&
+                        <Button icon="pi pi-plus" text size="small"
+                            aria-label="Lisää kuva" tooltip="Lisää kuva"
+                            onClick={() => fileInput.current?.click()} />
+                    }
+                    <Button icon="pi pi-trash" text size="small"
+                        severity="danger"
+                        aria-label="Poista kuva" tooltip="Poista kuva"
+                        onClick={(e) => setConfirmTarget(e.currentTarget)} />
+                    <ConfirmPopup target={confirmTarget ?? undefined}
+                        visible={confirmTarget !== null}
+                        onHide={() => setConfirmTarget(null)}
+                        message="Poistetaanko kuva?"
+                        acceptLabel="Poista" rejectLabel="Peruuta"
+                        accept={deleteCurrent} />
+                </div>
             }
         </div>
     )

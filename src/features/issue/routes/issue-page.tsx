@@ -17,7 +17,9 @@ import { deleteIssue } from '@api/issue/delete-issue';
 import { ImageView } from '@utils/image-view';
 import { deleteIssueImage } from '@api/issue/delete-issue-image';
 import { uploadIssueImage } from '@api/issue/upload-issue-image';
+import axios from 'axios';
 import { FileUpload, FileUploadHandlerEvent } from 'primereact/fileupload';
+import { prepareCoverUpload } from '@utils/prepare-cover-upload';
 import { IssueShortsPicker } from '@features/short/components/shorts-picker';
 import _ from 'lodash';
 import { Card } from 'primereact/card';
@@ -236,13 +238,23 @@ export const IssuePage = ({ id: issue_id }: IssueProps) => {
     const [imageIdx, setImageIdx] = useState(0);
 
     const saveImage = async (event: FileUploadHandlerEvent) => {
-        uploadIssueImage(issueId, event.files[0], event.files[0].name).then(response => {
+        try {
+            // Phone photos are large and may not be JPEG.
+            const file = await prepareCoverUpload(event.files[0]);
+            const response = await uploadIssueImage(issueId, file, file.name);
             if (response?.status === 200) {
-                onUpload('success', 'Kansi lisätty onnistuneesti');
+                onUpload('success', 'Kansi lisätty onnistuneesti');
             } else {
-                onUpload('error', 'Virhe kantta lisätäessä');
+                onUpload('error', 'Virhe kantta lisättäessä');
             }
-        });
+        } catch (err) {
+            // prepareCoverUpload throws a readable Finnish message.
+            const detail = err instanceof Error && !axios.isAxiosError(err)
+                ? `: ${err.message}` : '';
+            onUpload('error', `Virhe kantta lisättäessä${detail}`);
+        } finally {
+            event.options.clear();
+        }
     };
 
     const deleteImage = (_itemId: string | number, imageId: number) => {

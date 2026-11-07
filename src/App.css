@@ -553,6 +553,20 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
   width: 150px;
 }
 
+/* Admin add/delete buttons under a cover, only where there is no
+   right-click (touch screens). */
+.cover-touch-actions {
+  display: none;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+@media (hover: none) {
+  .cover-touch-actions {
+    display: flex;
+  }
+}
+
 .coverbtn {
   position: absolute;
   border: none;

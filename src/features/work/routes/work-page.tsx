@@ -35,6 +35,7 @@ import { groupSimilarEditions } from "@features/edition/utils/group-similar-edit
 import { combineEditions } from "@features/edition/utils/combine-editions";
 import { deleteEditionImage } from "@api/edition/delete-edition-image";
 import { ImageView } from "@utils/image-view";
+import { prepareCoverUpload } from "@utils/prepare-cover-upload";
 import { appearsIn } from "@utils/appears-in"
 import { Card } from "primereact/card";
 import { TabView, TabPanel } from "primereact/tabview";
@@ -111,11 +112,25 @@ function useEffectiveWorkId(
     };
 }
 
-const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, highlightEditionId, editionPrice }: {
+/** A readable reason for a failed cover upload. */
+const uploadErrorMessage = (err: unknown): string => {
+    if (axios.isAxiosError(err)) {
+        if (err.response?.status === 413) {
+            return 'Kuva on liian suuri.';
+        }
+        const msg = err.response?.data?.msg;
+        if (typeof msg === 'string' && msg) return msg;
+        return err.response ? `Palvelin vastasi ${err.response.status}.` : 'Yhteysvirhe.';
+    }
+    return err instanceof Error ? err.message : 'Tuntematon virhe.';
+};
+
+const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, onUploadError, highlightEditionId, editionPrice }: {
     editions: Edition[];
     work?: Work;
     onSubmitCallback: any;
     onUpload: any;
+    onUploadError: (message: string) => void;
     highlightEditionId?: string | null;
     editionPrice?: EditionPrice;
 }) => {
@@ -132,15 +147,22 @@ const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, highlight
         //const targetEditionId = currentImage ? currentImage.edition_id : edition.id;
         const uploadUrl = `editions/${edition.id}/images`;
 
-        const form = new FormData();
-        form.append('file', event.files[0], event.files[0].name);
-        const headers = authHeader();
-
-        await axios.post(import.meta.env.VITE_API_URL + uploadUrl, form, {
-            headers: headers
-        });
-        onUpload();
-    }, [onUpload, edition]);
+        try {
+            // Phone photos are large and may not be JPEG.
+            const file = await prepareCoverUpload(event.files[0]);
+            const form = new FormData();
+            form.append('file', file, file.name);
+            await axios.post(import.meta.env.VITE_API_URL + uploadUrl, form, {
+                headers: authHeader()
+            });
+            onUpload();
+        } catch (err) {
+            onUploadError(uploadErrorMessage(err));
+        } finally {
+            // Basic FileUpload: allow choosing a file again.
+            event.options.clear();
+        }
+    }, [onUpload, onUploadError, edition]);
 
     // Check if this edition should be highlighted
     const shouldHighlight = highlightEditionId && editions.some(e => e.id.toString() === highlightEditionId);
@@ -382,6 +404,10 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
         queryClient.invalidateQueries({ queryKey: ["work", workId] });
     }, [queryClient, workId]);
 
+    const onUploadError = useCallback((message: string) => {
+        toastRef.current?.show({ severity: 'error', summary: 'Kuvan tallentaminen epäonnistui', detail: message, life: 6000 });
+    }, []);
+
     const itemTemplate = (editions: Edition[]) => {
         if (!editions) {
             return null;
@@ -392,6 +418,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
             work={workData}
             onSubmitCallback={editionFormCallback}
             onUpload={onUpload}
+            onUploadError={onUploadError}
             highlightEditionId={highlightEditionId}
             editionPrice={combined ? editionPrices?.[combined.id] : undefined}
         />;

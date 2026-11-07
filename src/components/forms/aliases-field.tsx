@@ -64,7 +64,7 @@ export const AliasesField = ({ disabled }: AliasesFieldProps) => {
                         )}
                     />
                 </div>
-                <div className="flex align-content-center flex-wrap col-12 lg:col-2">
+                <div className="field flex flex-nowrap align-items-center col-12 lg:col-fixed lg:w-7rem p-2">
                     <Button
                         type="button"
                         className="p-button-rounded p-button-text"

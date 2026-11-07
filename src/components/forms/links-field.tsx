@@ -76,8 +76,8 @@ export const LinksField = ({ id, disabled, linkType }: LinksFieldProps) => {
 
 
     return (
-      <div key={keyName} className="grid gap-1">
-        <div className="field sm:col-12 lg:col-3" key={`${keyName}.link`}>
+      <div key={keyName} className="grid">
+        <div className="field col-12 lg:col min-w-0 p-2" key={`${keyName}.link`}>
           <Controller
             name={`links.${index}.link` as const}
             control={control}
@@ -92,7 +92,7 @@ export const LinksField = ({ id, disabled, linkType }: LinksFieldProps) => {
             )}
           />
         </div>
-        <div className="field sm:col-12 lg:col-3" key={`${keyName}.description`}>
+        <div className="field col-12 lg:col min-w-0 p-2" key={`${keyName}.description`}>
           <Controller
             name={`links.${index}.description` as const}
             control={control}
@@ -117,7 +117,7 @@ export const LinksField = ({ id, disabled, linkType }: LinksFieldProps) => {
             )}
           />
         </div>
-        <div className="field sm:col-12 lg:col-1">
+        <div className="field flex flex-nowrap align-items-center col-12 lg:col-fixed lg:w-7rem p-2">
           <Button type="button"
             className="p-button-rounded p-button-text"
             onClick={() => removeLink(index)}

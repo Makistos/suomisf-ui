@@ -121,7 +121,7 @@ const ContributorRow = ({ id, index, contributionTarget, disabled, isLast, onAdd
         <div key={keyValue}
             className="grid">
 
-            <div className="field col-12 lg:col-3 p-2">
+            <div className="field col-12 lg:col min-w-0 p-2">
                 <Controller
                     name={`${id}.${index}.person` as const}
                     control={control}
@@ -156,7 +156,7 @@ const ContributorRow = ({ id, index, contributionTarget, disabled, isLast, onAdd
                     )}
                 />
             </div>
-            <div className="field col-12 lg:col-3 p-2">
+            <div className="field col-12 lg:col min-w-0 p-2">
                 <Controller
                     name={`${id}.${index}.role` as const}
                     control={control}
@@ -179,7 +179,7 @@ const ContributorRow = ({ id, index, contributionTarget, disabled, isLast, onAdd
                     )}
                 />
             </div>
-            <div className="field col-12 lg:col-3 p-2">
+            <div className="field col-12 lg:col min-w-0 p-2">
                 <Controller
                     name={`${id}.${index}.description` as const}
                     control={control}
@@ -199,7 +199,7 @@ const ContributorRow = ({ id, index, contributionTarget, disabled, isLast, onAdd
                 />
             </div>
             {realNameOptions.length > 0 && (
-                <div className="field col-12 lg:col-3 p-2">
+                <div className="field col-12 lg:col min-w-0 p-2">
                     <Controller
                         name={`${id}.${index}.real_person` as const}
                         control={control}
@@ -249,7 +249,7 @@ const ContributorRow = ({ id, index, contributionTarget, disabled, isLast, onAdd
                 />
             </div>
                             */}
-            <div className="flex align-content-center flex-wrap col-12 lg:col-2">
+            <div className="field flex flex-nowrap align-items-center col-12 lg:col-fixed lg:w-7rem p-2">
                 <Button type="button"
                     className="p-button-rounded p-button-text"
                     onClick={() => onRemove(index)}

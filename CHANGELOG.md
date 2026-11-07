@@ -3,6 +3,8 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-07 `8644210` — Add and remove buttons on one line
+- In the Tekijät, Linkit and Aliakset fields of the forms the − and + buttons sit next to each other on the row they belong to. In Linkit the + used to drop below the −, and in Tekijät both dropped to their own line when the "Oikea henkilö" field appeared.
 ## 2026-11-07 `0820aa8` — Bookseries and publisher pages: creating and deleting
 - "Uusi kirjasarja" on a bookseries page now creates a new series. It used to open the current series in the form, so saving renamed it.
 - Deleting a bookseries or a publisher's series asks for confirmation and shows why if the delete fails. Poista is disabled while the series has works or editions, and on a publisher page while it has editions, magazines or series.

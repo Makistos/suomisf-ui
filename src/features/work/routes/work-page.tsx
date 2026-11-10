@@ -601,6 +601,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                                                 work={workData}
                                                 user={user}
                                                 onImported={() => queryClient.invalidateQueries({ queryKey: ["work", workId] })}
+                                                onLinkAdded={() => queryClient.invalidateQueries({ queryKey: ["work", workId] })}
                                             />
                                             {user && (
                                                 <WorkReadControl workId={workData.id} />

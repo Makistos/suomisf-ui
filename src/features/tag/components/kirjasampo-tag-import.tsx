@@ -6,6 +6,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
 import { InputSwitch } from 'primereact/inputswitch';
+import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { Toast } from 'primereact/toast';
 import { ProgressSpinner } from 'primereact/progressspinner';
@@ -31,9 +32,23 @@ interface KirjasampoTagImportProps {
     work: Work;
     user: User | null;
     onImported?: () => void;
+    /** Called after a Kirjasampo link was added to the work. */
+    onLinkAdded?: () => void;
 }
 
-export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImportProps) => {
+/** The server's message from a rejected postApiContent, if any. */
+const serverMessage = (err: unknown): string | null => {
+    try {
+        const raw = (err as { response?: unknown }).response;
+        const parsed = typeof raw === 'string' ? JSON.parse(raw) : null;
+        const msg = parsed?.data?.msg;
+        return typeof msg === 'string' && msg ? msg : null;
+    } catch {
+        return null;
+    }
+};
+
+export const KirjasampoTagImport = ({ work, user, onImported, onLinkAdded }: KirjasampoTagImportProps) => {
     const [dialogVisible, setDialogVisible] = useState(false);
     const [loading, setLoading] = useState(false);
     const [fetched, setFetched] = useState(false);
@@ -43,6 +58,10 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
     const [suggestions, setSuggestions] = useState<SfTag[]>([]);
     // A tag to add by hand: one picked from the list, or a typed new name.
     const [toAdd, setToAdd] = useState<SfTag | string | null>(null);
+    // Kirjasampo address typed in the dialog when the work has no link.
+    const [newLink, setNewLink] = useState('');
+    // Work whose link was just saved, until the work is reloaded.
+    const [linkAddedFor, setLinkAddedFor] = useState<number | null>(null);
     const toastRef = useRef<Toast>(null);
 
     const searchTags = useCallback(async (e: { query: string }) => {
@@ -60,18 +79,34 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
 
     if (!isAdmin(user)) return null;
 
-    const kirjasampoLink = work.links?.find(l => l.link.includes('kirjasampo.fi'));
-    if (!kirjasampoLink) return null;
+    // Without a link the dialog asks for one; it is saved to the work
+    // before the tags are fetched.
+    const hasLink = linkAddedFor === work.id || !!work.links?.some(l => l.link.includes('kirjasampo.fi'));
 
     const openDialog = () => {
         setRows([]);
         setFetched(false);
+        setNewLink('');
         setDialogVisible(true);
     };
 
     const fetchTags = async () => {
         setLoading(true);
         try {
+            if (!hasLink) {
+                try {
+                    await postApiContent(`work/${work.id}/kirjasampo/link`, { link: newLink.trim() }, user);
+                } catch (err) {
+                    toastRef.current?.show({
+                        severity: 'error', summary: 'Linkin lisääminen epäonnistui',
+                        detail: serverMessage(err) ?? `Palvelin vastasi ${(err as { status?: number }).status ?? '?'}.`,
+                        life: 6000,
+                    });
+                    return;
+                }
+                setLinkAddedFor(work.id);
+                onLinkAdded?.();
+            }
             const [previewRes, types] = await Promise.all([
                 getApiContent(`work/${work.id}/tags/import/preview`, user),
                 getTagTypes(user),
@@ -274,10 +309,31 @@ export const KirjasampoTagImport = ({ work, user, onImported }: KirjasampoTagImp
                         <p className="text-color-secondary m-0">
                             Hae asiasanat Kirjasammosta ja tarkista ne ennen tallennusta.
                         </p>
+                        {!hasLink && (
+                            <div className="flex flex-column gap-2 w-full md:w-9">
+                                <label htmlFor="kirjasampo-link" className="font-bold">
+                                    Kirjasampo-linkki
+                                </label>
+                                <InputText
+                                    id="kirjasampo-link"
+                                    value={newLink}
+                                    onChange={e => setNewLink(e.target.value)}
+                                    onKeyDown={e => { if (e.key === 'Enter' && newLink.trim()) fetchTags(); }}
+                                    placeholder="https://www.kirjasampo.fi/fi/kulsa/..."
+                                    aria-describedby="kirjasampo-link-help"
+                                    className="w-full"
+                                />
+                                <small id="kirjasampo-link-help" className="text-color-secondary">
+                                    Teoksella ei ole Kirjasampo-linkkiä. Kopioi tähän teoksen
+                                    sivun osoite Kirjasammosta; se lisätään teoksen linkkeihin.
+                                </small>
+                            </div>
+                        )}
                         <Button
                             label="Hae asiasanat"
                             icon="pi pi-download"
                             onClick={fetchTags}
+                            disabled={!hasLink && !newLink.trim()}
                         />
                     </div>
                 ) : (

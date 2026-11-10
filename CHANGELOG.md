@@ -3,6 +3,8 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-10 `f53bbe8` — Kirjasampo import without a link
+- "Tuo Kirjasampo-asiasanat" is shown on every work page for admins. If the work has no Kirjasampo link, the dialog has a "Kirjasampo-linkki" field: paste the work's Kirjasampo address and "Hae asiasanat" adds it to the work's links and fetches the tags.
 ## 2026-11-07 `502fac1` — Cover uploads from a phone
 - Uploaded edition and issue covers are resized to exactly 500 px high and saved as JPEG before uploading. Phone photos used to be too large, and PNG screenshots were refused.
 - A failed cover upload on a work page shows an error message instead of nothing.

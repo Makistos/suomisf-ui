@@ -48,3 +48,17 @@ Application uses PrimeReact component library. Always suggest components in it i
   `src/features/work/components/antikvaari-product-picker.tsx` (source selector
   order in `SOURCE_ORDER`); stored prices show in
   `src/features/edition/components/edition-prices-dialog.tsx`.
+
+## Wiki (user and admin documentation)
+
+- The user documentation is the GitHub wiki, cloned at `../suomisf-ui.wiki`:
+  `SuomiSF‐ohje.md` (user guide), `Ylläpito.md` (admin guide) and `Home.md`.
+  Server-side admin tasks are in `docs/ADMIN_GUIDE.md`.
+- Every time a change alters UI or logic that the wiki describes (labels,
+  buttons, dialogs, workflows, what a search or filter returns, limits,
+  who can do what), update the wiki as part of the same task: grep the wiki
+  for the feature's Finnish labels, fix the text, and retake affected
+  screenshots (`images/ohje/`, `images/yllapito/`, from the E2E stack logged
+  in as Test Admin). Commit and push the wiki; no need to ask first.
+- Also add new user-visible features to the right section. In the final
+  summary say what was updated in the wiki, or that nothing needed it.

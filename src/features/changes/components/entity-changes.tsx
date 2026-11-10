@@ -11,6 +11,7 @@ import { HttpStatusResponse } from "@services/user-service";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "primereact/skeleton";
 import { getPersonChanges } from "@api/people/get-person-changes";
+import { ChangeHistoryDialog } from "./change-history-dialog";
 
 interface WorkChangesProps {
     entityId: number,
@@ -34,6 +35,7 @@ type SubChanges = {
 export const EntityChanges = ({ entityId, entity }: WorkChangesProps) => {
     const user = useMemo(() => { return getCurrenUser() }, []);
     const [expandedRows, setExpandedRows] = useState<DataTableExpandedRows | LogItem[]>([]);
+    const [historyVisible, setHistoryVisible] = useState(false);
 
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = {
@@ -134,6 +136,16 @@ export const EntityChanges = ({ entityId, entity }: WorkChangesProps) => {
 
     return (
         <>
+            {entity === "work" && (
+                <>
+                    <div className="flex justify-content-end mb-2">
+                        <Button label="Avaa muutoshistoria" icon="pi pi-history" size="small" outlined
+                            onClick={() => setHistoryVisible(true)} />
+                    </div>
+                    <ChangeHistoryDialog workId={entityId} visible={historyVisible}
+                        onHide={() => setHistoryVisible(false)} />
+                </>
+            )}
             {
                 isLoading ?
                     <Skeleton />

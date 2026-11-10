@@ -1577,3 +1577,83 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
         display: none;
     }
 }
+
+/* Change history dialog (features/changes/components/change-history-dialog.tsx) */
+.change-row {
+  display: grid;
+  grid-template-columns: minmax(8rem, 12rem) 1fr auto;
+  gap: 0.25rem 1rem;
+  align-items: start;
+  padding: 0.4rem 0;
+  border-top: 1px solid var(--surface-border);
+}
+
+.change-row:first-child {
+  border-top: none;
+}
+
+.change-value {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.change-old {
+  color: var(--text-color-secondary);
+}
+
+.change-diff ins {
+  text-decoration: none;
+  background: color-mix(in srgb, var(--green-500) 22%, transparent);
+  border-radius: 3px;
+}
+
+.change-diff del {
+  background: color-mix(in srgb, var(--red-500) 18%, transparent);
+  border-radius: 3px;
+}
+
+.change-chip {
+  display: inline-flex;
+  gap: 0.25rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.85rem;
+  border: 1px solid;
+}
+
+.change-chip.added {
+  color: var(--green-800);
+  background: color-mix(in srgb, var(--green-500) 14%, transparent);
+  border-color: color-mix(in srgb, var(--green-500) 40%, transparent);
+}
+
+.change-chip.removed {
+  color: var(--red-800);
+  background: color-mix(in srgb, var(--red-500) 10%, transparent);
+  border-color: color-mix(in srgb, var(--red-500) 35%, transparent);
+}
+
+.change-diff del + ins,
+.change-diff ins + del {
+  margin-left: 0.3em;
+}
+
+.change-timeline .p-timeline-event-opposite {
+  display: none;
+}
+
+@media (max-width: 576px) {
+  .change-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .change-row .change-value {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .change-chip.added { color: var(--green-300); }
+  .change-chip.removed { color: var(--red-300); }
+}

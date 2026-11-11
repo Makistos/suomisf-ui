@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { test, expect } from '../fixtures/auth';
 
 const API_URL = 'http://localhost:5001/api/';
@@ -24,6 +24,13 @@ const setLinks = async (page: Page, headers: Record<string, string>, workId: num
 };
 
 const card = (page: Page, title: string) => page.locator('.p-card').filter({ hasText: title });
+
+// The similar-tags row of the pair (a, b). Names are matched exactly:
+// "teatteri" is a substring of "teatteriryhmät", which is in another pair.
+const exactTag = (page: Page, name: string) =>
+    page.locator('td .p-tag').filter({ hasText: new RegExp(`^${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`) });
+const pairRowOf = (similar: Locator, page: Page, a: string, b: string) =>
+    similar.locator('tbody tr').filter({ has: exactTag(page, a) }).filter({ has: exactTag(page, b) });
 
 /** Work ids of the works listed in a search result. */
 const listedWorkIds = async (page: Page, title: string) => {
@@ -159,8 +166,7 @@ test('a suggested duplicate tag pair is dismissed and restored', async ({ adminP
     const first = similar.locator('tbody tr').nth(browserName === 'firefox' ? 1 : 0);
     const [nameA, nameB] = await first.locator('td .p-tag').allTextContents();
     expect(nameA && nameB).toBeTruthy();
-    const pairRow = similar.locator('tbody tr')
-        .filter({ hasText: nameA }).filter({ hasText: nameB });
+    const pairRow = pairRowOf(similar, adminPage, nameA, nameB);
 
     await similar.getByPlaceholder('Hae asiasanaa...').fill(nameA);
     await pairRow.getByRole('button', { name: 'Eri asiasanat' }).click();
@@ -203,7 +209,7 @@ test('a suggested duplicate is marked related and back', async ({ adminPage, bro
     // Rows the dismiss test doesn't use, one per browser.
     const row = similar.locator('tbody tr').nth(browserName === 'firefox' ? 3 : 2);
     const [nameA, nameB] = await row.locator('td .p-tag').allTextContents();
-    const pairRow = similar.locator('tbody tr').filter({ hasText: nameA }).filter({ hasText: nameB });
+    const pairRow = pairRowOf(similar, adminPage, nameA, nameB);
     await similar.getByPlaceholder('Hae asiasanaa...').fill(nameA);
 
     await pairRow.getByRole('button', { name: 'Merkitse liittyväksi' }).click();
@@ -227,7 +233,7 @@ test('a suggested pair is marked checked and hidden', async ({ adminPage, browse
     // Rows the other tests don't use, one per browser.
     const row = similar.locator('tbody tr').nth(browserName === 'firefox' ? 5 : 4);
     const [nameA, nameB] = await row.locator('td .p-tag').allTextContents();
-    const pairRow = similar.locator('tbody tr').filter({ hasText: nameA }).filter({ hasText: nameB });
+    const pairRow = pairRowOf(similar, adminPage, nameA, nameB);
     const check = pairRow.getByRole('button', { name: 'Tarkistettu' });
     await expect(check).toHaveAttribute('aria-pressed', 'false');
     await check.click();

@@ -6,13 +6,24 @@ const dialAction = (page: Page, label: string) =>
 
 // There's no "create new tag" UI (only Muokkaa/Yhdistä/Poista on the dial) -
 // tags are created implicitly elsewhere (e.g. free text in a work's tag
-// field) rather than through a dedicated form. This covers rename + delete
-// on an existing, safely-deletable tag (id 542 "solarpunk", verified via
-// direct DB query to have zero work/story/article links).
+// field) rather than through a dedicated form. The test creates its own
+// tag through the API, so it has no links whatever the copied data holds
+// (an existing "unused" tag got linked to a work in production once).
 test('admin can rename and delete a tag with no linked content', async ({ adminPage }) => {
-    const editedName = `E2E_TEST_tag_${Date.now()}`;
+    const stamp = Date.now();
+    const editedName = `E2E_TEST_tag_${stamp}`;
 
-    await adminPage.goto('/tags/542');
+    const token = await adminPage.evaluate(() => JSON.parse(localStorage.getItem('user') ?? '{}').access_token);
+    const created = await adminPage.request.post('http://localhost:5001/api/tags', {
+        headers: { Authorization: `Bearer ${token}` },
+        data: { data: { name: `E2E_TEST_new_${stamp}` } },
+    });
+    expect(created.ok()).toBeTruthy();
+    const body = await created.json();
+    const tagId = body.id ?? body.response?.id;
+    expect(tagId).toBeTruthy();
+
+    await adminPage.goto(`/tags/${tagId}`);
     await expect(adminPage.getByRole('progressbar')).not.toBeVisible({ timeout: 20000 });
 
     // Rename

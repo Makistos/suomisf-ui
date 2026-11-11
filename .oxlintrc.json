@@ -30,6 +30,7 @@
     "react-hooks/rules-of-hooks": "error"
   },
   "ignorePatterns": [
+    ".claude/**",
     "build/**",
     "build-e2e/**",
     "coverage/**",

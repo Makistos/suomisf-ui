@@ -2,6 +2,9 @@ import { test, expect } from '../fixtures/guard';
 import { expectAccessible } from '../fixtures/axe';
 
 // Every public page type, scanned once its content has loaded.
+// Pages so big that axe alone can take over 30 s in firefox (/tags lists
+// every tag, ~4000) get triple the time.
+const SLOW = new Set(['/tags']);
 const PAGES: [string, RegExp | string][] = [
     ['/', ''],
     ['/works/63', ''],
@@ -41,6 +44,7 @@ const PAGES: [string, RegExp | string][] = [
 
 for (const [path, heading] of PAGES) {
     test(`${path} has no accessibility violations`, async ({ page }) => {
+        test.slow(SLOW.has(path));
         await page.goto(path);
         if (heading) await expect(page.getByRole('heading', { name: heading }).first()).toBeVisible({ timeout: 20000 });
         await expect(page.getByRole('progressbar')).toHaveCount(0, { timeout: 20000 });

@@ -47,7 +47,7 @@ dev servers on `:3000`/`:5000` are never touched.
 | `magazines.spec.ts` | `/magazines` | List page loads. |
 | `changes.spec.ts` | `/changes` | Audit log table loads and paginates. |
 | `faq.spec.ts` | `/faq` | Page loads with content. |
-| `tags.spec.ts` | `/tags` | All category headings present, specific tag names found within their category with a sane count. |
+| `tags.spec.ts` | `/tags` | All category headings present, each listing tags with a sane count. No tag names are checked: editors move tags between categories. |
 | `tag.spec.ts` | `/tags/521` | "dystopia" tag: description, Teokset/Novelleja/Artikkeleita headings, a known linked work's author heading (large tag, 300+ works — rendering-scale check). "eurooppa" (`/tags/937`) lists its suggested similar tags, 12 and the rest behind "+"; "jännitys" (`/tags/445`) shows the section and the option below only if the API lists similar tags for it. "Näytä myös samankaltaisten asiasanojen teokset" on "eurooppa" lists more works, its own among them, each once, with the tags each matched. |
 | `work.spec.ts` | `/works/63` | Title/author headings, genres/tags sections, and the "Myös teoksessa" omnibus relation (exercises the `part_of` sort fixed earlier this project). |
 | `edition.spec.ts` | `/editions/1731` | `/editions/:id` shares `WorkPage` with `/works/:id` but loads via the parent work and highlights the requested edition — checks exactly one `.highlighted-edition`. |
@@ -67,7 +67,7 @@ dev servers on `:3000`/`:5000` are never touched.
 | `register.spec.ts` | `/` | Registering through the account menu logs the new user in, and the password and tokens never reach the browser console; mismatched passwords block the request; the account menu's "Kirjaudu"/"Rekisteröidy" labels are visible text (not only accessible names); the register dialog closes from its close button. |
 | `front-page-popups.spec.ts` | `/` | "Bibliografiasta löytyy" covers (`ImageAccordion`): on a touch screen the first tap opens the panel, a tap on the panel's cover opens the edition and a tap outside closes it; mouse hover opens and leaving closes; Tab goes from cover to cover with each panel open and Enter opens the edition. |
 | `work-description.spec.ts` | `/works/6790`, `/works/53` | A long description is clipped and opens/closes by clicking it or "Näytä vähemmän" (`CollapsibleHtml`); a short one has no button. |
-| `a11y.spec.ts` | 25 page types + register dialog | axe (WCAG 2.1 A/AA) finds no violations; see "Accessibility checks" below. |
+| `a11y.spec.ts` | 25 page types + register dialog | axe (WCAG 2.1 A/AA) finds no violations; see "Accessibility checks" below. `/tags` (~4000 tags) gets triple the time: axe alone can take over 30 s on it in Firefox. |
 | `sanitize.spec.ts` | `/awards/27` | A description with a script, an `onerror` handler and a `javascript:` link (injected with `page.route`) renders its text but runs nothing (`safeHtml`, `src/utils/safe-html.ts`). |
 
 ## `tests/user/` — logged-in regular user (`Test User`)
@@ -103,7 +103,7 @@ rebuilt before the next run.
 | `bookseries.spec.ts` | Full create → edit → delete cycle. |
 | `magazine.spec.ts` | Three tests: (1) create a magazine and add an issue to it — not deleted afterward, since a magazine with issues genuinely can't be deleted (FK constraint) and the UI doesn't disable "Poista" for that case; (2) create-then-delete a magazine with no issues, checking the "Lehti poistettu" toast; (3) edit a magazine that has no publisher (used to crash the backend: the form sends `publisher: null`). |
 | `short.spec.ts` | Creates a new short story via the work page's "Muokkaa novelleja" picker dialog's nested "Uusi" form, then attaches it to the work. |
-| `tag.spec.ts` | No "create" UI — rename + delete on a tag pre-verified to have zero linked works/stories/articles. |
+| `tag.spec.ts` | No "create" UI — a tag is created through the API (so it has no links whatever the copied data holds), renamed, then deleted. |
 | `shorts-picker.spec.ts` | Opens the "Muokkaa novelleja" picker on a 5-story collection, searches a person, adds one of their stories to the list (6 items), closes without saving. |
 | `changes-audit.spec.ts` | Creates a work, then confirms a matching `Uusi`-action entry by `Test Admin` appears via `GET /api/changes`. |
 | `pricing.spec.ts` | On `/works/10` (one edition): the "Hinnat" picker links a shop product, fetches its price and saves it, and the price shows in the edition's price dialog — the shop search and price fetch are answered by `page.route`, never the real shops; a price added by hand in the edition price dialog is listed. |

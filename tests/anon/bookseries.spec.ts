@@ -5,7 +5,7 @@ test('Book series page loads and displays data', async ({ page }) => {
     await page.goto('/bookseries');
 
     // Check that the page heading exists
-    await expect(page.getByRole('heading', { name: /Kirjasarjat/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Kirjasarjat/i })).toBeVisible({ timeout: 20000 });
 
     // Verify that the page has a data table
     const dataTable = page.getByRole('table');

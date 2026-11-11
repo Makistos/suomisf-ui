@@ -19,11 +19,12 @@ const login = async (username = 'Test Admin', password = 'testadminpass123') => 
 
 // API call as the given user (for temporary test records).
 const api = (user) => async (method, path, body) => {
-    const r = await fetch(API + path, {
+    const init = {
         method,
         headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + user.access_token },
-        body: body ? JSON.stringify(body) : undefined,
-    });
+    };
+    if (body) init.body = JSON.stringify(body);
+    const r = await fetch(API + path, init);
     if (!r.ok) throw new Error(`${method} ${path} ${r.status} ${await r.text()}`);
     return r.json().catch(() => null);
 };

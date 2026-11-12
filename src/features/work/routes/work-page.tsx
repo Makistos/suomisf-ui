@@ -25,6 +25,7 @@ import { EditionForm } from "@features/edition/components/edition-form";
 import { isAnthology } from "../utils/is-anthology";
 import { WorkForm } from "../components/work-form";
 import { isAdmin } from "@features/user";
+import { SimilarWorks } from "../components/similar-works";
 import authHeader from "@services/auth-header";
 import { HttpStatusResponse } from "@services/user-service"
 import { WorkShortsPicker } from "@features/short/components/shorts-picker";
@@ -603,6 +604,7 @@ export function WorkPage({ id, editionId }: WorkPageProps) {
                                                 onImported={() => queryClient.invalidateQueries({ queryKey: ["work", workId] })}
                                                 onLinkAdded={() => queryClient.invalidateQueries({ queryKey: ["work", workId] })}
                                             />
+                                            <SimilarWorks workId={workData.id} user={user} />
                                             {user && (
                                                 <WorkReadControl workId={workData.id} />
                                             )}

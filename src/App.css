@@ -1612,6 +1612,17 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
   border-radius: 3px;
 }
 
+/* Similar works dialog (admins): a small cover or an empty slot of the
+   same size, so the titles line up. */
+.similar-works-cover {
+    flex: 0 0 auto;
+    width: 3.5rem;
+    height: 5rem;
+    object-fit: cover;
+    border-radius: 2px;
+    background: var(--surface-200);
+}
+
 .change-chip {
   display: inline-flex;
   gap: 0.25rem;

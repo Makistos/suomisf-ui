@@ -3,6 +3,8 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-12 `e08e776` — Similar works (admins only)
+- A "Samankaltaisia teoksia" button on the work page opens the work's eight most similar works with cover, author, year and the reasons ("Yhteinen alagenre: korkea fantasia · Samankaltainen kuvaus"). Computed by the backend's similar-works job from tags, description, genre and year. Admins only while the results are tried out.
 ## 2026-11-10 `38c3c09` — Change history dialog
 - "Avaa muutoshistoria" on a work's Muutoshistoria tab shows who changed what and when, and from which value to which: one card per save, list changes as added and removed items, word-level changes in descriptions.
 - Filters by edition, field, editor, type of change, dates and text; "Piilota muuttumattomat" hides rows where nothing really changed. "Kentän historia" lists one field's values over time.

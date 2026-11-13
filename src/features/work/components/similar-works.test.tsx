@@ -8,7 +8,7 @@ type ApiCall = (url: string, ...rest: any[]) => Promise<any>;
 const api = vi.hoisted(() => ({ getApiContent: vi.fn<ApiCall>() }));
 vi.mock("@services/user-service", () => api);
 
-import { formatValue, reasonText, shownReasons, signalsText, SimilarWorks, SimilarWork, tagTypesText } from "./similar-works";
+import { formatValue, partsText, reasonText, scoreText, shownReasons, SimilarWorks, SimilarWork, tagTypesText } from "./similar-works";
 
 const ADMIN = { id: 1, name: "admin", role: "admin" } as any;
 const USER = { id: 2, name: "user", role: "user" } as any;
@@ -24,7 +24,8 @@ const WORKS: SimilarWork[] = [
         ],
         score: 0.6337,
         signals: { S: 0.65, T: 0.9118, T_raw: 0.5124, D: 0.39, G: 0.5, Y: 0.74, coverage: 0.94,
-            types: { "1": 0.46, "2": 1, "3": 0 }, same_series: false },
+            types: { "1": 0.46, "2": 1, "3": 0 }, same_series: false, multiplier: 1,
+            parts: { T: 0.42, D: 0.16, G: 0.06, Y: 0.01 }, type_parts: { "1": 0.12, "2": 0.3, "3": 0 } },
     },
     {
         id: 1514, title: "Taru sormusten herrasta", author_str: "Tolkien, J. R. R.", pubyear: null,
@@ -61,13 +62,32 @@ describe("shownReasons", () => {
 });
 
 describe("values", () => {
-    it("formats the score and its parts with decimal commas", () => {
+    it("formats numbers with decimal commas", () => {
         expect(formatValue(0.5)).toBe("0,50");
         expect(formatValue(null)).toBe("–");
-        expect(signalsText(WORKS[0])).toBe(
-            "Pisteet 0,63 · Asiasanat 0,91 (raaka 0,51) · Kuvaus 0,39 · Genre 0,50 · Vuosi 0,74 · Kattavuus 0,94");
-        expect(signalsText({ ...WORKS[0], signals: { same_series: true } })).toContain("sama sarja");
-        expect(tagTypesText(WORKS[0].signals)).toBe("Aihe 0,46 · Alagenre 1,00 · Tyyli 0,00");
+    });
+
+    it("shows each signal's weighted share with its own value, adding up to S", () => {
+        expect(partsText(WORKS[0].signals)).toBe(
+            "Asiasanat 0,42 (0,91) · Kuvaus 0,16 (0,39) · Genre 0,06 (0,50) · Vuosi 0,01 (0,74) = 0,65");
+        // Lists computed before shares were stored: the values only.
+        expect(partsText({ T: 0.5, D: 0.2 })).toBe("Asiasanat 0,50 · Kuvaus 0,20");
+    });
+
+    it("splits the tags' share by type, leaving out types with nothing shared", () => {
+        // Tyyli has no shared tags: left out.
+        expect(tagTypesText(WORKS[0].signals)).toBe("Aihe 0,12 (0,46) · Alagenre 0,30 (1,00)");
+        expect(tagTypesText({ types: { "1": 0.4 } })).toBe("Aihe 0,40");
+    });
+
+    it("shows how the score comes from S", () => {
+        expect(scoreText(WORKS[0])).toBe("Pisteet 0,63 = 0,65 × kattavuus 0,97");
+        expect(scoreText({ ...WORKS[0], score: 0.12,
+            signals: { S: 0.5, coverage: 0.94, multiplier: 0.25, same_series: true } }))
+            .toBe("Pisteet 0,12 = 0,50 × kattavuus 0,97 × 0,25 sama sarja");
+        expect(scoreText({ ...WORKS[0], score: 0.3,
+            signals: { S: 0.62, coverage: 0.94, multiplier: 0.5, same_series: false } }))
+            .toBe("Pisteet 0,30 = 0,62 × kattavuus 0,97 × 0,50 ikäryhmä");
     });
 });
 
@@ -93,7 +113,8 @@ describe("SimilarWorks", () => {
         expect(document.querySelectorAll("li")).toHaveLength(2);
         // Values under the first work; none for one without signals.
         expect(document.querySelectorAll(".similar-works-values")).toHaveLength(1);
-        expect(document.body.textContent).toContain("Pisteet 0,63");
+        expect(document.body.textContent).toContain("Asiasanat 0,42 (0,91)");
+        expect(document.body.textContent).toContain("Pisteet 0,63 = 0,65");
         expect(document.body.textContent).toContain("Yhteinen aihe: a, b, c, d");
     });
 

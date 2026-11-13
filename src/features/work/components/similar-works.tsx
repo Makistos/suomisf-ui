@@ -49,6 +49,13 @@ export interface SimilarSignals {
     /** Per tag type id. */
     types?: Record<string, number>;
     same_series?: boolean;
+    /** Series and age-group multipliers together (1 = none). */
+    multiplier?: number;
+    /** How much each signal adds to S (weight × value / available weights);
+     * they add up to S. */
+    parts?: Partial<Record<"T" | "D" | "G" | "Y", number>>;
+    /** How much each tag type adds to parts.T, per tag type id. */
+    type_parts?: Record<string, number>;
 }
 
 export interface SimilarWork {
@@ -93,27 +100,62 @@ export const formatValue = (value: number | null | undefined): string =>
         ? "–"
         : value.toLocaleString("fi-FI", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-/** "Pisteet 0,63 · Asiasanat 0,91 (raaka 0,51) · Kuvaus 0,39 · …" */
-export const signalsText = (work: SimilarWork): string => {
-    const s = work.signals ?? {};
-    const parts = [
-        `Pisteet ${formatValue(work.score)}`,
-        `Asiasanat ${formatValue(s.T)}` + (s.T_raw !== undefined ? ` (raaka ${formatValue(s.T_raw)})` : ""),
-        `Kuvaus ${formatValue(s.D)}`,
-        `Genre ${formatValue(s.G)}`,
-        `Vuosi ${formatValue(s.Y)}`,
-        `Kattavuus ${formatValue(s.coverage)}`,
-    ];
-    if (s.same_series) parts.push("sama sarja");
-    return parts.join(" · ");
+const SIGNAL_NAMES: [keyof SimilarSignals & ("T" | "D" | "G" | "Y"), string][] = [
+    ["T", "Asiasanat"], ["D", "Kuvaus"], ["G", "Genre"], ["Y", "Vuosi"],
+];
+
+/**
+ * Each signal's share of S with its own value in brackets, adding up to S:
+ * "Asiasanat 0,45 (0,93) · Kuvaus 0,25 (0,62) · Genre 0,12 (1,00) ·
+ * Vuosi 0,01 (0,52) = 0,83". Without stored shares, the values only.
+ */
+export const partsText = (signals: SimilarSignals | undefined): string => {
+    const s = signals ?? {};
+    const shown = SIGNAL_NAMES.filter(([key]) => s[key] !== undefined && s[key] !== null);
+    if (!s.parts) {
+        return shown.map(([key, name]) => `${name} ${formatValue(s[key] as number)}`).join(" · ");
+    }
+    return shown
+        .map(([key, name]) => `${name} ${formatValue(s.parts?.[key] ?? 0)} (${formatValue(s[key] as number)})`)
+        .join(" · ") + ` = ${formatValue(s.S)}`;
 };
 
-/** "Aihe 0,46 · Alagenre 1,00 · Tyyli 0,00" for the types either work has. */
+/**
+ * The tag types' shares of the tags' part, with each type's own value:
+ * "Aihe 0,24 (0,56) · Alagenre 0,20 (0,56)". Types with no shared tags
+ * (share and value both zero) are left out.
+ */
 export const tagTypesText = (signals: SimilarSignals | undefined): string =>
     TAG_TYPE_ORDER
         .filter(t => signals?.types?.[t] !== undefined)
-        .map(t => `${TAG_TYPE_NAMES[t]} ${formatValue(signals?.types?.[t])}`)
+        .filter(t => !signals?.type_parts || (signals.type_parts[t] ?? 0) > 0 || (signals.types?.[t] ?? 0) > 0)
+        .map(t => {
+            const own = formatValue(signals?.types?.[t]);
+            const part = signals?.type_parts?.[t];
+            return part === undefined
+                ? `${TAG_TYPE_NAMES[t]} ${own}`
+                : `${TAG_TYPE_NAMES[t]} ${formatValue(part)} (${own})`;
+        })
         .join(" · ");
+
+/**
+ * How the ranking score comes from S: "Pisteet 0,82 = 0,83 × kattavuus
+ * 0,99", plus "× 0,25 sama sarja" or "× 0,50 ikäryhmä" when they apply.
+ */
+export const scoreText = (work: SimilarWork): string => {
+    const s = work.signals ?? {};
+    const parts = [`Pisteet ${formatValue(work.score)} = ${formatValue(s.S)}`];
+    if (s.coverage !== undefined && s.coverage !== null) {
+        parts.push(`kattavuus ${formatValue(0.5 + 0.5 * s.coverage)}`);
+    }
+    const multiplier = s.multiplier ?? 1;
+    if (Math.abs(multiplier - 1) > 1e-6) {
+        const age = s.same_series ? multiplier / 0.25 : multiplier;
+        const labels = [s.same_series && "sama sarja", Math.abs(age - 1) > 1e-6 && "ikäryhmä"].filter(Boolean);
+        parts.push(`${formatValue(multiplier)} ${labels.join(", ")}`);
+    }
+    return parts.join(" × ");
+};
 
 export const fetchSimilarWorks = async (workId: number, user: User | null): Promise<SimilarWork[]> => {
     const response = await getApiContent(`works/${workId}/similar?limit=8`, user);
@@ -147,10 +189,12 @@ export const SimilarWorks = ({ workId, user }: SimilarWorksProps) => {
             <Dialog header="Samankaltaisia teoksia" visible={visible} onHide={() => setVisible(false)}
                 blockScroll dismissableMask className="w-full md:w-8 xl:w-6">
                 <p className="text-sm text-600 mt-0">
-                    Luvut ovat 0–1. Pisteet järjestävät listan. Asiasanat ja kuvaus on skaalattu niin, että
-                    keskimääräinen teospari saa 0 ja samankaltaisimmat 1; asiasanojen skaalaamaton arvo on
-                    suluissa. Kattavuus kertoo, kuinka suuri osa vertailusta oli käytettävissä. Toisella
-                    rivillä ovat asiasanatyypit erikseen.
+                    Ensimmäisellä rivillä on kunkin tekijän painotettu osuus ja suluissa sen oma arvo (0–1);
+                    osuudet laskevat yhteen. Asiasanat ja kuvaus on skaalattu niin, että keskimääräinen
+                    teospari saa 0 ja samankaltaisimmat 1. Toisella rivillä asiasanojen osuus on jaettu
+                    tyypeittäin (vain tyypit, joissa on yhteisiä asiasanoja). Kolmas rivi näyttää, miten listan järjestävät pisteet syntyvät: summa
+                    kerrotaan kattavuudella (kuinka suuri osa vertailusta oli käytettävissä) ja mahdollisilla
+                    sarja- ja ikäryhmäkertoimilla.
                 </p>
                 <ul className="similar-works list-none p-0 m-0">
                     {data.map(work => (
@@ -170,9 +214,11 @@ export const SimilarWorks = ({ workId, user }: SimilarWorksProps) => {
                                 </span>
                                 {work.signals && (
                                     <span className="similar-works-values text-xs text-600">
-                                        {signalsText(work)}
+                                        {partsText(work.signals)}
                                         <br />
                                         {tagTypesText(work.signals)}
+                                        <br />
+                                        {scoreText(work)}
                                     </span>
                                 )}
                             </div>

@@ -3,6 +3,8 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-13 `9f1f323` — Similar works: weighted shares
+- The "Samankaltaisia teoksia" dialog shows each part's weighted share of the score with its own value in brackets ("Vuosi 0,01 (0,52)"), the tags' share by tag type, and how the ranking score comes from the sum. A high but lightly weighted value, such as the year, no longer looks decisive.
 ## 2026-11-13 `9188d36` — Similar works: values in the dialog
 - The admin "Samankaltaisia teoksia" dialog shows each work's score and its parts (tags, description, genre, year, coverage) and the value of each tag type, to help judge the results. Shared themes are shown whenever there are two or more.
 ## 2026-11-12 `e08e776` — Similar works (admins only)

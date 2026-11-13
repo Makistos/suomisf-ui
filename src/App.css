@@ -1623,6 +1623,12 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     background: var(--surface-200);
 }
 
+/* Score values under each similar work: tabular figures line up. */
+.similar-works-values {
+    font-variant-numeric: tabular-nums;
+    line-height: 1.5;
+}
+
 .change-chip {
   display: inline-flex;
   gap: 0.25rem;

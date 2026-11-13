@@ -8,7 +8,7 @@ type ApiCall = (url: string, ...rest: any[]) => Promise<any>;
 const api = vi.hoisted(() => ({ getApiContent: vi.fn<ApiCall>() }));
 vi.mock("@services/user-service", () => api);
 
-import { reasonText, SimilarWorks, SimilarWork } from "./similar-works";
+import { formatValue, reasonText, shownReasons, signalsText, SimilarWorks, SimilarWork, tagTypesText } from "./similar-works";
 
 const ADMIN = { id: 1, name: "admin", role: "admin" } as any;
 const USER = { id: 2, name: "user", role: "user" } as any;
@@ -22,11 +22,20 @@ const WORKS: SimilarWork[] = [
             { type: "description", type_name: "Kuvaus", tags: [] },
             { type: 1, type_name: "Aihe", tags: [{ id: 3, name: "magia" }] },
         ],
+        score: 0.6337,
+        signals: { S: 0.65, T: 0.9118, T_raw: 0.5124, D: 0.39, G: 0.5, Y: 0.74, coverage: 0.94,
+            types: { "1": 0.46, "2": 1, "3": 0 }, same_series: false },
     },
     {
         id: 1514, title: "Taru sormusten herrasta", author_str: "Tolkien, J. R. R.", pubyear: null,
         image: null,
-        reasons: [{ type: 1, type_name: "Aihe", tags: [{ id: 4, name: "a" }, { id: 5, name: "b" }, { id: 6, name: "c" }] }],
+        reasons: [
+            { type: 2, type_name: "Alagenre", tags: [{ id: 7, name: "x" }] },
+            { type: "description", type_name: "Kuvaus", tags: [] },
+            { type: 1, type_name: "Aihe", tags: [
+                { id: 4, name: "a" }, { id: 5, name: "b" }, { id: 6, name: "c" },
+                { id: 8, name: "d" }, { id: 9, name: "e" }] },
+        ],
     },
 ];
 
@@ -36,10 +45,29 @@ afterEach(() => {
 });
 
 describe("reasonText", () => {
-    it("names the tag type and at most two tags, or the description", () => {
+    it("names the tag type and its tags (four themes, two of others), or the description", () => {
         expect(reasonText(WORKS[0].reasons[0])).toBe("Yhteinen alagenre: korkea fantasia");
         expect(reasonText(WORKS[0].reasons[1])).toBe("Samankaltainen kuvaus");
-        expect(reasonText(WORKS[1].reasons[0])).toBe("Yhteinen aihe: a, b");
+        expect(reasonText(WORKS[1].reasons[2])).toBe("Yhteinen aihe: a, b, c, d");
+    });
+});
+
+describe("shownReasons", () => {
+    it("adds shared themes when there are two or more, even below the first two", () => {
+        expect(shownReasons(WORKS[1].reasons).map(r => r.type)).toEqual([2, "description", 1]);
+        // A single shared theme stays out.
+        expect(shownReasons(WORKS[0].reasons).map(r => r.type)).toEqual([2, "description"]);
+    });
+});
+
+describe("values", () => {
+    it("formats the score and its parts with decimal commas", () => {
+        expect(formatValue(0.5)).toBe("0,50");
+        expect(formatValue(null)).toBe("–");
+        expect(signalsText(WORKS[0])).toBe(
+            "Pisteet 0,63 · Asiasanat 0,91 (raaka 0,51) · Kuvaus 0,39 · Genre 0,50 · Vuosi 0,74 · Kattavuus 0,94");
+        expect(signalsText({ ...WORKS[0], signals: { same_series: true } })).toContain("sama sarja");
+        expect(tagTypesText(WORKS[0].signals)).toBe("Aihe 0,46 · Alagenre 1,00 · Tyyli 0,00");
     });
 });
 
@@ -63,6 +91,10 @@ describe("SimilarWorks", () => {
         expect(img?.getAttribute("src")).toContain("/images/thumbs/a.webp");
         expect(img?.alt).toBe("Kansikuva: Ennustusten aika");
         expect(document.querySelectorAll("li")).toHaveLength(2);
+        // Values under the first work; none for one without signals.
+        expect(document.querySelectorAll(".similar-works-values")).toHaveLength(1);
+        expect(document.body.textContent).toContain("Pisteet 0,63");
+        expect(document.body.textContent).toContain("Yhteinen aihe: a, b, c, d");
     });
 
     it("shows nothing when the work has no similar works", async () => {

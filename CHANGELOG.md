@@ -3,6 +3,8 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-13 `9188d36` — Similar works: values in the dialog
+- The admin "Samankaltaisia teoksia" dialog shows each work's score and its parts (tags, description, genre, year, coverage) and the value of each tag type, to help judge the results. Shared themes are shown whenever there are two or more.
 ## 2026-11-12 `e08e776` — Similar works (admins only)
 - A "Samankaltaisia teoksia" button on the work page opens the work's eight most similar works with cover, author, year and the reasons ("Yhteinen alagenre: korkea fantasia · Samankaltainen kuvaus"). Computed by the backend's similar-works job from tags, description, genre and year. Admins only while the results are tried out.
 ## 2026-11-10 `38c3c09` — Change history dialog

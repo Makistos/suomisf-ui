@@ -3,6 +3,8 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-14 `4e4613d` — Kirjasampo card: works without a link
+- The admin card "Kirjasampo-asiasanat tuomatta" can also search for works with no Kirjasampo link ("Ei Kirjasampo-linkkiä"). Works tagged puuttuu_kirjasammosta are left out, so a work that isn't in Kirjasampo stops coming up once it has the tag.
 ## 2026-11-14 `a6ffd7c` — Similar works: tag types with nothing shared
 - The second value row of the "Samankaltaisia teoksia" dialog ends with the tag types that share no tags ("ei yhteisiä: Toimija, Paikka"): they add nothing but lower the tags' value, which explains why the type values can be lower than the tags' value on the first row.
 ## 2026-11-13 `9f1f323` — Similar works: weighted shares

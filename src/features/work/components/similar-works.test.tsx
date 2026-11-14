@@ -74,9 +74,9 @@ describe("values", () => {
         expect(partsText({ T: 0.5, D: 0.2 })).toBe("Asiasanat 0,50 · Kuvaus 0,20");
     });
 
-    it("splits the tags' share by type, leaving out types with nothing shared", () => {
-        // Tyyli has no shared tags: left out.
-        expect(tagTypesText(WORKS[0].signals)).toBe("Aihe 0,12 (0,46) · Alagenre 0,30 (1,00)");
+    it("splits the tags' share by type, naming the types with nothing shared last", () => {
+        expect(tagTypesText(WORKS[0].signals)).toBe("Aihe 0,12 (0,46) · Alagenre 0,30 (1,00) · ei yhteisiä: Tyyli");
+        expect(tagTypesText({ types: { "1": 0.4, "5": 0, "6": 0 } })).toBe("Aihe 0,40 · ei yhteisiä: Aika, Paikka");
         expect(tagTypesText({ types: { "1": 0.4 } })).toBe("Aihe 0,40");
     });
 

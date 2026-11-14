@@ -122,21 +122,24 @@ export const partsText = (signals: SimilarSignals | undefined): string => {
 
 /**
  * The tag types' shares of the tags' part, with each type's own value:
- * "Aihe 0,24 (0,56) · Alagenre 0,20 (0,56)". Types with no shared tags
- * (share and value both zero) are left out.
+ * "Aihe 0,24 (0,56) · Alagenre 0,20 (0,56) · ei yhteisiä: Tyyli, Paikka".
+ * Types that count but have no shared tags are named together at the end:
+ * they add nothing but lower the tags' value.
  */
-export const tagTypesText = (signals: SimilarSignals | undefined): string =>
-    TAG_TYPE_ORDER
-        .filter(t => signals?.types?.[t] !== undefined)
-        .filter(t => !signals?.type_parts || (signals.type_parts[t] ?? 0) > 0 || (signals.types?.[t] ?? 0) > 0)
-        .map(t => {
-            const own = formatValue(signals?.types?.[t]);
-            const part = signals?.type_parts?.[t];
-            return part === undefined
-                ? `${TAG_TYPE_NAMES[t]} ${own}`
-                : `${TAG_TYPE_NAMES[t]} ${formatValue(part)} (${own})`;
-        })
-        .join(" · ");
+export const tagTypesText = (signals: SimilarSignals | undefined): string => {
+    const counted = TAG_TYPE_ORDER.filter(t => signals?.types?.[t] !== undefined);
+    const shared = counted.filter(t => (signals?.types?.[t] ?? 0) > 0);
+    const none = counted.filter(t => !shared.includes(t));
+    const items = shared.map(t => {
+        const own = formatValue(signals?.types?.[t]);
+        const part = signals?.type_parts?.[t];
+        return part === undefined
+            ? `${TAG_TYPE_NAMES[t]} ${own}`
+            : `${TAG_TYPE_NAMES[t]} ${formatValue(part)} (${own})`;
+    });
+    if (none.length > 0) items.push(`ei yhteisiä: ${none.map(t => TAG_TYPE_NAMES[t]).join(", ")}`);
+    return items.join(" · ");
+};
 
 /**
  * How the ranking score comes from S: "Pisteet 0,82 = 0,83 × kattavuus
@@ -192,7 +195,8 @@ export const SimilarWorks = ({ workId, user }: SimilarWorksProps) => {
                     Ensimmäisellä rivillä on kunkin tekijän painotettu osuus ja suluissa sen oma arvo (0–1);
                     osuudet laskevat yhteen. Asiasanat ja kuvaus on skaalattu niin, että keskimääräinen
                     teospari saa 0 ja samankaltaisimmat 1. Toisella rivillä asiasanojen osuus on jaettu
-                    tyypeittäin (vain tyypit, joissa on yhteisiä asiasanoja). Kolmas rivi näyttää, miten listan järjestävät pisteet syntyvät: summa
+                    tyypeittäin; tyypit, joissa ei ole yhteisiä asiasanoja, eivät tuo osuutta mutta
+                    laskevat asiasanojen arvoa. Kolmas rivi näyttää, miten listan järjestävät pisteet syntyvät: summa
                     kerrotaan kattavuudella (kuinka suuri osa vertailusta oli käytettävissä) ja mahdollisilla
                     sarja- ja ikäryhmäkertoimilla.
                 </p>

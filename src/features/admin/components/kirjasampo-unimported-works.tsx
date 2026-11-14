@@ -1,17 +1,33 @@
 import { useMemo, useState } from "react";
 import { Button } from "primereact/button";
 import { InputNumber } from "primereact/inputnumber";
+import { SelectButton } from "primereact/selectbutton";
 
 import { getCurrenUser } from "@services/auth-service";
 import { fetchIncompleteWorks, IncompleteWorksResult } from "../api/incomplete-works";
 import { WorkResultList } from "./work-result-list";
 
+// The searches (missing_fields of /works/random/incomplete).
+const SEARCHES = [
+    {
+        value: "kirjasampo_tags", label: "Asiasanat tuomatta",
+        text: "Teokset, joilla on Kirjasampo-linkki mutta joihin ei ole vielä tuotu Kirjasampo-asiasanoja.",
+    },
+    {
+        value: "kirjasampo_link", label: "Ei Kirjasampo-linkkiä",
+        text: "Teokset, joilla ei ole Kirjasampo-linkkiä. Asiasanalla puuttuu_kirjasammosta merkityt jätetään pois.",
+    },
+];
+
 /**
  * Random works that have a Kirjasampo link but whose Kirjasampo tags have
- * never been imported ("Tuo Kirjasampo-asiasanat" on the work page).
+ * never been imported ("Tuo Kirjasampo-asiasanat" on the work page), or
+ * that have no Kirjasampo link at all (leaving out works whose tag says
+ * they are missing from Kirjasampo; the backend has the tag's id).
  */
 export const KirjasampoUnimportedWorks = () => {
     const user = useMemo(() => getCurrenUser(), []);
+    const [field, setField] = useState(SEARCHES[0].value);
     const [count, setCount] = useState(10);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
@@ -21,7 +37,7 @@ export const KirjasampoUnimportedWorks = () => {
         setLoading(true);
         setError(false);
         try {
-            setResult(await fetchIncompleteWorks(count, ["kirjasampo_tags"], user));
+            setResult(await fetchIncompleteWorks(count, [field], user));
         } catch {
             setError(true);
             setResult(null);
@@ -32,9 +48,20 @@ export const KirjasampoUnimportedWorks = () => {
 
     return (
         <div>
+            <SelectButton
+                className="mb-3"
+                value={field}
+                options={SEARCHES}
+                optionLabel="label"
+                optionValue="value"
+                allowEmpty={false}
+                onChange={e => {
+                    setField(e.value);
+                    setResult(null);
+                }}
+            />
             <p className="mt-0 mb-3 text-color-secondary">
-                Teokset, joilla on Kirjasampo-linkki mutta joihin ei ole vielä tuotu
-                Kirjasampo-asiasanoja.
+                {SEARCHES.find(s => s.value === field)?.text}
             </p>
             <div className="flex align-items-end gap-3 flex-wrap mb-4">
                 <div className="flex flex-column gap-2">

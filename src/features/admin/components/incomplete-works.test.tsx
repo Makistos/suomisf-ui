@@ -99,4 +99,14 @@ describe("KirjasampoUnimportedWorks", () => {
         expect(api.postApiContent).toHaveBeenCalledWith(
             "works/random/incomplete", { count: 10, missing_fields: ["kirjasampo_tags"] }, expect.anything());
     });
+
+    it("can search for works without a Kirjasampo link instead", async () => {
+        render(<KirjasampoUnimportedWorks />);
+        click(byText("Ei Kirjasampo-linkkiä")[0]);
+        expect(document.body.textContent).toContain("puuttuu_kirjasammosta");
+        click(button("Hae teoksia"));
+        await waitFor(() => expect(byText("Antologia")).toHaveLength(1));
+        expect(api.postApiContent).toHaveBeenCalledWith(
+            "works/random/incomplete", { count: 10, missing_fields: ["kirjasampo_link"] }, expect.anything());
+    });
 });

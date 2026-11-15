@@ -4,7 +4,10 @@ import { Galleria } from "primereact/galleria";
 import { Toolbar } from "primereact/toolbar";
 import { Checkbox } from "primereact/checkbox";
 import { Dropdown } from "primereact/dropdown";
-import { useState, useMemo } from "react";
+import { lazy, Suspense, useMemo, useRef, useState } from "react";
+import { Toast } from "primereact/toast";
+import { ProgressSpinner } from "primereact/progressspinner";
+import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Work } from "@features/work/types";
 import { Edition } from "@features/edition/types";
@@ -19,6 +22,10 @@ import {
 } from "@features/work/utils/group-works";
 import { thumbUrl } from "../utils/cover-url";
 import { safeHtml } from "@utils/safe-html";
+import { isAdmin } from "@features/user";
+
+// Loaded only when an admin opens the edit dialog.
+const WorkForm = lazy(() => import("@features/work/components/work-form").then(m => ({ default: m.WorkForm })));
 
 interface ContributorWorkControlProps {
     /**
@@ -39,6 +46,21 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
 
     // Get current user for ownership checking
     const currentUser = getCurrenUser();
+    // Work being edited in the dialog (admins only).
+    const [editWorkId, setEditWorkId] = useState<number | null>(null);
+    const toastRef = useRef<Toast>(null);
+    const queryClient = useQueryClient();
+
+    const workSaved = (status: boolean, message: string) => {
+        setEditWorkId(null);
+        if (status) {
+            // The person page shows the works from the person query.
+            queryClient.invalidateQueries({ queryKey: ["person"] });
+            toastRef.current?.show({ severity: 'success', summary: 'Tallentaminen onnistui', detail: 'Tietojen päivitys onnistui', life: 4000 });
+        } else {
+            toastRef.current?.show({ severity: 'error', summary: 'Tietojen tallentaminen epäonnistui', detail: message, life: 6000 });
+        }
+    };
 
     // Group works by author_str, with person's own works first
     const grouped: { [key: string]: { authorStr: string, works: Work[] } } = {};
@@ -325,7 +347,23 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
                             >
                                 {work.title}
                             </Link>
+                            {isAdmin(currentUser) && (
+                                <Button
+                                    icon="pi pi-pencil"
+                                    rounded text size="small"
+                                    className="ml-1 p-0 w-2rem h-2rem vertical-align-middle"
+                                    aria-label={`Muokkaa teosta ${work.title}`}
+                                    tooltip="Muokkaa teosta"
+                                    tooltipOptions={{ position: "top" }}
+                                    onClick={() => setEditWorkId(work.id)}
+                                />
+                            )}
                         </div>
+
+                        {/* Subtitle */}
+                        {work.subtitle && (
+                            <div className="text-700 mb-1">{work.subtitle}</div>
+                        )}
 
                         {/* Original name and language. Gated on language,
                             not on orig_title differing from the title - a
@@ -507,6 +545,23 @@ export const ContributorWorkControl = ({ works, personName = "", collaborationsL
                     </div>
                 )}
             </div>
+
+            {/* Work edit dialog (admins) */}
+            <Toast ref={toastRef} />
+            {isAdmin(currentUser) && (
+                <Dialog maximizable blockScroll
+                    className="w-full xl:w-6"
+                    header="Teoksen muokkaus"
+                    visible={editWorkId !== null}
+                    onHide={() => setEditWorkId(null)}
+                >
+                    {editWorkId !== null && (
+                        <Suspense fallback={<div className="flex justify-content-center p-4"><ProgressSpinner style={{ width: '3rem', height: '3rem' }} /></div>}>
+                            <WorkForm workId={String(editWorkId)} onSubmitCallback={workSaved} />
+                        </Suspense>
+                    )}
+                </Dialog>
+            )}
 
             {/* Image Gallery Dialog */}
             <Dialog

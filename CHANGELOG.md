@@ -3,6 +3,9 @@
 This list is abbreviated to the most significant changes. Over two years (March 2024 – March 2026) a total of 272 commits were made, of which 220 were features or bug fixes. The project's entire history spans 623 commits.
 
 ---
+## 2026-11-15 `75f401c` — Person page: edit works from the list, subtitles
+- Admins can edit a work straight from a person's work list: the pencil button after the title opens the work form in a dialog, so an author's works can be filled in one after another without leaving the person page.
+- The list shows each work's subtitle under its title.
 ## 2026-11-14 `4e4613d` — Kirjasampo card: works without a link
 - The admin card "Kirjasampo-asiasanat tuomatta" can also search for works with no Kirjasampo link ("Ei Kirjasampo-linkkiä"). Works tagged puuttuu_kirjasammosta are left out, so a work that isn't in Kirjasampo stops coming up once it has the tag.
 ## 2026-11-14 `a6ffd7c` — Similar works: tag types with nothing shared

@@ -105,16 +105,41 @@ describe("SimilarWorks", () => {
         // No year: no empty brackets.
         expect(document.body.textContent).toContain("Tolkien, J. R. R.");
         expect(document.body.textContent).not.toContain("Tolkien, J. R. R. (");
-        expect(document.body.textContent).toContain("Yhteinen alagenre: korkea fantasia · Samankaltainen kuvaus");
-        expect(document.body.textContent).not.toContain("magia");
         const img = document.querySelector<HTMLImageElement>("img.similar-works-cover");
         expect(img?.getAttribute("src")).toContain("/images/thumbs/a.webp");
         expect(img?.alt).toBe("Kansikuva: Ennustusten aika");
         expect(document.querySelectorAll("li")).toHaveLength(2);
-        // Values under the first work; none for one without signals.
-        expect(document.querySelectorAll(".similar-works-values")).toHaveLength(1);
+
+        // Reasons and values are hidden until asked for, work by work.
+        const why = () => [...document.querySelectorAll<HTMLButtonElement>("button[aria-expanded]")];
+        expect(why().map(b => b.getAttribute("aria-label"))).toEqual(["Miksi samankaltainen?", "Miksi samankaltainen?"]);
+        // The question mark is on the title's line.
+        expect(why()[0].parentElement?.textContent?.trim()).toBe("Ennustusten aika");
+        expect(document.body.textContent).not.toContain("Yhteinen alagenre");
+        expect(document.body.textContent).not.toContain("Pisteet");
+        // The explanation is always there and points to the question mark.
+        expect(document.body.textContent).toContain("Nimekkeen perässä oleva kysymysmerkki näyttää");
+        expect(document.body.textContent).toContain("Lukujen ensimmäisellä rivillä");
+
+        click(why()[0]);
+        await waitFor(() => expect(document.querySelectorAll(".similar-works-values")).toHaveLength(1));
+        expect(why()[0].getAttribute("aria-expanded")).toBe("true");
+        expect(why()[0].getAttribute("aria-label")).toBe("Piilota perustelut");
+        expect(document.body.textContent).toContain("Yhteinen alagenre: korkea fantasia · Samankaltainen kuvaus");
+        // A single shared theme stays out of the reasons.
+        expect(document.body.textContent).not.toContain("magia");
         expect(document.body.textContent).toContain("Asiasanat 0,42 (0,91)");
         expect(document.body.textContent).toContain("Pisteet 0,63 = 0,65");
+        // The second work has reasons but no values.
+        expect(document.body.textContent).not.toContain("Yhteinen aihe: a, b, c, d");
+        click(why()[1]);
+        await waitFor(() => expect(document.body.textContent).toContain("Yhteinen aihe: a, b, c, d"));
+        expect(document.querySelectorAll(".similar-works-values")).toHaveLength(1);
+
+        click(why()[0]);
+        await waitFor(() => expect(document.querySelectorAll(".similar-works-values")).toHaveLength(0));
+        expect(document.body.textContent).not.toContain("korkea fantasia");
+        // The second work stays open.
         expect(document.body.textContent).toContain("Yhteinen aihe: a, b, c, d");
     });
 

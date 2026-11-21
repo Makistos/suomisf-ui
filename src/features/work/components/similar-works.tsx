@@ -177,6 +177,13 @@ interface SimilarWorksProps {
 export const SimilarWorks = ({ workId, user }: SimilarWorksProps) => {
     const admin = isAdmin(user);
     const [visible, setVisible] = useState(false);
+    // Works whose reasons and values ("Miksi samankaltainen?") are open.
+    const [open, setOpen] = useState<Set<number>>(new Set());
+    const toggle = (id: number) => setOpen(prev => {
+        const next = new Set(prev);
+        if (next.has(id)) next.delete(id); else next.add(id);
+        return next;
+    });
     const { data } = useQuery({
         queryKey: ["work", workId, "similar"],
         queryFn: () => fetchSimilarWorks(workId, user),
@@ -189,13 +196,15 @@ export const SimilarWorks = ({ workId, user }: SimilarWorksProps) => {
         <>
             <Button label="Samankaltaisia teoksia" icon="pi pi-clone" size="small" outlined
                 className="align-self-start" onClick={() => setVisible(true)} />
-            <Dialog header="Samankaltaisia teoksia" visible={visible} onHide={() => setVisible(false)}
+            <Dialog header="Samankaltaisia teoksia" visible={visible}
+                onHide={() => { setVisible(false); setOpen(new Set()); }}
                 blockScroll dismissableMask className="w-full md:w-8 xl:w-6">
                 <p className="text-sm text-600 mt-0">
-                    Ensimmäisellä rivillä on kunkin tekijän painotettu osuus ja suluissa sen oma arvo (0–1);
-                    osuudet laskevat yhteen. Asiasanat ja kuvaus on skaalattu niin, että keskimääräinen
+                    Nimekkeen perässä oleva kysymysmerkki näyttää, miksi teos on listalla: vahvimmat
+                    syyt ja niiden alla kolme riviä lukuja. Lukujen ensimmäisellä rivillä on kunkin
+                    tekijän painotettu osuus ja suluissa sen oma arvo (0–1); osuudet lasketaan yhteen. Asiasanat ja kuvaus on skaalattu niin, että keskimääräinen
                     teospari saa 0 ja samankaltaisimmat 1. Toisella rivillä asiasanojen osuus on jaettu
-                    tyypeittäin; tyypit, joissa ei ole yhteisiä asiasanoja, eivät tuo osuutta mutta
+                    tyypeittäin; tyypit, joissa ei ole yhteisiä asiasanoja, eivät vaikuta osuuteen mutta
                     laskevat asiasanojen arvoa. Kolmas rivi näyttää, miten listan järjestävät pisteet syntyvät: summa
                     kerrotaan kattavuudella (kuinka suuri osa vertailusta oli käytettävissä) ja mahdollisilla
                     sarja- ja ikäryhmäkertoimilla.
@@ -208,22 +217,39 @@ export const SimilarWorks = ({ workId, user }: SimilarWorksProps) => {
                                     className="similar-works-cover" loading="lazy" />
                                 : <div className="similar-works-cover" aria-hidden="true" />}
                             <div className="flex flex-column gap-1">
-                                <Link to={`/works/${work.id}`} className="font-bold"
-                                    onClick={() => setVisible(false)}>{work.title}</Link>
+                                <span>
+                                    <Link to={`/works/${work.id}`} className="font-bold"
+                                        onClick={() => setVisible(false)}>{work.title}</Link>
+                                    {(work.reasons.length > 0 || work.signals) && (
+                                        <Button rounded text size="small"
+                                            className="similar-works-why ml-1"
+                                            icon={open.has(work.id) ? "pi pi-times-circle" : "pi pi-question-circle"}
+                                            aria-label={open.has(work.id) ? "Piilota perustelut" : "Miksi samankaltainen?"}
+                                            tooltip={open.has(work.id) ? "Piilota perustelut" : "Miksi samankaltainen?"}
+                                            tooltipOptions={{ position: "top" }}
+                                            aria-expanded={open.has(work.id)}
+                                            aria-controls={`similar-why-${work.id}`}
+                                            onClick={() => toggle(work.id)} />
+                                    )}
+                                </span>
                                 <span className="text-600">
                                     {work.author_str}{work.pubyear ? ` (${work.pubyear})` : ""}
                                 </span>
-                                <span className="text-sm">
-                                    {shownReasons(work.reasons).map(reasonText).join(" · ")}
-                                </span>
-                                {work.signals && (
-                                    <span className="similar-works-values text-xs text-600">
-                                        {partsText(work.signals)}
-                                        <br />
-                                        {tagTypesText(work.signals)}
-                                        <br />
-                                        {scoreText(work)}
-                                    </span>
+                                {open.has(work.id) && (
+                                    <div id={`similar-why-${work.id}`} className="flex flex-column gap-1">
+                                        <span className="text-sm">
+                                            {shownReasons(work.reasons).map(reasonText).join(" · ")}
+                                        </span>
+                                        {work.signals && (
+                                            <span className="similar-works-values text-xs text-600">
+                                                {partsText(work.signals)}
+                                                <br />
+                                                {tagTypesText(work.signals)}
+                                                <br />
+                                                {scoreText(work)}
+                                            </span>
+                                        )}
+                                    </div>
                                 )}
                             </div>
                         </li>

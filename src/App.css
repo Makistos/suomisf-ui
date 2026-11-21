@@ -1623,6 +1623,15 @@ body .p-datatable.trophy-table .p-datatable-tbody > tr > td {
     background: var(--surface-200);
 }
 
+/* The "Miksi samankaltainen?" question mark after a similar work's
+   title: small, on the title's line. */
+.similar-works-why.p-button {
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    vertical-align: middle;
+}
+
 /* Score values under each similar work: tabular figures line up. */
 .similar-works-values {
     font-variant-numeric: tabular-nums;

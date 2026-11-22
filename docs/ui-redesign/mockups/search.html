@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<style>
+:root{
+  --page:#F3F4F8; --surface:#FFFFFF; --ink:#1E2233; --muted:#5D6377; --faint:#8A90A3;
+  --rule:#E3E6EE; --primary:#3F51B5; --primary-soft:#E8EBF8; --primary-ink:#2D3A8C;
+  --sf:#0958D7; --f:#31572C; --k:#D30031; --kok:#008B8B; --other:#6C757D;
+  --primary-ink:#2D3A8C; --primary-line:#CDD3F0; --on-primary:#fff; --on-ink:#fff; --tag-bg:#FAFBFD; --ph:#E3E6EE; --ph-line:#D3D7E2; --hover-line:#C9CEE0; --hover-bg:#F8F9FC; --admin-bg:#F7F8FB; --warn-bg:#FFF8E6; --warn-ink:#6B5310; --gold-soft:#FBF3DC; --gold-line:#EBD9A5; --gold-ink:#4A3A0A; --gold-icon:#8A6A12; --star-off:#C9CEDB; --ok:#2E7D4F; --mock-bg:#FFF7D6; --mock-ink:#5A4B0F; --mock-line:#D9C56B; --mock-note:#8A7A3A; --mock-on:#fff; --outline:transparent;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme=light]){--page:#121212; --surface:#1e1e1e; --ink:#dedede; --muted:#9e9e9e; --faint:#7c7c7c; --rule:#333333; --primary:#9FA8DA; --primary-soft:#2a2d3c; --primary-ink:#c5cae9; --primary-line:#3d4260; --on-primary:#121212; --on-ink:#121212; --tag-bg:#262626; --ph:#2c2c2c; --ph-line:#444444; --hover-line:#4a4a4a; --hover-bg:#262626; --admin-bg:#181818; --warn-bg:#3a3112; --warn-ink:#f0d78c; --gold-soft:#332a10; --gold-line:#6b5a22; --gold-ink:#f0d78c; --gold-icon:#e0c060; --star-off:#4a4a4a; --ok:#81c784; --mock-bg:#3a3412; --mock-ink:#f0e2a0; --mock-line:#7a6a1a; --mock-note:#c9b870; --mock-on:#3a3412; --outline:rgba(255,255,255,.28);}}
+:root[data-theme=dark]{--page:#121212; --surface:#1e1e1e; --ink:#dedede; --muted:#9e9e9e; --faint:#7c7c7c; --rule:#333333; --primary:#9FA8DA; --primary-soft:#2a2d3c; --primary-ink:#c5cae9; --primary-line:#3d4260; --on-primary:#121212; --on-ink:#121212; --tag-bg:#262626; --ph:#2c2c2c; --ph-line:#444444; --hover-line:#4a4a4a; --hover-bg:#262626; --admin-bg:#181818; --warn-bg:#3a3112; --warn-ink:#f0d78c; --gold-soft:#332a10; --gold-line:#6b5a22; --gold-ink:#f0d78c; --gold-icon:#e0c060; --star-off:#4a4a4a; --ok:#81c784; --mock-bg:#3a3412; --mock-ink:#f0e2a0; --mock-line:#7a6a1a; --mock-note:#c9b870; --mock-on:#3a3412; --outline:rgba(255,255,255,.28);}
+.seg,.gbar .t i,.gchip i,.legend i{box-shadow:inset 0 0 0 1px var(--outline)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 Roboto,system-ui,sans-serif}
+a{color:var(--primary);text-decoration:none;cursor:pointer}
+a:hover{text-decoration:underline}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+.viewas{background:var(--mock-bg);border-bottom:1px dashed var(--mock-line);font-size:13px;color:var(--mock-ink)}
+.viewas .wrap{display:flex;gap:10px;align-items:center;min-height:36px;flex-wrap:wrap}
+.viewas span.opt{padding:2px 10px;border-radius:999px;cursor:pointer}
+.viewas span.opt.on{background:var(--mock-ink);color:var(--mock-on)}
+.nav{background:var(--surface);border-bottom:1px solid var(--rule);position:relative;z-index:5}
+.nav .wrap{display:flex;align-items:center;gap:28px;height:60px}
+.brand{font:700 19px 'Roboto Slab',serif;color:var(--primary)}
+.nav a.m{color:var(--ink);font-size:15px}
+.nav .m i{margin-right:6px;font-size:13px}
+.navsearch{margin-left:auto;position:relative;width:360px}
+.navsearch .box{display:flex;align-items:center;gap:8px;border:1px solid var(--rule);border-radius:8px;padding:6px 12px;color:var(--ink);font-size:14px;background:var(--surface)}
+.navsearch .box.focus{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-soft)}
+.navsearch .box label{margin-left:auto;font-size:12px;color:var(--muted);display:flex;gap:4px;align-items:center;white-space:nowrap}
+.rel{position:relative}
+.anno{position:absolute;background:#FFE57A;color:#3a3000;font:600 12px Roboto;border-radius:999px;width:24px;height:24px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.25);z-index:6}
+
+/* Menu dropdown: grouped, one line per hit */
+.dd{position:absolute;top:calc(100% + 6px);right:0;width:460px;background:var(--surface);border:1px solid var(--rule);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:6px 0;display:none}
+body.dropdown .dd{display:block}
+.dd h4{margin:8px 14px 4px;font:500 12px Roboto;color:var(--faint)}
+.dd a{display:grid;grid-template-columns:20px 1fr;gap:10px;align-items:center;padding:6px 14px;color:var(--ink);font-size:14px;line-height:1.3}
+.dd a:hover,.dd a.hl{background:var(--hover-bg);text-decoration:none}
+.dd a i{color:var(--faint);font-size:13px}
+.dd a small{color:var(--muted);font-size:12.5px;margin-left:6px}
+.dd a > span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dd .all{border-top:1px solid var(--rule);margin-top:6px;padding:10px 14px 6px;display:block;font-size:14px;font-weight:500;color:var(--primary)}
+.dd .all kbd{float:right;font:12px Roboto;color:var(--faint);border:1px solid var(--rule);border-radius:4px;padding:0 5px}
+mark{background:var(--primary-soft);color:inherit;border-radius:2px;padding:0 1px}
+
+/* Results page */
+.head{padding:32px 0 8px}
+.head h1{font:600 30px/1.2 'Roboto Slab',serif;margin:0 0 14px}
+.bigsearch{display:flex;border:2px solid var(--primary);border-radius:10px;overflow:hidden;background:var(--surface);max-width:680px}
+.bigsearch .in{flex:1;display:flex;align-items:center;gap:10px;padding:0 14px;font-size:17px;min-height:50px;color:var(--ink)}
+.bigsearch .in i{color:var(--muted)}
+.bigsearch button{border:0;background:var(--primary);color:var(--on-primary);font:500 15px Roboto;padding:0 22px}
+.opts{display:flex;gap:18px;align-items:center;margin-top:10px;font-size:14px;color:var(--muted);flex-wrap:wrap}
+.opts label{display:flex;gap:6px;align-items:center;color:var(--ink)}
+.opts input{accent-color:var(--primary)}
+
+.best{margin-top:26px}
+.best h2,.sec h2{font:600 18px 'Roboto Slab',serif;margin:0 0 10px}
+.best h2 small,.sec h2 small{font:400 13px Roboto;color:var(--faint);margin-left:8px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:12px 14px;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;color:var(--ink)}
+.card:hover{border-color:var(--hover-line);text-decoration:none}
+.card .ic{width:40px;height:58px;border-radius:3px;background:var(--ph);display:grid;place-items:center;color:var(--faint);font-size:18px;overflow:hidden}
+.card .ic img{width:100%;height:100%;object-fit:cover}
+.card .ty{font-size:12px;color:var(--faint)}
+.card b{display:block;font-weight:600;line-height:1.3;margin:1px 0 2px}
+.card span{font-size:13px;color:var(--muted)}
+
+.tabs{position:sticky;top:0;z-index:3;background:var(--page);display:flex;gap:2px;border-bottom:1px solid var(--rule);margin-top:30px;overflow-x:auto}
+.tabs a{padding:12px 14px;color:var(--muted);font-weight:500;font-size:15px;border-bottom:2px solid transparent;white-space:nowrap}
+.tabs a.on{color:var(--primary);border-bottom-color:var(--primary)}
+.tabs a small{font-weight:400;color:var(--faint);margin-left:5px}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0 4px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.select{border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:6px 10px;font-size:13.5px;color:var(--ink)}
+.sec{margin-top:22px}
+.rows{background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:14px;align-items:center;padding:9px 14px;border-top:1px solid var(--rule)}
+.row:first-child{border-top:0}
+.row:hover{background:var(--hover-bg)}
+.row .th{width:34px;height:50px;border-radius:2px;background:var(--ph);display:grid;place-items:center;color:var(--faint);font-size:14px;overflow:hidden}
+.row .th img{width:100%;height:100%;object-fit:cover}
+.row .t{font-weight:600}
+.row .t a{color:var(--ink)}
+.row .a{color:var(--muted);font-size:14px}
+.row .d{font-size:13px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;margin-top:1px}
+.row .y{font-size:13px;color:var(--faint);white-space:nowrap;text-align:right}
+.more{display:block;padding:10px 14px;border-top:1px solid var(--rule);font-size:14px;font-weight:500}
+.empty{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:22px;margin-top:26px;max-width:680px}
+.empty h2{font:600 18px 'Roboto Slab',serif;margin:0 0 8px}
+.empty ul{margin:8px 0 0;padding-left:20px}
+.r-user,.r-admin{display:none}
+body.user .r-user, body.admin .r-user, body.admin .r-admin{display:inline}
+body.user .r-anon, body.admin .r-anon{display:none}
+footer{height:80px}
+
+@media (max-width:900px){
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  .wrap{padding:0 16px}
+  .nav a.m{display:none}
+  .nav .wrap{gap:12px}
+  .navsearch{width:auto;flex:1}
+  .dd{position:fixed;top:97px;left:0;right:0;width:auto;border-radius:0 0 10px 10px;max-height:calc(100vh - 110px);overflow:auto}
+  .head h1{font-size:22px}
+  .bigsearch .in{font-size:15px;min-height:46px}
+  .cards{grid-template-columns:minmax(0,1fr)}
+  .row{grid-template-columns:30px minmax(0,1fr);gap:10px}
+  .row .th{width:30px;height:44px}
+  .row .y{grid-column:2;text-align:left}
+  .anno{display:none}
+  .viewas em{display:none}
+}
+</style>
+</head>
+<body>
+<div class="viewas"><div class="wrap">Mockup:
+  <span class="opt" data-q="asimov">Haku "asimov"</span><span class="opt" data-q="aikakone">Haku "aikakone"</span><span class="opt" data-q="xyzzy">Ei tuloksia</span>
+  <span style="margin-left:10px">Valikkohaku:</span><span class="opt" data-dd="1">Auki</span>
+  <span style="margin-left:10px">Teema:</span><span class="opt th" data-th="light">Vaalea</span><span class="opt th" data-th="dark">Tumma</span>
+  <em style="margin-left:auto;color:var(--mock-note)">Hakutulokset oikeita (22.11.2026); vuodet ja kannet haettu teoksista</em></div></div>
+<header class="nav"><div class="wrap">
+  <span class="brand">SuomiSF</span>
+  <a class="m">Kirjat</a><a class="m">Lehdet</a><a class="m">Novellit</a>
+  <a class="m r-anon">Hakemistot ▾</a><a class="m r-user">Muut ▾</a>
+  <a class="m r-admin"><i class="pi pi-wrench"></i>Ylläpito ▾</a>
+  <a class="m r-anon"><i class="pi pi-user"></i>Käyttäjätili ▾</a><a class="m r-user"><i class="pi pi-user"></i>mep ▾</a>
+  <div class="navsearch rel"><span class="anno" style="left:-34px;top:6px">1</span>
+    <div class="box" id="navbox"><i class="pi pi-search"></i><span id="navterm"></span><label><input type="checkbox" checked> Vain nimet</label></div>
+    <div class="dd" id="dd" role="listbox" aria-label="Hakuehdotukset"></div>
+  </div>
+</div></header>
+
+<main class="wrap" id="main"></main>
+<footer></footer>
+
+<script src="search-data.js"></script>
+<script>
+const IMG="https://www.sf-bibliografia.fi:5000";
+const Q=new URLSearchParams(location.search);
+const TERM=Q.get("q")||"asimov";
+const TYPES={work:["Teokset","pi-book"],edition:["Painokset","pi-bookmark"],shortstory:["Novellit ja artikkelit","pi-file"],person:["Henkilöt","pi-user"],
+  magazine:["Lehdet","pi-copy"],issue:["Lehtien numerot","pi-file-o"],publisher:["Kustantajat","pi-building"],bookseries:["Kirjasarjat","pi-sitemap"],
+  pubseries:["Kustantajien sarjat","pi-list"],tag:["Asiasanat","pi-tag"],award:["Palkinnot","pi-trophy"]};
+const ONE={work:"Teos",edition:"Painos",shortstory:"Novelli tai artikkeli",person:"Henkilö",magazine:"Lehti",issue:"Lehden numero",publisher:"Kustantaja",bookseries:"Kirjasarja",pubseries:"Kustantajan sarja",tag:"Asiasana",award:"Palkinto"};
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fin=n=>n&&n.includes(", ")?n.split(" & ").map(p=>p.split(", ").reverse().join(" ")).join(" & "):(n||"");
+const nf=n=>n.toLocaleString("fi-FI");
+// Highlight the typed term in titles (the real search also stems words, so this is approximate)
+const hl=s=>esc(s).replace(new RegExp("("+TERM.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","ig"),"<mark>$1</mark>");
+const data=TERM==="aikakone"?SEARCH.aikakone:TERM==="asimov"?SEARCH.asimov:[];
+const X=SEARCH.extra;
+const meta=it=>{const e=it.type==="work"?X[it.id]:null;const who=it.author?fin(it.author):(e&&e.ed?fin(e.ed)+" (toim.)":"");
+  return {who, year:e?e.y:"", kind:e?e.t:"", img:e&&e.img?IMG+e.img:""}};
+const order=Object.keys(TYPES);
+const groups=order.map(t=>[t,data.filter(x=>x.type===t).sort((a,b)=>b.score-a.score)]).filter(g=>g[1].length);
+const tab=Q.get("tab")||"all";
+const thumb=(it,cls)=>{const m=meta(it);return `<span class="${cls}">${m.img?`<img src="${m.img}" alt="">`:`<i class="pi ${TYPES[it.type][1]}"></i>`}</span>`};
+
+// Results page
+let html=`<section class="head rel"><span class="anno" style="left:-34px;top:36px">2</span>
+  <h1>Haku</h1>
+  <div class="bigsearch" role="search"><div class="in"><i class="pi pi-search"></i>${esc(TERM)}</div><button>Hae</button></div>
+  <div class="opts"><label><input type="checkbox" ${TERM==="asimov"?"checked":""}> Vain nimet</label>
+  <span>${data.length?nf(data.length)+" tulosta":""}</span><span>Haku löytää myös taivutusmuodot ja yhdyssanojen osat.</span></div>
+</section>`;
+if(!data.length){
+  html+=`<section class="empty rel"><span class="anno" style="left:-34px;top:20px">6</span><h2>Ei tuloksia haulle "${esc(TERM)}"</h2>
+  Kokeile näitä:<ul><li>Poista rajaus <b>Vain nimet</b>, niin haku katsoo myös kuvaukset.</li><li>Tarkista kirjoitusasu tai kirjoita vain sanan alku.</li>
+  <li>Selaa <a>kirjoja</a>, <a>novelleja</a>, <a>henkilöitä</a> tai <a>asiasanoja</a>.</li></ul></section>`;
+} else {
+  // Best hit of each type, in score order: a person or magazine isn't buried under a long list of works
+  const best=groups.map(g=>g[1][0]).sort((a,b)=>b.score-a.score).slice(0,4);
+  html+=`<section class="best rel"><span class="anno" style="left:-34px;top:0">3</span><h2>Parhaat osumat<small>paras osuma kustakin ryhmästä</small></h2><div class="cards">
+  ${best.map(it=>{const m=meta(it);return `<a class="card">${thumb(it,"ic")}<div><div class="ty">${ONE[it.type]}${m.kind?", "+esc(m.kind.toLowerCase()):""}</div><b>${hl(it.header)}</b><span>${esc([m.who,m.year].filter(Boolean).join(", "))}</span></div></a>`}).join("")}
+  </div></section>`;
+  html+=`<nav class="tabs rel" aria-label="Tulosryhmät"><span class="anno" style="left:-34px;top:10px">4</span><a class="${tab==="all"?"on":""}" href="?q=${TERM}">Kaikki<small>${nf(data.length)}</small></a>
+  ${groups.map(([t,l])=>`<a class="${tab===t?"on":""}" href="?q=${TERM}&tab=${t}">${TYPES[t][0]}<small>${l.length}</small></a>`).join("")}</nav>
+  <div class="toolbar"><span>${tab==="all"?"Viisi parasta kustakin ryhmästä":nf((groups.find(g=>g[0]===tab)||[0,[]])[1].length)+" tulosta"}</span><span class="select">Järjestys: osuvuus ▾</span></div>`;
+  const shown=tab==="all"?groups:groups.filter(g=>g[0]===tab);
+  html+=`<div class="rel"><span class="anno" style="left:-34px;top:26px">5</span>`+shown.map(([t,l])=>{
+    const list=tab==="all"?l.slice(0,5):l; const seen=new Set();
+    return `<section class="sec"><h2>${TYPES[t][0]}<small>${l.length}</small></h2><div class="rows">
+    ${list.map(it=>{const m=meta(it);// A blurb shared by many volumes is shown once
+      const d=it.desc&&!seen.has(it.desc)?it.desc:"";seen.add(it.desc);
+      return `<div class="row">${thumb(it,"th")}<div><div class="t"><a>${hl(it.header)}</a>${m.who?` <span class="a">${esc(m.who)}</span>`:""}</div>${d?`<div class="d">${esc(d)}</div>`:""}</div><div class="y">${esc([m.kind,m.year].filter(Boolean).join(", "))}</div></div>`}).join("")}
+    ${tab==="all"&&l.length>5?`<a class="more" href="?q=${TERM}&tab=${t}">Näytä kaikki ${nf(l.length)} (${TYPES[t][0].toLowerCase()})</a>`:""}
+    </div></section>`}).join("")+`</div>`;
+}
+document.getElementById("main").innerHTML=html;
+
+// Menu dropdown: up to three per type, one line each, then a link to the full results
+document.getElementById("navterm").textContent=TERM;
+// Same type order as the results page (today's order)
+const ddGroups=groups;
+document.getElementById("dd").innerHTML=data.length?ddGroups.map(([t,l])=>`<h4>${TYPES[t][0]}</h4>`+l.slice(0,3).map((it,i)=>{const m=meta(it);
+  return `<a role="option"${t===ddGroups[0][0]&&i===0?' class="hl"':""}><i class="pi ${TYPES[t][1]}"></i><span>${hl(it.header)}<small>${esc([m.who,m.year].filter(Boolean).join(", "))}</small></span></a>`}).join("")).join("")
+  +`<a class="all">Näytä kaikki ${nf(data.length)} tulosta<kbd>Enter</kbd></a>`
+  :`<div style="padding:12px 14px;color:var(--muted);font-size:14px">Ei osumia. Enter avaa hakusivun.</div>`;
+
+// Mockup bar
+document.querySelectorAll(".viewas .opt[data-q]").forEach(x=>{x.classList.toggle("on",x.dataset.q===TERM);x.onclick=()=>{const u=new URLSearchParams(location.search);u.set("q",x.dataset.q);u.delete("tab");location.search=u}});
+const ddBtn=document.querySelector(".viewas .opt[data-dd]");
+const setDD=on=>{document.body.classList.toggle("dropdown",on);ddBtn.classList.toggle("on",on);document.getElementById("navbox").classList.toggle("focus",on)};
+ddBtn.onclick=()=>setDD(!document.body.classList.contains("dropdown"));
+setDD(Q.get("dd")==="1");
+document.body.classList.add(Q.get("as")||"anon");
+(()=>{const set=t=>{if(t)document.documentElement.dataset.theme=t;document.querySelectorAll(".viewas .th").forEach(x=>x.classList.toggle("on",x.dataset.th===document.documentElement.dataset.theme))};
+document.querySelectorAll(".viewas .th").forEach(x=>x.onclick=()=>set(x.dataset.th));set(Q.get("theme"));})();
+</script>
+</body>
+</html>

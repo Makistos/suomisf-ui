@@ -41,6 +41,8 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
   Genre colours stay the same in both themes; in dark mode genre dots, bars and timeline blocks get a faint light outline,
   because the darkest ones (fantasy `#31572C`) almost disappear on `#1e1e1e`. Every mockup has a Vaalea / Tumma switch.
   In code, use the theme's CSS variables (`var(--surface-card)`, `var(--text-color)`…) as the stats page already does, so both themes come for free.
+  **Later, after the new UI is implemented:** a logged-in user can choose a colour scheme for this site in their settings
+  (follow the browser / always light / always dark), saved with their account so it stays the same on every device and overrides the browser setting.
 - **Genre colours** (Agreed): the same colours as today, from `src/features/genre/utils/genre-colors.ts` (SF `#0958D7`, F `#31572C`, K `#D30031`,
   Kokoelma `#008B8B`, Ei SpeFiä `#6C757D`, and the rest). Used only for genre data (timelines, genre bars, genre chips), never for decoration.
 
@@ -66,6 +68,8 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
 | Facts / summary box | Sidebar on desktop that scrolls with the page (not sticky), below the content on a phone | Agreed |
 | External links | Two-column list in the sidebar | Agreed |
 | Admin actions | Keep the SpeedDial button; admin-only tools in one dashed "Ylläpitäjille" box | Agreed |
+| Search hits | Matched term highlighted; a text repeated across a list (shared blurb) shown once | Agreed (search) |
+| Navigation | Links and suggestions navigate inside the app; nothing reloads the whole site | Agreed (search) |
 | Main menu | Same on every page, including the search box; admins always see the Ylläpito menu | Agreed (front page) |
 | Change history | A link that opens a dialog, not a tab | Agreed (work) |
 | Similar works | Public to everyone (going public); a row of covers, each with a "Miksi samankaltainen?" popover (reasons for all, score numbers for admins) | Agreed (work) |

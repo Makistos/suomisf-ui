@@ -25,7 +25,7 @@ Nothing here is built yet unless the status table says so. Each change still goe
 | Edition link | `/editions/:id` | Part of [work.md](pages/work.md) (no separate page: it opens the work page with that edition highlighted) | Agreed |
 | Short story | `/shorts/:id` | [short.md](pages/short.md) | Not started |
 | Front page | `/` | [front-page.md](pages/front-page.md) | Agreed |
-| Search results | `/search` | [search.md](pages/search.md) | Not started |
+| Search (menu dropdown and results page) | `/search` | [search.md](pages/search.md) | Agreed |
 | People list | `/people` | [people-list.md](pages/people-list.md) | Not started |
 | Book index, works by type, non-fiction | `/bookindex`, `/nonfiction` | [book-index.md](pages/book-index.md) | Not started |
 | Short story index | `/shortstoryindex` | [short-index.md](pages/short-index.md) | Not started |
@@ -49,6 +49,13 @@ Status values: **Not started** → **Reviewed** (current page looked at, problem
 2. Fix the site-wide issues listed there first (nav width, tab style, chip styles), since every page benefits.
 3. Then the pages people visit most: person, work, edition, search, front page.
 4. Then lists and indexes, then admin pages.
+
+## Later
+
+Things agreed for after the redesign is implemented:
+
+- **Colour scheme in user settings:** a logged-in user can choose follow the browser / always light / always dark for this site,
+  saved with their account, overriding the browser setting (see the dark theme rule in [principles.md](principles.md)).
 
 ## Adding a plan
 

@@ -1,7 +1,8 @@
 # E2E test suite
 
 Playwright specs covering anonymous, logged-in-user, and admin flows against
-a disposable clone of the dev database. See `../TEST_PLAN.md` for the design
+a disposable test database restored from the backend's golden dump (see
+`../suomisf/tests/TEST_DOCUMENTATION.md`, "Test data (golden dump)"). See `../TEST_PLAN.md` for the design
 rationale; this file documents what each spec actually checks.
 
 ## Running it
@@ -14,8 +15,8 @@ rationale; this file documents what each spec actually checks.
   runs above and must be run alone.
 - `npx playwright test tests/admin/work.spec.ts` — any single file/dir.
 
-Each run's `globalSetup` (`tests/global-setup.ts`) clones `suomisf_test`
-fresh from the dev DB, seeds `Test Admin`/`Test User`, builds the frontend,
+Each run's `globalSetup` (`tests/global-setup.ts`) restores `suomisf_test`
+from the golden dump (never the live dev DB), seeds `Test Admin`/`Test User`, builds the frontend,
 and starts a throwaway backend (`:5001`) + frontend (`:3100`) — your normal
 dev servers on `:3000`/`:5000` are never touched.
 
@@ -88,8 +89,8 @@ dev servers on `:3000`/`:5000` are never touched.
 ## `tests/admin/` — logged-in admin (`Test Admin`)
 
 Each of these creates data named `E2E_TEST_...` for debuggability. No
-cleanup logic is needed — the whole `suomisf_test` clone is dropped and
-rebuilt before the next run.
+cleanup logic is needed — the whole `suomisf_test` database is restored
+from the golden dump again before the next run.
 
 | Spec | What it does |
 |---|---|

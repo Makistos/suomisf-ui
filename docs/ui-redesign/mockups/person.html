@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ursula K. Le Guin – mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --page:#F3F4F8; --surface:#FFFFFF; --ink:#1E2233; --muted:#5D6377; --faint:#8A90A3;
+  --rule:#E3E6EE; --primary:#3F51B5; --primary-soft:#E8EBF8;
+  --sf:#3F51B5; --f:#B5653F; --other:#9AA0B2;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 Roboto,system-ui,sans-serif}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+
+/* Nav: same width as content */
+.nav{background:var(--surface);border-bottom:1px solid var(--rule)}
+.nav .wrap{display:flex;align-items:center;gap:28px;height:60px}
+.brand{font:700 19px 'Roboto Slab',serif;color:var(--primary)}
+.nav a.m{color:var(--ink);font-size:15px}
+.search{margin-left:auto;display:flex;align-items:center;gap:8px;border:1px solid var(--rule);border-radius:8px;padding:7px 12px;width:340px;color:var(--faint);font-size:14px}
+.crumbs{font-size:13px;color:var(--faint);padding:18px 0 10px}
+.crumbs a{color:var(--muted)}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:168px 1fr;gap:28px;align-items:start}
+.portrait{width:168px;aspect-ratio:3/4;border-radius:6px;object-fit:cover;display:block;background:#ddd}
+.credit{font-size:11px;color:var(--faint);margin-top:6px;line-height:1.3}
+h1{font:600 44px/1.08 'Roboto Slab',serif;margin:2px 0 6px;letter-spacing:-.01em}
+.fullname{color:var(--muted);font-size:17px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 20px;margin:12px 0 14px;font-size:15px}
+.meta span{display:flex;align-items:center;gap:7px}
+.flag{width:20px;height:20px;border-radius:50%}
+.roles{display:flex;flex-wrap:wrap;gap:6px}
+.role{background:var(--primary-soft);color:#2D3A8C;border-radius:999px;padding:3px 11px;font-size:13px;font-weight:500}
+.also{font-size:14px;color:var(--muted);margin-top:12px}
+
+/* Timeline: the one bold element */
+.timeline{margin-top:28px;background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px 20px 12px}
+.tl-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+.tl-head h2{font:600 17px 'Roboto Slab',serif;margin:0}
+.tl-head p{margin:0;font-size:13px;color:var(--muted)}
+.legend{display:flex;gap:14px;font-size:12.5px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.bars{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);align-items:end;gap:2px;height:86px;margin-top:14px;border-bottom:1px solid var(--rule)}
+.bar{display:flex;flex-direction:column-reverse;gap:1px;height:100%;justify-content:flex-start;cursor:pointer;border-radius:2px}
+.bar:hover{background:var(--primary-soft)}
+.seg{height:19%;border-radius:2px}
+.seg.SF{background:var(--sf)} .seg.F{background:var(--f)} .seg.o{background:var(--other)}
+.seg.first{outline:2px solid var(--ink);outline-offset:-2px}
+.bar.sel{background:var(--primary-soft)}
+.axis{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px;font-size:11px;color:var(--faint);margin-top:4px}
+.axis span{white-space:nowrap;overflow:visible}
+
+/* Bio */
+.bio{margin-top:24px;max-width:72ch;position:relative}
+.bio p{margin:0 0 12px}
+.bio.collapsed{max-height:7.8em;overflow:hidden}
+.bio.collapsed::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3em;background:linear-gradient(transparent,var(--page))}
+.more{border:0;background:none;color:var(--primary);font:500 14px Roboto;padding:4px 0;cursor:pointer}
+.src{font-size:12px;color:var(--faint);font-style:italic}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:40px;margin-top:8px}
+main,.hero>div{min-width:0}
+aside{position:sticky;top:16px;align-self:start;display:flex;flex-direction:column;gap:14px;padding-top:6px}
+.box{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:16px 18px}
+.box h3{font:600 14px 'Roboto Slab',serif;margin:0 0 10px;color:var(--ink)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px 10px}
+.stat b{display:block;font:600 24px/1.1 'Roboto Slab',serif}
+.stat span{font-size:12.5px;color:var(--muted)}
+.gbar{display:grid;grid-template-columns:92px 1fr 22px;align-items:center;gap:8px;font-size:13.5px;margin:6px 0}
+.gbar .t{height:8px;border-radius:4px;background:var(--rule);overflow:hidden}
+.gbar .t i{display:block;height:100%}
+.gbar b{font-weight:500;text-align:right;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{border:1px solid var(--rule);border-radius:6px;padding:2px 8px;font-size:12.5px;color:var(--ink);background:#FAFBFD}
+.tag em{font-style:normal;color:var(--faint);margin-left:4px}
+.links{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:14px}
+.links li::before{content:"↗";color:var(--faint);margin-right:6px;font-size:12px}
+.admin{font-size:12.5px;color:var(--faint);display:flex;gap:12px;flex-wrap:wrap}
+
+/* Bibliography section */
+.biblio{margin-top:34px}
+.secnav{position:sticky;top:0;z-index:2;background:var(--page);display:flex;gap:4px;border-bottom:1px solid var(--rule);overflow-x:auto}
+.secnav a{padding:12px 14px;color:var(--muted);font-weight:500;font-size:15px;border-bottom:2px solid transparent;white-space:nowrap}
+.secnav a.on{color:var(--primary);border-bottom-color:var(--primary)}
+.secnav a small{font-weight:400;color:var(--faint);margin-left:5px}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:16px 0 10px}
+.chip{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13.5px;color:var(--ink);cursor:pointer}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip small{opacity:.65;margin-left:4px}
+.tool-r{margin-left:auto;display:flex;gap:8px;align-items:center}
+.input{border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:6px 10px;font-size:13.5px;color:var(--faint);width:180px}
+.select{border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:6px 10px;font-size:13.5px}
+.seg2{display:flex;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg2 span{padding:6px 10px;font-size:13px;color:var(--muted)}
+.seg2 span.on{background:var(--primary-soft);color:var(--primary);font-weight:500}
+
+.decade{font:600 15px 'Roboto Slab',serif;color:var(--muted);margin:22px 0 6px;display:flex;align-items:center;gap:10px}
+.decade::after{content:"";flex:1;height:1px;background:var(--rule)}
+.row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;align-items:center;padding:10px 12px;border-radius:8px;background:var(--surface);border:1px solid var(--rule);margin-bottom:6px}
+.row:hover{border-color:#C9CEE0}
+.thumb{width:44px;height:64px;border-radius:3px;object-fit:cover;background:#E9EBF2;display:block;box-shadow:0 1px 2px rgba(30,34,51,.18)}
+.r-title{font-weight:600;font-size:15.5px}
+.r-sub{font-size:13.5px;color:var(--muted)}
+.r-sub .series{color:var(--primary)}
+.eds{font-size:13px;color:var(--muted);margin-top:2px}
+.eds a{color:var(--muted);border-bottom:1px dotted var(--faint)}
+.r-right{display:flex;gap:6px;align-items:center}
+.g{font-size:11.5px;font-weight:700;border-radius:4px;padding:2px 6px;color:#fff}
+.g.SF{background:var(--sf)} .g.F{background:var(--f)} .g.kok{background:transparent;color:var(--muted);border:1px solid var(--rule);font-weight:500} .g.eiSF{background:var(--other)}
+.count{font-size:12px;color:var(--faint);min-width:56px;text-align:right}
+
+.fab{position:fixed;right:24px;bottom:24px;width:52px;height:52px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:26px;box-shadow:0 4px 12px rgba(63,81,181,.35)}
+.anno{position:absolute;background:#FFE57A;color:#3a3000;font:600 12px Roboto;border-radius:999px;width:24px;height:24px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.rel{position:relative}
+
+@media (max-width:900px){
+  .wrap{padding:0 16px}
+  .nav a.m{display:none}
+  .search{width:auto;flex:1}
+  .layout{grid-template-columns:1fr;gap:18px}
+  aside{position:static;order:2}
+  .hero{grid-template-columns:96px 1fr;gap:16px}
+  .portrait{width:96px}
+  h1{font-size:28px}
+  .fullname{font-size:15px}
+  .meta{font-size:14px;gap:4px 14px;margin:8px 0 10px}
+  .roles{grid-column:1/-1}
+  .timeline{padding:14px 12px 10px}
+  .bars{height:60px}
+  .tool-r{margin-left:0;width:100%}
+  .input{flex:1}
+  .count{display:none}
+  .anno{display:none}
+}
+</style>
+</head>
+<body>
+<header class="nav"><div class="wrap">
+  <span class="brand">SuomiSF</span>
+  <a class="m">Kirjat</a><a class="m">Lehdet</a><a class="m">Novellit</a><a class="m">Hakemistot ▾</a>
+  <div class="search">⌕&nbsp; Etsi kirjaa, henkilöä, novellia…</div>
+</div></header>
+
+<div class="wrap">
+  <div class="crumbs"><a>Henkilöt</a> / Le Guin, Ursula K.</div>
+
+  <div class="layout">
+    <main>
+      <section class="hero rel">
+        <span class="anno" style="left:-34px;top:0">1</span>
+        <div>
+          <img class="portrait" src="https://upload.wikimedia.org/wikipedia/commons/1/16/Ursula_Le_Guin_%283551195631%29_b_%28cropped%29.jpg" alt="Ursula K. Le Guin">
+          <div class="credit">Kuva: Marian Wood Kolisch, CC BY-SA 2.0</div>
+        </div>
+        <div>
+          <h1>Ursula K. Le Guin</h1>
+          <div class="fullname">Ursula Kroeber Le Guin</div>
+          <div class="meta">
+            <span><img class="flag" src="https://hatscripts.github.io/circle-flags/flags/us.svg" alt="">Yhdysvallat</span>
+            <span>1929–2018</span>
+          </div>
+          <div class="roles">
+            <span class="role">Kirjailija</span><span class="role">Novellisti</span><span class="role">Tietokirjailija</span><span class="role">Kirjoittaja</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="timeline rel" aria-label="Suomennokset vuosittain">
+        <span class="anno" style="left:-34px;top:16px">2</span>
+        <div class="tl-head">
+          <div><h2>Suomeksi 1976–2024</h2><p>40 painosta, 31 kirjaa. Klikkaa vuotta suodattaaksesi listan.</p></div>
+          <div class="legend"><span><i style="background:var(--sf)"></i>Science fiction</span><span><i style="background:var(--f)"></i>Fantasia</span><span><i style="background:var(--other)"></i>Muu</span><span><i style="outline:2px solid var(--ink);outline-offset:-2px;background:#fff"></i>Ensipainos</span></div>
+        </div>
+        <div class="bars" id="bars"></div>
+        <div class="axis" id="axis"></div>
+      </section>
+
+      <section class="bio collapsed rel" id="bio">
+        <span class="anno" style="left:-34px;top:0">3</span>
+        <p>Ursula K. Le Guin oli yhdysvaltalainen kirjailija, joka tunnetaan erityisesti syvällisestä ja runollisesta fantasian ja science fictionin yhdistämisestään. Hänen tunnetuimpia teoksiaan ovat <i>Maameren tarinat</i> ja <i>Pimeyden vasen käsi</i>, jossa hän tutki sukupuolen, kulttuurin ja identiteetin rajoja. Le Guin käytti spekulatiivista fiktiota keinona tarkastella yhteiskuntaa, valtaa, kielten merkitystä ja ihmisyyden monimuotoisuutta.</p>
+        <p>Hänen tyylinsä oli harkittu, filosofinen ja usein hiljaisen voimakas.</p>
+      </section>
+      <button class="more">Näytä koko esittely ▾</button> <span class="src">Lähde: ChatGPT</span>
+
+      <section class="biblio rel">
+        <span class="anno" style="left:-34px;top:10px">4</span>
+        <nav class="secnav">
+          <a class="on">Kirjat<small>31</small></a>
+          <a>Novellit ja artikkelit<small>93</small></a>
+          <a>Sarjat<small>3</small></a>
+          <a>Palkinnot<small>2</small></a>
+          <a>Muu tuotanto<small>1</small></a>
+        </nav>
+        <div class="toolbar rel">
+          <span class="anno" style="left:-34px;top:18px">5</span>
+          <span class="chip on">Kaikki<small>31</small></span>
+          <span class="chip">Romaanit<small>20</small></span>
+          <span class="chip">Kokoelmat<small>7</small></span>
+          <span class="chip">Yhteisniteet<small>3</small></span>
+          <span class="chip">Tietokirjat<small>1</small></span>
+          <div class="tool-r">
+            <span class="input">Suodata nimellä…</span>
+            <span class="select">Alkuteoksen vuosi ▾</span>
+            <span class="seg2"><span class="on">Lista</span><span>Kannet</span></span>
+          </div>
+        </div>
+        <div id="list"></div>
+      </section>
+    </main>
+
+    <aside class="rel">
+      <span class="anno" style="left:-34px;top:6px">6</span>
+      <div class="box">
+        <h3>Tuotanto tietokannassa</h3>
+        <div class="stats">
+          <div class="stat"><b>31</b><span>kirjaa suomeksi</span></div>
+          <div class="stat"><b>40</b><span>painosta</span></div>
+          <div class="stat"><b>93</b><span>novellia ja artikkelia</span></div>
+          <div class="stat"><b>2</b><span>palkintoa</span></div>
+        </div>
+      </div>
+      <div class="box">
+        <h3>Genret</h3>
+        <div class="gbar"><span>Fantasia</span><span class="t"><i style="width:100%;background:var(--f)"></i></span><b>17</b></div>
+        <div class="gbar"><span>Science fiction</span><span class="t"><i style="width:88%;background:var(--sf)"></i></span><b>15</b></div>
+        <div class="gbar"><span>Kokoelma</span><span class="t"><i style="width:41%;background:var(--other)"></i></span><b>7</b></div>
+        <div class="gbar"><span>Ei spefiä</span><span class="t"><i style="width:6%;background:var(--other)"></i></span><b>1</b></div>
+      </div>
+      <div class="box">
+        <h3>Yleisimmät asiasanat</h3>
+        <div class="tags">
+          <span class="tag">yhteiskunnallinen scifi<em>4</em></span>
+          <span class="tag">antropologinen scifi<em>3</em></span>
+          <span class="tag">dystopia<em>2</em></span>
+          <span class="tag">magia<em>9</em></span>
+          <span class="tag">lohikäärmeet<em>5</em></span>
+          <span class="tag">young adult</span>
+          <span class="tag">historiallinen fantasia</span>
+          <a style="font-size:13px;align-self:center">+150 muuta</a>
+        </div>
+      </div>
+      <div class="box">
+        <h3>Linkit</h3>
+        <ul class="links">
+          <li><a>Kotisivu</a></li><li><a>Wikipedia</a></li><li><a>SFE</a></li><li><a>ISFDB</a></li>
+          <li><a>Risingshadow</a></li><li><a>Goodreads</a></li><li><a>LibraryThing</a></li><li><a>Commons</a></li>
+        </ul>
+      </div>
+      <div class="admin">Muokattu 12.10.2026 · <a>Muutoshistoria</a></div>
+    </aside>
+  </div>
+  <div style="height:60px"></div>
+</div>
+<div class="fab" title="Ylläpito">+</div>
+
+<script>
+const IMG="https://www.sf-bibliografia.fi:5000/static/images/books/";
+// [title, orig, origYear, series, num, genres, editions "year publisher", img, kind]
+const W=[
+["Maameren velho","A Wizard of Earthsea",1968,"Maameren tarinat",1,["F"],["1976 WSOY","1984 WSOY","1990 WSOY"],"LeGuin_Ursula_K_Maamerenvelho_1p.jpg"],
+["Pimeyden vasen käsi","The Left Hand of Darkness",1969,"Hain-sarja",null,["SF"],["1976 WSOY","1986 WSOY","1992 WSOY"],"LeGuin_Ursula_K_Pimeydenvasenkasi_1p.jpg"],
+["Atuanin holvihaudat","The Tombs of Atuan",1971,"Maameren tarinat",2,["F"],["1977 WSOY","1984 WSOY","1990 WSOY"],"LeGuin_Ursula_K_Atuaninholvihaudat_1p.jpg"],
+["Kaukaisin ranta","The Farthest Shore",1972,"Maameren tarinat",3,["F"],["1977 WSOY","1984 WSOY","1990 WSOY"],"LeGuin_Ursula_K_Kaukaisinranta_1p.jpg"],
+["Osattomien planeetta","The Dispossessed",1974,"Hain-sarja",null,["SF"],["1979 WSOY"],"LeGuin_Ursula_K_Osattomienplaneetta_1p.jpg"],
+["Malafrena","Malafrena",1979,null,null,["eiSF"],["2018 Vaskikirjat"],"LeGuin_Ursula_K_Malafrena_1p.jpg"],
+["Maailma, vihreä metsä","The Word for World Is Forest",1972,"Hain-sarja",null,["SF"],["1984 WSOY"],"LeGuin_Ursula_K_Maailmavihreametsa_1p.jpg"],
+["Taivaan työkalu","The Lathe of Heaven",1971,null,null,["SF"],["1991 Book Studio"],"LeGuin_TaivaanTyokalu.jpg"],
+["Tehanu","Tehanu",1990,"Maameren tarinat",4,["F"],["1992 WSOY","2002 WSOY"],"LeGuin_Ursula_K_Tehanu_1p.jpg"],
+["Sisämeren kalastaja","A Fisherman of the Inland Sea",1994,null,null,["SF","kok"],["2000 Tampereen SF-seura"],"LeGuin_Ursula_K_Sisamerenkalastaja_1p.jpg"],
+["Kertomuksia Maamereltä","Tales from Earthsea",2001,"Maameren tarinat",5,["F","kok"],["2002 WSOY"],"LeGuin_Ursula_K_Kertomuksiamaamerelta_1p.jpg"],
+["Maameren tarinat 1–3","Omnibus",1972,"Maameren tarinat",null,["F"],["2002 WSOY"],"LeGuin_Ursula_K_Maamerentarinat1-3_1p.jpg"],
+["Toinen tuuli","The Other Wind",2001,"Maameren tarinat",6,["F"],["2003 WSOY"],"LeGuin_Ursula_K_Toinentuuli_1p.jpg"],
+["Velhot, örkit, sankarit","",2004,null,null,["F"],["2004 Kirjapaja"],"Miettinen_Esko_Velhotorkitsankarit_1p.jpg"],
+["Näkemisen lahja","Gifts",2004,"Läntisen rannan aikakirjat",1,["F"],["2005 WSOY"],"LeGuin_Ursula_K_Nakemisenlahja_1p.jpg"],
+["Pimeälipas","The Wind's Twelve Quarters",1975,null,null,["F","SF","kok"],["2006 Kirjava"],"LeGuin_Ursula_K_Pimealipas_1p.jpg"],
+["Sanan mahti","Voices",2006,"Läntisen rannan aikakirjat",2,["F"],["2007 WSOY"],"LeGuin_Ursula_K_Sananmahti_1p.jpg"],
+["Maameren tarinat 1–4","Omnibus",1990,"Maameren tarinat",null,["F"],["2007 WSOY"],"LeGuin_Ursula_K_Maamerentarinat1-4_1p.jpg"],
+["Muistamisen taito","Powers",2007,"Läntisen rannan aikakirjat",3,["F"],["2008 WSOY"],"LeGuin_Ursula_K_Muistamisentaito_1p.jpg"],
+["Maameren tarinat 5–6","Omnibus",2001,"Maameren tarinat",null,["F"],["2008 WSOY"],"LeGuin_Ursula_K_Maamerentarinat5-6_1p.jpg"],
+["Kahdesti haarautuva puu","The Telling",2000,"Hain-sarja",null,["SF"],["2009 BTJ"],"LeGuin_Ursula_K_Kahdestihaarautuvapuu_1p.jpg"],
+["Lavinia","Lavinia",2008,null,null,["F"],["2009 WSOY"],"LeGuin_Ursula_K_Lavinia_1p.jpg"],
+["Rocannonin maailma","Rocannon's World",1966,"Hain-sarja",null,["SF"],["2010 Avain"],"LeGuin_Ursula_K_Rocannoninmaailma_1p.jpg"],
+["Maanpakolaisten planeetta","Planet of Exile",1966,"Hain-sarja",null,["SF"],["2011 Avain"],"LeGuin_Ursula_K_Maanpakolaistenplaneetta_1p.jpg"],
+["Harhakaupunki","City of Illusions",1967,"Hain-sarja",null,["SF"],["2012 Avain"],"LeGuin_Ursula_K_Harhakaupunki_1p.jpg"],
+["Neljä anteeksiantoa","Four Ways to Forgiveness",1995,"Hain-sarja",null,["SF","kok"],["2014 Vaskikirjat"],"LeGuin_Ursula_K_Neljaanteeksiantoa_1p.jpg"],
+["Haikaran silmä","The Eye of the Heron",1978,null,null,["SF"],["2015 Vaskikirjat"],"LeGuin_Ursula_K_Haikaransilma_1p.jpg"],
+["Ikuisen hämärän maa","The Beginning Place",1980,null,null,["F"],["2017 Vaskikirjat"],"LeGuin_Ursula_K_Ikuisenhamaranmaa_1p.jpg"],
+["Maailman syntymäpäivä","The Birthday of the World",2002,"Hain-sarja",null,["SF","kok"],["2019 Vaskikirjat"],"LeGuin_Ursula_K_Maailmansyntymapaiva_1p.jpg"],
+["Lentokenttien maailmat","Changing Planes",2003,null,null,["SF","kok"],["2023 Vaskikirjat"],"LeGuin_Ursula_Lentokenttienmaailmat_1p.jpg"],
+["Kompassiruusu","The Compass Rose",1982,null,null,["F","SF","kok"],["2024 Moebius"],"LeGuin_Ursula_Kompassiruusu_1p.jpg"],
+];
+const main=g=>g.includes("SF")&&!g.includes("F")?"SF":g.includes("F")&&!g.includes("SF")?"F":g.includes("eiSF")?"o":(g.includes("SF")?"SF":"o");
+
+// Timeline: one segment per edition, outlined when it is the work's first Finnish edition
+const by={};W.forEach(w=>w[6].forEach((e,i)=>{const y=+e.slice(0,4);(by[y]=by[y]||[]).push({c:main(w[5]),first:i===0,t:w[0]})}));
+const bars=document.getElementById("bars"),axis=document.getElementById("axis");
+for(let y=1975;y<=2025;y++){
+  const b=document.createElement("div");b.className="bar"+(y===2002?" sel":"");b.title=y+": "+((by[y]||[]).map(x=>x.t).join(", ")||"ei painoksia");
+  (by[y]||[]).forEach(s=>{const d=document.createElement("div");d.className="seg "+s.c+(s.first?" first":"");b.appendChild(d)});
+  bars.appendChild(b);
+  const a=document.createElement("span");a.textContent=y%10===0?y:"";axis.appendChild(a);
+}
+
+// List grouped by decade of the original work
+const list=document.getElementById("list");
+const sorted=[...W].sort((a,b)=>a[2]-b[2]||a[0].localeCompare(b[0],"fi"));
+let dec=null;
+sorted.forEach(w=>{
+  const d=Math.floor(w[2]/10)*10;
+  if(d!==dec){dec=d;const h=document.createElement("div");h.className="decade";h.textContent=d+"-luku";list.appendChild(h)}
+  const eds=w[6].map(e=>e.split(" ")), pub=eds[0].slice(1).join(" ");
+  const sameP=eds.every(e=>e.slice(1).join(" ")===pub);
+  const edTxt=sameP?pub+" "+eds.map(e=>`<a>${e[0]}</a>`).join(", "):eds.map(e=>`${e.slice(1).join(" ")} <a>${e[0]}</a>`).join(", ");
+  const r=document.createElement("div");r.className="row";
+  r.innerHTML=`<img class="thumb" src="${IMG+w[7]}" alt="">
+  <div><div class="r-title"><a style="color:inherit">${w[0]}</a></div>
+  <div class="r-sub">${w[1]?w[1]+" "+w[2]:w[2]}${w[3]?` · <span class="series">${w[3]}${w[4]?" "+w[4]:""}</span>`:""}</div>
+  <div class="eds">Suomeksi: ${edTxt}</div></div>
+  <div class="r-right">${w[5].map(g=>`<span class="g ${g}">${g==="kok"?"kokoelma":g==="eiSF"?"ei spefiä":g}</span>`).join("")}<span class="count">${w[6].length} ${w[6].length>1?"painosta":"painos"}</span></div>`;
+  list.appendChild(r);
+});
+document.querySelector(".more").onclick=()=>document.getElementById("bio").classList.toggle("collapsed");
+</script>
+</body>
+</html>

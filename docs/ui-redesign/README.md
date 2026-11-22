@@ -29,7 +29,7 @@ Nothing here is built yet unless the status table says so. Each change still goe
 | People list | `/people` | [people-list.md](pages/people-list.md) | Agreed |
 | Book index, works by type, non-fiction | `/bookindex`, `/nonfiction` | [book-index.md](pages/book-index.md) | Agreed |
 | Short story index | `/shortstoryindex` | [short-index.md](pages/short-index.md) | Agreed |
-| Magazines, magazine, issue | `/magazines`, `/magazines/:id`, `/issues/:id` | [magazines.md](pages/magazines.md) | Not started |
+| Magazines, magazine, issue | `/magazines`, `/magazines/:id`, `/issues/:id` | [magazines.md](pages/magazines.md) | Agreed |
 | Book series | `/bookseries`, `/bookseries/:id` | [bookseries.md](pages/bookseries.md) | Agreed |
 | Publisher series | `/pubseries`, `/pubseries/:id` | [pubseries.md](pages/pubseries.md) | Agreed |
 | Publishers | `/publishers`, `/publishers/:id` | [publishers.md](pages/publishers.md) | Not started |

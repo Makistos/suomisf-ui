@@ -12,7 +12,7 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
 | Tabs don't show counts | Person; check others | Agreed: count after each label |
 | Three chip styles side by side (grey genre, red tag, purple "+N") | Person, work? | Agreed: one style per meaning, below |
 | Very long pages from big cards per item | Person; check work and series | Agreed: compact rows as the default list |
-| Tab and filter state is lost on reload and back | TODO check | Agreed: keep it in the URL |
+| Tab and filter state should be remembered across reload, back and shared links | All list pages | Agreed: keep it in the URL |
 | Tag colours encode tag type (subgenre, style, place, topic…) with no legend | Person, work | Agreed: group tags by type with written labels |
 | Names and titles in uppercase | Person, work | Agreed: mixed case |
 | Admin tools mixed into public content; change history is a tab for everyone | Work; check others | Agreed: one admin box, history as a link |
@@ -24,8 +24,23 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
 - **Names and titles in mixed case**, not uppercase (Agreed).
 - **No "Suomeksi" / "suomennos" labels** (Agreed): everything in the database is published in Finnish, so saying so adds nothing.
   "Suomentaja" for the translator role is fine.
-- **Surfaces:** light grey page, white boxes with a thin border. **TODO:** check every token in the dark theme too
-  (the stats page already reads theme CSS variables; follow it).
+- **Surfaces:** light grey page, white boxes with a thin border.
+- **Dark theme** (Agreed): every page has a dark version that follows the system setting, as the app does today with PrimeReact's
+  `mdc-light-indigo` / `mdc-dark-indigo` themes. Colours come from tokens, never hard-coded, so each has a light and a dark value:
+
+  | Token | Light | Dark (from `mdc-dark-indigo`) |
+  |---|---|---|
+  | Page background | `#F3F4F8` | `#121212` (`--surface-ground`) |
+  | Boxes | `#FFFFFF` | `#1e1e1e` (`--surface-card`) |
+  | Text | `#1E2233` | 87 % white (`--text-color`) |
+  | Secondary text | `#5D6377` | 60 % white (`--text-color-secondary`) |
+  | Borders | `#E3E6EE` | 12 % white (`--surface-border`) |
+  | Primary (links, active tab) | `#3F51B5` | `#9FA8DA` (`--primary-color`) |
+  | Text on primary | white | `#121212` |
+
+  Genre colours stay the same in both themes; in dark mode genre dots, bars and timeline blocks get a faint light outline,
+  because the darkest ones (fantasy `#31572C`) almost disappear on `#1e1e1e`. Every mockup has a Vaalea / Tumma switch.
+  In code, use the theme's CSS variables (`var(--surface-card)`, `var(--text-color)`…) as the stats page already does, so both themes come for free.
 - **Genre colours** (Agreed): the same colours as today, from `src/features/genre/utils/genre-colors.ts` (SF `#0958D7`, F `#31572C`, K `#D30031`,
   Kokoelma `#008B8B`, Ei SpeFiä `#6C757D`, and the rest). Used only for genre data (timelines, genre bars, genre chips), never for decoration.
 
@@ -42,7 +57,7 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
 | Series navigation | Previous and next titles by name plus position, not bare arrows | Agreed (work) |
 | Filter | Pill that turns dark when on, with a count | Agreed |
 | Genre | Neutral chip with a dot in the genre's colour (readable for light colours too); small coloured badge in compact lists; horizontal bars in summaries | Agreed |
-| Tabs | One row when they fit; if not, the row scrolls sideways (as PrimeReact `TabView scrollable` does today). Count after each label, state in the URL | Agreed |
+| Tabs | One row when they fit; if not, the row scrolls sideways (as PrimeReact `TabView scrollable` does today). Count after each label, state in the URL. Above a long list the tab row may stick to the top of the screen while scrolling | Agreed |
 | Covers in lists | Title and author next to every cover; nothing important is hover-only; samples work by click or tap | Agreed (front page) |
 | Counts shown to visitors | Link to the list or statistics behind them | Agreed (front page) |
 | Lists of books | Compact row by default (thumb, title, original title and year, series, editions); cover grid as a toggle | Agreed (person) |
@@ -58,8 +73,10 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
 
 ## Layout and quality floor
 
-- Page width: TODO (mockup uses 1240 px max with a 300 px sidebar).
+- Page width (Agreed): content up to 1280 px wide, centred, with 24 px side margins (16 px on a phone); the main menu uses the same width.
+  Running text stays under about 72 characters per line; a sidebar is 300 px.
 - Phone: works at 390 px wide with no sideways scroll, 16 px side margins.
-- Page height budget: TODO (person page goes from 8,651 px to about 4,200 px on desktop for Le Guin).
+- Page height (Agreed): no budget. Some people have almost a hundred works (Erin Hunter 94 works and 195 editions,
+  Stephen King 88 works and 152 stories), so long pages are normal. Compact rows, sticky tab rows and filters keep them usable.
 - Keyboard focus visible everywhere; clickable chart parts are buttons with labels.
 - Each page plan lists its Playwright and a11y test changes; the wiki (`SuomiSF‐ohje.md`) is updated in the same change.

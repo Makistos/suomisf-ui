@@ -11,7 +11,9 @@ Nothing here is built yet unless the status table says so. Each change still goe
 - Each page has its own plan in [pages/](pages/). A plan has before/after screenshots, the problems found,
   the proposed layout, implementation steps and **open questions**. The open questions are where input is most useful.
 - Mockups in [mockups/](mockups/) are static HTML pages with real data. Download one and open it in a browser;
-  they don't need the app running.
+  they don't need the app running. The yellow bar at the top switches between visitor, logged-in user and admin,
+  and between the light and dark theme (by default they follow your system setting, like the site).
+  Every plan has screenshots of both themes.
 - Comment by opening a GitHub issue that names the plan (for example "UI redesign: person page"), or by commenting on the pull request that changes the plan.
 
 ## Status

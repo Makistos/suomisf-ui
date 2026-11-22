@@ -18,6 +18,7 @@ More screenshots:
 - [Tolkien, logged-in user, default grouping "Samanlaiset yhdessä"](../images/work/after-lotr-user-full.png) and [before, Tolkien, condensed view](../images/work/before-lotr-full.png).
 - [Tolkien, "Kaikki", admin](../images/work/after-lotr-all-admin.png): every printing on its own row with ownership and admin columns.
 - [Editions on a phone, logged in](../images/work/after-mobile-editions.png).
+- Dark theme: [desktop](../images/work/after-desktop-dark.png), [admin, whole page](../images/work/after-admin-full-dark.png), [Tolkien](../images/work/after-lotr-user-full-dark.png), [phone](../images/work/after-mobile-dark.png), [editions on a phone](../images/work/after-mobile-editions-dark.png), [similar works](../images/work/after-similar-why-admin-dark.png).
 - [Similar works with "Miksi samankaltainen?" open, admin](../images/work/after-similar-why-admin.png). Open it in the mockup with `?why=0`.
 
 ## What's wrong today

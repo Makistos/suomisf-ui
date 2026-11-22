@@ -14,6 +14,7 @@ Books, covers and counts are real (live API, 22.11.2026). The yellow bar switche
 
 More: [first screen at 1400 px](../images/front-page/after-desktop.png), [admin view with the Ylläpito menu](../images/front-page/after-admin-full.png),
 [today's hover panel on a random pick](../images/front-page/before-hover.png).
+Dark theme: [first screen](../images/front-page/after-desktop-dark.png), [whole page](../images/front-page/after-desktop-full-dark.png), [admin](../images/front-page/after-admin-full-dark.png), [phone](../images/front-page/after-mobile-full-dark.png).
 
 ## What's wrong today
 
@@ -72,7 +73,7 @@ The numbers 1–6 in the mockup screenshots match the sections below.
    Personal and admin links stay in the main menu (user menu and Ylläpito), so the front page has no separate boxes for them.
 6. **Footer** with Tietoja sivustosta, Tilastot, Muutokset and a link to the user guide (the GitHub wiki).
 
-Measured: desktop 1,422 px (was 1,090, but now with titles, a description and the browse tiles); phone 2,004 px (was 2,071)
+Measured: desktop 1,429 px (was 1,090, but now with titles, a description and the browse tiles); phone 1,983 px (was 2,071)
 with the search on the first screen.
 
 ## Shared principles used or added

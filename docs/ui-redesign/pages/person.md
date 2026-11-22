@@ -12,12 +12,16 @@ The yellow bar at the top switches between visitor, logged-in user and admin; ow
 | ![before mobile](../images/person/before-mobile.png) | ![after mobile](../images/person/after-mobile.png) |
 
 Full mockup page: [after-desktop-full.png](../images/person/after-desktop-full.png). Current works list: [before-works.png](../images/person/before-works.png).
+Dark theme: [desktop](../images/person/after-desktop-dark.png), [whole page](../images/person/after-desktop-full-dark.png), [phone](../images/person/after-mobile-dark.png), [book list as admin](../images/person/after-admin-list-dark.png).
 Book list as admin: [after-admin-list.png](../images/person/after-admin-list.png) (owned ★ and wishlist marks on editions, edit pencil after each title).
 
 ## What's wrong today (measured on Le Guin)
 
 1. **Too long.** The page is 8,651 px tall on desktop and 17,391 px on a phone. Each book is a ~260 px card
-   (cover carousel, edition list, genre chip, collapsed tags). The mockup is 4,104 / 5,334 px.
+   (cover carousel, edition list, genre chip, collapsed tags). The mockup is 4,062 / 5,314 px.
+   People with long lists go much further: Erin Hunter (94 works, 195 editions) is 26,797 px on desktop and 57,285 px on a phone today,
+   Stephen King (88 works, 152 stories) 23,023 / 46,143 px. There is no height budget; compact rows (about 76 px instead of 260 px per book)
+   cut those lists to roughly a third, and the sticky tab row and filters keep them usable.
 2. **Two rows of tabs.** Main tabs (Teokset, Tietokirjat…), then role subtabs (Kirjoittanut (29)) inside.
    Tab icons sit right against the labels. Tab labels show no counts.
 3. **No summary.** You can't see how much exists or when it came out in Finnish without scrolling the whole list.
@@ -122,3 +126,5 @@ _None._
 - Tietokirjat stays its own tab.
 - Clicking a year in the "Painokset vuosittain" timeline filters the book list to that year; clicking again clears it.
 - The sidebar scrolls with the page; it is not sticky.
+- The tab row may stick to the top of the screen while scrolling the book list.
+- No page-height budget: long lists (Erin Hunter, Stephen King) are normal.

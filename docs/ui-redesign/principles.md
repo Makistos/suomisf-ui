@@ -63,6 +63,8 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
 | Covers in lists | Title and author next to every cover; nothing important is hover-only; samples work by click or tap | Agreed (front page) |
 | Counts shown to visitors | Link to the list or statistics behind them | Agreed (front page) |
 | Portraits | Only on a person's own page, not in lists | Agreed (people list) |
+| Text first | This is a bibliography: every list opens as text (rows); cover grids are an option, never the default | Agreed (series) |
+| "Merkittävä sarja" | Not shown in the UI for now (book and publisher series) | Agreed (series) |
 | Lists of books | Compact row by default (thumb, title, original title and year, series, editions); cover grid as a toggle | Agreed (person) |
 | Sort | Original year, Finnish year, name; group by decade when sorting by year | Agreed |
 | Long text (bio, description) | Clamp long text to 4–5 lines so it doesn't break the page flow, with "Näytä koko…" to read all of it (`CollapsibleHtml`) | Agreed |
@@ -77,6 +79,7 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
 | Errors | A failed request shows a message with a way to retry; a loading indicator never stays up after an error | Agreed (people list) |
 | Large lists | Paged on the server; nothing loads hundreds of items at once | Agreed (book index) |
 | Filter updates | Text fields search on Enter or a search button; chips, selects and letter bars update results at once | Agreed (book index) |
+| Natural order | A list with a natural order (series number, issue number) shows it by default; title order is an option | Agreed (series) |
 | Main menu | Same on every page, including the search box; admins always see the Ylläpito menu | Agreed (front page) |
 | Change history | A link that opens a dialog, not a tab | Agreed (work) |
 | Similar works | Public to everyone (going public); a row of covers, each with a "Miksi samankaltainen?" popover (reasons for all, score numbers for admins) | Agreed (work) |

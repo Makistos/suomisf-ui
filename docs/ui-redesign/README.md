@@ -30,8 +30,8 @@ Nothing here is built yet unless the status table says so. Each change still goe
 | Book index, works by type, non-fiction | `/bookindex`, `/nonfiction` | [book-index.md](pages/book-index.md) | Agreed |
 | Short story index | `/shortstoryindex` | [short-index.md](pages/short-index.md) | Agreed |
 | Magazines, magazine, issue | `/magazines`, `/magazines/:id`, `/issues/:id` | [magazines.md](pages/magazines.md) | Not started |
-| Book series | `/bookseries`, `/bookseries/:id` | [bookseries.md](pages/bookseries.md) | Not started |
-| Publisher series | `/pubseries`, `/pubseries/:id` | [pubseries.md](pages/pubseries.md) | Not started |
+| Book series | `/bookseries`, `/bookseries/:id` | [bookseries.md](pages/bookseries.md) | Agreed |
+| Publisher series | `/pubseries`, `/pubseries/:id` | [pubseries.md](pages/pubseries.md) | Agreed |
 | Publishers | `/publishers`, `/publishers/:id` | [publishers.md](pages/publishers.md) | Not started |
 | Awards | `/awards`, `/awards/:id` | [awards.md](pages/awards.md) | Not started |
 | Tags | `/tags`, `/tags/:id` | [tags.md](pages/tags.md) | Not started |

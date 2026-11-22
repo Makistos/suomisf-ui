@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Series mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<style>
+:root{
+  --page:#F3F4F8; --surface:#FFFFFF; --ink:#1E2233; --muted:#5D6377; --faint:#8A90A3;
+  --rule:#E3E6EE; --primary:#3F51B5; --primary-soft:#E8EBF8; --primary-ink:#2D3A8C;
+  --sf:#0958D7; --f:#31572C; --k:#D30031; --kok:#008B8B; --other:#6C757D;
+  --primary-ink:#2D3A8C; --primary-line:#CDD3F0; --on-primary:#fff; --on-ink:#fff; --tag-bg:#FAFBFD; --ph:#E3E6EE; --ph-line:#D3D7E2; --hover-line:#C9CEE0; --hover-bg:#F8F9FC; --admin-bg:#F7F8FB; --warn-bg:#FFF8E6; --warn-ink:#6B5310; --gold-soft:#FBF3DC; --gold-line:#EBD9A5; --gold-ink:#4A3A0A; --gold-icon:#8A6A12; --star-off:#C9CEDB; --ok:#2E7D4F; --mock-bg:#FFF7D6; --mock-ink:#5A4B0F; --mock-line:#D9C56B; --mock-note:#8A7A3A; --mock-on:#fff; --outline:transparent;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme=light]){--page:#121212; --surface:#1e1e1e; --ink:#dedede; --muted:#9e9e9e; --faint:#7c7c7c; --rule:#333333; --primary:#9FA8DA; --primary-soft:#2a2d3c; --primary-ink:#c5cae9; --primary-line:#3d4260; --on-primary:#121212; --on-ink:#121212; --tag-bg:#262626; --ph:#2c2c2c; --ph-line:#444444; --hover-line:#4a4a4a; --hover-bg:#262626; --admin-bg:#181818; --warn-bg:#3a3112; --warn-ink:#f0d78c; --gold-soft:#332a10; --gold-line:#6b5a22; --gold-ink:#f0d78c; --gold-icon:#e0c060; --star-off:#4a4a4a; --ok:#81c784; --mock-bg:#3a3412; --mock-ink:#f0e2a0; --mock-line:#7a6a1a; --mock-note:#c9b870; --mock-on:#3a3412; --outline:rgba(255,255,255,.28);}}
+:root[data-theme=dark]{--page:#121212; --surface:#1e1e1e; --ink:#dedede; --muted:#9e9e9e; --faint:#7c7c7c; --rule:#333333; --primary:#9FA8DA; --primary-soft:#2a2d3c; --primary-ink:#c5cae9; --primary-line:#3d4260; --on-primary:#121212; --on-ink:#121212; --tag-bg:#262626; --ph:#2c2c2c; --ph-line:#444444; --hover-line:#4a4a4a; --hover-bg:#262626; --admin-bg:#181818; --warn-bg:#3a3112; --warn-ink:#f0d78c; --gold-soft:#332a10; --gold-line:#6b5a22; --gold-ink:#f0d78c; --gold-icon:#e0c060; --star-off:#4a4a4a; --ok:#81c784; --mock-bg:#3a3412; --mock-ink:#f0e2a0; --mock-line:#7a6a1a; --mock-note:#c9b870; --mock-on:#3a3412; --outline:rgba(255,255,255,.28);}
+.seg,.gbar .t i,.gchip i,.legend i{box-shadow:inset 0 0 0 1px var(--outline)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 Roboto,system-ui,sans-serif}
+a{color:var(--primary);text-decoration:none;cursor:pointer}
+a:hover{text-decoration:underline}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+.viewas{background:var(--mock-bg);border-bottom:1px dashed var(--mock-line);font-size:13px;color:var(--mock-ink)}
+.viewas .wrap{display:flex;gap:8px;align-items:center;min-height:36px;flex-wrap:wrap;padding-top:4px;padding-bottom:4px}
+.viewas span.opt{padding:2px 10px;border-radius:999px;cursor:pointer}
+.viewas span.opt.on{background:var(--mock-ink);color:var(--mock-on)}
+.nav{background:var(--surface);border-bottom:1px solid var(--rule)}
+.nav .wrap{display:flex;align-items:center;gap:28px;height:60px}
+.brand{font:700 19px 'Roboto Slab',serif;color:var(--primary)}
+.nav a.m{color:var(--ink);font-size:15px}
+.nav .m i{margin-right:6px;font-size:13px}
+.navsearch{margin-left:auto;display:flex;align-items:center;gap:8px;border:1px solid var(--rule);border-radius:8px;padding:6px 12px;width:300px;color:var(--faint);font-size:14px}
+.navsearch label{margin-left:auto;font-size:12px;color:var(--muted);display:flex;gap:4px;align-items:center}
+.r-user,.r-admin{display:none}
+body.user .r-user, body.admin .r-user, body.admin .r-admin{display:inline}
+body.user .r-anon, body.admin .r-anon{display:none}
+.rel{position:relative}
+.anno{position:absolute;background:#FFE57A;color:#3a3000;font:600 12px Roboto;border-radius:999px;width:24px;height:24px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.25);z-index:4}
+.crumbs{font-size:13px;color:var(--faint);padding:18px 0 6px}
+.crumbs a{color:var(--muted)}
+h1{font:600 38px/1.12 'Roboto Slab',serif;margin:2px 0 4px;letter-spacing:-.01em}
+.orig{color:var(--muted);font-size:17px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.chip{border-radius:999px;padding:3px 11px;font-size:13px;font-weight:500;background:var(--primary-soft);color:var(--primary-ink)}
+.star{display:inline-flex;gap:6px;align-items:center;font-size:13px;font-weight:500;color:var(--gold-ink);background:var(--gold-soft);border:1px solid var(--gold-line);border-radius:999px;padding:2px 10px}
+.gchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:2px 10px 2px 8px;font-size:12.5px;font-weight:500;color:var(--ink)}
+.gchip i,.dot{width:9px;height:9px;border-radius:50%;display:inline-block;box-shadow:inset 0 0 0 1px var(--outline)}
+.facts{margin-top:14px;color:var(--muted);font-size:15px}
+.facts b{color:var(--ink);font-weight:500}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:40px;margin-top:8px}
+.box{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:14px 16px}
+.box h3{font:600 14px 'Roboto Slab',serif;margin:0 0 8px}
+.gbar{display:grid;grid-template-columns:110px 1fr 26px;gap:8px;align-items:center;font-size:13.5px;margin:5px 0}
+.gbar .t{height:8px;border-radius:4px;background:var(--rule);overflow:hidden}
+.gbar .t i{display:block;height:100%;box-shadow:inset 0 0 0 1px var(--outline)}
+.gbar b{font-weight:500;color:var(--muted);text-align:right}
+.links{list-style:none;margin:0;padding:0;font-size:14px;display:flex;flex-direction:column;gap:5px}
+.links li::before{content:"↗";color:var(--faint);margin-right:6px;font-size:12px}
+.links.plain li::before{content:none}
+aside{display:flex;flex-direction:column;gap:14px}
+
+.subs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:10px}
+.sub{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:10px 14px;color:var(--ink)}
+.sub:hover{border-color:var(--hover-line);text-decoration:none}
+.sub b{display:block;font-weight:600;color:var(--primary)}
+.sub span{font-size:13px;color:var(--muted)}
+.parent{display:inline-flex;gap:6px;align-items:center;font-size:14px;color:var(--muted);margin-bottom:4px}
+
+.sec-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:8px;margin:30px 0 12px}
+.sec-head h2{font:600 22px 'Roboto Slab',serif;margin:0}
+.sec-head h2 small{font:400 14px Roboto;color:var(--faint);margin-left:8px}
+.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.seg{display:flex;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--surface);font-size:13px}
+.seg span{padding:6px 11px;color:var(--muted);border-left:1px solid var(--rule);cursor:pointer;white-space:nowrap}
+.seg span:first-child{border-left:0}
+.seg span.on{background:var(--primary-soft);color:var(--primary);font-weight:500}
+.rows{background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.row{display:grid;grid-template-columns:44px 40px minmax(0,1fr) auto;gap:14px;align-items:center;padding:9px 14px;border-top:1px solid var(--rule)}
+.row:first-child{border-top:0}
+.row:hover{background:var(--hover-bg)}
+.num{font:600 20px 'Roboto Slab',serif;color:var(--faint);text-align:center}
+.num.none{font:400 12px Roboto}
+.th{width:40px;height:58px;border-radius:3px;background:var(--ph);display:grid;place-items:center;color:var(--faint);overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.18)}
+.th img{width:100%;height:100%;object-fit:cover}
+.t{font-weight:600}
+.t a{color:var(--ink)}
+.s{font-size:13.5px;color:var(--muted)}
+.right{text-align:right;font-size:13px;color:var(--muted);white-space:nowrap}
+.right b{display:block;font-weight:500;color:var(--ink)}
+.early{color:var(--warn-ink);background:var(--warn-bg);border-radius:4px;padding:0 5px;font-size:12px}
+.mark{display:none;color:#E0A100;margin-left:6px;font-size:13px}
+body.user .mark, body.admin .mark{display:inline}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:18px}
+.grid a{color:var(--ink);font-size:13px;line-height:1.3;position:relative}
+.grid img,.grid .ph{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:3px;display:block;margin-bottom:6px;background:var(--ph);box-shadow:0 1px 4px rgba(0,0,0,.22)}
+.grid b{display:block;font-weight:600}
+.grid small{color:var(--muted)}
+.grid .n{position:absolute;top:6px;left:6px;background:rgba(0,0,0,.65);color:#fff;border-radius:6px;padding:0 6px;font:600 12px Roboto}
+.decade{font:600 15px 'Roboto Slab',serif;color:var(--muted);margin:16px 0 6px;display:flex;align-items:center;gap:10px}
+.decade::after{content:"";flex:1;height:1px;background:var(--rule)}
+.desc{max-width:72ch;margin-top:14px}
+
+/* list pages */
+.lead{color:var(--muted);margin:0 0 16px}
+.filters{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.input{display:flex;align-items:center;gap:8px;border:1px solid var(--rule);border-radius:8px;padding:7px 12px;color:var(--faint);font-size:14.5px;min-width:260px;flex:1;max-width:420px}
+.select{border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:7px 12px;font-size:14px;color:var(--ink);white-space:nowrap}
+.select small{color:var(--faint)}
+.fchip{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13.5px;color:var(--ink)}
+.fchip.on{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden;font-size:14.5px;margin-top:12px}
+th{text-align:left;font-weight:500;color:var(--muted);font-size:13px;padding:10px 14px;border-bottom:1px solid var(--rule);white-space:nowrap}
+th i{font-size:11px;margin-left:4px;color:var(--faint)}
+th.on{color:var(--primary)}
+td{padding:8px 14px;border-bottom:1px solid var(--rule)}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--hover-bg)}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+td.y{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+td .imp{color:#E0A100;margin-left:6px}
+td .par{display:block;font-size:12.5px;color:var(--faint)}
+.fab{position:fixed;right:24px;bottom:24px;width:52px;height:52px;border-radius:50%;background:var(--primary);color:var(--on-primary);display:none;place-items:center;font-size:26px;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+body.admin .fab{display:grid}
+.foot{height:70px}
+
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+@media (max-width:760px){
+  .wrap{padding:0 16px}
+  .nav a.m{display:none}
+  .navsearch{width:auto;flex:1}
+  h1{font-size:26px}
+  .row{grid-template-columns:34px 34px minmax(0,1fr);gap:10px}
+  .th{width:34px;height:50px}
+  .num{font-size:16px}
+  .right{grid-column:3;text-align:left}
+  .right b{display:inline;margin-right:6px}
+  .input{min-width:0;max-width:none;width:100%}
+  thead{display:none}
+  table,tbody,tr,td{display:block}
+  tr{padding:8px 14px;border-bottom:1px solid var(--rule)}
+  td{border:0;padding:0}
+  td.n{text-align:left;display:inline;font-size:13px;color:var(--muted)}
+  td.n::after{content:" kirjaa · "}
+  td.y{display:inline;font-size:13px}
+  .anno{display:none}
+  .viewas em{display:none}
+}
+</style>
+</head>
+<body>
+<div class="viewas"><div class="wrap">Mockup:
+  <span class="opt" data-v="bs">Kirjasarja: Kiekkomaailma</span><span class="opt" data-v="sub">Alasarjat: Soturikissat</span><span class="opt" data-v="ps">Kustantajan sarja: Sci-fi-sarja</span>
+  <span class="opt" data-v="bslist">Kirjasarjat</span><span class="opt" data-v="pslist">Kustantajien sarjat</span>
+  <span style="margin-left:8px">Käyttäjä:</span><span class="opt" data-as="anon">Vierailija</span><span class="opt" data-as="user">Kirjautunut</span><span class="opt" data-as="admin">Ylläpitäjä</span>
+  <span style="margin-left:8px">Teema:</span><span class="opt thm" data-th="light">Vaalea</span><span class="opt thm" data-th="dark">Tumma</span></div></div>
+<header class="nav"><div class="wrap">
+  <span class="brand">SuomiSF</span>
+  <a class="m">Kirjat</a><a class="m">Lehdet</a><a class="m">Novellit</a>
+  <a class="m r-anon">Hakemistot ▾</a><a class="m r-user">Muut ▾</a>
+  <a class="m r-admin"><i class="pi pi-wrench"></i>Ylläpito ▾</a>
+  <a class="m r-anon"><i class="pi pi-user"></i>Käyttäjätili ▾</a><a class="m r-user"><i class="pi pi-user"></i>mep ▾</a>
+  <div class="navsearch"><i class="pi pi-search"></i>Etsi<label><input type="checkbox" checked> Vain nimet</label></div>
+</div></header>
+<div class="wrap" id="app"></div>
+<div class="fab" title="Ylläpito: uusi sarja, muokkaa, poista">+</div>
+
+<script src="series-data.js"></script>
+<script>
+const IMG="https://www.sf-bibliografia.fi:5000";
+const Q=new URLSearchParams(location.search);
+const V=Q.get("v")||"bs";
+// Text first: every series opens in the list view; covers are an option
+let ORDER=Q.get("order")||"series", VIEW=Q.get("view")||"list";
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fin=n=>(n||"").split(" & ").map(p=>p.includes(", ")?p.split(", ").reverse().join(" "):p).join(" & ");
+const nf=n=>n.toLocaleString("fi-FI");
+const GENRE_COLOR={"Science Fiction":"#0958D7","Fantasia":"#31572C","Kauhu":"#D30031","Kokoelma":"#008B8B","Ei SpeFiä":"#6C757D","Nuorten fantasia":"#21D011","Vaihtoehtohistoria":"#E67E22","rajatapaus":"#A0522D"};
+const span=a=>{a=a.filter(Boolean);if(!a.length)return "";const lo=Math.min(...a),hi=Math.max(...a);return lo===hi?""+lo:lo+"–"+hi};
+// Made-up ownership so the logged-in mark can be seen
+const OWN=new Set([2302, 2322, 2296, 2304]);
+function genreBars(list){const c={};list.forEach(g=>c[g]=(c[g]||0)+1);const e=Object.entries(c).sort((a,b)=>b[1]-a[1]);const max=e[0]?.[1]||1;
+  return e.map(([g,n])=>`<div class="gbar"><span>${esc(g)}</span><span class="t"><i style="width:${Math.round(n/max*100)}%;background:${GENRE_COLOR[g]||"#6C757D"}"></i></span><b>${n}</b></div>`).join("")}
+const num=x=>{const n=parseInt(x,10);return isNaN(n)?9999:n};
+
+function bookSeries(B,isParent){
+  let works=[...B.works];
+  const byFin=(a,b)=>(a.first?.y||9999)-(b.first?.y||9999);
+  works.sort(ORDER==="finnish"?byFin:ORDER==="title"?(a,b)=>a.title.localeCompare(b.title,"fi"):(a,b)=>num(a.num)-num(b.num)||byFin(a,b));
+  const authors=[...new Set(B.works.map(w=>fin(w.au)))];
+  const pubs=[...new Set(B.works.map(w=>w.first?.p).filter(Boolean))];
+  const firstFin=Math.min(...B.works.map(w=>w.first?.y||9999));
+  // A book that came out in Finnish before a lower-numbered one: marked when the list is in series order
+  let maxY=0;const early=new Set();[...B.works].sort((a,b)=>num(a.num)-num(b.num)).forEach(w=>{const y=w.first?.y||0;if(y&&y<maxY)early.add(w.id);maxY=Math.max(maxY,y)});
+  const subs=isParent?B.sub.map(s=>({...s,...SERIES.subCounts[s.id]})):[];
+  const totalSub=subs.reduce((a,s)=>a+s.n,0);
+  return `<div class="crumbs"><a>Hakemistot</a> / <a>Kirjasarjat</a> / ${esc(B.name)}</div>
+  <div class="layout"><main>
+  <section class="rel"><span class="anno" style="left:-34px;top:6px">1</span>
+    <h1>${esc(B.name)}</h1>${B.orig?`<div class="orig">${esc(B.orig)}</div>`:""}
+    <div class="meta"><span class="chip">Kirjasarja</span></div>
+    <div class="facts"><b>${esc(authors.join(", "))}</b>. ${B.works.length} kirjaa${isParent?` tässä sarjassa ja ${totalSub} alasarjoissa`:""}, ensimmäinen suomennos ${firstFin}, ${esc(pubs.join(", "))}.</div>
+    ${B.desc?`<div class="desc">${B.desc}</div>`:""}
+  </section>
+  ${isParent?`<section class="rel"><span class="anno" style="left:-34px;top:30px">2</span><div class="sec-head"><h2>Alasarjat<small>${subs.length} sarjaa, ${totalSub} kirjaa</small></h2></div>
+    <div class="subs">${subs.sort((a,b)=>Math.min(...a.y)-Math.min(...b.y)).map(s=>`<a class="sub"><b>${esc(s.name)}</b><span>${s.n} kirjaa, alkuteokset ${span(s.y)}</span></a>`).join("")}</div></section>`:""}
+  <section class="rel"><span class="anno" style="left:-34px;top:30px">${isParent?3:2}</span>
+    <div class="sec-head"><h2>Kirjat<small>${works.length}</small></h2>
+      <div class="tools"><span class="seg" id="ord"><span data-o="series">Sarjan järjestys</span><span data-o="finnish">Suomennosjärjestys</span><span data-o="title">Nimi</span></span>
+      <span class="seg" id="view"><span data-w="list">Lista</span><span data-w="covers">Kannet</span></span></div></div>
+    ${VIEW==="covers"?coverGrid(works.map(w=>({img:w.img,t:w.title,sub:w.first?w.first.y:"",n:w.num}))):`<div class="rows">${works.map(w=>`<div class="row">
+      <span class="num ${w.num?"":"none"}">${w.num||"–"}</span>
+      <span class="th">${w.img?`<img src="${IMG+w.img}" alt="">`:`<i class="pi pi-book"></i>`}</span>
+      <div><div class="t"><a>${esc(w.title)}</a>${OWN.has(w.id)?'<span class="mark" title="Omistat tämän">★</span>':""}</div><div class="s">${esc(w.orig||"")} ${w.y||""}${w.tr.length?` · suom. ${esc(w.tr.join(", "))}`:""}</div></div>
+      <div class="right"><b>${esc(w.first?.p||"")} ${w.first?.y||""}</b>${w.neds>1?`${w.neds} painosta`:""}${ORDER==="series"&&early.has(w.id)?` <span class="early" title="Suomennettiin ennen sarjassa aiempia osia">ennen aiempia osia</span>`:""}</div></div>`).join("")}</div>`}
+  </section></main>
+  <aside class="rel"><span class="anno" style="left:-34px;top:4px">${isParent?4:3}</span>
+    <div class="box"><h3>Genret</h3>${genreBars(B.works.flatMap(w=>w.genres))}</div>
+    ${B.links&&B.links.length?`<div class="box"><h3>Linkit</h3><ul class="links">${B.links.map(l=>`<li><a>${esc(l)}</a></li>`).join("")}</ul></div>`:""}
+  </aside></div>`;
+}
+function coverGrid(items){return `<div class="grid">${items.map(i=>`<a>${i.img?`<img src="${IMG+i.img}" alt="">`:`<span class="ph"></span>`}${i.n?`<span class="n">${esc(i.n)}</span>`:""}<b>${esc(i.t)}</b><small>${esc(i.sub)}</small></a>`).join("")}</div>`}
+
+function pubSeries(P){
+  const eds=[...P.eds].sort((a,b)=>num(a.num)-num(b.num)||a.y-b.y||a.title.localeCompare(b.title,"fi"));
+  const years=eds.map(e=>e.y);
+  let html=`<div class="crumbs"><a>Hakemistot</a> / <a>Kustantajien sarjat</a> / ${esc(P.name)}</div>
+  <div class="layout"><main>
+  <section class="rel"><span class="anno" style="left:-34px;top:6px">1</span>
+    <h1>${esc(P.name)}</h1>
+    <div class="meta"><span class="chip">Kustantajan sarja</span></div>
+    <div class="facts">Kustantaja <a>${esc(P.pub)}</a>. ${eds.length} kirjaa ${span(years)}. Sarjaa ei ole numeroitu, joten kirjat ovat ilmestymisjärjestyksessä.</div>
+  </section>
+  <section class="rel"><span class="anno" style="left:-34px;top:30px">2</span>
+    <div class="sec-head"><h2>Kirjat<small>${eds.length}</small></h2>
+      <div class="tools"><span class="seg" id="ord"><span data-o="series">Sarjan järjestys</span><span data-o="author">Kirjoittaja</span><span data-o="title">Nimi</span></span>
+      <span class="seg" id="view"><span data-w="list">Lista</span><span data-w="covers">Kannet</span></span></div></div>`;
+  let list=[...eds];
+  if(ORDER==="author")list.sort((a,b)=>a.au.localeCompare(b.au,"fi")); if(ORDER==="title")list.sort((a,b)=>a.title.localeCompare(b.title,"fi"));
+  if(VIEW==="covers"){html+=coverGrid(list.map(e=>({img:e.img,t:e.title,sub:`${fin(e.au)}, ${e.y}`,n:e.num})))}
+  else{let dec=null;html+=list.map(e=>{const d=Math.floor(e.y/10)*10;const h=ORDER==="series"&&d!==dec?`<div class="decade">${d}-luku</div>`:"";dec=d;
+    return `${h}<div class="rows" style="border-radius:8px;margin-bottom:4px"><div class="row"><span class="num none">${e.num||e.y}</span><span class="th">${e.img?`<img src="${IMG+e.img}" alt="">`:`<i class="pi pi-book"></i>`}</span>
+      <div><div class="t"><a>${esc(e.title)}</a></div><div class="s">${esc(fin(e.au))}${e.orig?` · ${esc(e.orig)} ${e.oy||""}`:""}</div></div>
+      <div class="right">${e.genres.map(g=>`<span class="gchip"><i style="background:${GENRE_COLOR[g]||"#6C757D"}"></i>${esc(g)}</span>`).join(" ")}</div></div></div>`}).join("")}
+  html+=`</section></main>
+  <aside class="rel"><span class="anno" style="left:-34px;top:4px">3</span>
+    <div class="box"><h3>Genret</h3>${genreBars(P.eds.flatMap(e=>e.genres))}</div>
+    <div class="box"><h3>Kirjoittajat</h3><ul class="links plain" style="list-style:none">${Object.entries(P.eds.reduce((a,e)=>{a[fin(e.au)]=(a[fin(e.au)]||0)+1;return a},{})).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([a,n])=>`<li style="display:flex;justify-content:space-between"><a>${esc(a)}</a><span style="color:var(--faint)">${n}</span></li>`).join("")}</ul></div>
+  </aside></div>`;
+  return html;
+}
+
+function listPage(kind){
+  const L=SERIES.lists;const bs=kind==="bs";
+  const rows=bs?L.bsl:L.psl;
+  return `<div class="crumbs"><a>Hakemistot</a> / ${bs?"Kirjasarjat":"Kustantajien sarjat"}</div>
+  <section class="rel"><span class="anno" style="left:-34px;top:8px">1</span><h1>${bs?"Kirjasarjat":"Kustantajien sarjat"}</h1>
+  <p class="lead">${nf(bs?L.bsTotal:L.psTotal)} ${bs?"tarinasarjaa lukujärjestyksineen.":"kustantajien julkaisusarjaa, esim. Sci-fi-sarja ja Keltainen kirjasto."}</p></section>
+  <section class="filters rel"><span class="anno" style="left:-50px;top:10px">2</span><span class="input"><i class="pi pi-search"></i>Hae sarjan nimellä…</span>
+    <span class="select"><small>${bs?"Kirjoittaja":"Kustantaja"}</small> Kaikki ▾</span>
+    ${bs?`<span class="fchip">Vain pääsarjat</span>`:""}</section>
+  <div class="rel"><span class="anno" style="left:-34px;top:14px">3</span><table><thead><tr><th class="on">Nimi<i class="pi pi-sort-amount-up-alt"></i></th>${bs?`<th>Alkuperäinen nimi<i class="pi pi-sort-alt"></i></th><th>Kirjoittaja<i class="pi pi-sort-alt"></i></th>`:`<th>Kustantaja<i class="pi pi-sort-alt"></i></th>`}<th style="text-align:right">Kirjoja<i class="pi pi-sort-alt"></i></th><th>Vuodet<i class="pi pi-sort-alt"></i></th></tr></thead>
+  <tbody>${rows.map(r=>`<tr><td><a>${esc(r.name.trim())}</a>${r.parent?`<span class="par">osa sarjaa ${esc(r.parent)}</span>`:""}</td>
+    ${bs?`<td>${esc(r.orig)}</td><td>${esc(r.au.map(fin).join(", "))}</td>`:`<td><a>${esc(r.pub)}</a></td>`}<td class="n">${r.n}</td><td class="y">${r.span?(r.span[0]===r.span[1]?r.span[0]:r.span[0]+"–"+r.span[1]):""}</td></tr>`).join("")}</tbody></table></div>
+  <div class="foot"></div>`;
+}
+
+function render(){
+  const app=document.getElementById("app");
+  app.innerHTML=V==="bs"?bookSeries(SERIES.bs,false):V==="sub"?bookSeries(SERIES.sot,true):V==="ps"?pubSeries(SERIES.ps):listPage(V==="bslist"?"bs":"ps");
+  app.insertAdjacentHTML("beforeend",'<div class="foot"></div>');
+  document.querySelectorAll("#ord span").forEach(x=>{x.classList.toggle("on",x.dataset.o===ORDER);x.onclick=()=>{ORDER=x.dataset.o;render()}});
+  document.querySelectorAll("#view span").forEach(x=>{x.classList.toggle("on",x.dataset.w===VIEW);x.onclick=()=>{VIEW=x.dataset.w;render()}});
+}
+render();
+document.querySelectorAll(".viewas .opt[data-v]").forEach(x=>{x.classList.toggle("on",x.dataset.v===V);x.onclick=()=>{const u=new URLSearchParams(location.search);u.set("v",x.dataset.v);u.delete("order");u.delete("view");location.search=u}});
+const setAs=a=>{document.body.classList.remove("anon","user","admin");document.body.classList.add(a);document.querySelectorAll(".viewas .opt[data-as]").forEach(x=>x.classList.toggle("on",x.dataset.as===a))};
+document.querySelectorAll(".viewas .opt[data-as]").forEach(x=>x.onclick=()=>setAs(x.dataset.as));setAs(Q.get("as")||"anon");
+(()=>{const set=t=>{if(t)document.documentElement.dataset.theme=t;document.querySelectorAll(".viewas .thm").forEach(x=>x.classList.toggle("on",x.dataset.th===document.documentElement.dataset.theme))};
+document.querySelectorAll(".viewas .thm").forEach(x=>x.onclick=()=>set(x.dataset.th));set(Q.get("theme"));})();
+</script>
+</body>
+</html>

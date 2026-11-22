@@ -62,6 +62,7 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
 | Tabs | One row when they fit; if not, the row scrolls sideways (as PrimeReact `TabView scrollable` does today). Count after each label, state in the URL. Above a long list the tab row may stick to the top of the screen while scrolling | Agreed |
 | Covers in lists | Title and author next to every cover; nothing important is hover-only; samples work by click or tap | Agreed (front page) |
 | Counts shown to visitors | Link to the list or statistics behind them | Agreed (front page) |
+| Portraits | Only on a person's own page, not in lists | Agreed (people list) |
 | Lists of books | Compact row by default (thumb, title, original title and year, series, editions); cover grid as a toggle | Agreed (person) |
 | Sort | Original year, Finnish year, name; group by decade when sorting by year | Agreed |
 | Long text (bio, description) | Clamp long text to 4–5 lines so it doesn't break the page flow, with "Näytä koko…" to read all of it (`CollapsibleHtml`) | Agreed |
@@ -71,6 +72,9 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
 | Search hits | Matched term highlighted; a text repeated across a list (shared blurb) shown once | Agreed (search) |
 | Navigation | Links and suggestions navigate inside the app; nothing reloads the whole site | Agreed (search) |
 | Printings in lists | Printings of the same book are one row with their years (each year links to its edition), not one row per printing | Agreed (short story) |
+| Filters on lists | In a bar above the list, not inside column headers | Agreed (people list) |
+| Sorting | Empty values last in both directions | Agreed (people list) |
+| Errors | A failed request shows a message with a way to retry; a loading indicator never stays up after an error | Agreed (people list) |
 | Main menu | Same on every page, including the search box; admins always see the Ylläpito menu | Agreed (front page) |
 | Change history | A link that opens a dialog, not a tab | Agreed (work) |
 | Similar works | Public to everyone (going public); a row of covers, each with a "Miksi samankaltainen?" popover (reasons for all, score numbers for admins) | Agreed (work) |

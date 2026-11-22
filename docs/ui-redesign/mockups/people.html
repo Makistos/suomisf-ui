@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>People list mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<style>
+:root{
+  --page:#F3F4F8; --surface:#FFFFFF; --ink:#1E2233; --muted:#5D6377; --faint:#8A90A3;
+  --rule:#E3E6EE; --primary:#3F51B5; --primary-soft:#E8EBF8; --primary-ink:#2D3A8C;
+  --sf:#0958D7; --f:#31572C; --k:#D30031; --kok:#008B8B; --other:#6C757D;
+  --primary-ink:#2D3A8C; --primary-line:#CDD3F0; --on-primary:#fff; --on-ink:#fff; --tag-bg:#FAFBFD; --ph:#E3E6EE; --ph-line:#D3D7E2; --hover-line:#C9CEE0; --hover-bg:#F8F9FC; --admin-bg:#F7F8FB; --warn-bg:#FFF8E6; --warn-ink:#6B5310; --gold-soft:#FBF3DC; --gold-line:#EBD9A5; --gold-ink:#4A3A0A; --gold-icon:#8A6A12; --star-off:#C9CEDB; --ok:#2E7D4F; --mock-bg:#FFF7D6; --mock-ink:#5A4B0F; --mock-line:#D9C56B; --mock-note:#8A7A3A; --mock-on:#fff; --outline:transparent;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme=light]){--page:#121212; --surface:#1e1e1e; --ink:#dedede; --muted:#9e9e9e; --faint:#7c7c7c; --rule:#333333; --primary:#9FA8DA; --primary-soft:#2a2d3c; --primary-ink:#c5cae9; --primary-line:#3d4260; --on-primary:#121212; --on-ink:#121212; --tag-bg:#262626; --ph:#2c2c2c; --ph-line:#444444; --hover-line:#4a4a4a; --hover-bg:#262626; --admin-bg:#181818; --warn-bg:#3a3112; --warn-ink:#f0d78c; --gold-soft:#332a10; --gold-line:#6b5a22; --gold-ink:#f0d78c; --gold-icon:#e0c060; --star-off:#4a4a4a; --ok:#81c784; --mock-bg:#3a3412; --mock-ink:#f0e2a0; --mock-line:#7a6a1a; --mock-note:#c9b870; --mock-on:#3a3412; --outline:rgba(255,255,255,.28);}}
+:root[data-theme=dark]{--page:#121212; --surface:#1e1e1e; --ink:#dedede; --muted:#9e9e9e; --faint:#7c7c7c; --rule:#333333; --primary:#9FA8DA; --primary-soft:#2a2d3c; --primary-ink:#c5cae9; --primary-line:#3d4260; --on-primary:#121212; --on-ink:#121212; --tag-bg:#262626; --ph:#2c2c2c; --ph-line:#444444; --hover-line:#4a4a4a; --hover-bg:#262626; --admin-bg:#181818; --warn-bg:#3a3112; --warn-ink:#f0d78c; --gold-soft:#332a10; --gold-line:#6b5a22; --gold-ink:#f0d78c; --gold-icon:#e0c060; --star-off:#4a4a4a; --ok:#81c784; --mock-bg:#3a3412; --mock-ink:#f0e2a0; --mock-line:#7a6a1a; --mock-note:#c9b870; --mock-on:#3a3412; --outline:rgba(255,255,255,.28);}
+.seg,.gbar .t i,.gchip i,.legend i{box-shadow:inset 0 0 0 1px var(--outline)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 Roboto,system-ui,sans-serif}
+a{color:var(--primary);text-decoration:none;cursor:pointer}
+a:hover{text-decoration:underline}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+.viewas{background:var(--mock-bg);border-bottom:1px dashed var(--mock-line);font-size:13px;color:var(--mock-ink)}
+.viewas .wrap{display:flex;gap:10px;align-items:center;min-height:36px;flex-wrap:wrap}
+.viewas span.opt{padding:2px 10px;border-radius:999px;cursor:pointer}
+.viewas span.opt.on{background:var(--mock-ink);color:var(--mock-on)}
+.nav{background:var(--surface);border-bottom:1px solid var(--rule)}
+.nav .wrap{display:flex;align-items:center;gap:28px;height:60px}
+.brand{font:700 19px 'Roboto Slab',serif;color:var(--primary)}
+.nav a.m{color:var(--ink);font-size:15px}
+.nav .m i{margin-right:6px;font-size:13px}
+.navsearch{margin-left:auto;display:flex;align-items:center;gap:8px;border:1px solid var(--rule);border-radius:8px;padding:6px 12px;width:300px;color:var(--faint);font-size:14px}
+.navsearch label{margin-left:auto;font-size:12px;color:var(--muted);display:flex;gap:4px;align-items:center}
+.r-user,.r-admin{display:none}
+body.user .r-user, body.admin .r-user, body.admin .r-admin{display:inline}
+body.user .r-anon, body.admin .r-anon{display:none}
+.only-admin{display:none}
+body.admin .only-admin{display:revert}
+.rel{position:relative}
+.anno{position:absolute;background:#FFE57A;color:#3a3000;font:600 12px Roboto;border-radius:999px;width:24px;height:24px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.25);z-index:4}
+.crumbs{font-size:13px;color:var(--faint);padding:18px 0 4px}
+
+h1{font:600 32px/1.2 'Roboto Slab',serif;margin:6px 0 4px}
+.lead{color:var(--muted);margin:0 0 18px}
+.filters{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.frow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.input{display:flex;align-items:center;gap:8px;border:1px solid var(--rule);border-radius:8px;padding:7px 12px;color:var(--ink);font-size:14.5px;background:var(--surface);min-width:260px;flex:1;max-width:420px}
+.input i{color:var(--muted)}
+.input.empty{color:var(--faint)}
+.select{border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:7px 12px;font-size:14px;color:var(--ink);white-space:nowrap}
+.select small{color:var(--faint)}
+.chip{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13.5px;color:var(--ink);cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.flabel{font-size:12.5px;color:var(--faint);margin-right:2px}
+.letters{display:flex;flex-wrap:wrap;gap:2px}
+.letters a{min-width:26px;text-align:center;padding:3px 0;border-radius:6px;font-size:13.5px;color:var(--muted)}
+.letters a.on{background:var(--primary-soft);color:var(--primary);font-weight:600}
+.clear{font-size:13.5px;margin-left:auto}
+
+.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:18px 0 8px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden;font-size:14.5px}
+th{text-align:left;font-weight:500;color:var(--muted);font-size:13px;padding:10px 14px;border-bottom:1px solid var(--rule);white-space:nowrap;cursor:pointer;user-select:none}
+th i{font-size:11px;margin-left:4px;color:var(--faint)}
+th.on{color:var(--primary)}
+th.on i{color:var(--primary)}
+th.num,td.num{text-align:right}
+td{padding:8px 14px;border-bottom:1px solid var(--rule);vertical-align:middle}
+tbody tr:hover{background:var(--hover-bg)}
+tr:last-child td{border-bottom:0}
+td.n a{font-weight:600}
+td.n .miss{color:var(--faint);font-weight:400;font-style:italic}
+td.y{white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums}
+td.num{font-variant-numeric:tabular-nums;color:var(--ink)}
+td.num.zero{color:var(--faint)}
+.nat{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.nat img{width:18px;height:18px;border-radius:50%}
+.roles{display:flex;flex-wrap:wrap;gap:4px}
+.role{background:var(--primary-soft);color:var(--primary-ink);border-radius:999px;padding:1px 9px;font-size:12px;font-weight:500;white-space:nowrap}
+.pager{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:14px 0 60px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.pages{display:flex;gap:4px;align-items:center}
+.pages a,.pages span{min-width:34px;text-align:center;padding:5px 8px;border-radius:8px;border:1px solid var(--rule);background:var(--surface);color:var(--ink)}
+.pages a.on{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.pages span{border:0;background:none;color:var(--faint)}
+.urlbox{font:12.5px ui-monospace,monospace;color:var(--muted);background:var(--surface);border:1px dashed var(--rule);border-radius:8px;padding:6px 10px;margin-top:8px;overflow:auto;white-space:nowrap}
+.errbox{background:var(--warn-bg);color:var(--warn-ink);border-radius:10px;padding:14px 16px;margin-top:16px;display:none}
+body.err .errbox{display:block}
+body.err table, body.err .pager, body.err .bar > span:first-of-type{display:none}
+
+@media (max-width:760px){
+  .wrap{padding:0 16px}
+  .nav a.m{display:none}
+  .navsearch{width:auto;flex:1}
+  h1{font-size:24px}
+  .input{min-width:0;max-width:none;width:100%}
+  .frow.chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}
+  .letters{flex-wrap:nowrap;overflow-x:auto}
+  thead{display:none}
+  table,tbody,tr,td{display:block}
+  tr{display:grid !important;grid-template-columns:1fr auto;gap:2px 12px;padding:10px 14px;border-bottom:1px solid var(--rule)}
+  td{border:0;padding:0}
+  td.n{grid-column:1}
+  td.y{grid-column:2;text-align:right}
+  td.natc{grid-column:1/-1;font-size:13.5px}
+  td.rolesc{grid-column:1/-1;margin-top:4px}
+  td.num{display:inline;grid-column:auto;text-align:left;font-size:13px;color:var(--muted)}
+  td.num::after{content:attr(data-l);margin-left:4px}
+  td.num.zero{display:none}
+  .anno{display:none}
+  .viewas em{display:none}
+}
+</style>
+</head>
+<body>
+<div class="viewas"><div class="wrap">Mockup:
+  <span class="opt" data-v="list">Lista</span><span class="opt" data-v="search">Nimihaku "king"</span><span class="opt" data-v="err">Virhe</span>
+  <span style="margin-left:10px">Käyttäjä:</span><span class="opt" data-as="anon">Vierailija</span><span class="opt" data-as="admin">Ylläpitäjä</span>
+  <span style="margin-left:10px">Teema:</span><span class="opt th" data-th="light">Vaalea</span><span class="opt th" data-th="dark">Tumma</span>
+  <em style="margin-left:auto;color:var(--mock-note)">Henkilöt oikeita (22.11.2026, 50 ensimmäistä); rooli- ja kirjainsuodatus toimii tässä vain näillä riveillä</em></div></div>
+<header class="nav"><div class="wrap">
+  <span class="brand">SuomiSF</span>
+  <a class="m">Kirjat</a><a class="m">Lehdet</a><a class="m">Novellit</a>
+  <a class="m r-anon">Hakemistot ▾</a><a class="m r-user">Muut ▾</a>
+  <a class="m r-admin"><i class="pi pi-wrench"></i>Ylläpito ▾</a>
+  <a class="m r-anon"><i class="pi pi-user"></i>Käyttäjätili ▾</a><a class="m r-user"><i class="pi pi-user"></i>mep ▾</a>
+  <div class="navsearch"><i class="pi pi-search"></i>Etsi<label><input type="checkbox" checked> Vain nimet</label></div>
+</div></header>
+<div class="wrap" id="app"></div>
+
+<script src="people-data.js"></script>
+<script>
+const Q=new URLSearchParams(location.search);
+const V=Q.get("v")||"list";
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const nf=n=>n.toLocaleString("fi-FI");
+const FLAG={"Suomi":"fi","Yhdysvallat":"us","Iso-Britannia":"gb","Ruotsi":"se","Saksa":"de","Japani":"jp","Tanska":"dk","Ranska":"fr","Kanada":"ca","Norja":"no","Venäjä":"ru","Italia":"it","Puola":"pl","Australia":"au"};
+// Role names as plural filter labels; "Esiintyy" = the person appears in a work (e.g. is written about)
+const ROLES=[["Kirjoittaja","Kirjoittajat"],["Kääntäjä","Kääntäjät"],["Toimittaja","Toimittajat"],["Kansikuva","Kansitaiteilijat"],["Kuvittaja","Kuvittajat"],["Esiintyy","Esiintyy teoksissa"]];
+const ROLE_SHOW={"Kansikuva":"Kansitaiteilija","Esiintyy":"Esiintyy"};
+// Readable URL values: /people?rooli=kaantaja
+const SLUG={"Kirjoittaja":"kirjoittaja","Kääntäjä":"kaantaja","Toimittaja":"toimittaja","Kansikuva":"kansitaiteilija","Kuvittaja":"kuvittaja","Esiintyy":"esiintyy"};
+const UNSLUG=Object.fromEntries(Object.entries(SLUG).map(([k,v])=>[v,k]));
+let role=UNSLUG[Q.get("rooli")]||Q.get("rooli")||"", letter=Q.get("kirjain")||"", sort=Q.get("jarjestys")||"nimi";
+const rows0=V==="search"?PEOPLE.king.people:PEOPLE.first;
+
+function render(){
+  let rows=rows0.filter(p=>(!role||p.roles.includes(role))&&(!letter||(p.name||"").toUpperCase().startsWith(letter)));
+  const key={nimi:p=>p.name||"",syntynyt:p=>p.dob,teoksia:p=>p.w,novelleja:p=>p.s,kansallisuus:p=>p.nat}[sort.replace("-","")];
+  const dir=sort.startsWith("-")?-1:1;
+  // Empty values always last, whichever direction
+  rows=[...rows].sort((a,b)=>{const x=key(a),y=key(b);const ex=x===null||x==="",ey=y===null||y==="";if(ex!==ey)return ex?1:-1;return (typeof x==="number"?x-y:String(x).localeCompare(String(y),"fi"))*dir});
+  const total=V==="search"?PEOPLE.king.total:PEOPLE.total;
+  const params=new URLSearchParams();if(V==="search")params.set("nimi","king");if(role)params.set("rooli",SLUG[role]);if(letter)params.set("kirjain",letter.toLowerCase());if(sort!=="nimi")params.set("jarjestys",sort);
+  const th=(k,label,cls="")=>{const on=sort.replace("-","")===k;return `<th class="${cls} ${on?"on":""}" data-k="${k}">${label}<i class="pi ${on?(sort.startsWith("-")?"pi-sort-amount-down":"pi-sort-amount-up-alt"):"pi-sort-alt"}"></i></th>`};
+  document.getElementById("app").innerHTML=`
+  <div class="crumbs">Hakemistot / Henkilöt</div>
+  <section class="rel"><span class="anno" style="left:-34px;top:12px">1</span>
+    <h1>Henkilöt</h1>
+    <p class="lead">${nf(PEOPLE.total)} kirjailijaa, suomentajaa, toimittajaa ja kansitaiteilijaa.</p>
+  </section>
+  <section class="filters rel"><span class="anno" style="left:-50px;top:14px">2</span>
+    <div class="frow"><span class="input ${V==="search"?"":"empty"}"><i class="pi pi-search"></i>${V==="search"?"king":"Hae nimellä…"}</span>
+      <span class="select"><small>Kansallisuus</small> Kaikki ▾</span>
+      <span class="select"><small>Syntynyt</small> vuodesta – vuoteen</span>
+      ${role||letter||V==="search"?`<a class="clear">Tyhjennä rajaukset</a>`:""}</div>
+    <div class="frow chips"><span class="flabel">Rooli</span><span class="chip ${role?"":"on"}" data-r="">Kaikki</span>${ROLES.map(([r,l])=>`<span class="chip ${role===r?"on":""}" data-r="${r}">${l}</span>`).join("")}</div>
+    <div class="letters rel"><span class="anno" style="left:-50px;top:0">3</span><a class="${letter?"":"on"}" data-l="">Kaikki</a>${"ABCDEFGHIJKLMNOPQRSTUVWXYZÅÄÖ".split("").map(c=>`<a class="${letter===c?"on":""}" data-l="${c}">${c}</a>`).join("")}</div>
+  </section>
+  <div class="bar rel"><span class="anno" style="left:-34px;top:2px">4</span><span>${role||letter?`${rows.length} henkilöä (mockupissa rajattu vain 50 ensimmäisestä)`:V==="search"?`${nf(total)} henkilöä, joiden nimessä on "king"`:`Näytetään 1–${rows.length} / ${nf(total)}`}</span>
+    <span class="select"><small>Rivejä</small> 50 ▾</span></div>
+  <div class="urlbox" title="Rajaukset ja järjestys osoitteessa: säilyvät, kun sivu ladataan uudelleen tai linkki jaetaan">/people${params.toString()?"?"+esc(decodeURIComponent(params.toString())):""}</div>
+  <div class="errbox"><b>Henkilöluettelon lataaminen epäonnistui.</b> Palvelin ei vastannut tähän järjestykseen. <a>Yritä uudelleen</a> tai <a>palaa nimijärjestykseen</a>.</div>
+  <div class="rel" style="margin-top:10px"><span class="anno" style="left:-34px;top:8px">5</span>
+  <table><thead><tr>${th("nimi","Nimi")}${th("syntynyt","Elinvuodet")}${th("kansallisuus","Kansallisuus")}${th("teoksia","Teoksia","num")}${th("novelleja","Novelleja","num")}<th style="cursor:default">Roolit</th></tr></thead>
+  <tbody>${rows.map(p=>`<tr><td class="n">${p.name?`<a>${esc(p.name)}</a>`:`<span class="only-admin"><a class="miss">nimetön henkilö (id ${p.id})</a></span>`}</td>
+    <td class="y">${p.dob||p.dod?`${p.dob||"?"}${p.dod?"–"+p.dod:"–"}`:""}</td>
+    <td class="natc">${p.nat?`<span class="nat">${FLAG[p.nat]?`<img src="https://hatscripts.github.io/circle-flags/flags/${FLAG[p.nat]}.svg" alt="">`:""}${esc(p.nat)}</span>`:""}</td>
+    <td class="num ${p.w?"":"zero"}" data-l="teosta">${p.w}</td><td class="num ${p.s?"":"zero"}" data-l="novellia">${p.s}</td>
+    <td class="rolesc"><span class="roles">${p.roles.map(r=>`<span class="role">${ROLE_SHOW[r]||r}</span>`).join("")}</span></td></tr>`).join("")}</tbody></table></div>
+  <div class="pager rel"><span class="anno" style="left:-34px;top:4px">6</span><span>Sivu 1 / ${Math.ceil(total/50)}</span>
+    <span class="pages"><a class="on">1</a><a>2</a><a>3</a><span>…</span><a>${Math.ceil(total/50)}</a><a title="Seuraava sivu">›</a></span></div>`;
+  // Hide the nameless record from visitors: it's a data error, shown to admins to fix
+  document.querySelectorAll("td.n").forEach(td=>{if(!td.querySelector("a:not(.miss)")&&!document.body.classList.contains("admin"))td.parentElement.style.display="none"});
+  document.querySelectorAll("[data-r]").forEach(x=>x.onclick=()=>{role=x.dataset.r;render()});
+  document.querySelectorAll("[data-l]").forEach(x=>x.onclick=()=>{letter=x.dataset.l;render()});
+  document.querySelectorAll("th[data-k]").forEach(x=>x.onclick=()=>{const k=x.dataset.k;sort=sort===k?"-"+k:k;render()});
+}
+const setAs=a=>{document.body.classList.remove("anon","user","admin");document.body.classList.add(a);document.querySelectorAll(".viewas .opt[data-as]").forEach(x=>x.classList.toggle("on",x.dataset.as===a));render()};
+document.querySelectorAll(".viewas .opt[data-as]").forEach(x=>x.onclick=()=>setAs(x.dataset.as));
+document.querySelectorAll(".viewas .opt[data-v]").forEach(x=>{x.classList.toggle("on",x.dataset.v===V);x.onclick=()=>{const u=new URLSearchParams(location.search);u.set("v",x.dataset.v);location.search=u}});
+if(V==="err"){document.body.classList.add("err");sort="-teoksia"}
+setAs(Q.get("as")||"anon");
+(()=>{const set=t=>{if(t)document.documentElement.dataset.theme=t;document.querySelectorAll(".viewas .th").forEach(x=>x.classList.toggle("on",x.dataset.th===document.documentElement.dataset.theme))};
+document.querySelectorAll(".viewas .th").forEach(x=>x.onclick=()=>set(x.dataset.th));set(Q.get("theme"));})();
+</script>
+</body>
+</html>

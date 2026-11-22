@@ -26,7 +26,7 @@ Nothing here is built yet unless the status table says so. Each change still goe
 | Short story | `/shorts/:id` | [short.md](pages/short.md) | Agreed |
 | Front page | `/` | [front-page.md](pages/front-page.md) | Agreed |
 | Search (menu dropdown and results page) | `/search` | [search.md](pages/search.md) | Agreed |
-| People list | `/people` | [people-list.md](pages/people-list.md) | Not started |
+| People list | `/people` | [people-list.md](pages/people-list.md) | Agreed |
 | Book index, works by type, non-fiction | `/bookindex`, `/nonfiction` | [book-index.md](pages/book-index.md) | Not started |
 | Short story index | `/shortstoryindex` | [short-index.md](pages/short-index.md) | Not started |
 | Magazines, magazine, issue | `/magazines`, `/magazines/:id`, `/issues/:id` | [magazines.md](pages/magazines.md) | Not started |

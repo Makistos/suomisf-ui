@@ -11,7 +11,7 @@
 :root{
   --page:#F3F4F8; --surface:#FFFFFF; --ink:#1E2233; --muted:#5D6377; --faint:#8A90A3;
   --rule:#E3E6EE; --primary:#3F51B5; --primary-soft:#E8EBF8;
-  --sf:#3F51B5; --f:#B5653F; --other:#9AA0B2; --gold-soft:#FBF3DC; --ok:#2E7D4F;
+  --sf:#0958D7; --f:#31572C; --k:#D30031; --kok:#008B8B; --other:#6C757D; --gold-soft:#FBF3DC; --ok:#2E7D4F;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 Roboto,system-ui,sans-serif}
@@ -181,6 +181,8 @@ body.admin .fab{display:grid}
   .viewas em{display:none}
   .anno{display:none}
 }
+.gchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:2px 10px 2px 8px;font-size:12.5px;font-weight:500;color:var(--ink);margin:8px 4px 0 0}
+.gchip i{width:9px;height:9px;border-radius:50%;display:inline-block}
 </style>
 </head>
 <body>
@@ -215,7 +217,9 @@ const fin=n=>n.includes(", ")?n.split(", ").reverse().join(" "):n;
 const yr=a=>Math.min(...a)===Math.max(...a)?String(Math.min(...a)):Math.min(...a)+"–"+Math.max(...a);
 const uniq=a=>[...new Set(a.filter(Boolean))];
 const rng=a=>a.reduce((o,n)=>{const l=o[o.length-1];l&&l[1]===n-1?l[1]=n:o.push([n,n]);return o},[]).map(([a,b])=>a===b?a:a+"–"+b).join(", ");
-const genreCls=g=>/Science/i.test(g)?"SF":/Fantasia/i.test(g)?"F":"o";
+// Genre colours from src/features/genre/utils/genre-colors.ts (the old system's), by genre name
+const GENRE_COLOR={"Science Fiction":"#0958D7","Fantasia":"#31572C","Kauhu":"#D30031","Nuorten scifi":"#4A90D9","Nuorten fantasia":"#21D011","Nuorten kauhu":"#FF696D","Lasten scifi":"#7EC8E3","Lasten fantasia":"#82C341","Kokoelma":"#008B8B","Ei SpeFiä":"#6C757D"};
+const genreChip=g=>`<span class="gchip"><i style="background:${GENRE_COLOR[g]||"#6C757D"}"></i>${esc(g)}</span>`;
 const trophy='<i class="pi pi-trophy" style="color:#8A6A12"></i>';
 
 const eds=[...W.eds].sort((a,b)=>a.v-b.v||a.n-b.n);
@@ -249,7 +253,7 @@ document.getElementById("hero").innerHTML=`<span class="anno" style="left:-34px;
       <h1>${esc(W.title)}</h1>
       <div class="orig">${esc(W.orig)}${W.year?` (${W.year}, ${esc(W.lang)})`:""}</div>
     </div>
-    <div class="chips"><span class="chip type">${esc(W.type)}</span>${W.genres.map(g=>`<span class="chip ${genreCls(g)}">${esc(g)}</span>`).join("")}</div>
+    <div class="chips"><span class="chip type">${esc(W.type)}</span>${W.genres.map(genreChip).join("")}</div>
     ${W.awards.length?`<div class="awards rel"><span class="anno" style="left:-264px;top:4px">2</span>${awards}</div>`:""}
     ${seriesHtml?`<div class="rel">${seriesHtml}<span class="anno" style="left:-264px;top:14px">3</span></div>`:""}
   </div>`;

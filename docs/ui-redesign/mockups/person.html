@@ -5,12 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ursula K. Le Guin – mockup</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --page:#F3F4F8; --surface:#FFFFFF; --ink:#1E2233; --muted:#5D6377; --faint:#8A90A3;
   --rule:#E3E6EE; --primary:#3F51B5; --primary-soft:#E8EBF8;
-  --sf:#3F51B5; --f:#B5653F; --other:#9AA0B2;
+  --sf:#0958D7; --f:#31572C; --k:#D30031; --kok:#008B8B; --other:#6C757D;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 Roboto,system-ui,sans-serif}
@@ -68,7 +69,7 @@ h1{font:600 44px/1.08 'Roboto Slab',serif;margin:2px 0 6px;letter-spacing:-.01em
 /* Layout */
 .layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:40px;margin-top:8px}
 main,.hero>div{min-width:0}
-aside{position:sticky;top:16px;align-self:start;display:flex;flex-direction:column;gap:14px;padding-top:6px}
+aside{align-self:start;display:flex;flex-direction:column;gap:14px;padding-top:6px}
 .box{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:16px 18px}
 .box h3{font:600 14px 'Roboto Slab',serif;margin:0 0 10px;color:var(--ink)}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:12px 10px}
@@ -83,7 +84,7 @@ aside{position:sticky;top:16px;align-self:start;display:flex;flex-direction:colu
 .tag em{font-style:normal;color:var(--faint);margin-left:4px}
 .links{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:14px}
 .links li::before{content:"↗";color:var(--faint);margin-right:6px;font-size:12px}
-.admin{font-size:12.5px;color:var(--faint);display:flex;gap:12px;flex-wrap:wrap}
+.meta-foot{font-size:12.5px;color:var(--faint);display:flex;gap:12px;flex-wrap:wrap}
 
 /* Bibliography section */
 .biblio{margin-top:34px}
@@ -114,7 +115,7 @@ aside{position:sticky;top:16px;align-self:start;display:flex;flex-direction:colu
 .eds a{color:var(--muted);border-bottom:1px dotted var(--faint)}
 .r-right{display:flex;gap:6px;align-items:center}
 .g{font-size:11.5px;font-weight:700;border-radius:4px;padding:2px 6px;color:#fff}
-.g.SF{background:var(--sf)} .g.F{background:var(--f)} .g.kok{background:transparent;color:var(--muted);border:1px solid var(--rule);font-weight:500} .g.eiSF{background:var(--other)}
+.g.SF{background:var(--sf)} .g.F{background:var(--f)} .g.kok{background:var(--kok)} .g.eiSF{background:var(--other)}
 .count{font-size:12px;color:var(--faint);min-width:56px;text-align:right}
 
 .fab{position:fixed;right:24px;bottom:24px;width:52px;height:52px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:26px;box-shadow:0 4px 12px rgba(63,81,181,.35)}
@@ -140,12 +141,35 @@ aside{position:sticky;top:16px;align-self:start;display:flex;flex-direction:colu
   .count{display:none}
   .anno{display:none}
 }
+.viewas{background:#FFF7D6;border-bottom:1px dashed #D9C56B;font-size:13px;color:#5A4B0F}
+.viewas .wrap{display:flex;gap:10px;align-items:center;min-height:36px;flex-wrap:wrap}
+.viewas span{padding:2px 10px;border-radius:999px;cursor:pointer}
+.viewas span.on{background:#5A4B0F;color:#fff}
+.nav .m i{margin-right:6px;font-size:13px}
+.r-user,.r-admin{display:none}
+body.user .r-user, body.admin .r-user, body.admin .r-admin{display:inline}
+body.user .r-anon, body.admin .r-anon{display:none}
+.mark{display:none;margin-right:3px;font-size:12px}
+body.user .mark, body.admin .mark{display:inline}
+.mark.own{color:#E0A100}
+.mark.wish{color:var(--primary)}
+.edit{display:none;border:0;background:none;color:var(--muted);cursor:pointer;margin-left:6px;font-size:13px;padding:0}
+body.admin .edit{display:inline}
+.fab{display:none !important}
+body.admin .fab{display:grid !important}
+@media (max-width:900px){.viewas em{display:none}}
 </style>
 </head>
 <body>
+<div class="viewas"><div class="wrap">Mockup, näytä käyttäjänä:
+  <span data-as="anon">Vierailija</span><span data-as="user">Kirjautunut</span><span data-as="admin">Ylläpitäjä</span>
+  <em style="margin-left:auto;color:#8A7A3A">Omistus- ja muistilistamerkinnät ovat esimerkkejä</em></div></div>
 <header class="nav"><div class="wrap">
   <span class="brand">SuomiSF</span>
-  <a class="m">Kirjat</a><a class="m">Lehdet</a><a class="m">Novellit</a><a class="m">Hakemistot ▾</a>
+  <a class="m">Kirjat</a><a class="m">Lehdet</a><a class="m">Novellit</a>
+  <a class="m r-anon">Hakemistot ▾</a><a class="m r-user">Muut ▾</a>
+  <a class="m r-admin"><i class="pi pi-wrench"></i>Ylläpito ▾</a>
+  <a class="m r-anon"><i class="pi pi-user"></i>Käyttäjätili ▾</a><a class="m r-user"><i class="pi pi-user"></i>mep ▾</a>
   <div class="search">⌕&nbsp; Etsi kirjaa, henkilöä, novellia…</div>
 </div></header>
 
@@ -176,7 +200,7 @@ aside{position:sticky;top:16px;align-self:start;display:flex;flex-direction:colu
       <section class="timeline rel" aria-label="Painokset vuosittain">
         <span class="anno" style="left:-34px;top:16px">2</span>
         <div class="tl-head">
-          <div><h2>Painokset vuosittain 1976–2024</h2><p>40 painosta, 31 kirjaa. Klikkaa vuotta suodattaaksesi listan.</p></div>
+          <div><h2>Painokset vuosittain 1976–2024</h2><p>39 painosta, 30 teosta. Klikkaa vuotta suodattaaksesi listan.</p></div>
           <div class="legend"><span><i style="background:var(--sf)"></i>Science fiction</span><span><i style="background:var(--f)"></i>Fantasia</span><span><i style="background:var(--other)"></i>Muu</span><span><i style="outline:2px solid var(--ink);outline-offset:-2px;background:#fff"></i>Ensipainos</span></div>
         </div>
         <div class="bars" id="bars"></div>
@@ -193,7 +217,8 @@ aside{position:sticky;top:16px;align-self:start;display:flex;flex-direction:colu
       <section class="biblio rel">
         <span class="anno" style="left:-34px;top:10px">4</span>
         <nav class="secnav">
-          <a class="on">Kirjat<small>31</small></a>
+          <a class="on">Teokset<small>30</small></a>
+          <a>Tietokirjat<small>1</small></a>
           <a>Novellit ja artikkelit<small>93</small></a>
           <a>Sarjat<small>3</small></a>
           <a>Palkinnot<small>2</small></a>
@@ -201,11 +226,10 @@ aside{position:sticky;top:16px;align-self:start;display:flex;flex-direction:colu
         </nav>
         <div class="toolbar rel">
           <span class="anno" style="left:-34px;top:18px">5</span>
-          <span class="chip on">Kaikki<small>31</small></span>
+          <span class="chip on">Kaikki<small>30</small></span>
           <span class="chip">Romaanit<small>20</small></span>
           <span class="chip">Kokoelmat<small>7</small></span>
           <span class="chip">Yhteisniteet<small>3</small></span>
-          <span class="chip">Tietokirjat<small>1</small></span>
           <div class="tool-r">
             <span class="input">Suodata nimellä…</span>
             <span class="select">Alkuteoksen vuosi ▾</span>
@@ -231,7 +255,7 @@ aside{position:sticky;top:16px;align-self:start;display:flex;flex-direction:colu
         <h3>Genret</h3>
         <div class="gbar"><span>Fantasia</span><span class="t"><i style="width:100%;background:var(--f)"></i></span><b>17</b></div>
         <div class="gbar"><span>Science fiction</span><span class="t"><i style="width:88%;background:var(--sf)"></i></span><b>15</b></div>
-        <div class="gbar"><span>Kokoelma</span><span class="t"><i style="width:41%;background:var(--other)"></i></span><b>7</b></div>
+        <div class="gbar"><span>Kokoelma</span><span class="t"><i style="width:41%;background:var(--kok)"></i></span><b>7</b></div>
         <div class="gbar"><span>Ei spefiä</span><span class="t"><i style="width:6%;background:var(--other)"></i></span><b>1</b></div>
       </div>
       <div class="box">
@@ -254,7 +278,7 @@ aside{position:sticky;top:16px;align-self:start;display:flex;flex-direction:colu
           <li><a>Risingshadow</a></li><li><a>Goodreads</a></li><li><a>LibraryThing</a></li><li><a>Commons</a></li>
         </ul>
       </div>
-      <div class="admin">Muokattu 12.10.2026 · <a>Muutoshistoria</a></div>
+      <div class="meta-foot">Muokattu 12.10.2026 · <a>Muutoshistoria</a></div>
     </aside>
   </div>
   <div style="height:60px"></div>
@@ -278,7 +302,6 @@ const W=[
 ["Kertomuksia Maamereltä","Tales from Earthsea",2001,"Maameren tarinat",5,["F","kok"],["2002 WSOY"],"LeGuin_Ursula_K_Kertomuksiamaamerelta_1p.jpg"],
 ["Maameren tarinat 1–3","Omnibus",1972,"Maameren tarinat",null,["F"],["2002 WSOY"],"LeGuin_Ursula_K_Maamerentarinat1-3_1p.jpg"],
 ["Toinen tuuli","The Other Wind",2001,"Maameren tarinat",6,["F"],["2003 WSOY"],"LeGuin_Ursula_K_Toinentuuli_1p.jpg"],
-["Velhot, örkit, sankarit","",2004,null,null,["F"],["2004 Kirjapaja"],"Miettinen_Esko_Velhotorkitsankarit_1p.jpg"],
 ["Näkemisen lahja","Gifts",2004,"Läntisen rannan aikakirjat",1,["F"],["2005 WSOY"],"LeGuin_Ursula_K_Nakemisenlahja_1p.jpg"],
 ["Pimeälipas","The Wind's Twelve Quarters",1975,null,null,["F","SF","kok"],["2006 Kirjava"],"LeGuin_Ursula_K_Pimealipas_1p.jpg"],
 ["Sanan mahti","Voices",2006,"Läntisen rannan aikakirjat",2,["F"],["2007 WSOY"],"LeGuin_Ursula_K_Sananmahti_1p.jpg"],
@@ -313,20 +336,26 @@ for(let y=1975;y<=2025;y++){
 const list=document.getElementById("list");
 const sorted=[...W].sort((a,b)=>a[2]-b[2]||a[0].localeCompare(b[0],"fi"));
 let dec=null;
+const OWN=new Set(["Maameren velho|1976","Pimeyden vasen käsi|1976","Atuanin holvihaudat|1984","Tehanu|1992"]);
+const WISH=new Set(["Osattomien planeetta|1979","Kompassiruusu|2024"]);
 sorted.forEach(w=>{
   const d=Math.floor(w[2]/10)*10;
   if(d!==dec){dec=d;const h=document.createElement("div");h.className="decade";h.textContent=d+"-luku";list.appendChild(h)}
   const eds=w[6].map(e=>e.split(" ")), pub=eds[0].slice(1).join(" ");
   const sameP=eds.every(e=>e.slice(1).join(" ")===pub);
-  const edTxt=sameP?pub+" "+eds.map(e=>`<a>${e[0]}</a>`).join(", "):eds.map(e=>`${e.slice(1).join(" ")} <a>${e[0]}</a>`).join(", ");
+  const mk=y=>OWN.has(w[0]+"|"+y)?'<span class="mark own" title="Omistat tämän painoksen">★</span>':WISH.has(w[0]+"|"+y)?'<i class="pi pi-bookmark-fill mark wish" title="Muistilistalla"></i>':"";
+  const edTxt=sameP?pub+" "+eds.map(e=>`${mk(e[0])}<a>${e[0]}</a>`).join(", "):eds.map(e=>`${e.slice(1).join(" ")} ${mk(e[0])}<a>${e[0]}</a>`).join(", ");
   const r=document.createElement("div");r.className="row";
   r.innerHTML=`<img class="thumb" src="${IMG+w[7]}" alt="">
-  <div><div class="r-title"><a style="color:inherit">${w[0]}</a></div>
+  <div><div class="r-title"><a style="color:inherit">${w[0]}</a><button class="edit" title="Muokkaa teosta"><i class="pi pi-pencil"></i></button></div>
   <div class="r-sub">${w[1]?w[1]+" "+w[2]:w[2]}${w[3]?` · <span class="series">${w[3]}${w[4]?" "+w[4]:""}</span>`:""}</div>
   <div class="eds">${edTxt}</div></div>
   <div class="r-right">${w[5].map(g=>`<span class="g ${g}">${g==="kok"?"kokoelma":g==="eiSF"?"ei spefiä":g}</span>`).join("")}<span class="count">${w[6].length} ${w[6].length>1?"painosta":"painos"}</span></div>`;
   list.appendChild(r);
 });
+function setAs(a){document.body.className=a;document.querySelectorAll(".viewas span").forEach(x=>x.classList.toggle("on",x.dataset.as===a))}
+document.querySelectorAll(".viewas span").forEach(x=>x.onclick=()=>setAs(x.dataset.as));
+setAs(new URLSearchParams(location.search).get("as")||"anon");
 document.querySelector(".more").onclick=()=>document.getElementById("bio").classList.toggle("collapsed");
 </script>
 </body>

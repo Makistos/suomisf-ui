@@ -11,7 +11,7 @@
 :root{
   --page:#F3F4F8; --surface:#FFFFFF; --ink:#1E2233; --muted:#5D6377; --faint:#8A90A3;
   --rule:#E3E6EE; --primary:#3F51B5; --primary-soft:#E8EBF8; --primary-ink:#2D3A8C;
-  --sf:#3F51B5; --f:#B5653F; --other:#9AA0B2;
+  --sf:#0958D7; --f:#31572C; --k:#D30031; --kok:#008B8B; --other:#6C757D;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 Roboto,system-ui,sans-serif}
@@ -129,6 +129,8 @@ footer .wrap span{color:var(--faint);margin-left:auto;font-size:13px}
   .anno{display:none}
   .viewas em{display:none}
 }
+.gchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:2px 10px 2px 8px;font-size:12.5px;font-weight:500;color:var(--ink);margin:8px 4px 0 0}
+.gchip i{width:9px;height:9px;border-radius:50%;display:inline-block}
 </style>
 </head>
 <body>
@@ -186,7 +188,9 @@ const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&g
 // "Sisättö, Vesa & Halme, Jukka (toim.)" -> "Vesa Sisättö & Jukka Halme (toim.)"
 const fin=n=>{const ed=/\s*\(toim\.\)$/.test(n||"");const parts=(n||"").replace(/\s*\(toim\.\)$/,"").split(" & ").map(p=>p.includes(", ")?p.split(", ").reverse().join(" "):p);return parts.join(" & ")+(ed?" (toim.)":"")};
 const nf=n=>n.toLocaleString("fi-FI");
-const genreCls=g=>/Science/i.test(g)?"SF":/fantasia/i.test(g)?"F":"o";
+// Genre colours from src/features/genre/utils/genre-colors.ts (the old system's), by genre name
+const GENRE_COLOR={"Science Fiction":"#0958D7","Fantasia":"#31572C","Kauhu":"#D30031","Nuorten scifi":"#4A90D9","Nuorten fantasia":"#21D011","Nuorten kauhu":"#FF696D","Lasten scifi":"#7EC8E3","Lasten fantasia":"#82C341","Kokoelma":"#008B8B","Ei SpeFiä":"#6C757D"};
+const genreChip=g=>`<span class="gchip"><i style="background:${GENRE_COLOR[g]||"#6C757D"}"></i>${esc(g)}</span>`;
 const S=FRONT.st;
 
 // Counts double as links: the stats block becomes a way in
@@ -201,7 +205,7 @@ function showPick(i){
   document.getElementById("feat").innerHTML=`<div class="feat">
     <a><img src="${IMG+(e.thumb||e.img)}" alt="Kansikuva: ${esc(e.title)}"></a>
     <div><h3><a>${esc(e.title)}</a></h3><div class="au">${esc(fin(e.author))}, ${e.y}${e.p?", "+esc(e.p):""}</div>
-    ${e.genres.map(g=>`<span class="chip ${genreCls(g)}">${esc(g)}</span>`).join("")}
+    ${e.genres.map(genreChip).join("")}
     <p>${esc(e.desc)}</p>
     <span class="adm-note">Kirjasampo-asiasanoja ei ole tuotu</span></div></div>`;
   document.querySelectorAll("#thumbs button").forEach((b,j)=>b.classList.toggle("on",j===i));

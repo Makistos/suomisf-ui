@@ -2,7 +2,7 @@
 
 **Route:** `/` · **Code:** `src/home-alt.tsx` (route `/` in `src/index.tsx`), `src/components/image-accordion.tsx`, styles `.home-alt-*` in `src/App.css`;
 backend `/api/frontpagedata`, `/api/frontpage/latest`, `/api/frontpage/random` in `../suomisf/app/api.py`
-**Status:** Proposal, first review done · **Updated:** 2026-11-22
+**Status:** Agreed · **Updated:** 2026-11-22
 **Sample page:** https://www.sf-bibliografia.fi/
 **Mockup:** [`../mockups/front-page.html`](../mockups/front-page.html) with [`front-data.js`](../mockups/front-data.js) next to it.
 Books, covers and counts are real (live API, 22.11.2026). The yellow bar switches between visitor, logged-in user and admin.
@@ -111,7 +111,7 @@ New rules from this plan:
 
 ## Open questions
 
-- Anything else you'd want on the front page, for example this year's new books by publication year (needs a new endpoint)?
+_None._
 
 ## Decisions
 
@@ -122,3 +122,4 @@ New rules from this plan:
 - No counts on the browse tiles.
 - Kirjaehdotukset opens in the same tab.
 - The menu search box stays visible on the front page.
+- Nothing else to add to the front page for now.

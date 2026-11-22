@@ -37,7 +37,7 @@ Full mockup page: [after-desktop-full.png](../images/person/after-desktop-full.p
 │         Ursula Kroeber Le Guin                │  31 kirjaa  40 painosta│
 │         🇺🇸 Yhdysvallat  1929–2018              │  93 novellia 2 palk.  │
 │         (Kirjailija)(Novellisti)…             ├───────────────────────┤
-│ ┌ Suomeksi 1976–2024 ──────────────────────┐ │ Genret (bars)          │
+│ ┌ Painokset vuosittain 1976–2024 ──────────┐ │ Genret (bars)          │
 │ │ ▮▮ ▮   ▮▮▮   ▮ ▮▮      ▮▮▮▮▮▮▮▮▮  ▮▮ ▮▮  │ │ Yleisimmät asiasanat   │
 │ └──────────────────────────────────────────┘ │ Linkit (2 columns)     │
 │ Bio, 4 lines … Näytä koko esittely ▾          │ Muokattu · Muutoshist. │
@@ -46,7 +46,7 @@ Full mockup page: [after-desktop-full.png](../images/person/after-desktop-full.p
 │ ── 1960-luku ──                               │    below on phone)     │
 │ [cover] Maameren velho          F  3 painosta │                       │
 │         A Wizard of Earthsea 1968 · Maameren tarinat 1                 │
-│         Suomeksi: WSOY 1976, 1984, 1990       │                       │
+│         WSOY 1976, 1984, 1990                 │                       │
 └──────────────────────────────────────────────┴───────────────────────┘
 ```
 
@@ -54,7 +54,7 @@ The numbers 1–6 in the mockup screenshots match the sections below.
 
 1. **Header.** Mixed-case name in Roboto Slab, larger portrait (168 px, 96 px on phone) with credit under it,
    nationality and years on one line, roles as small soft chips. "Myös" / "Oikea henkilö" stay under it.
-2. **Finnish publication timeline (new, the one distinctive element).** One block per Finnish edition per year,
+2. **Publication timeline, "Painokset vuosittain" (new, the one distinctive element).** One block per Finnish edition per year,
    coloured by genre (SF / fantasy / other), outlined if it's that book's first Finnish edition. Hover shows the titles;
    clicking a year filters the list below. This shows a person's Finnish publishing history in one look
    (for Le Guin: the WSOY 1970s–90s wave, then Avain and Vaskikirjat from 2010). Hidden when there are fewer than ~3 editions.
@@ -69,7 +69,7 @@ The numbers 1–6 in the mockup screenshots match the sections below.
 6. **Sidebar.** Stats box, genre bars (replace the chip pile), top 8 tags in one neutral style with counts plus "+N muuta",
    links in 2 columns, last-edited date with a link to the change history (`get-person-changes.ts` already exists).
 
-**Compact row:** 44×64 cover thumb, title, original title + year + series link, "Suomeksi: WSOY 1976, 1984, 1990"
+**Compact row:** 44×64 cover thumb, title, original title + year + series link, "WSOY 1976, 1984, 1990"
 (each year links to its edition), genre badges and edition count on the right. Tags move to the work page.
 That takes the row from ~260 px to ~76 px.
 

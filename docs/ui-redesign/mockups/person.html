@@ -173,10 +173,10 @@ aside{position:sticky;top:16px;align-self:start;display:flex;flex-direction:colu
         </div>
       </section>
 
-      <section class="timeline rel" aria-label="Suomennokset vuosittain">
+      <section class="timeline rel" aria-label="Painokset vuosittain">
         <span class="anno" style="left:-34px;top:16px">2</span>
         <div class="tl-head">
-          <div><h2>Suomeksi 1976–2024</h2><p>40 painosta, 31 kirjaa. Klikkaa vuotta suodattaaksesi listan.</p></div>
+          <div><h2>Painokset vuosittain 1976–2024</h2><p>40 painosta, 31 kirjaa. Klikkaa vuotta suodattaaksesi listan.</p></div>
           <div class="legend"><span><i style="background:var(--sf)"></i>Science fiction</span><span><i style="background:var(--f)"></i>Fantasia</span><span><i style="background:var(--other)"></i>Muu</span><span><i style="outline:2px solid var(--ink);outline-offset:-2px;background:#fff"></i>Ensipainos</span></div>
         </div>
         <div class="bars" id="bars"></div>
@@ -221,7 +221,7 @@ aside{position:sticky;top:16px;align-self:start;display:flex;flex-direction:colu
       <div class="box">
         <h3>Tuotanto tietokannassa</h3>
         <div class="stats">
-          <div class="stat"><b>31</b><span>kirjaa suomeksi</span></div>
+          <div class="stat"><b>31</b><span>kirjaa</span></div>
           <div class="stat"><b>40</b><span>painosta</span></div>
           <div class="stat"><b>93</b><span>novellia ja artikkelia</span></div>
           <div class="stat"><b>2</b><span>palkintoa</span></div>
@@ -323,7 +323,7 @@ sorted.forEach(w=>{
   r.innerHTML=`<img class="thumb" src="${IMG+w[7]}" alt="">
   <div><div class="r-title"><a style="color:inherit">${w[0]}</a></div>
   <div class="r-sub">${w[1]?w[1]+" "+w[2]:w[2]}${w[3]?` · <span class="series">${w[3]}${w[4]?" "+w[4]:""}</span>`:""}</div>
-  <div class="eds">Suomeksi: ${edTxt}</div></div>
+  <div class="eds">${edTxt}</div></div>
   <div class="r-right">${w[5].map(g=>`<span class="g ${g}">${g==="kok"?"kokoelma":g==="eiSF"?"ei spefiä":g}</span>`).join("")}<span class="count">${w[6].length} ${w[6].length>1?"painosta":"painos"}</span></div>`;
   list.appendChild(r);
 });

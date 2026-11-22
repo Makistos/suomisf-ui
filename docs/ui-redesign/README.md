@@ -19,7 +19,7 @@ Nothing here is built yet unless the status table says so. Each change still goe
 | Page | Route | Plan | Status |
 |---|---|---|---|
 | Person | `/people/:id` | [person.md](pages/person.md) | Proposal, mockup ready |
-| Work | `/works/:id` | [work.md](pages/work.md) | Not started |
+| Work | `/works/:id` | [work.md](pages/work.md) | Proposal, first review done |
 | Edition | `/editions/:id` | [edition.md](pages/edition.md) | Not started |
 | Short story | `/shorts/:id` | [short.md](pages/short.md) | Not started |
 | Front page | `/` | [front-page.md](pages/front-page.md) | Not started |

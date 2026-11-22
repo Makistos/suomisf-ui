@@ -70,6 +70,7 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
 | Admin actions | Keep the SpeedDial button; admin-only tools in one dashed "Ylläpitäjille" box | Agreed |
 | Search hits | Matched term highlighted; a text repeated across a list (shared blurb) shown once | Agreed (search) |
 | Navigation | Links and suggestions navigate inside the app; nothing reloads the whole site | Agreed (search) |
+| Printings in lists | Printings of the same book are one row with their years (each year links to its edition), not one row per printing | Agreed (short story) |
 | Main menu | Same on every page, including the search box; admins always see the Ylläpito menu | Agreed (front page) |
 | Change history | A link that opens a dialog, not a tab | Agreed (work) |
 | Similar works | Public to everyone (going public); a row of covers, each with a "Miksi samankaltainen?" popover (reasons for all, score numbers for admins) | Agreed (work) |

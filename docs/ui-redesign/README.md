@@ -23,7 +23,7 @@ Nothing here is built yet unless the status table says so. Each change still goe
 | Person | `/people/:id` | [person.md](pages/person.md) | Agreed |
 | Work | `/works/:id` | [work.md](pages/work.md) | Agreed |
 | Edition link | `/editions/:id` | Part of [work.md](pages/work.md) (no separate page: it opens the work page with that edition highlighted) | Agreed |
-| Short story | `/shorts/:id` | [short.md](pages/short.md) | Not started |
+| Short story | `/shorts/:id` | [short.md](pages/short.md) | Agreed |
 | Front page | `/` | [front-page.md](pages/front-page.md) | Agreed |
 | Search (menu dropdown and results page) | `/search` | [search.md](pages/search.md) | Agreed |
 | People list | `/people` | [people-list.md](pages/people-list.md) | Not started |
@@ -56,6 +56,9 @@ Things agreed for after the redesign is implemented:
 
 - **Colour scheme in user settings:** a logged-in user can choose follow the browser / always light / always dark for this site,
   saved with their account, overriding the browser setting (see the dark theme rule in [principles.md](principles.md)).
+- **Change history for short stories,** like works and people have (see [short.md](pages/short.md)).
+- **Original-year differences between translations:** find out why translations of the same story have different original years
+  (e.g. *The Tell-Tale Heart* 1843 vs 1850). If they aren't errors, remove the admin note added by the short story plan.
 
 ## Adding a plan
 

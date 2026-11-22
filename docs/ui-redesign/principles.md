@@ -75,6 +75,8 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
 | Filters on lists | In a bar above the list, not inside column headers | Agreed (people list) |
 | Sorting | Empty values last in both directions | Agreed (people list) |
 | Errors | A failed request shows a message with a way to retry; a loading indicator never stays up after an error | Agreed (people list) |
+| Large lists | Paged on the server; nothing loads hundreds of items at once | Agreed (book index) |
+| Filter updates | Text fields search on Enter or a search button; chips, selects and letter bars update results at once | Agreed (book index) |
 | Main menu | Same on every page, including the search box; admins always see the Ylläpito menu | Agreed (front page) |
 | Change history | A link that opens a dialog, not a tab | Agreed (work) |
 | Similar works | Public to everyone (going public); a row of covers, each with a "Miksi samankaltainen?" popover (reasons for all, score numbers for admins) | Agreed (work) |

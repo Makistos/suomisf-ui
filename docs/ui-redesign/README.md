@@ -13,7 +13,7 @@ Nothing here is built yet unless the status table says so. Each change still goe
 - Mockups in [mockups/](mockups/) are static HTML pages with real data. Download one and open it in a browser;
   they don't need the app running. The yellow bar at the top switches between visitor, logged-in user and admin,
   and between the light and dark theme (by default they follow your system setting, like the site).
-  Every plan has screenshots of both themes.
+  Every plan's before/after table shows the mockup in both the light and the dark theme.
 - Comment by opening a GitHub issue that names the plan (for example "UI redesign: person page"), or by commenting on the pull request that changes the plan.
 
 ## Status
@@ -27,8 +27,8 @@ Nothing here is built yet unless the status table says so. Each change still goe
 | Front page | `/` | [front-page.md](pages/front-page.md) | Agreed |
 | Search (menu dropdown and results page) | `/search` | [search.md](pages/search.md) | Agreed |
 | People list | `/people` | [people-list.md](pages/people-list.md) | Agreed |
-| Book index, works by type, non-fiction | `/bookindex`, `/nonfiction` | [book-index.md](pages/book-index.md) | Not started |
-| Short story index | `/shortstoryindex` | [short-index.md](pages/short-index.md) | Not started |
+| Book index, works by type, non-fiction | `/bookindex`, `/nonfiction` | [book-index.md](pages/book-index.md) | Agreed |
+| Short story index | `/shortstoryindex` | [short-index.md](pages/short-index.md) | Agreed |
 | Magazines, magazine, issue | `/magazines`, `/magazines/:id`, `/issues/:id` | [magazines.md](pages/magazines.md) | Not started |
 | Book series | `/bookseries`, `/bookseries/:id` | [bookseries.md](pages/bookseries.md) | Not started |
 | Publisher series | `/pubseries`, `/pubseries/:id` | [pubseries.md](pages/pubseries.md) | Not started |

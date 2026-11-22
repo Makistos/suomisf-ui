@@ -8,10 +8,10 @@ Ursula K. Le Guin, *Jotka Omelasista poistuvat* (https://www.sf-bibliografia.fi/
 **Mockup:** [`../mockups/short.html`](../mockups/short.html) with [`short-data.js`](../mockups/short-data.js) (real data). `?s=a` is Poe, `?s=b` Le Guin;
 the yellow bar also switches visitor / logged-in / admin and light / dark. Ownership marks are made-up examples.
 
-| Before | After (mockup) |
-|---|---|
-| ![before](../images/short/before-714-desktop.png) | ![after](../images/short/after-poe-desktop.png) |
-| ![before mobile](../images/short/before-1028-mobile.png) | ![after mobile](../images/short/after-omelas-mobile.png) |
+| Before | After (mockup, light) | After (mockup, dark) |
+|---|---|---|
+| ![before](../images/short/before-714-desktop.png) | ![after](../images/short/after-poe-desktop.png) | ![after dark](../images/short/after-poe-desktop-dark.png) |
+| ![before mobile](../images/short/before-1028-mobile.png) | ![after mobile](../images/short/after-omelas-mobile.png) | ![after mobile dark](../images/short/after-omelas-mobile-dark.png) |
 
 More: [before, "Muut käännökset" tab](../images/short/before-714-translations.png) · [before, Le Guin](../images/short/before-1028-desktop.png) ·
 [after, Le Guin](../images/short/after-omelas-desktop.png) · [after, logged in (owned marks)](../images/short/after-poe-user.png) · [after, admin (year note)](../images/short/after-poe-admin.png) · [after, Poe on a phone](../images/short/after-poe-mobile.png).

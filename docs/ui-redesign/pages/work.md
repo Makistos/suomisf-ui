@@ -8,10 +8,10 @@ J. R. R. Tolkien, *Taru sormusten herrasta* (https://www.sf-bibliografia.fi/work
 Open `work.html?w=a` for Le Guin, `work.html?w=b` for Tolkien. The yellow bar at the top switches between visitor, logged-in user and admin.
 Ownership, prices and the similar-works list are made-up example values.
 
-| Before | After (mockup) |
-|---|---|
-| ![before](../images/work/before-desktop.png) | ![after](../images/work/after-desktop.png) |
-| ![before mobile](../images/work/before-mobile.png) | ![after mobile](../images/work/after-mobile.png) |
+| Before | After (mockup, light) | After (mockup, dark) |
+|---|---|---|
+| ![before](../images/work/before-desktop.png) | ![after](../images/work/after-desktop.png) | ![after dark](../images/work/after-desktop-dark.png) |
+| ![before mobile](../images/work/before-mobile.png) | ![after mobile](../images/work/after-mobile.png) | ![after mobile dark](../images/work/after-mobile-dark.png) |
 
 More screenshots:
 - [Admin view, whole page](../images/work/after-admin-full.png): ownership column, admin actions, "Tarkastettu", admin box.

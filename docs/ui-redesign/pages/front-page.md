@@ -7,10 +7,10 @@ backend `/api/frontpagedata`, `/api/frontpage/latest`, `/api/frontpage/random` i
 **Mockup:** [`../mockups/front-page.html`](../mockups/front-page.html) with [`front-data.js`](../mockups/front-data.js) next to it.
 Books, covers and counts are real (live API, 22.11.2026). The yellow bar switches between visitor, logged-in user and admin.
 
-| Before | After (mockup) |
-|---|---|
-| ![before](../images/front-page/before-desktop.png) | ![after](../images/front-page/after-desktop-full.png) |
-| ![before mobile](../images/front-page/before-mobile-full.png) | ![after mobile](../images/front-page/after-mobile-full.png) |
+| Before | After (mockup, light) | After (mockup, dark) |
+|---|---|---|
+| ![before](../images/front-page/before-desktop.png) | ![after](../images/front-page/after-desktop-full.png) | ![after dark](../images/front-page/after-desktop-full-dark.png) |
+| ![before mobile](../images/front-page/before-mobile-full.png) | ![after mobile](../images/front-page/after-mobile-full.png) | ![after mobile dark](../images/front-page/after-mobile-full-dark.png) |
 
 More: [first screen at 1400 px](../images/front-page/after-desktop.png), [admin view with the Ylläpito menu](../images/front-page/after-admin-full.png),
 [today's hover panel on a random pick](../images/front-page/before-hover.png).

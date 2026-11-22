@@ -5,10 +5,10 @@
 **Sample page:** <live URL of a typical, data-rich example>
 **Mockup:** _none yet_ (`../mockups/bookseries.html`)
 
-| Before | After (mockup) |
-|---|---|
-| _screenshot at 1400 px_ | _mockup at 1400 px_ |
-| _screenshot at 390 px_ | _mockup at 390 px_ |
+| Before | After (mockup, light) | After (mockup, dark) |
+|---|---|---|
+| _screenshot at 1400 px_ | _mockup at 1400 px_ | _same, dark theme_ |
+| _screenshot at 390 px_ | _mockup at 390 px_ | _same, dark theme_ |
 
 ## What's wrong today
 

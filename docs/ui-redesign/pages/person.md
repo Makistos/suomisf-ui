@@ -6,10 +6,10 @@
 **Mockup:** [`../mockups/person.html`](../mockups/person.html), built with real Le Guin data from the live API (download and open it in a browser; covers load from the live site).
 The yellow bar at the top switches between visitor, logged-in user and admin; ownership and wishlist marks are made-up examples.
 
-| Before | After (mockup) |
-|---|---|
-| ![before](../images/person/before-desktop.png) | ![after](../images/person/after-desktop.png) |
-| ![before mobile](../images/person/before-mobile.png) | ![after mobile](../images/person/after-mobile.png) |
+| Before | After (mockup, light) | After (mockup, dark) |
+|---|---|---|
+| ![before](../images/person/before-desktop.png) | ![after](../images/person/after-desktop.png) | ![after dark](../images/person/after-desktop-dark.png) |
+| ![before mobile](../images/person/before-mobile.png) | ![after mobile](../images/person/after-mobile.png) | ![after mobile dark](../images/person/after-mobile-dark.png) |
 
 Full mockup page: [after-desktop-full.png](../images/person/after-desktop-full.png). Current works list: [before-works.png](../images/person/before-works.png).
 Dark theme: [desktop](../images/person/after-desktop-dark.png), [whole page](../images/person/after-desktop-full-dark.png), [phone](../images/person/after-mobile-dark.png), [book list as admin](../images/person/after-admin-list-dark.png).

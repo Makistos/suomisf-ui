@@ -8,10 +8,10 @@ backend `GET /api/people/` in `../suomisf/app/impl_people.py` (`list_people`, `_
 real data. The yellow bar switches list / name search / error, visitor / admin, light / dark. In the mockup the role and letter filters
 only work on those 50 rows.
 
-| Before | After (mockup) |
-|---|---|
-| ![before](../images/people-list/before-desktop.png) | ![after](../images/people-list/after-desktop.png) |
-| ![before mobile](../images/people-list/before-mobile.png) | ![after mobile](../images/people-list/after-mobile.png) |
+| Before | After (mockup, light) | After (mockup, dark) |
+|---|---|---|
+| ![before](../images/people-list/before-desktop.png) | ![after](../images/people-list/after-desktop.png) | ![after dark](../images/people-list/after-desktop-dark.png) |
+| ![before mobile](../images/people-list/before-mobile.png) | ![after mobile](../images/people-list/after-mobile.png) | ![after mobile dark](../images/people-list/after-mobile-dark.png) |
 
 More: [before, stuck after sorting by Teoksia](../images/people-list/before-sort-stuck.png) · [after, translators sorted by birth year](../images/people-list/after-filtered.png) ·
 [after, name search](../images/people-list/after-search.png) · [after, error message](../images/people-list/after-error.png) ·

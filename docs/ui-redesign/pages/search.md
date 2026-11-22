@@ -9,11 +9,11 @@
 years, types, covers and anthology editors were fetched from each work, because the search API doesn't return them (see backend changes).
 The yellow bar switches between the two searches, an empty result, the open menu dropdown, and light / dark.
 
-| Before | After (mockup) |
-|---|---|
-| ![before](../images/search/before-results-asimov-desktop.png) | ![after](../images/search/after-results-asimov-desktop.png) |
-| ![before dropdown](../images/search/before-dropdown-desktop.png) | ![after dropdown](../images/search/after-dropdown-desktop.png) |
-| ![before mobile](../images/search/before-dropdown-mobile.png) | ![after mobile](../images/search/after-dropdown-mobile.png) |
+| Before | After (mockup, light) | After (mockup, dark) |
+|---|---|---|
+| ![before](../images/search/before-results-asimov-desktop.png) | ![after](../images/search/after-results-asimov-desktop.png) | ![after dark](../images/search/after-results-asimov-desktop-dark.png) |
+| ![before dropdown](../images/search/before-dropdown-desktop.png) | ![after dropdown](../images/search/after-dropdown-desktop.png) | ![after dropdown dark](../images/search/after-dropdown-desktop-dark.png) |
+| ![before mobile](../images/search/before-dropdown-mobile.png) | ![after mobile](../images/search/after-dropdown-mobile.png) | ![after mobile dark](../images/search/after-dropdown-mobile-dark.png) |
 
 More: [before, "aikakone", whole page](../images/search/before-results-aikakone-desktop-full.png) ·
 [after, "aikakone"](../images/search/after-results-aikakone-desktop.png) · [after, "aikakone", Teokset tab](../images/search/after-results-aikakone-tab.png) ·

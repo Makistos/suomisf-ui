@@ -32,7 +32,7 @@ Nothing here is built yet unless the status table says so. Each change still goe
 | Magazines, magazine, issue | `/magazines`, `/magazines/:id`, `/issues/:id` | [magazines.md](pages/magazines.md) | Agreed |
 | Book series | `/bookseries`, `/bookseries/:id` | [bookseries.md](pages/bookseries.md) | Agreed |
 | Publisher series | `/pubseries`, `/pubseries/:id` | [pubseries.md](pages/pubseries.md) | Agreed |
-| Publishers | `/publishers`, `/publishers/:id` | [publishers.md](pages/publishers.md) | Not started |
+| Publishers | `/publishers`, `/publishers/:id` | [publishers.md](pages/publishers.md) | Agreed |
 | Awards | `/awards`, `/awards/:id` | [awards.md](pages/awards.md) | Not started |
 | Tags | `/tags`, `/tags/:id` | [tags.md](pages/tags.md) | Not started |
 | Latest additions, changes | `/latest`, `/changes` | [latest-changes.md](pages/latest-changes.md) | Not started |

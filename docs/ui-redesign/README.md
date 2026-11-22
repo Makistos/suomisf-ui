@@ -19,10 +19,10 @@ Nothing here is built yet unless the status table says so. Each change still goe
 | Page | Route | Plan | Status |
 |---|---|---|---|
 | Person | `/people/:id` | [person.md](pages/person.md) | Proposal, mockup ready |
-| Work | `/works/:id` | [work.md](pages/work.md) | Proposal, first review done |
+| Work | `/works/:id` | [work.md](pages/work.md) | Agreed |
 | Edition | `/editions/:id` | [edition.md](pages/edition.md) | Not started |
 | Short story | `/shorts/:id` | [short.md](pages/short.md) | Not started |
-| Front page | `/` | [front-page.md](pages/front-page.md) | Not started |
+| Front page | `/` | [front-page.md](pages/front-page.md) | Proposal, mockup ready |
 | Search results | `/search` | [search.md](pages/search.md) | Not started |
 | People list | `/people` | [people-list.md](pages/people-list.md) | Not started |
 | Book index, works by type, non-fiction | `/bookindex`, `/nonfiction` | [book-index.md](pages/book-index.md) | Not started |

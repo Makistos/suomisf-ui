@@ -41,14 +41,17 @@ Rules every page follows. **Proposed** = from the person page plan, waiting for 
 | Filter | Pill that turns dark when on, with a count | Proposed |
 | Genre | Small coloured badge in lists; horizontal bars in summaries | Proposed |
 | Tabs | One row only, count after each label, state in the URL | Proposed |
+| Covers in lists | Title and author next to every cover; nothing important is hover-only; samples work by click or tap | Proposed (front page) |
+| Counts shown to visitors | Link to the list or statistics behind them | Proposed (front page) |
 | Lists of books | Compact row by default (thumb, title, original title and year, series, Finnish editions); cover grid as a toggle | Proposed |
 | Sort | Original year, Finnish year, name; group by decade when sorting by year | Proposed |
 | Long text (bio, description) | Clamp to 4–5 lines with "Näytä koko…" (`CollapsibleHtml`) | Proposed |
 | Facts / summary box | Sidebar on desktop (sticky), below the content on a phone | Proposed |
 | External links | Two-column list in the sidebar | Proposed |
 | Admin actions | Keep the SpeedDial button; admin-only tools in one dashed "Ylläpitäjille" box | Proposed |
+| Main menu | Same on every page, including the search box; admins always see the Ylläpito menu | Agreed (front page) |
 | Change history | A link that opens a dialog, not a tab | Agreed (work) |
-| Similar works | Public to everyone (going public); a row of covers, each with a "Miksi samankaltainen?" popover (reasons for all, score numbers for admins) | Agreed: public, keep reasons. Placement proposed |
+| Similar works | Public to everyone (going public); a row of covers, each with a "Miksi samankaltainen?" popover (reasons for all, score numbers for admins) | Agreed (work) |
 | Use PrimeReact components where one fits (repo rule) | `SelectButton`, `Dropdown`, `Chip`, `Tag`, `InputText` | Agreed |
 
 ## Layout and quality floor

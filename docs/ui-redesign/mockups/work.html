@@ -209,7 +209,7 @@ body.admin .fab{display:grid}
 const IMG="https://www.sf-bibliografia.fi:5000";
 const Q=new URLSearchParams(location.search);
 const W=DATA[Q.get("w")==="b"?"b":"a"];
-let MODE=Q.get("group")||"all";
+let MODE=Q.get("group")||"condensed";
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const fin=n=>n.includes(", ")?n.split(", ").reverse().join(" "):n;
 const yr=a=>Math.min(...a)===Math.max(...a)?String(Math.min(...a)):Math.min(...a)+"–"+Math.max(...a);
@@ -272,14 +272,14 @@ const WHY=[
   nums:["Asiasanat 0,38 (0,80) · Kuvaus 0,14 (0,35) · Genre 0,12 (1,00) · Vuosi 0,01 (0,40) = 0,65","Aihe 0,26 (0,61) · Paikka 0,12 (0,50)","0,65 × kattavuus 1,00 = 0,65"]},
 ];
 const SIMIMG={"Harhakaupunki":"LeGuin_Ursula_K_Harhakaupunki_1p.jpg","Maailma, vihreä metsä":"LeGuin_Ursula_K_Maailmavihreametsa_1p.jpg","Maailman syntymäpäivä ja muita tarinoita":"LeGuin_Ursula_K_Maailmansyntymapaiva_1p.jpg","Maanpakolaisten planeetta":"LeGuin_Ursula_K_Maanpakolaistenplaneetta_1p.jpg","Osattomien planeetta":"LeGuin_Ursula_K_Osattomienplaneetta_1p.jpg","Rocannonin maailma":"LeGuin_Ursula_K_Rocannoninmaailma_1p.jpg","Kahdesti haarautuva puu":"LeGuin_Ursula_K_Kahdestihaarautuvapuu_1p.jpg","Neljä anteeksiantoa":"LeGuin_Ursula_K_Neljaanteeksiantoa_1p.jpg"};
-document.getElementById("tagsbox").innerHTML=`<span class="anno" style="left:-34px;top:4px">7</span>
+document.getElementById("tagsbox").innerHTML=`<span class="anno" style="left:-34px;top:4px">6</span>
 <div class="box"><h3>Asiasanat</h3>${ORDER.filter(k=>tg[k]).map(k=>`<div class="tgroup"><span>${LABEL[k]}</span><div class="tags">${tg[k].map(n=>`<a class="tag">${esc(n)}</a>`).join("")}</div></div>`).join("")}</div>`;
 document.getElementById("side").innerHTML=`
 <div class="box"><h3>Linkit</h3><ul class="links">${W.links.map(l=>`<li><a>${esc(l)}</a></li>`).join("")}</ul></div>
 <div class="box only-user"><h3>Oma lukumerkintä</h3><div class="rate"><span><i class="pi pi-thumbs-down"></i> En pitänyt</span><span><i class="pi pi-minus-circle"></i> Ihan ok</span><span><i class="pi pi-thumbs-up"></i> Pidin</span></div></div>
 <div class="box admin only-admin"><h3>Ylläpitäjille</h3><ul><li>Kirjasampo-asiasanat tuotu 4.11.2026</li><li><a>Hae Kirjasampo-asiasanat</a></li><li><a>Hinnat antikvariaateista</a></li></ul></div>
 <div class="meta-foot"><a>Muutoshistoria</a> (avautuu ikkunaan)</div>`;
-document.getElementById("sim").innerHTML=`<span class="anno" style="left:-34px;top:2px">8</span><h2>Samankaltaiset teokset<small>esimerkkidata</small></h2>
+document.getElementById("sim").innerHTML=`<span class="anno" style="left:-34px;top:2px">7</span><h2>Samankaltaiset teokset<small>esimerkkidata</small></h2>
 <div class="sim">${SIM.map((x,i)=>{const r=WHY[i%WHY.length];return `<div class="card"><a>${SIMIMG[x[1]]?`<img src="${IMG}/static/images/books/${SIMIMG[x[1]]}" alt="">`:`<span class="ph"></span>`}</a><a>${esc(x[1])}</a><button class="why" aria-expanded="false" aria-controls="why${i}" title="Miksi samankaltainen?" data-i="${i}"><i class="pi pi-question-circle"></i></button><small>Ursula K. Le Guin, ${x[2]}</small>
 <div class="pop" id="why${i}" role="dialog" aria-label="Miksi samankaltainen"><b>Miksi samankaltainen?</b><ul>${r.reasons.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>
 <div class="nums">${esc(r.nums[0])}<br>${esc(r.nums[1])}<br>${esc(r.nums[2])}</div></div></div>`}).join("")}</div>`;
@@ -337,10 +337,8 @@ function renderEds(){
     </div>
   </div>
   ${Object.entries(byV).map(([v,list])=>{
-    const nums=list.map(e=>e.n), missing=[];for(let i=1;i<Math.max(...nums);i++) if(!nums.includes(i)) missing.push(i);
     return `<div class="version">
       <div class="v-head"><h3>${v}. laitos</h3><span>${list.length} ${list.length>1?"painosta":"painos"}, ${yr(list.map(e=>e.y))}</span></div>
-      ${missing.length?`<div class="gap only-admin rel">Painosnumerot, joista ei ole tietoja: ${rng(missing)} <span class="anno" style="left:-50px;top:4px">6</span></div>`:""}
       <table><thead><tr><th></th><th>Painos</th><th>Vuosi</th><th>Kustantaja ja sarja</th><th>Suomentaja</th><th>Sidonta</th><th>Sivuja</th><th>ISBN</th><th class="col-user">Omat</th><th class="col-admin">Ylläpito</th></tr></thead>
       <tbody>${groups(list).map(g=>row(g,idx++)).join("")}</tbody></table></div>`}).join("")}`;
   document.querySelectorAll("#grp span").forEach(s=>{s.classList.toggle("on",s.dataset.m===MODE);s.onclick=()=>{MODE=s.dataset.m;renderEds()}});

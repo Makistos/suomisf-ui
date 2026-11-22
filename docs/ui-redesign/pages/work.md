@@ -1,7 +1,7 @@
 # Work page
 
 **Route:** `/works/:id` · **Code:** `src/features/work/routes/work-page.tsx`, `src/features/work/components/work-details.tsx`, `src/features/edition/components/edition-details.tsx`, `src/features/edition/utils/group-similar-editions.ts`
-**Status:** Proposal, first review done · **Updated:** 2026-11-22
+**Status:** Agreed ·  **Updated:** 2026-11-22
 **Sample pages:** Ursula K. Le Guin, *Pimeyden vasen käsi* (https://www.sf-bibliografia.fi/works/3984): awards, series, 3 editions.
 J. R. R. Tolkien, *Taru sormusten herrasta* (https://www.sf-bibliografia.fi/works/1514): 20 printings in 3 laitos.
 **Mockup:** [`../mockups/work.html`](../mockups/work.html) with [`works-data.js`](../mockups/works-data.js) next to it (real data from the live API).
@@ -15,8 +15,8 @@ Ownership, prices and the similar-works list are made-up example values.
 
 More screenshots:
 - [Admin view, whole page](../images/work/after-admin-full.png): ownership column, admin actions, "Tarkastettu", admin box.
-- [Tolkien, logged-in user, every printing](../images/work/after-lotr-user-full.png) and [before, Tolkien, condensed view](../images/work/before-lotr-full.png).
-- [Tolkien, "Samanlaiset yhdessä", admin](../images/work/after-lotr-condensed-admin.png): merged rows and the printing-number gap line.
+- [Tolkien, logged-in user, default grouping "Samanlaiset yhdessä"](../images/work/after-lotr-user-full.png) and [before, Tolkien, condensed view](../images/work/before-lotr-full.png).
+- [Tolkien, "Kaikki", admin](../images/work/after-lotr-all-admin.png): every printing on its own row with ownership and admin columns.
 - [Editions on a phone, logged in](../images/work/after-mobile-editions.png).
 - [Similar works with "Miksi samankaltainen?" open, admin](../images/work/after-similar-why-admin.png). Open it in the mockup with `?why=0`.
 
@@ -58,7 +58,7 @@ More screenshots:
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
-The numbers 1–8 in the mockup screenshots match the sections below.
+The numbers 1–7 in the mockup screenshots match the sections below.
 
 1. **Header with cover.** Cover of the first edition at 200 px (104 px on a phone, beside the title).
    Under it, a strip of every distinct cover with its year. Clicking one swaps the big cover.
@@ -80,17 +80,14 @@ The numbers 1–8 in the mockup screenshots match the sections below.
      **Kaikki** (every printing on its own row), **Samanlaiset yhdessä** (same laitos, title and page count share a row, so one laitos can have several rows),
      **Laitoksittain** (one row per laitos). A merged row shows the printing range, the year range and every publisher series, binding and ISBN in the group.
      Like today, ownership and admin controls appear only on single-printing rows.
-   - **Default view: table** (decided). Default grouping: see open questions.
+   - **Default: table, grouped "Samanlaiset yhdessä"** (as today's default).
    - "Kortit" keeps today's card view for anyone who prefers it.
    - On a phone each row becomes a small card (thumb on the left, fields stacked with short labels: Suom., Sivuja, ISBN).
    - All laitos tables use the same fixed column widths so their columns line up.
    - For collections and anthologies, a **"Sisältö"** section with the stories comes before "Painokset" (the Novellit tab today).
-6. **Printing-number gaps (admins).** Printing numbers count up within a laitos. Tolkien's 1st laitos has printings up to the 36th,
-   but only 17 are in the database; the other numbers (7, 9, 11–19, 21, 23, 26, 31–35) were printed but have no record.
-   A line above the table lists them, so admins can see what to add. Computed from gaps in `editionnum`; no new data.
-7. **Tags under the description**, grouped by type with a written label on the left (Alalaji, Tyyli, Aiheet, Hahmot ja olennot, Paikat, Aika,
+6. **Tags under the description**, grouped by type with a written label on the left (Alalaji, Tyyli, Aiheet, Hahmot ja olennot, Paikat, Aika,
    Listat ja sovitukset), all in one neutral chip style. This writes out what today's colours mean. All tags show; a work has at most ~20.
-8. **Samankaltaiset teokset** as a full-width row of covers under the editions, **public to everyone** (today admin-only; it is going public).
+7. **Samankaltaiset teokset** as a full-width row of covers under the editions, **public to everyone** (today admin-only; it is going public).
    Today the list is behind a button and opens in a dialog; the row shows it on the page directly.
    - Each cover keeps today's **"Miksi samankaltainen?"** control: a "?" after the title opens a popover (PrimeReact `OverlayPanel`)
      with the strongest reasons as a list, in today's wording (`shownReasons` + `reasonText`):
@@ -123,7 +120,7 @@ dust jacket and verified flags, awards, tags with types, and the series with its
 2. **Tags and sidebar**: tags grouped by type (new `TagsByType` in `src/features/tag/components/`, reusing the type names from
    `tag-type-to-severity.ts`), links list, read control, admin box, change-history dialog (wraps today's `EntityChanges`).
 3. **Editions table**: new `edition-table.tsx` in `src/features/edition/components/`. It reuses `groupSimilarEditions` for the three modes,
-   plus new pure helpers with Vitest tests: `mergeGroupForRow(group)` (ranges and unique values) and `missingPrintings(editions)`.
+   plus new pure helpers with Vitest tests: `mergeGroupForRow(group)` (ranges and unique values).
    Fixtures: the two sample works' API responses in `src/test/fixtures/`.
    PrimeReact `DataTable` with stacked layout on small screens, or a plain table if `DataTable` is too heavy.
 4. **Row controls**: move the ownership, wishlist, owners, price and admin buttons out of `edition-details.tsx` into components the table row
@@ -137,8 +134,7 @@ dust jacket and verified flags, awards, tags with types, and the series with its
 
 ## Tests
 
-- Vitest: `mergeGroupForRow` (ranges, unique series, bindings and ISBNs), `missingPrintings` (Tolkien fixture: 7, 9, 11–19, 21, 23, 26, 31–35),
-  series previous/next, tag grouping order, award overflow at more than three.
+- Vitest: `mergeGroupForRow` (ranges, unique series, bindings and ISBNs; Tolkien fixture), series previous/next, tag grouping order, award overflow at more than three.
 - Playwright: cover strip swaps the cover; grouping toggle changes rows; the "?" on a similar work opens its reasons (numbers only for admins); series links go to the right works; table rows link to editions;
   logged-in user sees the Omat column; admin sees the Ylläpito column, "Tarkastettu" and the admin box; visitor sees neither;
   change history opens in a dialog.
@@ -146,9 +142,7 @@ dust jacket and verified flags, awards, tags with types, and the series with its
 
 ## Open questions
 
-- Default grouping: **Kaikki** (proposed; the table is short enough) or today's default **Samanlaiset yhdessä**?
-- Printing-number gaps: admins only (as in the mockup), everyone, or leave them out?
-- Similar works: a cover row under the editions (mockup), or a sidebar list?
+_None._
 
 ## Decisions
 
@@ -160,3 +154,6 @@ dust jacket and verified flags, awards, tags with types, and the series with its
 - Similar works will be public to everyone, and keep the control that shows why a work is considered similar.
 - Editions must keep every field and control the cards have today: translator, ownership, wishlist, owners, prices, and admin edit, copy, delete.
 - No "Suomeksi" labels anywhere.
+- Default grouping stays "Samanlaiset yhdessä".
+- No list of missing printing numbers.
+- Similar works go in a full-width cover row under the editions.

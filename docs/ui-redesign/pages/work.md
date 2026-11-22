@@ -1,6 +1,6 @@
 # Work page
 
-**Route:** `/works/:id` · **Code:** `src/features/work/routes/work-page.tsx`, `src/features/work/components/work-details.tsx`, `src/features/edition/components/edition-details.tsx`, `src/features/edition/utils/group-similar-editions.ts`
+**Routes:** `/works/:id`, and `/editions/:id` (the same page with one edition highlighted) · **Code:** `src/features/work/routes/work-page.tsx`, `src/features/work/components/work-details.tsx`, `src/features/edition/components/edition-details.tsx`, `src/features/edition/utils/group-similar-editions.ts`
 **Status:** Agreed ·  **Updated:** 2026-11-22
 **Sample pages:** Ursula K. Le Guin, *Pimeyden vasen käsi* (https://www.sf-bibliografia.fi/works/3984): awards, series, 3 editions.
 J. R. R. Tolkien, *Taru sormusten herrasta* (https://www.sf-bibliografia.fi/works/1514): 20 printings in 3 laitos.
@@ -71,7 +71,7 @@ The numbers 1–7 in the mockup screenshots match the sections below.
 4. **Description** stays clamped (`CollapsibleHtml` already does this). "Muuta" becomes a quiet note under it.
 5. **"Painokset" section replaces the tabs** and uses the full page width. A one-line summary (printings, years, publishers, translators),
    then one box per laitos (`version`) with a table:
-   - **Columns:** cover thumb, printing (links to the edition page), year, publisher with printing place and publisher series,
+   - **Columns:** cover thumb, printing (links to `/editions/:id`, see "Edition links" below), year, publisher with printing place and publisher series,
      **translator**, binding, pages and size, ISBN. Cover artist, illustrator, dust jacket ("Kansipaperi"), overlapping covers ("Ylivetokannet"),
      a different edition title and the edition's own notes show in small text under the publisher.
    - **Logged-in users** get an "Omat" column: owned with condition (the 1–5 stars from `EditionOwnership`), wishlist (`EditionWishlist`),
@@ -85,6 +85,9 @@ The numbers 1–7 in the mockup screenshots match the sections below.
    - "Kortit" keeps today's card view for anyone who prefers it.
    - On a phone each row becomes a small card (thumb on the left, fields stacked with short labels: Suom., Sivuja, ISBN).
    - All laitos tables use the same fixed column widths so their columns line up.
+   - **Edition links:** there is no separate edition page. `/editions/:id` opens this work page, scrolls to that printing's row and
+     highlights it (today's `highlighted-edition` style, with its dark-theme colours). If the printing is inside a merged row
+     ("Samanlaiset yhdessä" or "Laitoksittain"), that row is highlighted.
    - For collections and anthologies, a **"Sisältö"** section with the stories comes before "Painokset" (the Novellit tab today).
 6. **Tags under the description**, grouped by type with a written label on the left (Alalaji, Tyyli, Aiheet, Hahmot ja olennot, Paikat, Aika,
    Listat ja sovitukset), all in one neutral chip style. This writes out what today's colours mean. All tags show; a work has at most ~20.
@@ -139,6 +142,7 @@ dust jacket and verified flags, awards, tags with types, and the series with its
 - Playwright: cover strip swaps the cover; grouping toggle changes rows; the "?" on a similar work opens its reasons (numbers only for admins); series links go to the right works; table rows link to editions;
   logged-in user sees the Omat column; admin sees the Ylläpito column, "Tarkastettu" and the admin box; visitor sees neither;
   change history opens in a dialog.
+- Playwright: `/editions/:id` opens the work page with that row highlighted and in view, also when it is inside a merged row.
 - a11y: table has headers, icon buttons have labels, cover strip buttons have labels.
 
 ## Open questions

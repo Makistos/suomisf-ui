@@ -6,6 +6,7 @@ import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 
 import { resetPassword } from '@services/auth-service';
+import { passwordRules } from '../utils/password-rules';
 
 type FormData = {
     password: string,
@@ -72,19 +73,20 @@ export const ResetPasswordView = () => {
                                     </label>
                                     <Controller name="password"
                                         control={form.control}
-                                        rules={{
-                                            required: "Salasana on pakollinen",
-                                            minLength: {
-                                                value: 6,
-                                                message: "Vähintään 6 merkkiä"
-                                            }
-                                        }}
+                                        rules={passwordRules}
                                         render={({ field, fieldState }) => (
-                                            <InputText id={field.name} {...field}
-                                                autoFocus type="password"
-                                                className={classNames(
-                                                    { 'p-invalid': fieldState.error },
-                                                    "w-full mb-3")} />
+                                            <>
+                                                <InputText id={field.name} {...field}
+                                                    autoFocus type="password"
+                                                    className={classNames(
+                                                        { 'p-invalid': fieldState.error },
+                                                        "w-full mb-3")} />
+                                                {fieldState.error && (
+                                                    <small className="p-error block mb-3">
+                                                        {fieldState.error.message}
+                                                    </small>
+                                                )}
+                                            </>
                                         )} />
                                 </div>
                                 <div className="field">
@@ -100,11 +102,18 @@ export const ResetPasswordView = () => {
                                                 || "Salasanat eivät täsmää"
                                         }}
                                         render={({ field, fieldState }) => (
-                                            <InputText id={field.name} {...field}
-                                                type="password"
-                                                className={classNames(
-                                                    { 'p-invalid': fieldState.error },
-                                                    "w-full mb-3")} />
+                                            <>
+                                                <InputText id={field.name} {...field}
+                                                    type="password"
+                                                    className={classNames(
+                                                        { 'p-invalid': fieldState.error },
+                                                        "w-full mb-3")} />
+                                                {fieldState.error && (
+                                                    <small className="p-error block mb-3">
+                                                        {fieldState.error.message}
+                                                    </small>
+                                                )}
+                                            </>
                                         )} />
                                 </div>
                                 <Button type="submit" icon="pi pi-check"

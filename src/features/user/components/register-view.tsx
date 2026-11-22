@@ -5,6 +5,8 @@ import { classNames } from 'primereact/utils';
 import React, { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
+import { passwordRules } from '../utils/password-rules';
+
 type FormData = {
     username: string,
     email: string,
@@ -80,15 +82,19 @@ export const RegisterView = () => {
                                     <span>
                                         <label htmlFor="password">Salasana</label>
                                         <Controller name="password" control={form.control}
-                                            rules={{ required: "Salasana on pakollinen" }}
+                                            rules={passwordRules}
                                             render={({ field, fieldState }) => (
-                                                <InputText
-                                                    id={field.name} {...field}
-                                                    {...form.register("password", { required: true })}
-                                                    type="password"
-                                                    className={classNames({ 'p-invalid': fieldState.error },
-                                                        "w-full mb-3")}
-                                                />
+                                                <>
+                                                    <InputText
+                                                        id={field.name} {...field}
+                                                        type="password"
+                                                        className={classNames({ 'p-invalid': fieldState.error },
+                                                            "w-full mb-3")}
+                                                    />
+                                                    {fieldState.error && (
+                                                        <small className="p-error block mb-3">{fieldState.error.message}</small>
+                                                    )}
+                                                </>
                                             )} />
                                     </span>
                                 </div>
@@ -99,15 +105,20 @@ export const RegisterView = () => {
                                             rules={{
                                                 required: "Salasana on pakollinen",
                                                 validate: (value) => value === form.getValues('password')
+                                                    || "Salasanat eivät täsmää"
                                             }}
                                             render={({ field, fieldState }) => (
-                                                <InputText
-                                                    id={field.name} {...field}
-                                                    {...form.register("password2", { required: true })}
-                                                    type="password"
-                                                    className={classNames({ 'p-invalid': fieldState.error },
-                                                        "w-full mb-3")}
-                                                />
+                                                <>
+                                                    <InputText
+                                                        id={field.name} {...field}
+                                                        type="password"
+                                                        className={classNames({ 'p-invalid': fieldState.error },
+                                                            "w-full mb-3")}
+                                                    />
+                                                    {fieldState.error && (
+                                                        <small className="p-error block mb-3">{fieldState.error.message}</small>
+                                                    )}
+                                                </>
                                             )} />
                                     </span>
                                 </div>

@@ -1,10 +1,12 @@
 # Person page
 
 **Route:** `/people/:id` · **Code:** `src/features/person/routes/person-page.tsx`, `src/features/person/components/person-details.tsx`, `src/components/contributor-book-control.tsx`
-**Status:** Agreed (revised 2026-11-23) · **Updated:** 2026-11-23
+**Status:** Agreed (revised 2026-11-24) · **Updated:** 2026-11-24
 **Sample page:** Ursula K. Le Guin, https://www.sf-bibliografia.fi/people/2435
 **Mockup:** [`../mockups/person.html`](../mockups/person.html), built with real Le Guin data from the live API (download and open it in a browser; covers load from the live site).
 The yellow bar at the top switches between visitor, logged-in user and admin; ownership and wishlist marks are made-up examples.
+"Otsake" swaps in the header of a person with pen names (header only; the rest of the page stays Le Guin): `?hd=king` (Stephen King, who
+used the pen name Richard Bachman) and `?hd=hunter` (Erin Hunter, a pen name shared by eight writers). `?osio=henkilosta` opens the Henkilöstä tab.
 **Alternative look:** [person-identity.md](person-identity.md) proposes a different visual identity for this page (typography, colour, the authority-record
 header) with the same behaviour as this plan. Proposal only; this plan stays the agreed design until it is decided.
 
@@ -16,11 +18,13 @@ header) with the same behaviour as this plan. Proposal only; this plan stays the
 Full mockup page: [after-desktop-full.png](../images/person/after-desktop-full.png). Current works list: [before-works.png](../images/person/before-works.png).
 Dark theme: [desktop](../images/person/after-desktop-dark.png), [whole page](../images/person/after-desktop-full-dark.png), [phone](../images/person/after-mobile-dark.png), [book list as admin](../images/person/after-admin-list-dark.png).
 Book list as admin: [after-admin-list.png](../images/person/after-admin-list.png) (owned ★ and wishlist marks on editions, edit pencil after each title).
+Pen names: [Stephen King](../images/person/after-header-king.png), [Erin Hunter](../images/person/after-header-hunter.png);
+[Henkilöstä tab](../images/person/after-about.png) (each also `-dark`).
 
 ## What's wrong today (measured on Le Guin)
 
 1. **Too long.** The page is 8,651 px tall on desktop and 17,391 px on a phone. Each book is a ~260 px card
-   (cover carousel, edition list, genre chip, collapsed tags). The mockup is 4,062 / 5,314 px.
+   (cover carousel, edition list, genre chip, collapsed tags). The mockup is 4,032 / 5,261 px.
    People with long lists go much further: Erin Hunter (94 works, 195 editions) is 26,797 px on desktop and 57,285 px on a phone today,
    Stephen King (88 works, 152 stories) 23,023 / 46,143 px. There is no height budget; compact rows (about 76 px instead of 260 px per book)
    cut those lists to roughly a third, and the sticky tab row and filters keep them usable.
@@ -42,14 +46,14 @@ Book list as admin: [after-admin-list.png](../images/person/after-admin-list.png
 │ Henkilöt / Le Guin, Ursula K.                                         │
 ├──────────────────────────────────────────────┬───────────────────────┤
 │ [photo] Ursula K. Le Guin                     │ Tuotanto tietokannassa │
-│         Ursula Kroeber Le Guin                │  31 kirjaa  40 painosta│
-│         🇺🇸 Yhdysvallat  1929–2018              │  93 novellia 2 palk.  │
+│         Ursula Kroeber Le Guin                │  30 kirjaa  39 painosta│
+│         🇺🇸 Yhdysvallat  1929–2018              │  80 novellia 35 palk. │
 │         (Kirjailija)(Novellisti)…             ├───────────────────────┤
 │ ┌ Painokset vuosittain 1976–2024 ──────────┐ │ Genret (bars)          │
 │ │ ▮▮ ▮   ▮▮▮   ▮ ▮▮      ▮▮▮▮▮▮▮▮▮  ▮▮ ▮▮  │ │ Yleisimmät asiasanat   │
 │ └──────────────────────────────────────────┘ │ Linkit (2 columns)     │
 │ Bio, 4 lines … Näytä koko esittely ▾          │ Muokattu · Muutoshist. │
-│ Teokset 30 | Tietokirjat 1 | Novellit 93 | …  │   (scrolls with page,  │
+│ Teokset 29 | Novellit 80 | Sarjat 3 | …       │   (scrolls with page,  │
 │ (Kaikki)(Romaanit)(Kokoelmat)…  [filter][sort][Lista|Kannet]          │
 │ ── 1960-luku ──                               │    below on phone)     │
 │ [cover] Maameren velho          F  3 painosta │                       │
@@ -61,7 +65,13 @@ Book list as admin: [after-admin-list.png](../images/person/after-admin-list.png
 The numbers 1–6 in the mockup screenshots match the sections below.
 
 1. **Header.** Mixed-case name in Roboto Slab, larger portrait (168 px, 96 px on phone) with credit under it,
-   nationality and years on one line, roles as small soft chips. "Myös" / "Oikea henkilö" stay under it.
+   nationality and years on one line, roles as small soft chips.
+   - **Pen names** (shown in the mockup since 2026-11-24, `?hd=king`, `?hd=hunter`), under the full name, each name a link to its record:
+     "Salanimi: Richard Bachman" (the record's `aliases`, the names this person used, followed by the free-text `other_names`;
+     "Salanimet" for several), and on a pen name's own record "Oikeat henkilöt: Tui T. Sutherland, Gillian Philip, …" (`real_names`;
+     Erin Hunter has eight, "Oikea henkilö" for one). Today's page shows the same data as "Myös:" and "Oikea henkilö:".
+     A book published under a pen name says so in its row: "*Thinner* 1985, nimellä Richard Bachman".
+   - **Roles come from the person's own contributions** (see "Counts and roles" below), never from the kind of book alone.
 2. **Publication timeline, "Painokset vuosittain" (new, the one distinctive element).** Revised 2026-11-23 after review: the first
    version drew one block per edition, which breaks for prolific authors (Erin Hunter has 195 editions, 57 of them in 2023).
    - **What it counts:** every Finnish **book edition** in the database in which the person has any role (author, editor, translator,
@@ -84,7 +94,10 @@ The numbers 1–6 in the mockup screenshots match the sections below.
 3. **Bio** clamped to 4–5 lines with `CollapsibleHtml`, source label next to the toggle.
 4. **Two levels of tabs, each with one job** (revised 2026-11-23; role tabs kept, decided):
    - **Main tabs = what kind of record:** **Teokset** (fiction books), **Tietokirjat** (non-fiction books, its own tab as decided),
-     **Novellit ja artikkelit**, **Sarjat**, **Lehdet** (magazines they edited), **Palkinnot**, **Muu tuotanto** (as today).
+     **Novellit ja artikkelit**, **Sarjat**, **Lehdet** (magazines they edited), **Palkinnot**, **Muu tuotanto** (as today: non-SF books and stories),
+     and **Henkilöstä** (decided 2026-11-24): books and articles the person appears in or that are about them ("Esiintyy"), in two groups with
+     their counts, **Kirjat** first and then **Artikkelit** (Le Guin: 1 book, 13 articles), each sorted by year; an article row shows its author,
+     year and where it was published, as the live list does ("Kimmo Hypen, 1984 · Spin 2 / 1984"). No toolbar and no role row in this tab.
      A tab shows only when it has content; with only one tab, the row isn't shown (a heading with the count instead).
    - **Role tabs = the person's role,** inside Teokset, Tietokirjat and Novellit ja artikkelit, as today's subtabs:
      Kirjoittanut, Toimittanut, Kääntänyt, Kansikuva, Kuvittanut, each with its count. Drawn as a smaller second row (a segmented control,
@@ -97,7 +110,7 @@ The numbers 1–6 in the mockup screenshots match the sections below.
 
    | Control | In which tabs | Behaviour |
    |---|---|---|
-   | Type chips | Teokset (Romaanit, Kokoelmat, Yhteisniteet…), Novellit ja artikkelit (Novellit, Artikkelit, Runot…) | One at a time, "Kaikki" first; only types that occur |
+   | Type chips | Teokset (Romaanit, Kokoelmat, Kokoomateokset…), Novellit ja artikkelit (Novellit, Artikkelit, Runot…) | One at a time, "Kaikki" first; only types that occur |
    | Year | Teokset, Tietokirjat, Novellit ja artikkelit | Set from the timeline; shown as a removable chip "1984 ×" |
    | Name filter | All list tabs | Filters as you type |
    | Sort | All list tabs | Original year (default), Finnish year, name; tabs offer only orders that make sense |
@@ -123,6 +136,42 @@ The numbers 1–6 in the mockup screenshots match the sections below.
    ([dark](../images/person/after-mobile-scrolled-dark.png)).
 6. **Sidebar.** Stats box, genre bars (replace the chip pile), top 8 tags in one neutral style with counts plus "+N muuta",
    links in 2 columns, last-edited date with a link to the change history (`get-person-changes.ts` already exists).
+
+**Counts and roles (revised 2026-11-24 after review).** Only the person's own contributions count, under any name they used (their record and
+its pen names), in a production role: Kirjoittaja, Toimittaja, Kääntäjä, Kansikuva, Kuvittaja. **"Esiintyy"** (the person appears in a book or
+article, or it is about them) is never output and never a role; those items are under Henkilöstä. Role names and their order are the live page's.
+
+**Compared with the live site** (2026-11-24; every number checked against the live pages for the same people). "First mockup" is the version
+before this review; differences from the live site are either a design change of this plan or a live bug listed in the notes below.
+
+| Le Guin | Live site | First mockup | Mockup now | Difference from live |
+|---|---|---|---|---|
+| Roles | Kirjailija, Tietokirjailija, Kirjoittaja, Novellisti | Kirjailija, Novellisti, Tietokirjailija, Kirjoittaja | Kirjailija, Kirjoittaja, Novellisti | Live bug, note 1 |
+| Teokset | 29 (Kirjoittanut 29) | 30 | 29 | None |
+| Tietokirjat | Tab with one book (Esiintyy 1) | 1 | No tab | Live bug, note 2; the book is under Henkilöstä |
+| Novellit ja artikkelit | 93 (72 + 5 + 2 + 14 articles) | 93 | 80 | Design: the 13 articles about her (live: Artikkeli, group "Esiintyy") move to Henkilöstä |
+| Sarjat | 3 | 3 | 3 | None |
+| Palkinnot | 35 | 2 | 35 | None |
+| Muu tuotanto | 1 (*Malafrena*) | 1 | 1 | None |
+| Henkilöstä | – | – | 14 (Kirjat 1, Artikkelit 13) | New tab |
+| Totals in the header / stats box | – (not shown) | 31 kirjaa, 40 painosta, 93 novellia, 2 palkintoa | 30, 39, 80, 35 | Worked out from the same API data the live page uses: 29 + 1 books and their printings, 93 − 13 stories, 35 awards |
+
+Other people, only where something differs from the live site:
+
+| Person | Live site | Mockup now | Difference |
+|---|---|---|---|
+| J. Pekka Mäkelä, Novellit ja artikkelit | 20 (Novelli 13, Artikkeli 7) | 16 (5 written, 11 translated) | Design: 4 articles about him move to Henkilöstä. Roles, Teokset (7 + 28 + 1) and Sarjat 1 match. |
+| Stephen King, Novellit ja artikkelit | 123 (Novelli 104, Runo 3, Artikkeli 15, Esipuhe 1) | 110 | Design: 13 articles about him move to Henkilöstä. Roles, Teokset 81, Sarjat 6, Palkinnot 30 and Muu tuotanto 36 (7 + 28 + 1) match. |
+| Erin Hunter, roles | Kirjailija | Kirjailija, Novellisti | Live bug, note 3. Teokset 94, Novellit 6 and Sarjat 16 match. |
+
+**Notes: possible bugs on the live site** (found while comparing; to be fixed separately, later, not as part of this redesign):
+1. **Tietokirjailija from the kind of book:** `getDerivedRoles` (`person-page.tsx:250`) adds "Tietokirjailija" when any linked work is non-fiction,
+   whatever the person's role in it. Le Guin only appears in Esko Miettinen's *Velhot, örkit, sankarit* (confirmed by the project owner).
+2. **Tietokirjat tab for a book the person only appears in:** the tab shows when any linked work is non-fiction (`hasFictionType(NONFICTION_TYPES)`),
+   so Le Guin gets a Tietokirjat tab with one "Esiintyy" book.
+3. **Erin Hunter is not shown as Novellisti** although six stories (type Novelli) credit her as Kirjoittaja in the API. Cause not checked.
+4. **J. Pekka Mäkelä's article "Hylyntyhjentäjien laulu"** credits him as both Kirjoittaja and Esiintyy; the live Artikkeli list shows it only under
+   "Esiintyy", so his "Kirjoittaja" group has one article where the data has two. The mockup counts it as his own article.
 
 **Compact row:** 44×64 cover thumb, title, original title + year + series link, "WSOY 1976, 1984, 1990"
 (each year links to its edition), genre badges and edition count on the right. Tags move to the work page.
@@ -171,13 +220,16 @@ which could be reused on publisher and series pages.
 All of it is frontend; the `/people/<id>` response already has editions with `pubyear`, genres and covers. No backend change is needed.
 
 1. **Header and bio**: `person-details.tsx`. Mixed-case name, portrait size, role chips (move `getDerivedRoles` out
-   of `person-page.tsx` into `person/utils.ts` with Vitest tests), `CollapsibleHtml` for the bio. Align the nav width in `mainmenu.tsx`.
-2. **Sidebar**: new `person-sidebar.tsx` (stats, `GenreBars`, top tags, links). Use the PrimeReact `Chip`/`Tag` components.
+   of `person-page.tsx` into `person/utils.ts` with Vitest tests; the role bugs in notes 1 and 3 are fixed separately first),
+   pen names as links, `CollapsibleHtml` for the bio. Align the nav width in `mainmenu.tsx`.
+2. **Sidebar**: new `person-sidebar.tsx` (stats counted from the person's own contributions, awards from the `awarded` query the page
+   already makes, `GenreBars`, top tags, links). Use the PrimeReact `Chip`/`Tag` components.
    Two columns via PrimeFlex `lg:col-8` / `lg:col-4`; the sidebar scrolls with the page (not sticky).
 3. **Timeline**: new `publication-timeline.tsx`. A pure `binEditionsByYear(person, width)` function (dedupes editions across roles, splits first editions from reprints,
    picks a 1/2/5/10-year bin) with Vitest tests from captured fixtures (Le Guin, Erin Hunter and Jules Verne API responses in `src/test/fixtures/`). Plain CSS grid, no chart library (chart.js would be heavy for this
    and less accessible). Bars are buttons with `aria-label="1984: 4 painosta, joista 2 ensipainosta"`.
-4. **Single tab row + toolbar**: rework `ContributorBookControl` (only the Person page uses it). PrimeReact `SelectButton`
+4. **Single tab row + toolbar**: rework `ContributorBookControl` (only the Person page uses it). Its `appearsIn_` list (role 6) and the
+   stories with role 6 become the Henkilöstä tab; Tietokirjat shows only non-fiction in a production role. PrimeReact `SelectButton`
    for chips and the Lista/Kannet toggle, `Dropdown` for sort, `InputText` for the filter, `Sidebar` (bottom) for the phone's filter sheet. A pure `filterWorks(items, state)` with faceted counts;
    all state in the URL through `useSearchParams` (push for clicks, replace for typing).
 5. **Compact row view**: new `work-row.tsx`. The current card stays available as the cover view.
@@ -186,7 +238,8 @@ All of it is frontend; the `/people/<id>` response already has editions with `pu
 
 ## Tests
 
-Vitest for the pure functions (roles, binning with Hunter's 57-edition year and Verne's 146-year span, faceted counts, sorting/grouping);
+Vitest for the pure functions (roles and counts from captured fixtures: Le Guin is not a tietokirjailija and has 30 books, 39 printings,
+80 stories and 35 awards; Mäkelä's 11 translated stories count, his 4 articles about him don't; King's Bachman books count as his; binning with Hunter's 57-edition year and Verne's 146-year span, faceted counts, sorting/grouping);
 Playwright for tabs, filters, the timeline year filter, the URL state (reload and back restore the same view, typing doesn't add history entries),
 the phone's filter sheet and that only the tab row sticks;
 owned and wishlist marks for a logged-in user, the edit pencil and SpeedDial for an admin, neither for a visitor.
@@ -214,3 +267,10 @@ _None._
 - Only the tab row sticks; the site menu scrolls away; on a phone the filters fold into a "Suodata ja järjestä" bottom sheet.
 - Missing data is hidden for everyone; no "missing" hints for admins. Thresholds: timeline from 5 editions, tabs from two groups,
   filter toolbar from about 10 items.
+
+2026-11-24, project owner (review):
+- Pen names must be on the page (they were missing from the mockups).
+- The award count includes awards for the person's books and stories, not only personal awards.
+- Le Guin is not a tietokirjailija: she only appears in a non-fiction book. Roles and counts come from the person's own contributions.
+- The Henkilöstä tab stays, with books and articles told apart (two groups).
+- Every number in the mockups is compared with the live site. Bugs found on the live site are listed as notes and fixed later, separately.

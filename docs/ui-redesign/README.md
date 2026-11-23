@@ -20,7 +20,7 @@ Nothing here is built yet unless the status table says so. Each change still goe
 
 | Page | Route | Plan | Status |
 |---|---|---|---|
-| Person | `/people/:id` | [person.md](pages/person.md) | Agreed (revised 2026-11-23) |
+| Person | `/people/:id` | [person.md](pages/person.md) | Agreed (revised 2026-11-24) |
 | Work | `/works/:id` | [work.md](pages/work.md) | Agreed (revised 2026-11-23) |
 | Person: visual identity (alternative) | `/people/:id` | [person-identity.md](pages/person-identity.md) | Proposal, mockup ready |
 | Work: visual identity (alternative) | `/works/:id` | [work-identity.md](pages/work-identity.md) | Proposal, mockup ready |

@@ -36,6 +36,12 @@ a:hover{text-decoration:underline}
 
 /* Hero */
 .hero{display:grid;grid-template-columns:168px 1fr;gap:28px;align-items:start}
+.hero.noportrait{grid-template-columns:minmax(0,1fr)}
+/* pen names: the names this person used, or the people who wrote under this name */
+.aka{font-size:15px;color:var(--muted);margin-top:4px}
+.aka a{color:var(--primary)}
+.viewas a.hd{padding:2px 10px;border-radius:999px;color:inherit;cursor:pointer}
+.viewas a.hd.on{background:var(--mock-ink);color:var(--mock-on)}
 .portrait{width:168px;aspect-ratio:3/4;border-radius:6px;object-fit:cover;display:block;background:var(--ph)}
 .credit{font-size:11px;color:var(--faint);margin-top:6px;line-height:1.3}
 h1{font:600 44px/1.08 'Roboto Slab',serif;margin:2px 0 6px;letter-spacing:-.01em}
@@ -115,6 +121,8 @@ aside{align-self:start;display:flex;flex-direction:column;gap:14px;padding-top:6
 .seg2 span{padding:6px 10px;font-size:13px;color:var(--muted)}
 .seg2 span.on{background:var(--primary-soft);color:var(--primary);font-weight:500}
 
+.row.about{grid-template-columns:minmax(0,1fr)}
+.about-intro{font-size:15px;color:var(--muted);margin:14px 0 0}
 .decade{font:600 15px 'Roboto Slab',serif;color:var(--muted);margin:22px 0 6px;display:flex;align-items:center;gap:10px}
 .decade::after{content:"";flex:1;height:1px;background:var(--rule)}
 .row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;align-items:center;padding:10px 12px;border-radius:8px;background:var(--surface);border:1px solid var(--rule);margin-bottom:6px}
@@ -177,6 +185,7 @@ body.admin .fab{display:grid !important}
 <div class="viewas"><div class="wrap">Mockup, näytä käyttäjänä:
   <span data-as="anon">Vierailija</span><span data-as="user">Kirjautunut</span><span data-as="admin">Ylläpitäjä</span> <span style="margin-left:14px">Teema:</span><span class="th" data-th="light">Vaalea</span><span class="th" data-th="dark">Tumma</span>
   <span style="margin-left:14px">Aikajana:</span><span class="tlsel" data-tl="">Le Guin</span><span class="tlsel" data-tl="hunter">Erin Hunter (57 / vuosi)</span><span class="tlsel" data-tl="verne">Jules Verne (1879–2024)</span>
+  <span style="margin-left:14px">Otsake:</span><a class="hd" data-hd="">Le Guin</a><a class="hd" data-hd="king">Stephen King (salanimi)</a><a class="hd" data-hd="hunter">Erin Hunter (yhteinen salanimi)</a>
   <em style="margin-left:auto;color:var(--mock-note)">Omistus- ja muistilistamerkinnät ovat esimerkkejä</em></div></div>
 <header class="nav"><div class="wrap">
   <span class="brand">SuomiSF</span>
@@ -206,7 +215,7 @@ body.admin .fab{display:grid !important}
             <span>1929–2018</span>
           </div>
           <div class="roles">
-            <span class="role">Kirjailija</span><span class="role">Novellisti</span><span class="role">Tietokirjailija</span><span class="role">Kirjoittaja</span>
+            <span class="role">Kirjailija</span><span class="role">Kirjoittaja</span><span class="role">Novellisti</span>
           </div>
         </div>
       </section>
@@ -231,20 +240,20 @@ body.admin .fab{display:grid !important}
       <section class="biblio rel">
         <span class="anno" style="left:-34px;top:10px">4</span>
         <nav class="secnav">
-          <a class="on">Teokset<small>30</small></a>
-          <a>Tietokirjat<small>1</small></a>
-          <a>Novellit ja artikkelit<small>93</small></a>
+          <a class="on">Teokset<small>29</small></a>
+          <a>Novellit ja artikkelit<small>80</small></a>
           <a>Sarjat<small>3</small></a>
-          <a>Palkinnot<small>2</small></a>
+          <a>Palkinnot<small>35</small></a>
           <a>Muu tuotanto<small>1</small></a>
+          <a>Henkilöstä<small>14</small></a>
         </nav>
         <div class="toolbar rel">
           <span class="anno" style="left:-34px;top:18px">5</span>
           <span class="fbtn"><i class="pi pi-sliders-h"></i> Suodata ja järjestä</span>
-          <span class="chip on">Kaikki<small>30</small></span>
-          <span class="chip">Romaanit<small>20</small></span>
+          <span class="chip on">Kaikki<small>29</small></span>
+          <span class="chip">Romaanit<small>19</small></span>
           <span class="chip">Kokoelmat<small>7</small></span>
-          <span class="chip">Yhteisniteet<small>3</small></span>
+          <span class="chip">Kokoomateokset<small>3</small></span>
           <div class="tool-r">
             <span class="input">Suodata nimellä…</span>
             <span class="select">Alkuteoksen vuosi ▾</span>
@@ -260,10 +269,10 @@ body.admin .fab{display:grid !important}
       <div class="box">
         <h3>Tuotanto tietokannassa</h3>
         <div class="stats">
-          <div class="stat"><b>31</b><span>kirjaa</span></div>
-          <div class="stat"><b>40</b><span>painosta</span></div>
-          <div class="stat"><b>93</b><span>novellia ja artikkelia</span></div>
-          <div class="stat"><b>2</b><span>palkintoa</span></div>
+          <div class="stat"><b>30</b><span>kirjaa</span></div>
+          <div class="stat"><b>39</b><span>painosta</span></div>
+          <div class="stat"><b>80</b><span>novellia ja artikkelia</span></div>
+          <div class="stat"><b>35</b><span>palkintoa</span></div>
         </div>
       </div>
       <div class="box">
@@ -371,7 +380,7 @@ drawTimeline();
 
 // List grouped by decade of the original work
 const list=document.getElementById("list");
-const sorted=[...W].sort((a,b)=>a[2]-b[2]||a[0].localeCompare(b[0],"fi"));
+const sorted=W.filter(w=>!w[5].every(g=>g==="eiSF"||g==="kok")).sort((a,b)=>a[2]-b[2]||a[0].localeCompare(b[0],"fi"));
 let dec=null;
 const OWN=new Set(["Maameren velho|1976","Pimeyden vasen käsi|1976","Atuanin holvihaudat|1984","Tehanu|1992"]);
 const WISH=new Set(["Osattomien planeetta|1979","Kompassiruusu|2024"]);
@@ -390,6 +399,31 @@ sorted.forEach(w=>{
   <div class="r-right">${w[5].map(g=>`<span class="g ${g}">${g==="kok"?"kokoelma":g==="eiSF"?"ei spefiä":g}</span>`).join("")}<span class="count">${w[6].length} ${w[6].length>1?"painosta":"painos"}</span></div>`;
   list.appendChild(r);
 });
+// Header variants from the live data (2026-11-24): Stephen King used a pen name, Erin Hunter is one shared by eight writers
+const HD={king:{img:"https://upload.wikimedia.org/wikipedia/commons/2/24/Stephen_King_at_the_2024_Toronto_International_Film_Festival_2_%28cropped%29.jpg",credit:"Kuva: Kevin Payravi, CC BY-SA 4.0",
+  name:"Stephen King",full:"Stephen Edwin King",aka:["Salanimi",["Richard Bachman"]],nat:["us","Yhdysvallat"],years:"1947–",roles:["Kirjailija","Kirjoittaja","Novellisti","Runoilija"]},
+ hunter:{name:"Erin Hunter",aka:["Oikeat henkilöt",["Tui T. Sutherland","Gillian Philip","Kate Cary","Cherith Baldry","Victoria Holmes","Inbali Iserles","Rosie Best","Clarissa Hutton"]],roles:["Kirjailija","Novellisti"]}};
+const HDK=new URLSearchParams(location.search).get("hd")||"";
+document.querySelectorAll(".viewas a.hd").forEach(a=>{const u=new URLSearchParams(location.search);a.dataset.hd?u.set("hd",a.dataset.hd):u.delete("hd");a.href="?"+u;a.classList.toggle("on",a.dataset.hd===HDK)});
+if(HD[HDK]){const h=HD[HDK],hero=document.querySelector(".hero");
+  hero.classList.toggle("noportrait",!h.img);
+  hero.innerHTML=`<span class="anno" style="left:-34px;top:0">1</span>${h.img?`<div><img class="portrait" src="${h.img}" alt="${h.name}"><div class="credit">${h.credit}</div></div>`:""}
+  <div><h1>${h.name}</h1>${h.full?`<div class="fullname">${h.full}</div>`:""}<div class="aka">${h.aka[0]}: ${h.aka[1].map(n=>`<a>${n}</a>`).join(", ")}</div>
+  ${h.nat||h.years?`<div class="meta">${h.nat?`<span><img class="flag" src="https://hatscripts.github.io/circle-flags/flags/${h.nat[0]}.svg" alt="">${h.nat[1]}</span>`:""}${h.years?`<span>${h.years}</span>`:""}</div>`:`<div style="height:12px"></div>`}
+  <div class="roles">${h.roles.map(r=>`<span class="role">${r}</span>`).join("")}</div></div>`;
+  document.querySelector(".crumbs").innerHTML=`<a>Henkilöt</a> / ${h.name}`;}
+// Henkilöstä (?osio=henkilosta): books and articles Le Guin appears in or that are about her, from the live API; books first, no toolbar
+const AB={"books": [{"t": "Velhot, örkit, sankarit", "au": "Miettinen, Esko", "y": 2004}], "articles": [{"t": "Taikuri", "au": "Veikko Rekunen", "y": 1983, "w": "Aikakone Vol.2 No.1"}, {"t": "Mustavalkea metsä", "au": "Kimmo Hypen", "y": 1984, "w": "Spin 2 / 1984"}, {"t": "Utopian ja ideologian dialektiikka Ursula K. Le Guinin romaanissa Osattomien planeetta", "au": "Jyrki Iivonen", "y": 1985, "w": "Tieteiskirjallisuuden maailmoita (1987)"}, {"t": "Ursula K. Le Guin ja anarkismi", "au": "Irma Hirsjärvi", "y": 1992, "w": "Portti 3/1992"}, {"t": "Myytti on niin kuin se luetaan: Ursula Le Guinin Jotka Omelasista poistuvat", "au": "Joel Kuortti", "y": 1998, "w": "Portti 2/1998"}, {"t": "Ursula K. Le Guin bibliografia", "au": "Raimo Nikkonen", "y": 2000, "w": "Portti 2/2000"}, {"t": "Ursula K. Le Guin", "au": "Vesa Sisättö", "y": 2003, "w": "Ulkomaisia fantasiakirjailijoita (2003)"}, {"t": "Ursula Le Guinin Maameri", "au": "Tarja Rainio", "y": 2003, "w": "Legolas 27 / 2003"}, {"t": "Ursula K. Le Guin", "au": "Vesa Sisättö", "y": 2004, "w": "Ulkomaisia tieteiskirjailijoita 1 (2004)"}, {"t": "Ursula Le Guin: Steering the Craft", "au": "Vesa Lehtinen", "y": 2004, "w": "Kosmoskynä 4 / 2004"}, {"t": "Earthsea - eli mitä se SciFi Channel sitten oikeastaan meni ja teki rakastetulle fantasiaklassikolle?", "au": "Teemu Naarajärvi, Sari Polvinen, Jukka Halme, Merja Polvinen", "y": 2005, "w": "Legolas 36 / 2005"}, {"t": "Tie naisen sydämeen vie etelänavan kautta", "au": "Tiina Männistö", "y": 2007, "w": "Spin 1 / 2007"}, {"t": "Retkiä Ursula K. Le Guinin maailmaan", "au": "Jyrki Iivonen", "y": 2009, "w": "Portti 1/2009"}]};
+const OS=new URLSearchParams(location.search).get("osio");
+document.querySelectorAll(".secnav a").forEach(a=>{const k=a.firstChild.textContent.trim();
+  if(k==="Teokset"||k==="Henkilöstä"){const u=new URLSearchParams(location.search);k==="Henkilöstä"?u.set("osio","henkilosta"):u.delete("osio");a.href="?"+u}
+  a.classList.toggle("on",OS==="henkilosta"?k==="Henkilöstä":k==="Teokset")});
+if(OS==="henkilosta"){document.querySelector(".toolbar").style.display="none";
+  const g=(h,items,row)=>items.length?`<div class="decade">${h} (${items.length})</div>${items.map(row).join("")}`:"";
+  const nm=n=>(n||"").split(" & ").map(p=>p.includes(", ")?p.split(", ").reverse().join(" "):p).join(" & ");
+  list.innerHTML=`<p class="about-intro">Kirjat ja artikkelit, joissa Ursula K. Le Guin esiintyy tai joiden aiheena hän on.</p>`
+   +g("Kirjat",AB.books,b=>`<div class="row about"><div><div class="r-title"><a style="color:inherit">${b.t}</a></div><div class="r-sub">${nm(b.au)}${b.y?`, ${b.y}`:""}</div></div></div>`)
+   +g("Artikkelit",AB.articles,a=>`<div class="row about"><div><div class="r-title"><a style="color:inherit">${a.t}</a></div><div class="r-sub">${a.au}${a.y?`, ${a.y}`:""}</div><div class="eds">${a.w}</div></div></div>`);}
 function setAs(a){document.body.className=a;document.querySelectorAll(".viewas span").forEach(x=>x.classList.toggle("on",x.dataset.as===a))}
 document.querySelectorAll(".viewas span").forEach(x=>x.onclick=()=>setAs(x.dataset.as));
 setAs(new URLSearchParams(location.search).get("as")||"anon");

@@ -64,7 +64,6 @@ body.admin .only-admin{display:inline-block}
 .portrait{width:168px;aspect-ratio:3/4;object-fit:cover;display:block;border-radius:2px;filter:grayscale(.15);background:var(--rule)}
 .credit{font-size:12.5px;color:var(--ink-3);margin-top:8px;line-height:1.35}
 h1{font-family:var(--serif);font-optical-sizing:auto;font-weight:650;font-size:56px;line-height:1.02;letter-spacing:-.022em;margin:0 0 10px;text-wrap:balance}
-.heading{font:15px var(--sans);color:var(--ink-2);margin:0;letter-spacing:.01em}
 .facts{display:grid;grid-template-columns:110px minmax(0,1fr);gap:9px 18px;margin:22px 0 0;padding-top:18px;border-top:1px solid var(--rule)}
 .facts dt{font-size:14px;color:var(--ink-3);padding-top:2px}
 .facts dd{margin:0;font:400 16.5px/1.45 var(--serif)}
@@ -143,6 +142,8 @@ h1{font-family:var(--serif);font-optical-sizing:auto;font-weight:650;font-size:5
 .r-right{text-align:right;font-size:13.5px;color:var(--ink-3);white-space:nowrap;display:flex;flex-direction:column;gap:4px;align-items:flex-end}
 .gdot{display:inline-flex;align-items:center;gap:6px;color:var(--ink-2)}
 .gdot i{width:9px;height:9px;border-radius:50%;display:inline-block;box-shadow:inset 0 0 0 1px var(--outline)}
+.row.about{grid-template-columns:minmax(0,1fr)}
+.about-intro{font:16px/1.5 var(--serif);color:var(--ink-2);margin:18px 0 0}
 .edit{border:0;background:none;color:var(--ink-3);cursor:pointer;padding:0 0 0 6px;display:none}
 body.admin .edit{display:inline}
 
@@ -183,7 +184,6 @@ body.admin .edit{display:inline}
   .rec{grid-template-columns:96px minmax(0,1fr);column-gap:16px}
   .portrait{width:96px}
   h1{font-size:30px;letter-spacing:-.015em}
-  .heading{font-size:13.5px}
   .facts{grid-template-columns:96px minmax(0,1fr);gap:8px 12px}
   .facts dd{font-size:15.5px}
   .bars{height:80px}
@@ -202,7 +202,7 @@ body.admin .edit{display:inline}
 <div class="viewas"><div class="wrap">Mockup:
   <span class="o" data-as="anon">Vierailija</span><span class="o" data-as="user">Kirjautunut</span><span class="o" data-as="admin">Ylläpitäjä</span>
   <span style="margin-left:10px">Teema:</span><span class="o th" data-th="light">Vaalea</span><span class="o th" data-th="dark">Tumma</span>
-  <span style="margin-left:10px">Henkilö:</span><span class="o ps" data-p="leguin">Ursula K. Le Guin</span><span class="o ps" data-p="jpm">J. Pekka Mäkelä (useita rooleja)</span><span class="o ps" data-p="tan">Eevien Tan (yksi kansi)</span><span class="o ps" data-p="huo">Safa Huovinen (yksi kirja)</span>
+  <span style="margin-left:10px">Henkilö:</span><span class="o ps" data-p="leguin">Ursula K. Le Guin</span><span class="o ps" data-p="jpm">J. Pekka Mäkelä (useita rooleja)</span><span class="o ps" data-p="king">Stephen King (salanimi)</span><span class="o ps" data-p="hunter">Erin Hunter (yhteinen salanimi)</span><span class="o ps" data-p="tan">Eevien Tan (yksi kansi)</span><span class="o ps" data-p="huo">Safa Huovinen (yksi kirja)</span>
   <span style="margin-left:10px">Aikajana:</span><span class="o tls" data-tl="">oma</span><span class="o tls" data-tl="hunter">Erin Hunter</span><span class="o tls" data-tl="verne">Jules Verne</span>
 </div></div>
 <header class="site"><div class="wrap">
@@ -227,7 +227,7 @@ body.admin .edit{display:inline}
 <script>
 const IMG="https://www.sf-bibliografia.fi:5000";
 const Q=new URLSearchParams(location.search);
-const K=["leguin","jpm","tan","huo"].includes(Q.get("p"))?Q.get("p"):"leguin";
+const K=["leguin","jpm","king","hunter","tan","huo"].includes(Q.get("p"))?Q.get("p"):"leguin";
 const TLK=Q.get("tl");
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const fin=n=>(n||"").split(" & ").map(p=>p.includes(", ")?p.split(", ").reverse().join(" "):p).join(" & ");
@@ -235,9 +235,9 @@ const GC={SF:"#0958D7",F:"#31572C",K:"#D30031",kok:"#008B8B",eiSF:"#6C757D",nF:"
 const GN={SF:"Science Fiction",F:"Fantasia",K:"Kauhu",kok:"Kokoelma",eiSF:"Ei spefiä",nF:"Nuorten fantasia",nSF:"Nuorten scifi",lF:"Lasten fantasia"};
 // The two sparse people from the sparse-data check (real data, see person-sparse.html)
 const SPARSE={
- tan:{name:"Eevien Tan",heading:"Tan, Eevien",nat:null,roles:["kansitaiteilija"],links:["Instagram","isfdb","cargocollective.com"],
+ tan:{name:"Eevien Tan",nat:null,roles:["kansitaiteilija"],links:["Instagram","isfdb","cargocollective.com"],
   books:[{t:"Siltavaltakunta",au:"Danielle L. Jensen",g:["F"],eds:["2019 Docendo"],img:"/static/images/books/thumbs/Jensen_Danielle_L_Siltavaltakunta_1p.webp"}]},
- huo:{name:"Safa Huovinen",heading:"Huovinen, Safa",nat:"Suomi",flag:"fi",roles:["kansitaiteilija"],links:[],
+ huo:{name:"Safa Huovinen",nat:"Suomi",flag:"fi",roles:["kansitaiteilija"],links:[],
   books:[{t:"Pienen hauen pyydystys",au:"Juhani Karila",g:["F"],eds:["2019 Siltala","2021 Siltala","2023 Siltala","2026 Siltala"],img:"/static/images/books/thumbs/Karila_Juhani_Pienenhauenpyydystys_1p.webp"}]}};
 const P=PD[K]||null, S=SPARSE[K]||null;
 let ROLE=Q.get("rooli")||"Kirjoittanut";
@@ -245,6 +245,7 @@ let ROLE=Q.get("rooli")||"Kirjoittanut";
 /* timeline: bar height = book editions that year (any role, each once); solid = first Finnish edition of a work */
 function tlData(){
   if(TLK&&TL[TLK]) return TL[TLK];
+  if(P&&P.tl) return P.tl;   // every book printing in any production role, worked out from the live data
   const by={};const add=(eds)=>eds.forEach((e,i)=>{const y=+e.slice(0,4);by[y]=by[y]||{all:0,first:0};by[y].all++;if(i===0)by[y].first++});
   if(P){P.works.forEach(w=>add(w.eds));(P.other||[]).forEach(w=>add(w.eds));}
   if(S) S.books.forEach(b=>add(b.eds));
@@ -273,13 +274,16 @@ function drawTimeline(){
     bars.appendChild(el);const a=document.createElement("span");a.textContent=b.y%STEP===0?b.y:"";axis.appendChild(a)});
 }
 
+// Pen names link to their own records: aliases (names this person used), real names (who wrote under this name)
+const names=(L,one,many)=>L&&L.length?`<dt>${L.length>1?many:one}</dt><dd>${L.map(n=>`<a>${esc(n)}</a>`).join(", ")}</dd>`:"";
 function rec(){
   const X=P||S;
   return `<section class="rec rel${X.portrait?"":" noportrait"}"><span class="anno" style="left:-38px;top:0">1</span>
     ${X.portrait?`<div><img class="portrait" src="${X.portrait}" alt="${esc(X.name)}"><div class="credit">${esc(X.credit)}</div></div>`:""}
-    <div class="rec-text"><div><h1>${esc(X.name)}</h1><p class="heading">${esc(X.heading)}</p></div>
+    <div class="rec-text"><div><h1>${esc(X.name)}</h1></div>
     <dl class="facts">
       ${X.full?`<dt>Koko nimi</dt><dd>${esc(X.full)}</dd>`:""}
+      ${names(X.aliases,"Salanimi","Salanimet")}${X.otherNames?`<dt>Muut nimet</dt><dd>${esc(X.otherNames)}</dd>`:""}${names(X.realNames,"Oikea henkilö","Oikeat henkilöt")}
       ${X.nat?`<dt>Kansallisuus</dt><dd>${X.flag?`<img class="flag" src="https://hatscripts.github.io/circle-flags/flags/${X.flag}.svg" alt="">`:""}${esc(X.nat)}</dd>`:""}
       ${X.years?`<dt>Elinvuodet</dt><dd>${esc(X.years)}</dd>`:""}
       <dt>Roolit</dt><dd>${X.roles.join(", ")}</dd>
@@ -294,17 +298,27 @@ function bio(){
 function rowHtml(w,role){
   const eds=w.eds.map(e=>e.split(" ")), pub=eds[0].slice(1).join(" "), same=eds.every(e=>e.slice(1).join(" ")===pub);
   const edTxt=same?`${esc(pub)} ${eds.map(e=>`<a>${e[0]}</a>`).join(", ")}`:eds.map(e=>`${esc(e.slice(1).join(" "))} <a>${e[0]}</a>`).join(", ");
-  const sub=role&&role!=="Kirjoittanut"?`${esc(fin(w.au))}${w.y?`, ${w.y}`:""}`:`${w.o?`<i>${esc(w.o)}</i> `:""}${w.y||""}${w.s?`, <a>${esc(w.s)}${w.n?" "+w.n:""}</a>`:""}`;
+  const sub=role&&role!=="Kirjoittanut"?`${esc(fin(w.au))}${w.y?`, ${w.y}`:""}`:`${w.o?`<i>${esc(w.o)}</i> `:""}${w.y||""}${w.s?`, <a>${esc(w.s)}${w.n?" "+w.n:""}</a>`:""}${w.as?`, nimellä <a>${esc(w.as)}</a>`:""}`;
   return `<div class="row">${w.img?`<img class="thumb" src="${IMG+w.img}" alt="">`:`<span class="thumb none"></span>`}
     <div><div class="r-t"><a>${esc(w.t)}</a><button class="edit" aria-label="Muokkaa teosta"><i class="pi pi-pencil"></i></button></div><div class="r-sub">${sub}</div><div class="r-eds">${edTxt}</div></div>
     <div class="r-right">${(w.g||[]).map(g=>`<span class="gdot"><i style="background:${GC[g]||"#6C757D"}"></i>${esc(GN[g]||g)}</span>`).join("")}<span>${w.eds.length} ${w.eds.length>1?"painosta":"painos"}</span></div></div>`;
+}
+// Henkilöstä: books and articles the person appears in or that are about them ("Esiintyy"), books first, each group with its count; no toolbar
+let OSIO=Q.get("osio")==="henkilosta"?"Henkilöstä":"Teokset";
+function aboutHtml(){
+  const A=P.about||{books:[],articles:[]};
+  const g=(h,items,row)=>items.length?`<h3 class="decade">${h}<small>${items.length}</small></h3>${items.map(row).join("")}`:"";
+  return `<p class="about-intro">Kirjat ja artikkelit, joissa ${esc(P.name)} esiintyy tai joiden aiheena hän on.</p>`
+   +g("Kirjat",A.books,b=>`<div class="row about"><div><div class="r-t"><a>${esc(b.t)}</a></div><div class="r-sub">${esc(fin(b.au))}${b.y?`, ${b.y}`:""}</div></div></div>`)
+   +g("Artikkelit",A.articles,a=>`<div class="row about"><div><div class="r-t"><a>${esc(a.t)}</a></div><div class="r-sub">${esc(a.au)}${a.y?`, ${a.y}`:""}</div><div class="r-eds">${esc(a.w)}</div></div></div>`);
 }
 function biblio(){
   if(S){ // one group only: a heading instead of tabs, no toolbar
     return `<section class="biblio rel"><span class="anno" style="left:-38px;top:0">4</span><h2 class="decade" style="font-size:24px;border:0">Kansikuvat <small>${S.books.length} ${S.books.length>1?"kirjaa":"kirja"}</small></h2>
       ${S.books.map(b=>rowHtml({...b,o:"",y:null},"Kansikuva")).join("")}</section>`;
   }
-  const tabs=`<nav class="tabs" aria-label="Tuotanto">${P.tabs.map(([l,n],i)=>`<a class="${i?"":"on"}">${l}<small>${n}</small></a>`).join("")}</nav>`;
+  const tabs=`<nav class="tabs" aria-label="Tuotanto">${P.tabs.map(([l,n])=>`<a class="${l===OSIO?"on":""}" data-tab="${l}">${l}<small>${n}</small></a>`).join("")}</nav>`;
+  if(OSIO==="Henkilöstä") return `<section class="biblio rel"><span class="anno" style="left:-38px;top:8px">4</span>${tabs}${aboutHtml()}</section>`;
   const roles=P.roleTabs?`<div class="roles" role="group" aria-label="Rooli"><span>Rooli</span><div class="seg">${P.roleTabs.filter(r=>r[1]).map(([l,n])=>`<button data-r="${l}" aria-pressed="${ROLE===l}">${l}<small>${n}</small></button>`).join("")}</div></div>`:"";
   let list=P.works, role=null;
   if(P.roleTabs){role=ROLE;list=ROLE==="Kirjoittanut"?P.works:P.other.filter(o=>(ROLE==="Kääntänyt"?"Kääntäjä":ROLE)===o.role)}
@@ -327,12 +341,14 @@ function side(){
 }
 function render(){
   const X=P||S;
-  document.getElementById("crumbs").innerHTML=`<a>Henkilöt</a> / ${esc(X.heading.split(", ").slice(0,2).join(", "))}`;
+  document.getElementById("crumbs").innerHTML=`<a>Henkilöt</a> / ${esc(X.name)}`;
   const sum=S?`<p class="summary">Kansikuva kirjaan <a>${esc(S.books[0].t)}</a> (${esc(S.books[0].au)})${S.books[0].eds.length>1?`, ${S.books[0].eds.length} painosta ${S.books[0].eds[0].slice(0,4)}–${S.books[0].eds.at(-1).slice(0,4)}`:`, ${esc(S.books[0].eds[0].slice(5))} ${S.books[0].eds[0].slice(0,4)}`}.</p>`:"";
   document.getElementById("main").innerHTML=rec()+sum+timeline()+bio()+biblio();
   document.getElementById("side").innerHTML=side();
   drawTimeline();
   document.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{ROLE=b.dataset.r;render()});
+  // the mockup switches between Teokset and Henkilöstä (?osio=henkilosta); the other tabs are not built
+  document.querySelectorAll("[data-tab]").forEach(a=>{if(a.dataset.tab==="Teokset"||a.dataset.tab==="Henkilöstä")a.onclick=()=>{OSIO=a.dataset.tab;const u=new URLSearchParams(location.search);OSIO==="Henkilöstä"?u.set("osio","henkilosta"):u.delete("osio");history.pushState(null,"","?"+u);render()}});
 }
 let AS=Q.get("as")||"anon";
 function applyAs(){document.body.className=AS;document.querySelectorAll(".viewas [data-as]").forEach(x=>x.classList.toggle("on",x.dataset.as===AS))}

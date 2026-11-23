@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Latest and changes mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<style>
+:root{
+  --page:#F3F4F8; --surface:#FFFFFF; --ink:#1E2233; --muted:#5D6377; --faint:#8A90A3;
+  --rule:#E3E6EE; --primary:#3F51B5; --primary-soft:#E8EBF8; --primary-ink:#2D3A8C;
+  --sf:#0958D7; --f:#31572C; --k:#D30031; --kok:#008B8B; --other:#6C757D;
+  --primary-ink:#2D3A8C; --primary-line:#CDD3F0; --on-primary:#fff; --on-ink:#fff; --tag-bg:#FAFBFD; --ph:#E3E6EE; --ph-line:#D3D7E2; --hover-line:#C9CEE0; --hover-bg:#F8F9FC; --admin-bg:#F7F8FB; --warn-bg:#FFF8E6; --warn-ink:#6B5310; --gold-soft:#FBF3DC; --gold-line:#EBD9A5; --gold-ink:#4A3A0A; --gold-icon:#8A6A12; --star-off:#C9CEDB; --ok:#2E7D4F; --mock-bg:#FFF7D6; --mock-ink:#5A4B0F; --mock-line:#D9C56B; --mock-note:#8A7A3A; --mock-on:#fff; --outline:transparent;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme=light]){--page:#121212; --surface:#1e1e1e; --ink:#dedede; --muted:#9e9e9e; --faint:#7c7c7c; --rule:#333333; --primary:#9FA8DA; --primary-soft:#2a2d3c; --primary-ink:#c5cae9; --primary-line:#3d4260; --on-primary:#121212; --on-ink:#121212; --tag-bg:#262626; --ph:#2c2c2c; --ph-line:#444444; --hover-line:#4a4a4a; --hover-bg:#262626; --admin-bg:#181818; --warn-bg:#3a3112; --warn-ink:#f0d78c; --gold-soft:#332a10; --gold-line:#6b5a22; --gold-ink:#f0d78c; --gold-icon:#e0c060; --star-off:#4a4a4a; --ok:#81c784; --mock-bg:#3a3412; --mock-ink:#f0e2a0; --mock-line:#7a6a1a; --mock-note:#c9b870; --mock-on:#3a3412; --outline:rgba(255,255,255,.28);}}
+:root[data-theme=dark]{--page:#121212; --surface:#1e1e1e; --ink:#dedede; --muted:#9e9e9e; --faint:#7c7c7c; --rule:#333333; --primary:#9FA8DA; --primary-soft:#2a2d3c; --primary-ink:#c5cae9; --primary-line:#3d4260; --on-primary:#121212; --on-ink:#121212; --tag-bg:#262626; --ph:#2c2c2c; --ph-line:#444444; --hover-line:#4a4a4a; --hover-bg:#262626; --admin-bg:#181818; --warn-bg:#3a3112; --warn-ink:#f0d78c; --gold-soft:#332a10; --gold-line:#6b5a22; --gold-ink:#f0d78c; --gold-icon:#e0c060; --star-off:#4a4a4a; --ok:#81c784; --mock-bg:#3a3412; --mock-ink:#f0e2a0; --mock-line:#7a6a1a; --mock-note:#c9b870; --mock-on:#3a3412; --outline:rgba(255,255,255,.28);}
+.seg,.gbar .t i,.gchip i,.legend i{box-shadow:inset 0 0 0 1px var(--outline)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 Roboto,system-ui,sans-serif}
+a{color:var(--primary);text-decoration:none;cursor:pointer}
+a:hover{text-decoration:underline}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+.viewas{background:var(--mock-bg);border-bottom:1px dashed var(--mock-line);font-size:13px;color:var(--mock-ink)}
+.viewas .wrap{display:flex;gap:8px;align-items:center;min-height:36px;flex-wrap:wrap;padding-top:4px;padding-bottom:4px}
+.viewas span.opt{padding:2px 10px;border-radius:999px;cursor:pointer}
+.viewas span.opt.on{background:var(--mock-ink);color:var(--mock-on)}
+.nav{background:var(--surface);border-bottom:1px solid var(--rule)}
+.nav .wrap{display:flex;align-items:center;gap:28px;height:60px}
+.brand{font:700 19px 'Roboto Slab',serif;color:var(--primary)}
+.nav a.m{color:var(--ink);font-size:15px}
+.nav .m i{margin-right:6px;font-size:13px}
+.navsearch{margin-left:auto;display:flex;align-items:center;gap:8px;border:1px solid var(--rule);border-radius:8px;padding:6px 12px;width:300px;color:var(--faint);font-size:14px}
+.navsearch label{margin-left:auto;font-size:12px;color:var(--muted);display:flex;gap:4px;align-items:center}
+.r-user,.r-admin{display:none}
+body.user .r-user, body.admin .r-user, body.admin .r-admin{display:inline}
+body.user .r-anon, body.admin .r-anon{display:none}
+.only-admin{display:none}
+body.admin .only-admin{display:revert}
+.rel{position:relative}
+.anno{position:absolute;background:#FFE57A;color:#3a3000;font:600 12px Roboto;border-radius:999px;width:24px;height:24px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.25);z-index:4}
+.crumbs{font-size:13px;color:var(--faint);padding:18px 0 6px}
+.crumbs a{color:var(--muted)}
+h1{font:600 36px/1.15 'Roboto Slab',serif;margin:2px 0 6px;letter-spacing:-.01em}
+.lead{color:var(--muted);margin:0 0 14px;max-width:80ch}
+.switch{display:flex;gap:18px;margin:0 0 4px;font-size:14.5px}
+.switch a{color:var(--muted)}
+.switch a.on{color:var(--ink);font-weight:500}
+.filters{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.input{display:flex;align-items:center;gap:8px;border:1px solid var(--rule);border-radius:8px;padding:7px 12px;color:var(--faint);font-size:14.5px;min-width:240px;flex:1;max-width:360px}
+.select{border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:7px 12px;font-size:14px;color:var(--ink);white-space:nowrap}
+.fchip{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13.5px;color:var(--ink);white-space:nowrap}
+.fchip.on{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.fchip small{opacity:.65;margin-left:4px}
+.tabs{position:sticky;top:0;z-index:3;background:var(--page);display:flex;gap:2px;border-bottom:1px solid var(--rule);margin-top:14px;overflow-x:auto}
+.tabs a{padding:12px 14px;color:var(--muted);font-weight:500;font-size:15px;border-bottom:2px solid transparent;white-space:nowrap}
+.tabs a.on{color:var(--primary);border-bottom-color:var(--primary)}
+.rows{background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin-top:14px}
+.row{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:14px;align-items:center;padding:9px 14px;border-top:1px solid var(--rule)}
+.row:first-child{border-top:0}
+.row:hover{background:var(--hover-bg)}
+.th{width:40px;height:58px;border-radius:3px;background:var(--ph);display:grid;place-items:center;color:var(--faint);overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.18)}
+.th img{width:100%;height:100%;object-fit:cover}
+.th.p{height:40px;border-radius:50%;box-shadow:none}
+.t{font-weight:600}
+.t a{color:var(--ink)}
+.s{font-size:13.5px;color:var(--muted)}
+.right{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+.gchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:1px 9px 1px 7px;font-size:12px;font-weight:500;color:var(--ink);white-space:nowrap}
+.gchip i{width:8px;height:8px;border-radius:50%;display:inline-block;box-shadow:inset 0 0 0 1px var(--outline)}
+.soft{border-radius:999px;padding:1px 9px;font-size:12px;font-weight:500;background:var(--primary-soft);color:var(--primary-ink);white-space:nowrap}
+.morebtn{display:block;margin:14px auto 0;border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:8px;padding:8px 18px;font:500 14px Roboto;cursor:pointer}
+.covers{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:18px;margin-top:16px}
+.covers figure{margin:0}
+.covers img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,.25);background:var(--ph)}
+.covers figcaption{font-size:13px;margin-top:6px}
+
+/* changes */
+.spark{display:flex;align-items:flex-end;gap:3px;height:54px;margin:16px 0 4px}
+.spark b{flex:1;background:var(--primary);opacity:.55;border-radius:2px 2px 0 0;min-height:2px;box-shadow:inset 0 0 0 1px var(--outline)}
+.spark b.on{opacity:1}
+.sparkax{display:flex;justify-content:space-between;font-size:12px;color:var(--faint)}
+.day{font:600 16px 'Roboto Slab',serif;margin:24px 0 8px;display:flex;gap:8px;align-items:baseline}
+.day small{font:400 13px Roboto;color:var(--faint)}
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden;font-size:14.5px;table-layout:fixed}
+th{text-align:left;font-weight:500;color:var(--muted);font-size:13px;padding:9px 14px;border-bottom:1px solid var(--rule)}
+td{padding:8px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--hover-bg)}
+td.tm{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+td .k{color:var(--faint);font-size:12.5px}
+.act{border-radius:6px;padding:1px 8px;font-size:12px;font-weight:500;border:1px solid var(--rule)}
+.act.new{background:var(--primary-soft);color:var(--primary-ink);border-color:transparent}
+.act.del{color:var(--danger,#c0392b)}
+.hist{color:var(--muted);font-size:13px;white-space:nowrap}
+.foot{height:60px}
+
+@media (max-width:760px){
+  .wrap{padding:0 16px}
+  .nav a.m{display:none}
+  .navsearch{width:auto;flex:1}
+  h1{font-size:28px}
+  .input{min-width:0;max-width:none;flex:1 1 100%}
+  .row{grid-template-columns:34px minmax(0,1fr);gap:10px}
+  .th{width:34px;height:50px}
+  .th.p{height:34px}
+  .right{grid-column:2;justify-content:flex-start}
+  table{table-layout:auto}
+  thead{display:none}
+  table,tbody,tr,td{display:block}
+  tr{padding:8px 14px;border-bottom:1px solid var(--rule)}
+  td{border:0;padding:0}
+  td.tm{display:inline;font-size:13px}
+  .covers{grid-template-columns:repeat(3,1fr);gap:10px}
+  .anno{display:none}
+}
+</style>
+</head>
+<body>
+<div class="viewas"><div class="wrap">Mockup:
+  <span class="opt" data-v="works">Uusimmat: teokset</span><span class="opt" data-v="editions">Uusimmat: painokset</span><span class="opt" data-v="covers">Uusimmat: kannet</span><span class="opt" data-v="changes">Muutokset</span>
+  <span style="margin-left:8px">Käyttäjä:</span><span class="opt" data-as="anon">Vierailija</span><span class="opt" data-as="admin">Ylläpitäjä</span>
+  <span style="margin-left:8px">Teema:</span><span class="opt thm" data-th="light">Vaalea</span><span class="opt thm" data-th="dark">Tumma</span></div></div>
+<header class="nav"><div class="wrap">
+  <span class="brand">SuomiSF</span>
+  <a class="m">Kirjat</a><a class="m">Lehdet</a><a class="m">Novellit</a>
+  <a class="m r-anon">Hakemistot ▾</a><a class="m r-user">Muut ▾</a>
+  <a class="m r-admin"><i class="pi pi-wrench"></i>Ylläpito ▾</a>
+  <a class="m r-anon"><i class="pi pi-user"></i>Käyttäjätili ▾</a><a class="m r-user"><i class="pi pi-user"></i>mep ▾</a>
+  <div class="navsearch"><i class="pi pi-search"></i>Etsi<label><input type="checkbox" checked> Vain nimet</label></div>
+</div></header>
+<div class="wrap" id="app"></div>
+
+<script src="latest-data.js"></script>
+<script>
+const IMG="https://www.sf-bibliografia.fi:5000";
+const Q=new URLSearchParams(location.search);
+const V=Q.get("v")||"works";
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fin=n=>{const ed=/ \(toim\.\)$/.test(n||"");const b=(n||"").replace(/ \(toim\.\)$/,"");return b.split(" & ").map(p=>p.includes(", ")?p.split(", ").reverse().join(" "):p).join(" & ")+(ed?" (toim.)":"")};
+const nf=n=>n.toLocaleString("fi-FI");
+const GC={"Science Fiction":"#0958D7","Fantasia":"#31572C","Kauhu":"#D30031","Kokoelma":"#008B8B","Ei SpeFiä":"#6C757D","Nuorten fantasia":"#21D011","Nuorten Science Fiction":"#4A90D9","Nuorten kauhu":"#FF696D","Lasten fantasia":"#82C341","Lasten Science Fiction":"#7EC8E3","Vaihtoehtohistoria":"#E67E22","Utopia":"#DAA520","Satu":"#E91E63","Paleofantasia":"#9B59B6","rajatapaus":"#A0522D"};
+const th=src=>`<span class="th">${src?`<img src="${IMG+src}" alt="" loading="lazy">`:`<i class="pi pi-book"></i>`}</span>`;
+
+function header(){
+  return `<div class="crumbs"><a>Etusivu</a> / ${V==="changes"?"Muutokset":"Uusimmat lisäykset"}</div>
+  <h1>${V==="changes"?"Muutokset":"Uusimmat lisäykset"}</h1>
+  <nav class="switch"><a class="${V!=="changes"?"on":""}">Uusimmat lisäykset</a><a class="${V==="changes"?"on":""}">Muutokset</a></nav>`;
+}
+
+function latest(){
+  const tabs=[["works","Teokset"],["editions","Painokset"],["shorts","Novellit"],["people","Henkilöt"],["covers","Kannet"]];
+  let body="";
+  if(V==="works") body=`<div class="rows">${LT.works.map(w=>`<div class="row">${th(w.img)}<div><div class="t"><a>${esc(w.t)}</a> <span class="s">${esc(fin(w.au))}</span></div>
+    <div class="s">${w.o&&w.o!==w.t?esc(w.o)+" "+(w.y||"")+" · ":""}${esc(w.p||"")} ${w.py||""}</div></div>
+    <div class="right">${w.genres.map(g=>`<span class="gchip"><i style="background:${GC[g]||"#6C757D"}"></i>${esc(g)}</span>`).join("")}</div></div>`).join("")}</div>`;
+  if(V==="editions") body=`<div class="rows">${LT.editions.map(e=>`<div class="row">${th(e.img)}<div><div class="t"><a>${esc(e.t)}</a> <span class="s">${esc(fin(e.au))}</span></div>
+    <div class="s">${esc(e.p||"")} ${e.y||""}</div></div><div class="right">${e.v>1?`<span class="soft">${e.v}. laitos</span>`:""}<span class="soft">${e.n>1?e.n+". painos":"1. painos"}</span></div></div>`).join("")}</div>`;
+  if(V==="covers") body=`<div class="covers">${LT.covers.map(c=>`<figure><img src="${IMG+c.img}" alt="" loading="lazy"><figcaption><a>${esc(c.ed)}</a></figcaption></figure>`).join("")}</div>`;
+  return `${header()}
+  <p class="lead rel"><span class="anno" style="left:-34px;top:0">1</span>Tietokantaan viimeksi lisätyt, uusin ensin.</p>
+  <div class="rel"><span class="anno" style="left:-34px;top:24px">2</span></div><nav class="tabs">${tabs.map(([k,l])=>`<a class="${k===V?"on":""}">${l}</a>`).join("")}</nav>
+  <div class="rel"><span class="anno" style="left:-34px;top:20px">3</span>${body}</div>
+  <button class="morebtn rel"><span class="anno" style="left:-34px;top:4px">4</span>Näytä seuraavat 20</button><div class="foot"></div>`;
+}
+
+function changes(){
+  const C=LT.changes;
+  const days=Object.entries(LT.days).sort();
+  const max=Math.max(...days.map(d=>d[1]));
+  // One row per object, day, action and user; fields joined.
+  const groups=[];const key={};
+  C.forEach(x=>{const d=x.d.slice(0,10);const k=[d,x.tbl,x.tid,x.a,x.u].join("|");
+    if(!key[k]){key[k]={d,tm:x.d.slice(11,16),tbl:x.tbl,o:x.o,a:x.a,u:x.u,f:new Set(),n:0};groups.push(key[k]);}
+    if(x.f)key[k].f.add(x.f);key[k].n++;});
+  const byDay={};groups.forEach(g=>(byDay[g.d]=byDay[g.d]||[]).push(g));
+  const tcount={};C.forEach(x=>tcount[x.tbl]=(tcount[x.tbl]||0)+1);
+  const fdate=d=>{const [y,m,dd]=d.split("-");return `${+dd}.${+m}.${y}`};
+  const wk=d=>["su","ma","ti","ke","to","pe","la"][new Date(d).getDay()];
+  const A={"Uusi":["new","Lisätty"],"Päivitys":["","Muutettu"],"Poisto":["del","Poistettu"]};
+  return `${header()}
+  <section class="rel"><span class="anno" style="left:-34px;top:0">1</span>
+  <p class="lead">${nf(LT.total)} muutosta viimeisten ${days.length} päivän aikana. Yksi rivi kohdetta kohden päivässä; rivin historia näyttää vanhat arvot.</p>
+  <div class="spark" title="Muutoksia päivittäin">${days.map(([d,n],i)=>`<b class="${i>=days.length-2?"on":""}" style="height:${Math.round(n/max*100)}%" title="${fdate(d)}: ${n}"></b>`).join("")}</div>
+  <div class="sparkax"><span>${fdate(days[0][0])}</span><span>${fdate(days[days.length-1][0])}</span></div></section>
+  <section class="filters rel" style="margin-top:16px"><span class="anno" style="left:-50px;top:10px">2</span><span class="input"><i class="pi pi-search"></i>Hae nimellä…</span>
+    <span class="fchip on">Kaikki</span><span class="fchip">Teokset</span><span class="fchip">Painokset</span><span class="fchip">Asiasanat</span><span class="fchip">Henkilöt</span><span class="fchip">Muut</span>
+    <span class="select">Kaikki toiminnot ▾</span><span class="select only-admin">Kaikki käyttäjät ▾</span></section>
+  <div class="rel"><span class="anno" style="left:-34px;top:30px">3</span>
+  ${Object.keys(byDay).sort().reverse().slice(0,2).map(d=>`<div class="day">${wk(d)} ${fdate(d)}<small>${LT.days[d]} muutosta</small></div>
+  <table><colgroup><col style="width:70px"><col><col style="width:120px"><col style="width:32%"><col class="only-admin" style="width:90px"><col style="width:90px"></colgroup>
+  <thead><tr><th>Aika</th><th>Kohde</th><th>Toiminto</th><th>Kentät</th><th class="only-admin">Käyttäjä</th><th></th></tr></thead>
+  <tbody>${byDay[d].slice(0,14).map(g=>`<tr><td class="tm">${g.tm}</td><td>${g.a==="Poisto"?esc(g.o):`<a>${esc(g.o)}</a>`} <span class="k">${esc(g.tbl)}</span></td>
+    <td><span class="act ${A[g.a][0]}">${A[g.a][1]}</span></td><td class="s">${[...g.f].join(", ")||"–"}</td><td class="only-admin s">${esc(g.u||"")}</td>
+    <td>${g.a==="Päivitys"?`<a class="hist"><i class="pi pi-history"></i> Historia</a>`:""}</td></tr>`).join("")}</tbody></table>`).join("")}
+  </div>
+  <button class="morebtn">Vanhemmat muutokset</button><div class="foot"></div>`;
+}
+
+document.getElementById("app").innerHTML=V==="changes"?changes():latest();
+document.querySelectorAll(".viewas .opt[data-v]").forEach(x=>{x.classList.toggle("on",x.dataset.v===V);x.onclick=()=>{const u=new URLSearchParams(location.search);u.set("v",x.dataset.v);location.search=u}});
+const setAs=a=>{document.body.classList.remove("anon","user","admin");document.body.classList.add(a);document.querySelectorAll(".viewas .opt[data-as]").forEach(x=>x.classList.toggle("on",x.dataset.as===a))};
+document.querySelectorAll(".viewas .opt[data-as]").forEach(x=>x.onclick=()=>setAs(x.dataset.as));setAs(Q.get("as")||"anon");
+(()=>{const set=t=>{if(t)document.documentElement.dataset.theme=t;document.querySelectorAll(".viewas .thm").forEach(x=>x.classList.toggle("on",x.dataset.th===document.documentElement.dataset.theme))};
+document.querySelectorAll(".viewas .thm").forEach(x=>x.onclick=()=>set(x.dataset.th));set(Q.get("theme"));})();
+</script>
+</body>
+</html>

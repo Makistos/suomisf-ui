@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Awards mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<style>
+:root{
+  --page:#F3F4F8; --surface:#FFFFFF; --ink:#1E2233; --muted:#5D6377; --faint:#8A90A3;
+  --rule:#E3E6EE; --primary:#3F51B5; --primary-soft:#E8EBF8; --primary-ink:#2D3A8C;
+  --sf:#0958D7; --f:#31572C; --k:#D30031; --kok:#008B8B; --other:#6C757D;
+  --primary-ink:#2D3A8C; --primary-line:#CDD3F0; --on-primary:#fff; --on-ink:#fff; --tag-bg:#FAFBFD; --ph:#E3E6EE; --ph-line:#D3D7E2; --hover-line:#C9CEE0; --hover-bg:#F8F9FC; --admin-bg:#F7F8FB; --warn-bg:#FFF8E6; --warn-ink:#6B5310; --gold-soft:#FBF3DC; --gold-line:#EBD9A5; --gold-ink:#4A3A0A; --gold-icon:#8A6A12; --star-off:#C9CEDB; --ok:#2E7D4F; --mock-bg:#FFF7D6; --mock-ink:#5A4B0F; --mock-line:#D9C56B; --mock-note:#8A7A3A; --mock-on:#fff; --outline:transparent;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme=light]){--page:#121212; --surface:#1e1e1e; --ink:#dedede; --muted:#9e9e9e; --faint:#7c7c7c; --rule:#333333; --primary:#9FA8DA; --primary-soft:#2a2d3c; --primary-ink:#c5cae9; --primary-line:#3d4260; --on-primary:#121212; --on-ink:#121212; --tag-bg:#262626; --ph:#2c2c2c; --ph-line:#444444; --hover-line:#4a4a4a; --hover-bg:#262626; --admin-bg:#181818; --warn-bg:#3a3112; --warn-ink:#f0d78c; --gold-soft:#332a10; --gold-line:#6b5a22; --gold-ink:#f0d78c; --gold-icon:#e0c060; --star-off:#4a4a4a; --ok:#81c784; --mock-bg:#3a3412; --mock-ink:#f0e2a0; --mock-line:#7a6a1a; --mock-note:#c9b870; --mock-on:#3a3412; --outline:rgba(255,255,255,.28);}}
+:root[data-theme=dark]{--page:#121212; --surface:#1e1e1e; --ink:#dedede; --muted:#9e9e9e; --faint:#7c7c7c; --rule:#333333; --primary:#9FA8DA; --primary-soft:#2a2d3c; --primary-ink:#c5cae9; --primary-line:#3d4260; --on-primary:#121212; --on-ink:#121212; --tag-bg:#262626; --ph:#2c2c2c; --ph-line:#444444; --hover-line:#4a4a4a; --hover-bg:#262626; --admin-bg:#181818; --warn-bg:#3a3112; --warn-ink:#f0d78c; --gold-soft:#332a10; --gold-line:#6b5a22; --gold-ink:#f0d78c; --gold-icon:#e0c060; --star-off:#4a4a4a; --ok:#81c784; --mock-bg:#3a3412; --mock-ink:#f0e2a0; --mock-line:#7a6a1a; --mock-note:#c9b870; --mock-on:#3a3412; --outline:rgba(255,255,255,.28);}
+.seg,.gbar .t i,.gchip i,.legend i{box-shadow:inset 0 0 0 1px var(--outline)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 Roboto,system-ui,sans-serif}
+a{color:var(--primary);text-decoration:none;cursor:pointer}
+a:hover{text-decoration:underline}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+.viewas{background:var(--mock-bg);border-bottom:1px dashed var(--mock-line);font-size:13px;color:var(--mock-ink)}
+.viewas .wrap{display:flex;gap:8px;align-items:center;min-height:36px;flex-wrap:wrap;padding-top:4px;padding-bottom:4px}
+.viewas span.opt{padding:2px 10px;border-radius:999px;cursor:pointer}
+.viewas span.opt.on{background:var(--mock-ink);color:var(--mock-on)}
+.nav{background:var(--surface);border-bottom:1px solid var(--rule)}
+.nav .wrap{display:flex;align-items:center;gap:28px;height:60px}
+.brand{font:700 19px 'Roboto Slab',serif;color:var(--primary)}
+.nav a.m{color:var(--ink);font-size:15px}
+.nav .m i{margin-right:6px;font-size:13px}
+.navsearch{margin-left:auto;display:flex;align-items:center;gap:8px;border:1px solid var(--rule);border-radius:8px;padding:6px 12px;width:300px;color:var(--faint);font-size:14px}
+.navsearch label{margin-left:auto;font-size:12px;color:var(--muted);display:flex;gap:4px;align-items:center}
+.r-user,.r-admin{display:none}
+body.user .r-user, body.admin .r-user, body.admin .r-admin{display:inline}
+body.user .r-anon, body.admin .r-anon{display:none}
+.rel{position:relative}
+.anno{position:absolute;background:#FFE57A;color:#3a3000;font:600 12px Roboto;border-radius:999px;width:24px;height:24px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.25);z-index:4}
+.crumbs{font-size:13px;color:var(--faint);padding:18px 0 6px}
+.crumbs a{color:var(--muted)}
+h1{font:600 36px/1.15 'Roboto Slab',serif;margin:2px 0 6px;letter-spacing:-.01em}
+.lead{color:var(--muted);margin:0 0 12px;max-width:80ch}
+.note{font-size:14px;color:var(--muted);border-left:3px solid var(--rule);padding:2px 0 2px 12px;max-width:80ch;margin:0 0 16px}
+.chip{border-radius:999px;padding:3px 11px;font-size:13px;font-weight:500;background:var(--primary-soft);color:var(--primary-ink)}
+.facts{color:var(--muted);margin-top:12px}
+.facts b{color:var(--ink);font-weight:500}
+.filters{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.input{display:flex;align-items:center;gap:8px;border:1px solid var(--rule);border-radius:8px;padding:7px 12px;color:var(--faint);font-size:14.5px;min-width:240px;flex:1;max-width:400px}
+.fchip{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13.5px;color:var(--ink);white-space:nowrap}
+.fchip.on{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.fchip small{opacity:.65;margin-left:4px}
+.sec{font:600 20px 'Roboto Slab',serif;margin:26px 0 10px;display:flex;align-items:baseline;gap:8px}
+.sec small{font:400 14px Roboto;color:var(--faint)}
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden;font-size:14.5px;table-layout:fixed}
+th{text-align:left;font-weight:500;color:var(--muted);font-size:13px;padding:10px 14px;border-bottom:1px solid var(--rule);white-space:nowrap}
+th i{font-size:11px;margin-left:4px;color:var(--faint)}
+th.on{color:var(--primary)}
+td{padding:9px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--hover-bg)}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+td.y{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+td .d{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:13.5px;color:var(--muted);margin-top:2px}
+td b{font-weight:600}
+td small{display:block;color:var(--faint);font-size:12.5px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:40px}
+.box{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:14px 16px}
+.box h3{font:600 14px 'Roboto Slab',serif;margin:0 0 8px}
+.links{list-style:none;margin:0;padding:0;font-size:14px;display:flex;flex-direction:column;gap:5px}
+.links li::before{content:"↗";color:var(--faint);margin-right:6px;font-size:12px}
+.desc{max-width:72ch;margin-top:12px;position:relative}
+.desc.clamp{max-height:5.2em;overflow:hidden}
+.desc.clamp::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2.2em;background:linear-gradient(transparent,var(--page))}
+.more{border:0;background:none;color:var(--primary);font:500 14px Roboto;padding:2px 0;cursor:pointer}
+.catbar{position:sticky;top:0;z-index:3;background:var(--page);display:flex;gap:6px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--rule);margin-top:20px}
+.fab{position:fixed;right:24px;bottom:24px;width:52px;height:52px;border-radius:50%;background:var(--primary);color:var(--on-primary);display:none;place-items:center;font-size:26px;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+body.admin .fab{display:grid}
+.foot{height:60px}
+col.y{width:90px}
+col.o{width:34%}
+
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+@media (max-width:760px){
+  .wrap{padding:0 16px}
+  .nav a.m{display:none}
+  .navsearch{width:auto;flex:1}
+  h1{font-size:26px}
+  .input{min-width:0;max-width:none;width:100%}
+  .catbar{flex-wrap:nowrap;overflow-x:auto}
+  table{table-layout:auto}
+  thead{display:none}
+  table,tbody,tr,td{display:block}
+  tr{padding:8px 14px;border-bottom:1px solid var(--rule)}
+  td{border:0;padding:0}
+  td.y,td.n{display:inline;font-size:13px;color:var(--muted)}
+  td.n::before{content:" · "}
+  td.n::after{content:" voittajaa"}
+  .anno{display:none}
+}
+</style>
+</head>
+<body>
+<div class="viewas"><div class="wrap">Mockup:
+  <span class="opt" data-v="list">Palkinnot</span><span class="opt" data-v="hugo">Palkinto: Hugo</span><span class="opt" data-v="tv">Palkinto: Tähtivaeltaja</span>
+  <span style="margin-left:8px">Käyttäjä:</span><span class="opt" data-as="anon">Vierailija</span><span class="opt" data-as="admin">Ylläpitäjä</span>
+  <span style="margin-left:8px">Teema:</span><span class="opt thm" data-th="light">Vaalea</span><span class="opt thm" data-th="dark">Tumma</span></div></div>
+<header class="nav"><div class="wrap">
+  <span class="brand">SuomiSF</span>
+  <a class="m">Kirjat</a><a class="m">Lehdet</a><a class="m">Novellit</a>
+  <a class="m r-anon">Hakemistot ▾</a><a class="m r-user">Muut ▾</a>
+  <a class="m r-admin"><i class="pi pi-wrench"></i>Ylläpito ▾</a>
+  <a class="m r-anon"><i class="pi pi-user"></i>Käyttäjätili ▾</a><a class="m r-user"><i class="pi pi-user"></i>mep ▾</a>
+  <div class="navsearch"><i class="pi pi-search"></i>Etsi<label><input type="checkbox" checked> Vain nimet</label></div>
+</div></header>
+<div class="wrap" id="app"></div>
+<div class="fab" title="Ylläpito: muokkaa, tuo voittajat">+</div>
+
+<script src="awards-data.js"></script>
+<script>
+const Q=new URLSearchParams(location.search);
+const V=Q.get("v")||"list";
+let CAT=Q.get("luokka")||"";
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fin=n=>(n||"").split(" & ").map(p=>p.includes(", ")?p.split(", ").reverse().join(" "):p).join(" & ");
+const nf=n=>n.toLocaleString("fi-FI");
+const sp=s=>!s?"":s[0]===s[1]?""+s[0]:s[0]+"–"+s[1];
+const CAVEAT="Kunkin palkinnon kohdalla luetellaan vain teokset ja henkilöt, jotka löytyvät tietokannasta: henkilöpalkinnoista ne, joilta on julkaistu suomeksi ainakin yksi teos, ja teospalkinnoista teokset, jotka on suomennettu.";
+
+function listPage(){
+  const L=AW.list;
+  const table=(rows)=>`<table><colgroup><col><col style="width:110px"><col style="width:110px"><col style="width:110px"></colgroup>
+    <thead><tr><th class="on">Palkinto<i class="pi pi-sort-amount-up-alt"></i></th><th>Vuodet<i class="pi pi-sort-alt"></i></th><th style="text-align:right">Voittajia<i class="pi pi-sort-alt"></i></th><th style="text-align:right">Luokkia</th></tr></thead>
+    <tbody>${rows.map(a=>`<tr><td><a><b>${esc(a.name)}</b></a>${a.desc?`<div class="d">${esc(a.desc)}</div>`:""}</td><td class="y">${sp(a.span)}</td><td class="n">${a.n}</td><td class="n" style="color:var(--muted)">${a.cats||""}</td></tr>`).join("")}</tbody></table>`;
+  const dom=L.filter(a=>a.dom), ext=L.filter(a=>!a.dom);
+  return `<div class="crumbs"><a>Hakemistot</a> / Palkinnot</div>
+  <section class="rel"><span class="anno" style="left:-34px;top:8px">1</span><h1>Palkinnot</h1>
+  <p class="lead">${L.length} palkintoa, joiden voittajia on tietokannassa: ${dom.length} kotimaista ja ${ext.length} ulkomaista.</p>
+  <p class="note">${CAVEAT}</p></section>
+  <section class="filters rel"><span class="anno" style="left:-50px;top:10px">2</span><span class="input"><i class="pi pi-search"></i>Hae palkinnon nimellä…</span>
+    <span class="fchip on">Kaikki<small>${L.length}</small></span><span class="fchip">Kotimaiset<small>${dom.length}</small></span><span class="fchip">Ulkomaiset<small>${ext.length}</small></span></section>
+  <div class="rel"><span class="anno" style="left:-34px;top:30px">3</span>
+  <div class="sec">Kotimaiset palkinnot<small>${dom.length}</small></div>${table(dom)}
+  <div class="sec">Ulkomaiset palkinnot<small>${ext.length}</small></div>${table(ext)}</div><div class="foot"></div>`;
+}
+
+function awardPage(A){
+  const cats=[...new Set(A.winners.map(w=>w.c))];
+  const count=c=>A.winners.filter(w=>w.c===c).length;
+  const ys=A.winners.map(w=>w.y);
+  const who=w=>w.work?`<a><b>${esc(w.work.t)}</b></a><small>${esc(fin(w.work.au))}</small>`
+    :w.story?`<a><b>${esc(w.story.t)}</b></a><small>${esc(w.story.au.join(", "))} · novelli</small>`
+    :w.person?`<a><b>${esc(w.person.name)}</b></a><small>henkilöpalkinto</small>`:"";
+  const orig=w=>w.work?.o&&w.work.o!==w.work.t?w.work.o:w.story?.o&&w.story.o!==w.story.t?w.story.o:"";
+  const shown=CAT?[CAT]:cats;
+  return `<div class="crumbs"><a>Hakemistot</a> / <a>Palkinnot</a> / ${esc(A.name)}</div>
+  <div class="layout"><main>
+  <section class="rel"><span class="anno" style="left:-34px;top:6px">1</span>
+    <h1>${esc(A.name)}</h1><div><span class="chip">${A.dom?"Kotimainen palkinto":"Ulkomainen palkinto"}</span></div>
+    <div class="facts"><b>${A.winners.length} voittajaa</b> tietokannassa vuosilta ${sp([Math.min(...ys),Math.max(...ys)])}, ${cats.length} ${cats.length>1?"luokkaa":"luokka"}.</div>
+    ${A.desc?`<div class="desc clamp" id="desc">${A.desc}</div><button class="more" onclick="document.getElementById('desc').classList.toggle('clamp')">Näytä koko kuvaus ▾</button>`:""}
+    <p class="note" style="margin-top:12px">${CAVEAT}</p>
+  </section></main>
+  <aside class="rel"><span class="anno" style="left:-34px;top:4px">2</span>
+    ${A.links.length?`<div class="box"><h3>Linkit</h3><ul class="links">${A.links.map(l=>`<li><a>${esc(l)}</a></li>`).join("")}</ul></div>`:""}
+  </aside></div>
+  <nav class="catbar rel" aria-label="Luokat"><span class="anno" style="left:-34px;top:14px">3</span><span class="fchip ${CAT?"":"on"}" data-c="">Kaikki<small>${A.winners.length}</small></span>${cats.map(c=>`<span class="fchip ${CAT===c?"on":""}" data-c="${esc(c)}">${esc(c)}<small>${count(c)}</small></span>`).join("")}</nav>
+  <div class="rel"><span class="anno" style="left:-34px;top:30px">4</span>${shown.map(c=>`<div class="sec">${esc(c)}<small>${count(c)}</small></div>
+    <table><colgroup><col class="y"><col><col class="o"></colgroup><thead><tr><th class="on">Vuosi<i class="pi pi-sort-amount-up-alt"></i></th><th>Voittaja</th><th>Alkuperäinen nimi</th></tr></thead>
+    <tbody>${A.winners.filter(w=>w.c===c).sort((a,b)=>a.y-b.y).map(w=>`<tr><td class="y">${w.y}</td><td>${who(w)}</td><td style="color:var(--muted)">${esc(orig(w))}</td></tr>`).join("")}</tbody></table>`).join("")}</div>
+  <div class="foot"></div>`;
+}
+
+function render(){
+  document.getElementById("app").innerHTML=V==="hugo"?awardPage(AW.hugo):V==="tv"?awardPage(AW.tv):listPage();
+  document.querySelectorAll(".catbar .fchip").forEach(x=>x.onclick=()=>{CAT=x.dataset.c;render()});
+}
+render();
+document.querySelectorAll(".viewas .opt[data-v]").forEach(x=>{x.classList.toggle("on",x.dataset.v===V);x.onclick=()=>{const u=new URLSearchParams(location.search);u.set("v",x.dataset.v);u.delete("luokka");location.search=u}});
+const setAs=a=>{document.body.classList.remove("anon","user","admin");document.body.classList.add(a);document.querySelectorAll(".viewas .opt[data-as]").forEach(x=>x.classList.toggle("on",x.dataset.as===a))};
+document.querySelectorAll(".viewas .opt[data-as]").forEach(x=>x.onclick=()=>setAs(x.dataset.as));setAs(Q.get("as")||"anon");
+(()=>{const set=t=>{if(t)document.documentElement.dataset.theme=t;document.querySelectorAll(".viewas .thm").forEach(x=>x.classList.toggle("on",x.dataset.th===document.documentElement.dataset.theme))};
+document.querySelectorAll(".viewas .thm").forEach(x=>x.onclick=()=>set(x.dataset.th));set(Q.get("theme"));})();
+</script>
+</body>
+</html>

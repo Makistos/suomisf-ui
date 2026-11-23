@@ -21,6 +21,8 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
 ## Visual identity
 
 - **Keep:** indigo primary, Roboto for text, Roboto Slab for headings and numbers. The redesign tidies the site rather than rebranding it.
+  An alternative identity is proposed in [pages/work-identity.md](pages/work-identity.md) (Literata and Schibsted Grotesk, cool paper and
+  catalogue blue, fewer boxes, subject headings as text). Not agreed; until it is, the rules here apply.
 - **Names and titles in mixed case**, not uppercase (Agreed).
 - **No "Suomeksi" / "suomennos" labels** (Agreed): everything in the database is published in Finnish, so saying so adds nothing.
   "Suomentaja" for the translator role is fine.

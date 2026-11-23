@@ -7,6 +7,8 @@ J. R. R. Tolkien, *Taru sormusten herrasta* (https://www.sf-bibliografia.fi/work
 **Mockup:** [`../mockups/work.html`](../mockups/work.html) with [`works-data.js`](../mockups/works-data.js) next to it (real data from the live API).
 Open `work.html?w=a` for Le Guin, `work.html?w=b` for Tolkien, `work.html?w=c` for a work with little data. The yellow bar at the top switches between visitor, logged-in user and admin.
 Ownership, prices and the similar-works list are made-up example values.
+**Alternative look:** [work-identity.md](work-identity.md) proposes a different visual identity for this page (typography, colour, a to-scale shelf of printings)
+with the same behaviour as this plan. Proposal only; this plan stays the agreed design until it is decided.
 
 | Before | After (mockup, light) | After (mockup, dark) |
 |---|---|---|

@@ -38,7 +38,7 @@ Nothing here is built yet unless the status table says so. Each change still goe
 | Latest additions, changes | `/latest`, `/changes` | [latest-changes.md](pages/latest-changes.md) | Agreed |
 | Statistics | `/stats` | [../stats-plan.md](../stats-plan.md) | Done 2026-10-13 |
 | Users, profile, admin | `/users`, `/users/:id`, `/admin` | [users-admin.md](pages/users-admin.md) | Agreed |
-| Login, password, FAQ, suggestions | `/login`, `/faq`, `/suggestions` … | [misc.md](pages/misc.md) | Not started |
+| Login, password, FAQ | `/login`, `/register`, `/forgot-password`, `/faq` | [misc.md](pages/misc.md) | Agreed |
 
 Status values: **Not started** → **Reviewed** (current page looked at, problems listed) → **Proposal** (layout and mockup) →
 **Agreed** (open questions answered) → **In progress** → **Done** (with the commit or PR).
@@ -59,6 +59,7 @@ Things agreed for after the redesign is implemented:
 - **Change history for short stories,** like works and people have (see [short.md](pages/short.md)).
 - **Original-year differences between translations:** find out why translations of the same story have different original years
   (e.g. *The Tell-Tale Heart* 1843 vs 1850). If they aren't errors, remove the admin note added by the short story plan.
+- **Suggestions page** (`/suggestions`, Kirjaehdotukset): not part of this redesign; it stays as it is for now (see [misc.md](pages/misc.md)).
 
 ## Adding a plan
 

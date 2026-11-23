@@ -2,7 +2,7 @@
 
 **Route:** `/people/:id` · **Builds on:** the agreed [person plan](person.md) (all its behaviour stays: bar-height timeline, main tabs by kind of record,
 role tabs as a second row, toolbar inside the tab, compact rows, URL state, the phone filter sheet, only the tab row sticky, missing data hidden)
-**Companion:** [work-identity.md](work-identity.md), the same identity on the work page (same tokens, fonts and rules)
+**Companions:** [work-identity.md](work-identity.md) and [front-identity.md](front-identity.md), the same identity on the work page and the front page (same tokens, fonts and rules)
 **Status:** Proposal · **Updated:** 2026-11-23
 **Mockup:** [`../mockups/person-identity.html`](../mockups/person-identity.html) with [`person-identity-data.js`](../mockups/person-identity-data.js) and the shared
 [`timeline-data.js`](../mockups/timeline-data.js), real data: `?p=leguin` Ursula K. Le Guin, `?p=jpm` J. Pekka Mäkelä (writer and translator, no portrait),

@@ -2,7 +2,7 @@
 
 **Route:** `/works/:id` · **Builds on:** the agreed [work page plan](work.md) (all its behaviour stays: table, grouping, expandable rows,
 column bands, URL state, ownership, admin tools, similar works, missing data)
-**Companion:** [person-identity.md](person-identity.md), the same identity on the person page
+**Companions:** [person-identity.md](person-identity.md) and [front-identity.md](front-identity.md), the same identity on the person page and the front page
 **Status:** Proposal · **Updated:** 2026-11-23
 **Mockup:** [`../mockups/work-identity.html`](../mockups/work-identity.html) with the same [`works-data.js`](../mockups/works-data.js) as the agreed mockup:
 `?w=a` Le Guin, `?w=b` Tolkien, `?w=c` a work with little data, `?w=d` Tove Jansson's *Vaarallinen juhannus* (sizes and covers missing

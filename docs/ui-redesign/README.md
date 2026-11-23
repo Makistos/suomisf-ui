@@ -24,6 +24,7 @@ Nothing here is built yet unless the status table says so. Each change still goe
 | Work | `/works/:id` | [work.md](pages/work.md) | Agreed (revised 2026-11-23) |
 | Person: visual identity (alternative) | `/people/:id` | [person-identity.md](pages/person-identity.md) | Proposal, mockup ready |
 | Work: visual identity (alternative) | `/works/:id` | [work-identity.md](pages/work-identity.md) | Proposal, mockup ready |
+| Front page: visual identity (alternative) | `/` | [front-identity.md](pages/front-identity.md) | Proposal, mockup ready |
 | Edition link | `/editions/:id` | Part of [work.md](pages/work.md) (no separate page: it opens the work page with that edition highlighted) | Agreed |
 | Short story | `/shorts/:id` | [short.md](pages/short.md) | Agreed |
 | Front page | `/` | [front-page.md](pages/front-page.md) | Agreed (revised 2026-11-23) |

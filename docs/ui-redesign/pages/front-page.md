@@ -8,6 +8,8 @@ backend `/api/frontpagedata`, `/api/frontpage/latest`, `/api/frontpage/random` i
 Books, covers and counts are real (live API, 22.11.2026). The yellow bar switches between visitor, logged-in user and admin, light and dark,
 and the data: `?data=x` shows the real worst cases (the longest title, anthologies with three editors, a 5th printing, a book without a cover),
 `?data=err` shows the random picks request failing while the rest of the page works.
+**Alternative look:** [front-identity.md](front-identity.md) proposes a different visual identity for this page (typography, colour, the catalogue card,
+latest additions on a shelf) with the same behaviour as this plan. Proposal only; this plan stays the agreed design until it is decided.
 
 | Before | After (mockup, light) | After (mockup, dark) |
 |---|---|---|

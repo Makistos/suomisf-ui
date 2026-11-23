@@ -1,7 +1,7 @@
 # Person page
 
 **Route:** `/people/:id` · **Code:** `src/features/person/routes/person-page.tsx`, `src/features/person/components/person-details.tsx`, `src/components/contributor-book-control.tsx`
-**Status:** Agreed, revisions proposed 2026-11-23 · **Updated:** 2026-11-23
+**Status:** Agreed (revised 2026-11-23) · **Updated:** 2026-11-23
 **Sample page:** Ursula K. Le Guin, https://www.sf-bibliografia.fi/people/2435
 **Mockup:** [`../mockups/person.html`](../mockups/person.html), built with real Le Guin data from the live API (download and open it in a browser; covers load from the live site).
 The yellow bar at the top switches between visitor, logged-in user and admin; ownership and wishlist marks are made-up examples.
@@ -22,7 +22,7 @@ Book list as admin: [after-admin-list.png](../images/person/after-admin-list.png
    People with long lists go much further: Erin Hunter (94 works, 195 editions) is 26,797 px on desktop and 57,285 px on a phone today,
    Stephen King (88 works, 152 stories) 23,023 / 46,143 px. There is no height budget; compact rows (about 76 px instead of 260 px per book)
    cut those lists to roughly a third, and the sticky tab row and filters keep them usable.
-2. **Two rows of tabs.** Main tabs (Teokset, Tietokirjat…), then role subtabs (Kirjoittanut (29)) inside.
+2. **Two rows of tabs that look the same.** Main tabs (Teokset, Tietokirjat…), then full-size role subtabs (Kirjoittanut (29)) inside, even when there is only one role.
    Tab icons sit right against the labels. Tab labels show no counts.
 3. **No summary.** You can't see how much exists or when it came out in Finnish without scrolling the whole list.
 4. **Noisy header sidebar.** Roles in bold text with an underline, large grey genre chips ("Fantasia x 17"),
@@ -80,18 +80,22 @@ The numbers 1–6 in the mockup screenshots match the sections below.
    [Jules Verne](../images/person/after-timeline-verne.png), [Verne on a phone](../images/person/after-timeline-verne-mobile.png)
    (each also `-dark`). The mockup's yellow bar switches the timeline between these three (`?tl=hunter`, `?tl=verne`).
 3. **Bio** clamped to 4–5 lines with `CollapsibleHtml`, source label next to the toggle.
-4. **Tabs split on what kind of record the list holds,** and nothing else (revised 2026-11-23):
-   **Teokset** (fiction books), **Tietokirjat** (non-fiction books, its own tab as decided), **Novellit ja artikkelit**, **Sarjat**,
-   **Lehdet** (magazines they edited), **Palkinnot**. A tab shows only when it has content; with only one tab, the row isn't shown
-   (a heading with the count instead). The old "Muu tuotanto" tab is gone: what it held is found with the role filter.
-   **The person's role is never a tab:** a book they translated is in Teokset, filtered by role.
-   **Tab counts are fixed totals** for the person and never change with filters.
+4. **Two levels of tabs, each with one job** (revised 2026-11-23; role tabs kept, decided):
+   - **Main tabs = what kind of record:** **Teokset** (fiction books), **Tietokirjat** (non-fiction books, its own tab as decided),
+     **Novellit ja artikkelit**, **Sarjat**, **Lehdet** (magazines they edited), **Palkinnot**, **Muu tuotanto** (as today).
+     A tab shows only when it has content; with only one tab, the row isn't shown (a heading with the count instead).
+   - **Role tabs = the person's role,** inside Teokset, Tietokirjat and Novellit ja artikkelit, as today's subtabs:
+     Kirjoittanut, Toimittanut, Kääntänyt, Kansikuva, Kuvittanut, each with its count. Drawn as a smaller second row (a segmented control,
+     not a second full tab bar) directly under the main tabs, and **only when the person has more than one role in that tab**
+     (Le Guin: none; a translator who also writes: two).
+   - **All tab counts are fixed totals** and never change with filters. The toolbar never filters by role or by kind of record,
+     so there is exactly one way to do each.
+   - Changing a main tab or a role tab clears the type, name and year filters; sort and view stay.
 5. **The toolbar filters inside the current tab only:**
 
    | Control | In which tabs | Behaviour |
    |---|---|---|
    | Type chips | Teokset (Romaanit, Kokoelmat, Yhteisniteet…), Novellit ja artikkelit (Novellit, Artikkelit, Runot…) | One at a time, "Kaikki" first; only types that occur |
-   | Role chips | Any tab where the person has more than one role (Kirjoittanut, Toimittanut, Kääntänyt, Kansikuva, Kuvittanut) | One at a time, "Kaikki" first |
    | Year | Teokset, Tietokirjat, Novellit ja artikkelit | Set from the timeline; shown as a removable chip "1984 ×" |
    | Name filter | All list tabs | Filters as you type |
    | Sort | All list tabs | Original year (default), Finnish year, name; tabs offer only orders that make sense |
@@ -105,7 +109,7 @@ The numbers 1–6 in the mockup screenshots match the sections below.
    Grouped by decade when sorted by year, by series when "Ryhmittele sarjoittain" is on.
 
    **Everything is in the URL** (defaults left out), so back, reload and shared links restore the same view:
-   `?osio=teokset&tyyppi=romaanit&rooli=kaantaja&haku=maa&vuosi=1984&jarjestys=suomivuosi&nakyma=kannet&sarjoittain=1`
+   `?osio=teokset&rooli=kaantaja&tyyppi=romaanit&haku=maa&vuosi=1984&jarjestys=suomivuosi&nakyma=kannet&sarjoittain=1`
    (`vuosi=1980-1984` for a 5-year bar). Tab, chip, year, sort and view changes add a history entry; typing in the name filter replaces
    the current entry, so back doesn't step through every letter.
 
@@ -150,7 +154,7 @@ What the layout does with missing data (the "Missing data" rule in [principles.m
   groups have content; the filter toolbar from about 10 items.
 - **Sidebar:** the stats, genre and tag boxes are hidden when they would repeat one number or one genre; links only when there are links.
 - **Printings as one row** (agreed rule): Huovinen's four printings read "Siltala 2019, 2021, 2023, 2026 (1.–20. painos)".
-- **Admins** see one dashed hint: "Ei kuvaa, syntymävuotta eikä esittelyä. Muokkaa henkilöä".
+- **No hints for admins either** (decided): missing data is simply not shown; admins add it through the edit dialog.
 - **Live bug:** Huovinen has a link row with no URL and no description; today it shows as a bare icon that goes nowhere.
   Empty link rows should not be shown, and the form should not save them.
 
@@ -187,12 +191,7 @@ owned and wishlist marks for a logged-in user, the edit pencil and SpeedDial for
 
 ## Open questions
 
-Raised by the 2026-11-23 review (timeline scaling, overlapping tabs and filters, URL state, sticky bars on a phone); proposed answers are in
-sections 2, 4 and 5 above:
-- Timeline as bar heights counting all book editions (any role), solid first editions and hatched reprints, no genre colours: OK?
-- Tabs split only on the kind of record; roles become a filter, "Muu tuotanto" goes: OK?
-- Only the tab row sticks, and on a phone the toolbar folds into a "Suodata ja järjestä" bottom sheet: OK?
-- The "Missing data" rule and its thresholds (timeline from 5 editions, filter toolbar from about 10 items) from the sparse data check.
+_None._
 
 ## Decisions
 
@@ -204,3 +203,12 @@ sections 2, 4 and 5 above:
 - The sidebar scrolls with the page; it is not sticky.
 - The tab row may stick to the top of the screen while scrolling the book list.
 - No page-height budget: long lists (Erin Hunter, Stephen King) are normal.
+
+2026-11-23, project owner (review of the person plan):
+- Timeline as bar heights: all Finnish book editions the person has any role in, reprints and new versions included, stories not;
+  solid first editions, hatched reprints; one colour, text legend, no genre colours; 2/5/10-year bars for long spans.
+- Role tabs are kept, as a smaller second row inside Teokset, Tietokirjat and Novellit ja artikkelit, shown only with more than one role;
+  "Muu tuotanto" stays. The toolbar has no role filter.
+- Only the tab row sticks; the site menu scrolls away; on a phone the filters fold into a "Suodata ja järjestä" bottom sheet.
+- Missing data is hidden for everyone; no "missing" hints for admins. Thresholds: timeline from 5 editions, tabs from two groups,
+  filter toolbar from about 10 items.

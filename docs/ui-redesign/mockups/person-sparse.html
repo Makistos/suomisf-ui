@@ -215,7 +215,6 @@ document.getElementById("main").innerHTML=`
     ${X.nat?`<div class="meta"><span><img class="flag" src="https://hatscripts.github.io/circle-flags/flags/${X.flag}.svg" alt="">${X.nat}</span></div>`:`<div style="height:10px"></div>`}
     <div class="roles"><span class="role">${X.role}</span></div>
     <p class="summary rel"><span class="anno" style="left:-34px;top:0">2</span>Kansikuva ${X.books.length===1?"kirjaan":X.books.length+" kirjaan"} <a>${X.books[0].t}</a> (${X.books[0].au})${nEds>1?`, ${nEds} painosta ${X.books[0].eds[0].y}–${X.books[0].eds[nEds-1].y}`:`, ${X.books[0].eds[0].p} ${X.books[0].eds[0].y}`}.</p>
-    <p class="admin-hint">Ei kuvaa, syntymävuotta eikä esittelyä. <a>Muokkaa henkilöä</a></p>
   </div></section>
   <h2 class="sec-h rel"><span class="anno" style="left:-34px;top:2px">3</span>Kansikuvat<small>${X.books.length} ${X.books.length>1?"kirjaa":"kirja"}</small></h2>
   <div id="list">${X.books.map(b=>`<div class="row"><img class="thumb" src="${IMG+b.img}" alt="">

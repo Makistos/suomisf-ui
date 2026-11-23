@@ -140,7 +140,9 @@ th.c-ed{width:150px} th.c-yr{width:92px} th.c-tr{width:15%} th.c-bind{width:82px
 th.c-own{width:220px} th.c-adm{width:118px}
 .c-book,.yr-inline,.tr-inline,.narrow-only{display:none}
 td.c-ed{white-space:nowrap}
-button.exp{border:0;background:none;color:var(--muted);cursor:pointer;padding:0 4px 0 0;font-size:12px}
+button.exp{border:0;background:none;color:var(--primary);cursor:pointer;padding:0;font:inherit;text-align:left}
+button.exp i{font-size:11px;color:var(--muted);margin-right:3px}
+button.exp b{font-weight:600;white-space:nowrap}
 tr.merged td{background:var(--surface)}
 tr.sub td{background:var(--hover-bg);font-size:13.5px;padding-top:5px;padding-bottom:5px}
 tr.sub td.c-ed{padding-left:28px}
@@ -264,6 +266,7 @@ span.extra.tr-inline,span.yr-inline,td.c-book,th.c-book,button.kebab{display:non
   th.c-own{width:160px} th.c-book{width:170px}
 }
 @media (max-width:759px){
+  #view{display:none} /* the table is already cards here */
   span.yr-inline{display:inline;margin-left:8px;color:var(--muted)}
   span.extra.tr-inline{display:none}
 }
@@ -338,11 +341,14 @@ document.getElementById("crumbs").innerHTML=`<a>Kirjat</a> / <a>${esc(W.author.m
 
 let seriesHtml="";
 if(W.series){
-  const s=[...W.series.works].sort((a,b)=>a[2]-b[2]);const i=s.findIndex(x=>x[0]===W.id);
+  // Same order as the series page's default "Sarjan järjestys": bookseriesorder, then the series number, then the original year, then title.
+  // Hain-sarja has neither order nor numbers, so it falls back to original years, and the label says so.
+  const s=[...W.series.works].sort((a,b)=>a[2]-b[2]||a[1].localeCompare(b[1],"fi"));const i=s.findIndex(x=>x[0]===W.id);
+  const numbered=false;
   const prev=s[i-1],next=s[i+1];
   seriesHtml=`<div class="series">
     <div class="prev">${prev?`<small>‹ Edellinen</small><a>${esc(prev[1])}</a>`:""}</div>
-    <div class="mid"><b><a>${esc(W.series.name)}</a></b><span>${i+1}/${s.length} julkaisujärjestyksessä</span></div>
+    <div class="mid"><b><a>${esc(W.series.name)}</a></b><span>${numbered?`osa ${i+1}/${s.length}`:`${i+1}/${s.length} alkuteosten ilmestymisjärjestyksessä`}</span></div>
     <div class="next">${next?`<small>Seuraava ›</small><a>${esc(next[1])}</a>`:""}</div></div>`;
 }
 // Up to three award chips in the header; the rest open the full list in a dialog
@@ -355,7 +361,7 @@ document.getElementById("hero").innerHTML=`<span class="anno" style="left:-34px;
   ${covers.length?`<div>
     <img class="cover" id="cover" src="${IMG+covers[0].src}" alt="Kansikuva">
     ${covers.length>1?`<div class="covers" role="list" aria-label="Kannet">${covers.map((c,i)=>`<figure role="listitem" class="${i?"":"on"}${covers.length>STRIP_MAX&&i>=STRIP_MAX-1?" more-hidden":""}" data-src="${c.src}" title="Kansi ${c.label}"><img src="${IMG+c.src}" alt="Kansi ${c.label}"><figcaption>${c.y}</figcaption></figure>`).join("")}${covers.length>STRIP_MAX?`<figure class="plus" title="Kaikki kannet"><span>+${covers.length-STRIP_MAX+1}</span><figcaption>kaikki</figcaption></figure>`:""}</div>`:""}
-  </div>`:`<span class="admin-hint only-admin" style="grid-column:1/-1;order:9">Kansikuva puuttuu. <a>Lisää kansikuva</a></span>`}
+  </div>`:""}
   <div class="hero-text">
     <div>
       <div class="author">${W.author.map(a=>`<a>${esc(fin(a.name))}</a>`).join(", ")}</div>
@@ -367,7 +373,7 @@ document.getElementById("hero").innerHTML=`<span class="anno" style="left:-34px;
     ${seriesHtml?`<div class="rel">${seriesHtml}<span class="anno" style="left:-264px;top:14px">3</span></div>`:""}
   </div>`;
 document.getElementById("desctext").innerHTML=(W.desc?`<section class="desc collapsed rel" id="desc" style="margin-top:0"><span class="anno" style="left:-34px;top:0">4</span>${W.desc}</section>
-<button class="more-btn" onclick="document.getElementById('desc').classList.toggle('collapsed')">Näytä koko kuvaus ▾</button>`:`<p class="admin-hint only-admin rel"><span class="anno" style="left:-34px;top:0">4</span>Kuvaus puuttuu. <a>Lisää kuvaus</a></p>`)+`
+<button class="more-btn" onclick="document.getElementById('desc').classList.toggle('collapsed')">Näytä koko kuvaus ▾</button>`:"")+`
 ${W.misc?`<div class="note"><b>Muuta:</b> ${esc(W.misc)}</div>`:""}`;
 
 const ORDER=["Alagenre","Tyyli","Aihe","Toimija","Paikka","Aika","Lista"];
@@ -387,7 +393,7 @@ const WHY=[
 const SIMIMG={"Harhakaupunki":"LeGuin_Ursula_K_Harhakaupunki_1p.jpg","Maailma, vihreä metsä":"LeGuin_Ursula_K_Maailmavihreametsa_1p.jpg","Maailman syntymäpäivä ja muita tarinoita":"LeGuin_Ursula_K_Maailmansyntymapaiva_1p.jpg","Maanpakolaisten planeetta":"LeGuin_Ursula_K_Maanpakolaistenplaneetta_1p.jpg","Osattomien planeetta":"LeGuin_Ursula_K_Osattomienplaneetta_1p.jpg","Rocannonin maailma":"LeGuin_Ursula_K_Rocannoninmaailma_1p.jpg","Kahdesti haarautuva puu":"LeGuin_Ursula_K_Kahdestihaarautuvapuu_1p.jpg","Neljä anteeksiantoa":"LeGuin_Ursula_K_Neljaanteeksiantoa_1p.jpg"};
 document.getElementById("tagsbox").innerHTML=W.tags.length?`<span class="anno" style="left:-34px;top:4px">6</span>
 <div class="box"><h3>Asiasanat</h3>${ORDER.filter(k=>tg[k]).map(k=>`<div class="tgroup"><span>${LABEL[k]}</span><div class="tags">${tg[k].map(n=>`<a class="tag">${esc(n)}</a>`).join("")}</div></div>`).join("")}</div>`
-  :`<p class="admin-hint only-admin">Ei asiasanoja. <a>Lisää asiasanoja</a> tai <a>hae Kirjasampo-asiasanat</a></p>`;
+  :"";
 const READ=`<div class="box only-user"><h3>Oma lukumerkintä</h3><div class="rate"><span><i class="pi pi-thumbs-down"></i> En pitänyt</span><span><i class="pi pi-minus-circle"></i> Ihan ok</span><span><i class="pi pi-thumbs-up"></i> Pidin</span></div></div>`;
 document.getElementById("readm").innerHTML=READ;
 document.getElementById("side").innerHTML=`
@@ -435,7 +441,7 @@ function cells(g,sub){
   const id=e.v+"-"+e.n, open=OPEN.has(id);
   const bookTxt=[binds.join(", "),pages.length?pages.join(", ")+" s.":"",sizes.length?sizes.join(", ")+" cm":""].filter(Boolean).join(" · ");
   return `${covers.length?`<td class="c-th">${sub?"":e.img[0]?`<img src="${IMG+e.img[0]}" alt="">`:`<div class="none"></div>`}</td>`:""}
-    <td class="c-ed">${many?`<button class="exp" aria-expanded="${open}" data-id="${id}" aria-label="${open?"Sulje":"Avaa"} ${g.length} painosta"><i class="pi ${open?"pi-chevron-down":"pi-chevron-right"}"></i></button>`:""}<a>${label}</a>
+    <td class="c-ed">${many?`<button class="exp" aria-expanded="${open}" data-id="${id}" title="${open?"Sulje":"Näytä"} painokset"><i class="pi ${open?"pi-chevron-down":"pi-chevron-right"}"></i> <b>${label}</b></button>`:`<a>${label}</a>`}
       ${many?`<small>${g.length} painosta</small>`:""}<span class="yr-inline">${yr(ys)}</span>${!many&&e.ver?`<span class="verified only-admin"><i class="pi pi-check-circle"></i> Tarkastettu</span>`:""}</td>
     <td class="c-yr nw">${yr(ys)}</td>
     <td class="c-pub">${pubs.join("<br>")}${extras.length?`<span class="extra">${esc(extras.join(". "))}</span>`:""}${trans.length&&tr.length?`<span class="extra tr-inline">Suom. ${esc(tr.join(", "))}</span>`:""}</td>
@@ -473,6 +479,7 @@ function renderEds(){
   document.querySelectorAll("#view span").forEach(x=>{x.classList.toggle("on",x.dataset.v===VIEW);x.onclick=()=>{VIEW=x.dataset.v;saveState();renderEds()}});
   document.querySelectorAll("button.exp").forEach(b=>b.onclick=()=>{const id=b.dataset.id;OPEN.has(id)?OPEN.delete(id):OPEN.add(id);renderEds()});
 }
+addEventListener("popstate",()=>location.reload());
 if(Q.get("auki")) Q.get("auki").split(",").forEach(x=>OPEN.add(x)); // mockup only: open merged rows for screenshots
 function setAs(a){document.body.className=a;document.querySelectorAll(".viewas span").forEach(s=>s.classList.toggle("on",s.dataset.as===a))}
 document.querySelectorAll(".viewas span").forEach(s=>s.onclick=()=>setAs(s.dataset.as));

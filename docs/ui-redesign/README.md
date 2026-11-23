@@ -34,7 +34,7 @@ Nothing here is built yet unless the status table says so. Each change still goe
 | Publisher series | `/pubseries`, `/pubseries/:id` | [pubseries.md](pages/pubseries.md) | Agreed |
 | Publishers | `/publishers`, `/publishers/:id` | [publishers.md](pages/publishers.md) | Agreed |
 | Awards | `/awards`, `/awards/:id` | [awards.md](pages/awards.md) | Agreed |
-| Tags | `/tags`, `/tags/:id` | [tags.md](pages/tags.md) | Not started |
+| Tags | `/tags`, `/tags/:id` | [tags.md](pages/tags.md) | Agreed |
 | Latest additions, changes | `/latest`, `/changes` | [latest-changes.md](pages/latest-changes.md) | Not started |
 | Statistics | `/stats` | [../stats-plan.md](../stats-plan.md) | Done 2026-10-13 |
 | Users, profile, admin | `/users`, `/users/:id`, `/admin` | [users-admin.md](pages/users-admin.md) | Not started |

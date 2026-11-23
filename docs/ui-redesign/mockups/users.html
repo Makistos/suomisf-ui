@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Users and admin mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<style>
+:root{
+  --page:#F3F4F8; --surface:#FFFFFF; --ink:#1E2233; --muted:#5D6377; --faint:#8A90A3;
+  --rule:#E3E6EE; --primary:#3F51B5; --primary-soft:#E8EBF8; --primary-ink:#2D3A8C;
+  --sf:#0958D7; --f:#31572C; --k:#D30031; --kok:#008B8B; --other:#6C757D;
+  --primary-ink:#2D3A8C; --primary-line:#CDD3F0; --on-primary:#fff; --on-ink:#fff; --tag-bg:#FAFBFD; --ph:#E3E6EE; --ph-line:#D3D7E2; --hover-line:#C9CEE0; --hover-bg:#F8F9FC; --admin-bg:#F7F8FB; --warn-bg:#FFF8E6; --warn-ink:#6B5310; --gold-soft:#FBF3DC; --gold-line:#EBD9A5; --gold-ink:#4A3A0A; --gold-icon:#8A6A12; --star-off:#C9CEDB; --ok:#2E7D4F; --mock-bg:#FFF7D6; --mock-ink:#5A4B0F; --mock-line:#D9C56B; --mock-note:#8A7A3A; --mock-on:#fff; --outline:transparent;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme=light]){--page:#121212; --surface:#1e1e1e; --ink:#dedede; --muted:#9e9e9e; --faint:#7c7c7c; --rule:#333333; --primary:#9FA8DA; --primary-soft:#2a2d3c; --primary-ink:#c5cae9; --primary-line:#3d4260; --on-primary:#121212; --on-ink:#121212; --tag-bg:#262626; --ph:#2c2c2c; --ph-line:#444444; --hover-line:#4a4a4a; --hover-bg:#262626; --admin-bg:#181818; --warn-bg:#3a3112; --warn-ink:#f0d78c; --gold-soft:#332a10; --gold-line:#6b5a22; --gold-ink:#f0d78c; --gold-icon:#e0c060; --star-off:#4a4a4a; --ok:#81c784; --mock-bg:#3a3412; --mock-ink:#f0e2a0; --mock-line:#7a6a1a; --mock-note:#c9b870; --mock-on:#3a3412; --outline:rgba(255,255,255,.28);}}
+:root[data-theme=dark]{--page:#121212; --surface:#1e1e1e; --ink:#dedede; --muted:#9e9e9e; --faint:#7c7c7c; --rule:#333333; --primary:#9FA8DA; --primary-soft:#2a2d3c; --primary-ink:#c5cae9; --primary-line:#3d4260; --on-primary:#121212; --on-ink:#121212; --tag-bg:#262626; --ph:#2c2c2c; --ph-line:#444444; --hover-line:#4a4a4a; --hover-bg:#262626; --admin-bg:#181818; --warn-bg:#3a3112; --warn-ink:#f0d78c; --gold-soft:#332a10; --gold-line:#6b5a22; --gold-ink:#f0d78c; --gold-icon:#e0c060; --star-off:#4a4a4a; --ok:#81c784; --mock-bg:#3a3412; --mock-ink:#f0e2a0; --mock-line:#7a6a1a; --mock-note:#c9b870; --mock-on:#3a3412; --outline:rgba(255,255,255,.28);}
+.seg,.gbar .t i,.gchip i,.legend i{box-shadow:inset 0 0 0 1px var(--outline)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 Roboto,system-ui,sans-serif}
+a{color:var(--primary);text-decoration:none;cursor:pointer}
+a:hover{text-decoration:underline}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+.viewas{background:var(--mock-bg);border-bottom:1px dashed var(--mock-line);font-size:13px;color:var(--mock-ink)}
+.viewas .wrap{display:flex;gap:8px;align-items:center;min-height:36px;flex-wrap:wrap;padding-top:4px;padding-bottom:4px}
+.viewas span.opt{padding:2px 10px;border-radius:999px;cursor:pointer}
+.viewas span.opt.on{background:var(--mock-ink);color:var(--mock-on)}
+.nav{background:var(--surface);border-bottom:1px solid var(--rule)}
+.nav .wrap{display:flex;align-items:center;gap:28px;height:60px}
+.brand{font:700 19px 'Roboto Slab',serif;color:var(--primary)}
+.nav a.m{color:var(--ink);font-size:15px}
+.nav .m i{margin-right:6px;font-size:13px}
+.navsearch{margin-left:auto;display:flex;align-items:center;gap:8px;border:1px solid var(--rule);border-radius:8px;padding:6px 12px;width:300px;color:var(--faint);font-size:14px}
+.navsearch label{margin-left:auto;font-size:12px;color:var(--muted);display:flex;gap:4px;align-items:center}
+.r-user,.r-admin{display:none}
+body.user .r-user, body.admin .r-user, body.admin .r-admin{display:inline}
+body.user .r-anon, body.admin .r-anon{display:none}
+.own{display:none}
+body.owner .own{display:revert}
+body.owner .notown{display:none}
+.rel{position:relative}
+.anno{position:absolute;background:#FFE57A;color:#3a3000;font:600 12px Roboto;border-radius:999px;width:24px;height:24px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.25);z-index:4}
+.crumbs{font-size:13px;color:var(--faint);padding:18px 0 6px}
+.crumbs a{color:var(--muted)}
+h1{font:600 36px/1.15 'Roboto Slab',serif;margin:2px 0 6px;letter-spacing:-.01em}
+h2{font:600 18px 'Roboto Slab',serif;margin:0 0 4px}
+.lead{color:var(--muted);margin:0 0 14px;max-width:80ch}
+.chip{border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:500;background:var(--primary-soft);color:var(--primary-ink);white-space:nowrap}
+.facts{color:var(--muted);margin-top:10px}
+.facts b{color:var(--ink);font-weight:500}
+.notice{font-size:13.5px;color:var(--muted);border-left:3px solid var(--rule);padding:2px 0 2px 12px;margin-top:12px;max-width:80ch}
+.tabs{position:sticky;top:0;z-index:3;background:var(--page);display:flex;gap:2px;border-bottom:1px solid var(--rule);margin-top:18px;overflow-x:auto}
+.tabs a{padding:12px 14px;color:var(--muted);font-weight:500;font-size:15px;border-bottom:2px solid transparent;white-space:nowrap}
+.tabs a.on{color:var(--primary);border-bottom-color:var(--primary)}
+.tabs a small{font-weight:400;color:var(--faint);margin-left:5px}
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px 0 10px}
+.input{display:flex;align-items:center;gap:8px;border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:7px 12px;color:var(--faint);font-size:14.5px;min-width:240px;flex:1;max-width:360px}
+.select{border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:7px 12px;font-size:14px;color:var(--ink);white-space:nowrap}
+.fchip{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13.5px;color:var(--ink);white-space:nowrap}
+.fchip.on{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.tool-r{margin-left:auto;display:flex;gap:12px;align-items:center;font-size:14px}
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--rule);border-radius:10px;overflow:hidden;font-size:14.5px;table-layout:fixed}
+th{text-align:left;font-weight:500;color:var(--muted);font-size:13px;padding:9px 14px;border-bottom:1px solid var(--rule);white-space:nowrap}
+th i{font-size:11px;margin-left:4px;color:var(--faint)}
+th.on{color:var(--primary)}
+td{padding:8px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--hover-bg)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+td.y{color:var(--muted);font-variant-numeric:tabular-nums}
+td b{font-weight:600}
+td small{display:block;color:var(--faint);font-size:12.5px}
+.cond{border:1px solid var(--rule);border-radius:6px;padding:0 6px;font-size:12px;color:var(--muted)}
+.op{font-size:13px;color:var(--muted);white-space:nowrap}
+.pager{display:flex;gap:6px;justify-content:center;align-items:center;margin-top:14px;font-size:14px;color:var(--muted)}
+.pager a{min-width:32px;text-align:center;padding:4px 8px;border-radius:6px;border:1px solid var(--rule);background:var(--surface);color:var(--ink)}
+.pager a.on{background:var(--primary-soft);color:var(--primary);border-color:transparent;font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:16px}
+.stat{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:12px 16px}
+.stat b{display:block;font:600 24px 'Roboto Slab',serif}
+.stat span{font-size:13.5px;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:14px 18px;margin-top:14px}
+.bars{display:grid;grid-template-columns:200px minmax(0,1fr) 56px;gap:6px 12px;align-items:center;font-size:14px;margin-top:8px}
+.bars .bar{height:12px;border-radius:2px;box-shadow:inset 0 0 0 1px var(--outline)}
+.bars .c{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:8px}
+.tool{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:14px 18px;display:flex;flex-direction:column;gap:6px}
+.tool p{margin:0;font-size:14px;color:var(--muted)}
+.tool .go{margin-top:auto;font-weight:500;font-size:14px}
+.tool .cnt{font-size:13px;color:var(--faint)}
+.sec{font:600 20px 'Roboto Slab',serif;margin:26px 0 8px}
+.quick{display:flex;flex-wrap:wrap;gap:10px}
+.btn{border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:8px;padding:8px 14px;font:500 14px Roboto;display:inline-flex;gap:8px;align-items:center}
+.btn.pri{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.adminlay{display:grid;grid-template-columns:280px minmax(0,1fr);gap:24px;margin-top:22px;align-items:start}
+.toollist{display:flex;flex-direction:column;gap:6px;position:sticky;top:12px}
+.toollist a{display:block;background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:10px 14px;color:var(--ink)}
+.toollist a span{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.toollist a.on{border-color:var(--primary);box-shadow:inset 3px 0 0 var(--primary)}
+.toollist a:hover{text-decoration:none;background:var(--hover-bg)}
+.foot{height:60px}
+
+@media (max-width:760px){
+  .wrap{padding:0 16px}
+  .nav a.m{display:none}
+  .navsearch{width:auto;flex:1}
+  h1{font-size:28px}
+  .input{min-width:0;max-width:none;flex:1 1 100%}
+  .tool-r{margin-left:0}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid2,.tools,.adminlay{grid-template-columns:1fr}
+  .toollist{position:static;flex-direction:row;overflow-x:auto}
+  .toollist a{min-width:200px}
+  .bars{grid-template-columns:110px minmax(0,1fr) 44px}
+  table{table-layout:auto}
+  thead{display:none}
+  table,tbody,tr,td{display:block}
+  tr{padding:8px 14px;border-bottom:1px solid var(--rule)}
+  td{border:0;padding:0}
+  td.y,td.n{display:inline;font-size:13px;color:var(--muted);margin-right:10px}
+  td.hide-m{display:none}
+  .anno{display:none}
+}
+</style>
+</head>
+<body>
+<div class="viewas"><div class="wrap">Mockup:
+  <span class="opt" data-v="owned">Profiili: kokoelma</span><span class="opt" data-v="read">Profiili: luetut</span><span class="opt" data-v="stats">Profiili: tilastot</span><span class="opt" data-v="users">Käyttäjät</span><span class="opt" data-v="admin">Ylläpito</span>
+  <span style="margin-left:8px">Katsoja:</span><span class="opt" data-as="user">Toinen käyttäjä</span><span class="opt" data-as="owner">Profiilin omistaja</span>
+  <span style="margin-left:8px">Teema:</span><span class="opt thm" data-th="light">Vaalea</span><span class="opt thm" data-th="dark">Tumma</span></div></div>
+<header class="nav"><div class="wrap">
+  <span class="brand">SuomiSF</span>
+  <a class="m">Kirjat</a><a class="m">Lehdet</a><a class="m">Novellit</a>
+  <a class="m r-anon">Hakemistot ▾</a><a class="m r-user">Muut ▾</a>
+  <a class="m r-admin"><i class="pi pi-wrench"></i>Ylläpito ▾</a>
+  <a class="m r-anon"><i class="pi pi-user"></i>Käyttäjätili ▾</a><a class="m r-user"><i class="pi pi-user"></i>mep ▾</a>
+  <div class="navsearch"><i class="pi pi-search"></i>Etsi<label><input type="checkbox" checked> Vain nimet</label></div>
+</div></header>
+<div class="wrap" id="app"></div>
+
+<script src="users-data.js"></script>
+<script>
+const Q=new URLSearchParams(location.search);
+const V=Q.get("v")||"owned";
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fin=n=>(n||"").split(" & ").map(p=>p.includes(", ")?p.split(", ").reverse().join(" "):p).join(" & ");
+const nf=n=>Math.round(n).toLocaleString("fi-FI");
+const GC={"PF":"#7B2D8E","rajatap":"#A0522D","Paleof":"#9B59B6","lF":"#82C341","Utopia":"#DAA520","nK":"#FF696D","eiSF":"#6C757D","nSF":"#4A90D9","F":"#31572C","SF":"#0958D7","K":"#D30031","kok":"#008B8B","VEH":"#E67E22","lSF":"#7EC8E3","nF":"#21D011","satu":"#E91E63"};
+const OP={"1":["pi-thumbs-up","Pidin"],"0":["pi-minus-circle","Ihan ok"],"-1":["pi-thumbs-down","En pitänyt"]};
+
+function profile(){
+  const tabs=[["owned","Kokoelma",US.ownedN],["wish","Muistilista",US.wishN],["read","Luetut",US.readN],["stats","Tilastot",""]];
+  let body="";
+  if(V==="owned") body=`<div class="filters rel"><span class="anno" style="left:-34px;top:20px">3</span><span class="input"><i class="pi pi-search"></i>Hae nimellä tai tekijällä…</span>
+      <span class="select">Järjestys: tekijä ▾</span><span class="fchip on">Kaikki kunnot</span><span class="fchip">K1–K2</span><span class="fchip">K3</span><span class="fchip">K4–K5</span>
+      <span class="tool-r own"><a><i class="pi pi-download"></i> Lataa CSV</a><a><i class="pi pi-file-pdf"></i> PDF</a></span></div>
+    <table><colgroup><col><col style="width:22%"><col style="width:90px"><col style="width:70px"><col style="width:90px"><col style="width:22%"></colgroup>
+    <thead><tr><th class="on">Kirja<i class="pi pi-sort-amount-up-alt"></i></th><th>Kustantaja ja vuosi<i class="pi pi-sort-alt"></i></th><th>Painos</th><th>Kunto</th><th class="n">Hinta<i class="pi pi-sort-alt"></i></th><th>Huomautus</th></tr></thead>
+    <tbody>${US.owned.slice(0,25).map(o=>`<tr><td><a><b>${esc(o.t)}</b></a><small>${esc(fin(o.au))}</small></td><td class="y">${esc(o.pub)} ${o.y}</td>
+      <td class="y">${o.v>1?o.v+". laitos, ":""}${o.n}. p.</td><td><span class="cond">${esc(o.k||"–")}</span></td><td class="n">${o.p?nf(o.p)+" €":"–"}</td><td class="y hide-m">${esc(o.d||"")}</td></tr>`).join("")}</tbody></table>
+    <div class="pager"><a>‹</a><a class="on">1</a><a>2</a><a>3</a><span>…</span><a>40</a><a>›</a><span style="margin-left:8px">25 / sivu</span></div>`;
+  if(V==="read") body=`<div class="filters"><span class="input"><i class="pi pi-search"></i>Hae nimellä tai tekijällä…</span><span class="fchip on">Kaikki</span><span class="fchip"><i class="pi pi-thumbs-up"></i> Pidin</span><span class="fchip">Ihan ok</span><span class="fchip">En pitänyt</span></div>
+    <table><colgroup><col><col style="width:110px"><col style="width:140px"><col style="width:28%"></colgroup><thead><tr><th class="on">Teos<i class="pi pi-sort-amount-up-alt"></i></th><th>Julkaistu</th><th>Arvio</th><th>Huomautus</th></tr></thead>
+    <tbody>${US.read.map(r=>{const o=OP[String(r.opinion)];return `<tr><td><a><b>${esc(r.title)}</b></a><small>${esc(fin(r.author_str))}</small></td><td class="y">${r.pubyear||""}</td><td class="op">${o?`<i class="pi ${o[0]}"></i> ${o[1]}`:"–"}</td><td class="y hide-m">${esc(r.description||"")}</td></tr>`}).join("")}</tbody></table>`;
+  if(V==="stats"){const g=[...US.gen].sort((a,b)=>b.count-a.count);const mx=g[0].count;const tot=g.reduce((a,b)=>a+b.count,0);
+    body=`<div class="stats rel"><span class="anno" style="left:-34px;top:14px">3</span><div class="stat"><b>${nf(US.ownedN)}</b><span>painosta kokoelmassa</span></div><div class="stat"><b>1 640</b><span>novellia kokoelmissa</span></div><div class="stat"><b>304 387</b><span>sivua yhteensä</span></div><div class="stat"><b>45,7 m</b><span>hyllytilaa</span></div></div>
+    <div class="panel"><h2>Kokoelman arvo</h2><div class="s" style="color:var(--muted);font-size:14px">Arvioitu ${nf(US.sum)} € hinnoitelluista kirjoista. Kalleimmat, kuntojakauma ja hinnattomat kirjat avautuvat tästä. <a>Näytä erittely</a></div></div>
+    <div class="grid2"><div class="panel"><h2>Genret</h2><div class="bars">${g.map(x=>`<span>${esc(x.name)}</span><span class="bar" style="width:${Math.max(1,x.count/mx*100)}%;background:${GC[x.abbr]||"#6C757D"}"></span><span class="c">${x.count}</span>`).join("")}</div>
+      <div style="font-size:13px;color:var(--faint);margin-top:8px">${nf(tot)} teosta genren mukaan</div></div>
+      <div class="panel"><h2>Kustantajat</h2><div style="font-size:14px;color:var(--muted)">Sama palkkimuoto: kymmenen yleisintä kustantajaa, genrevalitsin ja "Näytä kaikki".</div>
+      <h2 style="margin-top:16px">Painovuodet</h2><div style="font-size:14px;color:var(--muted)">Painokset ja alkuteokset vuosikymmenittäin pylväinä.</div></div></div>`;}
+  if(V==="wish") body="";
+  return `<div class="crumbs"><a>Käyttäjät</a> / mep</div>
+  <section class="rel"><span class="anno" style="left:-34px;top:6px">1</span>
+  <h1>mep</h1><span class="chip">Ylläpitäjä</span>
+  <div class="facts"><b>${nf(US.ownedN)} painosta</b> kokoelmassa, ${US.wishN} muistilistalla, ${US.readN} luettua teosta.</div>
+  <div class="notice own">Kokoelmasi, muistilistasi ja luetut näkyvät kaikille.</div></section>
+  <nav class="tabs rel"><span class="anno" style="left:-34px;top:10px">2</span>${tabs.map(([k,l,n])=>`<a class="${k===V?"on":""}">${l}${n!==""?`<small>${nf(n)}</small>`:""}</a>`).join("")}</nav>
+  ${body}<div class="foot"></div>`;
+}
+
+function users(){
+  const L=[...US.users].sort((a,b)=>b.owned-a.owned);
+  return `<div class="crumbs">Käyttäjät</div>
+  <section class="rel"><span class="anno" style="left:-34px;top:6px">1</span><h1>Käyttäjät</h1><p class="lead">${L.length} käyttäjää, joista ${L.filter(u=>u.is_admin).length} ylläpitäjää.</p></section>
+  <div class="filters rel"><span class="anno" style="left:-34px;top:20px">2</span><span class="input"><i class="pi pi-search"></i>Hae nimellä…</span><span class="fchip on">Kaikki</span><span class="fchip">Ylläpitäjät</span><span class="fchip">Kokoelma luetteloitu</span></div>
+  <table><colgroup><col><col style="width:140px"><col style="width:120px"><col style="width:120px"><col style="width:120px"></colgroup>
+  <thead><tr><th>Nimi<i class="pi pi-sort-alt"></i></th><th>Rooli</th><th class="n on">Kokoelma<i class="pi pi-sort-amount-down"></i></th><th class="n">Muistilista<i class="pi pi-sort-alt"></i></th><th class="n">Luettu<i class="pi pi-sort-alt"></i></th></tr></thead>
+  <tbody>${L.map(u=>`<tr><td><a><b>${esc(u.name)}</b></a></td><td>${u.is_admin?`<span class="chip">Ylläpitäjä</span>`:""}</td><td class="n">${u.owned||"–"}</td><td class="n">${u.wishlist||"–"}</td><td class="n">${u.read||"–"}</td></tr>`).join("")}</tbody></table>
+  <div class="foot"></div>`;
+}
+
+function admin(){
+  const tools=[
+    ["keskeneraiset","Keskeneräiset teokset","Satunnaisia teoksia, joilta puuttuu valitut tiedot."],
+    ["kirjasampo","Kirjasampo-asiasanat","Teoksia, joiden Kirjasampo-asiasanat on tuomatta tai linkki puuttuu."],
+    ["asiasanaparit","Samankaltaiset asiasanat","Ehdotetut asiasanaparit: yhdistä, merkitse liittyviksi tai hylkää."],
+    ["linkkien-lahteet","Linkkien lähteet","Teosten linkkien lähteet: nimeä uudelleen, yhdistä tai poista."]];
+  const cur="asiasanaparit";
+  const pairs=[["aaveet","kummitukset",41,63,"Kaksoiskappale?"],["kummitustalot","kummitukset",12,63,"Liittyvät"],["mars","marsilaiset",88,14,"Liittyvät"],["avaruusalukset","avaruuslaivat",120,7,"Kaksoiskappale?"],["tekno","kyberpunk",9,40,"Liittyvät"],["utopia","utopiat",59,3,"Kaksoiskappale?"]];
+  return `<div class="crumbs">Ylläpito</div>
+  <section class="rel"><span class="anno" style="left:-34px;top:6px">1</span><h1>Ylläpito</h1><p class="lead">Työkalut tietokannan ylläpitoon. Sivu näkyy vain ylläpitäjille.</p>
+  <div class="quick"><a class="btn pri"><i class="pi pi-plus"></i>Uusi teos</a><a class="btn"><i class="pi pi-plus"></i>Uusi henkilö</a><a class="btn"><i class="pi pi-history"></i>Muutokset</a><a class="btn"><i class="pi pi-users"></i>Käyttäjät</a></div></section>
+  <div class="adminlay">
+  <nav class="toollist rel"><span class="anno" style="left:-34px;top:8px">2</span>${tools.map(([k,t,d])=>`<a class="${k===cur?"on":""}"><b>${t}</b><span>${d}</span></a>`).join("")}</nav>
+  <section class="rel"><span class="anno" style="left:-34px;top:8px">3</span><div class="panel" style="margin-top:0"><h2>Samankaltaiset asiasanat</h2>
+    <div class="filters" style="padding-top:6px"><span class="fchip on">Ehdotukset</span><span class="fchip">Hylätyt</span><span class="select">Järjestys: nimi ▾</span></div>
+    <table><colgroup><col><col><col style="width:150px"><col style="width:200px"></colgroup><thead><tr><th>Asiasana</th><th>Pari</th><th>Arvio</th><th></th></tr></thead>
+    <tbody>${pairs.map(p=>`<tr><td><a>${p[0]}</a> <small style="display:inline">${p[2]}</small></td><td><a>${p[1]}</a> <small style="display:inline">${p[3]}</small></td><td class="y">${p[4]}</td><td><a>Yhdistä</a> · <a>Liittyvät</a> · <a>Hylkää</a></td></tr>`).join("")}</tbody></table>
+    <p style="font-size:13px;color:var(--faint);margin:10px 0 0">Esimerkkirivit; työkalun toiminta säilyy ennallaan. Valittu työkalu on osoitteessa: /admin?tyokalu=asiasanaparit</p></div></section></div>
+  <div class="foot"></div>`;
+}
+
+const ROLE=Q.get("as")||"owner";
+document.getElementById("app").innerHTML=V==="users"?users():V==="admin"?admin():profile();
+document.querySelectorAll(".viewas .opt[data-v]").forEach(x=>{x.classList.toggle("on",x.dataset.v===V);x.onclick=()=>{const u=new URLSearchParams(location.search);u.set("v",x.dataset.v);location.search=u}});
+const setAs=a=>{document.body.className="admin"+(a==="owner"?" owner":"");document.querySelectorAll(".viewas .opt[data-as]").forEach(x=>x.classList.toggle("on",x.dataset.as===a))};
+document.querySelectorAll(".viewas .opt[data-as]").forEach(x=>x.onclick=()=>setAs(x.dataset.as));setAs(ROLE);
+(()=>{const set=t=>{if(t)document.documentElement.dataset.theme=t;document.querySelectorAll(".viewas .thm").forEach(x=>x.classList.toggle("on",x.dataset.th===document.documentElement.dataset.theme))};
+document.querySelectorAll(".viewas .thm").forEach(x=>x.onclick=()=>set(x.dataset.th));set(Q.get("theme"));})();
+</script>
+</body>
+</html>

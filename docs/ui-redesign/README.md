@@ -37,7 +37,7 @@ Nothing here is built yet unless the status table says so. Each change still goe
 | Tags | `/tags`, `/tags/:id` | [tags.md](pages/tags.md) | Agreed |
 | Latest additions, changes | `/latest`, `/changes` | [latest-changes.md](pages/latest-changes.md) | Agreed |
 | Statistics | `/stats` | [../stats-plan.md](../stats-plan.md) | Done 2026-10-13 |
-| Users, profile, admin | `/users`, `/users/:id`, `/admin` | [users-admin.md](pages/users-admin.md) | Not started |
+| Users, profile, admin | `/users`, `/users/:id`, `/admin` | [users-admin.md](pages/users-admin.md) | Agreed |
 | Login, password, FAQ, suggestions | `/login`, `/faq`, `/suggestions` … | [misc.md](pages/misc.md) | Not started |
 
 Status values: **Not started** → **Reviewed** (current page looked at, problems listed) → **Proposal** (layout and mockup) →

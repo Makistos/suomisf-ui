@@ -49,6 +49,7 @@ h1{font:600 38px/1.15 'Roboto Slab',serif;margin:0 0 12px;letter-spacing:-.01em;
 .search{display:flex;gap:0;border:2px solid var(--primary);border-radius:10px;overflow:hidden;background:var(--surface);max-width:620px}
 .search .in{flex:1;display:flex;align-items:center;gap:10px;padding:0 16px;color:var(--faint);font-size:17px;min-height:56px}
 .search .in i{color:var(--muted)}
+.ph-short{display:none}
 .search button{border:0;background:var(--primary);color:var(--on-primary);font:500 16px Roboto;padding:0 26px;cursor:pointer}
 .opts{display:flex;gap:18px;align-items:center;margin-top:10px;font-size:14px;color:var(--muted);flex-wrap:wrap}
 .opts label{display:flex;gap:6px;align-items:center}
@@ -62,7 +63,11 @@ h1{font:600 38px/1.15 'Roboto Slab',serif;margin:0 0 12px;letter-spacing:-.01em;
 .pick-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
 .pick-head h2{font:600 15px 'Roboto Slab',serif;margin:0;color:var(--muted)}
 .pick-head button{border:0;background:none;color:var(--primary);font:500 13px Roboto;cursor:pointer;display:flex;gap:6px;align-items:center}
-.feat{display:grid;grid-template-columns:120px 1fr;gap:16px}
+/* All six picks are rendered in one grid cell and only the chosen one is visible, so the box is as tall as the tallest pick and swapping never moves the page */
+#feat{display:grid}
+#feat .feat{grid-area:1/1;visibility:hidden}
+#feat .feat.on{visibility:visible}
+.feat{display:grid;grid-template-columns:120px 1fr;gap:16px;align-content:start}
 .feat img{width:120px;aspect-ratio:2/3;object-fit:cover;border-radius:4px;box-shadow:0 2px 8px rgba(30,34,51,.25);display:block}
 .feat h3{font:600 20px/1.2 'Roboto Slab',serif;margin:0 0 2px}
 .feat h3 a{color:var(--ink)}
@@ -85,7 +90,15 @@ section.band{padding:40px 0 0}
 .latest a{color:var(--ink);font-size:13.5px;line-height:1.3}
 .latest img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:3px;display:block;margin-bottom:8px;box-shadow:0 1px 4px rgba(30,34,51,.22)}
 .latest .t{font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.latest .a{color:var(--muted);font-size:12.5px;margin-top:2px;display:block}
+.latest .a{color:var(--muted);font-size:12.5px;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* A latest addition without a cover keeps the row aligned: same frame, no text inside (title and author are under it as for every cover) */
+.nocover{display:grid;place-items:center;width:100%;aspect-ratio:2/3;border-radius:3px;margin-bottom:8px;background:var(--ph);border:1px solid var(--ph-line);color:var(--faint);font-size:28px}
+.feat .pr{color:var(--faint);font-size:13px;margin-top:1px}
+.feat .src{color:var(--faint);font-size:12.5px;margin-top:4px}
+.err{border:1px solid var(--rule);border-radius:8px;padding:14px 16px;font-size:14px;color:var(--ink);background:var(--page)}
+.err button{margin-top:10px;border:1px solid var(--primary);background:none;color:var(--primary);border-radius:6px;padding:5px 12px;font:500 13px Roboto;cursor:pointer}
+.viewas a.ds{padding:2px 10px;border-radius:999px;color:inherit}
+.viewas a.ds.on{background:var(--mock-ink);color:var(--mock-on)}
 
 .browse{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 .tile{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:16px 18px;color:var(--ink);display:flex;gap:14px;align-items:flex-start}
@@ -119,6 +132,7 @@ footer .wrap span{color:var(--faint);margin-left:auto;font-size:13px}
   .intro{font-size:15px;margin-bottom:18px}
   .search .in{font-size:15px;min-height:50px;padding:0 12px}
   .search button{padding:0 16px}
+  .ph-long{display:none} .ph-short{display:inline}
   .counts{gap:6px 18px;margin-top:20px}
   .counts b{font-size:18px}
   .feat{grid-template-columns:96px 1fr}
@@ -142,6 +156,7 @@ footer .wrap span{color:var(--faint);margin-left:auto;font-size:13px}
 <body>
 <div class="viewas"><div class="wrap">Mockup, näytä käyttäjänä:
   <span data-as="anon">Vierailija</span><span data-as="user">Kirjautunut</span><span data-as="admin">Ylläpitäjä</span> <span style="margin-left:14px">Teema:</span><span class="th" data-th="light">Vaalea</span><span class="th" data-th="dark">Tumma</span>
+  <span style="margin-left:14px;cursor:default">Aineisto:</span><a class="ds" data-ds="">Tavallinen</a><a class="ds" data-ds="x">Ääritapaukset</a><a class="ds" data-ds="err">Arvonta epäonnistuu</a>
   <em style="margin-left:auto;color:var(--mock-note)">Kirjat, kannet ja luvut ovat oikeita (sf-bibliografia.fi 22.11.2026)</em></div></div>
 <header class="nav"><div class="wrap">
   <span class="brand">SuomiSF</span>
@@ -156,7 +171,7 @@ footer .wrap span{color:var(--faint);margin-left:auto;font-size:13px}
   <div class="rel"><span class="anno" style="left:-34px;top:4px">1</span>
     <h1>Suomenkielisen spekulatiivisen fiktion bibliografia</h1>
     <p class="intro">Kaikki suomenkielinen SF-kirjallisuus ja tiedot suomalaisista SF-fanzineista: kirjat, painokset, novellit, tekijät, kustantajat ja palkinnot.</p>
-    <div class="search" role="search"><div class="in"><i class="pi pi-search"></i>Hae kirjaa, novellia, henkilöä tai sarjaa…</div><button>Hae</button></div>
+    <div class="search" role="search"><div class="in"><i class="pi pi-search"></i><span class="ph-long">Hae kirjaa, novellia, henkilöä tai sarjaa…</span><span class="ph-short">Hae kirjaa tai henkilöä…</span></div><button>Hae</button></div>
     <div class="opts"><label><input type="checkbox" checked> Vain nimet</label><span>Esim. <a>Maameren velho</a>, <a>Johanna Sinisalo</a>, <a>Tähtivaeltaja</a></span></div>
     <div class="counts rel" id="counts"><span class="anno" style="left:-34px;top:6px">2</span></div>
   </div>
@@ -193,34 +208,48 @@ const Q=new URLSearchParams(location.search);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 // "Sisättö, Vesa & Halme, Jukka (toim.)" -> "Vesa Sisättö & Jukka Halme (toim.)"
 const fin=n=>{const ed=/\s*\(toim\.\)$/.test(n||"");const parts=(n||"").replace(/\s*\(toim\.\)$/,"").split(" & ").map(p=>p.includes(", ")?p.split(", ").reverse().join(" "):p);return parts.join(" & ")+(ed?" (toim.)":"")};
+// Under a cover there is room for two names; three or more become "Matleena Sopanen ym. (toim.)"
+const finShort=n=>{const ed=/\s*\(toim\.\)$/.test(n||"");const parts=(n||"").replace(/\s*\(toim\.\)$/,"").split(" & ");return parts.length<3?fin(n):fin(parts[0])+" ym."+(ed?" (toim.)":"")};
 const nf=n=>n.toLocaleString("fi-FI");
+const DS=Q.get("data")||"";
+if(DS==="x"){FRONT.random=FRONT.x.random;FRONT.latest=FRONT.x.latest}
+document.querySelectorAll(".viewas a.ds").forEach(a=>{const u=new URLSearchParams(location.search);a.dataset.ds?u.set("data",a.dataset.ds):u.delete("data");a.href="?"+u;a.classList.toggle("on",a.dataset.ds===DS)});
 // Genre colours from src/features/genre/utils/genre-colors.ts (the old system's), by genre name
 const GENRE_COLOR={"Science Fiction":"#0958D7","Fantasia":"#31572C","Kauhu":"#D30031","Nuorten scifi":"#4A90D9","Nuorten fantasia":"#21D011","Nuorten kauhu":"#FF696D","Lasten scifi":"#7EC8E3","Lasten fantasia":"#82C341","Kokoelma":"#008B8B","Ei SpeFiä":"#6C757D"};
 const genreChip=g=>`<span class="gchip"><i style="background:${GENRE_COLOR[g]||"#6C757D"}"></i>${esc(g)}</span>`;
 const S=FRONT.st;
 
-// Counts double as links: the stats block becomes a way in
+// Counts double as links: the stats block becomes a way in. Each target shows the same number
+// (novellit = the three story types the count covers; painokset = Tilastot, Julkaisut ajallisesti). No cover count (decided 2026-11-23)
 document.getElementById("counts").insertAdjacentHTML("beforeend",[
-  [S.works,"teosta","bookindex"],[S.editions,"painosta","bookindex"],[S.shorts,"novellia","shortstoryindex"],
-  [S.magazines,"lehteä","magazines"],[S.covers,"kansikuvaa","stats"]
-].map(([n,l])=>`<a><b>${nf(n)}</b><span>${l}</span></a>`).join(""));
+  [S.works,"teosta","/bookindex"],[S.editions,"painosta","/stats?tab=julkaisut"],[S.shorts,"novellia","/shortstoryindex?tyyppi=novelli,pitka-novelli,pienoisromaani"],
+  [S.magazines,"lehteä","/magazines"]
+].map(([n,l,to])=>`<a title="${to}"><b>${nf(n)}</b><span>${l}</span></a>`).join(""));
 
 const R=FRONT.random;
-function showPick(i){
-  const e=R[i];
-  document.getElementById("feat").innerHTML=`<div class="feat">
+// The year next to the author is the work's (original) year, as in every list; the cover is a random printing, so it gets its own line
+const printing=e=>`Kansikuva: ${e.p?esc(e.p)+" ":""}${e.y}${e.ed>1?`, ${e.ed}. painos`:""}`;
+const panel=e=>`<div class="feat">
     <a><img src="${IMG+(e.thumb||e.img)}" alt="Kansikuva: ${esc(e.title)}"></a>
-    <div><h3><a>${esc(e.title)}</a></h3><div class="au">${esc(fin(e.author))}, ${e.y}${e.p?", "+esc(e.p):""}</div>
+    <div><h3><a>${esc(e.title)}</a></h3><div class="au">${esc(fin(e.author))}, ${e.oy||e.y}</div><div class="pr">${printing(e)}</div>
     ${e.genres.map(genreChip).join("")}
-    <p>${esc(e.desc)}</p>
+    <p>${esc(e.desc)}</p>${e.attr?`<div class="src">Kuvaus: ${esc(e.attr)}</div>`:""}
     <span class="adm-note">Kirjasampo-asiasanoja ei ole tuotu</span></div></div>`;
-  document.querySelectorAll("#thumbs button").forEach((b,j)=>b.classList.toggle("on",j===i));
+function showPick(i){
+  document.querySelectorAll("#feat .feat").forEach((p,j)=>p.classList.toggle("on",j===i));
+  document.querySelectorAll("#thumbs button").forEach((b,j)=>{b.classList.toggle("on",j===i);b.setAttribute("aria-pressed",j===i)});
 }
-document.getElementById("thumbs").innerHTML=R.map((e,i)=>`<button aria-label="Näytä ${esc(e.title)}" title="${esc(e.title)}"><img src="${IMG+(e.thumb||e.img)}" alt=""></button>`).join("");
-document.querySelectorAll("#thumbs button").forEach((b,i)=>b.onclick=()=>showPick(i));
-showPick(1);
+if(DS==="err"){
+  document.getElementById("feat").innerHTML=`<div class="err" role="alert">Satunnaisia kirjoja ei saatu haettua.<br><button>Yritä uudelleen</button></div>`;
+  document.querySelector(".pick-head button").style.display="none";
+}else{
+  document.getElementById("feat").innerHTML=R.map(panel).join("");
+  document.getElementById("thumbs").innerHTML=R.map((e,i)=>`<button aria-label="Näytä ${esc(e.title)}" title="${esc(e.title)}"><img src="${IMG+(e.thumb||e.img)}" alt=""></button>`).join("");
+  document.querySelectorAll("#thumbs button").forEach((b,i)=>b.onclick=()=>showPick(i));
+  showPick(DS==="x"?0:1);
+}
 
-document.getElementById("latest").innerHTML=FRONT.latest.map(e=>`<a><img src="${IMG+(e.thumb||e.img)}" alt=""><span class="t">${esc(e.title)}</span><span class="a">${esc(fin(e.author))}</span></a>`).join("");
+document.getElementById("latest").innerHTML=FRONT.latest.map(e=>`<a>${e.img?`<img src="${IMG+(e.thumb||e.img)}" alt="">`:`<span class="nocover" aria-hidden="true"><i class="pi pi-book"></i></span>`}<span class="t">${esc(e.title)}</span><span class="a">${esc(finShort(e.author))}</span></a>`).join("");
 
 document.getElementById("browse").innerHTML=`
 <a class="tile hi"><i class="pi pi-compass"></i><div><b>Mitä lukisin seuraavaksi?</b><span>Kirjaehdotukset: valitse genre ja mieltymyksesi vaihe vaiheelta, niin saat lukuvinkkejä bibliografian kirjoista.</span><span class="go">Aloita kirjaehdotukset</span></div></a>
@@ -232,8 +261,8 @@ ${[
  ["pi-sitemap","Kirjasarjat","Tarinasarjat ja niiden lukujärjestys",""],
  ["pi-objects-column","Kustantajien sarjat","Esim. Sci-fi-sarja ja Best Seller",""],
  ["pi-file","Lehdet","Suomalaiset SF-fanzinet ja -lehdet numeroittain",""],
- ["pi-trophy","Palkinnot","Palkitut ja ehdolla olleet teokset, novellit ja henkilöt",""],
- ["pi-tags","Asiasanat","Aiheet, alalajit, paikat ja hahmot",""],
+ ["pi-trophy","Palkinnot","Palkitut teokset, novellit ja henkilöt",""],
+ ["pi-tags","Asiasanat","Alalajit, aiheet, paikat ja hahmot",""],
  ["pi-chart-bar","Tilastot","Julkaisut vuosittain, genret, kustantajat ja kielet",""],
 ].map(([ic,t,d,n])=>`<a class="tile"><i class="pi ${ic}"></i><div><b>${t}</b><span>${d}</span>${n?`<em>${n}</em>`:""}</div></a>`).join("")}`;
 

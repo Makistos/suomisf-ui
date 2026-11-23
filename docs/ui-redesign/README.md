@@ -26,7 +26,7 @@ Nothing here is built yet unless the status table says so. Each change still goe
 | Work: visual identity (alternative) | `/works/:id` | [work-identity.md](pages/work-identity.md) | Proposal, mockup ready |
 | Edition link | `/editions/:id` | Part of [work.md](pages/work.md) (no separate page: it opens the work page with that edition highlighted) | Agreed |
 | Short story | `/shorts/:id` | [short.md](pages/short.md) | Agreed |
-| Front page | `/` | [front-page.md](pages/front-page.md) | Agreed |
+| Front page | `/` | [front-page.md](pages/front-page.md) | Agreed (revised 2026-11-23) |
 | Search (menu dropdown and results page) | `/search` | [search.md](pages/search.md) | Agreed |
 | People list | `/people` | [people-list.md](pages/people-list.md) | Agreed |
 | Book index, works by type, non-fiction | `/bookindex`, `/nonfiction` | [book-index.md](pages/book-index.md) | Agreed |

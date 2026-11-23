@@ -65,7 +65,7 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
 | Covers in lists | Title and author next to every cover; nothing important is hover-only; samples work by click or tap | Agreed (front page) |
 | Counts shown to visitors | Link to the list or statistics behind them | Agreed (front page) |
 | Portraits | Only on a person's own page, not in lists | Agreed (people list) |
-| Text first | This is a bibliography: every list opens as text (rows); cover grids are an option, never the default | Agreed (series) |
+| Text first | This is a bibliography: every list opens as text (rows); cover grids are an option, never the default. Exception: the front page, the landing page, shows its samples (random picks, latest additions) as covers, each with title and author | Agreed (series; front page exception 2026-11-23) |
 | "Merkittävä sarja" | Not shown in the UI for now (book and publisher series) | Agreed (series) |
 | Lists of books | Compact row by default (thumb, title, original title and year, series, editions); cover grid as a toggle | Agreed (person) |
 | Sort | Original year, Finnish year, name; group by decade when sorting by year | Agreed |

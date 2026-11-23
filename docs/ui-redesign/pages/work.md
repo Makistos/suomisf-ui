@@ -178,6 +178,9 @@ What the layout does with missing data (the "Missing data" rule in [principles.m
 - **One edition:** no grouping toggles and no "1. laitos" heading; the summary drops "Suomentanut" and the table drops the translator column
   when no edition has a translator.
 - **No hints for admins either** (decided 2026-11-23): missing data is simply not shown. The admin box keeps its Kirjasampo import link.
+- **Printing without a number** (found 2026-11-23: *Vaarallinen juhannus* has three in its 2nd laitos): the row reads "Numeroton painos", sorted after
+  the numbered printings of the same laitos by year; a merged row's range uses the known numbers ("23.–24. painos"), adds "ja numerottomat"
+  when the group has some, and reads "Numerottomat painokset" when it has only those. Never "null. painos".
 
 ## Shared principles used or added
 

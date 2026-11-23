@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work page, visual identity proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400..700;1,400&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<style>
+/* Identity tokens: cool library paper, blue-black ink, catalogue blue. Genre colours are data only (agreed list). */
+:root{
+  --paper:#F4F5F2; --sheet:#FFFFFF; --ink:#1D1F2B; --ink-2:#4F5262; --ink-3:#66697A; --rule:#DADBD4; --rule-2:#C4C6BE;
+  --blue:#2B44B8; --blue-soft:#E7EAF7; --gold:#9A6B00; --hover:#ECEEE8; --board:#1D1F2B; --sticker:#FFFFFF; --spine-blank:#5A5D6C;
+  --admin:#F0F1EC; --outline:rgba(0,0,0,0);
+  --mock-bg:#FFF6D6; --mock-ink:#4A3B00; --mock-line:#D9C36A; --mock-on:#FFF6D6;
+  --serif:'Literata',Georgia,serif; --sans:'Schibsted Grotesk',system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#131419; --sheet:#1B1C23; --ink:#E9E8E3; --ink-2:#B4B4BE; --ink-3:#8B8C97; --rule:#2E3039; --rule-2:#3D3F4A;
+  --blue:#A3B3FF; --blue-soft:#262C46; --gold:#E2B84E; --hover:#21232B; --board:#8B8C97; --sticker:#E9E8E3; --spine-blank:#4A4C58;
+  --admin:#191A20; --outline:rgba(255,255,255,.3);
+  --mock-bg:#3A3412; --mock-ink:#F0E2A0; --mock-line:#7A6A1A; --mock-on:#3A3412; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#131419; --sheet:#1B1C23; --ink:#E9E8E3; --ink-2:#B4B4BE; --ink-3:#8B8C97; --rule:#2E3039; --rule-2:#3D3F4A;
+  --blue:#A3B3FF; --blue-soft:#262C46; --gold:#E2B84E; --hover:#21232B; --board:#8B8C97; --sticker:#E9E8E3; --spine-blank:#4A4C58;
+  --admin:#191A20; --outline:rgba(255,255,255,.3);
+  --mock-bg:#3A3412; --mock-ink:#F0E2A0; --mock-line:#7A6A1A; --mock-on:#3A3412; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 var(--sans)}
+a{color:var(--blue);text-decoration:none;cursor:pointer}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:2px}
+button{font:inherit;color:inherit}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+.rel{position:relative}
+.anno{position:absolute;background:#FFE57A;color:#3a3000;font:700 12px var(--sans);border-radius:999px;width:24px;height:24px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.25);z-index:4}
+
+/* mockup bar (not part of the design) */
+.viewas{background:var(--mock-bg);border-bottom:1px dashed var(--mock-line);font-size:13px;color:var(--mock-ink)}
+.viewas .wrap{display:flex;gap:6px 8px;align-items:center;min-height:36px;flex-wrap:wrap;padding-top:4px;padding-bottom:4px}
+.viewas span.o{padding:2px 10px;border-radius:999px;cursor:pointer}
+.viewas span.o.on{background:var(--mock-ink);color:var(--mock-on)}
+
+/* site header */
+.site{border-bottom:1px solid var(--rule);background:var(--paper)}
+.site .wrap{display:flex;align-items:center;gap:26px;height:62px}
+.brand{font:700 21px/1 var(--serif);color:var(--ink);letter-spacing:-.01em}
+.site a.m{color:var(--ink);font-size:15.5px}
+.site a.m i{font-size:13px;margin-right:6px;color:var(--ink-2)}
+.search{margin-left:auto;display:flex;align-items:center;gap:8px;border:1px solid var(--rule-2);background:var(--sheet);border-radius:6px;padding:7px 12px;width:300px;color:var(--ink-3);font-size:14.5px}
+.search label{margin-left:auto;font-size:12.5px;color:var(--ink-2);display:flex;gap:5px;align-items:center}
+.r-user,.r-admin{display:none}
+body.user .r-user,body.admin .r-user,body.admin .r-admin{display:inline}
+body.user .r-anon,body.admin .r-anon{display:none}
+.only-user,.only-admin{display:none}
+body.user .only-user,body.admin .only-user,body.admin .only-admin{display:block}
+
+.crumbs{font-size:14px;color:var(--ink-3);padding:22px 0 18px}
+.crumbs a{color:var(--ink-2)}
+
+/* 1 the catalogue record */
+.rec{display:grid;grid-template-columns:220px minmax(0,1fr) 250px;grid-template-rows:auto 1fr;column-gap:44px;align-items:start}
+.rec > div:first-of-type:has(.cover){grid-row:1/span 2}
+.rec > .facts{grid-column:2;margin-top:6px}
+.rec > .side{grid-column:3;grid-row:1/span 2}
+.cover{width:220px;aspect-ratio:2/3;object-fit:cover;display:block;border-radius:2px;background:var(--rule);
+  box-shadow:0 1px 0 rgba(0,0,0,.06),0 14px 26px -14px rgba(20,22,35,.55)}
+.cover-note{font-size:13px;color:var(--ink-3);margin-top:10px;line-height:1.35}
+.byline{font:500 19px/1.3 var(--serif);margin:0}
+.byline a{color:var(--ink)}
+h1{font-family:var(--serif);font-optical-sizing:auto;font-weight:650;font-size:58px;line-height:1.02;letter-spacing:-.022em;margin:6px 0 8px;text-wrap:balance}
+.orig{font:italic 400 22px/1.3 var(--serif);color:var(--ink-2);margin:0}
+.orig span{font-style:normal;font-family:var(--sans);font-size:15px;color:var(--ink-3);margin-left:6px}
+.facts{display:grid;grid-template-columns:96px minmax(0,1fr);gap:9px 18px;margin:20px 0 0;padding-top:20px;border-top:1px solid var(--rule)}
+.facts dt{font-size:14px;color:var(--ink-3);padding-top:2px}
+.facts dd{margin:0;font:400 16.5px/1.45 var(--serif)}
+.gdot{display:inline-flex;align-items:center;gap:7px;margin-right:14px;white-space:nowrap}
+.gdot i{width:10px;height:10px;border-radius:50%;display:inline-block;box-shadow:inset 0 0 0 1px var(--outline)}
+.award{display:block}
+.award .pi{color:var(--gold);font-size:14px;margin-right:7px}
+.award small{font:14px var(--sans);color:var(--ink-3)}
+.snav{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 22px;font-size:15px;margin-top:4px;font-family:var(--sans);max-width:520px}
+.pos{font:14px var(--sans);color:var(--ink-3);margin-left:4px}
+
+/* 2 sidebar: no boxes, headings and space */
+.side{display:flex;flex-direction:column;gap:28px}
+.side h2{font:700 14.5px var(--sans);margin:0 0 9px;color:var(--ink)}
+.read{display:flex;flex-wrap:wrap;gap:6px}
+.read button{border:1px solid var(--rule-2);background:var(--sheet);border-radius:999px;padding:5px 12px;font-size:14px;cursor:pointer;color:var(--ink)}
+.read button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.links{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:15px}
+.links i{font-size:11px;color:var(--ink-3);margin-left:5px}
+.adminbox{border-left:3px solid var(--rule-2);padding:2px 0 2px 14px;font-size:14px;color:var(--ink-2)}
+.adminbox ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+.hist{font-size:14px;color:var(--ink-3)}
+
+/* 3 description and subject headings */
+.about{display:grid;grid-template-columns:220px minmax(0,1fr) 250px;gap:44px;margin-top:40px}
+.about > div{grid-column:2}
+.desc{font:400 18px/1.65 var(--serif);max-width:66ch;position:relative}
+.desc p{margin:0 0 .9em}
+.desc.clamp{max-height:calc(1.65em * 6);overflow:hidden}
+.desc.clamp::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3.3em;background:linear-gradient(transparent,var(--paper))}
+.more{border:0;background:none;color:var(--blue);font:700 15px var(--sans);padding:4px 0;cursor:pointer}
+.misc{font-size:15px;color:var(--ink-2);margin-top:14px;max-width:66ch}
+.subjects{display:grid;grid-template-columns:150px minmax(0,1fr);gap:8px 18px;margin:0;max-width:820px}
+.subj-h{font:600 21px var(--serif);margin:30px 0 10px}
+.subjects dt{font-size:14px;color:var(--ink-3);padding-top:2px}
+.subjects dd{margin:0;font:16.5px/1.5 var(--serif)}
+.subjects dd a{color:var(--ink)}
+.subjects dd a:hover{color:var(--blue);text-decoration:underline}
+
+/* 4 printings: the shelf is the one bold element */
+.printings{margin-top:56px;padding-top:28px;border-top:2px solid var(--ink)}
+.p-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px 24px;flex-wrap:wrap}
+.p-head h2{font:650 34px/1.1 var(--serif);letter-spacing:-.015em;margin:0}
+.p-head p{margin:6px 0 0;font:16px/1.5 var(--serif);color:var(--ink-2);max-width:72ch}
+.seg{display:inline-flex;border:1px solid var(--rule-2);border-radius:6px;overflow:hidden;background:var(--sheet);font-size:14px}
+.seg button{border:0;background:none;padding:6px 12px;cursor:pointer;color:var(--ink-2);border-left:1px solid var(--rule-2)}
+.seg button:first-child{border-left:0}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.ctrls{display:flex;gap:10px;flex-wrap:wrap}
+
+.shelf{display:flex;align-items:flex-end;gap:26px;overflow-x:auto;padding:34px 2px 4px;margin-top:6px;scrollbar-width:thin}
+.sgroup{flex:0 0 auto}
+.spines{display:flex;align-items:flex-end;gap:2px;padding:0 6px;border-bottom:4px solid var(--board);min-height:40px}
+.spine{position:relative;border:0;padding:0;cursor:pointer;border-radius:2px 2px 0 0;flex:0 0 auto;
+  background-color:var(--spine-blank);background-image:var(--img,none);background-size:auto 100%;background-position:center;
+  box-shadow:inset 2px 0 0 rgba(255,255,255,.22),inset -3px 0 0 rgba(0,0,0,.28),0 0 0 1px var(--outline);
+  transition:transform .15s ease}
+.spine .sticker{position:absolute;left:2px;right:2px;bottom:9px;margin:auto;max-width:15px;background:var(--sticker);color:#1D1F2B;
+  writing-mode:vertical-rl;transform:rotate(180deg);font:700 9.5px/1 var(--sans);padding:4px 0;text-align:center;border-radius:1px;letter-spacing:.02em}
+:root[data-theme="dark"] .spine .sticker{color:#131419}
+.spine:hover,.spine:focus-visible,.spine.on{transform:translateY(-8px)}
+.spine.on{box-shadow:inset 2px 0 0 rgba(255,255,255,.22),inset -3px 0 0 rgba(0,0,0,.28),0 0 0 2px var(--blue)}
+/* A missing dimension, drawn from the median of the work's other printings: "?" above the spine; a missing height also fades the top */
+.spine.est-h{background-image:linear-gradient(to bottom,var(--paper) 0,transparent 26px),var(--img,none)}
+.spine.est::before{content:"?";position:absolute;top:-18px;left:-4px;right:-4px;text-align:center;font:700 12px/1 var(--sans);color:var(--ink-2)}
+.spine.blank{background-color:var(--spine-blank)}
+.est-key{white-space:normal}
+.est-key b{font-weight:700;color:var(--ink-2);margin:0 4px 0 6px}
+.slabel{font-size:13.5px;color:var(--ink-2);padding:8px 6px 0;white-space:nowrap}
+.slabel span{color:var(--ink-3);margin-left:6px}
+.shelf-note{font-size:13px;color:var(--ink-3);margin:6px 0 0}
+@media (prefers-reduced-motion:reduce){.spine{transition:none}.spine:hover,.spine:focus-visible,.spine.on{transform:none}}
+
+/* 5 the table: one container per laitos, rules carry the structure */
+.version{margin-top:34px}
+.v-head{display:flex;align-items:baseline;gap:12px;margin-bottom:8px}
+.v-head h3{font:600 21px var(--serif);margin:0}
+.v-head span{font-size:14.5px;color:var(--ink-3)}
+table.et{width:100%;border-collapse:collapse;table-layout:fixed;font-size:14.5px;background:var(--sheet);border-top:2px solid var(--ink);border-bottom:1px solid var(--rule-2)}
+.et th{text-align:left;font-weight:400;font-size:13px;color:var(--ink-3);padding:9px 10px;border-bottom:1px solid var(--rule-2);white-space:nowrap}
+.et td{padding:9px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+.et tr:last-child td{border-bottom:0}
+.et tbody tr:hover td{background:var(--hover)}
+.et tr.hl td{background:var(--blue-soft)}
+.et tr.sub td{font-size:14px;background:color-mix(in srgb,var(--sheet) 70%,var(--paper))}
+.et tr.sub td.c-ed{padding-left:30px}
+.et tr.hl.hl td{background:var(--blue-soft)}
+.et tr.hl.hl td:first-child{box-shadow:inset 4px 0 0 var(--blue)}
+.c-th{width:54px} .c-ed{width:150px} .c-yr{width:88px} .c-tr{width:15%} .c-bind{width:84px} .c-pages{width:80px} .c-isbn{width:138px} .c-book{width:200px} .c-own{width:200px} .c-adm{width:126px}
+td.c-th img{width:30px;height:44px;object-fit:cover;display:block;border-radius:1px;background:var(--rule)}
+.ed a,.ed b{font-weight:700;white-space:nowrap}
+.ed small{display:block;font-size:13px;color:var(--ink-3)}
+.exp{border:0;background:none;padding:0;cursor:pointer;color:var(--blue);text-align:left}
+.exp i{font-size:11px;color:var(--ink-3);margin-right:4px}
+.note{display:block;font-size:13px;color:var(--ink-3);margin-top:2px}
+.isbn{font-variant-numeric:tabular-nums}
+.own{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;color:var(--ink-2)}
+.stars{color:var(--rule-2);letter-spacing:1px;cursor:pointer}
+.stars b{color:var(--gold);font-weight:400}
+.own .on{color:var(--blue)}
+.price{font-size:13.5px;font-weight:700;color:#2E7D32}
+:root[data-theme="dark"] .price{color:#81C784}
+.ownsum{font-size:13.5px;color:var(--ink-2)}
+.ownsum .pi-star-fill{color:var(--gold);font-size:12px;margin-right:4px}
+.adm{display:flex;gap:12px;color:var(--ink-2)}
+.adm i{cursor:pointer}
+.kebab{display:none;border:1px solid var(--rule-2);background:var(--sheet);border-radius:6px;padding:2px 8px;cursor:pointer;color:var(--ink-2)}
+.ver{display:none;font-size:12.5px;color:#2E7D32}
+body.admin .ver{display:block}
+.col-user,.col-admin{display:none}
+body.user .col-user,body.admin .col-user,body.admin .col-admin{display:table-cell}
+.c-book,.yr-in,.tr-in{display:none}
+
+/* 6 similar works */
+.similar{margin-top:56px;padding-top:24px;border-top:1px solid var(--rule)}
+.similar h2{font:600 24px var(--serif);margin:0 0 4px}
+.similar > p{margin:0 0 18px;font-size:14px;color:var(--ink-3)}
+.simrow{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:18px}
+.sim img,.sim .ph{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;border-radius:2px;background:var(--rule);box-shadow:0 10px 18px -12px rgba(20,22,35,.5)}
+.sim a.t{display:block;font:500 15px/1.3 var(--serif);color:var(--ink);margin-top:8px}
+.sim small{font-size:13px;color:var(--ink-3)}
+.why{border:0;background:none;color:var(--ink-3);cursor:pointer;padding:0 0 0 4px;font-size:12px}
+.foot{height:72px}
+.only-narrow{display:none}
+
+/* 900–1199 px: merge book facts, admin menu */
+@media (max-width:1199px){
+  .rec{grid-template-columns:180px minmax(0,1fr);gap:32px}
+  .cover{width:180px}
+  .rec > .side{grid-column:2;grid-row:auto;flex-direction:row;flex-wrap:wrap;gap:20px 36px;margin-top:24px}
+  .about{grid-template-columns:180px minmax(0,1fr);gap:32px}
+  .about > div{grid-column:2}
+  h1{font-size:50px}
+  .simrow{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .simrow .sim:nth-child(n+7){display:none}
+}
+@media (max-width:1199px) and (min-width:760px){
+  th.c-bind,td.c-bind,th.c-pages,td.c-pages,th.c-isbn,td.c-isbn,th.c-tr,td.c-tr{display:none}
+  th.c-book,td.c-book{display:table-cell}
+  .tr-in{display:block}
+  .adm{display:none} .kebab{display:inline-block}
+  .c-adm{width:58px} .c-own{width:180px}
+}
+/* below 900 px: one column, reading mark after the record, sidebar at the end */
+@media (max-width:899px){
+  .rec{grid-template-columns:120px minmax(0,1fr);column-gap:20px}
+  .rec > div:first-of-type:has(.cover){grid-row:auto}
+  .rec > .facts{grid-column:1/-1}
+  .cover{width:120px}
+  .rec .side{display:none}
+  .only-narrow{display:block}
+  .about{display:block;margin-top:28px}
+  .facts{grid-column:1/-1}
+  h1{font-size:38px}
+  .orig{font-size:18px}
+  .simrow{grid-template-columns:none;display:flex;overflow-x:auto;gap:14px;scrollbar-width:none}
+  .simrow .sim{flex:0 0 118px}
+  .simrow .sim:nth-child(n+7){display:block}
+  th.c-yr,td.c-yr{display:none}
+  .yr-in{display:block;font-size:13px;color:var(--ink-3)}
+}
+@media (max-width:759px){
+  .wrap{padding:0 16px}
+  .site a.m{display:none}
+  .search{width:auto;flex:1}
+  .crumbs{padding:14px 0 12px}
+  .rec{grid-template-columns:96px minmax(0,1fr);column-gap:16px}
+  .cover{width:96px}
+  h1{font-size:30px;letter-spacing:-.015em}
+  .byline{font-size:16px}
+  .orig{font-size:16.5px}
+  .orig span{display:block;margin:2px 0 0}
+  .facts{grid-template-columns:84px minmax(0,1fr);gap:8px 12px;margin-top:18px;padding-top:14px}
+  .facts dd{font-size:15.5px}
+  .desc{font-size:17px}
+  .subjects{grid-template-columns:1fr;gap:2px}
+  .subjects dd{margin-bottom:8px}
+  .p-head h2{font-size:28px}
+  #viewseg{display:none}
+  .shelf{padding-top:22px}
+  .anno{display:none}
+  /* cards */
+  table.et,table.et tbody,table.et tr,table.et td{display:block}
+  table.et thead{display:none}
+  table.et tr{display:grid;grid-template-columns:42px minmax(0,1fr);padding:10px 4px;border-bottom:1px solid var(--rule)}
+  table.et td{border:0;padding:1px 8px;width:auto}
+  table.et td.c-th{grid-row:1/span 12;padding:2px 0}
+  table.et td:not(.c-th){grid-column:2}
+  table.et td:empty{display:none}
+  table.et td[data-l]::before{content:attr(data-l) ' ';color:var(--ink-3);font-size:13px}
+  table.et.nothumb tr{grid-template-columns:1fr}
+  table.et.nothumb td{grid-column:1}
+  table.et tr.sub{padding-left:16px}
+  .yr-in{display:inline;margin-left:8px}
+  table.et td.c-book,table.et td.c-yr{display:none}
+  body.user td.col-user,body.admin td.col-user,body.admin td.col-admin{display:block;padding-top:6px}
+}
+</style>
+</head>
+<body>
+<div class="viewas"><div class="wrap">Mockup:
+  <span class="o" data-as="anon">Vierailija</span><span class="o" data-as="user">Kirjautunut</span><span class="o" data-as="admin">Ylläpitäjä</span>
+  <span style="margin-left:10px">Teema:</span><span class="o th" data-th="light">Vaalea</span><span class="o th" data-th="dark">Tumma</span>
+  <span style="margin-left:10px">Teos:</span><span class="o ws" data-w="a">Pimeyden vasen käsi</span><span class="o ws" data-w="b">Taru sormusten herrasta</span><span class="o ws" data-w="c">Satujen maan taistelu</span><span class="o ws" data-w="d">Vaarallinen juhannus (mitat puuttuvat osin)</span><span class="o ws" data-w="e">Tuulen tavoittelua (vain 1. painoksella mitat)</span>
+</div></div>
+<header class="site"><div class="wrap">
+  <span class="brand">SuomiSF</span>
+  <a class="m">Kirjat</a><a class="m">Lehdet</a><a class="m">Novellit</a>
+  <a class="m r-anon">Hakemistot ▾</a><a class="m r-user">Muut ▾</a>
+  <a class="m r-admin"><i class="pi pi-wrench"></i>Ylläpito ▾</a>
+  <a class="m r-anon"><i class="pi pi-user"></i>Käyttäjätili ▾</a><a class="m r-user"><i class="pi pi-user"></i>mep ▾</a>
+  <div class="search"><i class="pi pi-search"></i>Etsi<label><input type="checkbox" checked> Vain nimet</label></div>
+</div></header>
+
+<main class="wrap">
+  <nav class="crumbs" id="crumbs" aria-label="Murupolku"></nav>
+  <article>
+    <div class="rec rel" id="rec"></div>
+    <div id="readm" class="only-narrow" style="margin-top:22px"></div>
+    <div class="about rel" id="about"></div>
+  </article>
+  <section class="printings rel" id="printings" aria-labelledby="ph"></section>
+  <section class="similar rel" id="similar" aria-labelledby="sh"></section>
+  <div id="sidem" class="only-narrow" style="margin-top:40px"></div>
+  <div class="foot"></div>
+</main>
+
+<script src="works-data.js"></script>
+<script>
+const IMG="https://www.sf-bibliografia.fi:5000";
+const Q=new URLSearchParams(location.search);
+const W=DATA[["b","c","d","e"].includes(Q.get("w"))?Q.get("w"):"a"];
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fin=n=>n.includes(", ")?n.split(", ").reverse().join(" "):n;
+const yr=a=>Math.min(...a)===Math.max(...a)?String(Math.min(...a)):Math.min(...a)+"–"+Math.max(...a);
+const uniq=a=>[...new Set(a.filter(Boolean))];
+const GC={"Science Fiction":"#0958D7","Fantasia":"#31572C","Kauhu":"#D30031","Kokoelma":"#008B8B","Ei SpeFiä":"#6C757D","Nuorten fantasia":"#21D011","Nuorten scifi":"#4A90D9","Nuorten kauhu":"#FF696D","Lasten fantasia":"#82C341","Lasten scifi":"#7EC8E3"};
+const LABEL={Alagenre:"Alalaji",Tyyli:"Tyyli",Aihe:"Aiheet",Toimija:"Hahmot ja olennot",Paikka:"Paikat",Aika:"Aika",Lista:"Listat ja sovitukset"};
+const ORDER=["Alagenre","Tyyli","Aihe","Toimija","Paikka","Aika","Lista"];
+
+const eds=[...W.eds].sort((a,b)=>a.v-b.v||(a.n==null)-(b.n==null)||(a.n??0)-(b.n??0)||a.y-b.y);
+eds.forEach((e,i)=>e.uid=e.v+"-"+(e.n??("x"+i)));
+const idOf=e=>e.uid;
+const pLabel=e=>e.n!=null?`${e.n}. painos`:"Numeroton painos";
+// Shelf dimensions: known values to scale; a missing one is drawn from the median of this work's known values and marked
+const med=a=>{const s=[...a].sort((x,y)=>x-y);return s.length?s[Math.floor(s.length/2)]:null};
+const SIZE_MED=med(eds.filter(e=>e.size).map(e=>e.size)), PAGES_MED=med(eds.filter(e=>e.pages).map(e=>e.pages));
+const trans=uniq(eds.flatMap(e=>e.c.filter(c=>c[0]==="Kääntäjä").map(c=>fin(c[1]))));
+const hasCovers=eds.some(e=>e.img.length);
+let SEL=null, COVER=(eds.find(e=>e.img.length)||{img:[]}).img[0]||null;
+const store={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+const GK={kaikki:"all",samanlaiset:"condensed",laitoksittain:"brief"},GN={all:"kaikki",condensed:"samanlaiset",brief:"laitoksittain"};
+let MODE=GK[Q.get("ryhmittely")]||GK[store.get("work.ryhmittely")]||"condensed";
+let VIEW=Q.get("nakyma")||store.get("work.nakyma")||"taulukko";
+const OPEN=new Set();
+
+/* 1 record */
+function series(){
+  if(!W.series) return "";
+  const s=[...W.series.works].sort((a,b)=>a[2]-b[2]||a[1].localeCompare(b[1],"fi")), i=s.findIndex(x=>x[0]===W.id);
+  return `<dt>Sarja</dt><dd><a>${esc(W.series.name)}</a> <span class="pos">${i+1}/${s.length} alkuteosten ilmestymisjärjestyksessä</span>
+    <div class="snav">${s[i-1]?`<a>‹ ${esc(s[i-1][1])}</a>`:"<span></span>"}${s[i+1]?`<a>${esc(s[i+1][1])} ›</a>`:""}</div></dd>`;
+}
+function awards(){
+  if(!W.awards.length) return "";
+  const shown=W.awards.slice(0,3);
+  return `<dt>Palkinnot</dt><dd>${shown.map(a=>`<span class="award"><i class="pi pi-trophy" aria-hidden="true"></i>${esc(a.a)} ${a.y}, <small>${esc(a.c.toLowerCase())}</small></span>`).join("")}${W.awards.length>3?`<a>${W.awards.length-3} muuta palkintoa</a>`:""}</dd>`;
+}
+function record(){
+  const sameTitle=!W.orig||W.orig===W.title;
+  return `<span class="anno" style="left:-38px;top:0">1</span>
+  ${COVER?`<div><img class="cover" id="cover" src="${IMG+COVER}" alt="Kansikuva"><div class="cover-note">${(()=>{const e=SEL&&eds.find(x=>idOf(x)===SEL);return e?(e.n!=null?`${e.n}. painoksen kansi, ${e.y}`:`Numerottoman painoksen kansi, ${e.y}`):`Kansi ${eds.find(e=>e.img[0]===COVER)?.y||""}`})()}</div></div>`:""}
+  <div style="${COVER?"":"grid-column:1/3"}">
+    <p class="byline">${W.author.map(a=>`<a>${esc(fin(a.name))}</a>`).join(", ")}</p>
+    <h1>${esc(W.title)}</h1>
+    <p class="orig">${sameTitle?`<span style="margin:0">Julkaistu ${W.year||""}</span>`:`${esc(W.orig)}<span>${esc(W.lang)}, ${W.year}</span>`}</p>
+  </div>
+    <dl class="facts" style="${COVER?"":"grid-column:1/3"}">
+      <dt>Tyyppi</dt><dd>${esc(W.type)}</dd>
+      <dt>Genre</dt><dd>${W.genres.map(g=>`<span class="gdot"><i style="background:${GC[g]||"#6C757D"}"></i>${esc(g)}</span>`).join("")}</dd>
+      ${awards()}${series()}
+    </dl>
+  <aside class="side rel" aria-label="Lisätiedot"><span class="anno" style="left:-34px;top:0">2</span>${READ}${SIDE}</aside>`;
+}
+const READ=`<section class="only-user"><h2>Oma lukumerkintä</h2><div class="read"><button aria-pressed="false">En pitänyt</button><button aria-pressed="false">Ihan ok</button><button aria-pressed="true">Pidin</button></div></section>`;
+const SIDE=`${W.links.length?`<section><h2>Linkit</h2><ul class="links">${W.links.map(l=>`<li><a>${esc(l)}</a></li>`).join("")}</ul></section>`:""}
+<section class="only-admin"><h2>Ylläpitäjille</h2><div class="adminbox"><ul><li>${W.tags.length?"Kirjasampo-asiasanat tuotu 4.11.2026":"Kirjasampo-asiasanoja ei ole tuotu"}</li><li><a>Hae Kirjasampo-asiasanat</a></li><li><a>Hinnat antikvariaateista</a></li></ul></div></section>
+<p class="hist" style="margin:0"><a>Muutoshistoria</a> avautuu ikkunaan</p>`;
+
+/* 3 description and subject headings */
+function about(){
+  const tg={};W.tags.forEach(t=>(tg[t.t]=tg[t.t]||[]).push(t.n));
+  if(!W.desc&&!W.tags.length&&!W.misc) return "";
+  return `<div class="rel"><span class="anno" style="left:-38px;top:0">3</span>
+    ${W.desc?`<div class="desc clamp" id="desc">${W.desc}</div><button class="more" onclick="const d=document.getElementById('desc');d.classList.toggle('clamp');this.textContent=d.classList.contains('clamp')?'Näytä koko kuvaus':'Näytä vähemmän'">Näytä koko kuvaus</button>`:""}
+    ${W.misc?`<p class="misc">${esc(W.misc)}</p>`:""}
+    ${W.tags.length?`<section class="subjects-wrap"><h2 class="subj-h">Asiasanat</h2><dl class="subjects">${ORDER.filter(k=>tg[k]).map(k=>`<dt>${LABEL[k]}</dt><dd>${tg[k].map(n=>`<a>${esc(n)}</a>`).join(", ")}</dd>`).join("")}</dl></section>`:""}
+  </div>`;
+}
+
+/* 4 shelf + 5 table */
+function roleTxt(cs){const by={};cs.forEach(c=>(by[c[0]]=by[c[0]]||[]).push(fin(c[1])));
+  return Object.entries(by).filter(([r])=>r!=="Kääntäjä").map(([r,ns])=>({Kansikuva:"Kansi",Kuvittaja:"Kuvitus"}[r]||r)+" "+ns.join(", ")).join(". ")}
+function groups(list){
+  if(MODE==="all") return list.map(e=>[e]);
+  const out=[];list.forEach(e=>{const g=out.find(g=>MODE==="brief"||!g[0].pages||!e.pages||g[0].pages===e.pages);g?g.push(e):out.push([e])});return out;
+}
+const fakeOwn=e=>{const k=e.v*100+e.n;return{stars:k%6===1?3:k%7===2?4:0,wish:k%9===4,owners:[4,2,0,1,3][k%5],price:[null,"12,50","8,00",null,"22,00"][k%5]}};
+function spine(e){
+  const estH=!e.size&&SIZE_MED!=null, estW=!e.pages&&PAGES_MED!=null;
+  const w=Math.round(8+(e.pages||PAGES_MED||250)/36), h=Math.round((e.size||SIZE_MED||21)*6.4), id=idOf(e);
+  const lab=`${e.n!=null?e.n+". painos":"Numeroton painos"} ${e.y}, ${e.p}${e.b&&e.b!=="Ei tietoa/muu"?", "+e.b.toLowerCase():""}${e.pages?`, ${e.pages} sivua`:", sivumäärä ei tiedossa"}${e.size?`, ${e.size} cm`:", korkeus ei tiedossa"}`;
+  return `<button class="spine${SEL===id?" on":""}${estH?" est-h":""}${estW?" est-w":""}${estH||estW?" est":""}${e.img[0]?"":" blank"}" data-id="${id}" style="width:${w}px;height:${h}px;${e.img[0]?`--img:url('${IMG+e.img[0]}')`:""}" aria-label="${esc(lab)}" title="${esc(lab)}"><span class="sticker">${e.y}</span></button>`;
+}
+function shelf(){
+  // Nothing to compare unless at least two printings have a size, a page count or a cover
+  if(eds.filter(e=>e.size||e.pages||e.img.length).length<2) return "";
+  const byV={};eds.forEach(e=>(byV[e.v]=byV[e.v]||[]).push(e));
+  const estH=eds.some(e=>!e.size&&SIZE_MED!=null), estW=eds.some(e=>!e.pages&&PAGES_MED!=null), est=estH||estW;
+  const scale=SIZE_MED!=null&&PAGES_MED!=null?"Kirjat mittasuhteissaan: korkeus senttimetreinä, paksuus sivumäärän mukaan."
+    :SIZE_MED!=null?"Korkeus senttimetreinä; sivumäärää ei tiedetä yhdeltäkään painokselta, joten paksuus on sama."
+    :PAGES_MED!=null?"Paksuus sivumäärän mukaan; korkeutta ei tiedetä yhdeltäkään painokselta, joten korkeus on sama."
+    :"Mittoja ei tiedetä yhdeltäkään painokselta, joten kirjat ovat samankokoisia.";
+  return `<div class="rel"><span class="anno" style="left:-38px;top:40px">4</span>
+  <div class="shelf" role="group" aria-label="Painokset hyllyssä">${Object.entries(byV).map(([v,l])=>`<div class="sgroup"><div class="spines">${l.map(spine).join("")}</div><div class="slabel">${v}. laitos<span>${l.length} ${l.length>1?"painosta":"painos"}</span></div></div>`).join("")}</div>
+  <p class="shelf-note">${scale} Selkämykset on rajattu kansikuvista.${est?` <span class="est-key"><b aria-hidden="true">?</b>${estH&&estW?"Korkeus tai sivumäärä":estH?"Korkeus":"Sivumäärä"} puuttuu; se on piirretty tämän teoksen muiden painosten mukaan.</span>`:""} Valitse kirja nähdäksesi sen kannen ja rivin taulukossa.</p></div>`;
+}
+function cells(g,sub){
+  const e=g[0],many=g.length>1,id=idOf(e),open=OPEN.has(id);
+  const nums=g.map(x=>x.n),ys=g.map(x=>x.y);
+  const kn=nums.filter(n=>n!=null);
+  const label=many?(kn.length?(kn.length===1?`${kn[0]}. painos`:`${Math.min(...kn)}.–${Math.max(...kn)}. painos`)+(kn.length<g.length?" ja numerottomat":""):"Numerottomat painokset"):pLabel(e);
+  const pubs=uniq(g.map(x=>esc(x.p)+(x.pin?` (${esc(x.pin)})`:"")+(x.ps?`, <a>${esc(x.ps)}</a>${x.psn?" "+esc(x.psn):""}`:"")));
+  const tr=uniq(g.flatMap(x=>x.c.filter(c=>c[0]==="Kääntäjä").map(c=>fin(c[1]))));
+  const extras=uniq(g.flatMap(x=>[roleTxt(x.c),x.dust===3?"Kansipaperi":"",x.ci===3?"Ylivetokannet":"",x.misc||""]));
+  const binds=uniq(g.map(x=>x.b!=="Ei tietoa/muu"?x.b:"")),pages=uniq(g.map(x=>x.pages)),sizes=uniq(g.map(x=>x.size)),isbns=uniq(g.map(x=>x.isbn));
+  const book=[binds.join(", "),pages.length?pages.join(", ")+" s.":"",sizes.length?sizes.join(", ")+" cm":""].filter(Boolean).join(", ");
+  const own=many?(()=>{const o=g.filter(x=>fakeOwn(x).stars).length,w=g.filter(x=>fakeOwn(x).wish).length;
+      return `<span class="ownsum">${o?`<i class="pi pi-star-fill" aria-hidden="true"></i>Omistat ${o}/${g.length}`:"Et omista"}${w?`, muistilistalla ${w}`:""}</span>`})()
+    :(()=>{const o=fakeOwn(e);return `<span class="own"><span class="stars" role="button" aria-label="Kunto">${"<b>★</b>".repeat(o.stars)}${"★".repeat(5-o.stars)}</span><i class="pi ${o.wish?"pi-bookmark-fill on":"pi-bookmark"}" role="button" aria-label="Muistilista"></i><span title="Muut omistajat"><i class="pi pi-users" aria-hidden="true"></i> ${o.owners}</span>${o.price?`<span class="price">${o.price} €</span>`:""}</span>`})();
+  return `${hasCovers?`<td class="c-th">${sub?"":(()=>{const c=(g.find(x=>x.img[0])||{img:[]}).img[0];return c?`<img src="${IMG+c}" alt="">`:""})()}</td>`:""}
+    <td class="c-ed ed">${many?`<button class="exp" data-id="${id}" aria-expanded="${open}"><i class="pi ${open?"pi-chevron-down":"pi-chevron-right"}" aria-hidden="true"></i><b>${label}</b></button><small>${g.length} painosta</small>`:`<a>${label}</a>`}<span class="yr-in">${yr(ys)}</span>${!many&&e.ver?`<span class="ver"><i class="pi pi-check-circle"></i> Tarkastettu</span>`:""}</td>
+    <td class="c-yr">${yr(ys)}</td>
+    <td class="c-pub">${pubs.join("<br>")}${extras.length?`<span class="note">${esc(extras.join(". "))}</span>`:""}${trans.length&&tr.length?`<span class="note tr-in">Suom. ${esc(tr.join(", "))}</span>`:""}</td>
+    ${trans.length?`<td class="c-tr" data-l="Suom.">${esc(tr.join(", "))}</td>`:""}
+    <td class="c-bind">${esc(binds.join(", "))}</td>
+    <td class="c-pages" data-l="Sivuja">${pages.join(", ")}${sizes.length?`<span class="note">${sizes.join(", ")} cm</span>`:""}</td>
+    <td class="c-isbn isbn" data-l="ISBN">${isbns.map(i=>`<a>${esc(i)}</a>`).join("<br>")}</td>
+    <td class="c-book">${esc(book)}${isbns.length?`<span class="note isbn">${isbns.map(i=>`<a>${esc(i)}</a>`).join(", ")}</span>`:""}</td>
+    <td class="col-user c-own">${own}</td>
+    <td class="col-admin c-adm">${many?"":`<span class="adm"><i class="pi pi-pencil" role="button" aria-label="Muokkaa"></i><i class="pi pi-copy" role="button" aria-label="Kopioi painos"></i><i class="pi pi-trash" role="button" aria-label="Poista"></i><i class="pi pi-euro" role="button" aria-label="Hinnat"></i></span><button class="kebab" aria-label="Ylläpitotoiminnot"><i class="pi pi-ellipsis-h"></i></button>`}</td>`;
+}
+function rows(g){
+  const id=idOf(g[0]),ids=g.map(idOf),hl=SEL&&ids.includes(SEL);
+  let h=`<tr data-ids="${ids.join(" ")}" class="${hl&&(g.length===1||!OPEN.has(id))?"hl":""}">${cells(g,false)}</tr>`;
+  if(g.length>1&&OPEN.has(id)) h+=g.map(e=>`<tr class="sub${SEL===idOf(e)?" hl":""}" data-ids="${idOf(e)}">${cells([e],true)}</tr>`).join("");
+  return h;
+}
+function printings(){
+  const byV={};eds.forEach(e=>(byV[e.v]=byV[e.v]||[]).push(e));
+  const one=Object.keys(byV).length===1;
+  const pubs=uniq(eds.map(e=>e.p));
+  return `<div class="p-head"><div><h2 id="ph">Painokset</h2><p>${eds.length} ${eds.length>1?"painosta":"painos"} ${new Set(eds.map(e=>e.y)).size>1?"vuosina":"vuonna"} ${yr(eds.map(e=>e.y))}, ${esc(pubs.join(", "))}.${trans.length?` Suomentanut ${esc(trans.join(", "))}.`:""}</p></div>
+    ${eds.length>1?`<div class="ctrls"><div class="seg" role="group" aria-label="Ryhmittely">${[["all","Kaikki"],["condensed","Samanlaiset yhdessä"],["brief","Laitoksittain"]].map(([m,l])=>`<button data-m="${m}" aria-pressed="${MODE===m}">${l}</button>`).join("")}</div>
+      <div class="seg" id="viewseg" role="group" aria-label="Näkymä">${[["taulukko","Taulukko"],["kortit","Kortit"]].map(([m,l])=>`<button data-v="${m}" aria-pressed="${VIEW===m}">${l}</button>`).join("")}</div></div>`:""}</div>
+  ${shelf()}
+  <div class="rel"><span class="anno" style="left:-38px;top:40px">5</span>
+  ${Object.entries(byV).map(([v,l])=>`<div class="version">${one?"":`<div class="v-head"><h3>${v}. laitos</h3><span>${l.length} ${l.length>1?"painosta":"painos"}, ${yr(l.map(e=>e.y))}</span></div>`}
+    <table class="et${hasCovers?"":" nothumb"}"><thead><tr>${hasCovers?`<th class="c-th"><span class="sr" style="position:absolute;left:-9999px">Kansi</span></th>`:""}<th class="c-ed">Painos</th><th class="c-yr">Vuosi</th><th class="c-pub">Kustantaja ja sarja</th>${trans.length?`<th class="c-tr">Suomentaja</th>`:""}<th class="c-bind">Sidonta</th><th class="c-pages">Sivuja</th><th class="c-isbn">ISBN</th><th class="c-book">Kirja</th><th class="col-user c-own">Omat</th><th class="col-admin c-adm">Ylläpito</th></tr></thead>
+    <tbody>${groups(l).map(rows).join("")}</tbody></table></div>`).join("")}</div>`;
+}
+
+/* 6 similar works (example data, as in the agreed mockup) */
+const SIMIMG={"Harhakaupunki":"LeGuin_Ursula_K_Harhakaupunki_1p.jpg","Maailma, vihreä metsä":"LeGuin_Ursula_K_Maailmavihreametsa_1p.jpg","Maailman syntymäpäivä ja muita tarinoita":"LeGuin_Ursula_K_Maailmansyntymapaiva_1p.jpg","Maanpakolaisten planeetta":"LeGuin_Ursula_K_Maanpakolaistenplaneetta_1p.jpg","Osattomien planeetta":"LeGuin_Ursula_K_Osattomienplaneetta_1p.jpg","Rocannonin maailma":"LeGuin_Ursula_K_Rocannoninmaailma_1p.jpg","Kahdesti haarautuva puu":"LeGuin_Ursula_K_Kahdestihaarautuvapuu_1p.jpg","Neljä anteeksiantoa":"LeGuin_Ursula_K_Neljaanteeksiantoa_1p.jpg"};
+function similar(){
+  if(!W.tags.length&&!W.desc) return "";
+  const S=DATA.a.series.works.filter(x=>x[0]!==W.id).slice(0,8);
+  return `<span class="anno" style="left:-38px;top:24px">6</span><h2 id="sh">Samankaltaiset teokset</h2><p>Asiasanojen, kuvauksen ja genren perusteella. Esimerkkidata.</p>
+  <div class="simrow">${S.map(x=>`<div class="sim">${SIMIMG[x[1]]?`<img src="${IMG}/static/images/books/${SIMIMG[x[1]]}" alt="">`:`<span class="ph"></span>`}<a class="t">${esc(x[1])}</a><button class="why" aria-label="Miksi samankaltainen?" title="Miksi samankaltainen?"><i class="pi pi-question-circle"></i></button><br><small>Ursula K. Le Guin, ${x[2]}</small></div>`).join("")}</div>`;
+}
+
+function render(){
+  document.getElementById("crumbs").innerHTML=`<a>Kirjat</a> / <a>${esc(W.author.map(a=>fin(a.name)).join(", "))}</a> / ${esc(W.title)}`;
+  document.getElementById("rec").innerHTML=record();
+  document.getElementById("readm").innerHTML=`<div class="side">${READ}</div>`;
+  document.getElementById("about").innerHTML=about();
+  document.getElementById("printings").innerHTML=printings();
+  const sim=similar();document.getElementById("similar").innerHTML=sim;document.getElementById("similar").style.display=sim?"":"none";
+  document.getElementById("sidem").innerHTML=`<div class="side">${SIDE}</div>`;
+  wire();
+}
+function save(){const u=new URLSearchParams(location.search);MODE==="condensed"?u.delete("ryhmittely"):u.set("ryhmittely",GN[MODE]);VIEW==="taulukko"?u.delete("nakyma"):u.set("nakyma",VIEW);history.pushState(null,"","?"+u);store.set("work.ryhmittely",GN[MODE]);store.set("work.nakyma",VIEW)}
+function wire(){
+  document.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{MODE=b.dataset.m;save();render()});
+  document.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{VIEW=b.dataset.v;save();render()});
+  document.querySelectorAll(".exp").forEach(b=>b.onclick=()=>{const id=b.dataset.id;OPEN.has(id)?OPEN.delete(id):OPEN.add(id);render()});
+  document.querySelectorAll(".spine").forEach(s=>{
+    const rowsOf=()=>[...document.querySelectorAll("tr[data-ids]")].filter(r=>r.dataset.ids.split(" ").includes(s.dataset.id));
+    s.onmouseenter=s.onfocus=()=>rowsOf().forEach(r=>r.classList.add("hl"));
+    s.onmouseleave=s.onblur=()=>{if(SEL!==s.dataset.id)rowsOf().forEach(r=>r.classList.remove("hl"))};
+    s.onclick=()=>pick(s.dataset.id,true);
+  });
+  applyRole();
+}
+function pick(id,scroll){
+  SEL=id;const e=eds.find(x=>idOf(x)===id);if(e&&e.img[0])COVER=e.img[0];
+  if(MODE!=="all"){const byV=eds.filter(x=>x.v===e.v);const g=groups(byV).find(g=>g.some(x=>idOf(x)===id));if(g&&g.length>1)OPEN.add(idOf(g[0]))}
+  render();
+  if(scroll){const r=[...document.querySelectorAll("tr.hl")].pop();r&&r.scrollIntoView({block:"center"})}
+}
+let ROLE=Q.get("as")||"anon";
+function applyRole(){document.body.className=ROLE;document.querySelectorAll(".viewas [data-as]").forEach(x=>x.classList.toggle("on",x.dataset.as===ROLE))}
+document.querySelectorAll(".viewas [data-as]").forEach(x=>x.onclick=()=>{ROLE=x.dataset.as;applyRole()});
+document.querySelectorAll(".viewas .ws").forEach(x=>{x.classList.toggle("on",x.dataset.w===(Q.get("w")||"a"));x.onclick=()=>{const u=new URLSearchParams(location.search);u.set("w",x.dataset.w);u.delete("valittu");location.search=u}});
+(()=>{const set=t=>{if(t)document.documentElement.dataset.theme=t;document.querySelectorAll(".viewas .th").forEach(x=>x.classList.toggle("on",x.dataset.th===document.documentElement.dataset.theme))};
+document.querySelectorAll(".viewas .th").forEach(x=>x.onclick=()=>set(x.dataset.th));set(Q.get("theme"));})();
+addEventListener("popstate",()=>location.reload());
+render();
+if(Q.get("valittu")) pick(Q.get("valittu"),Q.get("vieritys")!==null); // mockup only: preselect a printing for screenshots
+</script>
+</body>
+</html>

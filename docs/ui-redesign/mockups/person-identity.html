@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Person page, visual identity proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400..700;1,400&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<style>
+/* Identity tokens: cool library paper, blue-black ink, catalogue blue. Genre colours are data only (agreed list). */
+:root{
+  --paper:#F4F5F2; --sheet:#FFFFFF; --ink:#1D1F2B; --ink-2:#4F5262; --ink-3:#66697A; --rule:#DADBD4; --rule-2:#C4C6BE;
+  --blue:#2B44B8; --blue-soft:#E7EAF7; --gold:#9A6B00; --hover:#ECEEE8; --board:#1D1F2B; --sticker:#FFFFFF; --spine-blank:#5A5D6C;
+  --admin:#F0F1EC; --outline:rgba(0,0,0,0);
+  --mock-bg:#FFF6D6; --mock-ink:#4A3B00; --mock-line:#D9C36A; --mock-on:#FFF6D6;
+  --serif:'Literata',Georgia,serif; --sans:'Schibsted Grotesk',system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#131419; --sheet:#1B1C23; --ink:#E9E8E3; --ink-2:#B4B4BE; --ink-3:#8B8C97; --rule:#2E3039; --rule-2:#3D3F4A;
+  --blue:#A3B3FF; --blue-soft:#262C46; --gold:#E2B84E; --hover:#21232B; --board:#8B8C97; --sticker:#E9E8E3; --spine-blank:#4A4C58;
+  --admin:#191A20; --outline:rgba(255,255,255,.3);
+  --mock-bg:#3A3412; --mock-ink:#F0E2A0; --mock-line:#7A6A1A; --mock-on:#3A3412; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#131419; --sheet:#1B1C23; --ink:#E9E8E3; --ink-2:#B4B4BE; --ink-3:#8B8C97; --rule:#2E3039; --rule-2:#3D3F4A;
+  --blue:#A3B3FF; --blue-soft:#262C46; --gold:#E2B84E; --hover:#21232B; --board:#8B8C97; --sticker:#E9E8E3; --spine-blank:#4A4C58;
+  --admin:#191A20; --outline:rgba(255,255,255,.3);
+  --mock-bg:#3A3412; --mock-ink:#F0E2A0; --mock-line:#7A6A1A; --mock-on:#3A3412; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 var(--sans)}
+a{color:var(--blue);text-decoration:none;cursor:pointer}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:2px}
+button{font:inherit;color:inherit}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+.rel{position:relative}
+.anno{position:absolute;background:#FFE57A;color:#3a3000;font:700 12px var(--sans);border-radius:999px;width:24px;height:24px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.25);z-index:4}
+.viewas{background:var(--mock-bg);border-bottom:1px dashed var(--mock-line);font-size:13px;color:var(--mock-ink)}
+.viewas .wrap{display:flex;gap:6px 8px;align-items:center;min-height:36px;flex-wrap:wrap;padding-top:4px;padding-bottom:4px}
+.viewas span.o{padding:2px 10px;border-radius:999px;cursor:pointer}
+.viewas span.o.on{background:var(--mock-ink);color:var(--mock-on)}
+.site{border-bottom:1px solid var(--rule);background:var(--paper)}
+.site .wrap{display:flex;align-items:center;gap:26px;height:62px}
+.brand{font:700 21px/1 var(--serif);color:var(--ink);letter-spacing:-.01em}
+.site a.m{color:var(--ink);font-size:15.5px}
+.site a.m i{font-size:13px;margin-right:6px;color:var(--ink-2)}
+.search{margin-left:auto;display:flex;align-items:center;gap:8px;border:1px solid var(--rule-2);background:var(--sheet);border-radius:6px;padding:7px 12px;width:300px;color:var(--ink-3);font-size:14.5px}
+.search label{margin-left:auto;font-size:12.5px;color:var(--ink-2);display:flex;gap:5px;align-items:center}
+.r-user,.r-admin{display:none}
+body.user .r-user,body.admin .r-user,body.admin .r-admin{display:inline}
+body.user .r-anon,body.admin .r-anon{display:none}
+.only-admin{display:none}
+body.admin .only-admin{display:inline-block}
+.crumbs{font-size:14px;color:var(--ink-3);padding:22px 0 18px}
+.crumbs a{color:var(--ink-2)}
+
+/* 1 the authority record */
+.page{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:56px;align-items:start}
+.rec{display:grid;grid-template-columns:168px minmax(0,1fr);column-gap:36px;align-items:start}
+.rec.noportrait{grid-template-columns:minmax(0,1fr)}
+.portrait{width:168px;aspect-ratio:3/4;object-fit:cover;display:block;border-radius:2px;filter:grayscale(.15);background:var(--rule)}
+.credit{font-size:12.5px;color:var(--ink-3);margin-top:8px;line-height:1.35}
+h1{font-family:var(--serif);font-optical-sizing:auto;font-weight:650;font-size:56px;line-height:1.02;letter-spacing:-.022em;margin:0 0 10px;text-wrap:balance}
+.heading{font:15px var(--sans);color:var(--ink-2);margin:0;letter-spacing:.01em}
+.facts{display:grid;grid-template-columns:110px minmax(0,1fr);gap:9px 18px;margin:22px 0 0;padding-top:18px;border-top:1px solid var(--rule)}
+.facts dt{font-size:14px;color:var(--ink-3);padding-top:2px}
+.facts dd{margin:0;font:400 16.5px/1.45 var(--serif)}
+.flag{width:16px;height:16px;border-radius:50%;vertical-align:-2px;margin-right:7px}
+.summary{font:17px/1.55 var(--serif);margin:20px 0 0;max-width:62ch}
+
+/* 2 the timeline: the one bold element, in ink */
+.tl{margin-top:40px}
+.tl-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px 20px;flex-wrap:wrap}
+.tl-head h2{font:600 21px var(--serif);margin:0}
+.tl-head p{margin:2px 0 0;font-size:14px;color:var(--ink-2)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13.5px;color:var(--ink-2)}
+.legend span{white-space:nowrap}
+.legend i{display:inline-block;width:12px;height:12px;margin-right:6px;vertical-align:-1px}
+.lg-f{background:var(--ink)}
+.lg-r{background:repeating-linear-gradient(135deg,var(--ink) 0 2px,transparent 2px 4px);box-shadow:inset 0 0 0 1px var(--ink)}
+.bars{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);align-items:end;gap:2px;height:112px;margin-top:14px;border-bottom:2px solid var(--ink)}
+.bar{display:flex;flex-direction:column-reverse;height:100%;border:0;padding:0;background:none;cursor:pointer;min-width:0}
+.bar:hover,.bar:focus-visible{background:var(--hover);outline:none}
+.bar .f{background:var(--ink)}
+.bar .r{background:repeating-linear-gradient(135deg,var(--ink) 0 2px,transparent 2px 4px);box-shadow:inset 0 0 0 1px var(--ink)}
+.bar.sel{background:var(--blue-soft)}
+.bar.sel .f{background:var(--blue)}
+.bar.sel .r{background:repeating-linear-gradient(135deg,var(--blue) 0 2px,transparent 2px 4px);box-shadow:inset 0 0 0 1px var(--blue)}
+.axis{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px;font-size:12.5px;color:var(--ink-3);margin-top:5px}
+.axis span{white-space:nowrap;overflow:visible}
+
+/* 3 bio */
+.bio{font:400 18px/1.65 var(--serif);max-width:66ch;margin-top:36px;position:relative}
+.bio p{margin:0 0 .9em}
+.bio.clamp{max-height:calc(1.65em * 5);overflow:hidden}
+.bio.clamp::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3.3em;background:linear-gradient(transparent,var(--paper))}
+.more{border:0;background:none;color:var(--blue);font:700 15px var(--sans);padding:4px 0;cursor:pointer}
+.src{font-size:13.5px;color:var(--ink-3);margin-left:10px}
+
+/* 4 tabs: kind of record, then role */
+.biblio{margin-top:44px}
+.tabs{position:sticky;top:0;z-index:5;background:var(--paper);display:flex;gap:4px 26px;border-bottom:2px solid var(--ink);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{padding:12px 0 10px;color:var(--ink-2);font-size:16px;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px}
+.tabs a.on{color:var(--ink);font-weight:700;border-bottom-color:var(--blue)}
+.tabs a small{font-size:13.5px;color:var(--ink-3);margin-left:5px;font-weight:400}
+.roles{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;font-size:14.5px}
+.roles > span{color:var(--ink-3)}
+.seg{display:inline-flex;border:1px solid var(--rule-2);border-radius:6px;overflow:hidden;background:var(--sheet);font-size:14px}
+.seg button{border:0;background:none;padding:6px 12px;cursor:pointer;color:var(--ink-2);border-left:1px solid var(--rule-2)}
+.seg button:first-child{border-left:0}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.seg small{opacity:.7;margin-left:4px}
+
+/* 5 toolbar inside the tab */
+.toolbar{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;padding:16px 0 8px}
+.types{display:flex;gap:4px 16px;flex-wrap:wrap;font-size:14.5px}
+.types a{color:var(--ink-2)}
+.types a.on{color:var(--ink);font-weight:700;text-decoration:underline;text-decoration-color:var(--blue);text-decoration-thickness:2px;text-underline-offset:5px}
+.types small{color:var(--ink-3);margin-left:3px}
+.tool-r{margin-left:auto;display:flex;gap:8px;align-items:center}
+.input{border:1px solid var(--rule-2);background:var(--sheet);border-radius:6px;padding:6px 12px;font-size:14px;color:var(--ink-3);width:200px}
+.select{border:1px solid var(--rule-2);background:var(--sheet);border-radius:6px;padding:6px 12px;font-size:14px;color:var(--ink);white-space:nowrap}
+.fbtn{display:none;border:1px solid var(--rule-2);background:var(--sheet);border-radius:6px;padding:7px 12px;font-size:14px;color:var(--ink);gap:6px;align-items:center}
+.result{font-size:14px;color:var(--ink-2);margin:4px 0 0}
+
+/* list as catalogue entries */
+.decade{font:600 19px var(--serif);margin:26px 0 4px;padding-bottom:6px;border-bottom:1px solid var(--rule-2);display:flex;gap:8px;align-items:baseline}
+.decade small{font:13.5px var(--sans);color:var(--ink-3)}
+.row{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:16px;align-items:start;padding:12px 0;border-bottom:1px solid var(--rule)}
+.thumb{width:40px;height:58px;object-fit:cover;display:block;border-radius:1px;background:var(--rule);box-shadow:0 6px 12px -8px rgba(20,22,35,.5)}
+.thumb.none{box-shadow:none}
+.r-t{font:600 17.5px/1.3 var(--serif)}
+.r-t a{color:var(--ink)}
+.r-sub{font:15px/1.4 var(--serif);color:var(--ink-2);margin-top:2px}
+.r-sub i{font-style:italic}
+.r-eds{font-size:14px;color:var(--ink-2);margin-top:3px}
+.r-eds a{color:var(--blue)}
+.mark{color:var(--gold);margin-right:3px}
+.r-right{text-align:right;font-size:13.5px;color:var(--ink-3);white-space:nowrap;display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.gdot{display:inline-flex;align-items:center;gap:6px;color:var(--ink-2)}
+.gdot i{width:9px;height:9px;border-radius:50%;display:inline-block;box-shadow:inset 0 0 0 1px var(--outline)}
+.edit{border:0;background:none;color:var(--ink-3);cursor:pointer;padding:0 0 0 6px;display:none}
+body.admin .edit{display:inline}
+
+/* 6 sidebar: no boxes */
+.side{display:flex;flex-direction:column;gap:30px}
+.side h2{font:700 14.5px var(--sans);margin:0 0 10px}
+.gbar{display:grid;grid-template-columns:110px minmax(0,1fr) 28px;gap:10px;align-items:center;font-size:14px;margin-bottom:7px}
+.gbar .t{height:8px;background:var(--rule)}
+.gbar .t i{display:block;height:100%;box-shadow:inset 0 0 0 1px var(--outline)}
+.gbar b{font-weight:400;color:var(--ink-3);text-align:right;font-variant-numeric:tabular-nums}
+.tagtext{font:15.5px/1.6 var(--serif)}
+.tagtext a{color:var(--ink)}
+.tagtext small{font:13px var(--sans);color:var(--ink-3)}
+.links{list-style:none;margin:0;padding:0;columns:2;column-gap:18px;font-size:15px}
+.links li{margin-bottom:6px;break-inside:avoid}
+.hist{font-size:14px;color:var(--ink-3);margin:0}
+.foot{height:80px}
+.only-narrow{display:none}
+
+@media (max-width:1100px){
+  .page{grid-template-columns:minmax(0,1fr) 230px;gap:40px}
+  h1{font-size:48px}
+}
+@media (max-width:899px){
+  .page{display:block}
+  .page > aside{margin-top:44px}
+  .rec{grid-template-columns:120px minmax(0,1fr);column-gap:20px}
+  .portrait{width:120px}
+  .rec-text{display:contents}
+  .rec .facts{grid-column:1/-1}
+  h1{font-size:38px}
+}
+@media (max-width:759px){
+  .wrap{padding:0 16px}
+  .site a.m{display:none}
+  .search{width:auto;flex:1}
+  .crumbs{padding:14px 0 12px}
+  .rec{grid-template-columns:96px minmax(0,1fr);column-gap:16px}
+  .portrait{width:96px}
+  h1{font-size:30px;letter-spacing:-.015em}
+  .heading{font-size:13.5px}
+  .facts{grid-template-columns:96px minmax(0,1fr);gap:8px 12px}
+  .facts dd{font-size:15.5px}
+  .bars{height:80px}
+  .bio{font-size:17px}
+  .toolbar .types,.tool-r .input,.tool-r .select{display:none}
+  .fbtn{display:inline-flex}
+  .tool-r{margin-left:auto}
+  .row{grid-template-columns:36px minmax(0,1fr);gap:12px}
+  .thumb{width:36px;height:52px}
+  .r-right{grid-column:2;flex-direction:row;flex-wrap:wrap;justify-content:flex-start;gap:4px 12px;white-space:normal}
+  .anno{display:none}
+}
+</style>
+</head>
+<body>
+<div class="viewas"><div class="wrap">Mockup:
+  <span class="o" data-as="anon">Vierailija</span><span class="o" data-as="user">Kirjautunut</span><span class="o" data-as="admin">Ylläpitäjä</span>
+  <span style="margin-left:10px">Teema:</span><span class="o th" data-th="light">Vaalea</span><span class="o th" data-th="dark">Tumma</span>
+  <span style="margin-left:10px">Henkilö:</span><span class="o ps" data-p="leguin">Ursula K. Le Guin</span><span class="o ps" data-p="jpm">J. Pekka Mäkelä (useita rooleja)</span><span class="o ps" data-p="tan">Eevien Tan (yksi kansi)</span><span class="o ps" data-p="huo">Safa Huovinen (yksi kirja)</span>
+  <span style="margin-left:10px">Aikajana:</span><span class="o tls" data-tl="">oma</span><span class="o tls" data-tl="hunter">Erin Hunter</span><span class="o tls" data-tl="verne">Jules Verne</span>
+</div></div>
+<header class="site"><div class="wrap">
+  <span class="brand">SuomiSF</span>
+  <a class="m">Kirjat</a><a class="m">Lehdet</a><a class="m">Novellit</a>
+  <a class="m r-anon">Hakemistot ▾</a><a class="m r-user">Muut ▾</a>
+  <a class="m r-admin"><i class="pi pi-wrench"></i>Ylläpito ▾</a>
+  <a class="m r-anon"><i class="pi pi-user"></i>Käyttäjätili ▾</a><a class="m r-user"><i class="pi pi-user"></i>mep ▾</a>
+  <div class="search"><i class="pi pi-search"></i>Etsi<label><input type="checkbox" checked> Vain nimet</label></div>
+</div></header>
+<main class="wrap">
+  <nav class="crumbs" id="crumbs" aria-label="Murupolku"></nav>
+  <div class="page">
+    <div id="main"></div>
+    <aside class="rel" id="side" aria-label="Lisätiedot"></aside>
+  </div>
+  <div class="foot"></div>
+</main>
+
+<script src="person-identity-data.js"></script>
+<script src="timeline-data.js"></script>
+<script>
+const IMG="https://www.sf-bibliografia.fi:5000";
+const Q=new URLSearchParams(location.search);
+const K=["leguin","jpm","tan","huo"].includes(Q.get("p"))?Q.get("p"):"leguin";
+const TLK=Q.get("tl");
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fin=n=>(n||"").split(" & ").map(p=>p.includes(", ")?p.split(", ").reverse().join(" "):p).join(" & ");
+const GC={SF:"#0958D7",F:"#31572C",K:"#D30031",kok:"#008B8B",eiSF:"#6C757D",nF:"#21D011",nSF:"#4A90D9",lF:"#82C341"};
+const GN={SF:"Science Fiction",F:"Fantasia",K:"Kauhu",kok:"Kokoelma",eiSF:"Ei spefiä",nF:"Nuorten fantasia",nSF:"Nuorten scifi",lF:"Lasten fantasia"};
+// The two sparse people from the sparse-data check (real data, see person-sparse.html)
+const SPARSE={
+ tan:{name:"Eevien Tan",heading:"Tan, Eevien",nat:null,roles:["kansitaiteilija"],links:["Instagram","isfdb","cargocollective.com"],
+  books:[{t:"Siltavaltakunta",au:"Danielle L. Jensen",g:["F"],eds:["2019 Docendo"],img:"/static/images/books/thumbs/Jensen_Danielle_L_Siltavaltakunta_1p.webp"}]},
+ huo:{name:"Safa Huovinen",heading:"Huovinen, Safa",nat:"Suomi",flag:"fi",roles:["kansitaiteilija"],links:[],
+  books:[{t:"Pienen hauen pyydystys",au:"Juhani Karila",g:["F"],eds:["2019 Siltala","2021 Siltala","2023 Siltala","2026 Siltala"],img:"/static/images/books/thumbs/Karila_Juhani_Pienenhauenpyydystys_1p.webp"}]}};
+const P=PD[K]||null, S=SPARSE[K]||null;
+let ROLE=Q.get("rooli")||"Kirjoittanut";
+
+/* timeline: bar height = book editions that year (any role, each once); solid = first Finnish edition of a work */
+function tlData(){
+  if(TLK&&TL[TLK]) return TL[TLK];
+  const by={};const add=(eds)=>eds.forEach((e,i)=>{const y=+e.slice(0,4);by[y]=by[y]||{all:0,first:0};by[y].all++;if(i===0)by[y].first++});
+  if(P){P.works.forEach(w=>add(w.eds));(P.other||[]).forEach(w=>add(w.eds));}
+  if(S) S.books.forEach(b=>add(b.eds));
+  return by;
+}
+function timeline(){
+  const BY=tlData(), ys=Object.keys(BY).map(Number).filter(Boolean);
+  const tot=ys.reduce((a,y)=>a+BY[y].all,0), fst=ys.reduce((a,y)=>a+BY[y].first,0);
+  if(tot<5) return "";
+  return `<section class="tl rel" aria-labelledby="tlh"><span class="anno" style="left:-38px;top:0">2</span>
+    <div class="tl-head"><div><h2 id="tlh">Painokset vuosittain ${Math.min(...ys)}–${Math.max(...ys)}</h2><p id="tlsum">${tot} painosta, joista ${fst} ensipainosta.</p></div>
+    <div class="legend"><span><i class="lg-f"></i>Ensipainos</span><span><i class="lg-r"></i>Uusintapainos tai uusi laitos</span><span id="tlmax"></span></div></div>
+    <div class="bars" id="bars"></div><div class="axis" id="axis"></div></section>`;
+}
+function drawTimeline(){
+  const bars=document.getElementById("bars");if(!bars)return;const axis=document.getElementById("axis");bars.innerHTML="";axis.innerHTML="";
+  const BY=tlData(), ys=Object.keys(BY).map(Number).filter(Boolean), y0=Math.min(...ys), y1=Math.max(...ys), width=bars.clientWidth||700;
+  const bin=[1,2,5,10].find(b=>Math.ceil((y1-y0+1)/b)*6<=width)||10, start=Math.floor(y0/bin)*bin;
+  const bins=[];for(let y=start;y<=y1;y+=bin){let all=0,first=0;for(let k=y;k<y+bin;k++){const v=BY[k];if(v){all+=v.all;first+=v.first}}bins.push({y,all,first})}
+  const max=Math.max(...bins.map(b=>b.all)), STEP=[10,20,25,50,100].find(st=>st/bin*(width/bins.length)>=44)||100;
+  document.getElementById("tlmax").textContent=`Korkein pylväs ${max}`;
+  if(bin>1) document.getElementById("tlsum").textContent+=` Yksi pylväs = ${bin} vuotta.`;
+  bins.forEach(b=>{const lab=bin>1?`${b.y}–${b.y+bin-1}`:`${b.y}`;const el=document.createElement("button");
+    el.className="bar"+(!TLK&&K==="leguin"&&b.y===1984?" sel":"");el.setAttribute("aria-label",`${lab}: ${b.all} painosta, joista ${b.first} ensipainosta`);el.title=el.getAttribute("aria-label");
+    if(b.all){const f=document.createElement("div");f.className="f";f.style.height=(b.first/max*100)+"%";const r=document.createElement("div");r.className="r";r.style.height=((b.all-b.first)/max*100)+"%";el.append(f,r)}
+    bars.appendChild(el);const a=document.createElement("span");a.textContent=b.y%STEP===0?b.y:"";axis.appendChild(a)});
+}
+
+function rec(){
+  const X=P||S;
+  return `<section class="rec rel${X.portrait?"":" noportrait"}"><span class="anno" style="left:-38px;top:0">1</span>
+    ${X.portrait?`<div><img class="portrait" src="${X.portrait}" alt="${esc(X.name)}"><div class="credit">${esc(X.credit)}</div></div>`:""}
+    <div class="rec-text"><div><h1>${esc(X.name)}</h1><p class="heading">${esc(X.heading)}</p></div>
+    <dl class="facts">
+      ${X.full?`<dt>Koko nimi</dt><dd>${esc(X.full)}</dd>`:""}
+      ${X.nat?`<dt>Kansallisuus</dt><dd>${X.flag?`<img class="flag" src="https://hatscripts.github.io/circle-flags/flags/${X.flag}.svg" alt="">`:""}${esc(X.nat)}</dd>`:""}
+      ${X.years?`<dt>Elinvuodet</dt><dd>${esc(X.years)}</dd>`:""}
+      <dt>Roolit</dt><dd>${X.roles.join(", ")}</dd>
+      ${P?`<dt>Tuotanto</dt><dd>${esc(P.output)}</dd>`:""}
+    </dl></div></section>`;
+}
+function bio(){
+  if(!P||!P.bio) return "";
+  return `<div class="rel"><span class="anno" style="left:-38px;top:36px">3</span><div class="bio clamp" id="bio">${P.bio}</div>
+    <button class="more" onclick="const b=document.getElementById('bio');b.classList.toggle('clamp');this.textContent=b.classList.contains('clamp')?'Näytä koko esittely':'Näytä vähemmän'">Näytä koko esittely</button><span class="src">Lähde: ${esc(P.bioSrc)}</span></div>`;
+}
+function rowHtml(w,role){
+  const eds=w.eds.map(e=>e.split(" ")), pub=eds[0].slice(1).join(" "), same=eds.every(e=>e.slice(1).join(" ")===pub);
+  const edTxt=same?`${esc(pub)} ${eds.map(e=>`<a>${e[0]}</a>`).join(", ")}`:eds.map(e=>`${esc(e.slice(1).join(" "))} <a>${e[0]}</a>`).join(", ");
+  const sub=role&&role!=="Kirjoittanut"?`${esc(fin(w.au))}${w.y?`, ${w.y}`:""}`:`${w.o?`<i>${esc(w.o)}</i> `:""}${w.y||""}${w.s?`, <a>${esc(w.s)}${w.n?" "+w.n:""}</a>`:""}`;
+  return `<div class="row">${w.img?`<img class="thumb" src="${IMG+w.img}" alt="">`:`<span class="thumb none"></span>`}
+    <div><div class="r-t"><a>${esc(w.t)}</a><button class="edit" aria-label="Muokkaa teosta"><i class="pi pi-pencil"></i></button></div><div class="r-sub">${sub}</div><div class="r-eds">${edTxt}</div></div>
+    <div class="r-right">${(w.g||[]).map(g=>`<span class="gdot"><i style="background:${GC[g]||"#6C757D"}"></i>${esc(GN[g]||g)}</span>`).join("")}<span>${w.eds.length} ${w.eds.length>1?"painosta":"painos"}</span></div></div>`;
+}
+function biblio(){
+  if(S){ // one group only: a heading instead of tabs, no toolbar
+    return `<section class="biblio rel"><span class="anno" style="left:-38px;top:0">4</span><h2 class="decade" style="font-size:24px;border:0">Kansikuvat <small>${S.books.length} ${S.books.length>1?"kirjaa":"kirja"}</small></h2>
+      ${S.books.map(b=>rowHtml({...b,o:"",y:null},"Kansikuva")).join("")}</section>`;
+  }
+  const tabs=`<nav class="tabs" aria-label="Tuotanto">${P.tabs.map(([l,n],i)=>`<a class="${i?"":"on"}">${l}<small>${n}</small></a>`).join("")}</nav>`;
+  const roles=P.roleTabs?`<div class="roles" role="group" aria-label="Rooli"><span>Rooli</span><div class="seg">${P.roleTabs.filter(r=>r[1]).map(([l,n])=>`<button data-r="${l}" aria-pressed="${ROLE===l}">${l}<small>${n}</small></button>`).join("")}</div></div>`:"";
+  let list=P.works, role=null;
+  if(P.roleTabs){role=ROLE;list=ROLE==="Kirjoittanut"?P.works:P.other.filter(o=>(ROLE==="Kääntänyt"?"Kääntäjä":ROLE)===o.role)}
+  const sorted=[...list].sort((a,b)=>(a.y||9999)-(b.y||9999)||a.t.localeCompare(b.t,"fi"));
+  let dec=null,html="";
+  sorted.forEach(w=>{const d=w.y?Math.floor(w.y/10)*10:null;if(d!==dec){dec=d;const n=sorted.filter(x=>(x.y?Math.floor(x.y/10)*10:null)===d).length;html+=`<h3 class="decade">${d?d+"-luku":"Vuosi ei tiedossa"}<small>${n}</small></h3>`}html+=rowHtml(w,role)});
+  const types=P.types?`<div class="types"><a class="on">Kaikki<small>${P.tabs[0][1]}</small></a>${P.types.map(([l,n])=>`<a>${l}<small>${n}</small></a>`).join("")}</div>`:"";
+  return `<section class="biblio rel"><span class="anno" style="left:-38px;top:8px">4</span>${tabs}${roles}
+    <div class="toolbar rel"><span class="anno" style="left:-38px;top:16px">5</span>${types}<button class="fbtn"><i class="pi pi-sliders-h"></i>Suodata ja järjestä</button>
+      <div class="tool-r"><span class="input">Suodata nimellä…</span><span class="select">Järjestys: alkuteoksen vuosi ▾</span>${role&&role!=="Kirjoittanut"?"":`<span class="seg"><button aria-pressed="true">Lista</button><button aria-pressed="false">Kannet</button></span>`}</div></div>
+    ${html}</section>`;
+}
+function side(){
+  const X=P||S;
+  return `<span class="anno" style="left:-34px;top:0">6</span><div class="side">
+    ${P&&P.genres?`<section><h2>Genret</h2>${(()=>{const mx=Math.max(...P.genres.map(g=>g[1]));return P.genres.map(([n,c,col])=>`<div class="gbar"><span>${esc(n)}</span><span class="t"><i style="width:${c/mx*100}%;background:${col}"></i></span><b>${c}</b></div>`).join("")})()}</section>`:""}
+    ${P&&P.tags?`<section><h2>Yleisimmät asiasanat</h2><p class="tagtext" style="margin:0">${P.tags.map(([t,n])=>`<a>${esc(t)}</a>${n?` <small>${n}</small>`:""}`).join(", ")}, <a>${P.moreTags} muuta</a></p></section>`:""}
+    ${X.links&&X.links.length?`<section><h2>Linkit</h2><ul class="links">${X.links.map(l=>`<li><a>${esc(l)}</a></li>`).join("")}</ul></section>`:""}
+    <p class="hist">${P?"Muokattu 12.10.2026. ":""}<a>Muutoshistoria</a></p></div>`;
+}
+function render(){
+  const X=P||S;
+  document.getElementById("crumbs").innerHTML=`<a>Henkilöt</a> / ${esc(X.heading.split(", ").slice(0,2).join(", "))}`;
+  const sum=S?`<p class="summary">Kansikuva kirjaan <a>${esc(S.books[0].t)}</a> (${esc(S.books[0].au)})${S.books[0].eds.length>1?`, ${S.books[0].eds.length} painosta ${S.books[0].eds[0].slice(0,4)}–${S.books[0].eds.at(-1).slice(0,4)}`:`, ${esc(S.books[0].eds[0].slice(5))} ${S.books[0].eds[0].slice(0,4)}`}.</p>`:"";
+  document.getElementById("main").innerHTML=rec()+sum+timeline()+bio()+biblio();
+  document.getElementById("side").innerHTML=side();
+  drawTimeline();
+  document.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{ROLE=b.dataset.r;render()});
+}
+let AS=Q.get("as")||"anon";
+function applyAs(){document.body.className=AS;document.querySelectorAll(".viewas [data-as]").forEach(x=>x.classList.toggle("on",x.dataset.as===AS))}
+document.querySelectorAll(".viewas [data-as]").forEach(x=>x.onclick=()=>{AS=x.dataset.as;applyAs()});
+const nav=(k,v)=>{const u=new URLSearchParams(location.search);v?u.set(k,v):u.delete(k);location.search=u};
+document.querySelectorAll(".viewas .ps").forEach(x=>{x.classList.toggle("on",x.dataset.p===K);x.onclick=()=>nav("p",x.dataset.p)});
+document.querySelectorAll(".viewas .tls").forEach(x=>{x.classList.toggle("on",(x.dataset.tl||null)===TLK);x.onclick=()=>nav("tl",x.dataset.tl)});
+(()=>{const set=t=>{if(t)document.documentElement.dataset.theme=t;document.querySelectorAll(".viewas .th").forEach(x=>x.classList.toggle("on",x.dataset.th===document.documentElement.dataset.theme))};
+document.querySelectorAll(".viewas .th").forEach(x=>x.onclick=()=>set(x.dataset.th));set(Q.get("theme"));})();
+render();applyAs();addEventListener("resize",drawTimeline);
+</script>
+</body>
+</html>

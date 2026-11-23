@@ -5,6 +5,8 @@
 **Sample page:** Ursula K. Le Guin, https://www.sf-bibliografia.fi/people/2435
 **Mockup:** [`../mockups/person.html`](../mockups/person.html), built with real Le Guin data from the live API (download and open it in a browser; covers load from the live site).
 The yellow bar at the top switches between visitor, logged-in user and admin; ownership and wishlist marks are made-up examples.
+**Alternative look:** [person-identity.md](person-identity.md) proposes a different visual identity for this page (typography, colour, the authority-record
+header) with the same behaviour as this plan. Proposal only; this plan stays the agreed design until it is decided.
 
 | Before | After (mockup, light) | After (mockup, dark) |
 |---|---|---|

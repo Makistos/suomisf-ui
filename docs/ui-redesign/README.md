@@ -20,8 +20,8 @@ Nothing here is built yet unless the status table says so. Each change still goe
 
 | Page | Route | Plan | Status |
 |---|---|---|---|
-| Person | `/people/:id` | [person.md](pages/person.md) | Agreed |
-| Work | `/works/:id` | [work.md](pages/work.md) | Agreed |
+| Person | `/people/:id` | [person.md](pages/person.md) | Agreed; revisions proposed |
+| Work | `/works/:id` | [work.md](pages/work.md) | Agreed (revised 2026-11-23) |
 | Edition link | `/editions/:id` | Part of [work.md](pages/work.md) (no separate page: it opens the work page with that edition highlighted) | Agreed |
 | Short story | `/shorts/:id` | [short.md](pages/short.md) | Agreed |
 | Front page | `/` | [front-page.md](pages/front-page.md) | Agreed |

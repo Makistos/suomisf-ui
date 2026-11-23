@@ -38,13 +38,13 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
   | Primary (links, active tab) | `#3F51B5` | `#9FA8DA` (`--primary-color`) |
   | Text on primary | white | `#121212` |
 
-  Genre colours stay the same in both themes; in dark mode genre dots, bars and timeline blocks get a faint light outline,
+  Genre colours stay the same in both themes; in dark mode genre dots and bars get a faint light outline,
   because the darkest ones (fantasy `#31572C`) almost disappear on `#1e1e1e`. Every mockup has a Vaalea / Tumma switch.
   In code, use the theme's CSS variables (`var(--surface-card)`, `var(--text-color)`…) as the stats page already does, so both themes come for free.
   **Later, after the new UI is implemented:** a logged-in user can choose a colour scheme for this site in their settings
   (follow the browser / always light / always dark), saved with their account so it stays the same on every device and overrides the browser setting.
 - **Genre colours** (Agreed): the same colours as today, from `src/features/genre/utils/genre-colors.ts` (SF `#0958D7`, F `#31572C`, K `#D30031`,
-  Kokoelma `#008B8B`, Ei SpeFiä `#6C757D`, and the rest). Used only for genre data (timelines, genre bars, genre chips), never for decoration.
+  Kokoelma `#008B8B`, Ei SpeFiä `#6C757D`, and the rest). Used only for genre data (genre bars, genre chips and badges, always with the genre's name), never for decoration, and never as the only way to tell things apart.
 
 ## Components
 
@@ -59,7 +59,7 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
 | Series navigation | Previous and next titles by name plus position, not bare arrows | Agreed (work) |
 | Filter | Pill that turns dark when on, with a count | Agreed |
 | Genre | Neutral chip with a dot in the genre's colour (readable for light colours too); small coloured badge in compact lists; horizontal bars in summaries | Agreed |
-| Tabs | One row when they fit; if not, the row scrolls sideways (as PrimeReact `TabView scrollable` does today). Count after each label, state in the URL. Above a long list the tab row may stick to the top of the screen while scrolling | Agreed |
+| Tabs | One row when they fit; if not, the row scrolls sideways (as PrimeReact `TabView scrollable` does today). Count after each label, state in the URL. Above a long list the tab row may stick to the top of the screen while scrolling. Tabs split only on the kind of record (books, non-fiction, stories, series…), never on a filter value; tab counts are fixed totals | Agreed; split rule proposed (person review) |
 | Covers in lists | Title and author next to every cover; nothing important is hover-only; samples work by click or tap | Agreed (front page) |
 | Counts shown to visitors | Link to the list or statistics behind them | Agreed (front page) |
 | Portraits | Only on a person's own page, not in lists | Agreed (people list) |
@@ -83,6 +83,11 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
 | Main menu | Same on every page, including the search box; admins always see the Ylläpito menu | Agreed (front page) |
 | Change history | A link that opens a dialog, not a tab | Agreed (work) |
 | Similar works | Public to everyone (going public); a row of covers, each with a "Miksi samankaltainen?" popover (reasons for all, score numbers for admins) | Agreed (work) |
+| Filters inside a tab | Type and role chips, year, name filter and sort act on the current tab only, combine with AND, show faceted counts and disable chips that would give 0; with any filter on, a "Näytetään 7 / 30 · … · Tyhjennä" line sits above the list; changing tab clears that tab's filters | Proposed (person review) |
+| State in the URL | Tab, every filter, sort, view mode, grouping and a selected year or range; defaults left out; clicks add a history entry, typing replaces it. Personal display preferences (view mode, grouping) also fall back to the reader's last choice on that device (localStorage) when the URL has none | Agreed for grouping and view (work); rest proposed (person review) |
+| Sticky bars | At most one sticky bar: the tab row (about 48 px). The site nav and toolbars scroll away; on a phone the toolbar folds into one "Suodata ja järjestä" button that opens a bottom sheet | Proposed (person review) |
+| Charts | Never rely on colour alone: a visible legend with text, fills or patterns for the categories, a stated scale ("Korkein pylväs 57"), and an accessible name per bar | Proposed (person review) |
+| Missing data | An empty section is hidden, with no heading or box (no description, tags, links, bio, portrait, cover). Columns empty in every row are dropped. Controls that change nothing are hidden (grouping toggles with one edition, tabs with one non-empty group, filters on a list of a few items). No placeholder space for a missing portrait or cover in headers. Empty records are never rendered (a link without URL). Admins see a quiet dashed hint where data is missing ("Kuvaus puuttuu. Lisää kuvaus"); visitors see nothing | Proposed (sparse data check) |
 | Use PrimeReact components where one fits (repo rule) | `SelectButton`, `Dropdown`, `Chip`, `Tag`, `InputText` | Agreed |
 
 ## Layout and quality floor

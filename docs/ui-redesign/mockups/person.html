@@ -16,7 +16,7 @@
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme=light]){--page:#121212; --surface:#1e1e1e; --ink:#dedede; --muted:#9e9e9e; --faint:#7c7c7c; --rule:#333333; --primary:#9FA8DA; --primary-soft:#2a2d3c; --primary-ink:#c5cae9; --primary-line:#3d4260; --on-primary:#121212; --on-ink:#121212; --tag-bg:#262626; --ph:#2c2c2c; --ph-line:#444444; --hover-line:#4a4a4a; --hover-bg:#262626; --admin-bg:#181818; --warn-bg:#3a3112; --warn-ink:#f0d78c; --gold-soft:#332a10; --gold-line:#6b5a22; --gold-ink:#f0d78c; --gold-icon:#e0c060; --star-off:#4a4a4a; --ok:#81c784; --mock-bg:#3a3412; --mock-ink:#f0e2a0; --mock-line:#7a6a1a; --mock-note:#c9b870; --mock-on:#3a3412; --outline:rgba(255,255,255,.28);}}
 :root[data-theme=dark]{--page:#121212; --surface:#1e1e1e; --ink:#dedede; --muted:#9e9e9e; --faint:#7c7c7c; --rule:#333333; --primary:#9FA8DA; --primary-soft:#2a2d3c; --primary-ink:#c5cae9; --primary-line:#3d4260; --on-primary:#121212; --on-ink:#121212; --tag-bg:#262626; --ph:#2c2c2c; --ph-line:#444444; --hover-line:#4a4a4a; --hover-bg:#262626; --admin-bg:#181818; --warn-bg:#3a3112; --warn-ink:#f0d78c; --gold-soft:#332a10; --gold-line:#6b5a22; --gold-ink:#f0d78c; --gold-icon:#e0c060; --star-off:#4a4a4a; --ok:#81c784; --mock-bg:#3a3412; --mock-ink:#f0e2a0; --mock-line:#7a6a1a; --mock-note:#c9b870; --mock-on:#3a3412; --outline:rgba(255,255,255,.28);}
-.seg,.gbar .t i,.gchip i,.legend i{box-shadow:inset 0 0 0 1px var(--outline)}
+.gbar .t i,.gchip i{box-shadow:inset 0 0 0 1px var(--outline)}
 .viewas .th{padding:2px 10px;border-radius:999px;cursor:pointer}
 
 *{box-sizing:border-box}
@@ -52,15 +52,19 @@ h1{font:600 44px/1.08 'Roboto Slab',serif;margin:2px 0 6px;letter-spacing:-.01em
 .tl-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
 .tl-head h2{font:600 17px 'Roboto Slab',serif;margin:0}
 .tl-head p{margin:0;font-size:13px;color:var(--muted)}
-.legend{display:flex;gap:14px;font-size:12.5px;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--muted)}
+.legend span{white-space:nowrap}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
 .bars{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);align-items:end;gap:2px;height:86px;margin-top:14px;border-bottom:1px solid var(--rule)}
-.bar{display:flex;flex-direction:column-reverse;gap:1px;height:100%;justify-content:flex-start;cursor:pointer;border-radius:2px}
-.bar:hover{background:var(--primary-soft)}
-.seg{height:19%;border-radius:2px}
-.seg.SF{background:var(--sf)} .seg.F{background:var(--f)} .seg.o{background:var(--other)}
-.seg.first{outline:2px solid var(--ink);outline-offset:-2px}
-.bar.sel{background:var(--primary-soft)}
+.bar{display:flex;flex-direction:column-reverse;height:100%;justify-content:flex-start;cursor:pointer;border-radius:2px 2px 0 0;padding:0;border:0;background:none;min-width:0}
+.bar:hover,.bar:focus-visible{background:var(--primary-soft);outline:none}
+.bar .f{background:var(--primary);border-radius:0 0 1px 1px}
+.bar .r{background:repeating-linear-gradient(135deg,var(--primary) 0 2px,transparent 2px 4px);box-shadow:inset 0 0 0 1px var(--primary);border-radius:1px 1px 0 0}
+.bar.sel{background:var(--primary-soft);box-shadow:inset 0 -3px 0 var(--ink)}
+.lg-first,.lg-re{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.lg-first{background:var(--primary)}
+.lg-re{background:repeating-linear-gradient(135deg,var(--primary) 0 2px,transparent 2px 4px);box-shadow:inset 0 0 0 1px var(--primary)}
+#tl-max{color:var(--faint)}
 .axis{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px;font-size:11px;color:var(--faint);margin-top:4px}
 .axis span{white-space:nowrap;overflow:visible}
 
@@ -95,6 +99,7 @@ aside{align-self:start;display:flex;flex-direction:column;gap:14px;padding-top:6
 /* Bibliography section */
 .biblio{margin-top:34px}
 .secnav{position:sticky;top:0;z-index:2;background:var(--page);display:flex;gap:4px;border-bottom:1px solid var(--rule);overflow-x:auto}
+.secnav{scrollbar-width:none}.secnav::-webkit-scrollbar{display:none}
 .secnav a{padding:12px 14px;color:var(--muted);font-weight:500;font-size:15px;border-bottom:2px solid transparent;white-space:nowrap}
 .secnav a.on{color:var(--primary);border-bottom-color:var(--primary)}
 .secnav a small{font-weight:400;color:var(--faint);margin-left:5px}
@@ -103,6 +108,7 @@ aside{align-self:start;display:flex;flex-direction:column;gap:14px;padding-top:6
 .chip.on{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
 .chip small{opacity:.65;margin-left:4px}
 .tool-r{margin-left:auto;display:flex;gap:8px;align-items:center}
+.fbtn{display:none;border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:7px 12px;font-size:14px;color:var(--ink)}
 .input{border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:6px 10px;font-size:13.5px;color:var(--faint);width:180px}
 .select{border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:6px 10px;font-size:13.5px}
 .seg2{display:flex;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--surface)}
@@ -142,8 +148,9 @@ aside{align-self:start;display:flex;flex-direction:column;gap:14px;padding-top:6
   .roles{grid-column:1/-1}
   .timeline{padding:14px 12px 10px}
   .bars{height:60px}
-  .tool-r{margin-left:0;width:100%}
-  .input{flex:1}
+  .toolbar .chip,.tool-r .input,.tool-r .select{display:none}
+  .fbtn{display:inline-flex;gap:6px;align-items:center}
+  .tool-r{margin-left:auto;width:auto}
   .count{display:none}
   .anno{display:none}
 }
@@ -169,6 +176,7 @@ body.admin .fab{display:grid !important}
 <body>
 <div class="viewas"><div class="wrap">Mockup, näytä käyttäjänä:
   <span data-as="anon">Vierailija</span><span data-as="user">Kirjautunut</span><span data-as="admin">Ylläpitäjä</span> <span style="margin-left:14px">Teema:</span><span class="th" data-th="light">Vaalea</span><span class="th" data-th="dark">Tumma</span>
+  <span style="margin-left:14px">Aikajana:</span><span class="tlsel" data-tl="">Le Guin</span><span class="tlsel" data-tl="hunter">Erin Hunter (57 / vuosi)</span><span class="tlsel" data-tl="verne">Jules Verne (1879–2024)</span>
   <em style="margin-left:auto;color:var(--mock-note)">Omistus- ja muistilistamerkinnät ovat esimerkkejä</em></div></div>
 <header class="nav"><div class="wrap">
   <span class="brand">SuomiSF</span>
@@ -206,8 +214,8 @@ body.admin .fab{display:grid !important}
       <section class="timeline rel" aria-label="Painokset vuosittain">
         <span class="anno" style="left:-34px;top:16px">2</span>
         <div class="tl-head">
-          <div><h2>Painokset vuosittain 1976–2024</h2><p>39 painosta, 30 teosta. Klikkaa vuotta suodattaaksesi listan.</p></div>
-          <div class="legend"><span><i style="background:var(--sf)"></i>Science fiction</span><span><i style="background:var(--f)"></i>Fantasia</span><span><i style="background:var(--other)"></i>Muu</span><span><i style="outline:2px solid var(--ink);outline-offset:-2px;background:var(--surface)"></i>Ensipainos</span></div>
+          <div><h2 id="tl-title">Painokset vuosittain</h2><p id="tl-sum"></p></div>
+          <div class="legend"><span><i class="lg-first"></i>Ensipainos</span><span><i class="lg-re"></i>Uusintapainos tai uusi laitos</span><span id="tl-max"></span></div>
         </div>
         <div class="bars" id="bars"></div>
         <div class="axis" id="axis"></div>
@@ -228,10 +236,10 @@ body.admin .fab{display:grid !important}
           <a>Novellit ja artikkelit<small>93</small></a>
           <a>Sarjat<small>3</small></a>
           <a>Palkinnot<small>2</small></a>
-          <a>Muu tuotanto<small>1</small></a>
         </nav>
         <div class="toolbar rel">
           <span class="anno" style="left:-34px;top:18px">5</span>
+          <span class="fbtn"><i class="pi pi-sliders-h"></i> Suodata ja järjestä</span>
           <span class="chip on">Kaikki<small>30</small></span>
           <span class="chip">Romaanit<small>20</small></span>
           <span class="chip">Kokoelmat<small>7</small></span>
@@ -291,6 +299,7 @@ body.admin .fab{display:grid !important}
 </div>
 <div class="fab" title="Ylläpito">+</div>
 
+<script src="timeline-data.js"></script>
 <script>
 const IMG="https://www.sf-bibliografia.fi:5000/static/images/books/";
 // [title, orig, origYear, series, num, genres, editions "year publisher", img, kind]
@@ -328,15 +337,36 @@ const W=[
 ];
 const main=g=>g.includes("SF")&&!g.includes("F")?"SF":g.includes("F")&&!g.includes("SF")?"F":g.includes("eiSF")?"o":(g.includes("SF")?"SF":"o");
 
-// Timeline: one segment per edition, outlined when it is the work's first Finnish edition
-const by={};W.forEach(w=>w[6].forEach((e,i)=>{const y=+e.slice(0,4);(by[y]=by[y]||[]).push({c:main(w[5]),first:i===0,t:w[0]})}));
-const bars=document.getElementById("bars"),axis=document.getElementById("axis");
-for(let y=1975;y<=2025;y++){
-  const b=document.createElement("div");b.className="bar"+(y===2002?" sel":"");b.title=y+": "+((by[y]||[]).map(x=>x.t).join(", ")||"ei painoksia");
-  (by[y]||[]).forEach(s=>{const d=document.createElement("div");d.className="seg "+s.c+(s.first?" first":"");b.appendChild(d)});
-  bars.appendChild(b);
-  const a=document.createElement("span");a.textContent=y%10===0?y:"";axis.appendChild(a);
+// Timeline: bar height = editions that year (all printings and versions, books only), solid part = first Finnish editions
+// of a work, hatched part = reprints and new versions. Bins of 1/2/5/10 years keep every bar at least 4 px wide.
+const LG={};W.forEach(w=>w[6].forEach((e,i)=>{const y=+e.slice(0,4);LG[y]=LG[y]||{all:0,first:0,t:[]};LG[y].all++;if(i===0)LG[y].first++;LG[y].t.push(w[0])}));
+const TLK=new URLSearchParams(location.search).get("tl");
+const BY=TLK&&typeof TL!=="undefined"&&TL[TLK]?TL[TLK]:LG;
+function drawTimeline(){
+  const bars=document.getElementById("bars"),axis=document.getElementById("axis");bars.innerHTML="";axis.innerHTML="";
+  const ys=Object.keys(BY).map(Number).filter(Boolean),y0=Math.min(...ys),y1=Math.max(...ys);
+  const width=bars.clientWidth||700;
+  const bin=[1,2,5,10].find(b=>Math.ceil((y1-y0+1)/b)*6<=width)||10;
+  const start=Math.floor(y0/bin)*bin;
+  const bins=[];for(let y=start;y<=y1;y+=bin){let all=0,first=0,t=[];for(let k=y;k<y+bin;k++){const v=BY[k];if(v){all+=v.all;first+=v.first;if(v.t)t=t.concat(v.t)}}bins.push({y,all,first,t})}
+  const max=Math.max(...bins.map(b=>b.all));
+  // Axis labels at least ~44 px apart, on round years
+  const STEP=[10,20,25,50,100].find(st=>st/bin*(width/bins.length)>=44)||100;
+  const tot=ys.reduce((a,y)=>a+BY[y].all,0),fst=ys.reduce((a,y)=>a+BY[y].first,0);
+  document.getElementById("tl-title").textContent=`Painokset vuosittain ${y0}–${y1}`;
+  document.getElementById("tl-sum").textContent=`${tot} painosta, joista ${fst} ensipainosta.${bin>1?` Yksi pylväs = ${bin} vuotta.`:""} Valitse vuosi suodattaaksesi listan.`;
+  document.getElementById("tl-max").textContent=`Korkein pylväs ${max}`;
+  bins.forEach((b,i)=>{
+    const lab=bin>1?`${b.y}–${b.y+bin-1}`:`${b.y}`;
+    const el=document.createElement("button");el.className="bar"+(!TLK&&b.y===1984?" sel":"");
+    el.setAttribute("aria-label",`${lab}: ${b.all} painosta, joista ${b.first} ensipainosta`);
+    el.title=`${lab}: ${b.all} painosta (${b.first} ensipainosta)${b.t.length?"\n"+b.t.slice(0,5).join(", ")+(b.t.length>5?` +${b.t.length-5} muuta`:""):""}`;
+    if(b.all){const f=document.createElement("div");f.className="f";f.style.height=(b.first/max*100)+"%";const r=document.createElement("div");r.className="r";r.style.height=((b.all-b.first)/max*100)+"%";el.append(f,r)}
+    bars.appendChild(el);
+    const a=document.createElement("span");a.textContent=b.y%STEP===0?b.y:"";axis.appendChild(a);
+  });
 }
+drawTimeline();
 
 // List grouped by decade of the original work
 const list=document.getElementById("list");
@@ -367,6 +397,8 @@ document.querySelector(".more").onclick=()=>document.getElementById("bio").class
 (()=>{const q=new URLSearchParams(location.search).get("theme");
 const set=t=>{if(t)document.documentElement.dataset.theme=t;document.querySelectorAll(".viewas .th").forEach(x=>{const on=x.dataset.th===document.documentElement.dataset.theme;x.style.background=on?"var(--mock-ink)":"";x.style.color=on?"var(--mock-on)":""})};
 document.querySelectorAll(".viewas .th").forEach(x=>x.onclick=()=>set(x.dataset.th));set(q);})();
+document.querySelectorAll(".viewas .tlsel").forEach(x=>{x.classList.toggle("on",(x.dataset.tl||null)===TLK);x.onclick=()=>{const u=new URLSearchParams(location.search);x.dataset.tl?u.set("tl",x.dataset.tl):u.delete("tl");location.search=u}});
+addEventListener("resize",drawTimeline);
 </script>
 </body>
 </html>

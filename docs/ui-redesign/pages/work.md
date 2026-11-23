@@ -1,7 +1,7 @@
 # Work page
 
 **Routes:** `/works/:id`, and `/editions/:id` (the same page with one edition highlighted) · **Code:** `src/features/work/routes/work-page.tsx`, `src/features/work/components/work-details.tsx`, `src/features/edition/components/edition-details.tsx`, `src/features/edition/utils/group-similar-editions.ts`
-**Status:** Agreed ·  **Updated:** 2026-11-22
+**Status:** Agreed (revised 2026-11-23) · **Updated:** 2026-11-23
 **Sample pages:** Ursula K. Le Guin, *Pimeyden vasen käsi* (https://www.sf-bibliografia.fi/works/3984): awards, series, 3 editions.
 J. R. R. Tolkien, *Taru sormusten herrasta* (https://www.sf-bibliografia.fi/works/1514): 20 printings in 3 laitos.
 **Mockup:** [`../mockups/work.html`](../mockups/work.html) with [`works-data.js`](../mockups/works-data.js) next to it (real data from the live API).
@@ -18,6 +18,10 @@ More screenshots:
 - [Tolkien, logged-in user, default grouping "Samanlaiset yhdessä"](../images/work/after-lotr-user-full.png) and [before, Tolkien, condensed view](../images/work/before-lotr-full.png).
 - [Tolkien, "Kaikki", admin](../images/work/after-lotr-all-admin.png): every printing on its own row with ownership and admin columns.
 - [Editions on a phone, logged in](../images/work/after-mobile-editions.png).
+- Review 2026-11-23: [merged row expanded into its printings](../images/work/after-lotr-expanded.png),
+  [admin at 1,100 px](../images/work/after-lotr-admin-1100.png), [admin at 820 px](../images/work/after-lotr-admin-820.png),
+  [cover strip](../images/work/after-lotr-cover-strip.png), [phone: header and reading mark](../images/work/after-lotr-phone-header.png),
+  [phone: similar works row](../images/work/after-mobile-similar.png), [before: Tolkien "Kaikki" on a phone](../images/work/before-lotr-all-mobile.png) (each also `-dark`).
 - Dark theme: [desktop](../images/work/after-desktop-dark.png), [admin, whole page](../images/work/after-admin-full-dark.png), [Tolkien](../images/work/after-lotr-user-full-dark.png), [phone](../images/work/after-mobile-dark.png), [editions on a phone](../images/work/after-mobile-editions-dark.png), [similar works](../images/work/after-similar-why-admin-dark.png).
 - [Similar works with "Miksi samankaltainen?" open, admin](../images/work/after-similar-why-admin.png). Open it in the mockup with `?why=0`.
 
@@ -33,6 +37,20 @@ More screenshots:
 5. **The series navigation is two tiny arrows** (◁ ▷) next to the series name. You can't see what comes before or after.
 6. **Title in uppercase**, same as the person page.
 7. **Change history is a tab,** next to real content tabs.
+
+## Page heights (Tolkien, visitor, measured 2026-11-23)
+
+| | Before (live) | After (mockup) | Change |
+|---|---|---|---|
+| "Kaikki", desktop 1,400 px | 6,232 px | 3,031 px | −51% |
+| "Kaikki", phone 390 px | 10,383 px | 6,387 px | −38% |
+| Default ("Samanlaiset yhdessä"), desktop | 1,650 px | 2,074 px | +26% |
+| Default, phone | 2,653 px | 3,132 px | +18% |
+
+The table pays off where there are many rows: the editions section in "Kaikki" is 1,540 px on desktop. The default view gets taller because
+the page now shows things the live page hides from visitors: the similar works row (about 310 px on both widths; admin-only today) and the
+cover above the fold. Without the similar works row the default is about +7% on desktop and +6% on a phone. On a phone, "Kaikki" is still
+long (4,449 px of edition cards): that is the case for expandable merged rows below rather than "Kaikki".
 
 ## Proposed layout
 
@@ -62,7 +80,11 @@ More screenshots:
 The numbers 1–7 in the mockup screenshots match the sections below.
 
 1. **Header with cover.** Cover of the first edition at 200 px (104 px on a phone, beside the title).
-   Under it, a strip of every distinct cover with its year. Clicking one swaps the big cover.
+   Under it, a **strip of distinct covers**: distinct means a **different image file**, not a different edition (Tolkien's 20 printings use 7 images).
+   Each thumb is captioned with the first year that image was used; the tooltip and accessible name give the whole range ("Kansi 1985–1991").
+   Clicking one swaps the big cover. **Overflow on desktop:** the strip has 4 slots under the cover; with more covers it shows 3 thumbs and a
+   "+N" tile that opens all covers in a dialog (each with its years and printings). **On a phone** the strip spans the full width under the header
+   as one sideways-scrolling row with every cover, no "+N" and no visible scrollbar. One cover only: no strip.
    Author link above the title, title in mixed case, original title with year and language, type and genre chips.
 2. **Awards in the header** as trophy chips (award, year, category). Up to three chips; when a work has more,
    a "+N muuta palkintoa" chip opens the full list in a dialog (today's `AwardList`). The Palkinnot tab goes away.
@@ -80,11 +102,28 @@ The numbers 1–7 in the mockup screenshots match the sections below.
    - **Grouping** keeps today's three modes as a toggle, with today's rules (`groupSimilarEditions`):
      **Kaikki** (every printing on its own row), **Samanlaiset yhdessä** (same laitos, title and page count share a row, so one laitos can have several rows),
      **Laitoksittain** (one row per laitos). A merged row shows the printing range, the year range and every publisher series, binding and ISBN in the group.
-     Like today, ownership and admin controls appear only on single-printing rows.
+     **Merged rows expand** (revised 2026-11-23: today ownership and admin controls appear only on single-printing rows, so in Tolkien's default view
+     a logged-in user's "Omat" column was mostly empty): a chevron before "1.–36. painos" opens the group's printings as indented sub-rows
+     right under it, each with its own Omat and Ylläpito controls. The merged row's Omat cell shows a **summary**: "★ Omistat 3/17 · 🔖 2"
+     (owned printings out of the group, and how many are on the wishlist), or "Et omista". An `/editions/:id` link into a merged row opens it.
    - **Default: table, grouped "Samanlaiset yhdessä"** (as today's default).
+   - **Grouping and view are remembered:** the URL is the source of truth (`?ryhmittely=kaikki|laitoksittain`, `?nakyma=kortit`; defaults left out),
+     so links, reload and the back button keep them. When the URL has no value, the reader's last choice on this device (localStorage, read and
+     written in try/catch) is used, then the default. Each change adds a history entry. Expanded rows are not stored.
    - "Kortit" keeps today's card view for anyone who prefers it.
-   - On a phone each row becomes a small card (thumb on the left, fields stacked with short labels: Suom., Sivuja, ISBN).
-   - All laitos tables use the same fixed column widths so their columns line up.
+   - **Columns by width** (revised 2026-11-23; the full set is too wide around 1,000–1,200 px):
+
+     | Width | Columns |
+     |---|---|
+     | 1,200 px and up | cover, Painos, Vuosi, Kustantaja ja sarja, Suomentaja, Sidonta, Sivuja, ISBN, Omat, Ylläpito (four icons) |
+     | 900–1,199 px | Sidonta, Sivuja and ISBN merge into one **Kirja** column ("Sidottu · 981 s. · 23 cm", ISBNs under it); Suomentaja moves under the publisher ("Suom. …"); Ylläpito becomes one **"⋯"** button that opens a menu (edit, copy, delete, prices); Omat wraps to two lines |
+     | 760–899 px | as above, and Vuosi moves under the printing number |
+     | under 760 px | cards: thumb on the left, fields stacked with short labels (Suom., Sivuja, ISBN), Omat and admin icons at the bottom |
+
+     Screenshots: [1,100 px](../images/work/after-lotr-admin-1100.png), [820 px](../images/work/after-lotr-admin-820.png), [phone](../images/work/after-mobile-editions.png).
+   - **A plain HTML `<table>`, not PrimeReact `DataTable`** (decided here; it was left open): every laitos table shares one set of fixed widths
+     (`table-layout: fixed`), rows merge and expand in ways DataTable's row grouping doesn't model, and the columns change by width. The controls
+     inside the cells stay PrimeReact (`Menu` for "⋯", `Button`, `Rating`-style stars, `Tooltip`), so the repo's "use PrimeReact where one fits" rule holds.
    - **Edition links:** there is no separate edition page. `/editions/:id` opens this work page, scrolls to that printing's row and
      highlights it (today's `highlighted-edition` style, with its dark-theme colours). If the printing is inside a merged row
      ("Samanlaiset yhdessä" or "Laitoksittain"), that row is highlighted.
@@ -100,6 +139,30 @@ The numbers 1–7 in the mockup screenshots match the sections below.
      The long explanation of the numbers in today's dialog moves to a "Mitä luvut tarkoittavat?" link in the admin popover.
    **Sidebar** next to the header: links; "Oma lukumerkintä" (`WorkReadControl`) for logged-in users;
    a dashed "Ylläpitäjille" box for admins (Kirjasampo import and its date, prices); and a "Muutoshistoria" link that opens the change history in a **dialog**.
+   **On a phone** (revised 2026-11-23) the order is: header (cover, title, chips, awards, series, cover strip) → **Oma lukumerkintä** (a main action,
+   so right under the header) → description → tags → Painokset → Samankaltaiset teokset (one sideways-scrolling row) → Linkit → Ylläpitäjille → Muutoshistoria.
+   [Screenshot](../images/work/after-lotr-phone-header.png).
+
+## Sparse data (checked 2026-11-23)
+
+A real work with little data: **Satujen maan taistelu** by Unelma Julma (Finnish original, one edition, no cover, description, tags or links;
+https://www.sf-bibliografia.fi/works/3407). Mockup: [`../mockups/work.html?w=c`](../mockups/work.html) (the same page as the main mockup).
+
+| Before | After (mockup, light) | After (mockup, dark) |
+|---|---|---|
+| ![before](../images/sparse/before-work-sparse.png) | ![after](../images/sparse/after-work-sparse.png) | ![after dark](../images/sparse/after-work-sparse-dark.png) |
+| _admin view_ | ![after admin](../images/sparse/after-work-sparse-admin.png) | ![after admin dark](../images/sparse/after-work-sparse-admin-dark.png) |
+| ![before mobile](../images/sparse/before-work-sparse-mobile.png) | ![after mobile](../images/sparse/after-work-sparse-mobile.png) | ![after mobile dark](../images/sparse/after-work-sparse-mobile-dark.png) |
+
+What the layout does with missing data (the "Missing data" rule in [principles.md](../principles.md)):
+- **No cover:** the header is one column; no grey box. The edition table drops its thumbnail column (on a phone too).
+- **Original title the same as the title** (a Finnish original): no repeated name; the line reads "Julkaistu 2001".
+- **No description, tags or links:** no description block, no "Näytä koko kuvaus", no Asiasanat box, no Linkit box.
+- **No similar works section:** with no tags and no description there is nothing to compare on.
+- **One edition:** no grouping toggles and no "1. laitos" heading; the summary drops "Suomentanut" and the table drops the translator column
+  when no edition has a translator.
+- **Admins** see dashed hints where the data is missing: "Kansikuva puuttuu. Lisää kansikuva", "Kuvaus puuttuu. Lisää kuvaus",
+  "Ei asiasanoja. Lisää asiasanoja tai hae Kirjasampo-asiasanat".
 
 ## Shared principles used or added
 
@@ -123,22 +186,27 @@ dust jacket and verified flags, awards, tags with types, and the series with its
    award chips with overflow dialog (new `award-chips.tsx`, reusable on the person and short story pages), series navigator (replaces `WorkBookseriesBrowser`'s arrows).
 2. **Tags and sidebar**: tags grouped by type (new `TagsByType` in `src/features/tag/components/`, reusing the type names from
    `tag-type-to-severity.ts`), links list, read control, admin box, change-history dialog (wraps today's `EntityChanges`).
-3. **Editions table**: new `edition-table.tsx` in `src/features/edition/components/`. It reuses `groupSimilarEditions` for the three modes,
-   plus new pure helpers with Vitest tests: `mergeGroupForRow(group)` (ranges and unique values).
-   Fixtures: the two sample works' API responses in `src/test/fixtures/`.
-   PrimeReact `DataTable` with stacked layout on small screens, or a plain table if `DataTable` is too heavy.
-4. **Row controls**: move the ownership, wishlist, owners, price and admin buttons out of `edition-details.tsx` into components the table row
-   and the card view both use, so nothing is lost in either view.
+3. **Row controls** (first, because the table needs them): move the ownership, wishlist, owners, price and admin buttons out of
+   `edition-details.tsx` into components the table row, the expanded sub-rows and the card view all use, so nothing is lost in any view.
+   Add an ownership summary component for merged rows ("Omistat 3/17").
+4. **Editions table**: new `edition-table.tsx` in `src/features/edition/components/`, a plain `<table>` with shared fixed column widths and the
+   width bands above (CSS only). It reuses `groupSimilarEditions` for the three modes, plus new pure helpers with Vitest tests:
+   `mergeGroupForRow(group)` (ranges and unique values) and `ownershipSummary(group, user)`. Expand state per merged row; grouping and view
+   in the URL with the localStorage fallback. Fixtures: the two sample works' API responses in `src/test/fixtures/`.
 5. **Remove the tabs**: stories become a "Sisältö" section, awards move to the header, change history becomes a dialog.
    Similar works move from the dialog into the full-width row once the endpoint is public. `similar-works.tsx` keeps its helpers
    (`shownReasons`, `reasonText`, `partsText`, `tagTypesText`, `scoreText`, already tested in `similar-works.test.tsx`);
    only the rendering changes from a dialog list to cover cards with a reasons popover.
-6. **Mobile and accessibility pass** at 390 px; update the work-page Playwright specs and `a11y.spec.ts`.
+6. **Mobile and accessibility pass** at 390, 820 and 1,100 px; update the work-page Playwright specs and `a11y.spec.ts`.
 7. **Wiki**: update the work page and edition sections in `SuomiSF‐ohje.md` and `Ylläpito.md`, retake screenshots.
 
 ## Tests
 
-- Vitest: `mergeGroupForRow` (ranges, unique series, bindings and ISBNs; Tolkien fixture), series previous/next, tag grouping order, award overflow at more than three.
+- Vitest: `mergeGroupForRow` (ranges, unique series, bindings and ISBNs; Tolkien fixture), `ownershipSummary`, distinct covers by image file
+  (Tolkien: 20 printings, 7 covers), series previous/next, tag grouping order, award overflow at more than three.
+- Playwright: a merged row expands and its printings have Omat controls; the merged row shows "Omistat n/m"; `?ryhmittely=kaikki` survives reload
+  and back; without it the last choice on the device is used; at 1,100 px the Kirja column and the "⋯" menu replace the four columns and icons;
+  on a phone "Oma lukumerkintä" comes right after the header; the cover strip shows "+4" for Tolkien on desktop.
 - Playwright: cover strip swaps the cover; grouping toggle changes rows; the "?" on a similar work opens its reasons (numbers only for admins); series links go to the right works; table rows link to editions;
   logged-in user sees the Omat column; admin sees the Ylläpito column, "Tarkastettu" and the admin box; visitor sees neither;
   change history opens in a dialog.
@@ -162,3 +230,10 @@ _None._
 - Default grouping stays "Samanlaiset yhdessä".
 - No list of missing printing numbers.
 - Similar works go in a full-width cover row under the editions.
+
+2026-11-23, project owner (review of the work plan):
+- Merged rows expand into their printings; the merged row shows an ownership summary ("Omistat 3/17").
+- Column bands as proposed: Kirja column and "⋯" admin menu below 1,200 px, year under the printing below 900 px, cards below 760 px.
+- A plain HTML table, not `DataTable`.
+- The similar works row in the default view is fine (no collapsing).
+- Grouping and view are in the page address; the next work opens with the last choice made on this device (option a).

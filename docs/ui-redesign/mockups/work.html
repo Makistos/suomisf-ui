@@ -52,6 +52,9 @@ main,.hero>div{min-width:0}
 .author{font:500 20px 'Roboto Slab',serif}
 h1{font:600 42px/1.1 'Roboto Slab',serif;margin:4px 0 8px;letter-spacing:-.01em}
 .orig{color:var(--muted);font-size:16px}
+.hero.nocover{grid-template-columns:1fr}
+.admin-hint{font-size:14px;color:var(--muted);border:1px dashed var(--rule);background:var(--admin-bg);border-radius:8px;padding:8px 12px;margin:0 0 12px}
+body.admin p.admin-hint.only-admin{display:block}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0}
 .chip{border-radius:999px;padding:3px 11px;font-size:13px;font-weight:500}
 .chip.type{background:var(--primary-soft);color:var(--primary-ink)}
@@ -128,9 +131,40 @@ th{text-align:left;font-weight:500;color:var(--faint);font-size:12.5px;padding:8
 td{padding:7px 10px;border-bottom:1px solid var(--rule);vertical-align:middle}
 tr:last-child td{border-bottom:0}
 tbody tr:hover{background:var(--hover-bg)}
-td.t{width:46px;padding-left:16px}
-td.t img{width:30px;height:44px;object-fit:cover;border-radius:2px;display:block;background:var(--ph)}
-td.t .none{width:30px;height:44px;border-radius:2px;background:var(--ph);border:1px dashed var(--ph-line)}
+/* Plain <table> (not DataTable): fixed layout so every laitos table shares the same column widths */
+table.etab{table-layout:fixed}
+th.c-th,td.c-th{width:56px;padding-left:16px}
+td.c-th img{width:30px;height:44px;object-fit:cover;border-radius:2px;display:block;background:var(--ph)}
+td.c-th .none{width:30px;height:44px;border-radius:2px;background:var(--ph);border:1px dashed var(--ph-line)}
+th.c-ed{width:150px} th.c-yr{width:92px} th.c-tr{width:15%} th.c-bind{width:82px} th.c-pages{width:76px} th.c-isbn{width:136px} th.c-book{width:190px}
+th.c-own{width:220px} th.c-adm{width:118px}
+.c-book,.yr-inline,.tr-inline,.narrow-only{display:none}
+td.c-ed{white-space:nowrap}
+button.exp{border:0;background:none;color:var(--muted);cursor:pointer;padding:0 4px 0 0;font-size:12px}
+tr.merged td{background:var(--surface)}
+tr.sub td{background:var(--hover-bg);font-size:13.5px;padding-top:5px;padding-bottom:5px}
+tr.sub td.c-ed{padding-left:28px}
+.same{color:var(--faint)}
+.own-sum{font-size:13px;color:var(--muted);white-space:nowrap}
+.own-sum b{color:#E0A100;font-weight:400}
+.own-sum i{font-size:12px;color:var(--primary)}
+button.kebab{border:1px solid var(--rule);background:var(--surface);color:var(--muted);border-radius:6px;padding:3px 8px;cursor:pointer}
+.covers figure.more-hidden{display:none}
+.covers figure.plus span{width:40px;height:58px;display:grid;place-items:center;border:1px dashed var(--rule);border-radius:2px;font-weight:600;color:var(--primary);font-size:13px}
+.only-phone{display:none}
+/* Middle widths: 900–1199 px. Binding, pages and ISBN merge into one "Kirja" column; admin icons become one menu button */
+@media (max-width:1199px) and (min-width:760px){
+  .c-bind,.c-pages,.c-isbn{display:none}
+  .c-book{display:table-cell}
+  .wide-only{display:none} .narrow-only{display:inline-block}
+  th.c-adm{width:64px} th.c-own{width:200px}
+}
+/* 760–899 px: year moves into the Painos cell, translator under the publisher */
+@media (max-width:899px) and (min-width:760px){
+  .c-yr,.c-tr{display:none}
+  .yr-inline,.tr-inline{display:block;font-size:12.5px;color:var(--muted)}
+  th.c-own{width:170px}
+}
 td.ed a{font-weight:600;white-space:nowrap}
 td.ed small,.extra{display:block;font-size:12.5px;color:var(--muted)}
 .verified{color:var(--ok);font-size:12px;white-space:nowrap;margin-left:6px}
@@ -162,11 +196,9 @@ body.admin .fab{display:grid}
   .nav a.m{display:none}
   .search{width:auto;flex:1}
   .layout{grid-template-columns:1fr;gap:18px}
-  .layout{grid-template-areas:"hero" "desc" "side"}
   .tgroup{grid-template-columns:1fr;gap:2px}
   .hero{grid-template-columns:104px 1fr;gap:16px}
   .cover{width:104px}
-  .covers{display:none}
   .author{font-size:16px}
   h1{font-size:26px}
   .orig{font-size:14px}
@@ -175,15 +207,34 @@ body.admin .fab{display:grid}
   .chips,.awards{margin-top:0}
   .series{grid-template-columns:1fr 1fr}
   .series .mid{grid-column:1/-1;grid-row:1;border:0;border-bottom:1px solid var(--rule)}
+  #side{display:none}
+  .only-phone{display:block}
+  #readm{grid-area:read}
+  .layout{grid-template-areas:"hero" "read" "desc"}
+  .hero > div:first-of-type{display:contents}
+  .cover{grid-column:1;grid-row:1}
+  .covers{order:9;display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x mandatory;margin-top:4px;grid-column:1/-1;padding-bottom:4px}
+  .covers figure{scroll-snap-align:start;flex:0 0 auto}
+  .covers{scrollbar-width:none}.covers::-webkit-scrollbar{display:none}
+  body.user .nav a.m, body.admin .nav a.m{display:none}
+  .covers figure.more-hidden{display:block} .covers figure.plus{display:none}
+}
+@media (max-width:759px){
   thead{display:none}
   table,tbody,tr,td{display:block}
   tr{display:grid !important;grid-template-columns:46px 1fr;padding:8px 0;border-bottom:1px solid var(--rule)}
   td{border:0;padding:1px 10px}
-  td.t{grid-row:1/span 10}
-  td:not(.t){grid-column:2}
+  td.c-th{grid-row:1/span 10}
+  td:not(.c-th){grid-column:2}
+  table.nothumb tr{grid-template-columns:1fr}
+  table.nothumb td{grid-column:1}
   td:empty{display:none}
   td[data-l]::before{content:attr(data-l) ' ';color:var(--faint);font-size:12.5px}
   body.user td.col-user, body.admin td.col-user, body.admin td.col-admin{display:block;padding-top:6px}
+  .c-book,.c-yr{display:none}
+  .yr-inline{display:inline;margin-left:8px;color:var(--muted)}
+  tr.sub{background:var(--hover-bg);padding-left:10px}
+  .wide-only{display:inline-flex}
   .viewas em{display:none}
   .anno{display:none}
 }
@@ -193,11 +244,40 @@ body.admin .fab{display:grid}
 .r-user,.r-admin{display:none}
 body.user .r-user, body.admin .r-user, body.admin .r-admin{display:inline}
 body.user .r-anon, body.admin .r-anon{display:none}
+
+/* Column bands for the editions table (kept last so they win over the base rules) */
+td.c-ed a{font-weight:600;white-space:nowrap}
+td.c-ed small{display:block;font-size:12.5px;color:var(--muted)}
+td.c-ed{white-space:normal}
+span.extra.tr-inline,span.yr-inline,td.c-book,th.c-book,button.kebab{display:none}
+@media (max-width:1199px) and (min-width:760px){
+  th.c-bind,td.c-bind,th.c-pages,td.c-pages,th.c-isbn,td.c-isbn,th.c-tr,td.c-tr{display:none}
+  th.c-book,td.c-book{display:table-cell}
+  span.extra.tr-inline{display:block}
+  span.adm.wide-only{display:none} button.kebab{display:inline-block}
+  th.c-adm{width:56px} th.c-own{width:190px} th.c-book{width:200px}
+  td.c-own .own{flex-wrap:wrap;row-gap:2px;gap:8px}
+}
+@media (max-width:899px) and (min-width:760px){
+  th.c-yr,td.c-yr{display:none}
+  span.yr-inline{display:block;font-size:12.5px;color:var(--muted)}
+  th.c-own{width:160px} th.c-book{width:170px}
+}
+@media (max-width:759px){
+  span.yr-inline{display:inline;margin-left:8px;color:var(--muted)}
+  span.extra.tr-inline{display:none}
+}
+@media (max-width:759px){
+  /* similar works: one sideways-scrolling row on a phone, not a wrapped grid */
+  .sim{display:flex !important;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;scrollbar-width:none}
+  .sim .card{flex:0 0 120px;scroll-snap-align:start}
+}
 </style>
 </head>
 <body>
 <div class="viewas"><div class="wrap">Mockup, näytä käyttäjänä:
   <span data-as="anon">Vierailija</span><span data-as="user">Kirjautunut</span><span data-as="admin">Ylläpitäjä</span> <span style="margin-left:14px">Teema:</span><span class="th" data-th="light">Vaalea</span><span class="th" data-th="dark">Tumma</span>
+  <span style="margin-left:14px">Teos:</span><span class="wsel" data-w="a">Pimeyden vasen käsi</span><span class="wsel" data-w="c">Niukka: Satujen maan taistelu</span>
   <em style="margin-left:auto;color:var(--mock-note)">Omistus-, hinta- ja samankaltaisuustiedot ovat esimerkkejä</em></div></div>
 <header class="nav"><div class="wrap">
   <span class="brand">SuomiSF</span>
@@ -212,19 +292,31 @@ body.user .r-anon, body.admin .r-anon{display:none}
   <div class="layout">
     <section id="hero" class="hero rel"></section>
     <div id="side" class="sidecol rel"></div>
+    <div id="readm" class="only-phone"></div>
     <div id="descwrap"><div id="desctext"></div><div id="tagsbox" class="rel"></div></div>
   </div>
   <section class="eds rel" id="eds"></section>
   <section class="simrow rel" id="sim"></section>
-  <div style="height:200px"></div>
+  <div id="sidem" class="only-phone sidecol" style="margin-top:28px"></div>
+  <div style="height:60px"></div>
 </div>
 <div class="fab" title="Ylläpito">+</div>
 <script src="works-data.js"></script>
 <script>
 const IMG="https://www.sf-bibliografia.fi:5000";
 const Q=new URLSearchParams(location.search);
-const W=DATA[Q.get("w")==="b"?"b":"a"];
-let MODE=Q.get("group")||"condensed";
+const W=DATA[["b","c"].includes(Q.get("w"))?Q.get("w"):"a"];
+const SPARSE_SIM=!W.tags.length&&!W.desc; // nothing to compare on: no similar works section
+// Grouping and view: the URL is the source of truth (shareable, back button); without it, this device's last
+// choice (localStorage) is used, then the site default. Defaults are left out of the URL.
+const GKEY={kaikki:"all",samanlaiset:"condensed",laitoksittain:"brief"}, GNAME={all:"kaikki",condensed:"samanlaiset",brief:"laitoksittain"};
+const store={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+let MODE=GKEY[Q.get("ryhmittely")]||GKEY[store.get("work.ryhmittely")]||"condensed";
+let VIEW=Q.get("nakyma")||store.get("work.nakyma")||"taulukko";
+const OPEN=new Set(); // merged rows the reader has expanded (by first printing id)
+function saveState(){const u=new URLSearchParams(location.search);
+  MODE==="condensed"?u.delete("ryhmittely"):u.set("ryhmittely",GNAME[MODE]);VIEW==="taulukko"?u.delete("nakyma"):u.set("nakyma",VIEW);
+  history.pushState(null,"","?"+u);store.set("work.ryhmittely",GNAME[MODE]);store.set("work.nakyma",VIEW)}
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const fin=n=>n.includes(", ")?n.split(", ").reverse().join(" "):n;
 const yr=a=>Math.min(...a)===Math.max(...a)?String(Math.min(...a)):Math.min(...a)+"–"+Math.max(...a);
@@ -237,7 +329,10 @@ const trophy='<i class="pi pi-trophy" style="color:var(--gold-icon)"></i>';
 
 const eds=[...W.eds].sort((a,b)=>a.v-b.v||a.n-b.n);
 const trans=uniq(eds.flatMap(e=>e.c.filter(c=>c[0]==="Kääntäjä").map(c=>fin(c[1]))));
-const covers=[];eds.forEach(e=>e.img.forEach(src=>{if(!covers.find(c=>c.src===src))covers.push({src,y:e.y})}));
+// Distinct covers = distinct image files (not editions): Tolkien's 20 printings use 7 images.
+const covers=[];eds.forEach(e=>e.img.forEach(src=>{let c=covers.find(c=>c.src===src);if(!c){c={src,ys:[]};covers.push(c)}c.ys.push(e.y)}));
+covers.forEach(c=>{c.y=Math.min(...c.ys);c.label=yr(c.ys)});
+const STRIP_MAX=4; // desktop: up to 4 slots under the 200 px cover; with more covers, 3 thumbs and a "+N" tile
 
 document.getElementById("crumbs").innerHTML=`<a>Kirjat</a> / <a>${esc(W.author.map(a=>fin(a.name)).join(", "))}</a> / ${esc(W.title)}`;
 
@@ -255,23 +350,24 @@ const AW_MAX=3;
 const awards=W.awards.slice(0,AW_MAX).map(a=>`<span class="award">${trophy}<b>${esc(a.a)}</b> ${a.y}, ${esc(a.c.toLowerCase())}</span>`).join("")
   +(W.awards.length>AW_MAX?`<span class="award more">+${W.awards.length-AW_MAX} muuta palkintoa</span>`:"");
 
+if(!covers.length) document.getElementById("hero").classList.add("nocover");
 document.getElementById("hero").innerHTML=`<span class="anno" style="left:-34px;top:0">1</span>
-  <div>
-    <img class="cover" id="cover" src="${IMG+(covers[0]?.src||"")}" alt="Kansikuva">
-    ${covers.length>1?`<div class="covers">${covers.map((c,i)=>`<figure class="${i?"":"on"}" data-src="${c.src}"><img src="${IMG+c.src}" alt=""><figcaption>${c.y}</figcaption></figure>`).join("")}</div>`:""}
-  </div>
+  ${covers.length?`<div>
+    <img class="cover" id="cover" src="${IMG+covers[0].src}" alt="Kansikuva">
+    ${covers.length>1?`<div class="covers" role="list" aria-label="Kannet">${covers.map((c,i)=>`<figure role="listitem" class="${i?"":"on"}${covers.length>STRIP_MAX&&i>=STRIP_MAX-1?" more-hidden":""}" data-src="${c.src}" title="Kansi ${c.label}"><img src="${IMG+c.src}" alt="Kansi ${c.label}"><figcaption>${c.y}</figcaption></figure>`).join("")}${covers.length>STRIP_MAX?`<figure class="plus" title="Kaikki kannet"><span>+${covers.length-STRIP_MAX+1}</span><figcaption>kaikki</figcaption></figure>`:""}</div>`:""}
+  </div>`:`<span class="admin-hint only-admin" style="grid-column:1/-1;order:9">Kansikuva puuttuu. <a>Lisää kansikuva</a></span>`}
   <div class="hero-text">
     <div>
       <div class="author">${W.author.map(a=>`<a>${esc(fin(a.name))}</a>`).join(", ")}</div>
       <h1>${esc(W.title)}</h1>
-      <div class="orig">${esc(W.orig)}${W.year?` (${W.year}, ${esc(W.lang)})`:""}</div>
+      <div class="orig">${W.orig&&W.orig!==W.title?esc(W.orig)+(W.year?` (${W.year}, ${esc(W.lang)})`:""):(W.year?`Julkaistu ${W.year}`:"")}</div>
     </div>
     <div class="chips"><span class="chip type">${esc(W.type)}</span>${W.genres.map(genreChip).join("")}</div>
     ${W.awards.length?`<div class="awards rel"><span class="anno" style="left:-264px;top:4px">2</span>${awards}</div>`:""}
     ${seriesHtml?`<div class="rel">${seriesHtml}<span class="anno" style="left:-264px;top:14px">3</span></div>`:""}
   </div>`;
-document.getElementById("desctext").innerHTML=`<section class="desc collapsed rel" id="desc" style="margin-top:0"><span class="anno" style="left:-34px;top:0">4</span>${W.desc||""}</section>
-<button class="more-btn" onclick="document.getElementById('desc').classList.toggle('collapsed')">Näytä koko kuvaus ▾</button>
+document.getElementById("desctext").innerHTML=(W.desc?`<section class="desc collapsed rel" id="desc" style="margin-top:0"><span class="anno" style="left:-34px;top:0">4</span>${W.desc}</section>
+<button class="more-btn" onclick="document.getElementById('desc').classList.toggle('collapsed')">Näytä koko kuvaus ▾</button>`:`<p class="admin-hint only-admin rel"><span class="anno" style="left:-34px;top:0">4</span>Kuvaus puuttuu. <a>Lisää kuvaus</a></p>`)+`
 ${W.misc?`<div class="note"><b>Muuta:</b> ${esc(W.misc)}</div>`:""}`;
 
 const ORDER=["Alagenre","Tyyli","Aihe","Toimija","Paikka","Aika","Lista"];
@@ -289,14 +385,19 @@ const WHY=[
   nums:["Asiasanat 0,38 (0,80) · Kuvaus 0,14 (0,35) · Genre 0,12 (1,00) · Vuosi 0,01 (0,40) = 0,65","Aihe 0,26 (0,61) · Paikka 0,12 (0,50)","0,65 × kattavuus 1,00 = 0,65"]},
 ];
 const SIMIMG={"Harhakaupunki":"LeGuin_Ursula_K_Harhakaupunki_1p.jpg","Maailma, vihreä metsä":"LeGuin_Ursula_K_Maailmavihreametsa_1p.jpg","Maailman syntymäpäivä ja muita tarinoita":"LeGuin_Ursula_K_Maailmansyntymapaiva_1p.jpg","Maanpakolaisten planeetta":"LeGuin_Ursula_K_Maanpakolaistenplaneetta_1p.jpg","Osattomien planeetta":"LeGuin_Ursula_K_Osattomienplaneetta_1p.jpg","Rocannonin maailma":"LeGuin_Ursula_K_Rocannoninmaailma_1p.jpg","Kahdesti haarautuva puu":"LeGuin_Ursula_K_Kahdestihaarautuvapuu_1p.jpg","Neljä anteeksiantoa":"LeGuin_Ursula_K_Neljaanteeksiantoa_1p.jpg"};
-document.getElementById("tagsbox").innerHTML=`<span class="anno" style="left:-34px;top:4px">6</span>
-<div class="box"><h3>Asiasanat</h3>${ORDER.filter(k=>tg[k]).map(k=>`<div class="tgroup"><span>${LABEL[k]}</span><div class="tags">${tg[k].map(n=>`<a class="tag">${esc(n)}</a>`).join("")}</div></div>`).join("")}</div>`;
+document.getElementById("tagsbox").innerHTML=W.tags.length?`<span class="anno" style="left:-34px;top:4px">6</span>
+<div class="box"><h3>Asiasanat</h3>${ORDER.filter(k=>tg[k]).map(k=>`<div class="tgroup"><span>${LABEL[k]}</span><div class="tags">${tg[k].map(n=>`<a class="tag">${esc(n)}</a>`).join("")}</div></div>`).join("")}</div>`
+  :`<p class="admin-hint only-admin">Ei asiasanoja. <a>Lisää asiasanoja</a> tai <a>hae Kirjasampo-asiasanat</a></p>`;
+const READ=`<div class="box only-user"><h3>Oma lukumerkintä</h3><div class="rate"><span><i class="pi pi-thumbs-down"></i> En pitänyt</span><span><i class="pi pi-minus-circle"></i> Ihan ok</span><span><i class="pi pi-thumbs-up"></i> Pidin</span></div></div>`;
+document.getElementById("readm").innerHTML=READ;
 document.getElementById("side").innerHTML=`
-<div class="box"><h3>Linkit</h3><ul class="links">${W.links.map(l=>`<li><a>${esc(l)}</a></li>`).join("")}</ul></div>
+${W.links.length?`<div class="box"><h3>Linkit</h3><ul class="links">${W.links.map(l=>`<li><a>${esc(l)}</a></li>`).join("")}</ul></div>`:""}
 <div class="box only-user"><h3>Oma lukumerkintä</h3><div class="rate"><span><i class="pi pi-thumbs-down"></i> En pitänyt</span><span><i class="pi pi-minus-circle"></i> Ihan ok</span><span><i class="pi pi-thumbs-up"></i> Pidin</span></div></div>
-<div class="box admin only-admin"><h3>Ylläpitäjille</h3><ul><li>Kirjasampo-asiasanat tuotu 4.11.2026</li><li><a>Hae Kirjasampo-asiasanat</a></li><li><a>Hinnat antikvariaateista</a></li></ul></div>
+<div class="box admin only-admin"><h3>Ylläpitäjille</h3><ul><li>${W.tags.length?"Kirjasampo-asiasanat tuotu 4.11.2026":"Kirjasampo-asiasanoja ei ole tuotu"}</li><li><a>Hae Kirjasampo-asiasanat</a></li><li><a>Hinnat antikvariaateista</a></li></ul></div>
 <div class="meta-foot"><a>Muutoshistoria</a> (avautuu ikkunaan)</div>`;
-document.getElementById("sim").innerHTML=`<span class="anno" style="left:-34px;top:2px">7</span><h2>Samankaltaiset teokset<small>esimerkkidata</small></h2>
+// Phone order: header, reading mark, description, tags, editions, similar works, then links, admin box, history
+document.getElementById("sidem").innerHTML=document.getElementById("side").innerHTML.replace(READ,"");
+if(SPARSE_SIM) document.getElementById("sim").remove(); else document.getElementById("sim").innerHTML=`<span class="anno" style="left:-34px;top:2px">7</span><h2>Samankaltaiset teokset<small>esimerkkidata</small></h2>
 <div class="sim">${SIM.map((x,i)=>{const r=WHY[i%WHY.length];return `<div class="card"><a>${SIMIMG[x[1]]?`<img src="${IMG}/static/images/books/${SIMIMG[x[1]]}" alt="">`:`<span class="ph"></span>`}</a><a>${esc(x[1])}</a><button class="why" aria-expanded="false" aria-controls="why${i}" title="Miksi samankaltainen?" data-i="${i}"><i class="pi pi-question-circle"></i></button><small>Ursula K. Le Guin, ${x[2]}</small>
 <div class="pop" id="why${i}" role="dialog" aria-label="Miksi samankaltainen"><b>Miksi samankaltainen?</b><ul>${r.reasons.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>
 <div class="nums">${esc(r.nums[0])}<br>${esc(r.nums[1])}<br>${esc(r.nums[2])}</div></div></div>`}).join("")}</div>`;
@@ -310,10 +411,19 @@ function groups(list){
   list.forEach(e=>{const g=out.find(g=>MODE==="brief"||!g[0].pages||!e.pages||g[0].pages===e.pages);g?g.push(e):out.push([e])});
   return out;
 }
-// Made-up per-user state so the controls can be seen: owned with condition, wishlist, other owners, best price
-const fakeOwn=i=>({stars:i===0?3:0,wish:i===2,owners:[4,2,0,1][i%4],price:[null,"12,50","8,00",null][i%4]});
+// Made-up per-printing state so the controls can be seen: owned (with condition), wishlist, other owners, best price
+const fakeOwn=e=>{const k=(e.v*100+e.n);return {stars:k%6===1?3:k%7===2?4:0,wish:k%9===4,owners:[4,2,0,1,3][k%5],price:[null,"12,50","8,00",null,"22,00"][k%5]}};
+const ownCell=e=>{const o=fakeOwn(e);return `<span class="own">
+  <span class="stars" title="Lisää omistettuihin: 5 = uusi … 1 = kehno" role="button" aria-label="Kunto">${"<b>★</b>".repeat(o.stars)}${"★".repeat(5-o.stars)}</span>
+  <i class="pi ${o.wish?"pi-bookmark-fill on":"pi-bookmark"}" title="Muistilista" role="button" aria-label="Muistilista"></i>
+  <span title="Muut omistajat"><i class="pi pi-users"></i> <span class="cnt">${o.owners}</span></span>
+  ${o.price?`<span class="price" title="Paras hinta antikvariaateissa">${o.price} €</span>`:""}</span>`};
+// Merged rows: a summary instead of an empty cell ("Omistat 2/7 · muistilistalla 1"), controls inside the expanded printings
+const ownSummary=g=>{const own=g.filter(e=>fakeOwn(e).stars).length,wish=g.filter(e=>fakeOwn(e).wish).length;
+  return `<span class="own-sum">${own?`<b>★</b> Omistat ${own}/${g.length}`:`Et omista`}${wish?` · <i class="pi pi-bookmark-fill"></i> ${wish}`:""}</span>`};
+const admIcons=`<span class="adm wide-only"><i class="pi pi-pencil" title="Muokkaa" role="button" aria-label="Muokkaa"></i><i class="pi pi-copy" title="Kopioi painos" role="button" aria-label="Kopioi"></i><i class="pi pi-trash" title="Poista" role="button" aria-label="Poista"></i><i class="pi pi-euro" title="Hinnat" role="button" aria-label="Hinnat"></i></span><button class="kebab narrow-only" aria-label="Ylläpitotoiminnot" title="Muokkaa, kopioi, poista, hinnat"><i class="pi pi-ellipsis-h"></i></button>`;
 
-function row(g,idx){
+function cells(g,sub){
   const e=g[0],many=g.length>1;
   const nums=g.map(x=>x.n), ys=g.map(x=>x.y);
   const label=many?`${Math.min(...nums)}.–${Math.max(...nums)}. painos`:`${e.n}. painos`;
@@ -322,47 +432,52 @@ function row(g,idx){
   const extras=uniq(g.flatMap(x=>[roleTxt(x.c), x.dust===3?"Kansipaperi":"", x.ci===3?"Ylivetokannet":"", x.misc||""]));
   const binds=uniq(g.map(x=>x.b!=="Ei tietoa/muu"?x.b:"")), pages=uniq(g.map(x=>x.pages)), sizes=uniq(g.map(x=>x.size));
   const isbns=uniq(g.map(x=>x.isbn));
-  const o=fakeOwn(idx);
-  return `<tr>
-    <td class="t">${e.img[0]?`<img src="${IMG+e.img[0]}" alt="">`:`<div class="none"></div>`}</td>
-    <td class="ed"><a>${label}</a>${many?`<small>${g.length} painosta</small>`:""}${!many&&e.ver?`<span class="verified only-admin"><i class="pi pi-check-circle"></i> Tarkastettu</span>`:""}</td>
-    <td class="nw">${yr(ys)}</td>
-    <td>${pubs.join("<br>")}${extras.length?`<span class="extra">${esc(extras.join(". "))}</span>`:""}</td>
-    <td data-l="Suom.">${esc(tr.join(", "))}</td>
-    <td>${esc(binds.join(", "))}</td>
-    <td class="nw" data-l="Sivuja">${pages.join(", ")}${sizes.length?`<span class="extra">${sizes.join(", ")} cm</span>`:""}</td>
-    <td class="isbn" data-l="ISBN">${isbns.map(i=>`<a>${esc(i)}</a>`).join("<br>")}</td>
-    <td class="col-user">${many?`<span class="extra">Avaa painokset erikseen</span>`:`<span class="own">
-      <span class="stars" title="Lisää omistettuihin: 5 = uusi … 1 = kehno">${"<b>★</b>".repeat(o.stars)}${"★".repeat(5-o.stars)}</span>
-      <i class="pi ${o.wish?"pi-bookmark-fill on":"pi-bookmark"}" title="Muistilista"></i>
-      <span title="Muut omistajat"><i class="pi pi-users"></i> <span class="cnt">${o.owners}</span></span>
-      ${o.price?`<span class="price" title="Paras hinta antikvariaateissa">${o.price} €</span>`:""}</span>`}</td>
-    <td class="col-admin">${many?"":`<span class="adm"><i class="pi pi-pencil" title="Muokkaa"></i><i class="pi pi-copy" title="Kopioi painos"></i><i class="pi pi-trash" title="Poista"></i><i class="pi pi-euro" title="Hinnat"></i></span>`}</td>
-  </tr>`;
+  const id=e.v+"-"+e.n, open=OPEN.has(id);
+  const bookTxt=[binds.join(", "),pages.length?pages.join(", ")+" s.":"",sizes.length?sizes.join(", ")+" cm":""].filter(Boolean).join(" · ");
+  return `${covers.length?`<td class="c-th">${sub?"":e.img[0]?`<img src="${IMG+e.img[0]}" alt="">`:`<div class="none"></div>`}</td>`:""}
+    <td class="c-ed">${many?`<button class="exp" aria-expanded="${open}" data-id="${id}" aria-label="${open?"Sulje":"Avaa"} ${g.length} painosta"><i class="pi ${open?"pi-chevron-down":"pi-chevron-right"}"></i></button>`:""}<a>${label}</a>
+      ${many?`<small>${g.length} painosta</small>`:""}<span class="yr-inline">${yr(ys)}</span>${!many&&e.ver?`<span class="verified only-admin"><i class="pi pi-check-circle"></i> Tarkastettu</span>`:""}</td>
+    <td class="c-yr nw">${yr(ys)}</td>
+    <td class="c-pub">${pubs.join("<br>")}${extras.length?`<span class="extra">${esc(extras.join(". "))}</span>`:""}${trans.length&&tr.length?`<span class="extra tr-inline">Suom. ${esc(tr.join(", "))}</span>`:""}</td>
+    ${trans.length?`<td class="c-tr" data-l="Suom.">${esc(tr.join(", "))}</td>`:""}
+    <td class="c-bind">${esc(binds.join(", "))}</td>
+    <td class="c-pages nw" data-l="Sivuja">${pages.join(", ")}${sizes.length?`<span class="extra">${sizes.join(", ")} cm</span>`:""}</td>
+    <td class="c-isbn isbn" data-l="ISBN">${isbns.map(i=>`<a>${esc(i)}</a>`).join("<br>")}</td>
+    <td class="c-book">${esc(bookTxt)}${isbns.length?`<span class="extra isbn">${isbns.map(i=>`<a>${esc(i)}</a>`).join(", ")}</span>`:""}</td>
+    <td class="col-user c-own">${many?ownSummary(g):ownCell(e)}</td>
+    <td class="col-admin c-adm">${many?"":admIcons}</td>`;
 }
+function rows(g){
+  const many=g.length>1,id=g[0].v+"-"+g[0].n;
+  let h=`<tr class="${many?"merged":""}">${cells(g,false)}</tr>`;
+  if(many&&OPEN.has(id)) h+=g.map(e=>`<tr class="sub">${cells([e],true)}</tr>`).join("");
+  return h;
+}
+const HEAD=()=>`<thead><tr>${covers.length?`<th class="c-th"></th>`:""}<th class="c-ed">Painos</th><th class="c-yr">Vuosi</th><th class="c-pub">Kustantaja ja sarja</th>${trans.length?`<th class="c-tr">Suomentaja</th>`:""}<th class="c-bind">Sidonta</th><th class="c-pages">Sivuja</th><th class="c-isbn">ISBN</th><th class="c-book">Kirja</th><th class="col-user c-own">Omat</th><th class="col-admin c-adm">Ylläpito</th></tr></thead>`;
 
 function renderEds(){
   const byV={};eds.forEach(e=>(byV[e.v]=byV[e.v]||[]).push(e));
   const years=eds.map(e=>e.y), pubs=uniq(eds.map(e=>e.p));
-  let idx=0;
   document.getElementById("eds").innerHTML=`<span class="anno" style="left:-34px;top:4px">5</span>
   <div class="eds-head">
-    <div><h2>Painokset</h2><p>${eds.length} ${eds.length>1?"painosta":"painos"} ${yr(years)}, ${esc(pubs.join(", "))}. Suomentanut ${esc(trans.join(", "))}.</p></div>
-    <div class="ctrls">
-      <div class="toggle" id="grp"><span data-m="all">Kaikki</span><span data-m="condensed">Samanlaiset yhdessä</span><span data-m="brief">Laitoksittain</span></div>
-      <div class="toggle"><span class="on">Taulukko</span><span title="Nykyinen korttinäkymä">Kortit</span></div>
+    <div><h2>Painokset</h2><p>${eds.length} ${eds.length>1?"painosta":"painos"} ${yr(years)}, ${esc(pubs.join(", "))}.${trans.length?` Suomentanut ${esc(trans.join(", "))}.`:""}</p></div>
+    <div class="ctrls"${eds.length>1?"":` style="display:none"`}>
+      <div class="toggle" id="grp" role="group" aria-label="Ryhmittely"><span data-m="all">Kaikki</span><span data-m="condensed">Samanlaiset yhdessä</span><span data-m="brief">Laitoksittain</span></div>
+      <div class="toggle" id="view" role="group" aria-label="Näkymä"><span data-v="taulukko">Taulukko</span><span data-v="kortit">Kortit</span></div>
     </div>
   </div>
-  ${Object.entries(byV).map(([v,list])=>{
-    return `<div class="version">
-      <div class="v-head"><h3>${v}. laitos</h3><span>${list.length} ${list.length>1?"painosta":"painos"}, ${yr(list.map(e=>e.y))}</span></div>
-      <table><thead><tr><th></th><th>Painos</th><th>Vuosi</th><th>Kustantaja ja sarja</th><th>Suomentaja</th><th>Sidonta</th><th>Sivuja</th><th>ISBN</th><th class="col-user">Omat</th><th class="col-admin">Ylläpito</th></tr></thead>
-      <tbody>${groups(list).map(g=>row(g,idx++)).join("")}</tbody></table></div>`}).join("")}`;
-  document.querySelectorAll("#grp span").forEach(s=>{s.classList.toggle("on",s.dataset.m===MODE);s.onclick=()=>{MODE=s.dataset.m;renderEds()}});
+  ${Object.entries(byV).map(([v,list])=>`<div class="version">
+      <div class="v-head"${Object.keys(byV).length>1?"":` style="display:none"`}><h3>${v}. laitos</h3><span>${list.length} ${list.length>1?"painosta":"painos"}, ${yr(list.map(e=>e.y))}</span></div>
+      <table class="etab${covers.length?"":" nothumb"}">${HEAD()}<tbody>${groups(list).map(rows).join("")}</tbody></table></div>`).join("")}`;
+  document.querySelectorAll("#grp span").forEach(x=>{x.classList.toggle("on",x.dataset.m===MODE);x.onclick=()=>{MODE=x.dataset.m;saveState();renderEds()}});
+  document.querySelectorAll("#view span").forEach(x=>{x.classList.toggle("on",x.dataset.v===VIEW);x.onclick=()=>{VIEW=x.dataset.v;saveState();renderEds()}});
+  document.querySelectorAll("button.exp").forEach(b=>b.onclick=()=>{const id=b.dataset.id;OPEN.has(id)?OPEN.delete(id):OPEN.add(id);renderEds()});
 }
+if(Q.get("auki")) Q.get("auki").split(",").forEach(x=>OPEN.add(x)); // mockup only: open merged rows for screenshots
 function setAs(a){document.body.className=a;document.querySelectorAll(".viewas span").forEach(s=>s.classList.toggle("on",s.dataset.as===a))}
 document.querySelectorAll(".viewas span").forEach(s=>s.onclick=()=>setAs(s.dataset.as));
 renderEds();setAs(Q.get("as")||"anon");
+document.querySelectorAll(".viewas .wsel").forEach(x=>{const on=x.dataset.w===(Q.get("w")||"a");x.style.background=on?"var(--mock-ink)":"";x.style.color=on?"var(--mock-on)":"";x.style.cursor="pointer";x.onclick=()=>{const u=new URLSearchParams(location.search);u.set("w",x.dataset.w);location.search=u}});
 document.querySelectorAll(".sim .why").forEach(b=>b.onclick=()=>{const p=document.getElementById(b.getAttribute("aria-controls"));const o=!p.classList.contains("open");
   document.querySelectorAll(".pop.open").forEach(x=>{x.classList.remove("open")});document.querySelectorAll(".sim .why").forEach(x=>x.setAttribute("aria-expanded","false"));
   if(o){p.classList.add("open");b.setAttribute("aria-expanded","true")}});

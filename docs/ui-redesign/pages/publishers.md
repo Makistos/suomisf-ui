@@ -36,7 +36,7 @@ phones: [list before](../images/publishers/before-list-mobile.png), [list after]
 
 **Publisher page**
 1. **Header:** name, full name, a "Kustantaja" chip and one line of facts: "2 263 painosta (1 389 kirjaa) vuosina 1889–2026, 59 kustantajan sarjaa".
-2. **"Painokset vuosittain" timeline:** the person page's timeline component, one bar per year (WSOY peaks at 103 editions a year).
+2. **"Painokset vuosittain" timeline:** the person page's timeline component (bar heights, solid first editions and hatched reprints, bins for long spans; WSOY peaks at 103 editions a year).
    Clicking a year filters the book list to that year.
 3. **Sidebar:** links.
 4. **Tabs with counts:** Kirjat, Sarjat, and **Lehdet** when the publisher has magazines (decided): a table of its magazines with type, years and

@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sparse Ursula K. Le Guin – mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@7.0.0/primeicons.css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --page:#F3F4F8; --surface:#FFFFFF; --ink:#1E2233; --muted:#5D6377; --faint:#8A90A3;
+  --rule:#E3E6EE; --primary:#3F51B5; --primary-soft:#E8EBF8;
+  --sf:#0958D7; --f:#31572C; --k:#D30031; --kok:#008B8B; --other:#6C757D;
+  --primary-ink:#2D3A8C; --primary-line:#CDD3F0; --on-primary:#fff; --on-ink:#fff; --tag-bg:#FAFBFD; --ph:#E3E6EE; --ph-line:#D3D7E2; --hover-line:#C9CEE0; --hover-bg:#F8F9FC; --admin-bg:#F7F8FB; --warn-bg:#FFF8E6; --warn-ink:#6B5310; --gold-soft:#FBF3DC; --gold-line:#EBD9A5; --gold-ink:#4A3A0A; --gold-icon:#8A6A12; --star-off:#C9CEDB; --ok:#2E7D4F; --mock-bg:#FFF7D6; --mock-ink:#5A4B0F; --mock-line:#D9C56B; --mock-note:#8A7A3A; --mock-on:#fff; --outline:transparent;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme=light]){--page:#121212; --surface:#1e1e1e; --ink:#dedede; --muted:#9e9e9e; --faint:#7c7c7c; --rule:#333333; --primary:#9FA8DA; --primary-soft:#2a2d3c; --primary-ink:#c5cae9; --primary-line:#3d4260; --on-primary:#121212; --on-ink:#121212; --tag-bg:#262626; --ph:#2c2c2c; --ph-line:#444444; --hover-line:#4a4a4a; --hover-bg:#262626; --admin-bg:#181818; --warn-bg:#3a3112; --warn-ink:#f0d78c; --gold-soft:#332a10; --gold-line:#6b5a22; --gold-ink:#f0d78c; --gold-icon:#e0c060; --star-off:#4a4a4a; --ok:#81c784; --mock-bg:#3a3412; --mock-ink:#f0e2a0; --mock-line:#7a6a1a; --mock-note:#c9b870; --mock-on:#3a3412; --outline:rgba(255,255,255,.28);}}
+:root[data-theme=dark]{--page:#121212; --surface:#1e1e1e; --ink:#dedede; --muted:#9e9e9e; --faint:#7c7c7c; --rule:#333333; --primary:#9FA8DA; --primary-soft:#2a2d3c; --primary-ink:#c5cae9; --primary-line:#3d4260; --on-primary:#121212; --on-ink:#121212; --tag-bg:#262626; --ph:#2c2c2c; --ph-line:#444444; --hover-line:#4a4a4a; --hover-bg:#262626; --admin-bg:#181818; --warn-bg:#3a3112; --warn-ink:#f0d78c; --gold-soft:#332a10; --gold-line:#6b5a22; --gold-ink:#f0d78c; --gold-icon:#e0c060; --star-off:#4a4a4a; --ok:#81c784; --mock-bg:#3a3412; --mock-ink:#f0e2a0; --mock-line:#7a6a1a; --mock-note:#c9b870; --mock-on:#3a3412; --outline:rgba(255,255,255,.28);}
+.seg,.gbar .t i,.gchip i,.legend i{box-shadow:inset 0 0 0 1px var(--outline)}
+.viewas .th{padding:2px 10px;border-radius:999px;cursor:pointer}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 Roboto,system-ui,sans-serif}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+
+/* Nav: same width as content */
+.nav{background:var(--surface);border-bottom:1px solid var(--rule)}
+.nav .wrap{display:flex;align-items:center;gap:28px;height:60px}
+.brand{font:700 19px 'Roboto Slab',serif;color:var(--primary)}
+.nav a.m{color:var(--ink);font-size:15px}
+.search{margin-left:auto;display:flex;align-items:center;gap:8px;border:1px solid var(--rule);border-radius:8px;padding:7px 12px;width:340px;color:var(--faint);font-size:14px}
+.crumbs{font-size:13px;color:var(--faint);padding:18px 0 10px}
+.crumbs a{color:var(--muted)}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:168px 1fr;gap:28px;align-items:start}
+.portrait{width:168px;aspect-ratio:3/4;border-radius:6px;object-fit:cover;display:block;background:var(--ph)}
+.credit{font-size:11px;color:var(--faint);margin-top:6px;line-height:1.3}
+h1{font:600 44px/1.08 'Roboto Slab',serif;margin:2px 0 6px;letter-spacing:-.01em}
+.fullname{color:var(--muted);font-size:17px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 20px;margin:12px 0 14px;font-size:15px}
+.meta span{display:flex;align-items:center;gap:7px}
+.flag{width:20px;height:20px;border-radius:50%}
+.roles{display:flex;flex-wrap:wrap;gap:6px}
+.role{background:var(--primary-soft);color:var(--primary-ink);border-radius:999px;padding:3px 11px;font-size:13px;font-weight:500}
+.also{font-size:14px;color:var(--muted);margin-top:12px}
+
+/* Timeline: the one bold element */
+.timeline{margin-top:28px;background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px 20px 12px}
+.tl-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+.tl-head h2{font:600 17px 'Roboto Slab',serif;margin:0}
+.tl-head p{margin:0;font-size:13px;color:var(--muted)}
+.legend{display:flex;gap:14px;font-size:12.5px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.bars{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);align-items:end;gap:2px;height:86px;margin-top:14px;border-bottom:1px solid var(--rule)}
+.bar{display:flex;flex-direction:column-reverse;gap:1px;height:100%;justify-content:flex-start;cursor:pointer;border-radius:2px}
+.bar:hover{background:var(--primary-soft)}
+.seg{height:19%;border-radius:2px}
+.seg.SF{background:var(--sf)} .seg.F{background:var(--f)} .seg.o{background:var(--other)}
+.seg.first{outline:2px solid var(--ink);outline-offset:-2px}
+.bar.sel{background:var(--primary-soft)}
+.axis{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px;font-size:11px;color:var(--faint);margin-top:4px}
+.axis span{white-space:nowrap;overflow:visible}
+
+/* Bio */
+.bio{margin-top:24px;max-width:72ch;position:relative}
+.bio p{margin:0 0 12px}
+.bio.collapsed{max-height:7.8em;overflow:hidden}
+.bio.collapsed::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3em;background:linear-gradient(transparent,var(--page))}
+.more{border:0;background:none;color:var(--primary);font:500 14px Roboto;padding:4px 0;cursor:pointer}
+.src{font-size:12px;color:var(--faint);font-style:italic}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:40px;margin-top:8px}
+main,.hero>div{min-width:0}
+aside{align-self:start;display:flex;flex-direction:column;gap:14px;padding-top:6px}
+.box{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:16px 18px}
+.box h3{font:600 14px 'Roboto Slab',serif;margin:0 0 10px;color:var(--ink)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px 10px}
+.stat b{display:block;font:600 24px/1.1 'Roboto Slab',serif}
+.stat span{font-size:12.5px;color:var(--muted)}
+.gbar{display:grid;grid-template-columns:92px 1fr 22px;align-items:center;gap:8px;font-size:13.5px;margin:6px 0}
+.gbar .t{height:8px;border-radius:4px;background:var(--rule);overflow:hidden}
+.gbar .t i{display:block;height:100%}
+.gbar b{font-weight:500;text-align:right;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{border:1px solid var(--rule);border-radius:6px;padding:2px 8px;font-size:12.5px;color:var(--ink);background:var(--tag-bg)}
+.tag em{font-style:normal;color:var(--faint);margin-left:4px}
+.links{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:14px}
+.links li::before{content:"↗";color:var(--faint);margin-right:6px;font-size:12px}
+.meta-foot{font-size:12.5px;color:var(--faint);display:flex;gap:12px;flex-wrap:wrap}
+
+/* Bibliography section */
+.biblio{margin-top:34px}
+.secnav{position:sticky;top:0;z-index:2;background:var(--page);display:flex;gap:4px;border-bottom:1px solid var(--rule);overflow-x:auto}
+.secnav a{padding:12px 14px;color:var(--muted);font-weight:500;font-size:15px;border-bottom:2px solid transparent;white-space:nowrap}
+.secnav a.on{color:var(--primary);border-bottom-color:var(--primary)}
+.secnav a small{font-weight:400;color:var(--faint);margin-left:5px}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:16px 0 10px}
+.chip{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13.5px;color:var(--ink);cursor:pointer}
+.chip.on{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.chip small{opacity:.65;margin-left:4px}
+.tool-r{margin-left:auto;display:flex;gap:8px;align-items:center}
+.input{border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:6px 10px;font-size:13.5px;color:var(--faint);width:180px}
+.select{border:1px solid var(--rule);background:var(--surface);border-radius:8px;padding:6px 10px;font-size:13.5px}
+.seg2{display:flex;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg2 span{padding:6px 10px;font-size:13px;color:var(--muted)}
+.seg2 span.on{background:var(--primary-soft);color:var(--primary);font-weight:500}
+
+.decade{font:600 15px 'Roboto Slab',serif;color:var(--muted);margin:22px 0 6px;display:flex;align-items:center;gap:10px}
+.decade::after{content:"";flex:1;height:1px;background:var(--rule)}
+.row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;align-items:center;padding:10px 12px;border-radius:8px;background:var(--surface);border:1px solid var(--rule);margin-bottom:6px}
+.row:hover{border-color:var(--hover-line)}
+.thumb{width:44px;height:64px;border-radius:3px;object-fit:cover;background:var(--ph);display:block;box-shadow:0 1px 2px rgba(30,34,51,.18)}
+.r-title{font-weight:600;font-size:15.5px}
+.r-sub{font-size:13.5px;color:var(--muted)}
+.r-sub .series{color:var(--primary)}
+.eds{font-size:13px;color:var(--muted);margin-top:2px}
+.eds a{color:var(--muted);border-bottom:1px dotted var(--faint)}
+.r-right{display:flex;gap:6px;align-items:center}
+.g{font-size:11.5px;font-weight:700;border-radius:4px;padding:2px 6px;color:#fff}
+.g.SF{background:var(--sf)} .g.F{background:var(--f)} .g.kok{background:var(--kok)} .g.eiSF{background:var(--other)}
+.count{font-size:12px;color:var(--faint);min-width:56px;text-align:right}
+
+.fab{position:fixed;right:24px;bottom:24px;width:52px;height:52px;border-radius:50%;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;font-size:26px;box-shadow:0 4px 12px rgba(63,81,181,.35)}
+.anno{position:absolute;background:#FFE57A;color:#3a3000;font:600 12px Roboto;border-radius:999px;width:24px;height:24px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.rel{position:relative}
+
+@media (max-width:900px){
+  .wrap{padding:0 16px}
+  .nav a.m{display:none}
+  .search{width:auto;flex:1}
+  .layout{grid-template-columns:1fr;gap:18px}
+  aside{position:static;order:2}
+  .hero{grid-template-columns:96px 1fr;gap:16px}
+  .portrait{width:96px}
+  h1{font-size:28px}
+  .fullname{font-size:15px}
+  .meta{font-size:14px;gap:4px 14px;margin:8px 0 10px}
+  .roles{grid-column:1/-1}
+  .timeline{padding:14px 12px 10px}
+  .bars{height:60px}
+  .tool-r{margin-left:0;width:100%}
+  .input{flex:1}
+  .count{display:none}
+  .anno{display:none}
+}
+.viewas{background:var(--mock-bg);border-bottom:1px dashed var(--mock-line);font-size:13px;color:var(--mock-ink)}
+.viewas .wrap{display:flex;gap:10px;align-items:center;min-height:36px;flex-wrap:wrap}
+.viewas span{padding:2px 10px;border-radius:999px;cursor:pointer}
+.viewas span.on{background:var(--mock-ink);color:var(--mock-on)}
+.nav .m i{margin-right:6px;font-size:13px}
+.r-user,.r-admin{display:none}
+body.user .r-user, body.admin .r-user, body.admin .r-admin{display:inline}
+body.user .r-anon, body.admin .r-anon{display:none}
+.mark{display:none;margin-right:3px;font-size:12px}
+body.user .mark, body.admin .mark{display:inline}
+.mark.own{color:#E0A100}
+.mark.wish{color:var(--primary)}
+.edit{display:none;border:0;background:none;color:var(--muted);cursor:pointer;margin-left:6px;font-size:13px;padding:0}
+body.admin .edit{display:inline}
+.fab{display:none !important}
+body.admin .fab{display:grid !important}
+@media (max-width:900px){.viewas em{display:none}}
+</style>
+<style>
+.hero.noportrait{grid-template-columns:1fr}
+.admin-hint{display:none;font-size:14px;color:var(--muted);border:1px dashed var(--rule);background:var(--admin-bg);border-radius:8px;padding:8px 12px;margin:14px 0 0}
+body.admin .admin-hint{display:block}
+.summary{margin-top:18px;font-size:16px;max-width:72ch}
+.sec-h{font:600 20px 'Roboto Slab',serif;margin:28px 0 10px;display:flex;gap:8px;align-items:baseline}
+.sec-h small{font:400 14px Roboto;color:var(--faint)}
+.psel{cursor:pointer}
+</style>
+</head>
+<body>
+<div class="viewas"><div class="wrap">Mockup: <span class="psel" data-p="tan">Eevien Tan (1 painos)</span><span class="psel" data-p="huo">Safa Huovinen (1 kirja, 4 painosta)</span> · näytä käyttäjänä:
+  <span data-as="anon">Vierailija</span><span data-as="user">Kirjautunut</span><span data-as="admin">Ylläpitäjä</span> <span style="margin-left:14px">Teema:</span><span class="th" data-th="light">Vaalea</span><span class="th" data-th="dark">Tumma</span>
+  <em style="margin-left:auto;color:var(--mock-note)">Omistus- ja muistilistamerkinnät ovat esimerkkejä</em></div></div>
+<header class="nav"><div class="wrap">
+  <span class="brand">SuomiSF</span>
+  <a class="m">Kirjat</a><a class="m">Lehdet</a><a class="m">Novellit</a>
+  <a class="m r-anon">Hakemistot ▾</a><a class="m r-user">Muut ▾</a>
+  <a class="m r-admin"><i class="pi pi-wrench"></i>Ylläpito ▾</a>
+  <a class="m r-anon"><i class="pi pi-user"></i>Käyttäjätili ▾</a><a class="m r-user"><i class="pi pi-user"></i>mep ▾</a>
+  <div class="search">⌕&nbsp; Etsi kirjaa, henkilöä, novellia…</div>
+</div></header>
+
+<div class="wrap">
+  <div class="crumbs" id="crumbs"></div>
+  <div class="layout">
+    <main id="main"></main>
+    <aside class="rel" id="aside"></aside>
+  </div>
+  <div style="height:60px"></div>
+</div>
+<div class="fab" title="Ylläpito">+</div>
+<script>
+const IMG="https://www.sf-bibliografia.fi:5000";
+const Q=new URLSearchParams(location.search);
+const P={
+ tan:{name:"Eevien Tan",sort:"Tan, Eevien",nat:null,flag:null,role:"Kansitaiteilija",links:["Instagram","isfdb","cargocollective.com"],
+  books:[{t:"Siltavaltakunta",au:"Danielle L. Jensen",g:"F",eds:[{y:2019,p:"Docendo",n:1}],img:"/static/images/books/thumbs/Jensen_Danielle_L_Siltavaltakunta_1p.webp"}]},
+ huo:{name:"Safa Huovinen",sort:"Huovinen, Safa",nat:"Suomi",flag:"fi",role:"Kansitaiteilija",links:[],
+  books:[{t:"Pienen hauen pyydystys",au:"Juhani Karila",g:"F",eds:[{y:2019,p:"Siltala",n:1},{y:2021,p:"Siltala",n:10},{y:2023,p:"Siltala",n:14},{y:2026,p:"Siltala",n:20}],img:"/static/images/books/thumbs/Karila_Juhani_Pienenhauenpyydystys_1p.webp"}]}};
+const K=P[Q.get("p")]?Q.get("p"):"tan", X=P[K];
+const nEds=X.books.reduce((a,b)=>a+b.eds.length,0);
+document.getElementById("crumbs").innerHTML=`<a>Henkilöt</a> / ${X.sort}`;
+const edTxt=b=>b.eds[0].p+" "+b.eds.map(e=>`<a>${e.y}</a>`).join(", ")+(b.eds.length>1?` <span style="color:var(--faint)">(${b.eds[0].n}.–${b.eds[b.eds.length-1].n}. painos)</span>`:"");
+document.getElementById("main").innerHTML=`
+  <section class="hero noportrait rel"><span class="anno" style="left:-34px;top:0">1</span><div>
+    <h1>${X.name}</h1>
+    ${X.nat?`<div class="meta"><span><img class="flag" src="https://hatscripts.github.io/circle-flags/flags/${X.flag}.svg" alt="">${X.nat}</span></div>`:`<div style="height:10px"></div>`}
+    <div class="roles"><span class="role">${X.role}</span></div>
+    <p class="summary rel"><span class="anno" style="left:-34px;top:0">2</span>Kansikuva ${X.books.length===1?"kirjaan":X.books.length+" kirjaan"} <a>${X.books[0].t}</a> (${X.books[0].au})${nEds>1?`, ${nEds} painosta ${X.books[0].eds[0].y}–${X.books[0].eds[nEds-1].y}`:`, ${X.books[0].eds[0].p} ${X.books[0].eds[0].y}`}.</p>
+    <p class="admin-hint">Ei kuvaa, syntymävuotta eikä esittelyä. <a>Muokkaa henkilöä</a></p>
+  </div></section>
+  <h2 class="sec-h rel"><span class="anno" style="left:-34px;top:2px">3</span>Kansikuvat<small>${X.books.length} ${X.books.length>1?"kirjaa":"kirja"}</small></h2>
+  <div id="list">${X.books.map(b=>`<div class="row"><img class="thumb" src="${IMG+b.img}" alt="">
+    <div><div class="r-title"><a style="color:inherit">${b.t}</a></div><div class="r-sub">${b.au}</div><div class="eds">${edTxt(b)}</div></div>
+    <div class="r-right"><span class="g ${b.g}">${b.g}</span><span class="count">${b.eds.length} ${b.eds.length>1?"painosta":"painos"}</span></div></div>`).join("")}</div>`;
+document.getElementById("aside").innerHTML=`<span class="anno" style="left:-34px;top:6px">4</span>
+  ${X.links.length?`<div class="box"><h3>Linkit</h3><ul class="links">${X.links.map(l=>`<li><a>${l}</a></li>`).join("")}</ul></div>`:""}
+  <div class="meta-foot"><a>Muutoshistoria</a></div>`;
+function setAs(a){document.body.className=a;document.querySelectorAll(".viewas span[data-as]").forEach(x=>x.classList.toggle("on",x.dataset.as===a))}
+document.querySelectorAll(".viewas span[data-as]").forEach(x=>x.onclick=()=>setAs(x.dataset.as));setAs(Q.get("as")||"anon");
+document.querySelectorAll(".viewas .psel").forEach(x=>{x.classList.toggle("on",x.dataset.p===K);x.onclick=()=>{const u=new URLSearchParams(location.search);u.set("p",x.dataset.p);location.search=u}});
+(()=>{const q=Q.get("theme");
+const set=t=>{if(t)document.documentElement.dataset.theme=t;document.querySelectorAll(".viewas .th").forEach(x=>{const on=x.dataset.th===document.documentElement.dataset.theme;x.style.background=on?"var(--mock-ink)":"";x.style.color=on?"var(--mock-on)":""})};
+document.querySelectorAll(".viewas .th").forEach(x=>x.onclick=()=>set(x.dataset.th));set(q);})();
+</script>
+</body>
+</html>

@@ -31,7 +31,9 @@
 /* 1 the catalogue record */
 .wn-rec { display: grid; grid-template-columns: 220px minmax(0, 1fr) 250px; column-gap: 44px; align-items: start; }
 .wn-rec.wn-nocover { grid-template-columns: minmax(0, 1fr) 250px; }
-.wn-cover { width: 220px; aspect-ratio: 2 / 3; object-fit: cover; display: block; border-radius: 2px; background: var(--wn-rule);
+/* PrimeReact Image: a span around the img; clicking opens the cover at full size. */
+.wn-cover { display: block; width: 220px; }
+.wn-cover img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; display: block; border-radius: 2px; background: var(--wn-rule);
     box-shadow: 0 1px 0 rgba(0, 0, 0, .06), 0 14px 26px -14px rgba(20, 22, 35, .55); }
 .wn-cover-note { font-size: 13px; color: var(--wn-ink-3); margin-top: 10px; line-height: 1.35; }
 .wn-byline { font: 500 19px/1.3 var(--wn-serif); margin: 0; }
@@ -135,10 +137,11 @@ table.wn-et { width: 100%; border-collapse: collapse; table-layout: fixed; font-
 .wn-et tr.wn-sub td.c-ed { padding-left: 30px; }
 .wn-et tr.wn-hl td { background: var(--wn-blue-soft); }
 .wn-et tr.wn-hl td:first-child { box-shadow: inset 4px 0 0 var(--wn-blue); }
-.wn-et .c-th { width: 54px; } .wn-et .c-ed { width: 150px; } .wn-et .c-yr { width: 88px; } .wn-et .c-tr { width: 15%; }
+.wn-et .c-th { width: 68px; } .wn-et .c-ed { width: 150px; } .wn-et .c-yr { width: 88px; } .wn-et .c-tr { width: 15%; }
 .wn-et .c-bind { width: 84px; } .wn-et .c-pages { width: 80px; } .wn-et .c-isbn { width: 138px; } .wn-et .c-book { width: 200px; }
 .wn-et .c-own { width: 210px; } .wn-et .c-adm { width: 150px; }
-.wn-et td.c-th img { width: 30px; height: 44px; object-fit: cover; display: block; border-radius: 1px; background: var(--wn-rule); }
+.wn-et td.c-th .p-image { display: block; width: 44px; }
+.wn-et td.c-th img { width: 44px; height: 66px; object-fit: cover; display: block; border-radius: 1px; background: var(--wn-rule); }
 .wn-ed a, .wn-ed b { font-weight: 700; white-space: nowrap; }
 .wn-ed small { display: block; font-size: 13px; color: var(--wn-ink-3); }
 .wn-exp { border: 0; background: none; padding: 0; cursor: pointer; color: var(--wn-blue); text-align: left; font: inherit; }
@@ -244,7 +247,7 @@ table.wn-et { width: 100%; border-collapse: collapse; table-layout: fixed; font-
     /* cards */
     table.wn-et, table.wn-et tbody, table.wn-et tr, table.wn-et td { display: block; }
     table.wn-et thead { display: none; }
-    table.wn-et tr { display: grid; grid-template-columns: 42px minmax(0, 1fr); padding: 10px 4px; border-bottom: 1px solid var(--wn-rule); }
+    table.wn-et tr { display: grid; grid-template-columns: 56px minmax(0, 1fr); padding: 10px 4px; border-bottom: 1px solid var(--wn-rule); }
     table.wn-et td { border: 0; padding: 1px 8px; width: auto; }
     table.wn-et td.c-th { grid-row: 1 / span 12; padding: 2px 0; }
     table.wn-et td:not(.c-th) { grid-column: 2; }

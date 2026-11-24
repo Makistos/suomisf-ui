@@ -67,6 +67,28 @@ test('Le Guin: the catalogue record, awards, series order and subject headings',
     await expect(page.locator('.wn-p-head p')).toHaveText('3 painosta vuosina 1976–1992, WSOY. Suomentanut Kalevi Nyytäjä.');
 });
 
+test('covers are large enough and open at full size when clicked', async ({ adminPage: page }) => {
+    await openNew(page, `/works/${LE_GUIN}`);
+    const thumb = page.locator('table.wn-et td.c-th img').first();
+    expect((await thumb.boundingBox())!.width).toBeGreaterThanOrEqual(44);
+
+    // The table shows the small copy; its "Suurenna kuva" button opens the original file.
+    await expect(thumb).toHaveAttribute('src', /\/thumbs\//);
+    const cell = page.locator('table.wn-et td.c-th').first();
+    await cell.evaluate(el => el.scrollIntoView({ block: 'center' }));
+    await cell.getByRole('button', { name: 'Suurenna kuva' }).click();
+    const full = page.locator('.p-image-preview');
+    await expect(full).toBeVisible();
+    await expect(full).toHaveAttribute('src', /\/static\/images\/books\/[^/]+\.(jpe?g|png|webp)$/i);
+    await expect(full).not.toHaveAttribute('src', /\/thumbs\//);
+    await page.keyboard.press('Escape');
+    await expect(full).toHaveCount(0);
+
+    await page.locator('.wn-cover').evaluate(el => el.scrollIntoView({ block: 'center' }));
+    await page.locator('.wn-cover').getByRole('button', { name: 'Suurenna kuva' }).click();
+    await expect(page.locator('.p-image-preview')).toBeVisible();
+});
+
 test('Tolkien: the shelf has a spine per printing, the missing sizes marked', async ({ adminPage: page }) => {
     await openNew(page, `/works/${TOLKIEN}`);
     const shelf = page.getByRole('group', { name: 'Painokset hyllyssä' });

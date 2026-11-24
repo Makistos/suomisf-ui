@@ -189,6 +189,8 @@ The new page is built from this proposal with the agreed behaviour of [work.md](
 - **Kept from the current page for now:** "Kortit" shows today's edition cards (cover upload stays there); the Sisältö section uses `ShortsList`;
   similar works show only to admins until `works/:id/similar` is public.
 - **Background:** the site's own, as decided below.
+- **Covers** (owner, 2026-11-25): the table thumbnails are 44 × 66 px (the header cover stays 220 px); clicking either (its "Suurenna kuva" button, PrimeReact `Image` preview) opens the original file at full size, with zoom and
+  rotate. The table shows the small WebP copy, the preview the original.
 - **Compared with the live site** (API, 2026-11-24): Tolkien 20 printings in 3 laitos, 4 without a size; Le Guin 3 printings, Hugo 1970 and Nebula 1970;
   Jansson 24 printings, 3 unnumbered. The test data and the new page show the same.
 - **Tests that must keep passing before it becomes the default:** Vitest `work-facts.test.ts`, `work-view-state.test.ts`, `page-version.test.ts`;

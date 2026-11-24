@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Dialog } from "primereact/dialog";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { Image } from "primereact/image";
 
 import { LoadError } from "@components/load-error";
 import { CollapsibleHtml } from "@components/collapsible-html";
@@ -243,7 +244,7 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
                 <div className={`wn-rec${cover ? "" : " wn-nocover"}`}>
                     {cover && (
                         <div>
-                            <img className="wn-cover" src={imageUrl(cover.image_src)} alt={`Kansikuva: ${work.title}`} />
+                            <Image className="wn-cover" src={imageUrl(cover.image_src)} alt={`Kansikuva: ${work.title}`} preview />
                             <div className="wn-cover-note">{coverNote}</div>
                         </div>
                     )}

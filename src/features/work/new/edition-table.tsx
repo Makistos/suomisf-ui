@@ -7,6 +7,7 @@ import { Dialog } from "primereact/dialog";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { confirmPopup, ConfirmPopup } from "primereact/confirmpopup";
 import { Toast } from "primereact/toast";
+import { Image } from "primereact/image";
 import type { MenuItem } from "primereact/menuitem";
 
 import { Edition, EditionOwnershipStatus, EditionPrice } from "@features/edition";
@@ -156,7 +157,15 @@ export const EditionTable = ({ work, laitos, user, admin, ownership, prices, pic
         return (
             <tr key={`${sub ? "s" : "g"}${first.id}`} data-editions={ids.join(" ")} id={many ? undefined : `painos-${first.id}`}
                 className={[sub ? "wn-sub" : "", hl ? "wn-hl" : ""].filter(Boolean).join(" ") || undefined}>
-                {hasCovers && <td className="c-th">{!sub && r.cover && <img src={imageUrl(r.cover.thumb_src ?? r.cover.image_src)} alt="" loading="lazy" />}</td>}
+                {hasCovers && (
+                    <td className="c-th">
+                        {!sub && r.cover && (
+                            // The small copy in the table; a click opens the original.
+                            <Image src={imageUrl(r.cover.thumb_src ?? r.cover.image_src)} zoomSrc={imageUrl(r.cover.image_src)}
+                                alt={`Kansikuva: ${r.label}`} preview loading="lazy" />
+                        )}
+                    </td>
+                )}
                 <td className="c-ed wn-ed">
                     {many ? (
                         <>

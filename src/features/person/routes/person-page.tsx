@@ -30,8 +30,8 @@ import { PersonDetails } from '../components/person-details';
 import { AwardedForm } from '@features/award/components/awarded-form';
 import { ContributorMagazineControl } from '@components/contributor-magazine-control';
 import { Issue } from '@features/issue';
-import { ContributionType } from '../../../types/contribution';
 import { LoadError } from "@components/load-error";
+import { derivePersonRoles, visibleLinks } from "../utils/person-facts";
 
 const baseURL = "people/";
 
@@ -236,43 +236,6 @@ export const PersonPage = ({ id }: PersonPageProps) => {
         return _.flatten(all_genres).some(genre => genre.abbr === 'eiSF');
     }
 
-    const getDerivedRoles = (data: Person, issues: Issue[]): string[] => {
-        const roles: string[] = [];
-
-        const authoredShorts = (data.stories || []).filter(s =>
-            (s.contributors || []).some(c => c.person.id === data.id && c.role.id === ContributionType.Kirjoittaja)
-        );
-        const isNovellisti = authoredShorts.some(s => s.type && [1, 2, 3, 5].includes(s.type.id));
-        const isRunoilija = authoredShorts.some(s => s.type && [4, 6].includes(s.type.id));
-        const isKirjoittaja = authoredShorts.some(s => s.type && [7, 8, 9].includes(s.type.id));
-
-        if (data.works.some(w => [1, 2, 5, 6].includes(w.work_type.id))) roles.push('Kirjailija');
-        if (data.works.some(w => w.work_type.id === 4)) roles.push('Tietokirjailija');
-        if (isNovellisti) roles.push('Novellisti');
-        if (isRunoilija) roles.push('Runoilija');
-        if (isKirjoittaja) roles.push('Kirjoittaja');
-
-        const hasTranslatedBooks = (data.editions || []).some(e =>
-            (e.contributions || []).some(c => c.person.id === data.id && c.role.id === ContributionType.Kääntäjä)
-        );
-        const hasTranslatedShorts = (data.stories || []).some(s =>
-            (s.contributors || []).some(c => c.person.id === data.id && c.role.id === ContributionType.Kääntäjä)
-        );
-        if (hasTranslatedBooks || hasTranslatedShorts) roles.push('Kääntäjä');
-        if (data.edits && data.edits.length > 0) roles.push('Toimittaja');
-
-        const editions = data.editions || [];
-        if (editions.some(e => (e.contributions || []).some(c => c.person.id === data.id && c.role.id === ContributionType.Kansikuva)))
-            roles.push('Kansitaiteilija');
-        if (editions.some(e => (e.contributions || []).some(c => c.person.id === data.id && c.role.id === ContributionType.Kuvittaja)))
-            roles.push('Kuvittaja');
-        if (issues.some(i => (i.contributors || []).some(c => c.person.id === data.id && c.role.id === ContributionType.Päätoimittaja)))
-            roles.push('Päätoimittaja');
-
-        const order = ['Kirjailija', 'Tietokirjailija', 'Kirjoittaja', 'Kääntäjä', 'Toimittaja', 'Novellisti', 'Runoilija', 'Kansitaiteilija', 'Kuvittaja', 'Päätoimittaja'];
-        return roles.sort((a, b) => order.indexOf(a) - order.indexOf(b));
-    }
-
     const queryClient = useQueryClient();
 
     const onDialogShow = () => {
@@ -345,9 +308,9 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                     {/* Genres moved to right side */}
                                     <div className="col-12 lg:col-3">  {/* Full width on mobile, 3 cols on large screens */}
                                         <div className="flex flex-column gap-4">
-                                            {getDerivedRoles(data, issueContributions.data || []).length > 0 && (
+                                            {derivePersonRoles(data, issueContributions.data || []).length > 0 && (
                                                 <div className="flex flex-column gap-2 pt-3 border-bottom-1">
-                                                    <span className="font-bold">{getDerivedRoles(data, issueContributions.data || []).join(', ')}</span>
+                                                    <span className="font-bold">{derivePersonRoles(data, issueContributions.data || []).join(', ')}</span>
                                                 </div>
                                             )}
                                             {getGenres().length > 0 && (
@@ -375,10 +338,10 @@ export const PersonPage = ({ id }: PersonPageProps) => {
                                 </div>
 
                                 {/* Links section */}
-                                {data.links && data.links.length > 0 && (
+                                {visibleLinks(data.links).length > 0 && (
                                     <div className="mt-4 pt-3 border-top-1 surface-border">
                                         <div className="flex flex-wrap gap-3">
-                                            {data.links.map((link, index) => (
+                                            {visibleLinks(data.links).map((link, index) => (
                                                 <a
                                                     key={index}
                                                     href={link.link}

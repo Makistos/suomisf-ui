@@ -22,7 +22,7 @@ const MagazinesPage = lazy(() => import('./features/magazine/routes/magazines-pa
 const MagazinePage = lazy(() => import('./features/magazine/routes/magazine-page').then(m => ({ default: m.MagazinePage })));
 const IssuePage = lazy(() => import('./features/issue/routes/issue-page').then(m => ({ default: m.IssuePage })));
 const PeoplePage = lazy(() => import('./features/person').then(m => ({ default: m.PeoplePage })));
-const PersonPage = lazy(() => import('./features/person').then(m => ({ default: m.PersonPage })));
+const PersonPageSwitch = lazy(() => import('./features/person').then(m => ({ default: m.PersonPageSwitch })));
 const WorkPage = lazy(() => import('./features/work').then(m => ({ default: m.WorkPage })));
 const LoginView = lazy(() => import('./features/user/components/login-view'));
 const ForgotPasswordView = lazy(() => import('./features/user/components/forgot-password-view').then(m => ({ default: m.ForgotPasswordView })));
@@ -76,7 +76,7 @@ root.render(
             <Route path="faq" element={<FAQ />} />
             <Route path="shortstoryindex" element={<ShortSearchPage />} />
             <Route path="people" element={<PeoplePage />} />
-            <Route path="people/:itemId" element={<PersonPage id={null} />} />
+            <Route path="people/:itemId" element={<PersonPageSwitch id={null} />} />
             <Route path="magazines" element={<MagazinesPage />} />
             <Route path="magazines/:magazineId" element={<MagazinePage />} />
             <Route path="issues/:itemId" element={<IssuePage id={null} />} />

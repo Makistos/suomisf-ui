@@ -82,7 +82,8 @@ export const PersonForm = (props: PersonFormProps) => {
     }, [props.data, reset]);
 
     const updatePerson = (data: PersonFormData) => {
-        const saveData = { data: data };
+        // The form always has one link row; don't save it empty.
+        const saveData = { data: { ...data, links: (data.links ?? []).filter(l => l.link?.trim()) } };
         if (data.id != null) {
             return putApiContent('people', saveData, user);
         } else {

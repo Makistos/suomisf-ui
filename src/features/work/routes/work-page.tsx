@@ -59,7 +59,7 @@ interface WorkPageProps {
     editionId?: string | null;
 }
 
-function useEffectiveWorkId(
+export function useEffectiveWorkId(
     idFromProps?: string | null,
     editionId?: string | null,
 ) {
@@ -126,7 +126,7 @@ const uploadErrorMessage = (err: unknown): string => {
     return err instanceof Error ? err.message : 'Tuntematon virhe.';
 };
 
-const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, onUploadError, highlightEditionId, editionPrice }: {
+export const EditionListItem = ({ editions, work, onSubmitCallback, onUpload, onUploadError, highlightEditionId, editionPrice }: {
     editions: Edition[];
     work?: Work;
     onSubmitCallback: any;

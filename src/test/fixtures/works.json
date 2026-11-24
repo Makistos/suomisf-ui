@@ -1,0 +1,4355 @@
+{
+ "tolkien": {
+  "id": 1514,
+  "title": "Taru sormusten herrasta",
+  "orig_title": "The Lord of the Rings",
+  "pubyear": 1955,
+  "language_name": {
+   "id": 1,
+   "name": "englanti"
+  },
+  "work_type": {
+   "id": 1,
+   "name": "Romaani"
+  },
+  "type": 1,
+  "genres": [
+   {
+    "id": 1,
+    "name": "Fantasia",
+    "abbr": "F"
+   }
+  ],
+  "misc": "Kokoomateos, suomennos vuoden 1966 korjatusta laitoksesta. (The Fellowship of the Ring (1954), The Two Towers (1954)  & The Return of the King (1955)). Korjattu ja tarkastettu suomennos. Prometheus Award Hall of Fame 2009.",
+  "links": [
+   {
+    "id": 10292,
+    "link": "https://kansalliskirjasto.finna.fi/Record/fikka.3291885",
+    "description": "Kansalliskirjasto - sidotut painokset"
+   },
+   {
+    "id": 10293,
+    "link": "https://kansalliskirjasto.finna.fi/Record/fikka.3292683",
+    "description": "Kansalliskirjasto - nidotut painokset"
+   },
+   {
+    "id": 10294,
+    "link": "https://kontu.wiki/Taru_Sormusten_herrasta",
+    "description": "Kontu.wiki"
+   },
+   {
+    "id": 10295,
+    "link": "https://www.risingshadow.fi/book/741-taru-sormusten-herrasta",
+    "description": "Risingshadow"
+   },
+   {
+    "id": 10296,
+    "link": "https://en.wikipedia.org/wiki/The_Lord_of_the_Rings",
+    "description": "Wikipedia"
+   },
+   {
+    "id": 10297,
+    "link": "https://tolkiengateway.net/wiki/The_Lord_of_the_Rings",
+    "description": "tolkiengateway.net"
+   }
+  ],
+  "bookseriesnum": "",
+  "bookseriesorder": null,
+  "tags": [
+   {
+    "id": 39,
+    "name": "mytologia",
+    "type": {
+     "id": 1,
+     "name": "Aihe"
+    }
+   },
+   {
+    "id": 355,
+    "name": "velhot",
+    "type": {
+     "id": 4,
+     "name": "Toimija"
+    }
+   },
+   {
+    "id": 401,
+    "name": "elokuva",
+    "type": {
+     "id": 7,
+     "name": "Lista"
+    }
+   },
+   {
+    "id": 424,
+    "name": "tv-sarja",
+    "type": {
+     "id": 7,
+     "name": "Lista"
+    }
+   },
+   {
+    "id": 550,
+    "name": "korkea fantasia",
+    "type": {
+     "id": 2,
+     "name": "Alagenre"
+    }
+   },
+   {
+    "id": 571,
+    "name": "sodat",
+    "type": {
+     "id": 1,
+     "name": "Aihe"
+    }
+   },
+   {
+    "id": 608,
+    "name": "myytit",
+    "type": {
+     "id": 1,
+     "name": "Aihe"
+    }
+   },
+   {
+    "id": 637,
+    "name": "hyvän ja pahan taistelu",
+    "type": {
+     "id": 1,
+     "name": "Aihe"
+    }
+   },
+   {
+    "id": 721,
+    "name": "taikaesineet",
+    "type": {
+     "id": 1,
+     "name": "Aihe"
+    }
+   },
+   {
+    "id": 730,
+    "name": "ystävyys",
+    "type": {
+     "id": 1,
+     "name": "Aihe"
+    }
+   },
+   {
+    "id": 758,
+    "name": "pahuus",
+    "type": {
+     "id": 1,
+     "name": "Aihe"
+    }
+   },
+   {
+    "id": 765,
+    "name": "kääpiöt",
+    "type": {
+     "id": 4,
+     "name": "Toimija"
+    }
+   },
+   {
+    "id": 891,
+    "name": "sankaruus",
+    "type": {
+     "id": 1,
+     "name": "Aihe"
+    }
+   },
+   {
+    "id": 964,
+    "name": "taruolennot",
+    "type": {
+     "id": 4,
+     "name": "Toimija"
+    }
+   },
+   {
+    "id": 1025,
+    "name": "soturit",
+    "type": {
+     "id": 4,
+     "name": "Toimija"
+    }
+   },
+   {
+    "id": 1537,
+    "name": "ihmiset",
+    "type": {
+     "id": 4,
+     "name": "Toimija"
+    }
+   },
+   {
+    "id": 1765,
+    "name": "sormukset",
+    "type": {
+     "id": 1,
+     "name": "Aihe"
+    }
+   },
+   {
+    "id": 1766,
+    "name": "haltijat",
+    "type": {
+     "id": 4,
+     "name": "Toimija"
+    }
+   },
+   {
+    "id": 2423,
+    "name": "örkit",
+    "type": {
+     "id": 4,
+     "name": "Toimija"
+    }
+   }
+  ],
+  "awards": [],
+  "bookseries": null,
+  "editions": [
+   {
+    "id": 10207,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 1,
+    "pubyear": 1985,
+    "pages": 981,
+    "size": 23,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 3,
+    "coverimage": 1,
+    "misc": null,
+    "verified": false,
+    "isbn": "951-0-13208-X",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": {
+     "id": 112,
+     "name": "Lukemisen pikkujättiläiset -sarja"
+    },
+    "images": [
+     {
+      "id": 9772,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_1p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_1p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 1752,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 2,
+    "pubyear": 1985,
+    "pages": 981,
+    "size": 23,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 3,
+    "coverimage": 1,
+    "misc": null,
+    "verified": false,
+    "isbn": "951-0-13208-X",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": {
+     "id": 112,
+     "name": "Lukemisen pikkujättiläiset -sarja"
+    },
+    "images": [
+     {
+      "id": 3064,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_1p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_1p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 1753,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 3,
+    "pubyear": 1987,
+    "pages": 981,
+    "size": 23,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": null,
+    "verified": false,
+    "isbn": "951-0-14098-8",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": {
+     "id": 20,
+     "name": "Best Seller"
+    },
+    "images": [
+     {
+      "id": 3062,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_3p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_3p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 10208,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 4,
+    "pubyear": 1988,
+    "pages": 981,
+    "size": 23,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 3,
+    "coverimage": 1,
+    "misc": null,
+    "verified": false,
+    "isbn": "951-0-13208-X",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": {
+     "id": 112,
+     "name": "Lukemisen pikkujättiläiset -sarja"
+    },
+    "images": [
+     {
+      "id": 9774,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_1p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_1p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 10201,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 5,
+    "pubyear": 1989,
+    "pages": 981,
+    "size": 23,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": null,
+    "verified": false,
+    "isbn": "951-0-14098-8",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": {
+     "id": 20,
+     "name": "Best Seller"
+    },
+    "images": [
+     {
+      "id": 9760,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_3p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_3p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 6949,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 6,
+    "pubyear": 1991,
+    "pages": 981,
+    "size": 23,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 3,
+    "misc": null,
+    "verified": true,
+    "isbn": "951-0-13208-X",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 3065,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_10p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_10p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 10202,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 8,
+    "pubyear": 1991,
+    "pages": 981,
+    "size": 23,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": null,
+    "verified": false,
+    "isbn": "951-0-14098-8",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": {
+     "id": 20,
+     "name": "Best Seller"
+    },
+    "images": [
+     {
+      "id": 9761,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_3p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_3p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 10196,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 10,
+    "pubyear": 1993,
+    "pages": 981,
+    "size": 23,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 3,
+    "misc": null,
+    "verified": false,
+    "isbn": "951-0-13208-X",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 9755,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_10p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_10p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 10197,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 20,
+    "pubyear": 2001,
+    "pages": 981,
+    "size": 23,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 3,
+    "misc": null,
+    "verified": false,
+    "isbn": "9789510132081",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 9756,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_10p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_10p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 6948,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 22,
+    "pubyear": 2001,
+    "pages": 981,
+    "size": null,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": null,
+    "verified": false,
+    "isbn": "951-0-14098-8",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 3063,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_22p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_22p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 10198,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 24,
+    "pubyear": 2001,
+    "pages": 981,
+    "size": 23,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 3,
+    "misc": null,
+    "verified": false,
+    "isbn": "9789510132081",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 9757,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_10p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_10p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 10193,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 25,
+    "pubyear": 2001,
+    "pages": 981,
+    "size": null,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": null,
+    "verified": false,
+    "isbn": "951-0-14098-8",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 9752,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_22p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_22p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 10192,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 27,
+    "pubyear": 2001,
+    "pages": 981,
+    "size": null,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": null,
+    "verified": false,
+    "isbn": "951-0-14098-8",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 9751,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_22p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_22p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 10195,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 28,
+    "pubyear": 2002,
+    "pages": 981,
+    "size": 23,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 3,
+    "misc": null,
+    "verified": false,
+    "isbn": "9789510132081",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 9754,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_10p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_10p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 10191,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 29,
+    "pubyear": 2002,
+    "pages": 981,
+    "size": null,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": null,
+    "verified": false,
+    "isbn": "951-0-14098-8",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 9750,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_22p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_22p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 8736,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 30,
+    "pubyear": 2002,
+    "pages": 981,
+    "size": 23,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 3,
+    "misc": "",
+    "verified": true,
+    "isbn": "951-0-13208-X",
+    "owners": [
+     {
+      "id": 2,
+      "name": "mep"
+     }
+    ],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 7805,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_10p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_10p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": "Runot suom."
+     },
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 10194,
+    "title": "Taru sormusten herrasta",
+    "version": 1,
+    "editionnum": 36,
+    "pubyear": 2002,
+    "pages": 981,
+    "size": 23,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 3,
+    "misc": "",
+    "verified": false,
+    "isbn": "951-0-13208-X",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 9753,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_10p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_10p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": "Runot suom."
+     },
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 1754,
+    "title": "Taru sormusten herrasta",
+    "version": 2,
+    "editionnum": 1,
+    "pubyear": 2007,
+    "pages": 1182,
+    "size": 24,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": null,
+    "verified": false,
+    "isbn": "978-951-0-33337-2",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 1,
+     "name": "Ei tietoa/muu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 3066,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_2l1p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_2l1p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 5457,
+       "name": "Saramäki, Sami",
+       "alt_name": "Sami Saramäki"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 10199,
+    "title": "Taru sormusten herrasta",
+    "version": 2,
+    "editionnum": 2,
+    "pubyear": 2021,
+    "pages": 1182,
+    "size": 24,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": null,
+    "verified": false,
+    "isbn": "978-951-0-33337-2",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 1,
+     "name": "Ei tietoa/muu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 9758,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_2l1p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_2l1p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 5457,
+       "name": "Saramäki, Sami",
+       "alt_name": "Sami Saramäki"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 8796,
+    "title": "Taru sormusten herrasta",
+    "version": 3,
+    "editionnum": 1,
+    "pubyear": 2023,
+    "pages": 1014,
+    "size": 25,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 3,
+    "coverimage": 1,
+    "misc": "Juhlalaitos. Tarkistettu suomennos.",
+    "verified": false,
+    "isbn": "978-951-0-49939-9",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 7957,
+      "image_src": "/static/images/books/Tolkien_JRR_Tarusormustenherrasta_3l1p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Tolkien_JRR_Tarusormustenherrasta_3l1p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 1015,
+       "name": "Pennanen, Eila",
+       "alt_name": "Eila Pennanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 1014,
+       "name": "Pekkanen, Panu",
+       "alt_name": "Panu Pekkanen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 1011,
+       "name": "Tolkien, J. R. R.",
+       "alt_name": "J. R. R. Tolkien"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 163,
+       "name": "Juva, Kersti",
+       "alt_name": "Kersti Juva"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     }
+    ]
+   }
+  ]
+ },
+ "leguin": {
+  "id": 3984,
+  "title": "Pimeyden vasen käsi",
+  "orig_title": "The Left Hand of Darkness",
+  "pubyear": 1969,
+  "language_name": {
+   "id": 1,
+   "name": "englanti"
+  },
+  "work_type": {
+   "id": 1,
+   "name": "Romaani"
+  },
+  "type": 1,
+  "genres": [
+   {
+    "id": 5,
+    "name": "Science Fiction",
+    "abbr": "SF"
+   }
+  ],
+  "misc": "",
+  "links": [
+   {
+    "id": 7979,
+    "link": "https://kansalliskirjasto.finna.fi/Record/fikka.3453507?sid=4893584091",
+    "description": "Kansalliskirjasto"
+   },
+   {
+    "id": 7980,
+    "link": "https://www.risingshadow.fi/book/254-pimeyden-vasen-kasi",
+    "description": "Risingshadow"
+   },
+   {
+    "id": 7981,
+    "link": "https://www.kirjasampo.fi/fi/kulsa/kauno%253Aateos_12055",
+    "description": "Kirjasampo"
+   },
+   {
+    "id": 7982,
+    "link": "https://en.wikipedia.org/wiki/The_Left_Hand_of_Darkness",
+    "description": "Wikipedia"
+   }
+  ],
+  "bookseriesnum": "",
+  "bookseriesorder": null,
+  "tags": [
+   {
+    "id": 6,
+    "name": "avaruus",
+    "type": {
+     "id": 5,
+     "name": "Paikka"
+    }
+   },
+   {
+    "id": 345,
+    "name": "uusi aalto",
+    "type": {
+     "id": 3,
+     "name": "Tyyli"
+    }
+   },
+   {
+    "id": 405,
+    "name": "yhteiskunnallinen scifi",
+    "type": {
+     "id": 2,
+     "name": "Alagenre"
+    }
+   },
+   {
+    "id": 540,
+    "name": "antropologinen scifi",
+    "type": {
+     "id": 2,
+     "name": "Alagenre"
+    }
+   },
+   {
+    "id": 766,
+    "name": "politiikka",
+    "type": {
+     "id": 1,
+     "name": "Aihe"
+    }
+   },
+   {
+    "id": 817,
+    "name": "valtataistelu",
+    "type": {
+     "id": 1,
+     "name": "Aihe"
+    }
+   },
+   {
+    "id": 923,
+    "name": "vieraat sivilisaatiot",
+    "type": {
+     "id": 4,
+     "name": "Toimija"
+    }
+   },
+   {
+    "id": 946,
+    "name": "yhteiskunta",
+    "type": {
+     "id": 1,
+     "name": "Aihe"
+    }
+   },
+   {
+    "id": 956,
+    "name": "planeetat",
+    "type": {
+     "id": 5,
+     "name": "Paikka"
+    }
+   },
+   {
+    "id": 1026,
+    "name": "talvi",
+    "type": {
+     "id": 6,
+     "name": "Aika"
+    }
+   },
+   {
+    "id": 1431,
+    "name": "sukupuoli-identiteetti",
+    "type": {
+     "id": 1,
+     "name": "Aihe"
+    }
+   },
+   {
+    "id": 1957,
+    "name": "tähtivaeltaja top50",
+    "type": {
+     "id": 7,
+     "name": "Lista"
+    }
+   },
+   {
+    "id": 2282,
+    "name": "androgynia",
+    "type": {
+     "id": 1,
+     "name": "Aihe"
+    }
+   },
+   {
+    "id": 2283,
+    "name": "kaksineuvoisuus",
+    "type": {
+     "id": 1,
+     "name": "Aihe"
+    }
+   }
+  ],
+  "awards": [
+   {
+    "id": 42,
+    "year": 1970,
+    "award": {
+     "id": 2,
+     "name": "Hugo",
+     "domestic": false
+    },
+    "category": {
+     "id": 1,
+     "name": "Paras romaani",
+     "type": 1
+    }
+   },
+   {
+    "id": 67,
+    "year": 1970,
+    "award": {
+     "id": 3,
+     "name": "Nebula",
+     "domestic": false
+    },
+    "category": {
+     "id": 1,
+     "name": "Paras romaani",
+     "type": 1
+    }
+   }
+  ],
+  "bookseries": {
+   "id": 766,
+   "name": "Hain-sarja",
+   "partof": null,
+   "works": [
+    {
+     "id": 3966,
+     "title": "Harhakaupunki",
+     "pubyear": 1967,
+     "bookseriesnum": "",
+     "bookseriesorder": null
+    },
+    {
+     "id": 3972,
+     "title": "Maailma, vihreä metsä",
+     "pubyear": 1972,
+     "bookseriesnum": "",
+     "bookseriesorder": null
+    },
+    {
+     "id": 3978,
+     "title": "Maanpakolaisten planeetta",
+     "pubyear": 1966,
+     "bookseriesnum": "",
+     "bookseriesorder": null
+    },
+    {
+     "id": 3973,
+     "title": "Maailman syntymäpäivä ja muita tarinoita",
+     "pubyear": 2002,
+     "bookseriesnum": "",
+     "bookseriesorder": null
+    },
+    {
+     "id": 3984,
+     "title": "Pimeyden vasen käsi",
+     "pubyear": 1969,
+     "bookseriesnum": "",
+     "bookseriesorder": null
+    },
+    {
+     "id": 3983,
+     "title": "Osattomien planeetta",
+     "pubyear": 1974,
+     "bookseriesnum": "",
+     "bookseriesorder": null
+    },
+    {
+     "id": 3986,
+     "title": "Rocannonin maailma",
+     "pubyear": 1966,
+     "bookseriesnum": "",
+     "bookseriesorder": null
+    },
+    {
+     "id": 3968,
+     "title": "Kahdesti haarautuva puu",
+     "pubyear": 2000,
+     "bookseriesnum": "",
+     "bookseriesorder": null
+    },
+    {
+     "id": 3981,
+     "title": "Neljä anteeksiantoa",
+     "pubyear": 1995,
+     "bookseriesnum": "",
+     "bookseriesorder": null
+    }
+   ]
+  },
+  "editions": [
+   {
+    "id": 4573,
+    "title": "Pimeyden vasen käsi",
+    "version": 1,
+    "editionnum": 1,
+    "pubyear": 1976,
+    "pages": 302,
+    "size": 21,
+    "printedin": "Porvoo",
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 3,
+    "misc": null,
+    "verified": true,
+    "isbn": "951-0-07527-2",
+    "owners": [
+     {
+      "id": 2,
+      "name": "mep"
+     },
+     {
+      "id": 3,
+      "name": "Jussi"
+     },
+     {
+      "id": 11,
+      "name": "Kirjokerttu"
+     }
+    ],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": {
+     "id": 180,
+     "name": "Sci-fi -sarja"
+    },
+    "images": [
+     {
+      "id": 187,
+      "image_src": "/static/images/books/LeGuin_Ursula_K_Pimeydenvasenkasi_1p.jpg",
+      "thumb_src": "/static/images/books/thumbs/LeGuin_Ursula_K_Pimeydenvasenkasi_1p.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 5434,
+       "name": "Kalliomaa, Heikki",
+       "alt_name": "Heikki Kalliomaa"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": "Kansi"
+     },
+     {
+      "person": {
+       "id": 707,
+       "name": "Nyytäjä, Kalevi",
+       "alt_name": "Kalevi Nyytäjä"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 4574,
+    "title": "Pimeyden vasen käsi",
+    "version": 1,
+    "editionnum": 2,
+    "pubyear": 1986,
+    "pages": 302,
+    "size": 20,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "Kansi Raimo Raatikainen ja Heikki Kalliomaa.",
+    "verified": false,
+    "isbn": "951-0-13456-2",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": {
+     "id": 20,
+     "name": "Best Seller"
+    },
+    "images": [
+     {
+      "id": 392,
+      "image_src": "/static/images/books/LeGuin_PimeydenVasenKasi_p2.jpg",
+      "thumb_src": "/static/images/books/thumbs/LeGuin_PimeydenVasenKasi_p2.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 5434,
+       "name": "Kalliomaa, Heikki",
+       "alt_name": "Heikki Kalliomaa"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 707,
+       "name": "Nyytäjä, Kalevi",
+       "alt_name": "Kalevi Nyytäjä"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   },
+   {
+    "id": 6193,
+    "title": "Pimeyden vasen käsi",
+    "version": 1,
+    "editionnum": 3,
+    "pubyear": 1992,
+    "pages": 218,
+    "size": 30,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "Ursula Le Guinin romaanista suomentanut ja Yleisradiolle radiokuunnelmaksi sovittanut Kalevi Nyytäjä. 8 lehteä.",
+    "verified": false,
+    "isbn": "",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 1,
+     "name": "Ei tietoa/muu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [],
+    "contributions": [
+     {
+      "person": {
+       "id": 707,
+       "name": "Nyytäjä, Kalevi",
+       "alt_name": "Kalevi Nyytäjä"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     }
+    ]
+   }
+  ]
+ },
+ "jansson": {
+  "id": 3313,
+  "title": "Vaarallinen juhannus",
+  "orig_title": "Farlig midsommar",
+  "pubyear": 1954,
+  "language_name": {
+   "id": 19,
+   "name": "ruotsi"
+  },
+  "work_type": {
+   "id": 1,
+   "name": "Romaani"
+  },
+  "type": 1,
+  "genres": [
+   {
+    "id": 17,
+    "name": "Lasten fantasia",
+    "abbr": "lF"
+   }
+  ],
+  "misc": "",
+  "links": [
+   {
+    "id": 6085,
+    "link": "https://kansalliskirjasto.finna.fi/Record/fikka.3594061?sid=5151383180",
+    "description": "Kansalliskirjasto"
+   },
+   {
+    "id": 6086,
+    "link": "https://www.risingshadow.fi/book/942-vaarallinen-juhannus",
+    "description": "Risingshadow"
+   },
+   {
+    "id": 6087,
+    "link": "https://www.kirjasampo.fi/fi/kulsa/saha3%253Au138d1c33-ac29-4f8c-bbf9-11442369b25a",
+    "description": "Kirjasampo"
+   }
+  ],
+  "bookseriesnum": "6",
+  "bookseriesorder": 6,
+  "tags": [
+   {
+    "id": 314,
+    "name": "muumit",
+    "type": {
+     "id": 4,
+     "name": "Toimija"
+    }
+   },
+   {
+    "id": 555,
+    "name": "satufantasia",
+    "type": {
+     "id": 2,
+     "name": "Alagenre"
+    }
+   },
+   {
+    "id": 771,
+    "name": "seikkailu",
+    "type": {
+     "id": 3,
+     "name": "Tyyli"
+    }
+   },
+   {
+    "id": 772,
+    "name": "klassikot",
+    "type": {
+     "id": 7,
+     "name": "Lista"
+    }
+   },
+   {
+    "id": 1151,
+    "name": "tulvat",
+    "type": {
+     "id": 1,
+     "name": "Aihe"
+    }
+   },
+   {
+    "id": 2028,
+    "name": "juhannus",
+    "type": {
+     "id": 6,
+     "name": "Aika"
+    }
+   },
+   {
+    "id": 3094,
+    "name": "näytelmä",
+    "type": {
+     "id": 3,
+     "name": "Tyyli"
+    }
+   },
+   {
+    "id": 3214,
+    "name": "saturomaanit",
+    "type": {
+     "id": 2,
+     "name": "Alagenre"
+    }
+   },
+   {
+    "id": 3347,
+    "name": "muumilaakso",
+    "type": {
+     "id": 5,
+     "name": "Paikka"
+    }
+   },
+   {
+    "id": 3517,
+    "name": "teatterit",
+    "type": {
+     "id": 5,
+     "name": "Paikka"
+    }
+   }
+  ],
+  "awards": [],
+  "bookseries": {
+   "id": 719,
+   "name": "Muumikirjat",
+   "partof": null,
+   "works": [
+    {
+     "id": 3307,
+     "title": "Muumit ja suuri tuhotulva",
+     "pubyear": 1945,
+     "bookseriesnum": "1",
+     "bookseriesorder": 1
+    },
+    {
+     "id": 3305,
+     "title": "Muumipeikko ja pyrstötähti",
+     "pubyear": 1946,
+     "bookseriesnum": "2",
+     "bookseriesorder": 2
+    },
+    {
+     "id": 3311,
+     "title": "Taikurin hattu",
+     "pubyear": 1948,
+     "bookseriesnum": "3",
+     "bookseriesorder": 3
+    },
+    {
+     "id": 3303,
+     "title": "Muumipapan urotyöt",
+     "pubyear": 1950,
+     "bookseriesnum": "4",
+     "bookseriesorder": 4
+    },
+    {
+     "id": 6324,
+     "title": "Kuinkas sitten kävikään?",
+     "pubyear": 1952,
+     "bookseriesnum": "5",
+     "bookseriesorder": 5
+    },
+    {
+     "id": 3313,
+     "title": "Vaarallinen juhannus",
+     "pubyear": 1954,
+     "bookseriesnum": "6",
+     "bookseriesorder": 6
+    },
+    {
+     "id": 3310,
+     "title": "Taikatalvi",
+     "pubyear": 1957,
+     "bookseriesnum": "7",
+     "bookseriesorder": 7
+    },
+    {
+     "id": 6325,
+     "title": "Kuka lohduttaisi Nyytiä?",
+     "pubyear": 1960,
+     "bookseriesnum": "8",
+     "bookseriesorder": 8
+    },
+    {
+     "id": 3308,
+     "title": "Näkymätön lapsi ja muita kertomuksia",
+     "pubyear": 1962,
+     "bookseriesnum": "9",
+     "bookseriesorder": 9
+    },
+    {
+     "id": 3304,
+     "title": "Muumipappa ja meri",
+     "pubyear": 1965,
+     "bookseriesnum": "10",
+     "bookseriesorder": 10
+    },
+    {
+     "id": 3301,
+     "title": "Muumilaakson marraskuu",
+     "pubyear": 1970,
+     "bookseriesnum": "11",
+     "bookseriesorder": 11
+    },
+    {
+     "id": 3314,
+     "title": "Vaarallinen matka",
+     "pubyear": 1977,
+     "bookseriesnum": "12",
+     "bookseriesorder": 12
+    },
+    {
+     "id": 6326,
+     "title": "Outo vieras muumitalossa",
+     "pubyear": 1980,
+     "bookseriesnum": "13",
+     "bookseriesorder": 13
+    },
+    {
+     "id": 6876,
+     "title": "Tarinoita muumilaaksosta",
+     "pubyear": 2003,
+     "bookseriesnum": "",
+     "bookseriesorder": null
+    }
+   ]
+  },
+  "editions": [
+   {
+    "id": 3791,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 1,
+    "pubyear": 1957,
+    "pages": 139,
+    "size": null,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 1,
+     "name": "Ei tietoa/muu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [],
+    "contributions": [
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": null
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9374,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 2,
+    "pubyear": 1961,
+    "pages": 139,
+    "size": null,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": null,
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 1,
+     "name": "Ei tietoa/muu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [],
+    "contributions": [
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9375,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 3,
+    "pubyear": 1970,
+    "pages": 139,
+    "size": null,
+    "printedin": "Porvoo",
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": null,
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 1,
+     "name": "Ei tietoa/muu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [],
+    "contributions": [
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9377,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 4,
+    "pubyear": 1975,
+    "pages": 139,
+    "size": 19,
+    "printedin": "Porvoo",
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "951-0-07017-3",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [],
+    "contributions": [
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9378,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 5,
+    "pubyear": 1984,
+    "pages": 139,
+    "size": 19,
+    "printedin": "Porvoo",
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "951-0-07017-3",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [],
+    "contributions": [
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9379,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 6,
+    "pubyear": 1987,
+    "pages": 139,
+    "size": 18,
+    "printedin": "Juva",
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "951-0-14446-0",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 8764,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_p6.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_p6.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9380,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 7,
+    "pubyear": 1991,
+    "pages": 139,
+    "size": 18,
+    "printedin": "Juva",
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "951-0-14446-0",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 8765,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_p6.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_p6.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9381,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 8,
+    "pubyear": 1991,
+    "pages": 139,
+    "size": 18,
+    "printedin": "Juva",
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "951-0-14446-0",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 8766,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_p6.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_p6.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9382,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 9,
+    "pubyear": 1991,
+    "pages": 139,
+    "size": 18,
+    "printedin": "Juva",
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "951-0-14446-0",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 8767,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_p6.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_p6.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9383,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 10,
+    "pubyear": 1992,
+    "pages": 139,
+    "size": 18,
+    "printedin": "Juva",
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "951-0-14446-0",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 8768,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_p6.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_p6.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9389,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 11,
+    "pubyear": 1994,
+    "pages": 139,
+    "size": 19,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "951-0-19580-4",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 8774,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_p11.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_p11.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9384,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 12,
+    "pubyear": 1994,
+    "pages": 139,
+    "size": 18,
+    "printedin": "Juva",
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "951-0-14446-0",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 8769,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_p6.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_p6.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9385,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 14,
+    "pubyear": 2000,
+    "pages": 139,
+    "size": 18,
+    "printedin": "Juva",
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "951-0-14446-0",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 8770,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_p6.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_p6.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9386,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 15,
+    "pubyear": 2001,
+    "pages": 139,
+    "size": 18,
+    "printedin": "Juva",
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "951-0-14446-0",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 8771,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_p6.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_p6.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9392,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 16,
+    "pubyear": 2003,
+    "pages": 139,
+    "size": 18,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "952-459-280-0",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": {
+     "id": 238,
+     "name": "Loisto"
+    },
+    "images": [
+     {
+      "id": 8777,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_p16.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_p16.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9387,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 17,
+    "pubyear": 2003,
+    "pages": 139,
+    "size": 18,
+    "printedin": "Juva",
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "951-0-14446-0",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 8772,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_p6.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_p6.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9390,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 18,
+    "pubyear": 2003,
+    "pages": 139,
+    "size": 19,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "951-0-19580-4",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 8775,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_p11.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_p11.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9388,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 19,
+    "pubyear": 2005,
+    "pages": 139,
+    "size": 18,
+    "printedin": "Juva",
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "951-0-14446-0",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 8773,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_p6.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_p6.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9391,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 20,
+    "pubyear": 2007,
+    "pages": 139,
+    "size": 19,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "978-951-0-19580-2",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 8776,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_p11.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_p11.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9393,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 23,
+    "pubyear": 2010,
+    "pages": 132,
+    "size": 21,
+    "printedin": "Juva",
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "978-951-0-36421-5",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 8778,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_p23.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_p23.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9394,
+    "title": "Vaarallinen juhannus",
+    "version": 1,
+    "editionnum": 24,
+    "pubyear": 2010,
+    "pages": 132,
+    "size": 18,
+    "printedin": "Juva",
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "978-951-0-37219-7",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": {
+     "id": 236,
+     "name": "WSOY Pokkari"
+    },
+    "images": [
+     {
+      "id": 8779,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_p24.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_p24.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9395,
+    "title": "Vaarallinen juhannus",
+    "version": 2,
+    "editionnum": null,
+    "pubyear": 2014,
+    "pages": 132,
+    "size": 18,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "978-951-0-40571-0",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 8780,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_2014.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_2014.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 1930,
+       "name": "Kivelä, Päivi",
+       "alt_name": "Päivi Kivelä"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": "Suomennoksen tarkistus"
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9396,
+    "title": "Vaarallinen juhannus",
+    "version": 2,
+    "editionnum": null,
+    "pubyear": 2018,
+    "pages": 144,
+    "size": 20,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "978-951-0-43402-4",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 8781,
+      "image_src": "/static/images/books/Jansson_VaarallinenJuhannus_2018.jpg",
+      "thumb_src": "/static/images/books/thumbs/Jansson_VaarallinenJuhannus_2018.webp"
+     }
+    ],
+    "contributions": [
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     }
+    ]
+   },
+   {
+    "id": 9397,
+    "title": "Vaarallinen juhannus",
+    "version": 2,
+    "editionnum": null,
+    "pubyear": 2019,
+    "pages": 144,
+    "size": 18,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "978-951-0-43709-4",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 387,
+     "name": "WSOY"
+    },
+    "pubseries": null,
+    "images": [],
+    "contributions": [
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 5,
+       "name": "Kuvittaja"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2123,
+       "name": "Järvinen, Laila",
+       "alt_name": "Laila Järvinen"
+      },
+      "role": {
+       "id": 2,
+       "name": "Kääntäjä"
+      },
+      "description": ""
+     },
+     {
+      "person": {
+       "id": 2122,
+       "name": "Jansson, Tove",
+       "alt_name": "Tove Jansson"
+      },
+      "role": {
+       "id": 4,
+       "name": "Kansikuva"
+      },
+      "description": ""
+     }
+    ]
+   }
+  ]
+ },
+ "tuulen": {
+  "id": 185,
+  "title": "Tuulen tavoittelua",
+  "orig_title": "Tuulen tavoittelua",
+  "pubyear": 2000,
+  "language_name": {
+   "id": 7,
+   "name": "suomi"
+  },
+  "work_type": {
+   "id": 1,
+   "name": "Romaani"
+  },
+  "type": 1,
+  "genres": [
+   {
+    "id": 8,
+    "name": "Nuorten fantasia",
+    "abbr": "nF"
+   }
+  ],
+  "misc": "",
+  "links": [],
+  "bookseriesnum": "6",
+  "bookseriesorder": 6,
+  "tags": [],
+  "awards": [],
+  "bookseries": {
+   "id": 470,
+   "name": "Vuorileijonan varjo",
+   "partof": null,
+   "works": [
+    {
+     "id": 180,
+     "title": "Kuuman tuulen aika",
+     "pubyear": 1996,
+     "bookseriesnum": "1",
+     "bookseriesorder": 1
+    },
+    {
+     "id": 179,
+     "title": "Kuningastie",
+     "pubyear": 1997,
+     "bookseriesnum": "2",
+     "bookseriesorder": 2
+    },
+    {
+     "id": 187,
+     "title": "Tähtien kosketus",
+     "pubyear": 1997,
+     "bookseriesnum": "3",
+     "bookseriesorder": 3
+    },
+    {
+     "id": 178,
+     "title": "Jääsilmä",
+     "pubyear": 1998,
+     "bookseriesnum": "4",
+     "bookseriesorder": 4
+    },
+    {
+     "id": 184,
+     "title": "Tulisydän",
+     "pubyear": 1999,
+     "bookseriesnum": "5",
+     "bookseriesorder": 5
+    },
+    {
+     "id": 185,
+     "title": "Tuulen tavoittelua",
+     "pubyear": 2000,
+     "bookseriesnum": "6",
+     "bookseriesorder": 6
+    },
+    {
+     "id": 182,
+     "title": "Talvisateet",
+     "pubyear": 2015,
+     "bookseriesnum": "7",
+     "bookseriesorder": 7
+    },
+    {
+     "id": 186,
+     "title": "Tuulien koti",
+     "pubyear": 2016,
+     "bookseriesnum": "8",
+     "bookseriesorder": 8
+    },
+    {
+     "id": 181,
+     "title": "Raudanluja",
+     "pubyear": 2017,
+     "bookseriesnum": "9",
+     "bookseriesorder": 9
+    },
+    {
+     "id": 183,
+     "title": "Tilinteon aika",
+     "pubyear": 2018,
+     "bookseriesnum": "10",
+     "bookseriesorder": 10
+    }
+   ]
+  },
+  "editions": [
+   {
+    "id": 264,
+    "title": "Tuulen tavoittelua",
+    "version": 1,
+    "editionnum": 1,
+    "pubyear": 2000,
+    "pages": 383,
+    "size": 21,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 3,
+    "misc": "",
+    "verified": false,
+    "isbn": "951-31-1924-6",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 3,
+     "name": "Sidottu"
+    },
+    "publisher": {
+     "id": 318,
+     "name": "Tammi"
+    },
+    "pubseries": null,
+    "images": [
+     {
+      "id": 1311,
+      "image_src": "/static/images/books/Vayrynen_Taru_Tuulentavoittelua_1p.jpg",
+      "thumb_src": "/static/images/books/thumbs/Vayrynen_Taru_Tuulentavoittelua_1p.webp"
+     }
+    ],
+    "contributions": []
+   },
+   {
+    "id": 265,
+    "title": "Tuulen tavoittelua",
+    "version": 1,
+    "editionnum": 2,
+    "pubyear": 2014,
+    "pages": null,
+    "size": null,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 1,
+     "name": "Ei tietoa/muu"
+    },
+    "publisher": {
+     "id": 39,
+     "name": "Books on Demand"
+    },
+    "pubseries": null,
+    "images": [],
+    "contributions": []
+   },
+   {
+    "id": 266,
+    "title": "Tuulen tavoittelua",
+    "version": 1,
+    "editionnum": 3,
+    "pubyear": 2016,
+    "pages": null,
+    "size": null,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 1,
+     "name": "Ei tietoa/muu"
+    },
+    "publisher": {
+     "id": 220,
+     "name": "Omakustanne"
+    },
+    "pubseries": null,
+    "images": [],
+    "contributions": []
+   },
+   {
+    "id": 267,
+    "title": "Tuulen tavoittelua",
+    "version": 1,
+    "editionnum": 4,
+    "pubyear": 2018,
+    "pages": null,
+    "size": null,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 1,
+     "name": "Ei tietoa/muu"
+    },
+    "publisher": {
+     "id": 39,
+     "name": "Books on Demand"
+    },
+    "pubseries": null,
+    "images": [],
+    "contributions": []
+   }
+  ]
+ },
+ "sparse": {
+  "id": 3407,
+  "title": "Satujen maan taistelu",
+  "orig_title": "Satujen maan taistelu",
+  "pubyear": 2001,
+  "language_name": {
+   "id": 7,
+   "name": "suomi"
+  },
+  "work_type": {
+   "id": 1,
+   "name": "Romaani"
+  },
+  "type": 1,
+  "genres": [
+   {
+    "id": 8,
+    "name": "Nuorten fantasia",
+    "abbr": "nF"
+   }
+  ],
+  "misc": "",
+  "links": [],
+  "bookseriesnum": "",
+  "bookseriesorder": 0,
+  "tags": [],
+  "awards": [],
+  "bookseries": null,
+  "editions": [
+   {
+    "id": 3889,
+    "title": "Satujen maan taistelu",
+    "version": 1,
+    "editionnum": 1,
+    "pubyear": 2001,
+    "pages": 132,
+    "size": 21,
+    "printedin": null,
+    "pubseriesnum": null,
+    "dustcover": 1,
+    "coverimage": 1,
+    "misc": "",
+    "verified": false,
+    "isbn": "952-5424-01-4",
+    "owners": [],
+    "wishlisted": [],
+    "binding": {
+     "id": 2,
+     "name": "Nidottu"
+    },
+    "publisher": {
+     "id": 248,
+     "name": "Porvoon Julmapaino"
+    },
+    "pubseries": null,
+    "images": [],
+    "contributions": []
+   }
+  ]
+ }
+}

@@ -15,6 +15,8 @@ import { Button } from "primereact/button";
 interface EditionOwnershipProps {
     editionId: number,
     workId?: number,
+    /** The user's ownership from the work's one ownership request (null: not owned); undefined fetches it. */
+    prefetched?: EditionOwnershipStatus | null,
 }
 
 interface ConditionDialogProps {
@@ -119,7 +121,7 @@ export const EditionOwnership = (props: EditionOwnershipProps) => {
 
 // Split from EditionOwnership so the logged-out early return above doesn't
 // come before hooks (hooks must run unconditionally, in the same order).
-const EditionOwnershipContent = ({ editionId, workId, user }: EditionOwnershipProps & { user: User }) => {
+const EditionOwnershipContent = ({ editionId, workId, user, prefetched }: EditionOwnershipProps & { user: User }) => {
     const [showInfoDialog, setShowInfoDialog] = useState(false);
     const [queryEnabled, setQueryEnabled] = useState(true);
     const [condition, setCondition] = useState<EditionOwnershipStatus>(
@@ -171,7 +173,12 @@ const EditionOwnershipContent = ({ editionId, workId, user }: EditionOwnershipPr
     const { isLoading, data } = useQuery({
         queryKey: ["edition", "owner", editionId],
         queryFn: () => fetchOwnership(editionId, user),
-        enabled: queryEnabled
+        enabled: queryEnabled,
+        // Not owned comes back from the API as an empty list.
+        ...(prefetched !== undefined && {
+            initialData: (prefetched ?? []) as EditionOwnershipStatus,
+            staleTime: Infinity,
+        }),
     })
 
     const conditionChange = (newCondition: number | null | undefined) => {

@@ -23,7 +23,8 @@ const MagazinePage = lazy(() => import('./features/magazine/routes/magazine-page
 const IssuePage = lazy(() => import('./features/issue/routes/issue-page').then(m => ({ default: m.IssuePage })));
 const PeoplePage = lazy(() => import('./features/person').then(m => ({ default: m.PeoplePage })));
 const PersonPageSwitch = lazy(() => import('./features/person').then(m => ({ default: m.PersonPageSwitch })));
-const WorkPage = lazy(() => import('./features/work').then(m => ({ default: m.WorkPage })));
+// Admins can switch to the new work page under trial (Shift+U); everyone else gets the current one.
+const WorkPageSwitch = lazy(() => import('./features/work').then(m => ({ default: m.WorkPageSwitch })));
 const LoginView = lazy(() => import('./features/user/components/login-view'));
 const ForgotPasswordView = lazy(() => import('./features/user/components/forgot-password-view').then(m => ({ default: m.ForgotPasswordView })));
 const ResetPasswordView = lazy(() => import('./features/user/components/reset-password-view').then(m => ({ default: m.ResetPasswordView })));
@@ -80,8 +81,8 @@ root.render(
             <Route path="magazines" element={<MagazinesPage />} />
             <Route path="magazines/:magazineId" element={<MagazinePage />} />
             <Route path="issues/:itemId" element={<IssuePage id={null} />} />
-            <Route path="works/:itemId" element={<WorkPage />} />
-            <Route path="editions/:itemId" element={<WorkPage />} />
+            <Route path="works/:itemId" element={<WorkPageSwitch />} />
+            <Route path="editions/:itemId" element={<WorkPageSwitch />} />
             <Route path="bookseries" element={<BookseriesListPage />} />
             <Route path="bookseries/:itemId" element={<BookseriesPage id={null} />} />
             <Route path="pubseries" element={<PubseriesListPage />} />

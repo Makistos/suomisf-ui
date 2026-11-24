@@ -11,6 +11,8 @@ interface EditionWishlistProps {
     editionId: number,
     initial: boolean,
     workId?: number,
+    /** Trust `initial` (from the work response) instead of asking per printing. */
+    prefetched?: boolean,
 }
 
 export const EditionWishlist = (props: EditionWishlistProps) => {
@@ -21,7 +23,7 @@ export const EditionWishlist = (props: EditionWishlistProps) => {
 
 // Split from EditionWishlist so the logged-out early return above doesn't
 // come before hooks (hooks must run unconditionally, in the same order).
-const EditionWishlistContent = ({ editionId, workId, user }: EditionWishlistProps & { user: User }) => {
+const EditionWishlistContent = ({ editionId, workId, user, initial, prefetched }: EditionWishlistProps & { user: User }) => {
     const queryClient = useQueryClient();
 
     const updateStatus = (value: boolean) => {
@@ -65,6 +67,7 @@ const EditionWishlistContent = ({ editionId, workId, user }: EditionWishlistProp
     const { isLoading, data } = useQuery({
         queryKey: ['edition', editionId, 'wishlist'],
         queryFn: () => fetchWishlistStatus(editionId, user),
+        ...(prefetched && { initialData: { wishlisted: initial }, staleTime: Infinity }),
     })
 
     if (isLoading)

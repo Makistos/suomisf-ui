@@ -3,7 +3,7 @@
 **Route:** `/people/:id` · **Builds on:** the agreed [person plan](person.md) (all its behaviour stays: bar-height timeline, main tabs by kind of record,
 role tabs as a second row, toolbar inside the tab, compact rows, URL state, the phone filter sheet, only the tab row sticky, missing data hidden)
 **Companions:** [work-identity.md](work-identity.md) and [front-identity.md](front-identity.md), the same identity on the work page and the front page (same tokens, fonts and rules)
-**Status:** Proposal · **Updated:** 2026-11-24
+**Status:** Proposal; implemented as an admin-only trial of the person page (2026-11-24, see [person.md](person.md#implementation-2026-11-24-an-admin-only-trial)) · **Updated:** 2026-11-24
 **Mockup:** [`../mockups/person-identity.html`](../mockups/person-identity.html) with [`person-identity-data.js`](../mockups/person-identity-data.js) and the shared
 [`timeline-data.js`](../mockups/timeline-data.js), real data: `?p=leguin` Ursula K. Le Guin, `?p=jpm` J. Pekka Mäkelä (writer and translator, no portrait), `?p=king` Stephen King (pen name Richard Bachman),
 `?p=hunter` Erin Hunter (a pen name shared by eight writers), `&osio=henkilosta` the Henkilöstä tab (books and articles about the person),
@@ -89,3 +89,6 @@ Unchanged: everything the person plan decided about the timeline, tabs, role tab
 2026-11-24, project owner:
 - No second name line under the heading ("Le Guin, Ursula K., 1929–2018"): the years are in the facts and the name once is enough.
 - Pen names belong in the record; counts and roles as decided in the person plan.
+- The page uses the site's own background (white, or dark under the dark theme), in the trial and after launch; the grey paper
+  `#F4F5F2` / `#131419` is dropped: in the trial it sat as a grey box inside the white menu and margins. Reasons in the
+  [work proposal's decisions](work-identity.md#decisions). The mockup and its screenshots still show the grey paper.

@@ -1,7 +1,7 @@
 # Work page
 
 **Routes:** `/works/:id`, and `/editions/:id` (the same page with one edition highlighted) · **Code:** `src/features/work/routes/work-page.tsx`, `src/features/work/components/work-details.tsx`, `src/features/edition/components/edition-details.tsx`, `src/features/edition/utils/group-similar-editions.ts`
-**Status:** Agreed (revised 2026-11-23) · **Updated:** 2026-11-23
+**Status:** Agreed (revised 2026-11-23); built in the identity trial, see [work-identity.md](work-identity.md#implementation-2026-11-24-an-admin-only-trial) · **Updated:** 2026-11-24
 **Sample pages:** Ursula K. Le Guin, *Pimeyden vasen käsi* (https://www.sf-bibliografia.fi/works/3984): awards, series, 3 editions.
 J. R. R. Tolkien, *Taru sormusten herrasta* (https://www.sf-bibliografia.fi/works/1514): 20 printings in 3 laitos.
 **Mockup:** [`../mockups/work.html`](../mockups/work.html) with [`works-data.js`](../mockups/works-data.js) next to it (real data from the live API).
@@ -205,7 +205,7 @@ publisher series, binding, pages, size, ISBN, dust jacket and verified flags, ea
 and the series with its works. Prices already come in one request per work (`user/:id/work/:workId/edition-prices`).
 Making `works/:id/similar` public is planned separately.
 
-0. **Backend:** `GET user/:id/work/:workId/ownership` returns the user's condition for every printing of the work they own
+0. **Backend (done 2026-11-24):** `GET user/:id/work/:workId/ownership` returns the user's condition for every printing of the work they own
    (same auth and shape conventions as `user/:id/work/:workId/edition-prices`), with a backend test; saving still goes through `save-ownership`.
 
 1. **Header**: `work-details.tsx`. Cover and cover strip (new `cover-history.tsx`), mixed-case title, type and genre chips,

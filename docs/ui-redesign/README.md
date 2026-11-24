@@ -5,9 +5,27 @@ looking and working like one site. Written for admins and contributors, so anyon
 
 Nothing here is built yet unless the status table says so. Each change still goes through normal review.
 
+## Rules for every redesigned page (decided 2026-11-24)
+
+These apply to every page in this rewrite, not only the ones built so far:
+
+1. **The new identity style.** Every redesigned page uses the visual identity defined in
+   [work-identity.md](pages/work-identity.md#design-plan): Literata and Schibsted Grotesk (self-hosted, `src/components/identity-fonts/`),
+   ink and catalogue-blue tokens with light and dark values, the site's own page background, rules and space instead of boxes,
+   labelled facts and text lists instead of chips. A page plan that was agreed in the older style (indigo, Roboto, cards) is built in the
+   identity style; its behaviour stays as agreed. The person and work pages are the reference implementations.
+2. **An admin-only trial first.** The new page is reached only by admins, with the shared switch
+   (`src/components/page-version-switch.tsx`): a button at the bottom left and **Shift+U**, the choice kept per page type in the browser.
+   Visitors and other users keep getting the current page, and the new page's code is lazy-loaded so they never download it.
+3. **The current page must not break.** It keeps working for everyone, unchanged except for bug fixes. If the new page needs an API change
+   that would break the current page, it gets a new route instead. Tests prove both: Playwright specs for the new page (`tests/admin/<page>-new.spec.ts`),
+   and for visitors and users that they still get the current page (`tests/anon|user/<page>-version.spec.ts`); the full test suites
+   (backend, Vitest, Playwright in Chromium and Firefox) pass before a trial is called done.
+4. **Making it the default** is a separate decision per page: render the new page for everyone in the switch, then remove the old page and the switch.
+
 ## How to read and comment
 
-- Start with [principles.md](principles.md): the rules every page follows (colours, type, chips, tabs, lists, mobile).
+- Start with [principles.md](principles.md): the rules every page follows (colours, type, chips, tabs, lists, mobile), and the build rules above.
 - Each page has its own plan in [pages/](pages/). A plan has before/after screenshots, the problems found,
   the proposed layout, implementation steps and **open questions**. The open questions are where input is most useful.
 - Mockups in [mockups/](mockups/) are static HTML pages with real data. Download one and open it in a browser;
@@ -20,10 +38,10 @@ Nothing here is built yet unless the status table says so. Each change still goe
 
 | Page | Route | Plan | Status |
 |---|---|---|---|
-| Person | `/people/:id` | [person.md](pages/person.md) | Agreed (revised 2026-11-24) |
+| Person | `/people/:id` | [person.md](pages/person.md) | Agreed; new page in admin-only trial (Shift+U), 2026-11-24 |
 | Work | `/works/:id` | [work.md](pages/work.md) | Agreed (revised 2026-11-23) |
-| Person: visual identity (alternative) | `/people/:id` | [person-identity.md](pages/person-identity.md) | Proposal, mockup ready |
-| Work: visual identity (alternative) | `/works/:id` | [work-identity.md](pages/work-identity.md) | Proposal, mockup ready |
+| Person: visual identity (alternative) | `/people/:id` | [person-identity.md](pages/person-identity.md) | Proposal; implemented for the admin trial |
+| Work: visual identity (alternative) | `/works/:id` | [work-identity.md](pages/work-identity.md) | New page in admin-only trial (Shift+U), 2026-11-24 |
 | Front page: visual identity (alternative) | `/` | [front-identity.md](pages/front-identity.md) | Proposal, mockup ready |
 | Edition link | `/editions/:id` | Part of [work.md](pages/work.md) (no separate page: it opens the work page with that edition highlighted) | Agreed |
 | Short story | `/shorts/:id` | [short.md](pages/short.md) | Agreed |

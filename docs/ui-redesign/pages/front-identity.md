@@ -31,7 +31,7 @@ More: [worst cases](../images/front-identity/extremes.png) · [worst cases, phon
 
 ## Design plan
 
-Tokens and type are the work proposal's ([colour and type](work-identity.md#design-plan)): cool paper `#F4F5F2` / `#131419`, ink `#1D1F2B` / `#E9E8E3`,
+Tokens and type are the work proposal's ([colour and type](work-identity.md#design-plan)): the site's own background (white, or the dark theme's; the grey paper was dropped on 2026-11-24, see the work proposal's decisions), ink `#1D1F2B` / `#E9E8E3`,
 catalogue blue `#2B44B8` / `#A3B3FF`, Literata for reading and headings, Schibsted Grotesk for the interface. Nothing new apart from the shadow
 of the card's rod hole.
 
@@ -137,4 +137,6 @@ Unchanged: everything the front page plan decided (see "Builds on" above).
 
 ## Decisions
 
-_None yet._
+2026-11-24, project owner:
+- The page background stays the site's own (white or the dark theme's), not the grey paper; reasons in the
+  [work proposal's decisions](work-identity.md#decisions). The mockup and its screenshots still show the grey paper.

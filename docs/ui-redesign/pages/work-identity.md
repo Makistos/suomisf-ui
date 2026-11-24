@@ -3,7 +3,7 @@
 **Route:** `/works/:id` · **Builds on:** the agreed [work page plan](work.md) (all its behaviour stays: table, grouping, expandable rows,
 column bands, URL state, ownership, admin tools, similar works, missing data)
 **Companions:** [person-identity.md](person-identity.md) and [front-identity.md](front-identity.md), the same identity on the person page and the front page
-**Status:** Proposal · **Updated:** 2026-11-23
+**Status:** Proposal; implemented as an admin-only trial (2026-11-24) · **Updated:** 2026-11-24
 **Mockup:** [`../mockups/work-identity.html`](../mockups/work-identity.html) with the same [`works-data.js`](../mockups/works-data.js) as the agreed mockup:
 `?w=a` Le Guin, `?w=b` Tolkien, `?w=c` a work with little data, `?w=d` Tove Jansson's *Vaarallinen juhannus* (sizes and covers missing
 on the oldest printings, three printings without a number), `?w=e` *Tuulen tavoittelua* (only the first printing has any measurements). The yellow bar switches visitor / logged in / admin and light / dark.
@@ -38,15 +38,15 @@ More: [Tolkien printings](../images/work-identity/lotr-printings.png) · [picked
 
 | Token | Light | Dark | Use |
 |---|---|---|---|
-| Paper | `#F4F5F2` | `#131419` | page background: a cool library paper, not cream |
-| Sheet | `#FFFFFF` | `#1B1C23` | the edition tables only |
+| Page | `#FFFFFF` | the dark theme's (`#121212`; Firefox `#1C1B22`) | page background: the site's own, so redesigned pages ship one at a time; the cool paper `#F4F5F2` / `#131419` was dropped (decided 2026-11-24) |
+| Sheet | `#FFFFFF` | `#1B1C23` | the edition tables only; on the white page they stand out by their rules, not their fill |
 | Ink | `#1D1F2B` | `#E9E8E3` | text, the shelf board, section rules |
 | Catalogue blue | `#2B44B8` | `#A3B3FF` | links, the picked printing, focus rings |
 | Quiet ink | `#4F5262` / `#66697A` | `#B4B4BE` / `#8B8C97` | secondary text and field labels |
 | Rule | `#DADBD4` | `#2E3039` | row lines |
 
 Genre colours stay exactly as agreed (data only, always with the name). Award trophies keep a dark gold. All text pairs pass WCAG AA:
-labels 5.0:1 on paper in light and 5.5:1 in dark, links 7.3:1 and 8.5:1.
+labels 5.4:1 on white and at least 5.1:1 in dark, links 8.0:1 and at least 8.5:1 (recomputed 2026-11-24 for the site's background).
 
 **Type:**
 - **Literata** for the title, text, facts and subject headings. A reading face made for screens, with optical sizes: at 58 px the title
@@ -98,6 +98,7 @@ Ideas that came up first and were dropped because they would fit any SF site, no
   books and their printings, not space.
 - **Cream paper, a Garamond-style display face and a stamp-red accent** (library stamps): the cream-and-serif-and-warm-accent default.
   Kept the library idea, moved the paper to a cool grey-white and the accent to catalogue blue, close to today's indigo so the site stays recognisable.
+  The grey-white was later dropped as well: pages keep the site's white ([Decisions](#decisions)).
 - **The agreed mockup's boxes** around links, tags, the admin box and every table: the "everything is a rounded card" kit. Replaced with
   headings, space and rules.
 - **Middle-dot strings and chips everywhere:** replaced with commas, a label column and plain text.
@@ -106,8 +107,11 @@ Ideas that came up first and were dropped because they would fit any SF site, no
 
 - **One spine per printing,** grouped by laitos on its own board, in printing order, with "1. laitos, 17 painosta" under each board.
   It shows every printing whatever the table's grouping, so it is the physical overview of the table below.
-- **Drawn to scale from the data:** height from the size in cm (21 cm → 134 px, 25 cm → 160 px), thickness from the page count
-  (302 pages → 16 px, 981 → 35 px, 1,182 → 41 px). Tolkien's three laitos look different because they are: 23, 24 and 25 cm.
+- **Drawn to scale from the data, in real proportions** (revised 2026-11-24): height from the size in cm and thickness from the page count
+  on one scale, at **10 pages a millimetre**, so a 400-page book of 20 cm stands 20:4 whatever its siblings are (before, thickness was only
+  relative and every printing of a thick book looked thin). At full scale 21 cm → 134 px, 302 pages → 19 px, 981 → 63 px, 1,182 → 76 px;
+  the whole shelf is then scaled down evenly until every board and its label fits the page (never below 45 %, below that it scrolls sideways),
+  so proportions never change. Tolkien's three laitos look different because they are: 23, 24 and 25 cm, 981 to 1,182 pages.
 - **When a size or page count is missing** (added 2026-11-23 after review; a sample of 319 works and 447 editions from the live API):
   - How often: 6.7% of editions have no size, 3.1% no page count, 2.7% neither. It is concentrated in old books: of editions from the
     1950s and 1960s only about half have a size, from the 1920s none; since the 1980s nearly all do. Of works with several printings,
@@ -165,6 +169,42 @@ Each can be taken or left separately:
 Unchanged: the table, its columns and width bands, grouping and its URL state, expandable rows and the ownership summary, the admin tools,
 the series order and label, the awards overflow, the phone order (reading mark right after the record), missing data handling, similar works.
 
+## Implementation (2026-11-24): an admin-only trial
+
+The new page is built from this proposal with the agreed behaviour of [work.md](work.md), **next to** the current page:
+- **Everyone sees the current page.** Admins switch with the button at the bottom left ("Uusi teossivu" / "Nykyinen teossivu") or **Shift+U**,
+  as on the person page; the work and person choices are kept apart (`suomisf.workPageVersion`, `suomisf.personPageVersion`). `/works/:id` and
+  `/editions/:id` both go through `src/features/work/routes/work-page-switch.tsx`. The switch itself is shared: `src/components/page-version-switch.tsx`
+  and `src/utils/page-version.ts`.
+- **Code:** `src/features/work/new/` (page, shelf, table, admin tools, styles scoped under `.wn`; the fonts are shared with the person page in
+  `src/components/identity-fonts/`) and the pure rules in `src/features/work/utils/` (`work-facts.ts`: labels and ranges, laitos groups, merged rows,
+  printings and ownership summaries, series order, subject headings, the shelf; `work-view-state.ts`: grouping, view and the picked printing in the URL
+  with the device's last choice). Fixtures: five real works in `src/test/fixtures/works.json`.
+- **Backend:** the decided `GET /api/user/:id/work/:workId/ownership` (work.md step 0), the user or an admin only. The table reads the conditions from it
+  and the wishlist and other owners from the work response, so a Tolkien page makes one ownership request instead of one per printing. `EditionOwnership`
+  and `EditionWishlist` take the prefetched values as optional props; the current page is unchanged.
+- **Column bands follow the printings section's own width** (CSS container queries), not the window: the site's content column (`App container`,
+  1,140 px) leaves the section about 1,050 px at any window size. With the Omat or Ylläpito column the table therefore always uses the merged "Kirja"
+  column and the "⋯" menu on desktop; a visitor's table (neither column) gets every column down to 900 px. Cards below 740 px.
+- **Kept from the current page for now:** "Kortit" shows today's edition cards (cover upload stays there); the Sisältö section uses `ShortsList`;
+  similar works show only to admins until `works/:id/similar` is public.
+- **Background:** the site's own, as decided below.
+- **Compared with the live site** (API, 2026-11-24): Tolkien 20 printings in 3 laitos, 4 without a size; Le Guin 3 printings, Hugo 1970 and Nebula 1970;
+  Jansson 24 printings, 3 unnumbered. The test data and the new page show the same.
+- **Tests that must keep passing before it becomes the default:** Vitest `work-facts.test.ts`, `work-view-state.test.ts`, `page-version.test.ts`;
+  Playwright `tests/admin/work-new.spec.ts` (switch, record, series, subject headings, shelf, picking a spine, merged rows and one ownership request,
+  grouping in the URL, `/editions/:id`, column band and ⋯ menu, sparse work, history dialog, phone, background, axe), `tests/anon/work-version.spec.ts`
+  and `tests/user/work-version.spec.ts`; backend `test_work_ownership_*` in `tests/api/test_user_data.py`. To make it the default: render `WorkPageNew`
+  for everyone in the switch, make `works/:id/similar` public, then remove the current page and the switch.
+
+### Notes: possible bugs on the live site
+
+1. **Series arrows followed the database order** (work.md section 3): in the test data Hain-sarja put *Pimeyden vasen käsi* between *Maailman syntymäpäivä* and
+   *Osattomien planeetta*. **Fixed** on the current page too: `WorkBookseriesBrowser` uses the same `seriesPosition` as the new page
+   (`tests/anon/work-version.spec.ts`).
+2. **`GET /api/user/:id/work/:workId/edition-prices` has no login check:** anyone can ask for any user's prices, which also tells which printings
+   of a work that user owns or has on the wishlist. Not fixed; the new ownership endpoint requires the user or an admin.
+
 ## Implementation notes (only if adopted)
 
 1. A theme layer: CSS variables for the tokens above over PrimeReact's theme, both colour schemes; self-hosted fonts with `font-display: swap`.
@@ -185,4 +225,11 @@ the series order and label, the awards overflow, the phone order (reading mark r
 
 ## Decisions
 
-_None yet._
+2026-11-24, project owner:
+- **The page background stays the site's own**, white or the dark theme's, also after the new UI is launched; the grey paper tone
+  `#F4F5F2` / `#131419` is dropped. Why: each redesigned page can become the default on its own instead of all at once; the
+  theme's dialogs, menus and tables are white and would show as patches on grey; the identity is carried by the type, the shelf and
+  the rules, not the tint. Seen first in the person page trial, where the grey page sat as a box inside the white site. The quiet
+  grey-green tones stay for hover and selected rows. The mockups and their screenshots still show the grey paper.
+- **Spine thickness in real proportion to height:** 10 pages a millimetre (owner, after the first trial: thick books looked thin because
+  thickness was compared only with the other printings). The mockup still uses the older relative thickness.

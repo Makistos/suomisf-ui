@@ -20,15 +20,17 @@ Rules every page follows. **Agreed** = accepted by the project owner (2026-11-22
 
 ## Visual identity
 
-- **Keep:** indigo primary, Roboto for text, Roboto Slab for headings and numbers. The redesign tidies the site rather than rebranding it.
-  An alternative identity is proposed in [pages/work-identity.md](pages/work-identity.md), [pages/person-identity.md](pages/person-identity.md)
-  and [pages/front-identity.md](pages/front-identity.md)
-  (Literata and Schibsted Grotesk, cool paper and catalogue blue, fewer boxes, subject headings and roles as text). Not agreed; until it is, the rules here apply.
+- **The new identity is the style of every redesigned page** (decided 2026-11-24): the colour and type tokens of
+  [pages/work-identity.md](pages/work-identity.md#design-plan) (Literata and Schibsted Grotesk, ink and catalogue blue, the site's own page
+  background, rules and space instead of boxes, subject headings and roles as text), as built on the person and work pages; see
+  [person-identity.md](pages/person-identity.md) and [front-identity.md](pages/front-identity.md) for those pages. Where a rule below names the older
+  style (indigo, Roboto, light grey page with white boxes, chips), the identity wins for the look; the behaviour rules still apply.
+  Each page is built as an admin-only trial next to the current page, which must keep working ([build rules](README.md#rules-for-every-redesigned-page-decided-2026-11-24)).
 - **Names and titles in mixed case**, not uppercase (Agreed).
 - **No "Suomeksi" / "suomennos" labels** (Agreed): everything in the database is published in Finnish, so saying so adds nothing.
   "Suomentaja" for the translator role is fine.
-- **Surfaces:** light grey page, white boxes with a thin border.
-- **Dark theme** (Agreed): every page has a dark version that follows the system setting, as the app does today with PrimeReact's
+- **Surfaces:** the site's own page background (white, or the dark theme's), rules and space instead of boxes (identity, 2026-11-24; was: light grey page, white boxes).
+- **Dark theme** (Agreed): every page has a dark version that follows the system setting (the table below is today's theme; redesigned pages use the identity's light and dark tokens), as the app does today with PrimeReact's
   `mdc-light-indigo` / `mdc-dark-indigo` themes. Colours come from tokens, never hard-coded, so each has a light and a dark value:
 
   | Token | Light | Dark (from `mdc-dark-indigo`) |

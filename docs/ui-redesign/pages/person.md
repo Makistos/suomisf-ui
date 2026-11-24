@@ -1,7 +1,7 @@
 # Person page
 
 **Route:** `/people/:id` · **Code:** `src/features/person/routes/person-page.tsx`, `src/features/person/components/person-details.tsx`, `src/components/contributor-book-control.tsx`
-**Status:** Agreed (revised 2026-11-24) · **Updated:** 2026-11-24
+**Status:** Agreed; implemented as an admin-only trial (2026-11-24) · **Updated:** 2026-11-24
 **Sample page:** Ursula K. Le Guin, https://www.sf-bibliografia.fi/people/2435
 **Mockup:** [`../mockups/person.html`](../mockups/person.html), built with real Le Guin data from the live API (download and open it in a browser; covers load from the live site).
 The yellow bar at the top switches between visitor, logged-in user and admin; ownership and wishlist marks are made-up examples.
@@ -113,7 +113,7 @@ The numbers 1–6 in the mockup screenshots match the sections below.
    | Type chips | Teokset (Romaanit, Kokoelmat, Kokoomateokset…), Novellit ja artikkelit (Novellit, Artikkelit, Runot…) | One at a time, "Kaikki" first; only types that occur |
    | Year | Teokset, Tietokirjat, Novellit ja artikkelit | Set from the timeline; shown as a removable chip "1984 ×" |
    | Name filter | All list tabs | Filters as you type |
-   | Sort | All list tabs | Original year (default), Finnish year, name; tabs offer only orders that make sense |
+   | Sort | All list tabs | Name (default, decided 2026-11-24), original year, Finnish year; tabs offer only orders that make sense |
    | Lista / Kannet | Teokset, Tietokirjat | Kannet is the cover grid |
 
    Groups combine with AND. **Chip counts are faceted:** each chip shows how many items it would give with the other active filters
@@ -121,7 +121,7 @@ The numbers 1–6 in the mockup screenshots match the sections below.
    "Näytetään 7 / 30 · Romaanit × · 1984 × · Tyhjennä", so the tab count (30) and the list never seem to disagree.
    **Changing tab clears** that tab's type, role, name and year filters; sort and view stay. Clicking a timeline year while in
    Sarjat, Lehdet or Palkinnot switches to Teokset.
-   Grouped by decade when sorted by year, by series when "Ryhmittele sarjoittain" is on.
+   Grouped by decade when sorted by year, by series when "Ryhmittele sarjoittain" is on; one list when sorted by name (the default).
 
    **Everything is in the URL** (defaults left out), so back, reload and shared links restore the same view:
    `?osio=teokset&rooli=kaantaja&tyyppi=romaanit&haku=maa&vuosi=1984&jarjestys=suomivuosi&nakyma=kannet&sarjoittain=1`
@@ -146,9 +146,9 @@ before this review; differences from the live site are either a design change of
 
 | Le Guin | Live site | First mockup | Mockup now | Difference from live |
 |---|---|---|---|---|
-| Roles | Kirjailija, Tietokirjailija, Kirjoittaja, Novellisti | Kirjailija, Novellisti, Tietokirjailija, Kirjoittaja | Kirjailija, Kirjoittaja, Novellisti | Live bug, note 1 |
+| Roles | Kirjailija, Tietokirjailija, Kirjoittaja, Novellisti | Kirjailija, Novellisti, Tietokirjailija, Kirjoittaja | Kirjailija, Kirjoittaja, Novellisti | Live bug, note 1 (fixed) |
 | Teokset | 29 (Kirjoittanut 29) | 30 | 29 | None |
-| Tietokirjat | Tab with one book (Esiintyy 1) | 1 | No tab | Live bug, note 2; the book is under Henkilöstä |
+| Tietokirjat | Tab with one book (Esiintyy 1) | 1 | No tab | Design: the book is under Henkilöstä (note 2) |
 | Novellit ja artikkelit | 93 (72 + 5 + 2 + 14 articles) | 93 | 80 | Design: the 13 articles about her (live: Artikkeli, group "Esiintyy") move to Henkilöstä |
 | Sarjat | 3 | 3 | 3 | None |
 | Palkinnot | 35 | 2 | 35 | None |
@@ -162,18 +162,24 @@ Other people, only where something differs from the live site:
 |---|---|---|---|
 | J. Pekka Mäkelä, Novellit ja artikkelit | 20 (Novelli 13, Artikkeli 7) | 16 (5 written, 11 translated) | Design: 4 articles about him move to Henkilöstä. Roles, Teokset (7 + 28 + 1) and Sarjat 1 match. |
 | Stephen King, Novellit ja artikkelit | 123 (Novelli 104, Runo 3, Artikkeli 15, Esipuhe 1) | 110 | Design: 13 articles about him move to Henkilöstä. Roles, Teokset 81, Sarjat 6, Palkinnot 30 and Muu tuotanto 36 (7 + 28 + 1) match. |
-| Erin Hunter, roles | Kirjailija | Kirjailija, Novellisti | Live bug, note 3. Teokset 94, Novellit 6 and Sarjat 16 match. |
+| Erin Hunter | Kirjailija, Novellisti; Teokset 94, Novellit 6, Sarjat 16 | The same | None (an earlier version of this table said the live page left out Novellisti; that was a misreading, see note 3) |
 
-**Notes: possible bugs on the live site** (found while comparing; to be fixed separately, later, not as part of this redesign):
-1. **Tietokirjailija from the kind of book:** `getDerivedRoles` (`person-page.tsx:250`) adds "Tietokirjailija" when any linked work is non-fiction,
-   whatever the person's role in it. Le Guin only appears in Esko Miettinen's *Velhot, örkit, sankarit* (confirmed by the project owner).
-2. **Tietokirjat tab for a book the person only appears in:** the tab shows when any linked work is non-fiction (`hasFictionType(NONFICTION_TYPES)`),
-   so Le Guin gets a Tietokirjat tab with one "Esiintyy" book.
-3. **Erin Hunter is not shown as Novellisti** although six stories (type Novelli) credit her as Kirjoittaja in the API. Cause not checked.
-4. **J. Pekka Mäkelä's article "Hylyntyhjentäjien laulu"** credits him as both Kirjoittaja and Esiintyy; the live Artikkeli list shows it only under
-   "Esiintyy", so his "Kirjoittaja" group has one article where the data has two. The mockup counts it as his own article.
-5. **Erin Hunter has an empty image row:** the API returns one image for her with no address, attribution or licence (`images: [{id: 2739, src: ""}]`).
-   The live page correctly shows no portrait; the empty row itself is like Safa Huovinen's empty link row (see Sparse data).
+**Notes: possible bugs on the live site** (found while comparing, 2026-11-24). Notes 1 and 4 are fixed on the current page too
+(2026-11-24, with tests); the others turned out not to be bugs:
+1. **Tietokirjailija from the kind of book:** `getDerivedRoles` (`person-page.tsx:250`) added "Tietokirjailija" (and "Kirjailija") when any linked work
+   was of that kind, whatever the person's role in it. Le Guin only appears in Esko Miettinen's *Velhot, örkit, sankarit* (confirmed by the project
+   owner). **Fixed:** roles now come from `derivePersonRoles` (`src/features/person/utils/person-facts.ts`), which checks the person's role.
+2. **Tietokirjat tab for a book the person only appears in:** not a bug in the current page's model; the tab's role subtab says "Esiintyy (1)".
+   The new page lists such books under Henkilöstä instead.
+3. **Withdrawn:** "Erin Hunter is not shown as Novellisti" was a misreading (a text pattern over the whole page); the live page shows
+   "Kirjailija, Novellisti".
+4. **J. Pekka Mäkelä's article "Hylyntyhjentäjien laulu"** credits him as both Esiintyy and Kirjoittaja; the story list grouped each story under the
+   person's *first* listed role, so it showed only under "Esiintyy". **Fixed:** `groupShorts` (`src/features/short/utils/group-shorts.ts`) now picks
+   the most significant role (Kirjoittaja, Toimittaja, Kääntäjä, Kansikuva, Kuvittaja, then Esiintyy).
+5. **Withdrawn:** Erin Hunter's empty image row is deliberate: it is what the image picker's "Ei kuvaa" choice saves, and it stops the automatic
+   Wikimedia lookup (a pen name has no portrait).
+6. **Found during implementation, not fixed:** an SF comic (work type Sarjakuva) the person wrote is listed nowhere: Teokset takes types 1, 2, 5 and 6,
+   and Muu tuotanto takes comics only when they are non-SF. The new page keeps the live rule, so the counts still match.
 
 **Compact row:** 44×64 cover thumb, title, original title + year + series link, "WSOY 1976, 1984, 1990"
 (each year links to its edition), genre badges and edition count on the right. Tags move to the work page.
@@ -208,8 +214,10 @@ What the layout does with missing data (the "Missing data" rule in [principles.m
 - **Sidebar:** the stats, genre and tag boxes are hidden when they would repeat one number or one genre; links only when there are links.
 - **Printings as one row** (agreed rule): Huovinen's four printings read "Siltala 2019, 2021, 2023, 2026 (1.–20. painos)".
 - **No hints for admins either** (decided): missing data is simply not shown; admins add it through the edit dialog.
-- **Live bug:** Huovinen has a link row with no URL and no description; today it shows as a bare icon that goes nowhere.
-  Empty link rows should not be shown, and the form should not save them.
+- **Live bug, fixed 2026-11-24:** Huovinen has a link row with no URL and no description; it showed as a bare icon that goes nowhere.
+  Cause: creating a person saved the form's empty link row (`person_add` in the backend; updating already skipped it). Now the backend skips
+  rows without an address on create, the form doesn't send them, and the page doesn't show them. Existing empty rows stay in the database
+  until someone edits the person (the update path removes them).
 
 ## Shared principles used or added
 
@@ -217,12 +225,44 @@ This is the first plan, so it proposes most of the rules in [principles.md](../p
 chip styles, genre colours, facts sidebar, clamped bio, URL state, filters inside a tab, sticky bars, charts. New rule only here: the publication timeline,
 which could be reused on publisher and series pages.
 
+## Implementation (2026-11-24): an admin-only trial
+
+The new page is built from [person-identity.md](person-identity.md) with this plan's behaviour, **next to** the current page:
+- **Everyone sees the current page.** Admins switch with the button at the bottom left ("Uusi henkilösivu" / "Nykyinen henkilösivu") or
+  **Shift+U** (by key position, so any layout; not while typing in a field; no Alt or Ctrl, since browser extensions can take those:
+  Bitwarden uses Alt+Shift+U, the first choice). The choice stays in the browser (`localStorage`,
+  `suomisf.personPageVersion`) until switched back. `src/features/person/routes/person-page-switch.tsx` is the `/people/:id` route.
+- **Code:** `src/features/person/new/` (page, lists, timeline, admin tools, styles scoped under `.pn`, self-hosted Literata and
+  Schibsted Grotesk with their OFL licences) and the pure rules in `src/features/person/utils/` (`person-facts.ts`: roles, counts,
+  Henkilöstä, timeline; `list-state.ts`: URL state, filters, faceted counts, sorting, grouping; the switch is shared with the work page trial: `src/components/page-version-switch.tsx`, `src/utils/page-version.ts`).
+  The new page is lazy-loaded, so visitors don't download it.
+- **No API change:** it uses the existing `/api/people/:id`, `/api/people/:id/awarded` and `/api/people/:id/issue-contributions`.
+- **Background:** the site's own (`Canvas`, white or dark), not the identity's paper tone, so the page doesn't sit as a grey box inside
+  the white menu and margins; it stays so after launch, the paper tone is dropped (decided 2026-11-24,
+  [reasons](work-identity.md#decisions)).
+- **After the owner's first look (2026-11-24):**
+  - the ownership mark (a star when the user owns a printing, a bookmark when one is on the wishlist, the years in its name) is **in front of
+    the title**, no longer among the printing years;
+  - a **"Nimellä" row** picks the books published under one name ("Kaikki 81, Stephen King 79, Richard Bachman 2"), shown only when a pen
+    name has books; the choice is in the URL (`salanimi=2712` or `salanimi=oma`) and clears with the tab or the role;
+  - **bigger covers** in the lists (52 × 78 px, 44 × 66 px on a phone; the cover grid at least 140 px wide);
+  - **many tabs wrap** onto a second line on desktop instead of hiding off the edge (Anne Leinonen has seven); on a phone they scroll
+    sideways with a visible scrollbar; the Lista / Kannet toggle uses the identity's button-group style;
+  - **books are sorted by title by default** (`jarjestys` left out of the URL); original year and Finnish year are choices, with decade groups;
+  - **bug fixed:** opening the sort dropdown crashed the page (the PrimeReact `Dropdown` had no `optionLabel`, so it tried to render the
+    option objects; it also showed no value).
+- **Kept from the current page for now:** Sarjat and Lehdet reuse `BookSeriesList` and `ContributorMagazineControl` as they are.
+- **Tests that must keep passing before it becomes the default:** Vitest `person-facts.test.ts`, `list-state.test.ts`, `src/utils/page-version.test.ts`;
+  Playwright `tests/admin/person-new.spec.ts` (switch, numbers, tabs, Henkilöstä, timeline filter, URL state, pen names, roles, Kannet,
+  sparse person, pencil, phone, background, sort dropdown, pen-name row, ownership mark, axe), `tests/anon/person-version.spec.ts` and `tests/user/person-version.spec.ts` (visitors and users keep
+  the current page). To make it the default: render `PersonPageNew` for everyone in the switch, then remove the current page and the switch.
+
 ## Implementation steps (each one a small PR)
 
 All of it is frontend; the `/people/<id>` response already has editions with `pubyear`, genres and covers. No backend change is needed.
 
 1. **Header and bio**: `person-details.tsx`. Mixed-case name, portrait size, role chips (move `getDerivedRoles` out
-   of `person-page.tsx` into `person/utils.ts` with Vitest tests; the role bugs in notes 1 and 3 are fixed separately first),
+   of `person-page.tsx` into `person/utils.ts` with Vitest tests; done: `derivePersonRoles`, note 1),
    pen names as links, `CollapsibleHtml` for the bio. Align the nav width in `mainmenu.tsx`.
 2. **Sidebar**: new `person-sidebar.tsx` (stats counted from the person's own contributions, awards from the `awarded` query the page
    already makes, `GenreBars`, top tags, links). Use the PrimeReact `Chip`/`Tag` components.
@@ -276,3 +316,6 @@ _None._
 - Le Guin is not a tietokirjailija: she only appears in a non-fiction book. Roles and counts come from the person's own contributions.
 - The Henkilöstä tab stays, with books and articles told apart (two groups).
 - Every number in the mockups is compared with the live site. Bugs found on the live site are listed as notes and fixed later, separately.
+
+2026-11-24, project owner (trial):
+- A person's books are sorted by title by default (was original year).

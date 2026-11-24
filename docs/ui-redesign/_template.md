@@ -33,12 +33,15 @@ _Which rules from [principles.md](../principles.md) this page uses, and any new 
 ## Implementation steps
 
 _Each step one small pull request. Name the files. Say whether the backend needs changes._
+_Build rules ([README](README.md#rules-for-every-redesigned-page-decided-2026-11-24)): the identity style; an admin-only trial behind
+`PageVersionSwitch` (button and Shift+U); the current page keeps working, and an API change that would break it gets a new route._
 
 1.
 
 ## Tests
 
-_Vitest for pure functions, Playwright for interactions and URL state, a11y spec changes._
+_Vitest for pure functions, Playwright for interactions and URL state, a11y spec changes. `tests/admin/<page>-new.spec.ts` for the new page,
+`tests/anon|user/<page>-version.spec.ts` that visitors and users still get the current page; full suites before done._
 
 ## Open questions
 

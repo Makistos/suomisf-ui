@@ -172,6 +172,8 @@ Other people, only where something differs from the live site:
 3. **Erin Hunter is not shown as Novellisti** although six stories (type Novelli) credit her as Kirjoittaja in the API. Cause not checked.
 4. **J. Pekka Mäkelä's article "Hylyntyhjentäjien laulu"** credits him as both Kirjoittaja and Esiintyy; the live Artikkeli list shows it only under
    "Esiintyy", so his "Kirjoittaja" group has one article where the data has two. The mockup counts it as his own article.
+5. **Erin Hunter has an empty image row:** the API returns one image for her with no address, attribution or licence (`images: [{id: 2739, src: ""}]`).
+   The live page correctly shows no portrait; the empty row itself is like Safa Huovinen's empty link row (see Sparse data).
 
 **Compact row:** 44×64 cover thumb, title, original title + year + series link, "WSOY 1976, 1984, 1990"
 (each year links to its edition), genre badges and edition count on the right. Tags move to the work page.

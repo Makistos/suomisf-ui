@@ -101,49 +101,6 @@ export const ownEditions = (person: Person): Edition[] => {
     return [...seen.values()];
 };
 
-export const isFirstPrinting = (e: Edition) => (e.editionnum ?? 1) === 1 && (e.version ?? 1) === 1;
-
-export type YearCount = { all: number; first: number };
-
-/** Printings per year for the timeline: all, and first printings of a work. */
-export const editionsByYear = (person: Person): Record<number, YearCount> => {
-    const by: Record<number, YearCount> = {};
-    for (const e of ownEditions(person)) {
-        const year = Number(e.pubyear);
-        if (!year) continue;
-        const y = (by[year] ??= { all: 0, first: 0 });
-        y.all++;
-        if (isFirstPrinting(e)) y.first++;
-    }
-    return by;
-};
-
-export type YearBin = { from: number; to: number; all: number; first: number };
-
-/**
- * Bars for the timeline: one a year when each bar gets at least 6 px, else 2,
- * 5 or 10 years a bar. `step` spaces the axis labels at least 44 px apart.
- */
-export const binYears = (byYear: Record<number, YearCount>, width: number) => {
-    const years = Object.keys(byYear).map(Number).filter(Boolean);
-    if (years.length === 0) return { bin: 1, bins: [] as YearBin[], max: 0, step: 10 };
-    const y0 = Math.min(...years), y1 = Math.max(...years);
-    const bin = [1, 2, 5, 10].find(b => Math.ceil((y1 - y0 + 1) / b) * 6 <= width) ?? 10;
-    const bins: YearBin[] = [];
-    for (let from = Math.floor(y0 / bin) * bin; from <= y1; from += bin) {
-        const to = Math.min(from + bin - 1, y1);
-        let all = 0, first = 0;
-        for (let y = from; y <= to; y++) {
-            all += byYear[y]?.all ?? 0;
-            first += byYear[y]?.first ?? 0;
-        }
-        bins.push({ from, to, all, first });
-    }
-    const max = Math.max(...bins.map(b => b.all));
-    const step = [10, 20, 25, 50, 100].find(s => (s / bin) * (width / bins.length) >= 44) ?? 100;
-    return { bin, bins, max, step };
-};
-
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
 /** Distinct works of the editions where the person has the given role. */

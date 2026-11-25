@@ -4,7 +4,7 @@ import { contribution, edition, short, work } from "../../../test/factories";
 import type { Person } from "../types";
 import type { Awarded } from "../../award";
 import {
-    aboutItems, binYears, booksByRole, byCredit, creditFacets, derivePersonRoles, editionsByYear, FICTION_TYPES, outputSummary, writerCredit,
+    aboutItems, booksByRole, byCredit, creditFacets, derivePersonRoles, FICTION_TYPES, outputSummary, writerCredit,
     personTabs, visibleLinks,
 } from "./person-facts";
 
@@ -75,39 +75,6 @@ describe("aboutItems", () => {
         const result = aboutItems(person({ works: [novel, appearsIn], stories: [own, about, both] }));
         expect(result.books.map(w => w.title)).toEqual(["Velhot, örkit, sankarit"]);
         expect(result.articles.map(s => s.title)).toEqual(["Haastattelu"]);
-    });
-});
-
-describe("editionsByYear", () => {
-    it("counts each printing in a production role once and leaves out books the person only appears in", () => {
-        const translated = edition({ id: 301, pubyear: 1984, editionnum: 1, contributions: [contribution(ME, 2), contribution(ME, 4)] });
-        const byYear = editionsByYear(person({ works: [novel, appearsIn], editions: [translated] }));
-        expect(byYear).toEqual({ 1976: { all: 1, first: 1 }, 1984: { all: 2, first: 1 } });
-    });
-
-    it("counts a new version (laitos) as not a first printing", () => {
-        const w = work({ id: 6, work_type: type(1), contributions: [contribution(ME, 1)],
-            editions: [edition({ id: 1, pubyear: 1990 }), edition({ id: 2, pubyear: 2000, version: 2, editionnum: 1 })] });
-        expect(editionsByYear(person({ works: [w] }))).toEqual({ 1990: { all: 1, first: 1 }, 2000: { all: 1, first: 0 } });
-    });
-});
-
-describe("binYears", () => {
-    it("uses one bar a year when every bar gets at least 6 px", () => {
-        const r = binYears({ 1976: { all: 2, first: 1 }, 1984: { all: 4, first: 2 } }, 700);
-        expect(r.bin).toBe(1);
-        expect(r.bins).toHaveLength(9);
-        expect(r.max).toBe(4);
-        expect(r.bins[8]).toEqual({ from: 1984, to: 1984, all: 4, first: 2 });
-    });
-
-    it("widens bars to 2, 5 or 10 years for long spans on a narrow chart", () => {
-        const verne = { 1879: { all: 1, first: 1 }, 2024: { all: 3, first: 0 } };
-        expect(binYears(verne, 860).bin).toBe(2);
-        expect(binYears(verne, 345).bin).toBe(5);
-        const r = binYears(verne, 345);
-        expect(r.bins[0].from).toBe(1875);
-        expect(r.bins.at(-1)).toMatchObject({ from: 2020, to: 2024, all: 3 });
     });
 });
 

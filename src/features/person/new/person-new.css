@@ -44,29 +44,13 @@
 .pn-flag { width: 16px; height: 16px; border-radius: 50%; vertical-align: -2px; margin-right: 7px; }
 .pn-summary { font: 17px/1.55 var(--pn-serif); margin: 20px 0 0; max-width: 62ch; }
 
-/* 2 the timeline: the page's one bold element, in ink */
-.pn-tl { margin-top: 40px; }
-.pn-tl-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px 20px; flex-wrap: wrap; }
-.pn-tl-head h2 { font: 600 21px var(--pn-serif); margin: 0; }
-.pn-tl-head p { margin: 2px 0 0; font-size: 14px; color: var(--pn-ink-2); }
-.pn-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13.5px; color: var(--pn-ink-2); }
-.pn-legend span { white-space: nowrap; }
-.pn-legend i { display: inline-block; width: 12px; height: 12px; margin-right: 6px; vertical-align: -1px; }
-.pn-first { background: var(--pn-ink); }
-.pn-re { background: repeating-linear-gradient(135deg, var(--pn-ink) 0 2px, transparent 2px 4px); box-shadow: inset 0 0 0 1px var(--pn-ink); }
-.pn-bars { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); align-items: end; gap: 2px; height: 112px; margin-top: 14px; border-bottom: 2px solid var(--pn-ink); }
-.pn-bar { display: flex; flex-direction: column-reverse; height: 100%; border: 0; padding: 0; background: none; cursor: pointer; min-width: 0; }
-.pn-bar:hover, .pn-bar:focus-visible { background: var(--pn-hover); outline: none; }
-.pn-bar.pn-sel { background: var(--pn-blue-soft); }
-.pn-bar.pn-sel .pn-first { background: var(--pn-blue); }
-.pn-bar.pn-sel .pn-re { background: repeating-linear-gradient(135deg, var(--pn-blue) 0 2px, transparent 2px 4px); box-shadow: inset 0 0 0 1px var(--pn-blue); }
-.pn-axis { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 2px; font-size: 12.5px; color: var(--pn-ink-3); margin-top: 5px; }
-.pn-axis span { white-space: nowrap; overflow: visible; }
-
-/* 3 bio */
-.pn-bio { margin-top: 36px; max-width: 66ch; }
-.pn-bio .html-content { font: 400 18px/1.65 var(--pn-serif); }
-.pn-bio .p-button-link, .pn-bio button { font-family: var(--pn-sans); }
+/* 3 bio: closed behind a text button (owner, 2026-11-25) */
+.pn-bio { margin-top: 28px; max-width: 66ch; }
+.pn-bio .html-content { font: 400 18px/1.65 var(--pn-serif); margin-top: 14px; }
+.pn button.pn-disc { border: 0; background: none; padding: 0; color: var(--pn-blue); font: 600 15px var(--pn-sans); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px; }
+.pn button.pn-disc:hover { text-decoration: underline; text-underline-offset: 3px; }
+.pn button.pn-disc .pi { font-size: 12px; }
 .pn-src { font-size: 13.5px; color: var(--pn-ink-3); margin-top: 4px; }
 
 /* 4 tabs: kind of record, then role */

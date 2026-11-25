@@ -67,8 +67,24 @@ test('Le Guin: record, counts and roles from her own contributions', async ({ ad
     const tabs = page.getByRole('tablist', { name: 'Tuotanto' }).getByRole('tab');
     await expect(tabs).toHaveText([/^Teokset\s*29$/, /^Novellit ja artikkelit\s*80$/, /^Sarjat\s*3$/, /^Palkinnot\s*35$/,
         /^Muu tuotanto\s*1$/, /^Henkilöstä\s*14$/]);
-    await expect(page.locator('.pn-tl-head p')).toContainText('39 painosta, joista 30 ensipainosta.');
     await expect(page.locator('.pn-row')).toHaveCount(29);
+    // No publication graph (owner, 2026-11-25).
+    await expect(page.locator('.pn-bars, .pn-tl')).toHaveCount(0);
+});
+
+test('the description is closed behind "Näytä kuvaus"', async ({ adminPage: page }) => {
+    await openNew(page, LE_GUIN);
+    const show = page.getByRole('button', { name: 'Näytä kuvaus' });
+    await expect(show).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('.pn-bio .html-content')).toHaveCount(0);
+    await show.click();
+    const hide = page.getByRole('button', { name: 'Piilota kuvaus' });
+    await expect(hide).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.locator('.pn-bio .html-content')).toContainText('Ursula K. Le Guin oli yhdysvaltalainen kirjailija');
+    await expect(page.locator('.pn-bio .pn-src')).toHaveText('Lähde: ChatGPT');
+    await hide.press('Enter');
+    await expect(page.locator('.pn-bio .html-content')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Näytä kuvaus' })).toBeFocused();
 });
 
 test('every tab is visible when there are many, without scrolling the tab bar', async ({ adminPage: page }) => {
@@ -94,22 +110,16 @@ test('Henkilöstä lists the books and the articles about the person apart', asy
     await expect(page.getByRole('region', { name: 'Artikkelit' }).getByRole('link', { name: 'Mustavalkea metsä' })).toBeVisible();
 });
 
-test('a timeline bar filters the list by year; back and reload restore the view', async ({ adminPage: page }) => {
-    await openNew(page, LE_GUIN, '?osio=henkilosta');
-    const bar = page.getByRole('button', { name: /^1984: \d+ paino/ });
-    await bar.click();
-    // From Henkilöstä a year opens Teokset.
-    await expect(page).toHaveURL(/osio=teokset&vuosi=1984/);
-    await expect(tab(page, /^Teokset/)).toHaveAttribute('aria-selected', 'true');
+test('an old link with a year still filters the list, and the year can be cleared', async ({ adminPage: page }) => {
+    // The timeline that set the year is gone; links made with it keep working.
+    await openNew(page, LE_GUIN, '?osio=teokset&vuosi=1984');
     await expect(page.locator('.pn-result')).toContainText(/Näytetään \d+ \/ 29/);
     const shown = await page.locator('.pn-row').count();
     expect(shown).toBeGreaterThan(0);
     expect(shown).toBeLessThan(29);
-
-    await page.reload();
-    await expect(page.locator('.pn-row')).toHaveCount(shown, { timeout: 20000 });
-    await page.goBack();
-    await expect(tab(page, /^Henkilöstä/)).toHaveAttribute('aria-selected', 'true');
+    await page.getByRole('button', { name: 'Poista vuosirajaus' }).click();
+    await expect(page.locator('.pn-row')).toHaveCount(29);
+    await expect(page).not.toHaveURL(/vuosi=/);
 });
 
 test('type and name filters show faceted counts, live in the URL and clear together', async ({ adminPage: page }) => {
@@ -233,10 +243,9 @@ test('Kannet shows the books as covers, and the choice is in the URL', async ({ 
     await expect(page.locator('.pn-covers a')).toHaveCount(81);
 });
 
-test('a person with one cover: a sentence instead of the timeline, a heading instead of tabs', async ({ adminPage: page }) => {
+test('a person with one cover: a sentence, and a heading instead of tabs', async ({ adminPage: page }) => {
     await openNew(page, TAN);
     await expect(page.locator('.pn-summary')).toHaveText('Kansikuva kirjaan Siltavaltakunta (Danielle L. Jensen), Docendo 2019.');
-    await expect(page.locator('.pn-tl')).toHaveCount(0);
     await expect(page.getByRole('tablist')).toHaveCount(0);
     await expect(page.locator('.pn-onegroup')).toHaveText(/Teokset\s*1/);
 });
@@ -279,5 +288,8 @@ test('the new page has the site\'s own background, light and dark, not a grey bo
 test('the new person page has no accessibility violations', async ({ adminPage: page }) => {
     await openNew(page, LE_GUIN);
     await page.waitForLoadState('networkidle');
+    await expectAccessible(page, { include: '[data-person-page="uusi"]' });
+    // And with the description open.
+    await page.getByRole('button', { name: 'Näytä kuvaus' }).click();
     await expectAccessible(page, { include: '[data-person-page="uusi"]' });
 });

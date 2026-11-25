@@ -38,7 +38,6 @@ interface Props {
     ownership?: Record<string, EditionOwnershipStatus>;
     prices?: Record<number, EditionPrice>;
     picked: number | null;
-    preview: number | null;
     open: Set<number>;
     onToggle: (firstId: number) => void;
 }
@@ -63,7 +62,7 @@ const OtherOwners = ({ edition, user }: { edition: Edition; user: User }) => {
 };
 
 /** The editions in tables, one per laitos, with the agreed columns and width bands (work.md section 5). */
-export const EditionTable = ({ work, laitos, user, admin, ownership, prices, picked, preview, open, onToggle }: Props) => {
+export const EditionTable = ({ work, laitos, user, admin, ownership, prices, picked, open, onToggle }: Props) => {
     const queryClient = useQueryClient();
     const toast = useRef<Toast>(null);
     const menu = useRef<Menu>(null);
@@ -152,7 +151,7 @@ export const EditionTable = ({ work, laitos, user, admin, ownership, prices, pic
         const first = group[0];
         const ids = group.map(e => e.id);
         const isOpen = many && open.has(first.id);
-        const hl = (picked !== null && ids.includes(picked) && !isOpen) || (preview !== null && ids.includes(preview) && !isOpen);
+        const hl = picked !== null && ids.includes(picked) && !isOpen;
         const translators = r.translators.map(t => t.alt_name || t.name).join(", ");
         return (
             <tr key={`${sub ? "s" : "g"}${first.id}`} data-editions={ids.join(" ")} id={many ? undefined : `painos-${first.id}`}

@@ -17,7 +17,7 @@ import { isAdmin } from "../../user";
 import { selectId } from "../../../utils";
 import { useDocumentTitle } from "../../../components/document-title";
 import { LoadError } from "@components/load-error";
-import { CollapsibleHtml } from "@components/collapsible-html";
+import { IdentityDisclosure } from "@components/identity-disclosure";
 import { BookSeriesList } from "@features/bookseries";
 import { ContributorMagazineControl } from "@components/contributor-magazine-control";
 import { EntityChanges } from "@features/changes/components/entity-changes";
@@ -29,15 +29,14 @@ import {
     OTHER_TYPES, ownIds, ownStories, outputSummary, personTabs, PRODUCTION_ROLES, storiesByRole, visibleLinks,
     type BookEntry, type PersonTab, type TabKey,
 } from "../utils/person-facts";
-import { parseListState, withListState, type ListState, type YearRange } from "../utils/list-state";
-import { PublicationTimeline, TIMELINE_FROM } from "./publication-timeline";
+import { parseListState, withListState, type ListState } from "../utils/list-state";
 import { AboutList, AwardRows, BookList, naturalName, StoryList, type Update } from "./person-lists";
 import { PersonAdminTools } from "./person-admin-tools";
 
 const fetchJson = async <T,>(url: string): Promise<T> => (await getApiContent(url, getCurrenUser())).data;
 
-/** Tabs whose lists the timeline's year filters. */
-const YEAR_TABS: TabKey[] = ["teokset", "tietokirjat", "novellit", "muut"];
+/** Below this many printings a person with a single book gets a one-sentence summary. */
+const SUMMARY_BELOW = 5;
 
 const names = (list: { id: number; name: string; alt_name?: string }[], one: string, many: string) =>
     list.length === 0 ? null : (
@@ -89,7 +88,7 @@ const ROLE_PHRASE: Record<string, string> = {
     kansikuva: "Kansikuva kirjaan", kuvittaja: "Kuvitus kirjaan",
 };
 
-/** With too few printings for a timeline and a single book, one sentence says what there is. */
+/** With few printings and a single book, one sentence says what there is. */
 const SparseSummary = ({ entries }: { entries: BookEntry[] }) => {
     if (entries.length !== 1) return null;
     const { work, editions, role } = entries[0];
@@ -220,13 +219,6 @@ export const PersonPageNew = ({ id }: { id: string | null }) => {
     const active: PersonTab | undefined = tabs.find(t => t.key === state.osio) ?? tabs[0];
     const name = person.alt_name || person.name;
 
-    const selectYear = (range: YearRange | null) => {
-        // A year filters a list; from Sarjat, Lehdet, Palkinnot or Henkilöstä it opens Teokset.
-        let next = currentParams();
-        if (!active || !YEAR_TABS.includes(active.key)) next = withListState(next, { osio: tabs.find(t => YEAR_TABS.includes(t.key))?.key ?? null });
-        setSearchParams(withListState(next, { vuosi: range }));
-    };
-
     const ids = ownIds(person);
     const realIds = new Set((person.real_names ?? []).map(r => r.id));
     // The live Sarjat tab's rule: books the person wrote, not those another writer wrote under a shared name.
@@ -266,12 +258,13 @@ export const PersonPageNew = ({ id }: { id: string | null }) => {
             <div className="pn-page">
                 <div>
                     <PersonRecord person={person} roles={derived.roles} output={outputSummary(person, awards)} />
-                    {derived.printings < TIMELINE_FROM && <SparseSummary entries={derived.allBooks} />}
-                    <PublicationTimeline person={person} selected={state.vuosi} onSelect={selectYear} />
+                    {derived.printings < SUMMARY_BELOW && <SparseSummary entries={derived.allBooks} />}
                     {person.bio && (
                         <div className="pn-bio">
-                            <CollapsibleHtml html={person.bio} collapsedHeight={9} />
-                            {person.bio_src && <div className="pn-src">Lähde: <span dangerouslySetInnerHTML={safeHtml(person.bio_src)} /></div>}
+                            <IdentityDisclosure className="pn-disc" showLabel="Näytä kuvaus" hideLabel="Piilota kuvaus">
+                                <div className="html-content" dangerouslySetInnerHTML={safeHtml(person.bio)} />
+                                {person.bio_src && <div className="pn-src">Lähde: <span dangerouslySetInnerHTML={safeHtml(person.bio_src)} /></div>}
+                            </IdentityDisclosure>
                         </div>
                     )}
                     {active && (

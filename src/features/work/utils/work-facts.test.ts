@@ -5,7 +5,7 @@ import { Edition } from "@features/edition";
 import { Work } from "../types";
 import {
     editionLabel, groupLabel, laitosGroups, mergeGroupForRow, ownershipSummary, printingsSummary, seriesPosition,
-    spineSizes, tagsByType, titleFit, yearRange,
+    subjectGroups, tagsByType, titleFit, yearRange, originFact,
 } from "./work-facts";
 
 // Real API responses, trimmed (src/test/fixtures/works.json, captured 2026-11-24).
@@ -125,51 +125,6 @@ describe("tagsByType", () => {
     });
 });
 
-describe("spineSizes", () => {
-    it("draws each printing to scale: height from cm, thickness from pages at 10 pages a millimetre", () => {
-        const shelf = spineSizes(tolkien.editions)!;
-        const first = shelf.spines.get(tolkien.editions[0].id)!;
-        expect([first.width, first.height]).toEqual([62.8, 147.2]); // 981 pages = 98 mm, 23 cm
-        const v2 = tolkien.editions.find(e => e.version === 2)!;
-        expect(shelf.spines.get(v2.id)!.width).toBe(75.6); // 1,182 pages
-        const v3 = tolkien.editions.find(e => e.version === 3)!;
-        expect(shelf.spines.get(v3.id)!.height).toBe(160); // 25 cm
-    });
-
-    it("keeps a book's real proportions, not only its siblings': 400 pages and 20 cm is 20:4", () => {
-        const book = (id: number, pages: number, size: number) =>
-            ({ id, pages, size, version: 1, editionnum: id, pubyear: 2000, images: [] }) as unknown as Edition;
-        const s = spineSizes([book(1, 400, 20), book(2, 400, 20)])!.spines.get(1)!;
-        expect(s.height / s.width).toBeCloseTo(20 / 4, 1);
-        // Two thick printings stay thick even with nothing thinner beside them.
-        const thick = spineSizes([book(1, 600, 21), book(2, 620, 21)])!.spines.get(1)!;
-        expect(thick.height / thick.width).toBeCloseTo(21 / 6, 1);
-    });
-
-    it("draws a missing size from the median of the work's known sizes and flags it", () => {
-        const shelf = spineSizes(tolkien.editions)!;
-        const missing = tolkien.editions.filter(e => !e.size);
-        expect(missing).toHaveLength(4);
-        for (const e of missing) {
-            const s = shelf.spines.get(e.id)!;
-            expect(s.height).toBe(147.2);
-            expect(s.estHeight).toBe(true);
-            expect(s.name).toContain("korkeus ei tiedossa");
-        }
-        expect(shelf.note).toContain("Korkeus puuttuu; se on piirretty tämän teoksen muiden painosten mukaan.");
-    });
-
-    it("names each spine in full", () => {
-        const s = spineSizes(leGuin.editions)!.spines.get(leGuin.editions[0].id)!;
-        expect(s.name).toBe("1. painos 1976, WSOY, sidottu, 302 sivua, 21 cm");
-    });
-
-    it("leaves the shelf out when fewer than two printings have a size, a page count or a cover", () => {
-        expect(spineSizes(work("tuulen").editions)).toBeNull();
-        expect(spineSizes(work("sparse").editions)).toBeNull();
-    });
-});
-
 describe("titleFit", () => {
     it("keeps the full size for ordinary words and shrinks it for a long one", () => {
         expect(titleFit("Pimeyden vasen käsi")).toBe(1);
@@ -179,5 +134,34 @@ describe("titleFit", () => {
     });
     it("never goes below half size", () => {
         expect(titleFit("a".repeat(60))).toBe(0.5);
+    });
+});
+
+describe("subjectGroups", () => {
+    it("takes the subgenre to the record and leaves the other types for the section below the printings", () => {
+        const { subgenre, rest } = subjectGroups(leGuin.tags);
+        expect(subgenre.map(t => t.name)).toEqual(["yhteiskunnallinen scifi", "antropologinen scifi"]);
+        expect(rest.map(g => g.label)).toEqual(["Tyyli", "Aiheet", "Hahmot ja olennot", "Paikat", "Aika", "Listat ja sovitukset"]);
+    });
+
+    it("is empty without subject headings", () => {
+        expect(subjectGroups([])).toEqual({ subgenre: [], rest: [] });
+        expect(subjectGroups(undefined)).toEqual({ subgenre: [], rest: [] });
+    });
+});
+
+describe("originFact", () => {
+    it("is the original's language and year for a translation", () => {
+        expect(originFact(leGuin)).toEqual({ label: "Alkuteos", value: "englanti, 1969" });
+    });
+
+    it("is the publication year for a Finnish original", () => {
+        const finnish = { ...leGuin, language_name: { id: 7, name: "suomi" }, pubyear: 1999 } as unknown as Work;
+        expect(originFact(finnish)).toEqual({ label: "Julkaistu", value: "1999" });
+    });
+
+    it("leaves out what is missing, and is null with nothing to say", () => {
+        expect(originFact({ ...leGuin, language_name: null } as unknown as Work)).toEqual({ label: "Alkuteos", value: "1969" });
+        expect(originFact({ ...leGuin, language_name: null, pubyear: null } as unknown as Work)).toBeNull();
     });
 });

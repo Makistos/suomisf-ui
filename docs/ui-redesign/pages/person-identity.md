@@ -3,7 +3,7 @@
 **Route:** `/people/:id` · **Builds on:** the agreed [person plan](person.md) (all its behaviour stays: bar-height timeline, main tabs by kind of record,
 role tabs as a second row, toolbar inside the tab, compact rows, URL state, the phone filter sheet, only the tab row sticky, missing data hidden)
 **Companions:** [work-identity.md](work-identity.md) and [front-identity.md](front-identity.md), the same identity on the work page and the front page (same tokens, fonts and rules)
-**Status:** Proposal; implemented as an admin-only trial of the person page (2026-11-24, see [person.md](person.md#implementation-2026-11-24-an-admin-only-trial)) · **Updated:** 2026-11-24
+**Status:** Proposal; implemented as an admin-only trial of the person page (2026-11-24, see [person.md](person.md#implementation-2026-11-24-an-admin-only-trial)) · **Updated:** 2026-11-25
 **Mockup:** [`../mockups/person-identity.html`](../mockups/person-identity.html) with [`person-identity-data.js`](../mockups/person-identity-data.js) and the shared
 [`timeline-data.js`](../mockups/timeline-data.js), real data: `?p=leguin` Ursula K. Le Guin, `?p=jpm` J. Pekka Mäkelä (writer and translator, no portrait), `?p=king` Stephen King (pen name Richard Bachman),
 `?p=hunter` Erin Hunter (a pen name shared by eight writers), `&osio=henkilosta` the Henkilöstä tab (books and articles about the person),
@@ -83,6 +83,12 @@ Unchanged: everything the person plan decided about the timeline, tabs, role tab
 
 - Adopt the identity for the whole site, for the person and work pages as a trial, or not at all? (Same question as on the work page proposal.)
 - Roles as text instead of chips?
+
+## Changed in the trial (owner, 2026-11-25)
+
+- **The publication timeline is removed** (the bars of printings by year, with their year filter). An old link with `vuosi` in it still filters
+  the list and shows the year chip, which clears it. The one-sentence summary for a person with a single book stays.
+- **The description (bio) is closed by default** behind *Näytä kuvaus* / *Piilota kuvaus*, with no clamped first lines.
 
 ## Decisions
 

@@ -194,62 +194,20 @@ export const tagsByType = (tags: SfTag[] = []) => {
     return [...known, ...rest];
 };
 
-export interface Spine {
-    width: number;
-    height: number;
-    /** Drawn from the median of this work's known values. */
-    estHeight: boolean;
-    estWidth: boolean;
-    /** "20. painos 2001, WSOY, sidottu, 981 sivua, 23 cm" */
-    name: string;
-}
-
-const PX_PER_CM = 6.4;
-const PAGES_PER_MM = 10;
-const MIN_SPINE = 6;
-// Tenths of a pixel: whole pixels would skew a thin spine's proportions.
-const tenth = (px: number) => Math.round(px * 10) / 10;
-
-const median = (values: number[]) => {
-    const s = [...values].sort((a, b) => a - b);
-    return s.length ? s[Math.floor(s.length / 2)] : null;
+/** The subgenre goes into the record next to the genre (it answers the same question); the other types below the printings. */
+export const subjectGroups = (tags: SfTag[] = []) => {
+    const groups = tagsByType(tags);
+    return {
+        subgenre: groups.find(g => g.label === "Alalaji")?.tags ?? [],
+        rest: groups.filter(g => g.label !== "Alalaji"),
+    };
 };
 
-/**
- * The shelf: one spine per printing, all on one scale (6.4 px a centimetre): height from the size,
- * thickness from the page count at 10 pages a millimetre, so a 400-page book of 20 cm stands 20:4
- * whatever its siblings are (21 cm → 134.4 px, 302 pages → 19.3 px).
- * A missing size or page count takes the median of the work's known values and is
- * flagged; a dimension nobody has is the same for every spine. Null when fewer than
- * two printings have a size, a page count or a cover: nothing to compare.
- */
-export const spineSizes = (editions: Edition[]): { spines: Map<number, Spine>; note: string } | null => {
-    if (editions.filter(e => num(e.size) || num(e.pages) || e.images?.length).length < 2) return null;
-    const sizeMed = median(editions.map(e => num(e.size)).filter((n): n is number => !!n));
-    const pagesMed = median(editions.map(e => num(e.pages)).filter((n): n is number => !!n));
-    const spines = new Map<number, Spine>();
-    for (const e of editions) {
-        const [size, pages] = [num(e.size), num(e.pages)];
-        const binding = e.binding && e.binding.id > 1 ? `, ${e.binding.name.toLowerCase()}` : "";
-        spines.set(e.id, {
-            width: Math.max(MIN_SPINE, tenth(((pages || pagesMed || 250) / PAGES_PER_MM / 10) * PX_PER_CM)),
-            height: tenth((size || sizeMed || 21) * PX_PER_CM),
-            estHeight: !size && sizeMed !== null,
-            estWidth: !pages && pagesMed !== null,
-            name: `${editionLabel(e)} ${e.pubyear ?? ""}`.trim() + (e.publisher ? `, ${e.publisher.name}` : "") + binding
-                + (pages ? `, ${pages} sivua` : ", sivumäärä ei tiedossa") + (size ? `, ${size} cm` : ", korkeus ei tiedossa"),
-        });
-    }
-    const all = [...spines.values()];
-    const [estH, estW] = [all.some(s => s.estHeight), all.some(s => s.estWidth)];
-    const scale = sizeMed !== null && pagesMed !== null ? "Kirjat mittasuhteissaan: korkeus senttimetreinä, paksuus sivumäärästä (10 sivua on noin millimetri)."
-        : sizeMed !== null ? "Korkeus senttimetreinä; sivumäärää ei tiedetä yhdeltäkään painokselta, joten paksuus on sama."
-            : pagesMed !== null ? "Paksuus sivumäärästä (10 sivua on noin millimetri); korkeutta ei tiedetä yhdeltäkään painokselta, joten korkeus on sama."
-                : "Mittoja ei tiedetä yhdeltäkään painokselta, joten kirjat ovat samankokoisia.";
-    const est = estH || estW
-        ? ` ${estH && estW ? "Korkeus tai sivumäärä" : estH ? "Korkeus" : "Sivumäärä"} puuttuu; se on piirretty tämän teoksen muiden painosten mukaan.`
-        : "";
-    return { spines, note: `${scale} Selkämykset on rajattu kansikuvista.${est}` };
+/** The record's row for where the work comes from: "Alkuteos: englanti, 1969", or "Julkaistu: 1999" for a Finnish original. */
+export const originFact = (work: Pick<Work, "language_name" | "pubyear">) => {
+    const finnish = work.language_name?.id === 7;
+    const value = [finnish ? null : work.language_name?.name, work.pubyear].filter(v => v !== null && v !== undefined && v !== "").join(", ");
+    return value ? { label: finnish ? "Julkaistu" : "Alkuteos", value } : null;
 };
 
 /** Letters of a word that still fit the title column at full size (58 px in about 490 px). */

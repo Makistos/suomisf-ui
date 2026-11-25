@@ -25,7 +25,7 @@ const stored = (storage: Storage | null, key: string) => {
 };
 
 export const readViewState = (params: URLSearchParams, storage: Storage | null): WorkViewState => {
-    const mode = MODES[params.get("ryhmittely") ?? ""] ?? MODES[stored(storage, MODE_KEY) ?? ""] ?? "condensed";
+    const mode = MODES[params.get("ryhmittely") ?? ""] ?? MODES[stored(storage, MODE_KEY) ?? ""] ?? "brief";
     const view = [params.get("nakyma"), stored(storage, VIEW_KEY)].find((v): v is WorkView => VIEWS.includes(v as WorkView)) ?? "taulukko";
     const painos = Number(params.get("painos"));
     return { mode, view, painos: Number.isInteger(painos) && painos > 0 ? painos : null };
@@ -35,7 +35,7 @@ export const readViewState = (params: URLSearchParams, storage: Storage | null):
 export const withViewState = (params: URLSearchParams, changes: Partial<WorkViewState>) => {
     const next = new URLSearchParams(params);
     if (changes.mode !== undefined) {
-        if (changes.mode === "condensed") next.delete("ryhmittely"); else next.set("ryhmittely", MODE_NAMES[changes.mode]);
+        if (changes.mode === "brief") next.delete("ryhmittely"); else next.set("ryhmittely", MODE_NAMES[changes.mode]);
     }
     if (changes.view !== undefined) {
         if (changes.view === "taulukko") next.delete("nakyma"); else next.set("nakyma", changes.view);

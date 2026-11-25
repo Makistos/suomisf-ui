@@ -12,11 +12,13 @@ const LE_GUIN = 3984;
 const TOLKIEN = 1514;
 const COLLECTION = 3973; // Maailman syntymäpäivä ja muita tarinoita
 const SPARSE = 3407; // Satujen maan taistelu: one printing, no cover
-const TOLKIEN_20TH = 10197; // 20. painos 2001, inside the merged 1st laitos row
 const TOLKIEN_4TH = 10208; // 4. painos 1988
 
 const newPage = (page: Page) => page.locator('[data-work-page="uusi"]');
 const fact = (page: Page, label: string) => page.locator('.wn-facts dt', { hasText: label }).locator('xpath=following-sibling::dd[1]');
+
+// The subject headings and the description are closed behind one button (owner, 2026-11-25).
+const openAbout = (page: Page) => page.getByRole('button', { name: 'Asiasanat ja kuvaus' }).click();
 
 async function openNew(page: Page, path: string) {
     await page.goto('/');
@@ -54,16 +56,23 @@ test('the switch button and Shift+U swap the work page, apart from the person pa
 test('Le Guin: the catalogue record, awards, series order and subject headings', async ({ adminPage: page }) => {
     await openNew(page, `/works/${LE_GUIN}`);
     await expect(page.getByRole('heading', { level: 1, name: 'Pimeyden vasen käsi' })).toBeVisible();
-    await expect(page.locator('.wn-orig')).toHaveText('The Left Hand of Darknessenglanti, 1969');
+    await expect(page.locator('.wn-orig')).toHaveText('The Left Hand of Darkness');
+    // The record in the owner's order: original's language and year, type, genre, then the subgenre next to the genre.
+    await expect(page.locator('.wn-facts dt')).toHaveText(['Alkuteos', 'Tyyppi', 'Genre', 'Alalaji', 'Palkinnot', 'Sarja']);
+    await expect(fact(page, 'Alkuteos')).toHaveText('englanti, 1969');
     await expect(fact(page, 'Tyyppi')).toHaveText('Romaani');
     await expect(fact(page, 'Genre')).toHaveText('Science Fiction');
+    await expect(fact(page, 'Alalaji')).toHaveText('yhteiskunnallinen scifi, antropologinen scifi');
     await expect(fact(page, 'Palkinnot').locator('.wn-award')).toHaveText(['Hugo 1970, paras romaani', 'Nebula 1970, paras romaani']);
     const series = fact(page, 'Sarja');
     await expect(series).toContainText('Hain-sarja');
     await expect(series).toContainText('4/9 alkuteosten ilmestymisjärjestyksessä');
     await expect(series.getByRole('link', { name: '‹ Harhakaupunki' })).toHaveAttribute('href', '/works/3966');
     await expect(series.getByRole('link', { name: 'Maailma, vihreä metsä ›' })).toHaveAttribute('href', '/works/3972');
-    await expect(page.locator('.wn-subjects dt')).toHaveText(['Alalaji', 'Tyyli', 'Aiheet', 'Hahmot ja olennot', 'Paikat', 'Aika', 'Listat ja sovitukset']);
+    // The other subject headings are behind "Asiasanat ja kuvaus", above the description.
+    await openAbout(page);
+    await expect(page.locator('.wn-subjects dt')).toHaveText(['Tyyli', 'Aiheet', 'Hahmot ja olennot', 'Paikat', 'Aika', 'Listat ja sovitukset']);
+    expect(await page.locator('.wn-subjects').evaluate(el => !!(el.compareDocumentPosition(document.querySelector('.wn-desc')!) & Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
     await expect(page.locator('.wn-p-head p')).toHaveText('3 painosta vuosina 1976–1992, WSOY. Suomentanut Kalevi Nyytäjä.');
 });
 
@@ -107,35 +116,42 @@ test('a title with a long word stays in its column, on desktop and on a phone', 
     }
 });
 
-test('Tolkien: the shelf has a spine per printing, the missing sizes marked', async ({ adminPage: page }) => {
-    await openNew(page, `/works/${TOLKIEN}`);
-    const shelf = page.getByRole('group', { name: 'Painokset hyllyssä' });
-    await expect(shelf.locator('.wn-spine')).toHaveCount(20);
-    await expect(shelf.locator('.wn-spine.wn-est')).toHaveCount(4);
-    await expect(shelf.locator('.wn-slabel')).toHaveText([/^1\. laitos\s*17 painosta$/, /^2\. laitos\s*2 painosta$/, /^3\. laitos\s*1 painos$/]);
-    await expect(page.locator('.wn-shelf-note')).toContainText('Korkeus puuttuu; se on piirretty tämän teoksen muiden painosten mukaan.');
-    await expect(page.locator('.wn-version h3')).toHaveText(['1. laitos', '2. laitos', '3. laitos']);
-
-    // Thickness from pages at 10 pages a millimetre, on the same scale as the height: 981 pages and 23 cm stand
-    // about 23:9.8. The whole shelf is scaled down evenly so all three laitos fit the page.
-    const first = await shelf.locator('.wn-spine').first().boundingBox();
-    expect(first!.height / first!.width).toBeCloseTo(230 / 98.1, 1);
-    expect(await shelf.evaluate(el => el.scrollWidth - el.clientWidth)).toBeLessThanOrEqual(1);
+test('the subject headings and the description are closed behind one button, there is no shelf, and the printings start on the first screen', async ({ adminPage: page }) => {
+    await page.setViewportSize({ width: 1400, height: 900 });
+    for (const id of [LE_GUIN, TOLKIEN]) {
+        await openNew(page, `/works/${id}`);
+        const top = await page.locator('#wn-printings-h').evaluate(el => el.getBoundingClientRect().top + window.scrollY);
+        expect(top).toBeLessThan(900);
+        // The shelf is gone (owner, 2026-11-25).
+        await expect(page.locator('.wn-spine')).toHaveCount(0);
+        await expect(page.getByRole('button', { name: /kirjahylly/ })).toHaveCount(0);
+    }
+    // Tolkien's note is a fact row, not prose.
+    await expect(fact(page, 'Lisätietoja')).toContainText('Kokoomateos, suomennos vuoden 1966 korjatusta laitoksesta.');
+    const about = page.getByRole('button', { name: 'Asiasanat ja kuvaus' });
+    await expect(about).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('.wn-desc')).toHaveCount(0);
+    await expect(page.locator('.wn-subjects')).toHaveCount(0);
+    await about.click();
+    await expect(about).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.locator('.wn-subjects dt')).toHaveText(['Aiheet', 'Hahmot ja olennot', 'Listat ja sovitukset']);
+    await expect(page.locator('.wn-desc')).toContainText('Taru Sormusten herrasta on kaikenikäisten fantasiaklassikko');
+    // The opened region is the one the button names.
+    expect(await page.locator('.wn-desc').evaluate(el => el.parentElement!.id)).toBe(await about.getAttribute('aria-controls'));
+    await about.press('Enter');
+    await expect(page.locator('.wn-desc')).toHaveCount(0);
+    await expect(about).toBeFocused();
+    await expect(about).toHaveAttribute('aria-expanded', 'false');
 });
 
-test('picking a spine shows its cover, opens its merged row and highlights the printing', async ({ adminPage: page }) => {
+test('printings are grouped by laitos by default, and the URL stays clean', async ({ adminPage: page }) => {
     await openNew(page, `/works/${TOLKIEN}`);
-    await page.getByRole('button', { name: '20. painos 2001, WSOY, sidottu, 981 sivua, 23 cm' }).click();
-    await expect(page).toHaveURL(new RegExp(`painos=${TOLKIEN_20TH}`));
-    await expect(page.locator('.wn-cover-note')).toHaveText('20. painoksen kansi, 2001');
-    const merged = page.getByRole('button', { name: '1.–36. painos' });
-    await expect(merged).toHaveAttribute('aria-expanded', 'true');
-    const row = page.locator(`#painos-${TOLKIEN_20TH}`);
-    await expect(row).toHaveClass(/wn-hl/);
-    await expect(row).toBeInViewport();
-    // The reader can still close it.
-    await merged.click();
-    await expect(merged).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.getByRole('group', { name: 'Ryhmittely' }).getByRole('button', { name: 'Laitoksittain' })).toHaveAttribute('aria-pressed', 'true');
+    expect(new URL(page.url()).searchParams.get('ryhmittely')).toBeNull();
+    await expect(page.locator('.wn-version h3')).toHaveText(['1. laitos', '2. laitos', '3. laitos']);
+    // "Samanlaiset yhdessä" is now a choice of its own in the URL.
+    await page.getByRole('group', { name: 'Ryhmittely' }).getByRole('button', { name: 'Samanlaiset yhdessä' }).click();
+    await expect(page).toHaveURL(/ryhmittely=samanlaiset/);
 });
 
 test('a merged row opens into its printings, each with its own controls and one ownership request', async ({ adminPage: page }) => {
@@ -198,9 +214,12 @@ test('in the site\'s content column an admin gets the Kirja column and the ⋯ m
     await expect(menu.getByText('Kopioi painos')).toBeVisible();
 });
 
-test('a work with little data: no shelf, no grouping, no laitos heading', async ({ adminPage: page }) => {
+test('a work with little data: no button, no grouping, no laitos heading', async ({ adminPage: page }) => {
     await openNew(page, `/works/${SPARSE}`);
-    await expect(page.locator('.wn-orig')).toHaveText(/^Julkaistu \d{4}$/);
+    await expect(page.locator('.wn-orig')).toHaveCount(0);
+    await expect(fact(page, 'Julkaistu')).toHaveText(/^\d{4}$/);
+    // Nothing to open: no buttons and no empty subject section.
+    await expect(page.getByRole('button', { name: 'Asiasanat ja kuvaus' })).toHaveCount(0);
     await expect(page.locator('.wn-cover')).toHaveCount(0);
     await expect(page.getByRole('group', { name: 'Painokset hyllyssä' })).toHaveCount(0);
     await expect(page.getByRole('group', { name: 'Ryhmittely' })).toHaveCount(0);
@@ -223,6 +242,27 @@ test('on a phone the page fits, the printings are cards and the view toggle is g
     await expect(page.getByRole('group', { name: 'Näkymä' })).toBeHidden();
     // The reading mark comes right after the record.
     await expect(page.locator('.wn-narrow').first().getByRole('heading', { name: 'Oma lukumerkintä' })).toBeVisible();
+    // Record, the subject headings and description button, then the printings.
+    const order = await page.evaluate(() => [...document.querySelectorAll('h1, .wn-disc, #wn-printings-h')]
+        .filter(el => (el as HTMLElement).offsetParent !== null).map(el => el.id || el.textContent!.trim() || el.tagName));
+    expect(order).toEqual(['Taru sormusten herrasta', 'Asiasanat ja kuvaus', 'wn-printings-h']);
+    await openAbout(page);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(0);
+
+    // Le Guin: a long word in the series row once widened the page, the facts were squeezed beside the cover,
+    // and the translator cell kept its desktop width in the cards (one letter a line).
+    await openNew(page, `/works/${LE_GUIN}`);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(0);
+    const cover = (await page.locator('.wn-cover').boundingBox())!;
+    const facts = (await page.locator('.wn-facts').boundingBox())!;
+    expect(facts.y).toBeGreaterThanOrEqual(cover.y + cover.height - 1);
+    expect(Math.abs(facts.x - cover.x)).toBeLessThanOrEqual(1);
+    // The title follows the author closely, not spread over the cover's height.
+    const byline = (await page.locator('.wn-byline').boundingBox())!;
+    const title = (await page.locator('h1.wn-title').boundingBox())!;
+    expect(title.y - (byline.y + byline.height)).toBeLessThan(16);
+    const translator = page.locator('table.wn-et td.c-tr').first();
+    expect((await translator.boundingBox())!.width).toBeGreaterThan(200);
 });
 
 test('the new work page has the site\'s own background and no accessibility violations', async ({ adminPage: page }) => {
@@ -233,5 +273,8 @@ test('the new work page has the site\'s own background and no accessibility viol
     ]);
     expect(work).toBe(site);
     await page.waitForLoadState('networkidle');
+    await expectAccessible(page, { include: '[data-work-page="uusi"]' });
+    // And with the subject headings and the description open.
+    await openAbout(page);
     await expectAccessible(page, { include: '[data-work-page="uusi"]' });
 });

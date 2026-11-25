@@ -76,10 +76,10 @@ Status values: **Not started** → **Reviewed** (current page looked at, problem
 Owner's notes on the person and work page trials, not done yet. The work page items are planned in
 [work-identity.md, "Revision plan"](pages/work-identity.md#revision-plan-2026-11-25-the-record-and-the-printings-first):
 
-- **Work page title a bit smaller in general** (58 px now, besides the long-word scaling added on 2026-11-25).
-- **Descriptions closed by default** on the work and person pages: only a "Näytä kuvaus" button, no clamped first lines.
-- **The work page's bookshelf closed by default** behind a "Näytä kirjahylly" button.
-- **The person page's publication timeline closed by default** behind a similar button (for example "Näytä julkaisuvuodet").
+- ~~**Work page title a bit smaller in general**~~ done 2026-11-25 (46 px).
+- ~~**Descriptions closed by default**~~ done 2026-11-25 on both pages (the work page's button is "Asiasanat ja kuvaus").
+- ~~**The work page's bookshelf closed by default**~~ the shelf was removed instead (owner, 2026-11-25).
+- ~~**The person page's publication timeline closed by default**~~ the timeline was removed instead (owner, 2026-11-25).
 
 ## Later
 

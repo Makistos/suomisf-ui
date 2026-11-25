@@ -3,7 +3,7 @@
 **Route:** `/works/:id` · **Builds on:** the agreed [work page plan](work.md) (all its behaviour stays: table, grouping, expandable rows,
 column bands, URL state, ownership, admin tools, similar works, missing data)
 **Companions:** [person-identity.md](person-identity.md) and [front-identity.md](front-identity.md), the same identity on the person page and the front page
-**Status:** Proposal; implemented as an admin-only trial (2026-11-24); revision planned (2026-11-25) · **Updated:** 2026-11-25
+**Status:** Proposal; implemented as an admin-only trial (2026-11-24); revision implemented in the trial, shelf removed (2026-11-25) · **Updated:** 2026-11-25
 **Mockup:** [`../mockups/work-identity.html`](../mockups/work-identity.html) with the same [`works-data.js`](../mockups/works-data.js) as the agreed mockup:
 `?w=a` Le Guin, `?w=b` Tolkien, `?w=c` a work with little data, `?w=d` Tove Jansson's *Vaarallinen juhannus* (sizes and covers missing
 on the oldest printings, three printings without a number), `?w=e` *Tuulen tavoittelua* (only the first printing has any measurements). The yellow bar switches visitor / logged in / admin and light / dark.
@@ -297,6 +297,36 @@ reading order, and keyboard focus stays on the button.
 5. Tests: Vitest for the subject heading split; Playwright for both buttons (closed by default, open, close, keyboard), no button without a
    description or shelf, the Painokset heading on the first screen for Le Guin and Tolkien at 1,400 × 900, the phone order, axe;
    screenshots and the wiki's work page section.
+
+### Built (2026-11-25)
+
+Implemented in the trial as planned, with the plan's proposals for the three questions below until the owner decides
+(subject headings below the printings, the shelf closed on every page, Alalaji in the facts). The toggle is `src/components/identity-disclosure.tsx`;
+the rules are `subjectGroups` and `originFact` in `work-facts.ts`.
+
+**Measured** (admin, 1,400 × 900; phone 390 px), the top of "Painokset":
+
+| Work | Before, desktop | After, desktop | Before, phone | After, phone |
+|---|---|---|---|---|
+| Le Guin (3984) | 1,241 px | 713 px | 1,697 px | 913 px |
+| Tolkien (1514) | 1,311 px | 721 px | not measured | not measured |
+
+The printings now start on the first desktop screen, but lower than the plan's estimate (560 and 500 px): the facts list is longer with the
+Alkuteos, Alalaji and Lisätietoja rows, and Tolkien's note is five lines.
+
+**Phone bugs found and fixed while checking:** on Le Guin a long word in the series row ("ilmestymisjärjestyksessä") made the page 26 px wider
+than the screen; the facts were squeezed into the column beside the cover (the rule meant to put them under the cover never matched); and in the
+printing cards the translator cell kept its desktop width, so "Suom. Kalevi Nyytäjä" broke one letter a line. The phone test only checked Tolkien
+before; it now checks Le Guin too.
+
+### Changed after the build (owner, 2026-11-25)
+
+- **The shelf is removed** altogether (component, styles and the spine rules); the "The shelf" section above is history.
+  A printing is still picked through `/editions/:id` and `painos` in the URL.
+- **"Laitoksittain" is the default grouping** (was "Samanlaiset yhdessä"); the default is left out of the URL, so
+  `ryhmittely=samanlaiset` now appears when chosen. A reader's stored choice still wins.
+- **The subject headings are back above the description, inside the same closed block;** the button reads
+  *Asiasanat ja kuvaus* in both states (the chevron and `aria-expanded` tell whether it is open). Alalaji stays in the facts.
 
 ### Questions for the owner
 

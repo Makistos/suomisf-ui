@@ -9,7 +9,7 @@ const memory = (entries: Record<string, string> = {}) => {
 
 describe("readViewState", () => {
     it("defaults to similar printings together, as a table, nothing picked", () => {
-        expect(readViewState(new URLSearchParams(), null)).toEqual({ mode: "condensed", view: "taulukko", painos: null });
+        expect(readViewState(new URLSearchParams(), null)).toEqual({ mode: "brief", view: "taulukko", painos: null });
     });
 
     it("reads grouping, view and the picked printing from the URL", () => {
@@ -27,15 +27,17 @@ describe("readViewState", () => {
     it("ignores unknown values and storage that throws", () => {
         const broken = { getItem: () => { throw new Error("blocked"); }, setItem: () => { throw new Error("blocked"); } };
         expect(readViewState(new URLSearchParams("ryhmittely=x&nakyma=y&painos=abc"), broken))
-            .toEqual({ mode: "condensed", view: "taulukko", painos: null });
+            .toEqual({ mode: "brief", view: "taulukko", painos: null });
         expect(() => rememberViewState(broken, { mode: "all", view: "kortit" })).not.toThrow();
     });
 });
 
 describe("withViewState", () => {
     it("writes only what differs from the defaults and keeps other parameters", () => {
-        const p = withViewState(new URLSearchParams("x=1&ryhmittely=kaikki"), { mode: "condensed", view: "kortit" });
+        const p = withViewState(new URLSearchParams("x=1&ryhmittely=kaikki"), { mode: "brief", view: "kortit" });
         expect(p.toString()).toBe("x=1&nakyma=kortit");
+        // "Samanlaiset yhdessä" is no longer the default, so it is written out.
+        expect(withViewState(new URLSearchParams(), { mode: "condensed" }).toString()).toBe("ryhmittely=samanlaiset");
         expect(withViewState(new URLSearchParams(), { painos: 5 }).toString()).toBe("painos=5");
         expect(withViewState(new URLSearchParams("painos=5"), { painos: null }).toString()).toBe("");
     });

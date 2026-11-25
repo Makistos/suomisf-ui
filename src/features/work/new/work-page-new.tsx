@@ -9,7 +9,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Image } from "primereact/image";
 
 import { LoadError } from "@components/load-error";
-import { CollapsibleHtml } from "@components/collapsible-html";
+import { IdentityDisclosure } from "@components/identity-disclosure";
 import { getCurrenUser } from "@services/auth-service";
 import { getApiContent } from "@services/user-service";
 import { isAdmin } from "@features/user";
@@ -31,10 +31,9 @@ import {
     fetchSimilarWorks, partsText, reasonText, scoreText, shownReasons, SimilarWork, tagTypesText,
 } from "../components/similar-works";
 import {
-    comparePrintings, laitosGroups, printingsSummary, seriesPosition, tagsByType, titleFit,
+    comparePrintings, laitosGroups, originFact, printingsSummary, seriesPosition, subjectGroups, titleFit,
 } from "../utils/work-facts";
 import { readViewState, rememberViewState, withViewState, WorkViewState } from "../utils/work-view-state";
-import { EditionShelf } from "./edition-shelf";
 import { EditionTable } from "./edition-table";
 import { WorkAdminTools } from "./work-admin-tools";
 
@@ -117,7 +116,6 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
     const [formOpen, setFormOpen] = useState(false);
     const [historyVisible, setHistoryVisible] = useState(false);
     const [awardsVisible, setAwardsVisible] = useState(false);
-    const [preview, setPreview] = useState<number | null>(null);
     // Merged rows the reader opened (true) or closed (false); otherwise only the picked printing's row is open.
     const [opened, setOpened] = useState<Map<number, boolean>>(new Map());
     const [searchParams, setSearchParams] = useSearchParams();
@@ -177,12 +175,6 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
     const isOpen = (firstId: number) => opened.get(firstId) ?? firstId === pickedGroup;
     const open = new Set(laitos.flatMap(l => l.groups).map(g => g[0].id).filter(isOpen));
     const toggle = (firstId: number) => setOpened(prev => new Map(prev).set(firstId, !isOpen(firstId)));
-    const pick = (editionId: number) => {
-        scrollTo.current = editionId;
-        const group = laitos.flatMap(l => l.groups).find(g => g.some(e => e.id === editionId));
-        if (group && group.length > 1) setOpened(prev => new Map(prev).set(group[0].id, true));
-        update({ painos: editionId }, true);
-    };
 
     const editions = [...(work.editions ?? [])].sort(comparePrintings);
     const pickedEdition = editions.find(e => e.id === picked);
@@ -195,9 +187,11 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
     const authors = peopleIn(work, 1);
     const editors = peopleIn(work, 3);
     const series = seriesPosition(work);
-    const subjects = tagsByType(work.tags);
+    const { subgenre, rest: subjects } = subjectGroups(work.tags);
+    const origin = originFact(work);
     const awards = [...(work.awards ?? [])].sort((a, b) => Number(a.year) - Number(b.year));
     const people = appearsIn(work.contributions);
+    // The original title under the Finnish one; language and year are a fact row (originFact).
     const foreign = isForeign(work) && work.orig_title && work.orig_title !== work.title;
     const anthologyAuthor = authors[0];
     const hasStories = (work.stories?.length ?? 0) > 0;
@@ -243,24 +237,21 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
             <article>
                 <div className={`wn-rec${cover ? "" : " wn-nocover"}`}>
                     {cover && (
-                        <div>
+                        <div className="wn-coverbox">
                             <Image className="wn-cover" src={imageUrl(cover.image_src)} alt={`Kansikuva: ${work.title}`} preview />
                             <div className="wn-cover-note">{coverNote}</div>
                         </div>
                     )}
-                    <div>
+                    <div className="wn-recmain">
                         {authors.length > 0 && (
                             <p className="wn-byline"><PeopleLinks people={authors} />
                                 {sharedAlias.length > 0 && <small> (kirjoittanut <PeopleLinks people={sharedAlias} />)</small>}
                             </p>
                         )}
                         <h1 className="wn-title" style={{ "--wn-title-fit": titleFit(work.title) } as CSSProperties}>{work.title}{work.subtitle && <span className="wn-subtitle">{work.subtitle}</span>}</h1>
-                        <p className="wn-orig">
-                            {foreign
-                                ? <>{work.orig_title}<span>{[work.language_name?.name, work.pubyear].filter(Boolean).join(", ")}</span></>
-                                : <span className="wn-only">Julkaistu {work.pubyear}</span>}
-                        </p>
+                        {foreign && <p className="wn-orig">{work.orig_title}</p>}
                         <dl className="wn-facts">
+                            {origin && <><dt>{origin.label}</dt><dd>{origin.value}</dd></>}
                             <dt>Tyyppi</dt><dd>{work.work_type?.name}</dd>
                             {work.genres?.length > 0 && (
                                 <>
@@ -268,6 +259,12 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
                                     <dd>{work.genres.map((g: { abbr: string; name: string }) => (
                                         <span className="wn-gdot" key={g.abbr}><i style={{ background: getGenreColors([g.abbr])[0] ?? "#6C757D" }} />{g.name}</span>
                                     ))}</dd>
+                                </>
+                            )}
+                            {subgenre.length > 0 && (
+                                <>
+                                    <dt>Alalaji</dt>
+                                    <dd>{subgenre.map((t, i) => <Fragment key={t.id}>{i > 0 && ", "}<Link to={`/tags/${t.id}`}>{t.name}</Link></Fragment>)}</dd>
                                 </>
                             )}
                             {editors.length > 0 && <><dt>Toimittanut</dt><dd><PeopleLinks people={editors} /></dd></>}
@@ -331,37 +328,34 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
                                     <dd><PeopleLinks people={people.map(c => c.person)} /></dd>
                                 </>
                             )}
+                            {work.misc && <><dt>Lisätietoja</dt><dd className="wn-misc">{work.misc}</dd></>}
                         </dl>
+                        {(work.description || subjects.length > 0) && (
+                            <div className="wn-descbox">
+                                <IdentityDisclosure className="wn-disc" showLabel="Asiasanat ja kuvaus" hideLabel="Asiasanat ja kuvaus">
+                                    {subjects.length > 0 && (
+                                        <dl className="wn-subjects" aria-label="Asiasanat">
+                                            {subjects.map(g => (
+                                                <div key={g.label}>
+                                                    <dt>{g.label}</dt>
+                                                    <dd>{g.tags.map((t, i) => <Fragment key={t.id}>{i > 0 && ", "}<Link to={`/tags/${t.id}`}>{t.name}</Link></Fragment>)}</dd>
+                                                </div>
+                                            ))}
+                                        </dl>
+                                    )}
+                                    {work.description && (
+                                        <div className="wn-desc">
+                                            <div dangerouslySetInnerHTML={safeHtml(work.description)} />
+                                            {work.descr_attr && <div className="wn-attr" dangerouslySetInnerHTML={safeHtml(work.descr_attr)} />}
+                                        </div>
+                                    )}
+                                </IdentityDisclosure>
+                            </div>
+                        )}
                     </div>
                     <aside className="wn-side" aria-label="Lisätiedot">{readMark}{side}</aside>
                 </div>
                 {readMark && <div className="wn-side wn-narrow" style={{ marginTop: 22 }}>{readMark}</div>}
-                {(work.description || work.misc || subjects.length > 0) && (
-                    <div className={`wn-about${cover ? "" : " wn-nocover"}`}>
-                        <div>
-                            {work.description && (
-                                <div className="wn-desc">
-                                    <CollapsibleHtml html={work.description} collapsedHeight={10} />
-                                    {work.descr_attr && <div className="wn-attr" dangerouslySetInnerHTML={safeHtml(work.descr_attr)} />}
-                                </div>
-                            )}
-                            {work.misc && <p className="wn-misc">{work.misc}</p>}
-                            {subjects.length > 0 && (
-                                <section>
-                                    <h2 className="wn-subj-h">Asiasanat</h2>
-                                    <dl className="wn-subjects">
-                                        {subjects.map(g => (
-                                            <Fragment key={g.label}>
-                                                <dt>{g.label}</dt>
-                                                <dd>{g.tags.map((t, i) => <Fragment key={t.id}>{i > 0 && ", "}<Link to={`/tags/${t.id}`}>{t.name}</Link></Fragment>)}</dd>
-                                            </Fragment>
-                                        ))}
-                                    </dl>
-                                </section>
-                            )}
-                        </div>
-                    </div>
-                )}
             </article>
 
             {hasStories && (
@@ -393,7 +387,6 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
                             </div>
                         )}
                     </div>
-                    <EditionShelf editions={editions} laitos={laitosGroups(editions, "all")} picked={picked} onPick={pick} onPreview={setPreview} />
                     {state.view === "kortit" ? (
                         <div className="grid mt-4">
                             {laitos.flatMap(l => l.groups).map(group => (
@@ -407,7 +400,7 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
                         </div>
                     ) : (
                         <EditionTable work={work} laitos={laitos} user={user} admin={admin} ownership={ownership} prices={prices}
-                            picked={picked} preview={preview} open={open} onToggle={toggle} />
+                            picked={picked} open={open} onToggle={toggle} />
                     )}
                 </section>
             )}

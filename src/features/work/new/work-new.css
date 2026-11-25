@@ -6,7 +6,7 @@
 .wn {
     --wn-paper: Canvas; --wn-sheet: #FFFFFF; --wn-ink: #1D1F2B; --wn-ink-2: #4F5262; --wn-ink-3: #66697A;
     --wn-rule: #DADBD4; --wn-rule-2: #C4C6BE; --wn-blue: #2B44B8; --wn-blue-soft: #E7EAF7; --wn-gold: #9A6B00;
-    --wn-hover: #ECEEE8; --wn-board: #1D1F2B; --wn-sticker: #FFFFFF; --wn-sticker-ink: #1D1F2B; --wn-spine-blank: #5A5D6C;
+    --wn-hover: #ECEEE8;
     --wn-outline: rgba(0, 0, 0, 0); --wn-price: #2E7D32;
     --wn-serif: 'PN Literata', Georgia, serif; --wn-sans: 'PN Schibsted Grotesk', system-ui, sans-serif;
     background: var(--wn-paper); color: var(--wn-ink); font: 16px/1.55 var(--wn-sans);
@@ -15,8 +15,8 @@
 @media (prefers-color-scheme: dark) {
     .wn {
         --wn-sheet: #1B1C23; --wn-ink: #E9E8E3; --wn-ink-2: #B4B4BE; --wn-ink-3: #8B8C97; --wn-rule: #2E3039; --wn-rule-2: #3D3F4A;
-        --wn-blue: #A3B3FF; --wn-blue-soft: #262C46; --wn-gold: #E2B84E; --wn-hover: #21232B; --wn-board: #8B8C97;
-        --wn-sticker: #E9E8E3; --wn-sticker-ink: #131419; --wn-spine-blank: #4A4C58; --wn-outline: rgba(255, 255, 255, .3); --wn-price: #81C784;
+        --wn-blue: #A3B3FF; --wn-blue-soft: #262C46; --wn-gold: #E2B84E; --wn-hover: #21232B;
+        --wn-outline: rgba(255, 255, 255, .3); --wn-price: #81C784;
     }
 }
 /* The site places and sizes the admin SpeedDial only under the current pages' classes. */
@@ -44,15 +44,13 @@
 .wn-byline a { color: var(--wn-ink); }
 .wn-byline small { font: 14px var(--wn-sans); color: var(--wn-ink-3); }
 /* --wn-title-fit (titleFit) shrinks a title with a long word; a word that still doesn't fit breaks rather than run into the sidebar. */
-.wn h1.wn-title { font-family: var(--wn-serif); font-optical-sizing: auto; font-weight: 650; font-size: calc(58px * var(--wn-title-fit, 1)); line-height: 1.02;
+.wn h1.wn-title { font-family: var(--wn-serif); font-optical-sizing: auto; font-weight: 650; font-size: calc(46px * var(--wn-title-fit, 1)); line-height: 1.02;
     letter-spacing: -.022em; margin: 6px 0 8px; text-wrap: balance; overflow-wrap: break-word; hyphens: auto; }
 .wn-subtitle { display: block; font: 400 22px/1.3 var(--wn-serif); letter-spacing: 0; margin-top: 6px; }
 .wn-orig { font: italic 400 22px/1.3 var(--wn-serif); color: var(--wn-ink-2); margin: 0; }
-.wn-orig span { font-style: normal; font-family: var(--wn-sans); font-size: 15px; color: var(--wn-ink-3); margin-left: 6px; }
-.wn-orig span.wn-only { margin: 0; }
 .wn-facts { display: grid; grid-template-columns: 116px minmax(0, 1fr); gap: 9px 18px; margin: 20px 0 0; padding-top: 20px; border-top: 1px solid var(--wn-rule); }
 .wn-facts dt { font-size: 14px; color: var(--wn-ink-3); padding-top: 2px; }
-.wn-facts dd { margin: 0; font: 400 16.5px/1.45 var(--wn-serif); }
+.wn-facts dd { margin: 0; font: 400 16.5px/1.45 var(--wn-serif); min-width: 0; overflow-wrap: anywhere; }
 .wn-facts dd ul { list-style: none; margin: 0; padding: 0; }
 .wn-facts dd small { font: 14px var(--wn-sans); color: var(--wn-ink-3); }
 .wn-gdot { display: inline-flex; align-items: center; gap: 7px; margin-right: 14px; white-space: nowrap; }
@@ -72,19 +70,21 @@
 .wn-hist { font-size: 14px; color: var(--wn-ink-3); margin: 0; }
 .wn-narrow { display: none; }
 
-/* 3 description and subject headings */
-.wn-about { display: grid; grid-template-columns: 220px minmax(0, 1fr) 250px; gap: 44px; margin-top: 40px; }
-.wn-about > div { grid-column: 2; }
-.wn-about.wn-nocover { grid-template-columns: minmax(0, 1fr) 250px; }
-.wn-about.wn-nocover > div { grid-column: 1; }
-.wn-desc { font: 400 18px/1.65 var(--wn-serif); max-width: 66ch; }
+/* 3 subject headings and description: closed behind one text button (owner, 2026-11-25) */
+.wn button.wn-disc { border: 0; background: none; padding: 0; color: var(--wn-blue); font: 600 15px var(--wn-sans); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px; }
+.wn button.wn-disc:hover { text-decoration: underline; text-underline-offset: 3px; }
+.wn button.wn-disc .pi { font-size: 12px; }
+.wn-descbox { margin-top: 22px; }
+.wn-desc { font: 400 18px/1.65 var(--wn-serif); max-width: 66ch; margin-top: 14px; }
 .wn-desc p { margin: 0 0 .9em; }
 .wn-attr { font-size: 13px; color: var(--wn-ink-3); }
-.wn-misc { font-size: 15px; color: var(--wn-ink-2); margin-top: 14px; max-width: 66ch; }
-.wn-subj-h { font: 600 21px var(--wn-serif); margin: 30px 0 10px; }
-.wn-subjects { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 8px 18px; margin: 0; max-width: 820px; }
-.wn-subjects dt { font-size: 14px; color: var(--wn-ink-3); padding-top: 2px; }
-.wn-subjects dd { margin: 0; font: 16.5px/1.5 var(--wn-serif); }
+.wn-facts dd.wn-misc { font: 15px/1.5 var(--wn-sans); color: var(--wn-ink-2); }
+/* compact: each type a small label and its headings, flowing in columns */
+.wn-subjects { columns: 3 220px; column-gap: 36px; margin: 16px 0 0; font-size: 15px; line-height: 1.45; max-width: 820px; }
+.wn-subjects > div { break-inside: avoid; margin-bottom: 10px; }
+.wn-subjects dt { font-size: 13px; color: var(--wn-ink-3); }
+.wn-subjects dd { margin: 0; }
 .wn-subjects dd a { color: var(--wn-ink); }
 .wn-subjects dd a:hover { color: var(--wn-blue); }
 
@@ -92,7 +92,7 @@
 .wn-contents { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--wn-rule); }
 .wn-contents h2 { font: 650 28px/1.1 var(--wn-serif); margin: 0 0 12px; }
 
-/* 4 printings: the shelf is the one bold element */
+/* 4 printings */
 /* The table's column bands follow the section's own width (the site's content column is narrower than the window). */
 .wn-printings { container-type: inline-size; margin-top: 56px; padding-top: 28px; border-top: 2px solid var(--wn-ink); }
 .wn-p-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px 24px; flex-wrap: wrap; }
@@ -104,28 +104,6 @@
 .wn-seg button:first-child { border-left: 0; }
 .wn-seg button[aria-pressed="true"] { background: var(--wn-ink); color: var(--wn-paper); }
 
-.wn-shelf { display: flex; align-items: flex-end; gap: 26px; overflow-x: auto; padding: 34px 2px 4px; margin-top: 6px; scrollbar-width: thin; }
-.wn-sgroup { flex: 0 0 auto; }
-.wn-spines { display: flex; align-items: flex-end; gap: 2px; padding: 0 6px; border-bottom: 4px solid var(--wn-board); min-height: 40px; }
-.wn-spine { position: relative; border: 0; padding: 0; cursor: pointer; border-radius: 2px 2px 0 0; flex: 0 0 auto;
-    background-color: var(--wn-spine-blank); background-size: auto 100%; background-position: center;
-    box-shadow: inset 2px 0 0 rgba(255, 255, 255, .22), inset -3px 0 0 rgba(0, 0, 0, .28), 0 0 0 1px var(--wn-outline);
-    transition: transform .15s ease; }
-.wn-sticker { position: absolute; left: 2px; right: 2px; bottom: 9px; margin: auto; max-width: 15px; background: var(--wn-sticker); color: var(--wn-sticker-ink);
-    writing-mode: vertical-rl; transform: rotate(180deg); font: 700 9.5px/1 var(--wn-sans); padding: 4px 0; text-align: center; border-radius: 1px; letter-spacing: .02em; }
-.wn-spine:hover, .wn-spine:focus-visible, .wn-spine.wn-on { transform: translateY(-8px); }
-.wn-spine.wn-on { box-shadow: inset 2px 0 0 rgba(255, 255, 255, .22), inset -3px 0 0 rgba(0, 0, 0, .28), 0 0 0 2px var(--wn-blue); }
-/* A missing dimension, drawn from the median of the work's other printings: "?" above, a missing height also fades the top. */
-.wn-spine.wn-est::before { content: "?"; position: absolute; top: -18px; left: -4px; right: -4px; text-align: center; font: 700 12px/1 var(--wn-sans); color: var(--wn-ink-2); }
-.wn-fade { position: absolute; inset: 0 0 auto; height: 26px; background: linear-gradient(to bottom, var(--wn-paper), transparent); pointer-events: none; }
-/* inline-block: as wide as its text, so the shelf can measure it */
-.wn-slabel { display: inline-block; font-size: 13.5px; color: var(--wn-ink-2); padding: 8px 6px 0; white-space: nowrap; }
-.wn-slabel span { color: var(--wn-ink-3); margin-left: 6px; }
-.wn-shelf-note { font-size: 13px; color: var(--wn-ink-3); margin: 6px 0 0; }
-@media (prefers-reduced-motion: reduce) {
-    .wn-spine { transition: none; }
-    .wn-spine:hover, .wn-spine:focus-visible, .wn-spine.wn-on { transform: none; }
-}
 
 /* 5 the table: one per laitos, rules carry the structure */
 .wn-version { margin-top: 34px; }
@@ -188,9 +166,7 @@ table.wn-et { width: 100%; border-collapse: collapse; table-layout: fixed; font-
     .wn-cover { width: 180px; }
     .wn-rec > .wn-side { grid-column: 2; flex-direction: row; flex-wrap: wrap; gap: 20px 36px; margin-top: 24px; }
     .wn-rec.wn-nocover > .wn-side { grid-column: 1; }
-    .wn-about { grid-template-columns: 180px minmax(0, 1fr); gap: 32px; }
-    .wn-about.wn-nocover { grid-template-columns: minmax(0, 1fr); }
-    .wn h1.wn-title { font-size: calc(50px * var(--wn-title-fit, 1)); }
+    .wn h1.wn-title { font-size: calc(42px * var(--wn-title-fit, 1)); }
     .wn-simrow { grid-template-columns: repeat(6, minmax(0, 1fr)); }
     .wn-simrow > li:nth-child(n+7) { display: none; }
 }
@@ -215,12 +191,18 @@ table.wn-et { width: 100%; border-collapse: collapse; table-layout: fixed; font-
 @media (max-width: 899px) {
     .wn-rec, .wn-rec.wn-nocover { grid-template-columns: 120px minmax(0, 1fr); column-gap: 20px; }
     .wn-rec.wn-nocover { grid-template-columns: minmax(0, 1fr); }
-    .wn-rec > .wn-facts { grid-column: 1 / -1; }
+    /* the cover beside the author, title and original title; the facts and the description under both, full width */
+    .wn-rec:not(.wn-nocover) > .wn-recmain { display: contents; }
+    .wn-rec:not(.wn-nocover) > .wn-recmain > * { grid-column: 2; }
+    .wn-rec:not(.wn-nocover) > .wn-recmain > .wn-facts, .wn-rec:not(.wn-nocover) > .wn-recmain > .wn-descbox { grid-column: 1 / -1; }
+    .wn-rec:not(.wn-nocover) > .wn-coverbox { grid-row: 1 / span 3; }
+    /* the third row takes the cover's extra height, so the author and the title stay together at the top */
+    .wn-rec:not(.wn-nocover) { grid-template-rows: auto auto 1fr; }
+    .wn-rec:not(.wn-nocover) > .wn-recmain > * { align-self: start; }
     .wn-cover { width: 120px; }
     .wn-rec > .wn-side { display: none; }
     .wn-narrow { display: flex; }
-    .wn-about, .wn-about.wn-nocover { display: block; margin-top: 28px; }
-    .wn h1.wn-title { font-size: calc(38px * var(--wn-title-fit, 1)); }
+    .wn h1.wn-title { font-size: calc(34px * var(--wn-title-fit, 1)); }
     .wn-orig { font-size: 18px; }
     .wn-simrow { display: flex; overflow-x: auto; gap: 14px; scrollbar-width: none; }
     .wn-simrow > li { flex: 0 0 118px; }
@@ -235,25 +217,22 @@ table.wn-et { width: 100%; border-collapse: collapse; table-layout: fixed; font-
     .wn-crumbs { padding: 14px 0 12px; }
     .wn-rec { grid-template-columns: 96px minmax(0, 1fr); column-gap: 16px; }
     .wn-cover { width: 96px; }
-    .wn h1.wn-title { font-size: calc(30px * var(--wn-title-fit, 1)); letter-spacing: -.015em; }
+    .wn h1.wn-title { font-size: calc(28px * var(--wn-title-fit, 1)); letter-spacing: -.015em; }
     .wn-byline { font-size: 16px; }
     .wn-orig { font-size: 16.5px; }
-    .wn-orig span { display: block; margin: 2px 0 0; }
     .wn-facts { grid-template-columns: 90px minmax(0, 1fr); gap: 8px 12px; margin-top: 18px; padding-top: 14px; }
     .wn-facts dd { font-size: 15.5px; }
     .wn-desc { font-size: 17px; }
-    .wn-subjects { grid-template-columns: 1fr; gap: 2px; }
-    .wn-subjects dd { margin-bottom: 8px; }
 }
 @container (max-width: 739px) {
     .wn-p-head h2 { font-size: 28px; }
     .wn-viewseg { display: none; }
-    .wn-shelf { padding-top: 22px; }
     /* cards */
     table.wn-et, table.wn-et tbody, table.wn-et tr, table.wn-et td { display: block; }
     table.wn-et thead { display: none; }
     table.wn-et tr { display: grid; grid-template-columns: 56px minmax(0, 1fr); padding: 10px 4px; border-bottom: 1px solid var(--wn-rule); }
-    table.wn-et td { border: 0; padding: 1px 8px; width: auto; }
+    /* td.c-xx: the desktop column widths outrank a plain td rule */
+    table.wn-et td, table.wn-et td.c-ed, table.wn-et td.c-yr, table.wn-et td.c-tr { border: 0; padding: 1px 8px; width: auto; }
     table.wn-et td.c-th { grid-row: 1 / span 12; padding: 2px 0; }
     table.wn-et td:not(.c-th) { grid-column: 2; }
     table.wn-et td:empty { display: none; }

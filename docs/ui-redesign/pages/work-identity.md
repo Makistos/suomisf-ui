@@ -3,7 +3,7 @@
 **Route:** `/works/:id` · **Builds on:** the agreed [work page plan](work.md) (all its behaviour stays: table, grouping, expandable rows,
 column bands, URL state, ownership, admin tools, similar works, missing data)
 **Companions:** [person-identity.md](person-identity.md) and [front-identity.md](front-identity.md), the same identity on the person page and the front page
-**Status:** Proposal; implemented as an admin-only trial (2026-11-24) · **Updated:** 2026-11-24
+**Status:** Proposal; implemented as an admin-only trial (2026-11-24); revision planned (2026-11-25) · **Updated:** 2026-11-25
 **Mockup:** [`../mockups/work-identity.html`](../mockups/work-identity.html) with the same [`works-data.js`](../mockups/works-data.js) as the agreed mockup:
 `?w=a` Le Guin, `?w=b` Tolkien, `?w=c` a work with little data, `?w=d` Tove Jansson's *Vaarallinen juhannus* (sizes and covers missing
 on the oldest printings, three printings without a number), `?w=e` *Tuulen tavoittelua* (only the first printing has any measurements). The yellow bar switches visitor / logged in / admin and light / dark.
@@ -219,6 +219,91 @@ The new page is built from this proposal with the agreed behaviour of [work.md](
 3. Record layout and subject-heading lists in `work-details.tsx`; the table keeps the agreed component with new styles only.
 4. Playwright: picking a spine highlights the row and swaps the cover; keyboard reaches every spine; reduced motion stops the lift;
    contrast check in both themes in `a11y.spec.ts`.
+
+## Revision plan (2026-11-25): the record and the printings first
+
+**Owner's finding after the trial:** the most important things on a work page are the author, title, original title, language, original year,
+type, genre and the printings. The description and the subject headings sit in the middle of the page and dominate it; the description and the
+shelf could be closed, with only a text button to open them.
+
+**Measured on the trial** (admin, 1,400 × 900 window; phone 390 px wide), the top of the "Painokset" heading:
+
+| Work | Desktop | Phone | Between the record and the printings (desktop) |
+|---|---|---|---|
+| Le Guin, *Pimeyden vasen käsi* (3984) | 1,241 px | 1,697 px | description 220 px, subject headings 300 px |
+| Tolkien, *Taru sormusten herrasta* (1514) | 1,311 px | not measured | description and note 260 px, subject headings 190 px; then the shelf 150 px before the table |
+
+On both the printings start on the second screen, and Tolkien's table only after the shelf.
+
+### Proposed layout
+
+```
+ Kirjat / Ursula K. Le Guin / Pimeyden vasen käsi
+┌────────┐  Ursula K. Le Guin                                  Oma lukumerkintä
+│        │  Pimeyden vasen käsi                    (smaller)    [En pitänyt][Ihan ok][Pidin]
+│ cover  │  The Left Hand of Darkness
+│        │  Alkuteos   englanti, 1969                           Linkit
+│        │  Tyyppi     Romaani                                  Kansalliskirjasto …
+└────────┘  Genre      ● Science Fiction                        Ylläpitäjille …
+ Kansi 1976 Alalaji    yhteiskunnallinen scifi, antropologinen scifi   Muutoshistoria
+            Palkinnot  🏆 Hugo 1970, paras romaani
+            Sarja      Hain-sarja 4/9 …  ‹ Harhakaupunki   Maailma, vihreä metsä ›
+            ˅ Näytä kuvaus
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ Painokset   3 painosta vuosina 1976–1992 …          [Kaikki|Samanlaiset yhdessä|Laitoksittain] [Taulukko|Kortit]
+ ˅ Näytä kirjahylly
+ (table)
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ Asiasanat   Tyyli uusi aalto · Aiheet politiikka, valtataistelu, … · Hahmot ja olennot … · Paikat … · Aika … · Listat …
+ Samankaltaiset teokset (admins)
+```
+
+1. **The record keeps only the identifying facts,** in the order of the owner's list: author, title, original title, then the facts. Language and
+   original year get their own labelled row, *Alkuteos: englanti, 1969*, instead of the small grey text after the original title, so they read as
+   facts and not as a footnote. A Finnish original shows *Julkaistu 1999* in the same row. Type, genre, awards and series follow as now.
+2. **The title is smaller:** 46 px instead of 58 (TODO note), with the same scaling for long words (`titleFit`). The phone size follows from it.
+3. **"Alalaji" moves into the facts, after Genre.** The subgenre answers the same question as the genre ("what kind of book is it") and is short
+   (one to three headings on the sample works). It's the only subject heading type that moves up.
+4. **The description is closed by default:** only a text button *˅ Näytä kuvaus* under the facts; it opens the full text in place with its source
+   line, and the button becomes *˄ Piilota kuvaus*. No clamped first lines (they are what makes it dominate now). With no description, no button.
+   The `misc` note (Tolkien: "Kokoomateos, suomennos vuoden 1966 korjatusta laitoksesta …") is a fact, not prose: it becomes a *Lisätietoja*
+   row at the end of the facts.
+5. **The shelf is closed by default:** a text button *˅ Näytä kirjahylly* between the "Painokset" heading and the table. Opening it shows the shelf as now;
+   picking a spine still picks the printing. The header cover, the table row highlight and `painos` in the URL work the same with the shelf
+   closed, since the table rows can be picked too. When the shelf would not be shown anyway (fewer than two printings with a size, page count or
+   cover), there is no button.
+6. **The subject headings move below the printings,** full width, in a compact form: sans 15 px, the types as small labels in one flowing
+   paragraph (or two to three columns on wide screens) instead of a two-column list in Literata. They stay plain-text links, grouped by type,
+   as in a library catalogue. The similar works (admins) follow them.
+7. **Phone:** the same order: record, *Näytä kuvaus*, read mark, printings with *Näytä kirjahylly*, subject headings, links.
+
+**Expected effect** (estimated from the screenshots, to be measured on the build): "Painokset" at about 560 px on Le Guin and 500 px on Tolkien
+(was 1,241 and 1,311), so the printings start on the first desktop screen; Tolkien's table starts about 150 px higher again with the shelf closed.
+
+**Worst cases to check in the build:** no description and no subject headings (no buttons, no empty section); a very long description
+(opens in place, no inner scroll); many subject heading types (Le Guin has seven); a work with only one printing (no shelf button);
+a `misc` note several lines long; a long original title with a long title word; the dark theme; the phone.
+
+**Accessibility:** both buttons are real buttons with `aria-expanded` and `aria-controls`, the opened region follows the button in the
+reading order, and keyboard focus stays on the button.
+
+### Implementation steps (when agreed)
+
+1. A small shared disclosure component (`identity-disclosure.tsx`: text button with the chevron, `aria-expanded`, the region), also for the
+   person page's TODO items (its description and publication timeline).
+2. Work page record: *Alkuteos* row, *Alalaji* row (`tagsByType` split), *Lisätietoja* row, smaller title, the description behind the disclosure.
+3. Shelf behind the disclosure; whether it is open is decided in open question 2.
+4. Subject headings section below the printings.
+5. Tests: Vitest for the subject heading split; Playwright for both buttons (closed by default, open, close, keyboard), no button without a
+   description or shelf, the Painokset heading on the first screen for Le Guin and Tolkien at 1,400 × 900, the phone order, axe;
+   screenshots and the wiki's work page section.
+
+### Questions for the owner
+
+1. **Subject headings:** below the printings as proposed, or in the sidebar next to the record? The sidebar keeps them in view but makes the
+   top row taller than the record (Le Guin's seven types are about 350 px), which pushes the printings down again.
+2. **Shelf memory:** stay closed on every page (proposed), or remember per browser that the reader opened it, like the grouping choice?
+3. **Alalaji in the facts:** agreed, or keep all subject headings together?
 
 ## Open questions
 

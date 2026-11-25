@@ -73,7 +73,8 @@ Status values: **Not started** → **Reviewed** (current page looked at, problem
 
 ## TODO (from the trials, 2026-11-25)
 
-Owner's notes on the person and work page trials, not done yet:
+Owner's notes on the person and work page trials, not done yet. The work page items are planned in
+[work-identity.md, "Revision plan"](pages/work-identity.md#revision-plan-2026-11-25-the-record-and-the-printings-first):
 
 - **Work page title a bit smaller in general** (58 px now, besides the long-word scaling added on 2026-11-25).
 - **Descriptions closed by default** on the work and person pages: only a "Näytä kuvaus" button, no clamped first lines.

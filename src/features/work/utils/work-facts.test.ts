@@ -5,7 +5,7 @@ import { Edition } from "@features/edition";
 import { Work } from "../types";
 import {
     editionLabel, groupLabel, laitosGroups, mergeGroupForRow, ownershipSummary, printingsSummary, seriesPosition,
-    subjectGroups, tagsByType, titleFit, yearRange, originFact,
+    subjectGroups, tagsByType, titleFit, yearRange, originFact, workCovers, mainCover,
 } from "./work-facts";
 
 // Real API responses, trimmed (src/test/fixtures/works.json, captured 2026-11-24).
@@ -163,5 +163,49 @@ describe("originFact", () => {
     it("leaves out what is missing, and is null with nothing to say", () => {
         expect(originFact({ ...leGuin, language_name: null } as unknown as Work)).toEqual({ label: "Alkuteos", value: "1969" });
         expect(originFact({ ...leGuin, language_name: null, pubyear: null } as unknown as Work)).toBeNull();
+    });
+});
+
+describe("workCovers", () => {
+    it("lists every printing's covers in printing order, each with its printing", () => {
+        const covers = workCovers(leGuin.editions);
+        expect(covers.map(c => c.image.id)).toEqual([187, 392]);
+        expect(covers.map(c => c.caption)).toEqual(["1. painos 1976, WSOY", "2. painos 1986, WSOY"]);
+        expect(covers[1].edition.id).toBe(4574);
+    });
+
+    it("keeps every cover of a printing with several, each once", () => {
+        const e = { ...leGuin.editions[0], images: [{ id: 1, image_src: "/a.jpg" }, { id: 2, image_src: "/b.jpg" }, { id: 1, image_src: "/a.jpg" }] } as unknown as Edition;
+        expect(workCovers([e]).map(c => c.image.id)).toEqual([1, 2]);
+    });
+
+    it("is empty when no printing has a cover", () => {
+        expect(workCovers(work("sparse").editions)).toEqual([]);
+    });
+});
+
+describe("mainCover", () => {
+    const covers = workCovers(leGuin.editions);
+
+    it("is the first printing's cover by default", () => {
+        expect(mainCover(covers, null, null)).toBe(0);
+    });
+
+    it("is the cover the admin chose", () => {
+        expect(mainCover(covers, 392, null)).toBe(1);
+    });
+
+    it("is a picked printing's own cover, before the admin's choice", () => {
+        expect(mainCover(covers, 187, 4574)).toBe(1);
+        // A picked printing without a cover leaves the choice in place.
+        expect(mainCover(covers, 392, 6193)).toBe(1);
+    });
+
+    it("ignores a choice that is no longer one of the covers", () => {
+        expect(mainCover(covers, 99999, null)).toBe(0);
+    });
+
+    it("is -1 without covers", () => {
+        expect(mainCover([], null, null)).toBe(-1);
     });
 });

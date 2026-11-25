@@ -19,7 +19,7 @@ import { EditionShortsPicker } from "@features/short/components/shorts-picker";
 import { User } from "@features/user";
 import { deleteApiContent, postApiContent } from "@services/user-service";
 import { Work } from "../types";
-import { editionLabel, Laitos, mergeGroupForRow, ownershipSummary } from "../utils/work-facts";
+import { CoverItem, editionLabel, Laitos, mergeGroupForRow, ownershipSummary, workCovers } from "../utils/work-facts";
 
 const imageUrl = (src: string) => (src.startsWith("http") ? src : `${import.meta.env.VITE_IMAGE_URL}${src}`);
 const nlLink = (isbn: string) => "https://kansalliskirjasto.finna.fi/Search/Results?limit=0&filter%5B%5D=~language%3A%22fin%22"
@@ -40,6 +40,8 @@ interface Props {
     picked: number | null;
     open: Set<number>;
     onToggle: (firstId: number) => void;
+    /** Opens the page's gallery on a row's covers: a printing can have several, and a row can hold several printings. */
+    onGallery: (covers: CoverItem[]) => void;
 }
 
 /** Other owners of a printing, from the work response (no request per printing). */
@@ -62,7 +64,7 @@ const OtherOwners = ({ edition, user }: { edition: Edition; user: User }) => {
 };
 
 /** The editions in tables, one per laitos, with the agreed columns and width bands (work.md section 5). */
-export const EditionTable = ({ work, laitos, user, admin, ownership, prices, picked, open, onToggle }: Props) => {
+export const EditionTable = ({ work, laitos, user, admin, ownership, prices, picked, open, onToggle, onGallery }: Props) => {
     const queryClient = useQueryClient();
     const toast = useRef<Toast>(null);
     const menu = useRef<Menu>(null);
@@ -158,11 +160,20 @@ export const EditionTable = ({ work, laitos, user, admin, ownership, prices, pic
                 className={[sub ? "wn-sub" : "", hl ? "wn-hl" : ""].filter(Boolean).join(" ") || undefined}>
                 {hasCovers && (
                     <td className="c-th">
-                        {!sub && r.cover && (
-                            // The small copy in the table; a click opens the original.
-                            <Image src={imageUrl(r.cover.thumb_src ?? r.cover.image_src)} zoomSrc={imageUrl(r.cover.image_src)}
-                                alt={`Kansikuva: ${r.label}`} preview loading="lazy" />
-                        )}
+                        {!sub && r.cover && (() => {
+                            const covers = workCovers(group);
+                            const thumb = <img src={imageUrl(r.cover.thumb_src ?? r.cover.image_src)} alt={`Kansikuva: ${r.label}`} loading="lazy" />;
+                            // Several covers in the row: a gallery of them all; one cover: the original at full size.
+                            return covers.length > 1 ? (
+                                <button type="button" className="wn-th-btn" aria-label={`Näytä rivin kannet (${covers.length}): ${r.label}`}
+                                    onClick={() => onGallery(covers)}>
+                                    {thumb}<span className="wn-th-n" aria-hidden="true">{covers.length}</span>
+                                </button>
+                            ) : (
+                                <Image src={imageUrl(r.cover.thumb_src ?? r.cover.image_src)} zoomSrc={imageUrl(r.cover.image_src)}
+                                    alt={`Kansikuva: ${r.label}`} preview loading="lazy" />
+                            );
+                        })()}
                     </td>
                 )}
                 <td className="c-ed wn-ed">

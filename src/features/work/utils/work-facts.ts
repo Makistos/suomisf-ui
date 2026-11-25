@@ -210,6 +210,40 @@ export const originFact = (work: Pick<Work, "language_name" | "pubyear">) => {
     return value ? { label: finnish ? "Julkaistu" : "Alkuteos", value } : null;
 };
 
+export interface CoverItem {
+    image: Edition["images"][number];
+    edition: Edition;
+    /** "1. painos 1976, WSOY" */
+    caption: string;
+}
+
+/** Every cover of the given printings in printing order, each once: the work's gallery, or one table row's. */
+export const workCovers = (editions: Edition[]): CoverItem[] => {
+    const seen = new Set<number>();
+    const items: CoverItem[] = [];
+    for (const e of [...editions].sort(comparePrintings)) {
+        for (const image of e.images ?? []) {
+            if (!image.image_src || seen.has(image.id)) continue;
+            seen.add(image.id);
+            const caption = [`${editionLabel(e)} ${e.pubyear ?? ""}`.trim(), e.publisher?.name].filter(Boolean).join(", ");
+            items.push({ image, edition: e, caption });
+        }
+    }
+    return items;
+};
+
+/**
+ * Which cover the work page shows: a picked printing's own cover, else the one an admin chose
+ * (work.cover_image_id), else the first printing's. -1 when there are none.
+ */
+export const mainCover = (covers: CoverItem[], chosenImageId: number | null | undefined, pickedEditionId: number | null) => {
+    if (covers.length === 0) return -1;
+    const picked = pickedEditionId === null ? -1 : covers.findIndex(c => c.edition.id === pickedEditionId);
+    if (picked >= 0) return picked;
+    const chosen = chosenImageId == null ? -1 : covers.findIndex(c => c.image.id === chosenImageId);
+    return chosen >= 0 ? chosen : 0;
+};
+
 /** Letters of a word that still fit the title column at full size (58 px in about 490 px). */
 const TITLE_WORD_FITS = 13;
 

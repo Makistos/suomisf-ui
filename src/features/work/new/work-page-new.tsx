@@ -31,10 +31,12 @@ import {
     fetchSimilarWorks, partsText, reasonText, scoreText, shownReasons, SimilarWork, tagTypesText,
 } from "../components/similar-works";
 import {
-    comparePrintings, laitosGroups, originFact, printingsSummary, seriesPosition, subjectGroups, titleFit,
+    comparePrintings, laitosGroups, mainCover, originFact, printingsSummary, seriesPosition, subjectGroups, titleFit, workCovers,
 } from "../utils/work-facts";
 import { readViewState, rememberViewState, withViewState, WorkViewState } from "../utils/work-view-state";
 import { EditionTable } from "./edition-table";
+import { CoverGallery, type CoverGalleryHandle } from "./cover-gallery";
+import { CoverPicker } from "./cover-picker";
 import { WorkAdminTools } from "./work-admin-tools";
 
 const storage = () => {
@@ -116,6 +118,8 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
     const [formOpen, setFormOpen] = useState(false);
     const [historyVisible, setHistoryVisible] = useState(false);
     const [awardsVisible, setAwardsVisible] = useState(false);
+    const gallery = useRef<CoverGalleryHandle>(null);
+    const [pickerVisible, setPickerVisible] = useState(false);
     // Merged rows the reader opened (true) or closed (false); otherwise only the picked printing's row is open.
     const [opened, setOpened] = useState<Map<number, boolean>>(new Map());
     const [searchParams, setSearchParams] = useSearchParams();
@@ -147,7 +151,7 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
 
     // A printing opened through /editions/:id is picked until the reader picks another.
     const picked = state.painos ?? (highlightEditionId ? Number(highlightEditionId) : null);
-    const laitos = useMemo(() => laitosGroups(work?.editions ?? [], state.mode), [work, state.mode]);
+    const laitos = laitosGroups(work?.editions ?? [], state.mode);
 
     // The page scrolls to the picked printing's row.
     useEffect(() => {
@@ -178,8 +182,11 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
 
     const editions = [...(work.editions ?? [])].sort(comparePrintings);
     const pickedEdition = editions.find(e => e.id === picked);
-    const coverEdition = pickedEdition?.images?.length ? pickedEdition : editions.find(e => e.images?.length);
-    const cover = coverEdition?.images[0];
+    // Every cover of every printing; the header shows a picked printing's, the admin's choice or the first printing's.
+    const covers = workCovers(editions);
+    const main = mainCover(covers, work.cover_image_id, picked);
+    const coverEdition = main >= 0 ? covers[main].edition : undefined;
+    const cover = main >= 0 ? covers[main].image : undefined;
     const coverNote = pickedEdition && pickedEdition === coverEdition
         ? (pickedEdition.editionnum ? `${pickedEdition.editionnum}. painoksen kansi, ${pickedEdition.pubyear}` : `Numerottoman painoksen kansi, ${pickedEdition.pubyear}`)
         : coverEdition ? `Kansi ${coverEdition.pubyear}` : "";
@@ -238,8 +245,24 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
                 <div className={`wn-rec${cover ? "" : " wn-nocover"}`}>
                     {cover && (
                         <div className="wn-coverbox">
-                            <Image className="wn-cover" src={imageUrl(cover.image_src)} alt={`Kansikuva: ${work.title}`} preview />
-                            <div className="wn-cover-note">{coverNote}</div>
+                            {covers.length > 1 ? (
+                                // Several covers: the cover opens the gallery at itself.
+                                <button type="button" className="wn-cover wn-cover-btn" onClick={() => gallery.current?.open(covers, main)}
+                                    aria-label={`Näytä kaikki kannet (${covers.length}), alkaen: ${covers[main].caption}`}>
+                                    <img src={imageUrl(cover.image_src)} alt={`Kansikuva: ${work.title}`} />
+                                </button>
+                            ) : (
+                                <Image className="wn-cover" src={imageUrl(cover.image_src)} alt={`Kansikuva: ${work.title}`} preview />
+                            )}
+                            <div className="wn-cover-note">
+                                {coverNote}
+                                {covers.length > 1 && (
+                                    <> · <button type="button" className="wn-link" onClick={() => gallery.current?.open(covers, main)}>{covers.length} kantta</button></>
+                                )}
+                            </div>
+                            {admin && covers.length > 1 && (
+                                <button type="button" className="wn-link wn-pick-open" onClick={() => setPickerVisible(true)}>Vaihda pääkuva</button>
+                            )}
                         </div>
                     )}
                     <div className="wn-recmain">
@@ -400,7 +423,8 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
                         </div>
                     ) : (
                         <EditionTable work={work} laitos={laitos} user={user} admin={admin} ownership={ownership} prices={prices}
-                            picked={picked} open={open} onToggle={toggle} />
+                            picked={picked} open={open} onToggle={toggle}
+                            onGallery={covers => gallery.current?.open(covers, 0)} />
                     )}
                 </section>
             )}
@@ -415,6 +439,12 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
             <Dialog header="Palkinnot" visible={awardsVisible} onHide={() => setAwardsVisible(false)} className="w-full lg:w-6" blockScroll>
                 {awardsVisible && <AwardList awards={work.awards} />}
             </Dialog>
+            {covers.length > 0 && <CoverGallery ref={gallery} initial={covers} />}
+            {admin && covers.length > 1 && (
+                <CoverPicker workId={work.id} covers={covers} chosen={work.cover_image_id ?? null} user={user}
+                    visible={pickerVisible} onHide={() => setPickerVisible(false)}
+                    onSaved={() => queryClient.invalidateQueries({ queryKey: ["work", workId] })} />
+            )}
             {admin && workId && <WorkAdminTools work={work} workId={String(workId)} onFormOpen={setFormOpen} />}
         </main>
     );

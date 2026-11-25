@@ -11,6 +11,10 @@ import { expectAccessible } from '../fixtures/axe';
 const LE_GUIN = 3984;
 const TOLKIEN = 1514;
 const COLLECTION = 3973; // Maailman syntymäpäivä ja muita tarinoita
+const TUULEN = 185; // Tuulen tavoittelua: four printings, one cover
+const MATKA = 552; // Matka alkaa: one printing with two covers, used only by the cover picker test
+const TOLKIEN_2ND = 1752; // 2. painos 1985: two covers
+const ATUAN = 3964; // Atuanin holvihaudat: one laitos row, three printings, two covers
 const SPARSE = 3407; // Satujen maan taistelu: one printing, no cover
 const TOLKIEN_4TH = 10208; // 4. painos 1988
 
@@ -76,8 +80,8 @@ test('Le Guin: the catalogue record, awards, series order and subject headings',
     await expect(page.locator('.wn-p-head p')).toHaveText('3 painosta vuosina 1976–1992, WSOY. Suomentanut Kalevi Nyytäjä.');
 });
 
-test('covers are large enough and open at full size when clicked', async ({ adminPage: page }) => {
-    await openNew(page, `/works/${LE_GUIN}`);
+test('a single cover is large enough and opens at full size when clicked', async ({ adminPage: page }) => {
+    await openNew(page, `/works/${TUULEN}`);
     const thumb = page.locator('table.wn-et td.c-th img').first();
     expect((await thumb.boundingBox())!.width).toBeGreaterThanOrEqual(44);
 
@@ -96,6 +100,121 @@ test('covers are large enough and open at full size when clicked', async ({ admi
     await page.locator('.wn-cover').evaluate(el => el.scrollIntoView({ block: 'center' }));
     await page.locator('.wn-cover').getByRole('button', { name: 'Suurenna kuva' }).click();
     await expect(page.locator('.p-image-preview')).toBeVisible();
+    // One cover: no gallery and nothing to choose.
+    await expect(page.getByRole('button', { name: /^Näytä kaikki kannet/ })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Vaihda pääkuva' })).toHaveCount(0);
+});
+
+// PrimeReact keeps an empty overlay layer in the page (no content, pointer-events none); an open gallery has its content in it.
+const gallery = (page: Page) => page.locator('.p-galleria-mask .p-galleria');
+
+test('several covers: the header cover opens a gallery of all of them, each with its printing', async ({ adminPage: page }) => {
+    await openNew(page, `/works/${LE_GUIN}`);
+    await expect(page.locator('.wn-cover-note')).toHaveText('Kansi 1976 · 2 kantta');
+    await page.getByRole('button', { name: 'Näytä kaikki kannet (2), alkaen: 1. painos 1976, WSOY' }).click();
+    await expect(gallery(page)).toBeVisible();
+    await expect(gallery(page).locator('.wn-gallery-cap')).toHaveText('1. painos 1976, WSOY');
+    // The original file, not the small copy.
+    const img = gallery(page).locator('img.wn-gallery-img');
+    await expect(img).toHaveAttribute('src', /\/static\/images\/books\/[^/]+\.(jpe?g|png|webp)$/i);
+    await expect(gallery(page).locator('img.wn-gallery-thumb')).toHaveCount(2);
+    await gallery(page).locator('.p-galleria-item-next').click();
+    await expect(gallery(page).locator('.wn-gallery-cap')).toHaveText('2. painos 1986, WSOY');
+    await gallery(page).locator('.p-galleria-close').click();
+    await expect(gallery(page)).toHaveCount(0);
+    // The "2 kantta" link opens it too.
+    await page.locator('.wn-cover-note').getByRole('button', { name: '2 kantta' }).click();
+    await expect(gallery(page)).toBeVisible();
+});
+
+test('a table row with several covers opens a gallery of the row\'s covers', async ({ adminPage: page }) => {
+    await openNew(page, `/works/${TOLKIEN}?ryhmittely=kaikki`);
+    // One printing with two covers.
+    const row = page.locator(`#painos-${TOLKIEN_2ND}`);
+    await row.locator('td.c-th').evaluate(el => el.scrollIntoView({ block: 'center' }));
+    await row.getByRole('button', { name: /^Näytä rivin kannet \(2\)/ }).click();
+    await expect(gallery(page).locator('img.wn-gallery-thumb')).toHaveCount(2);
+    await expect(gallery(page).locator('.wn-gallery-cap')).toHaveText('2. painos 1985, WSOY');
+    await gallery(page).locator('.p-galleria-close').click();
+    await expect(gallery(page)).toHaveCount(0);
+
+    // A row holding many printings (the first laitos, 17 printings): every cover of every printing in it,
+    // more than the printings since some have several.
+    await openNew(page, `/works/${TOLKIEN}`);
+    const first = page.locator('table.wn-et tbody tr').first();
+    await first.locator('td.c-th').evaluate(el => el.scrollIntoView({ block: 'center' }));
+    const button = first.getByRole('button', { name: /^Näytä rivin kannet \(\d+\): 1\.–36\. painos$/ });
+    const n = Number((await button.getAttribute('aria-label'))!.match(/\((\d+)\)/)![1]);
+    expect(n).toBeGreaterThan(17);
+    await expect(first.locator('.wn-th-n')).toHaveText(String(n));
+    await button.click();
+    await expect(gallery(page).locator('img.wn-gallery-thumb')).toHaveCount(n);
+    await gallery(page).locator('.p-galleria-close').click();
+    // A row with one cover keeps the plain full-size view.
+    const last = page.locator('table.wn-et tbody tr').last();
+    await expect(last.getByRole('button', { name: /^Näytä rivin kannet/ })).toHaveCount(0);
+    await last.locator('td.c-th').evaluate(el => el.scrollIntoView({ block: 'center' }));
+    await last.getByRole('button', { name: 'Suurenna kuva' }).click();
+    await expect(page.locator('.p-image-preview')).toBeVisible();
+});
+
+test('each gallery opens over a dark overlay with working arrows and close, whichever opens first', async ({ adminPage: page }) => {
+    // The owner's report: a row's gallery opened without its overlay, white controls on the white page, the next arrow
+    // under the admin SpeedDial, and no way to close it.
+    for (const order of [['row', 'header'], ['header', 'row']]) {
+        await openNew(page, `/works/${ATUAN}`);
+        for (const which of order) {
+            const opener = which === 'row'
+                ? page.getByRole('button', { name: /^Näytä rivin kannet \(2\)/ })
+                : page.getByRole('button', { name: /^Näytä kaikki kannet \(2\)/ });
+            await opener.scrollIntoViewIfNeeded();
+            await opener.click();
+            await expect(page.locator('.p-galleria-mask.p-component-overlay')).toHaveCount(1);
+            expect(Number(await page.locator('.p-galleria-mask.p-component-overlay').evaluate(el => getComputedStyle(el).zIndex))).toBeGreaterThan(1000);
+            await expect(gallery(page).locator('.wn-gallery-cap')).toHaveText('1. painos 1977, WSOY');
+            await gallery(page).locator('.p-galleria-item-next').click();
+            await expect(gallery(page).locator('.wn-gallery-cap')).toHaveText('3. painos 1990, WSOY');
+            await gallery(page).locator('.p-galleria-close').click();
+            await expect(gallery(page)).toHaveCount(0);
+        }
+    }
+});
+
+test('an admin picks the cover the work page shows, and can return to the default', async ({ adminPage: page }) => {
+    await openNew(page, `/works/${MATKA}`);
+    const header = page.locator('.wn-cover img');
+    const first = await header.getAttribute('src');
+    await page.getByRole('button', { name: 'Vaihda pääkuva' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Teossivun pääkuva' });
+    const choices = dialog.getByRole('group', { name: 'Pääkuva' }).getByRole('button');
+    await expect(choices).toHaveCount(3);
+    await expect(choices.first()).toHaveAttribute('aria-pressed', 'true');
+    const saved = page.waitForResponse(r => r.url().includes(`/works/${MATKA}/cover`) && r.request().method() === 'PUT');
+    await choices.nth(2).click();
+    expect((await saved).status()).toBe(200);
+    await expect(dialog).toHaveCount(0);
+    await expect(header).not.toHaveAttribute('src', first!);
+    const second = await header.getAttribute('src');
+    // Everyone sees it: it is stored, not only in this browser.
+    await page.reload();
+    await expect(page.locator('.wn-cover img')).toHaveAttribute('src', second!, { timeout: 20000 });
+
+    await page.getByRole('button', { name: 'Vaihda pääkuva' }).click();
+    await expect(choices.nth(2)).toHaveAttribute('aria-pressed', 'true');
+    await choices.first().click();
+    await expect(dialog).toHaveCount(0);
+    await expect(page.locator('.wn-cover img')).toHaveAttribute('src', first!);
+});
+
+test('a failed cover choice says so and leaves the cover as it was', async ({ adminPage: page }) => {
+    await page.route(`**/api/works/${LE_GUIN}/cover`, route => route.fulfill({ status: 500, body: '{}' }));
+    await openNew(page, `/works/${LE_GUIN}`);
+    const before = await page.locator('.wn-cover img').getAttribute('src');
+    await page.getByRole('button', { name: 'Vaihda pääkuva' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Teossivun pääkuva' });
+    await dialog.getByRole('button', { name: 'Pääkuvaksi: 2. painos 1986, WSOY' }).click();
+    await expect(dialog.getByRole('alert')).toHaveText('Pääkuvan tallentaminen ei onnistunut.');
+    await expect(page.locator('.wn-cover img')).toHaveAttribute('src', before!);
 });
 
 test('a title with a long word stays in its column, on desktop and on a phone', async ({ adminPage: page }) => {
@@ -165,7 +284,7 @@ test('a merged row opens into its printings, each with its own controls and one 
     const first = page.locator('.wn-version').first();
     await expect(first.locator('tbody tr')).toHaveCount(1);
     await expect(first.locator('.wn-ownsum')).toHaveText('Et omista');
-    await first.getByRole('button', { name: '1.–36. painos' }).click();
+    await first.getByRole('button', { name: '1.–36. painos', exact: true }).click();
     await expect(first.locator('tr.wn-sub')).toHaveCount(17);
     await expect(first.locator('tr.wn-sub .p-rating')).toHaveCount(17);
     await expect(first.locator('tr.wn-sub').first().getByRole('link', { name: '1. painos' })).toHaveAttribute('href', /\/editions\/\d+/);
@@ -196,7 +315,7 @@ test('grouping lives in the URL, survives reload and back, and the next work ope
 
 test('/editions/:id opens the new page with that printing picked and its cover in the header', async ({ adminPage: page }) => {
     await openNew(page, `/editions/${TOLKIEN_4TH}`);
-    await expect(page.locator('.wn-cover-note')).toHaveText('4. painoksen kansi, 1988');
+    await expect(page.locator('.wn-cover-note')).toHaveText(/^4\. painoksen kansi, 1988 · \d+ kantta$/);
     const row = page.locator(`#painos-${TOLKIEN_4TH}`);
     await expect(row).toHaveClass(/wn-hl/);
     await expect(row).toBeInViewport();

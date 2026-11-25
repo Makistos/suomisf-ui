@@ -43,6 +43,8 @@ export interface Work {
     id: number,
     imported_string: string,
     kirjasampo_imported?: string | null,
+    /** The cover an admin picked for the work page (null = the first printing's). */
+    cover_image_id?: number | null,
     language_name: Language,
     links: LinkType[],
     misc: string,

@@ -328,6 +328,20 @@ before; it now checks Le Guin too.
 - **The subject headings are back above the description, inside the same closed block;** the button reads
   *Asiasanat ja kuvaus* in both states (the chevron and `aria-expanded` tell whether it is open). Alalaji stays in the facts.
 
+### Covers: gallery and the admin's main cover (owner, 2026-11-25)
+
+- **Header:** with more than one cover among the printings, the cover is a button that opens a full-screen gallery (PrimeReact Galleria)
+  of every cover of every printing, in printing order, each captioned with its printing ("1. painos 1976, WSOY"); the note under the cover
+  reads "Kansi 1976 · 2 kantta" and the count opens the gallery too. A single cover keeps the plain full-size view.
+- **Main cover:** admins get *Vaihda pääkuva* under the cover: a dialog of all covers plus *Oletus* (the first printing's cover). The choice
+  is stored on the work (`work.cover_image_id`, backend migration 053, `PUT /api/works/:id/cover`, logged in the change history as Pääkuva)
+  and shown to everyone. A picked printing (`painos`, `/editions/:id`) still shows its own cover first.
+- **Edition table:** a row's thumbnail opens a gallery of every cover in that row when it has more than one: a printing can have several
+  covers, and a merged row holds several printings (Tolkien's first laitos row: 17 printings, 18 covers). The count is shown on the thumbnail.
+  A row with one cover keeps the plain full-size view.
+- **The current page is unaffected:** it ignores `cover_image_id`. The migration must be applied to a database before the backend
+  version that reads the column is deployed there.
+
 ### Questions for the owner
 
 1. **Subject headings:** below the printings as proposed, or in the sidebar next to the record? The sidebar keeps them in view but makes the

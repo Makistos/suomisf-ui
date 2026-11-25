@@ -19,8 +19,12 @@
         --wn-sticker: #E9E8E3; --wn-sticker-ink: #131419; --wn-spine-blank: #4A4C58; --wn-outline: rgba(255, 255, 255, .3); --wn-price: #81C784;
     }
 }
-.wn a { color: var(--wn-blue); text-decoration: none; }
-.wn a:hover { text-decoration: underline; text-underline-offset: 3px; }
+/* The site places and sizes the admin SpeedDial only under the current pages' classes. */
+.wn .fixed-dial { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; }
+.wn .fixed-dial .p-speeddial-button { width: 3rem; height: 3rem; }
+/* The admin SpeedDial's links keep the theme's look (:where adds no specificity, so other link rules still win as before). */
+.wn a:where(:not(.p-speeddial-action)) { color: var(--wn-blue); text-decoration: none; }
+.wn a:where(:not(.p-speeddial-action)):hover { text-decoration: underline; text-underline-offset: 3px; }
 .wn :focus-visible { outline: 2px solid var(--wn-blue); outline-offset: 2px; border-radius: 2px; }
 .wn h1, .wn h2, .wn h3 { color: var(--wn-ink); }
 .wn button.wn-link { border: 0; background: none; padding: 0; color: var(--wn-blue); font: inherit; cursor: pointer; text-align: left; }

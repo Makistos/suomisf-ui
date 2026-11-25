@@ -76,9 +76,9 @@ export const WorkAdminTools = ({ work, workId, onFormOpen }: {
         <>
             <Toast ref={toastRef} />
             <ConfirmDialog />
-            <Tooltip position="left" target=".wn-dial .p-speeddial-action" />
-            <SpeedDial model={items} direction="up" className="wn-dial" showIcon="pi pi-plus" hideIcon="pi pi-times"
-                buttonClassName="p-button-primary" style={{ position: "fixed", right: "2rem", bottom: "2rem" }} />
+            <Tooltip position="left" target=".fixed-dial .p-speeddial-action" />
+            <SpeedDial model={items} direction="up" className="fixed-dial" showIcon="pi pi-plus" hideIcon="pi pi-times"
+                buttonClassName="p-button-primary" />
             <Dialog maximizable blockScroll className="w-full xl:w-6" header={open === "new" ? "Uusi teos" : "Teoksen muokkaus"}
                 visible={open === "new" || open === "edit"} onHide={close}>
                 {(open === "new" || open === "edit") && <WorkForm workId={open === "edit" ? workId : null} onSubmitCallback={saved} />}

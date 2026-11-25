@@ -19,8 +19,12 @@
         --pn-hover: #21232B; --pn-admin: #191A20; --pn-outline: rgba(255, 255, 255, .3);
     }
 }
-.pn a { color: var(--pn-blue); text-decoration: none; }
-.pn a:hover { text-decoration: underline; text-underline-offset: 3px; }
+/* The site places and sizes the admin SpeedDial only under the current pages' classes. */
+.pn .fixed-dial { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; }
+.pn .fixed-dial .p-speeddial-button { width: 3rem; height: 3rem; }
+/* The admin SpeedDial's links keep the theme's look (:where adds no specificity, so other link rules still win as before). */
+.pn a:where(:not(.p-speeddial-action)) { color: var(--pn-blue); text-decoration: none; }
+.pn a:where(:not(.p-speeddial-action)):hover { text-decoration: underline; text-underline-offset: 3px; }
 .pn :focus-visible { outline: 2px solid var(--pn-blue); outline-offset: 2px; border-radius: 2px; }
 .pn h1, .pn h2, .pn h3 { color: var(--pn-ink); }
 .pn-crumbs { font-size: 14px; color: var(--pn-ink-3); padding: 14px 0 18px; }

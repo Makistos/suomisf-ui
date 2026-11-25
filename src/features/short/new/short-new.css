@@ -20,14 +20,16 @@
         --sn-warn: #2A2617; --sn-warn-rule: #7A6524;
     }
 }
-.sn a { color: var(--sn-blue); text-decoration: none; }
-.sn a:hover { text-decoration: underline; text-underline-offset: 3px; }
+/* The admin SpeedDial's links keep the theme's look (:where adds no specificity, so other link rules still win as before). */
+.sn a:where(:not(.p-speeddial-action)) { color: var(--sn-blue); text-decoration: none; }
+.sn a:where(:not(.p-speeddial-action)):hover { text-decoration: underline; text-underline-offset: 3px; }
 .sn :focus-visible { outline: 2px solid var(--sn-blue); outline-offset: 2px; border-radius: 2px; }
 .sn h1, .sn h2, .sn h3 { color: var(--sn-ink); }
 .sn button.sn-link { border: 0; background: none; padding: 0; color: var(--sn-blue); font: inherit; cursor: pointer; text-align: left; }
 .sn button.sn-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 /* the site places the admin SpeedDial only under the current pages' classes */
 .sn .fixed-dial { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; }
+.sn .fixed-dial .p-speeddial-button { width: 3rem; height: 3rem; }
 .sn-crumbs { font-size: 14px; color: var(--sn-ink-3); padding: 22px 0 18px; }
 .sn-crumbs a { color: var(--sn-ink-2); }
 

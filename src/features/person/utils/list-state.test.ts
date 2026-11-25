@@ -20,9 +20,9 @@ const rows: ListRow[] = [
 describe("parseListState / withListState", () => {
     it("reads every part of the view from the URL, with defaults", () => {
         const s = parseListState(new URLSearchParams("osio=novellit&rooli=kaantaja&tyyppi=romaanit&haku=maa&vuosi=1980-1984&jarjestys=suomivuosi&nakyma=kannet&sarjoittain=1"));
-        expect(s).toEqual({ osio: "novellit", rooli: "kaantaja", salanimi: null, tyyppi: "romaanit", haku: "maa",
+        expect(s).toEqual({ osio: "novellit", rooli: "kaantaja", tekija: null, tyyppi: "romaanit", haku: "maa",
             vuosi: { from: 1980, to: 1984 }, jarjestys: "suomivuosi", nakyma: "kannet", sarjoittain: true });
-        expect(parseListState(new URLSearchParams(""))).toEqual({ osio: null, rooli: null, salanimi: null, tyyppi: null, haku: "",
+        expect(parseListState(new URLSearchParams(""))).toEqual({ osio: null, rooli: null, tekija: null, tyyppi: null, haku: "",
             vuosi: null, jarjestys: "nimi", nakyma: "lista", sarjoittain: false });
     });
 
@@ -83,12 +83,22 @@ describe("sortRows and groupRows", () => {
     });
 });
 
-describe("salanimi", () => {
+describe("tekija", () => {
     it("is read from and written to the URL, and cleared with the tab and the role", () => {
-        expect(parseListState(new URLSearchParams("salanimi=2712")).salanimi).toBe("2712");
-        expect(parseListState(new URLSearchParams()).salanimi).toBeNull();
-        expect(withListState(new URLSearchParams(), { salanimi: "oma" }).toString()).toBe("salanimi=oma");
-        expect(withListState(new URLSearchParams("salanimi=2712"), { osio: "novellit" }).get("salanimi")).toBeNull();
-        expect(withListState(new URLSearchParams("salanimi=2712"), { rooli: "kaantaja" }).get("salanimi")).toBeNull();
+        expect(parseListState(new URLSearchParams("tekija=2370-5521")).tekija).toBe("2370-5521");
+        expect(parseListState(new URLSearchParams()).tekija).toBeNull();
+        expect(withListState(new URLSearchParams(), { tekija: "2712" }).toString()).toBe("tekija=2712");
+        expect(withListState(new URLSearchParams("tekija=2712"), { osio: "novellit" }).get("tekija")).toBeNull();
+        expect(withListState(new URLSearchParams("tekija=2712"), { rooli: "kaantaja" }).get("tekija")).toBeNull();
+    });
+
+    it("groups by credit when sorted by title and there is more than one credit", () => {
+        const s = parseListState(new URLSearchParams());
+        const row = (id: number, title: string, label: string, rank: number) =>
+            ({ id, title, origTitle: "", origYear: null, firstYear: null, type: "Romaani", years: [], series: null, credit: { key: label, label, rank } });
+        const rs = [row(1, "B", "Anne Leinonen & Eija Lappalainen", 2), row(2, "A", "Anne Leinonen", 0), row(3, "C", "Anne Leinonen", 0)];
+        expect(groupRows(sortRows(rs, "nimi"), s).map(g => [g.label, g.rows.map(r => r.title)]))
+            .toEqual([["Anne Leinonen", ["A", "C"]], ["Anne Leinonen & Eija Lappalainen", ["B"]]]);
+        expect(groupRows(sortRows(rs.slice(1), "nimi"), s).map(g => g.label)).toEqual([null]);
     });
 });

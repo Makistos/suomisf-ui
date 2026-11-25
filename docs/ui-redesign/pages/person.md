@@ -243,8 +243,13 @@ The new page is built from [person-identity.md](person-identity.md) with this pl
 - **After the owner's first look (2026-11-24):**
   - the ownership mark (a star when the user owns a printing, a bookmark when one is on the wishlist, the years in its name) is **in front of
     the title**, no longer among the printing years;
-  - a **"Nimellä" row** picks the books published under one name ("Kaikki 81, Stephen King 79, Richard Bachman 2"), shown only when a pen
-    name has books; the choice is in the URL (`salanimi=2712` or `salanimi=oma`) and clears with the tab or the role;
+  - a **"Tekijä" row** picks the books or stories by credit: the person's own name, each pen name, and each collaboration
+    (King: "Stephen King 75, Richard Bachman 2, Stephen King & Peter Straub 2 …"; Anne Leinonen's books: own name 14, with Eija Lappalainen 4 …),
+    shown when there is more than one; more than four different collaborations fold into one "Yhdessä muiden kanssa" button (Leinonen's
+    stories have 15). The choice is in the URL (`tekija=2712`, `tekija=2370-5521`, `tekija=yhdessa`) and clears with the tab or the role;
+  - **collaborations are grouped and named,** as on the old page: sorted by title, the written books and stories are grouped by credit
+    (own name first, pen names, collaborations last), and a row written with others says "yhdessä Eija Lappalainen" (before, nothing told
+    them apart);
   - **bigger covers** in the lists (52 × 78 px, 44 × 66 px on a phone; the cover grid at least 140 px wide);
   - **many tabs wrap** onto a second line on desktop instead of hiding off the edge (Anne Leinonen has seven); on a phone they scroll
     sideways with a visible scrollbar; the Lista / Kannet toggle uses the identity's button-group style;
@@ -254,7 +259,7 @@ The new page is built from [person-identity.md](person-identity.md) with this pl
 - **Kept from the current page for now:** Sarjat and Lehdet reuse `BookSeriesList` and `ContributorMagazineControl` as they are.
 - **Tests that must keep passing before it becomes the default:** Vitest `person-facts.test.ts`, `list-state.test.ts`, `src/utils/page-version.test.ts`;
   Playwright `tests/admin/person-new.spec.ts` (switch, numbers, tabs, Henkilöstä, timeline filter, URL state, pen names, roles, Kannet,
-  sparse person, pencil, phone, background, sort dropdown, pen-name row, ownership mark, axe), `tests/anon/person-version.spec.ts` and `tests/user/person-version.spec.ts` (visitors and users keep
+  sparse person, pencil, phone, background, sort dropdown, Tekijä row and collaboration groups, ownership mark, axe), `tests/anon/person-version.spec.ts` and `tests/user/person-version.spec.ts` (visitors and users keep
   the current page). To make it the default: render `PersonPageNew` for everyone in the switch, then remove the current page and the switch.
 
 ## Implementation steps (each one a small PR)

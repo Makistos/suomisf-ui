@@ -18,7 +18,9 @@ import { editionIsOwned } from "../../edition/utils/edition-is-owned";
 import { editionIsWishlisted } from "../../edition/utils/edition-is-wishlisted";
 import { getGenreColors } from "../../genre/utils/genre-colors";
 import { thumbUrl } from "../../../utils/cover-url";
-import { byPenName, penNameFacets, ROLE_TABS, storyYear, type BookEntry, type PenNameFacet, type RoleKey, type StoryRoleKey } from "../utils/person-facts";
+import {
+    byCredit, creditFacets, ROLE_TABS, storyYear, writerCredit, type BookEntry, type Credit, type CreditFacet, type RoleKey, type StoryRoleKey,
+} from "../utils/person-facts";
 import type { Person } from "../types";
 import {
     filterRows, groupRows, sortRows, typeFacets, typeSlug, type ListRow, type ListState,
@@ -127,8 +129,8 @@ const Toolbar = ({ rows, state, update, showView }: ToolbarProps) => {
 };
 
 /** "Näytetään 7 / 30 · Romaanit × · 1984 × · Tyhjennä" when any filter is on. */
-const ResultLine = ({ rows, shown, state, update, penName }: { rows: ListRow[]; shown: number; state: ListState; update: Update; penName?: string }) => {
-    if (!state.tyyppi && !state.haku && !state.vuosi && !penName) return null;
+const ResultLine = ({ rows, shown, state, update, creditLabel }: { rows: ListRow[]; shown: number; state: ListState; update: Update; creditLabel?: string }) => {
+    if (!state.tyyppi && !state.haku && !state.vuosi && !creditLabel) return null;
     const v = state.vuosi;
     const type = rows.find(r => typeSlug(r.type) === state.tyyppi)?.type;
     return (
@@ -137,8 +139,8 @@ const ResultLine = ({ rows, shown, state, update, penName }: { rows: ListRow[]; 
             {state.tyyppi && <button type="button" onClick={() => update({ tyyppi: null })} aria-label="Poista tyyppirajaus">{type ? typePlural(type) : state.tyyppi} ×</button>}
             {v && <button type="button" onClick={() => update({ vuosi: null })} aria-label="Poista vuosirajaus">{v.from === v.to ? v.from : `${v.from}–${v.to}`} ×</button>}
             {state.haku && <button type="button" onClick={() => update({ haku: "" })} aria-label="Poista nimirajaus">”{state.haku}” ×</button>}
-            {penName && <button type="button" onClick={() => update({ salanimi: null })} aria-label="Poista julkaisunimen rajaus">Nimellä {penName} ×</button>}
-            <button type="button" className="pn-clear" onClick={() => update({ tyyppi: null, haku: "", vuosi: null, salanimi: null })}>Tyhjennä</button>
+            {creditLabel && <button type="button" onClick={() => update({ tekija: null })} aria-label="Poista tekijärajaus">{creditLabel} ×</button>}
+            <button type="button" className="pn-clear" onClick={() => update({ tyyppi: null, haku: "", vuosi: null, tekija: null })}>Tyhjennä</button>
         </p>
     );
 };
@@ -184,6 +186,7 @@ const bookRow = (entry: BookEntry): BookRow => {
         id: w.id, title: w.title, origTitle: w.orig_title && w.orig_title !== w.title ? w.orig_title : "",
         origYear: w.pubyear || null, firstYear: years.length ? Math.min(...years) : null,
         type: w.work_type?.name ?? "", years, series: w.bookseries?.name ?? null, entry,
+        ...(entry.credit ? { credit: entry.credit } : {}),
     };
 };
 
@@ -227,6 +230,7 @@ const BookRowView = ({ row, user, onEditWork }: { row: BookRow; user: User | nul
                             {row.origTitle && <><i>{row.origTitle}</i> </>}{row.origYear}
                             {w.bookseries && <>, <Link to={`/bookseries/${w.bookseries.id}`}>{w.bookseries.name}{w.bookseriesnum ? ` ${w.bookseriesnum}` : ""}</Link></>}
                             {asName && <>, nimellä <Link to={`/people/${asId}`}>{asName}</Link></>}
+                            <CoAuthors credit={row.entry.credit} />
                         </>
                     ) : (
                         <>{naturalName(w.author_str)}{row.origYear ? `, ${row.origYear}` : ""}</>
@@ -259,14 +263,22 @@ const CoverGrid = ({ rows }: { rows: BookRow[] }) => (
 type BookListProps = {
     groups: Record<RoleKey, BookEntry[]>; state: ListState; update: Update; user: User | null;
     onEditWork?: (id: number) => void; showView?: boolean;
-    /** For the pen-name row: the person's own name. */
+    /** For the credit row (own name, pen names, collaborations). */
     person?: Person;
 };
 
-/** "Nimellä: Kaikki 81 · Stephen King 79 · Richard Bachman 2", only when a pen name has books. */
-const PenNameRow = ({ facets, active, onPick }: { facets: PenNameFacet[]; active: string | null; onPick: (key: string | null) => void }) => (
-    <div className="pn-roles" role="group" aria-label="Julkaisunimi">
-        <span>Nimellä</span>
+/** ", yhdessä Eija Lappalainen": the co-authors of a book or story written with others. */
+const CoAuthors = ({ credit }: { credit?: Credit }) => credit && credit.coAuthors.length > 0 ? (
+    <>, yhdessä {credit.coAuthors.map((c, i) => <Fragment key={c.id}>{i > 0 && " & "}<Link to={`/people/${c.id}`}>{c.name}</Link></Fragment>)}</>
+) : null;
+
+/**
+ * "Tekijä: Kaikki 20 · Anne Leinonen 14 · Anne Leinonen & Eija Lappalainen 4 …": the person's own name, each pen name
+ * and each collaboration, shown when there is more than one.
+ */
+const CreditRow = ({ facets, active, onPick }: { facets: CreditFacet[]; active: string | null; onPick: (key: string | null) => void }) => (
+    <div className="pn-roles" role="group" aria-label="Tekijä">
+        <span>Tekijä</span>
         <div className="pn-seg">
             <button type="button" aria-pressed={active === null} onClick={() => onPick(null)}>
                 Kaikki<small>{facets.reduce((n, f) => n + f.count, 0)}</small>
@@ -284,10 +296,10 @@ export const BookList = ({ groups, state, update, user, onEditWork, showView = t
     const roles = ROLE_TABS.filter(r => groups[r.key].length > 0);
     if (roles.length === 0) return null;
     const active = roles.find(r => r.key === state.rooli) ?? roles[0];
-    const pens = active.key === "kirjoittaja" && person ? penNameFacets(groups.kirjoittaja, person) : null;
-    const pen = pens?.find(f => f.key === state.salanimi) ?? null;
     const allRows = groups[active.key].map(bookRow);
-    const rows = pen ? allRows.filter(r => byPenName([r.entry], pen.key).length > 0) : allRows;
+    const credits = active.key === "kirjoittaja" && person ? creditFacets(allRows.flatMap(r => (r.credit ? [r.credit as Credit] : []))) : null;
+    const credit = credits?.find(f => f.key === state.tekija) ?? null;
+    const rows = credit ? byCredit(allRows as (BookRow & { credit?: Credit })[], credit.key) : allRows;
     const shown = filterRows(rows, state);
     return (
         <>
@@ -295,9 +307,9 @@ export const BookList = ({ groups, state, update, user, onEditWork, showView = t
                 <RoleRow roles={roles.map(r => [r.key, r.label, groups[r.key].length])} active={active.key}
                     onPick={key => update({ rooli: key, tyyppi: null, haku: "", vuosi: null })} />
             )}
-            {pens && <PenNameRow facets={pens} active={pen?.key ?? null} onPick={key => update({ salanimi: key })} />}
+            {credits && <CreditRow facets={credits} active={credit?.key ?? null} onPick={key => update({ tekija: key })} />}
             {rows.length >= TOOLBAR_FROM && <Toolbar rows={rows} state={state} update={update} showView={showView} />}
-            <ResultLine rows={allRows} shown={shown.length} state={state} update={update} penName={pen?.label} />
+            <ResultLine rows={allRows} shown={shown.length} state={state} update={update} creditLabel={credit?.label} />
             {showView && state.nakyma === "kannet"
                 ? <CoverGrid rows={shown} />
                 : <Groups rows={shown} state={state} render={r => <BookRowView key={r.id} row={r} user={user} onEditWork={onEditWork} />} />}
@@ -318,10 +330,11 @@ const publicationYears = (s: Short) => [
     ...(s.issues ?? []).map(i => Number(i.year)),
 ].filter(Boolean);
 
-const storyRow = (s: Short): StoryRow => {
+const storyRow = (s: Short, credit?: Credit): StoryRow => {
     const years = publicationYears(s);
     const own = Number(s.pubyear) || null;
     return {
+        ...(credit ? { credit } : {}),
         id: s.id, title: s.title, origTitle: s.orig_title && s.orig_title !== s.title ? s.orig_title : "",
         origYear: own, firstYear: years.length ? Math.min(...years) : own, type: s.type?.name ?? "Muu",
         years: years.length ? years : own ? [own] : [], series: null, story: s,
@@ -342,26 +355,33 @@ export const Published = ({ story }: { story: Short }) => {
     return <div className="pn-r-eds">{items.map((x, i) => <Fragment key={i}>{i > 0 && ", "}{x}</Fragment>)}</div>;
 };
 
-const StoryRowView = ({ row, role }: { row: StoryRow; role: StoryRoleKey }) => (
+const StoryRowView = ({ row, role }: { row: StoryRow; role: StoryRoleKey }) => {
+    const credit = row.credit as Credit | undefined;
+    return (
     <div className="pn-row pn-text">
         <div>
             <div className="pn-r-t"><Link to={`/shorts/${row.id}`}>{row.title}</Link></div>
             <div className="pn-r-sub">
                 {role === "kirjoittaja"
-                    ? <>{row.origTitle && <><i>{row.origTitle}</i> </>}{row.origYear}</>
+                    ? <>{row.origTitle && <><i>{row.origTitle}</i> </>}{row.origYear}{credit?.penName && <>, nimellä {credit.penName}</>}<CoAuthors credit={credit} /></>
                     : <>{authorsOf(row.story)}{row.origYear ? `, ${row.origYear}` : ""}</>}
             </div>
             <Published story={row.story} />
         </div>
         <div className="pn-r-right"><span>{row.type}</span></div>
     </div>
-);
+    );
+};
 
-export const StoryList = ({ groups, state, update }: { groups: Record<StoryRoleKey, Short[]>; state: ListState; update: Update }) => {
+export const StoryList = ({ groups, state, update, person }: { groups: Record<StoryRoleKey, Short[]>; state: ListState; update: Update; person?: Person }) => {
     const roles = STORY_ROLES.filter(r => groups[r.key].length > 0);
     if (roles.length === 0) return null;
     const active = roles.find(r => r.key === state.rooli) ?? roles[0];
-    const rows = groups[active.key].map(storyRow);
+    const written = active.key === "kirjoittaja" && person;
+    const allRows = groups[active.key].map(s => storyRow(s, written ? writerCredit(s.contributors, person) : undefined));
+    const credits = written ? creditFacets(allRows.flatMap(r => (r.credit ? [r.credit as Credit] : []))) : null;
+    const credit = credits?.find(f => f.key === state.tekija) ?? null;
+    const rows = credit ? byCredit(allRows as (StoryRow & { credit?: Credit })[], credit.key) : allRows;
     const shown = filterRows(rows, state);
     return (
         <>
@@ -369,8 +389,9 @@ export const StoryList = ({ groups, state, update }: { groups: Record<StoryRoleK
                 <RoleRow roles={roles.map(r => [r.key, r.label, groups[r.key].length])} active={active.key}
                     onPick={key => update({ rooli: key, tyyppi: null, haku: "", vuosi: null })} />
             )}
+            {credits && <CreditRow facets={credits} active={credit?.key ?? null} onPick={key => update({ tekija: key })} />}
             {rows.length >= TOOLBAR_FROM && <Toolbar rows={rows} state={state} update={update} showView={false} />}
-            <ResultLine rows={rows} shown={shown.length} state={state} update={update} />
+            <ResultLine rows={allRows} shown={shown.length} state={state} update={update} creditLabel={credit?.label} />
             <Groups rows={shown} state={state} render={r => <StoryRowView key={r.id} row={r} role={active.key} />} />
             {shown.length === 0 && <p className="pn-empty">Ei osumia näillä rajauksilla.</p>}
         </>

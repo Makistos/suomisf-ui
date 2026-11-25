@@ -9,8 +9,8 @@ export type YearRange = { from: number; to: number };
 export type ListState = {
     osio: string | null;
     rooli: string | null;
-    /** Books under one name: "oma" or a pen name's person id. */
-    salanimi: string | null;
+    /** Items under one credit: the credited writers' ids ("2370", "2370-5521"). */
+    tekija: string | null;
     tyyppi: string | null;
     haku: string;
     vuosi: YearRange | null;
@@ -34,7 +34,7 @@ export const parseListState = (params: URLSearchParams): ListState => {
     return {
         osio: params.get("osio"),
         rooli: params.get("rooli"),
-        salanimi: params.get("salanimi"),
+        tekija: params.get("tekija"),
         tyyppi: params.get("tyyppi"),
         haku: params.get("haku") ?? "",
         vuosi: parseYears(params.get("vuosi")),
@@ -49,17 +49,17 @@ export const parseListState = (params: URLSearchParams): ListState => {
 export const withListState = (params: URLSearchParams, changes: Partial<ListState>): URLSearchParams => {
     const next = new URLSearchParams(params);
     if ("osio" in changes && changes.osio !== params.get("osio")) {
-        for (const k of ["rooli", "salanimi", "tyyppi", "haku", "vuosi"]) next.delete(k);
+        for (const k of ["rooli", "tekija", "tyyppi", "haku", "vuosi"]) next.delete(k);
     }
-    // Pen names belong to the written books: another role clears the choice.
-    if ("rooli" in changes && changes.rooli !== params.get("rooli")) next.delete("salanimi");
+    // Credits belong to the written items: another role clears the choice.
+    if ("rooli" in changes && changes.rooli !== params.get("rooli")) next.delete("tekija");
     const set = (key: string, value: string | null, fallback: string | null = null) => {
         if (value === null || value === "" || value === fallback) next.delete(key);
         else next.set(key, value);
     };
     if ("osio" in changes) set("osio", changes.osio ?? null);
     if ("rooli" in changes) set("rooli", changes.rooli ?? null);
-    if ("salanimi" in changes) set("salanimi", changes.salanimi ?? null);
+    if ("tekija" in changes) set("tekija", changes.tekija ?? null);
     if ("tyyppi" in changes) set("tyyppi", changes.tyyppi ?? null);
     if ("haku" in changes) set("haku", changes.haku ?? "");
     if ("vuosi" in changes) {
@@ -78,6 +78,8 @@ export const typeSlug = (name: string) =>
 
 /** What the filters, sorting and grouping need to know about a list row. */
 export type ListRow = {
+    /** Who it is credited to, for grouping by credit (written books and stories). */
+    credit?: { key: string; label: string; rank: number };
     id: number;
     title: string;
     origTitle: string;
@@ -134,7 +136,13 @@ export const groupRows = <R extends ListRow>(rows: R[], s: ListState): RowGroup<
         const none = groups.get("Ei sarjaa");
         return [...named.map(([label, rs]) => ({ label, rows: rs })), ...(none ? [{ label: "Ei sarjaa", rows: none }] : [])];
     }
-    if (s.jarjestys === "nimi") return [{ label: null, rows }];
+    if (s.jarjestys === "nimi") {
+        // By credit, as on the old page: own name first, pen names, collaborations last.
+        const credits = new Map(rows.filter(r => r.credit).map(r => [r.credit!.key, r.credit!]));
+        if (credits.size <= 1) return [{ label: null, rows }];
+        const order = [...credits.values()].sort((a, b) => a.rank - b.rank || a.label.localeCompare(b.label, "fi"));
+        return order.map(c => ({ label: c.label, rows: rows.filter(r => r.credit?.key === c.key) }));
+    }
     for (const r of rows) {
         const y = s.jarjestys === "alkuvuosi" ? r.origYear ?? r.firstYear : r.firstYear;
         add(y ? `${Math.floor(y / 10) * 10}-luku` : "Vuosi ei tiedossa", r);

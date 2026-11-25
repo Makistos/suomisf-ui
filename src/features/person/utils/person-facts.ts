@@ -202,31 +202,77 @@ export const ROLE_TABS: { key: RoleKey; label: string; role: number }[] = [
 ];
 
 /** A book in one of the person's roles, with the printings that role covers. */
-export type BookEntry = { work: Work; editions: Edition[]; role: RoleKey; asName?: string; asId?: number };
+export type BookEntry = { work: Work; editions: Edition[]; role: RoleKey; asName?: string; asId?: number; credit?: Credit };
 
 /**
  * The person's books by role, for one group of work types and SF / non-SF:
  * written (all printings), edited, translated, cover and illustration
  * (the printings the person worked on). Each work once per role.
  */
-export type PenNameFacet = { key: string; label: string; count: number };
+/** Who a book or story is credited to: the person, one of their pen names, or either with co-authors. */
+export type Credit = {
+    /** The credited writers' ids, sorted: "2370", "7502", "2370-5521". */
+    key: string;
+    /** "Anne Leinonen", "Impi Kure", "Anne Leinonen & Eija Lappalainen" */
+    label: string;
+    /** Own name 0, pen name 1, with co-authors 2: the old page's order (own name first, collaborations last). */
+    rank: 0 | 1 | 2;
+    penName?: string;
+    coAuthors: { id: number; name: string }[];
+};
+export type CreditFacet = { key: string; label: string; count: number };
 
-/** "Stephen King 2, Richard Bachman 1": the names the books were published under; null when no pen name has books. */
-export const penNameFacets = (entries: BookEntry[], person: Person): PenNameFacet[] | null => {
-    const pens = new Map<number, PenNameFacet>();
-    for (const e of entries) {
-        if (e.asId === undefined) continue;
-        const f = pens.get(e.asId) ?? { key: String(e.asId), label: e.asName ?? "", count: 0 };
-        pens.set(e.asId, { ...f, count: f.count + 1 });
-    }
-    if (pens.size === 0) return null;
-    const own = entries.filter(e => e.asId === undefined).length;
-    return [{ key: "oma", label: person.alt_name || person.name, count: own }, ...[...pens.values()].sort((a, b) => b.count - a.count)];
+const personName = (p: { name: string; alt_name?: string }) =>
+    p.alt_name || (p.name.includes(", ") ? p.name.split(", ").reverse().join(" ") : p.name);
+
+export const writerCredit = (contributions: Contribution[] | undefined, person: Person): Credit => {
+    const ids = ownIds(person);
+    const writers = [...new Map((contributions ?? []).filter(c => c.role.id === ContributionType.Kirjoittaja).map(c => [c.person.id, c])).values()];
+    const mine = writers.filter(c => ids.has(c.person.id));
+    const others = writers.filter(c => !ids.has(c.person.id));
+    // Credited under the person's own name too: the own name wins over a pen name.
+    const pen = mine.length > 0 && !mine.some(c => c.person.id === person.id) ? mine[0].person : null;
+    const alias = pen && (person.aliases ?? []).find(a => a.id === pen.id);
+    const self = pen ? personName(alias ?? pen) : personName(person);
+    const coAuthors = others.map(c => ({ id: c.person.id, name: personName(c.person) }));
+    return {
+        key: [pen ? pen.id : person.id, ...coAuthors.map(c => c.id)].sort((a, b) => a - b).join("-"),
+        label: [self, ...coAuthors.map(c => c.name)].join(" & "),
+        rank: coAuthors.length > 0 ? 2 : pen ? 1 : 0,
+        ...(pen ? { penName: self } : {}),
+        coAuthors,
+    };
 };
 
-/** The books published under one name ("oma" or a pen name's id); all with null. */
-export const byPenName = (entries: BookEntry[], key: string | null) =>
-    key === null ? entries : entries.filter(e => (key === "oma" ? e.asId === undefined : String(e.asId) === key));
+/** More different collaborations than this become one "Yhdessä muiden kanssa" button. */
+const MAX_COLLABORATION_FACETS = 4;
+export const COLLABORATIONS_KEY = "yhdessa";
+
+/**
+ * Each credit with its count, own name first, then pen names (most used first), then collaborations; null with only one.
+ * Many collaborations (Anne Leinonen's stories have 15) fold into one button.
+ */
+export const creditFacets = (credits: Credit[]): CreditFacet[] | null => {
+    const byKey = new Map<string, { credit: Credit; count: number }>();
+    for (const c of credits) byKey.set(c.key, { credit: c, count: (byKey.get(c.key)?.count ?? 0) + 1 });
+    if (byKey.size <= 1) return null;
+    const facets = [...byKey.values()]
+        .sort((a, b) => a.credit.rank - b.credit.rank
+            || (a.credit.rank === 1 ? b.count - a.count : 0)
+            || a.credit.label.localeCompare(b.credit.label, "fi"));
+    const together = facets.filter(f => f.credit.rank === 2);
+    const shown = together.length > MAX_COLLABORATION_FACETS
+        ? [...facets.filter(f => f.credit.rank < 2).map(({ credit, count }) => ({ key: credit.key, label: credit.label, count })),
+            { key: COLLABORATIONS_KEY, label: "Yhdessä muiden kanssa", count: together.reduce((n, f) => n + f.count, 0) }]
+        : facets.map(({ credit, count }) => ({ key: credit.key, label: credit.label, count }));
+    return shown;
+};
+
+/** The items under one credit; all with null. */
+export const byCredit = <T extends { credit?: Credit }>(items: T[], key: string | null) =>
+    key === null ? items
+        : key === COLLABORATIONS_KEY ? items.filter(x => x.credit?.rank === 2)
+            : items.filter(x => x.credit?.key === key);
 
 export const booksByRole = (person: Person, types: number[], keep: (w: Work) => boolean): Record<RoleKey, BookEntry[]> => {
     const ids = ownIds(person);
@@ -252,7 +298,8 @@ export const booksByRole = (person: Person, types: number[], keep: (w: Work) => 
             // Published only under a pen name: the row says "nimellä Richard Bachman".
             const penId = credited.every(c => c.person.id !== person.id) ? credited[0]?.person.id : undefined;
             const pen = penId !== undefined ? aliasNames.get(penId) : undefined;
-            return { work: w, editions: [...(w.editions ?? [])], role: "kirjoittaja" as RoleKey, ...(pen ? { asName: pen, asId: penId } : {}) };
+            return { work: w, editions: [...(w.editions ?? [])], role: "kirjoittaja" as RoleKey, ...(pen ? { asName: pen, asId: penId } : {}),
+                credit: writerCredit(w.contributions, person) };
         });
     return {
         kirjoittaja: written,

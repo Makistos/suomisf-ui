@@ -134,8 +134,10 @@ test('type and name filters show faceted counts, live in the URL and clear toget
 test('books are sorted by title by default; the sort dropdown shows its value and changes it without breaking the page', async ({ adminPage: page }) => {
     await openNew(page, KING);
     await expect(page.locator('.pn-toolbar .p-dropdown-label').first()).toHaveText('Nimi');
-    const titles = await page.locator('.pn-row .pn-r-t a').allTextContents();
-    expect(titles).toEqual([...titles].sort((a, b) => a.localeCompare(b, 'fi')));
+    // Within each author group (own name, pen name, collaborations) the titles are in order.
+    const own = await page.getByRole('region', { name: 'Stephen King', exact: true }).locator('.pn-r-t a').allTextContents();
+    expect(own.length).toBe(75);
+    expect(own).toEqual([...own].sort((a, b) => a.localeCompare(b, 'fi')));
     await page.locator('.pn-toolbar .p-dropdown').first().click();
     await page.getByRole('option', { name: 'Alkuteoksen vuosi', exact: true }).click();
     await expect(page).toHaveURL(/jarjestys=alkuvuosi/);
@@ -156,25 +158,42 @@ test('pen names: a person who used one and a pen name shared by several writers'
     await expect(page.locator('.pn-portrait')).toHaveCount(0);
 });
 
-test('a pen name row picks the books published under one name', async ({ adminPage: page }) => {
+test('the Tekijä row picks books by pen name or collaboration; King\'s Bachman books', async ({ adminPage: page }) => {
     await openNew(page, KING);
-    const names = page.getByRole('group', { name: 'Julkaisunimi' });
-    await expect(names.getByRole('button')).toHaveText([/^Kaikki\s*81$/, /^Stephen King\s*79$/, /^Richard Bachman\s*2$/]);
-    await names.getByRole('button', { name: /^Richard Bachman/ }).click();
-    await expect(page).toHaveURL(/salanimi=2712/);
+    const credits = page.getByRole('group', { name: 'Tekijä' });
+    await expect(credits.getByRole('button')).toHaveText([/^Kaikki\s*81$/, /^Stephen King\s*75$/, /^Richard Bachman\s*2$/,
+        /^Stephen King & Owen King\s*1$/, /^Stephen King & Peter Straub\s*2$/, /^Stephen King & Richard Chizmar\s*1$/]);
+    await credits.getByRole('button', { name: /^Richard Bachman/ }).click();
+    await expect(page).toHaveURL(/tekija=2712/);
     await expect(page.locator('.pn-row')).toHaveCount(2);
     for (const sub of await page.locator('.pn-row .pn-r-sub').allTextContents()) expect(sub).toContain('nimellä Richard Bachman');
-    await expect(page.locator('.pn-result')).toContainText('Nimellä Richard Bachman ×');
     await expect(page.locator('.pn-result')).toContainText('Näytetään 2 / 81');
+    await expect(page.locator('.pn-result')).toContainText('Richard Bachman ×');
     await page.getByRole('button', { name: 'Tyhjennä' }).click();
-    await expect(page).not.toHaveURL(/salanimi=/);
+    await expect(page).not.toHaveURL(/tekija=/);
     await expect(page.locator('.pn-row')).toHaveCount(81);
+});
 
-    // Not for a writer without pen names, nor on a pen name's own page.
-    await openNew(page, LE_GUIN);
-    await expect(page.getByRole('group', { name: 'Julkaisunimi' })).toHaveCount(0);
-    await openNew(page, HUNTER);
-    await expect(page.getByRole('group', { name: 'Julkaisunimi' })).toHaveCount(0);
+test('collaborations are grouped and named, as on the old page (Anne Leinonen)', async ({ adminPage: page }) => {
+    await openNew(page, LEINONEN);
+    // Sorted by title (the default): own name first, then each collaboration.
+    await expect(page.locator('.pn-group-h')).toHaveText([/^Anne Leinonen\s*14$/, /^Anne Leinonen & Eija Laitinen\s*1$/,
+        /^Anne Leinonen & Eija Lappalainen\s*4$/, /^Anne Leinonen & Petri Laine\s*1$/]);
+    const routasisarukset = page.locator('.pn-row', { has: page.getByRole('link', { name: 'Routasisarukset', exact: true }) });
+    await expect(routasisarukset.locator('.pn-r-sub')).toContainText('yhdessä Eija Lappalainen');
+    await page.getByRole('group', { name: 'Tekijä' }).getByRole('button', { name: /^Anne Leinonen & Eija Lappalainen/ }).click();
+    await expect(page.locator('.pn-row')).toHaveCount(4);
+
+    // Stories: her three pen names, and her many collaborations folded into one button.
+    await page.goto(`/people/${LEINONEN}?osio=novellit`);
+    const credits = page.getByRole('group', { name: 'Tekijä' });
+    await expect(credits.getByRole('button')).toHaveText([/^Kaikki\s*184$/, /^Anne Leinonen\s*158$/, /^Aimo-Inari Holappa\s*1$/,
+        /^Impi Kure\s*1$/, /^Kalervo Rauta-Kalske\s*1$/, /^Yhdessä muiden kanssa\s*23$/], { timeout: 20000 });
+    await credits.getByRole('button', { name: /^Impi Kure/ }).click();
+    await expect(page.locator('.pn-row')).toHaveCount(1);
+    await expect(page.locator('.pn-row .pn-r-sub')).toContainText('nimellä Impi Kure');
+    await credits.getByRole('button', { name: /^Yhdessä muiden kanssa/ }).click();
+    await expect(page.locator('.pn-row')).toHaveCount(23);
 });
 
 test('a book the user owns is marked before its title', async ({ adminPage: page }) => {

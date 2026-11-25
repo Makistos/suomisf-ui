@@ -240,7 +240,7 @@ export const PersonPageNew = ({ id }: { id: string | null }) => {
         switch (key) {
             case "teokset": return <BookList groups={derived.books.teokset} state={listState} update={update} user={user} onEditWork={onEditWork} person={person} />;
             case "tietokirjat": return <BookList groups={derived.books.tietokirjat} state={listState} update={update} user={user} onEditWork={onEditWork} person={person} />;
-            case "novellit": return <StoryList groups={derived.stories} state={listState} update={update} />;
+            case "novellit": return <StoryList groups={derived.stories} state={listState} update={update} person={person} />;
             case "sarjat": return <div className="pn-panel-legacy"><BookSeriesList works={seriesWorks} seriesType="bookseries" /></div>;
             case "lehdet": return <div className="pn-panel-legacy"><ContributorMagazineControl issues={issues} person={person.id} /></div>;
             case "palkinnot": return <AwardRows awards={awards} />;
@@ -252,7 +252,7 @@ export const PersonPageNew = ({ id }: { id: string | null }) => {
                     </>}
                     {derived.hasOtherStories && <>
                         <h3 className="pn-group-h">Novellit ja artikkelit</h3>
-                        <StoryList groups={derived.otherStories} state={listState} update={update} />
+                        <StoryList groups={derived.otherStories} state={listState} update={update} person={person} />
                     </>}
                 </>
             );

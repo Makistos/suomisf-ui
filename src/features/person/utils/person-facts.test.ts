@@ -4,7 +4,7 @@ import { contribution, edition, short, work } from "../../../test/factories";
 import type { Person } from "../types";
 import type { Awarded } from "../../award";
 import {
-    aboutItems, binYears, booksByRole, byPenName, derivePersonRoles, editionsByYear, FICTION_TYPES, outputSummary, penNameFacets,
+    aboutItems, binYears, booksByRole, byCredit, creditFacets, derivePersonRoles, editionsByYear, FICTION_TYPES, outputSummary, writerCredit,
     personTabs, visibleLinks,
 } from "./person-facts";
 
@@ -175,26 +175,53 @@ describe("visibleLinks", () => {
     });
 });
 
-describe("penNameFacets / byPenName", () => {
-    // Stephen King and his pen name Richard Bachman (ALIAS).
-    const own = work({ id: 1, title: "Hohto", work_type: type(1, "Romaani"), contributions: [contribution(ME, 1)], editions: [] });
-    const both = work({ id: 3, title: "Yhdessä", work_type: type(1, "Romaani"), contributions: [contribution(ME, 1), contribution(ALIAS, 1)], editions: [] });
-    const bachman = work({ id: 2, title: "Kirous", work_type: type(1, "Romaani"), contributions: [contribution(ALIAS, 1)], editions: [] });
-    const king = person({ alt_name: "Stephen King", aliases: [{ id: ALIAS, name: "Bachman, Richard", alt_name: "Richard Bachman" }],
-        works: [own, bachman, both] } as Partial<Person>);
-    const entries = () => booksByRole(king, FICTION_TYPES, () => true).kirjoittaja;
+describe("writerCredit / creditFacets / byCredit", () => {
+    // Stephen King, his pen name Richard Bachman (ALIAS), and a co-author (OTHER).
+    const king = person({ alt_name: "Stephen King", aliases: [{ id: ALIAS, name: "Bachman, Richard", alt_name: "Richard Bachman" }] } as Partial<Person>);
+    const writers = (...ids: number[]) => ids.map(id => contribution(id, 1, id === OTHER ? "Straub, Peter" : id === ALIAS ? "Bachman, Richard" : "King, Stephen"));
 
-    it("offers the own name and each pen name with its count, only when a pen name has books", () => {
-        expect(penNameFacets(entries(), king)).toEqual([
-            { key: "oma", label: "Stephen King", count: 2 },
-            { key: String(ALIAS), label: "Richard Bachman", count: 1 },
-        ]);
-        expect(penNameFacets(booksByRole(person({ works: [own] }), FICTION_TYPES, () => true).kirjoittaja, person())).toBeNull();
+    it("says who a book is credited to: the person, a pen name, or the person with co-authors", () => {
+        expect(writerCredit(writers(ME), king)).toMatchObject({ key: String(ME), label: "Stephen King", coAuthors: [], rank: 0 });
+        expect(writerCredit(writers(ALIAS), king)).toMatchObject({ key: String(ALIAS), label: "Richard Bachman", penName: "Richard Bachman", rank: 1 });
+        const together = writerCredit(writers(OTHER, ME), king);
+        expect(together).toMatchObject({ key: `${ME}-${OTHER}`, label: "Stephen King & Peter Straub", rank: 2 });
+        expect(together.coAuthors.map(c => c.name)).toEqual(["Peter Straub"]);
+        // Credited under both his own name and the pen name: his own name wins.
+        expect(writerCredit(writers(ME, ALIAS), king).key).toBe(String(ME));
     });
 
-    it("keeps only the books published under the chosen name", () => {
-        expect(byPenName(entries(), String(ALIAS)).map(e => e.work.title)).toEqual(["Kirous"]);
-        expect(byPenName(entries(), "oma").map(e => e.work.title)).toEqual(["Hohto", "Yhdessä"]);
-        expect(byPenName(entries(), null)).toHaveLength(3);
+    it("lists each credit with its count: own name first, pen names, then collaborations; null with only one", () => {
+        const credits = [writers(ME), writers(ME), writers(ALIAS), writers(ME, OTHER)].map(w => writerCredit(w, king));
+        expect(creditFacets(credits)).toEqual([
+            { key: String(ME), label: "Stephen King", count: 2 },
+            { key: String(ALIAS), label: "Richard Bachman", count: 1 },
+            { key: `${ME}-${OTHER}`, label: "Stephen King & Peter Straub", count: 1 },
+        ]);
+        expect(creditFacets([writerCredit(writers(ME), king)])).toBeNull();
+    });
+
+    it("folds many collaborations into one button, so the row stays short", () => {
+        const co = (n: number) => writerCredit([...writers(ME), contribution(500 + n, 1, `Kirjoittaja ${n}, Testi`)], king);
+        const credits = [writerCredit(writers(ME), king), co(1), co(2), co(3), co(4), co(5), co(5)];
+        expect(creditFacets(credits)).toEqual([
+            { key: String(ME), label: "Stephen King", count: 1 },
+            { key: "yhdessa", label: "Yhdessä muiden kanssa", count: 6 },
+        ]);
+        expect(creditFacets(credits.slice(0, 5))!.map(f => f.key)).toEqual([String(ME), `${ME}-501`, `${ME}-502`, `${ME}-503`, `${ME}-504`]);
+        const items = credits.map((credit, id) => ({ id, credit }));
+        expect(byCredit(items, "yhdessa").map(x => x.id)).toEqual([1, 2, 3, 4, 5, 6]);
+    });
+
+    it("keeps only the items under the chosen credit", () => {
+        const items = [writers(ME), writers(ALIAS), writers(ME, OTHER)].map((w, i) => ({ id: i, credit: writerCredit(w, king) }));
+        expect(byCredit(items, `${ME}-${OTHER}`).map(x => x.id)).toEqual([2]);
+        expect(byCredit(items, null)).toHaveLength(3);
+    });
+
+    it("gives every written book its credit, and King's Bachman books say so", () => {
+        const own = work({ id: 1, title: "Hohto", work_type: type(1, "Romaani"), contributions: writers(ME), editions: [] });
+        const bachman = work({ id: 2, title: "Kirous", work_type: type(1, "Romaani"), contributions: writers(ALIAS), editions: [] });
+        const entries = booksByRole({ ...king, works: [own, bachman] } as Person, FICTION_TYPES, () => true).kirjoittaja;
+        expect(entries.map(e => [e.work.title, e.credit?.label, e.asName])).toEqual([["Hohto", "Stephen King", undefined], ["Kirous", "Richard Bachman", "Richard Bachman"]]);
     });
 });

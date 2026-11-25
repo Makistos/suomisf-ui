@@ -2,7 +2,7 @@
 
 **Route:** `/shorts/:id` · **Code:** `src/features/short/routes/short-page.tsx`, `src/features/short/components/short-defails.tsx`,
 `src/features/short/components/similar-shorts.tsx`; backend `GET /api/shorts/:id` and `/api/shorts/:id/similar` (other translations: same author and original title)
-**Status:** Agreed · **Updated:** 2026-11-22
+**Status:** Agreed; implemented as an admin-only trial in the identity style (2026-11-25) · **Updated:** 2026-11-25
 **Sample pages:** Edgar Allan Poe, *Kielivä sydän* (https://www.sf-bibliografia.fi/shorts/714): three books, four Finnish translations.
 Ursula K. Le Guin, *Jotka Omelasista poistuvat* (https://www.sf-bibliografia.fi/shorts/1028): Hugo award, one book and one magazine.
 **Mockup:** [`../mockups/short.html`](../mockups/short.html) with [`short-data.js`](../mockups/short-data.js) (real data). `?s=a` is Poe, `?s=b` Le Guin;
@@ -73,6 +73,25 @@ rarely has enough tags or people for a sidebar. When it has tags, they go under 
 
 **Admins** keep today's SpeedDial (Muokkaa, Palkinnot, Poista). There's no change history for short stories today
 (`EntityChanges` supports only works and people), so the mockup doesn't show one.
+
+## Implementation (2026-11-25): an admin-only trial in the identity style
+
+Built to the [build rules](../README.md#rules-for-every-redesigned-page-decided-2026-11-24): this plan's layout and behaviour, drawn in the identity
+style of [work-identity.md](work-identity.md) and [person-identity.md](person-identity.md) (Literata and Schibsted Grotesk, catalogue blue,
+the site's own background, a labelled fact list instead of chips). Admins switch with *Uusi novellisivu* or Shift+U (`suomisf.shortPageVersion`,
+apart from the other pages' choices); everyone else gets the current page.
+
+- **Code:** `src/features/short/new/` (`short-page-new.tsx`, `short-admin-tools.tsx`, `short-new.css`), the rules in
+  `src/features/short/utils/short-facts.ts` (`publicationRows`, `publishedCount`, `translationRows`, `origYearMismatch`, with Vitest tests),
+  the switch in `src/features/short/routes/short-page-switch.tsx`.
+- **No API change.** `/api/shorts/:id/similar` already returns each translation's books and magazines (`ShortBriefSchema`), so the agreed
+  backend change wasn't needed.
+- **Differences from the plan, for now:**
+  - the header uses the work page's fact list (Tyyppi, Genre, Suomentanut, Palkinnot, Henkilöt, subject headings by type) instead of chips;
+  - a book's row links the book title to the work page, and each printing year to `/editions/:id`;
+  - a book or magazine without a cover, or whose image fails to load, shows a plain cloth binding (as on the new front page);
+  - a story first published in Finnish says "Julkaistu 1999" instead of the original title, and its list says "joissa novelli on ilmestynyt".
+- **Tests:** `tests/admin/short-new.spec.ts`, `tests/anon|user/short-version.spec.ts`.
 
 ## Shared principles used or added
 

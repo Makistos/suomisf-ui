@@ -1,0 +1,109 @@
+/* Short story page in the identity style of the work and person pages (work-identity.md, person-identity.md), layout from short.md.
+   Scoped under .sn so the rest of the site keeps its look; the site's own page background, as on every identity page.
+   One column of about 920 px: a short story rarely has enough for a sidebar. */
+@import "../../../components/identity-fonts/fonts.css";
+
+.sn {
+    --sn-paper: Canvas; --sn-sheet: #FFFFFF; --sn-ink: #1D1F2B; --sn-ink-2: #4F5262; --sn-ink-3: #66697A;
+    --sn-rule: #DADBD4; --sn-rule-2: #C4C6BE; --sn-blue: #2B44B8; --sn-blue-soft: #E7EAF7; --sn-gold: #9A6B00;
+    --sn-spine-blank: #5A5D6C; --sn-outline: rgba(0, 0, 0, 0); --sn-warn: #FFF4D6; --sn-warn-rule: #D9B44A;
+    --sn-serif: 'PN Literata', Georgia, serif; --sn-sans: 'PN Schibsted Grotesk', system-ui, sans-serif;
+    background: var(--sn-paper); color: var(--sn-ink); font: 16px/1.55 var(--sn-sans);
+    width: 100%; padding: 0 24px 72px;
+}
+/* left-aligned with the menu like the other identity pages; the column itself stops at about 920 px */
+.sn > * { max-width: 920px; }
+@media (prefers-color-scheme: dark) {
+    .sn {
+        --sn-sheet: #1B1C23; --sn-ink: #E9E8E3; --sn-ink-2: #B4B4BE; --sn-ink-3: #8B8C97; --sn-rule: #2E3039; --sn-rule-2: #3D3F4A;
+        --sn-blue: #A3B3FF; --sn-blue-soft: #262C46; --sn-gold: #E2B84E; --sn-spine-blank: #4A4C58; --sn-outline: rgba(255, 255, 255, .3);
+        --sn-warn: #2A2617; --sn-warn-rule: #7A6524;
+    }
+}
+.sn a { color: var(--sn-blue); text-decoration: none; }
+.sn a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.sn :focus-visible { outline: 2px solid var(--sn-blue); outline-offset: 2px; border-radius: 2px; }
+.sn h1, .sn h2, .sn h3 { color: var(--sn-ink); }
+.sn button.sn-link { border: 0; background: none; padding: 0; color: var(--sn-blue); font: inherit; cursor: pointer; text-align: left; }
+.sn button.sn-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+/* the site places the admin SpeedDial only under the current pages' classes */
+.sn .fixed-dial { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; }
+.sn-crumbs { font-size: 14px; color: var(--sn-ink-3); padding: 22px 0 18px; }
+.sn-crumbs a { color: var(--sn-ink-2); }
+
+/* 1 the record */
+.sn-byline { font: 500 19px/1.3 var(--sn-serif); margin: 0; }
+.sn-byline a { color: var(--sn-ink); }
+/* --sn-title-fit (titleFit) shrinks a title with a long word, as on the work page. */
+.sn h1.sn-title { font-family: var(--sn-serif); font-optical-sizing: auto; font-weight: 650; font-size: calc(52px * var(--sn-title-fit, 1)); line-height: 1.04;
+    letter-spacing: -.022em; margin: 6px 0 8px; text-wrap: balance; overflow-wrap: break-word; hyphens: auto; }
+.sn-orig { font: italic 400 22px/1.3 var(--sn-serif); color: var(--sn-ink-2); margin: 0; }
+.sn-orig span { font-style: normal; font-family: var(--sn-sans); font-size: 15px; color: var(--sn-ink-3); margin-left: 6px; }
+.sn-orig span.sn-only { margin: 0; }
+.sn-facts { display: grid; grid-template-columns: 116px minmax(0, 1fr); gap: 9px 18px; margin: 20px 0 0; padding-top: 20px; border-top: 1px solid var(--sn-rule); max-width: 720px; }
+.sn-facts dt { font-size: 14px; color: var(--sn-ink-3); padding-top: 2px; }
+.sn-facts dd { margin: 0; font: 400 16.5px/1.45 var(--sn-serif); min-width: 0; overflow-wrap: anywhere; }
+.sn-facts dd small { font: 14px var(--sn-sans); color: var(--sn-ink-3); }
+.sn-gdot { display: inline-flex; align-items: center; gap: 7px; margin-right: 14px; white-space: nowrap; }
+.sn-gdot i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; box-shadow: inset 0 0 0 1px var(--sn-outline); }
+.sn-award { display: block; }
+.sn-award .pi { color: var(--sn-gold); font-size: 14px; margin-right: 7px; }
+.sn-notes { font: 16.5px/1.6 var(--sn-serif); color: var(--sn-ink-2); margin-top: 18px; max-width: 66ch; }
+.sn-notes p { margin: 0 0 .7em; }
+
+/* 2 and 3 sections */
+.sn-sec { margin-top: 48px; padding-top: 18px; border-top: 2px solid var(--sn-ink); }
+.sn-sec-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 24px; margin-bottom: 10px; }
+.sn-sec-head h2 { font: 600 28px/1.15 var(--sn-serif); margin: 0; }
+.sn-sec-head h2 small { font: 500 15px var(--sn-sans); color: var(--sn-ink-3); margin-left: 12px; letter-spacing: 0; }
+.sn-sec-head p { margin: 0; font-size: 14.5px; color: var(--sn-ink-3); }
+.sn-empty { font: 16.5px var(--sn-serif); color: var(--sn-ink-2); }
+
+/* publications: one row per book, its printings as years */
+.sn-rows { list-style: none; margin: 0; padding: 0; }
+.sn-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--sn-rule); }
+.sn-row img, .sn-cloth { width: 44px; aspect-ratio: 2 / 3; object-fit: cover; display: block; border-radius: 1px 2px 2px 1px; background: var(--sn-rule);
+    box-shadow: inset 3px 0 0 rgba(0, 0, 0, .18), 0 0 0 1px var(--sn-outline); }
+/* a book or issue without a cover: a plain cloth binding, no text on it */
+.sn-cloth { background: var(--sn-spine-blank); box-shadow: inset 4px 0 0 rgba(0, 0, 0, .25); }
+.sn-row-main { min-width: 0; }
+.sn a.sn-row-t { font: 600 17px/1.3 var(--sn-serif); color: var(--sn-ink); overflow-wrap: anywhere; }
+.sn-row-s { margin: 3px 0 0; font-size: 14.5px; color: var(--sn-ink-2); }
+.sn-row-k { font-size: 13.5px; color: var(--sn-ink-3); white-space: nowrap; }
+.sn-mark { color: var(--sn-gold); font-size: 12px; margin-right: 5px; }
+
+/* translations */
+.sn-yearnote { display: flex; gap: 10px; align-items: baseline; background: var(--sn-warn); border-left: 3px solid var(--sn-warn-rule);
+    padding: 8px 14px; font-size: 14.5px; color: var(--sn-ink); margin: 0 0 14px; }
+table.sn-tr { width: 100%; border-collapse: collapse; font-size: 15px; }
+.sn-tr th:first-child { width: 24%; }
+.sn-tr th { text-align: left; font: 600 13.5px var(--sn-sans); color: var(--sn-ink-3); padding: 8px 12px 8px 0; border-bottom: 1px solid var(--sn-rule-2); }
+.sn-tr td { padding: 11px 12px 11px 0; border-bottom: 1px solid var(--sn-rule); vertical-align: baseline; }
+.sn-tr td:first-child { font: 16.5px/1.35 var(--sn-serif); }
+.sn-tr .sn-y { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sn-tr tr.sn-this td { background: var(--sn-blue-soft); }
+.sn-tr tr.sn-this td:first-child { box-shadow: inset 3px 0 0 var(--sn-blue); padding-left: 12px; }
+.sn-this-tag { display: block; margin-top: 2px; font: 600 12.5px var(--sn-sans); color: var(--sn-blue); }
+.sn-tr td:nth-child(2) a { white-space: nowrap; }
+.sn-tr .sn-n, .sn-none { color: var(--sn-ink-3); }
+
+@media (max-width: 640px) {
+    .sn { padding: 0 16px 56px; }
+    .sn h1.sn-title { font-size: calc(36px * var(--sn-title-fit, 1)); }
+    .sn-orig { font-size: 18px; }
+    .sn-facts { grid-template-columns: 96px minmax(0, 1fr); gap: 7px 14px; }
+    .sn-sec { margin-top: 36px; }
+    .sn-sec-head h2 { font-size: 23px; }
+    .sn-row { grid-template-columns: 40px minmax(0, 1fr); gap: 12px; }
+    .sn-row img, .sn-cloth { width: 40px; }
+    .sn-row-k { grid-column: 2; }
+    /* the translations table becomes one card per translation */
+    table.sn-tr, .sn-tr tbody, .sn-tr tr, .sn-tr td { display: block; }
+    .sn-tr thead { display: none; }
+    .sn-tr tr { padding: 10px 0; border-bottom: 1px solid var(--sn-rule); }
+    .sn-tr tr.sn-this { background: var(--sn-blue-soft); box-shadow: inset 3px 0 0 var(--sn-blue); padding-left: 12px; }
+    .sn-tr tr.sn-this td, .sn-tr tr.sn-this td:first-child { background: none; box-shadow: none; padding-left: 0; }
+    .sn-tr td { border: 0; padding: 1px 0; }
+    .sn-this-tag { display: inline-block; margin: 0 0 0 10px; }
+    .sn-tr td:not(:first-child)::before { content: attr(data-label) " "; color: var(--sn-ink-3); font-size: 13.5px; margin-right: 6px; }
+}

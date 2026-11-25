@@ -44,7 +44,7 @@ These apply to every page in this rewrite, not only the ones built so far:
 | Work: visual identity (alternative) | `/works/:id` | [work-identity.md](pages/work-identity.md) | New page in admin-only trial (Shift+U), 2026-11-24 |
 | Front page: visual identity (alternative) | `/` | [front-identity.md](pages/front-identity.md) | New page in admin-only trial (Shift+U), 2026-11-25 |
 | Edition link | `/editions/:id` | Part of [work.md](pages/work.md) (no separate page: it opens the work page with that edition highlighted) | Agreed |
-| Short story | `/shorts/:id` | [short.md](pages/short.md) | Agreed |
+| Short story | `/shorts/:id` | [short.md](pages/short.md) | Agreed; new page in admin-only trial (Shift+U) in the identity style, 2026-11-25 |
 | Front page | `/` | [front-page.md](pages/front-page.md) | Agreed (revised 2026-11-23) |
 | Search (menu dropdown and results page) | `/search` | [search.md](pages/search.md) | Agreed |
 | People list | `/people` | [people-list.md](pages/people-list.md) | Agreed |

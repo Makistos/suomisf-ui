@@ -47,7 +47,7 @@ const LatestAdditions = lazy(() => import('./features/latest/routes/latest-addit
 const FAQ = lazy(() => import('./faq').then(m => ({ default: m.FAQ })));
 const ProfilePage = lazy(() => import('@features/user/routes/profile-page'));
 const UsersPage = lazy(() => import('@features/user/routes/users-page').then(m => ({ default: m.UsersPage })));
-const ShortPage = lazy(() => import('@features/short/routes/short-page').then(m => ({ default: m.ShortPage })));
+const ShortPageSwitch = lazy(() => import('@features/short/routes/short-page-switch').then(m => ({ default: m.ShortPageSwitch })));
 const WorksByType = lazy(() => import('@features/work/routes/works-by-type').then(m => ({ default: m.WorksByType })));
 const StatsPage = lazy(() => import('@features/stats').then(m => ({ default: m.StatsPage })));
 const SearchResultsPage = lazy(() => import('@features/search/routes/search-results-page'));
@@ -91,7 +91,7 @@ root.render(
             <Route path="pubseries/:itemId" element={<PubseriesPage id={null} />} />
             <Route path="publishers/:itemId" element={<PublisherPage id={null} />} />
             <Route path="publishers" element={<PublisherListPage />} />
-            <Route path="shorts/:itemId" element={<ShortPage id={null} />} />
+            <Route path="shorts/:itemId" element={<ShortPageSwitch />} />
             <Route path="tags" element={<SFTags />} />
             <Route path="tags/:tagid" element={<SFTag id={null} />} />
             <Route path="/login" element={<main className="all-content"><LoginView /></main>} />

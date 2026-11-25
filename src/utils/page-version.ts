@@ -1,12 +1,13 @@
 // Which version of a page under trial an admin sees: the current one
 // ("vanha", what everyone else sees) or the new identity version ("uusi").
 // The choice is per browser and per page type, so it stays while the admin
-// moves from person to person, or from work to work (and for the front page).
+// moves from person to person, or from work to work (and for the front page and short stories).
 
 export type PageVersion = "vanha" | "uusi";
 export const PERSON_PAGE_VERSION_KEY = "suomisf.personPageVersion";
 export const WORK_PAGE_VERSION_KEY = "suomisf.workPageVersion";
 export const FRONT_PAGE_VERSION_KEY = "suomisf.frontPageVersion";
+export const SHORT_PAGE_VERSION_KEY = "suomisf.shortPageVersion";
 export const PAGE_VERSION_HOTKEY = "Shift+U";
 
 type Storage = { getItem(key: string): string | null; setItem(key: string, value: string): void };

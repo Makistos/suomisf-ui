@@ -21,8 +21,11 @@ test('the switch button and Shift+U swap the front page, apart from the other pa
     await toggle.click();
     await expect(newPage(page)).toBeVisible({ timeout: 20000 });
     await expect(toggle).toHaveText('Nykyinen etusivu');
+    // Each page finishes loading before the next: Firefox reports requests cut off by navigation as uncaught errors.
+    await page.waitForLoadState('networkidle');
     await page.goto('/works/3984');
     await expect(page.locator('main.work-page')).toBeVisible({ timeout: 20000 });
+    await page.waitForLoadState('networkidle');
     await page.goto('/');
     await expect(newPage(page)).toBeVisible({ timeout: 20000 });
     await page.keyboard.press('Shift+KeyU');
@@ -34,9 +37,10 @@ test('the search opens the search results with "Vain nimet", shared with the men
     await page.getByRole('searchbox', { name: 'Hakusana' }).fill('Maameren velho');
     await page.getByRole('button', { name: 'Hae', exact: true }).click();
     await expect(page).toHaveURL(/\/search\?q=Maameren%20velho&titles=1/);
-    // Turning it off here turns it off for the menu search too.
+    await page.waitForLoadState('networkidle');
+    // Turning it off here (not in the menu) turns it off for the menu search too.
     await page.goto('/');
-    await page.getByLabel('Vain nimet').first().uncheck();
+    await page.locator('.fn-opts').getByLabel('Vain nimet').uncheck();
     expect(await page.evaluate(() => localStorage.getItem('searchTitlesOnly'))).toBe('0');
     await expect(page.getByRole('link', { name: 'Tähtivaeltaja' })).toHaveAttribute('href', '/search?q=T%C3%A4htivaeltaja');
 });

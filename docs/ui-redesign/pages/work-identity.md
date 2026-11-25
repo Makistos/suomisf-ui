@@ -189,6 +189,8 @@ The new page is built from this proposal with the agreed behaviour of [work.md](
 - **Kept from the current page for now:** "Kortit" shows today's edition cards (cover upload stays there); the Sisältö section uses `ShortsList`;
   similar works show only to admins until `works/:id/similar` is public.
 - **Background:** the site's own, as decided below.
+- **Long words in the title** (bug found by the owner, 2026-11-25): "Tapahtumapaikkana" at 58 px ran into the sidebar. The title now shrinks
+  by its longest word (`titleFit`: full size up to 13 letters, then 13 / letters, never below half), and a word that still doesn't fit breaks.
 - **Covers** (owner, 2026-11-25): the table thumbnails are 44 × 66 px (the header cover stays 220 px); clicking either (its "Suurenna kuva" button, PrimeReact `Image` preview) opens the original file at full size, with zoom and
   rotate. The table shows the small WebP copy, the preview the original.
 - **Compared with the live site** (API, 2026-11-24): Tolkien 20 printings in 3 laitos, 4 without a size; Le Guin 3 printings, Hugo 1970 and Nebula 1970;

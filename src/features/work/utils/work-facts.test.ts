@@ -5,7 +5,7 @@ import { Edition } from "@features/edition";
 import { Work } from "../types";
 import {
     editionLabel, groupLabel, laitosGroups, mergeGroupForRow, ownershipSummary, printingsSummary, seriesPosition,
-    spineSizes, tagsByType, yearRange,
+    spineSizes, tagsByType, titleFit, yearRange,
 } from "./work-facts";
 
 // Real API responses, trimmed (src/test/fixtures/works.json, captured 2026-11-24).
@@ -167,5 +167,17 @@ describe("spineSizes", () => {
     it("leaves the shelf out when fewer than two printings have a size, a page count or a cover", () => {
         expect(spineSizes(work("tuulen").editions)).toBeNull();
         expect(spineSizes(work("sparse").editions)).toBeNull();
+    });
+});
+
+describe("titleFit", () => {
+    it("keeps the full size for ordinary words and shrinks it for a long one", () => {
+        expect(titleFit("Pimeyden vasen käsi")).toBe(1);
+        expect(titleFit("Taru sormusten herrasta")).toBe(1);
+        expect(titleFit("Tapahtumapaikkana Duma Key")).toBeCloseTo(13 / 17, 2);
+        expect(titleFit("Houkutus: kymmenvuotisjuhlakirja")).toBeCloseTo(13 / 22, 2);
+    });
+    it("never goes below half size", () => {
+        expect(titleFit("a".repeat(60))).toBe(0.5);
     });
 });

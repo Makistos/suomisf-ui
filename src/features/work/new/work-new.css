@@ -39,8 +39,9 @@
 .wn-byline { font: 500 19px/1.3 var(--wn-serif); margin: 0; }
 .wn-byline a { color: var(--wn-ink); }
 .wn-byline small { font: 14px var(--wn-sans); color: var(--wn-ink-3); }
-.wn h1.wn-title { font-family: var(--wn-serif); font-optical-sizing: auto; font-weight: 650; font-size: 58px; line-height: 1.02;
-    letter-spacing: -.022em; margin: 6px 0 8px; text-wrap: balance; }
+/* --wn-title-fit (titleFit) shrinks a title with a long word; a word that still doesn't fit breaks rather than run into the sidebar. */
+.wn h1.wn-title { font-family: var(--wn-serif); font-optical-sizing: auto; font-weight: 650; font-size: calc(58px * var(--wn-title-fit, 1)); line-height: 1.02;
+    letter-spacing: -.022em; margin: 6px 0 8px; text-wrap: balance; overflow-wrap: break-word; hyphens: auto; }
 .wn-subtitle { display: block; font: 400 22px/1.3 var(--wn-serif); letter-spacing: 0; margin-top: 6px; }
 .wn-orig { font: italic 400 22px/1.3 var(--wn-serif); color: var(--wn-ink-2); margin: 0; }
 .wn-orig span { font-style: normal; font-family: var(--wn-sans); font-size: 15px; color: var(--wn-ink-3); margin-left: 6px; }
@@ -185,7 +186,7 @@ table.wn-et { width: 100%; border-collapse: collapse; table-layout: fixed; font-
     .wn-rec.wn-nocover > .wn-side { grid-column: 1; }
     .wn-about { grid-template-columns: 180px minmax(0, 1fr); gap: 32px; }
     .wn-about.wn-nocover { grid-template-columns: minmax(0, 1fr); }
-    .wn h1.wn-title { font-size: 50px; }
+    .wn h1.wn-title { font-size: calc(50px * var(--wn-title-fit, 1)); }
     .wn-simrow { grid-template-columns: repeat(6, minmax(0, 1fr)); }
     .wn-simrow > li:nth-child(n+7) { display: none; }
 }
@@ -215,7 +216,7 @@ table.wn-et { width: 100%; border-collapse: collapse; table-layout: fixed; font-
     .wn-rec > .wn-side { display: none; }
     .wn-narrow { display: flex; }
     .wn-about, .wn-about.wn-nocover { display: block; margin-top: 28px; }
-    .wn h1.wn-title { font-size: 38px; }
+    .wn h1.wn-title { font-size: calc(38px * var(--wn-title-fit, 1)); }
     .wn-orig { font-size: 18px; }
     .wn-simrow { display: flex; overflow-x: auto; gap: 14px; scrollbar-width: none; }
     .wn-simrow > li { flex: 0 0 118px; }
@@ -230,7 +231,7 @@ table.wn-et { width: 100%; border-collapse: collapse; table-layout: fixed; font-
     .wn-crumbs { padding: 14px 0 12px; }
     .wn-rec { grid-template-columns: 96px minmax(0, 1fr); column-gap: 16px; }
     .wn-cover { width: 96px; }
-    .wn h1.wn-title { font-size: 30px; letter-spacing: -.015em; }
+    .wn h1.wn-title { font-size: calc(30px * var(--wn-title-fit, 1)); letter-spacing: -.015em; }
     .wn-byline { font-size: 16px; }
     .wn-orig { font-size: 16.5px; }
     .wn-orig span { display: block; margin: 2px 0 0; }

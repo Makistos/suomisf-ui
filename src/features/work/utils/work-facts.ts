@@ -251,3 +251,15 @@ export const spineSizes = (editions: Edition[]): { spines: Map<number, Spine>; n
         : "";
     return { spines, note: `${scale} Selkämykset on rajattu kansikuvista.${est}` };
 };
+
+/** Letters of a word that still fit the title column at full size (58 px in about 490 px). */
+const TITLE_WORD_FITS = 13;
+
+/**
+ * Scale for the title so its longest word fits its column ("Tapahtumapaikkana", 17 letters, ran into the sidebar):
+ * 1 for ordinary words, smaller for a long one, never below half.
+ */
+export const titleFit = (title: string) => {
+    const longest = Math.max(0, ...title.split(/[\s\-–—/]+/).map(w => w.replace(/[^\p{L}\p{N}]/gu, "").length));
+    return longest <= TITLE_WORD_FITS ? 1 : Math.max(0.5, TITLE_WORD_FITS / longest);
+};

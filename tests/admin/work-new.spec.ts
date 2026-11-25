@@ -89,6 +89,24 @@ test('covers are large enough and open at full size when clicked', async ({ admi
     await expect(page.locator('.p-image-preview')).toBeVisible();
 });
 
+test('a title with a long word stays in its column, on desktop and on a phone', async ({ adminPage: page }) => {
+    for (const id of [3699, 1758]) { // Tapahtumapaikkana Duma Key; Houkutus: kymmenvuotisjuhlakirja …
+        await page.setViewportSize({ width: 1400, height: 1000 });
+        await openNew(page, `/works/${id}`);
+        const title = (await page.locator('h1.wn-title').boundingBox())!;
+        const words = await page.locator('h1.wn-title').evaluate(el => {
+            const range = document.createRange();
+            range.selectNodeContents(el.firstChild!);
+            return Math.max(...[...range.getClientRects()].map(r => r.right));
+        });
+        const side = (await page.getByRole('complementary', { name: 'Lisätiedot' }).boundingBox())!;
+        expect(words).toBeLessThanOrEqual(side.x);
+        expect(title.x + title.width).toBeLessThanOrEqual(side.x);
+        await page.setViewportSize({ width: 390, height: 844 });
+        expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(0);
+    }
+});
+
 test('Tolkien: the shelf has a spine per printing, the missing sizes marked', async ({ adminPage: page }) => {
     await openNew(page, `/works/${TOLKIEN}`);
     const shelf = page.getByRole('group', { name: 'Painokset hyllyssä' });

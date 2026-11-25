@@ -1,6 +1,6 @@
 import "./work-new.css";
 
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Dialog } from "primereact/dialog";
@@ -31,7 +31,7 @@ import {
     fetchSimilarWorks, partsText, reasonText, scoreText, shownReasons, SimilarWork, tagTypesText,
 } from "../components/similar-works";
 import {
-    comparePrintings, laitosGroups, printingsSummary, seriesPosition, tagsByType,
+    comparePrintings, laitosGroups, printingsSummary, seriesPosition, tagsByType, titleFit,
 } from "../utils/work-facts";
 import { readViewState, rememberViewState, withViewState, WorkViewState } from "../utils/work-view-state";
 import { EditionShelf } from "./edition-shelf";
@@ -254,7 +254,7 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
                                 {sharedAlias.length > 0 && <small> (kirjoittanut <PeopleLinks people={sharedAlias} />)</small>}
                             </p>
                         )}
-                        <h1 className="wn-title">{work.title}{work.subtitle && <span className="wn-subtitle">{work.subtitle}</span>}</h1>
+                        <h1 className="wn-title" style={{ "--wn-title-fit": titleFit(work.title) } as CSSProperties}>{work.title}{work.subtitle && <span className="wn-subtitle">{work.subtitle}</span>}</h1>
                         <p className="wn-orig">
                             {foreign
                                 ? <>{work.orig_title}<span>{[work.language_name?.name, work.pubyear].filter(Boolean).join(", ")}</span></>

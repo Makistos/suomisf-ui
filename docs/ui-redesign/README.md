@@ -42,7 +42,7 @@ These apply to every page in this rewrite, not only the ones built so far:
 | Work | `/works/:id` | [work.md](pages/work.md) | Agreed (revised 2026-11-23) |
 | Person: visual identity (alternative) | `/people/:id` | [person-identity.md](pages/person-identity.md) | Proposal; implemented for the admin trial |
 | Work: visual identity (alternative) | `/works/:id` | [work-identity.md](pages/work-identity.md) | New page in admin-only trial (Shift+U), 2026-11-24 |
-| Front page: visual identity (alternative) | `/` | [front-identity.md](pages/front-identity.md) | Proposal, mockup ready |
+| Front page: visual identity (alternative) | `/` | [front-identity.md](pages/front-identity.md) | New page in admin-only trial (Shift+U), 2026-11-25 |
 | Edition link | `/editions/:id` | Part of [work.md](pages/work.md) (no separate page: it opens the work page with that edition highlighted) | Agreed |
 | Short story | `/shorts/:id` | [short.md](pages/short.md) | Agreed |
 | Front page | `/` | [front-page.md](pages/front-page.md) | Agreed (revised 2026-11-23) |
@@ -70,6 +70,15 @@ Status values: **Not started** → **Reviewed** (current page looked at, problem
 2. Fix the site-wide issues listed there first (nav width, tab style, chip styles), since every page benefits.
 3. Then the pages people visit most: person, work, edition, search, front page.
 4. Then lists and indexes, then admin pages.
+
+## TODO (from the trials, 2026-11-25)
+
+Owner's notes on the person and work page trials, not done yet:
+
+- **Work page title a bit smaller in general** (58 px now, besides the long-word scaling added on 2026-11-25).
+- **Descriptions closed by default** on the work and person pages: only a "Näytä kuvaus" button, no clamped first lines.
+- **The work page's bookshelf closed by default** behind a "Näytä kirjahylly" button.
+- **The person page's publication timeline closed by default** behind a similar button (for example "Näytä julkaisuvuodet").
 
 ## Later
 

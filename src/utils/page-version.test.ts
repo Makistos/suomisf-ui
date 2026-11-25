@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
-    isPageVersionHotkey, readPageVersion, writePageVersion, PERSON_PAGE_VERSION_KEY, WORK_PAGE_VERSION_KEY,
+    FRONT_PAGE_VERSION_KEY, isPageVersionHotkey, readPageVersion, writePageVersion, PERSON_PAGE_VERSION_KEY, WORK_PAGE_VERSION_KEY,
 } from "./page-version";
 
 const key = (fields: Partial<KeyboardEvent>, target: EventTarget | null = document.body) =>
@@ -51,6 +51,10 @@ describe("readPageVersion / writePageVersion", () => {
         expect(readPageVersion(storage, WORK_PAGE_VERSION_KEY)).toBe("uusi");
         expect(readPageVersion(storage, PERSON_PAGE_VERSION_KEY)).toBe("vanha");
         expect(PERSON_PAGE_VERSION_KEY).toBe("suomisf.personPageVersion"); // admins' existing choice stays
+        writePageVersion(storage, FRONT_PAGE_VERSION_KEY, "uusi");
+        expect(FRONT_PAGE_VERSION_KEY).toBe("suomisf.frontPageVersion");
+        expect(new Set([FRONT_PAGE_VERSION_KEY, WORK_PAGE_VERSION_KEY, PERSON_PAGE_VERSION_KEY]).size).toBe(3);
+        expect(readPageVersion(storage, PERSON_PAGE_VERSION_KEY)).toBe("vanha");
     });
 
     it("falls back to the current page when storage is unavailable", () => {

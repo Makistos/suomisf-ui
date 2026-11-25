@@ -12,6 +12,8 @@ import { GlobalToastProvider } from './components/global-toast';
 import { LoadError } from './components/load-error';
 import reportWebVitals from './reportWebVitals';
 import HomeAlt from './home-alt';
+// Admins can switch to the new front page under trial (Shift+U); everyone else gets the current one.
+import FrontPageSwitch from './features/front/front-page-switch';
 
 // Every route other than the shell (App) and the landing page (HomeAlt,
 // kept eager so first paint has no loading flash) is code-split into its
@@ -70,7 +72,7 @@ root.render(
       <Suspense fallback={routeFallback}>
         <Routes>
           <Route path="/" element={<App />}>
-            <Route index element={<HomeAlt />} />
+            <Route index element={<FrontPageSwitch />} />
             <Route path="awards" element={<Awards />} />
             <Route path="awards/:itemId" element={<AwardPage id={null} />} />
             <Route path="bookindex" element={<WorkSearchPage />} />

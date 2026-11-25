@@ -5,7 +5,7 @@ the four counts and their link targets, one featured pick that swaps on click wi
 titles and authors, Kirjaehdotukset first and in the same tab, no counts on the ways in, the same main menu, separate loading and errors, missing data)
 **Companions:** [work-identity.md](work-identity.md) and [person-identity.md](person-identity.md), the same identity on the work and person pages
 (same tokens, fonts and rules)
-**Status:** Proposal · **Updated:** 2026-11-23
+**Status:** Proposal; implemented as an admin-only trial (2026-11-25) · **Updated:** 2026-11-25
 **Mockup:** [`../mockups/front-identity.html`](../mockups/front-identity.html) with the same [`front-data.js`](../mockups/front-data.js) as the agreed
 mockup (real books, covers and counts): `?data=x` the real worst cases (the longest title, anthologies with three editors, a 5th printing,
 a book without a cover), `?data=err` the random picks request failing. The yellow bar also switches visitor / logged in / admin and light / dark.
@@ -128,6 +128,32 @@ Each can be taken separately (the first three are shared with the work and perso
 5. Page height grows by about 29% on desktop and 14% on a phone.
 
 Unchanged: everything the front page plan decided (see "Builds on" above).
+
+## Implementation (2026-11-25): an admin-only trial
+
+Built from this proposal with the behaviour of [front-page.md](front-page.md), **next to** the current front page (`home-alt.tsx`), following the
+[build rules](../README.md#rules-for-every-redesigned-page-decided-2026-11-24):
+- **Everyone sees the current page.** Admins switch with the button at the bottom left ("Uusi etusivu" / "Nykyinen etusivu") or **Shift+U**, kept
+  apart from the person and work choices (`suomisf.frontPageVersion`). `src/features/front/front-page-switch.tsx` is the `/` route; the new page is
+  lazy-loaded.
+- **Code:** `src/features/front/new/` (page, styles scoped under `.fn`) and the pure rules in `src/features/front/utils/front-facts.ts`
+  (names in natural order, "ym." after two names, the cover line, the holdings sentence, picks with a cover). The three requests are three queries
+  with their own placeholders and errors; the random set stays while the reader moves around the site (`staleTime: Infinity`), "Arvo uudet"
+  draws a new one.
+- **No API change.** Backend step 0 of front-page.md (dropping `latest` and `covers` from `/api/frontpagedata`, a lighter random payload) would
+  change what the current page reads, so it waits until the new page is the default. Random picks without a cover are shown, not left out (owner, 2026-11-25): every cover
+  in the card, its thumbnails and the shelf falls back to the cloth binding when the book has no cover or its image fails to load.
+- **Differences from the plan, for now:**
+  - the hero search is a plain field with the same "Vain nimet" setting and search URL as the menu search, not the menu's shared AutoComplete
+    (pulling that out of `mainmenu.tsx` would change the current menu);
+  - the "novellia" count links to `/shortstoryindex` without the story-type filter, which the story search doesn't read from the URL yet,
+    so its total differs from the count;
+  - the menu's Kirjaehdotukset link still opens in a new tab (the menu is shared with the current page).
+- **Found while building:** on a phone a pick with long genre names widened the page, and the counts' placeholder was a fixed 480 px; both fixed
+  and tested. The local test images lack the newest covers, so the latest additions show blank there; the live site has them.
+- **Tests:** Vitest `front-facts.test.ts`, `page-version.test.ts`; Playwright `tests/admin/front-new.spec.ts`, `tests/anon/front-version.spec.ts`,
+  `tests/user/front-version.spec.ts`, and the current page's `front-page-popups.spec.ts` still passes. To make it the default: render
+  `FrontPageNew` for everyone in the switch, do backend step 0, then remove `home-alt.tsx` and the switch.
 
 ## Open questions
 

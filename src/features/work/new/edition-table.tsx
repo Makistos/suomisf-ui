@@ -19,7 +19,7 @@ import { EditionShortsPicker } from "@features/short/components/shorts-picker";
 import { User } from "@features/user";
 import { deleteApiContent, postApiContent } from "@services/user-service";
 import { Work } from "../types";
-import { CoverItem, editionLabel, Laitos, mergeGroupForRow, ownershipSummary, workCovers } from "../utils/work-facts";
+import { CoverItem, editionLabel, Laitos, mergeGroupForRow, ownershipSummary, publisherLines, workCovers } from "../utils/work-facts";
 
 const imageUrl = (src: string) => (src.startsWith("http") ? src : `${import.meta.env.VITE_IMAGE_URL}${src}`);
 const nlLink = (isbn: string) => "https://kansalliskirjasto.finna.fi/Search/Results?limit=0&filter%5B%5D=~language%3A%22fin%22"
@@ -43,6 +43,12 @@ interface Props {
     /** Opens the page's gallery on a row's covers: a printing can have several, and a row can hold several printings. */
     onGallery: (covers: CoverItem[]) => void;
 }
+
+type Person = { id: number; name: string; alt_name: string };
+/** Linked names, as on the old edition rows. */
+const People = ({ people }: { people: Person[] }) => (
+    <>{people.map((p, i) => <Fragment key={p.id}>{i > 0 && ", "}<Link to={`/people/${p.id}`}>{p.alt_name || p.name}</Link></Fragment>)}</>
+);
 
 /** Other owners of a printing, from the work response (no request per printing). */
 const OtherOwners = ({ edition, user }: { edition: Edition; user: User }) => {
@@ -154,13 +160,13 @@ export const EditionTable = ({ work, laitos, user, admin, ownership, prices, pic
         const ids = group.map(e => e.id);
         const isOpen = many && open.has(first.id);
         const hl = picked !== null && ids.includes(picked) && !isOpen;
-        const translators = r.translators.map(t => t.alt_name || t.name).join(", ");
         return (
             <tr key={`${sub ? "s" : "g"}${first.id}`} data-editions={ids.join(" ")} id={many ? undefined : `painos-${first.id}`}
                 className={[sub ? "wn-sub" : "", hl ? "wn-hl" : ""].filter(Boolean).join(" ") || undefined}>
                 {hasCovers && (
                     <td className="c-th">
-                        {!sub && r.cover && (() => {
+                        {/* A row's own covers: a merged row's are all its printings', an opened printing's only its own. */}
+                        {r.cover && (() => {
                             const covers = workCovers(group);
                             const thumb = <img src={imageUrl(r.cover.thumb_src ?? r.cover.image_src)} alt={`Kansikuva: ${r.label}`} loading="lazy" />;
                             // Several covers in the row: a gallery of them all; one cover: the original at full size.
@@ -189,29 +195,50 @@ export const EditionTable = ({ work, laitos, user, admin, ownership, prices, pic
                     {!many && admin && first.verified && <span className="wn-verified"><i className="pi pi-check-circle" aria-hidden="true" /> Tarkastettu</span>}
                 </td>
                 <td className="c-yr">{r.years}</td>
+                {/* Every row (owner, 2026-11-26): another title in bold, publisher and series, translators, the other credits,
+                    then the printing's own notes. A merged row stops at the translators: the rest is on its printings' rows. */}
                 <td className="c-pub">
-                    {r.publishers.map((p, i) => (
+                    {r.otherTitles.map(t => <b key={t} className="wn-etitle">{t}</b>)}
+                    {many ? publisherLines(r.publishers).map((l, i) => (
+                        <Fragment key={i}>
+                            {l.publisher && <div><Link to={`/publishers/${l.publisher.id}`}>{l.publisher.name}</Link></div>}
+                            {l.series.map(x => <div key={x.id}><Link to={`/pubseries/${x.id}`}>{x.name}</Link></div>)}
+                        </Fragment>
+                    )) : r.publishers.map((p, i) => (
                         <div key={i}>
                             {p.publisher && <Link to={`/publishers/${p.publisher.id}`}>{p.publisher.name}</Link>}
                             {p.printedin && ` (${p.printedin})`}
                             {p.pubseries && <>, <Link to={`/pubseries/${p.pubseries.id}`}>{p.pubseries.name}</Link>{p.pubseriesnum ? ` ${p.pubseriesnum}` : ""}</>}
                         </div>
                     ))}
-                    {r.notes.length > 0 && <span className="wn-note">{r.notes.join(". ")}</span>}
-                    {hasTranslators && translators && <span className="wn-note wn-tr-in">Suom. {translators}</span>}
+                    {hasTranslators && r.translators.length > 0 && <span className="wn-note wn-tr-in">Suom. <People people={r.translators} /></span>}
+                    {!many && (r.coverArtists.length > 0 || r.illustrators.length > 0) && (
+                        <span className="wn-note">
+                            {r.coverArtists.length > 0 && <>Kansi <People people={r.coverArtists} /></>}
+                            {r.coverArtists.length > 0 && r.illustrators.length > 0 && ". "}
+                            {r.illustrators.length > 0 && <>Kuvitus <People people={r.illustrators} /></>}
+                        </span>
+                    )}
+                    {!many && r.notes.length > 0 && <span className="wn-note wn-misc">{r.notes.join(". ")}</span>}
                 </td>
                 {hasTranslators && (
                     <td className="c-tr" data-l="Suom.">
-                        {r.translators.map((t, i) => <Fragment key={t.id}>{i > 0 && ", "}<Link to={`/people/${t.id}`}>{t.alt_name || t.name}</Link></Fragment>)}
+                        <People people={r.translators} />
                     </td>
                 )}
-                <td className="c-bind">{r.bindings.join(", ")}</td>
-                <td className="c-pages" data-l="Sivuja">{r.pages.join(", ")}{r.sizes.length > 0 && <span className="wn-note">{r.sizes.join(", ")} cm</span>}</td>
+                {/* Kansipaperi and Ylivetokannet go with the binding on every row (owner, 2026-11-26) */}
+                <td className="c-bind">{[...r.bindings, ...r.jackets].join(", ")}</td>
+                <td className="c-pages" data-l="Sivuja">
+                    {!many && <>{r.pages.join(", ")}{r.sizes.length > 0 && <span className="wn-note">{r.sizes.join(", ")} cm</span>}</>}
+                </td>
                 <td className="c-isbn wn-isbn" data-l="ISBN">
                     {r.isbns.map(i => <div key={i}><a href={nlLink(i)} target="_blank" rel="noopener noreferrer">{i}</a></div>)}
                 </td>
                 <td className="c-book">
-                    {[r.bindings.join(", "), r.pages.length ? `${r.pages.join(", ")} s.` : "", r.sizes.length ? `${r.sizes.join(", ")} cm` : ""].filter(Boolean).join(", ")}
+                    {(many
+                        ? [...r.bindings, ...r.jackets]
+                        : [...r.bindings, ...r.jackets, r.pages.length ? `${r.pages.join(", ")} s.` : "", r.sizes.length ? `${r.sizes.join(", ")} cm` : ""]
+                    ).filter(Boolean).join(", ")}
                     {r.isbns.length > 0 && <span className="wn-note wn-isbn">{r.isbns.map(i => <span key={i} className="wn-nowrap">{i}</span>)}</span>}
                 </td>
                 {user && <td className="c-own">{ownCell(group)}</td>}

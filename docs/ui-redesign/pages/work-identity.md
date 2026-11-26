@@ -338,7 +338,18 @@ before; it now checks Le Guin too.
   and shown to everyone. A picked printing (`painos`, `/editions/:id`) still shows its own cover first.
 - **Edition table:** a row's thumbnail opens a gallery of every cover in that row when it has more than one: a printing can have several
   covers, and a merged row holds several printings (Tolkien's first laitos row: 17 printings, 18 covers). The count is shown on the thumbnail.
-  A row with one cover keeps the plain full-size view.
+  A row with one cover keeps the plain full-size view. When a merged row is opened, each printing's row shows its own cover (owner,
+  2026-11-26), and the merged row keeps the gallery of them all.
+- **Linked names (owner, 2026-11-26):** translators, cover artists ("Kansi") and illustrators ("Kuvitus") in the edition rows link to
+  their person pages, as on the old rows; the notes keep the old order (other title, cover, illustration, then the rest).
+- **Merged rows say only what their printings share (owner, 2026-11-26):** another title in bold (no "Nimellä"), publishers and
+  series without printing places or series numbers (the publisher once, then each series on its own line: "WSOY", "Bon"), translators only (no cover artist or illustrator), no misc notes; the Kirja
+  column (Sidonta at full width) gives bindings, Kansipaperi and Ylivetokannet, ISBNs, but no pages or sizes. All of it is on the
+  printings' own rows when the row is opened. Example: Hobitti's 2. laitos (work 1505, 1.–24. painos). Kansipaperi and Ylivetokannet
+  go with the binding on a printing's row too, not in its notes.
+- **Printing rows' Kustantaja ja sarja (owner, 2026-11-26):** another title in bold as on the merged row, then publisher, printing
+  place and series, then "Suom. …" (in the cell only when the Suomentaja column is hidden), then cover artist and illustrator, and
+  the printing's own notes last.
 - **The current page is unaffected:** it ignores `cover_image_id`. The migration must be applied to a database before the backend
   version that reads the column is deployed there.
 

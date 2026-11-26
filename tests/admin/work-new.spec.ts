@@ -288,9 +288,65 @@ test('a merged row opens into its printings, each with its own controls and one 
     await expect(first.locator('tr.wn-sub')).toHaveCount(17);
     await expect(first.locator('tr.wn-sub .p-rating')).toHaveCount(17);
     await expect(first.locator('tr.wn-sub').first().getByRole('link', { name: '1. painos' })).toHaveAttribute('href', /\/editions\/\d+/);
+    // Each opened printing shows its own cover; the merged row keeps the gallery of all 17 (owner, 2026-11-26).
+    const subs = first.locator('tr.wn-sub');
+    for (let i = 0; i < 17; i++) await expect(subs.nth(i).locator('td.c-th img')).toHaveCount(1);
+    // its own printing's file: the 17 share four covers (1p, 3p, 10p, 22p in the data)
+    for (const [label, file] of [['1. painos', '_1p'], ['3. painos', '_3p'], ['6. painos', '_10p'], ['22. painos', '_22p']]) {
+        const sub = subs.filter({ has: page.getByRole('link', { name: label, exact: true }) });
+        await expect(sub.locator('td.c-th img')).toHaveAttribute('src', new RegExp(`${file}\\.`));
+    }
+    // the merged row's gallery holds every printing's covers: one each, or the count on a printing with several
+    const coverCounts = await subs.locator('td.c-th').evaluateAll(cells => cells.map(c => Number(c.querySelector('.wn-th-n')?.textContent ?? 1)));
+    await expect(first.locator('tbody tr:not(.wn-sub) td.c-th .wn-th-n')).toHaveText(String(coverCounts.reduce((a, b) => a + b, 0)));
+    // Cover artists and illustrators are links, as on the old rows.
+    // The 2. laitos is a merged row, which names only translators; its printings' rows name the cover artist.
+    const v2 = page.locator('.wn-version').nth(1);
+    await expect(v2.locator('tbody tr:not(.wn-sub) td.c-pub')).not.toContainText('Sami Saramäki');
+    await v2.locator('button.wn-exp').click();
+    await expect(v2.locator('tr.wn-sub .wn-note').getByRole('link', { name: 'Sami Saramäki' }).first()).toHaveAttribute('href', /\/people\/5457$/);
+    const v3 = page.locator('.wn-version').nth(2);
+    await expect(v3.locator('.wn-note').getByRole('link', { name: 'J. R. R. Tolkien' })).toHaveAttribute('href', /\/people\/1011$/);
     await page.waitForLoadState('networkidle');
     expect(perWork).toHaveLength(1);
     expect(perPrinting).toHaveLength(0);
+});
+
+test('a merged row says only what its printings share: other title in bold, publisher, translators, binding and jackets (Hobitti)', async ({ adminPage: page }) => {
+    await openNew(page, '/works/1505');
+    const merged = page.locator('.wn-version').nth(1).locator('tbody tr:not(.wn-sub)').first();
+    await expect(merged.locator('td.c-ed')).toContainText('1.–24. painos');
+    const pub = merged.locator('td.c-pub');
+    await expect(pub.locator('b.wn-etitle')).toHaveText('Hobitti eli sinne ja takaisin');
+    await expect(pub).not.toContainText('Nimellä');
+    // the printings' notes, printing places and other credits stay on their own rows (owner, 2026-11-26)
+    await expect(pub).not.toContainText('Kuvitettu');
+    await expect(pub).not.toContainText(/Kansi |Kuvitus /);
+    await expect(pub).not.toContainText('(');
+    await expect(pub.locator('.wn-tr-in')).toHaveText('Suom. Kersti Juva');
+    await expect(merged.locator('td.c-book')).toHaveText(/^[^\d]*Kansipaperi, Ylivetokannet/);
+    await expect(merged.locator('td.c-book')).not.toContainText(/ s\.| cm/);
+    await expect(merged.locator('td.c-pages')).toHaveText('');
+    // its first printing's row still has them all
+    await merged.getByRole('button', { name: '1.–24. painos', exact: true }).click();
+    const firstPrinting = page.locator('.wn-version').nth(1).locator('tr.wn-sub').first();
+    // a printing's row in the owner's order (2026-11-26): other title in bold, publisher, translators, other credits, notes
+    await expect(firstPrinting.locator('td.c-pub b.wn-etitle')).toHaveText('Hobitti eli sinne ja takaisin');
+    await expect(firstPrinting.locator('td.c-pub')).not.toContainText('Nimellä');
+    const order = await firstPrinting.locator('td.c-pub > *').evaluateAll(els => els.map(el => el.textContent ?? ''));
+    expect(order.map(t => t.startsWith('Hobitti') ? 'title' : t.startsWith('WSOY') ? 'publisher' : t.startsWith('Suom.') ? 'translators'
+        : /^(Kansi|Kuvitus) /.test(t) ? 'credits' : 'notes')).toEqual(['title', 'publisher', 'translators', 'credits', 'notes']);
+    expect(order[4]).toContain('Kuvitettu');
+    await expect(firstPrinting.locator('td.c-pub').getByRole('link', { name: 'J. R. R. Tolkien' }).first()).toHaveAttribute('href', /\/people\/1011$/);
+    await expect(firstPrinting.locator('td.c-pub')).toContainText('Kuvitettu');
+    // Kansipaperi goes with the binding on a printing's row too, not in its notes
+    await expect(firstPrinting.locator('td.c-book')).toContainText('Kansipaperi');
+    await expect(firstPrinting.locator('td.c-bind')).toContainText('Kansipaperi');
+    await expect(firstPrinting.locator('td.c-pub')).not.toContainText('Kansipaperi');
+    // a merged row names its publisher once, then the series under it: "WSOY", "Bon", not "WSOY, Bon"
+    const v4 = page.locator('.wn-version').filter({ has: page.getByRole('heading', { name: '4. laitos' }) });
+    const v4pub = v4.locator('tbody tr:not(.wn-sub)').first().locator('td.c-pub > div');
+    await expect(v4pub).toHaveText(['WSOY', 'Bon']);
 });
 
 test('grouping lives in the URL, survives reload and back, and the next work opens with it', async ({ adminPage: page }) => {

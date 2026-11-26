@@ -71,6 +71,8 @@ export const laitosGroups = (editions: Edition[], mode: GroupingMode): Laitos[] 
 };
 
 const ROLE_TRANSLATOR = 2;
+const ROLE_COVER = 4;
+const ROLE_ILLUSTRATOR = 5;
 const isbnsOf = (e: Edition): string[] =>
     typeof e.isbn === "string" ? [e.isbn] : (e.isbn ?? []).map(i => i.isbn);
 const peopleOf = (group: Edition[], role: number) => {
@@ -86,7 +88,14 @@ export interface MergedRow {
     years: string;
     publishers: Pick<Edition, "publisher" | "printedin" | "pubseries" | "pubseriesnum">[];
     translators: { id: number; name: string; alt_name: string }[];
-    /** Cover artists, illustrators, dust jacket, overlapping covers, a different title, the edition's own notes. */
+    /** People, not text, so the row links them as the old list did. */
+    coverArtists: { id: number; name: string; alt_name: string }[];
+    illustrators: { id: number; name: string; alt_name: string }[];
+    /** Titles of printings published under another name than the work's. */
+    otherTitles: string[];
+    /** "Kansipaperi", "Ylivetokannet": a printing row shows them in its notes, a merged row with the binding. */
+    jackets: string[];
+    /** The printings' own notes (misc); a merged row leaves them to its printings. */
     notes: string[];
     bindings: string[];
     pages: number[];
@@ -101,28 +110,40 @@ export const mergeGroupForRow = (group: Edition[], workTitle?: string): MergedRo
         const key = [e.publisher?.id, e.printedin, e.pubseries?.id, e.pubseriesnum].join("|");
         if (!publishers.has(key)) publishers.set(key, { publisher: e.publisher, printedin: e.printedin, pubseries: e.pubseries, pubseriesnum: e.pubseriesnum });
     }
-    const credits = (role: number, prefix: string) => {
-        const people = peopleOf(group, role);
-        return people.length ? `${prefix} ${people.map(p => p.alt_name || p.name).join(", ")}` : "";
-    };
     return {
         label: groupLabel(group),
         years: yearRange(group.map(year)),
         publishers: [...publishers.values()],
         translators: peopleOf(group, ROLE_TRANSLATOR),
-        notes: uniq<string>([
-            ...uniq<string>(group.map(e => workTitle && e.title && e.title !== workTitle ? `Nimellä ${e.title}` : "")),
-            credits(4, "Kansi"), credits(5, "Kuvitus"),
+        coverArtists: peopleOf(group, ROLE_COVER),
+        illustrators: peopleOf(group, ROLE_ILLUSTRATOR),
+        otherTitles: uniq<string>(group.map(e => (workTitle && e.title && e.title !== workTitle ? e.title : ""))),
+        jackets: uniq<string>([
             group.some(e => e.dustcover === 3) ? "Kansipaperi" : "",
             group.some(e => e.coverimage === 3) ? "Ylivetokannet" : "",
-            ...group.map(e => e.misc),
         ]),
+        notes: uniq<string>(group.map(e => e.misc)),
         bindings: uniq<string>(group.map(e => (e.binding && e.binding.id > 1 ? e.binding.name : ""))),
         pages: uniq<number>(group.map(e => num(e.pages))),
         sizes: uniq<number>(group.map(e => num(e.size))),
         isbns: uniq<string>(group.flatMap(isbnsOf)),
         cover: group.find(e => e.images?.length)?.images[0] ?? null,
     };
+};
+
+/**
+ * A merged row's publisher column: each publisher once, then its series on their own lines (owner, 2026-11-26: "WSOY" then
+ * "Bon", not "WSOY, Bon"). Printing places and series numbers belong to the printings' rows.
+ */
+export const publisherLines = (list: MergedRow["publishers"]) => {
+    const lines = new Map<string, { publisher: Edition["publisher"] | null; series: NonNullable<Edition["pubseries"]>[] }>();
+    for (const p of list) {
+        const key = String(p.publisher?.id ?? "");
+        const line = lines.get(key) ?? { publisher: p.publisher ?? null, series: [] };
+        lines.set(key, line);
+        if (p.pubseries && !line.series.some(x => x.id === p.pubseries!.id)) line.series.push(p.pubseries);
+    }
+    return [...lines.values()];
 };
 
 /** "20 painosta vuosina 1985–2023, WSOY. Suomentanut Eila Pennanen, Kersti Juva." */

@@ -137,6 +137,7 @@ table.wn-et { width: 100%; border-collapse: collapse; table-layout: fixed; font-
 .wn-exp { border: 0; background: none; padding: 0; cursor: pointer; color: var(--wn-blue); text-align: left; font: inherit; }
 .wn-exp i { font-size: 11px; color: var(--wn-ink-3); margin-right: 4px; }
 .wn-note { display: block; font-size: 13px; color: var(--wn-ink-3); margin-top: 2px; }
+.wn-et .wn-etitle { display: block; font-weight: 600; color: var(--wn-ink); }
 .wn-isbn { font-variant-numeric: tabular-nums; }
 .wn-isbn a, .wn-nowrap { white-space: nowrap; }
 .wn-note .wn-nowrap { display: block; }

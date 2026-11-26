@@ -4,7 +4,7 @@ import fixtures from "../../../test/fixtures/works.json";
 import { Edition } from "@features/edition";
 import { Work } from "../types";
 import {
-    editionLabel, groupLabel, laitosGroups, mergeGroupForRow, ownershipSummary, printingsSummary, seriesPosition,
+    editionLabel, groupLabel, laitosGroups, mergeGroupForRow, ownershipSummary, publisherLines, printingsSummary, seriesPosition,
     subjectGroups, tagsByType, titleFit, yearRange, originFact, workCovers, mainCover,
 } from "./work-facts";
 
@@ -64,6 +64,48 @@ describe("mergeGroupForRow", () => {
         expect(row.pages).toEqual([981]);
         expect(row.publishers.map(p => p.publisher?.name)).toContain("WSOY");
         expect(new Set(row.isbns).size).toBe(row.isbns.length);
+    });
+
+    it("keeps cover artists and illustrators as people, so the row can link them", () => {
+        const first = jansson.editions.find(e => e.id === 3791)!;
+        const row = mergeGroupForRow([first]);
+        expect(row.coverArtists.map(p => p.id)).toEqual([2122]);
+        expect(row.illustrators.map(p => p.alt_name)).toEqual(["Tove Jansson"]);
+        expect(row.notes.some(n => /^(Kansi|Kuvitus) /.test(n))).toBe(false);
+        expect(mergeGroupForRow(tolkien.editions.filter(e => e.version === 2), "Toinen nimi").otherTitles).toEqual(["Taru sormusten herrasta"]);
+        expect(mergeGroupForRow(leGuin.editions.slice(0, 2)).coverArtists.map(p => p.alt_name)).toEqual(["Heikki Kalliomaa"]);
+    });
+});
+
+describe("mergeGroupForRow: a merged row's parts kept apart", () => {
+    // Hobitti's 2. laitos in the dev data (owner, 2026-11-26): the merged row shows the other title in bold, publishers without
+    // the printing place or notes, translators only, and the dust jacket and overlapping covers with the binding.
+    const base = jansson.editions.find(e => e.id === 3791)!;
+    const group = [
+        { ...base, id: 1, editionnum: 1, title: "Hobitti eli sinne ja takaisin", printedin: "Porvoo", misc: "Kuvitettu.", dustcover: 3, coverimage: 1 },
+        { ...base, id: 2, editionnum: 2, title: "Hobitti eli sinne ja takaisin", printedin: null, misc: "Karttoja.", dustcover: 1, coverimage: 3, contributions: [] },
+    ] as unknown as Edition[];
+
+    it("gives the other title as a name, the dust jacket and covers apart from the notes", () => {
+        const row = mergeGroupForRow(group, "Lohikäärmevuori");
+        expect(row.otherTitles).toEqual(["Hobitti eli sinne ja takaisin"]);
+        expect(row.jackets).toEqual(["Kansipaperi", "Ylivetokannet"]);
+        expect(row.notes).toEqual(["Kuvitettu.", "Karttoja."]);
+        expect(row.publishers.map(p => p.printedin)).toEqual(["Porvoo", null]);
+    });
+});
+
+describe("publisherLines", () => {
+    it("names each publisher once, then its series on their own lines (owner, 2026-11-26: WSOY, then Bon)", () => {
+        const wsoy = { id: 387, name: "WSOY" }, otava = { id: 10, name: "Otava" };
+        const lines = publisherLines([
+            { publisher: wsoy, pubseries: null },
+            { publisher: wsoy, pubseries: { id: 50, name: "Bon" } },
+            { publisher: wsoy, pubseries: { id: 238, name: "Loisto" } },
+            { publisher: wsoy, pubseries: { id: 50, name: "Bon" } },
+            { publisher: otava, pubseries: { id: 7, name: "Seven" } },
+        ] as never);
+        expect(lines.map(l => [l.publisher?.name, l.series.map(x => x.name)])).toEqual([["WSOY", ["Bon", "Loisto"]], ["Otava", ["Seven"]]]);
     });
 });
 

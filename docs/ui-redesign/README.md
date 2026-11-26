@@ -9,11 +9,13 @@ Nothing here is built yet unless the status table says so. Each change still goe
 
 These apply to every page in this rewrite, not only the ones built so far:
 
-1. **The new identity style.** Every redesigned page uses the visual identity defined in
+1. **The identity style** ("identity" for short; decided 2026-11-26 as the name for all pages). Every redesigned page uses the visual identity defined in
    [work-identity.md](pages/work-identity.md#design-plan): Literata and Schibsted Grotesk (self-hosted, `src/components/identity-fonts/`),
    ink and catalogue-blue tokens with light and dark values, the site's own page background, rules and space instead of boxes,
    labelled facts and text lists instead of chips. A page plan that was agreed in the older style (indigo, Roboto, cards) is built in the
    identity style; its behaviour stays as agreed. The person and work pages are the reference implementations.
+   "Write a page in identity style" means exactly this. When a page reaches a new stage, its **Identity** column in the
+   status table is updated in the same change.
 2. **An admin-only trial first.** The new page is reached only by admins, with the shared switch
    (`src/components/page-version-switch.tsx`): a button at the bottom left and **Shift+U**, the choice kept per page type in the browser.
    Visitors and other users keep getting the current page, and the new page's code is lazy-loaded so they never download it.
@@ -36,33 +38,37 @@ These apply to every page in this rewrite, not only the ones built so far:
 
 ## Status
 
-| Page | Route | Plan | Status |
-|---|---|---|---|
-| Person | `/people/:id` | [person.md](pages/person.md) | Agreed; new page in admin-only trial (Shift+U), 2026-11-24 |
-| Work | `/works/:id` | [work.md](pages/work.md) | Agreed (revised 2026-11-23) |
-| Person: visual identity (alternative) | `/people/:id` | [person-identity.md](pages/person-identity.md) | Proposal; implemented for the admin trial |
-| Work: visual identity (alternative) | `/works/:id` | [work-identity.md](pages/work-identity.md) | New page in admin-only trial (Shift+U), 2026-11-24 |
-| Front page: visual identity (alternative) | `/` | [front-identity.md](pages/front-identity.md) | New page in admin-only trial (Shift+U), 2026-11-25 |
-| Edition link | `/editions/:id` | Part of [work.md](pages/work.md) (no separate page: it opens the work page with that edition highlighted) | Agreed |
-| Short story | `/shorts/:id` | [short.md](pages/short.md) | Agreed; new page in admin-only trial (Shift+U) in the identity style, 2026-11-25 |
-| Front page | `/` | [front-page.md](pages/front-page.md) | Agreed (revised 2026-11-23) |
-| Search (menu dropdown and results page) | `/search` | [search.md](pages/search.md) | Agreed |
-| People list | `/people` | [people-list.md](pages/people-list.md) | Agreed |
-| Book index, works by type, non-fiction | `/bookindex`, `/nonfiction` | [book-index.md](pages/book-index.md) | Agreed |
-| Short story index | `/shortstoryindex` | [short-index.md](pages/short-index.md) | Agreed |
-| Magazines, magazine, issue | `/magazines`, `/magazines/:id`, `/issues/:id` | [magazines.md](pages/magazines.md) | Agreed |
-| Book series | `/bookseries`, `/bookseries/:id` | [bookseries.md](pages/bookseries.md) | Agreed |
-| Publisher series | `/pubseries`, `/pubseries/:id` | [pubseries.md](pages/pubseries.md) | Agreed |
-| Publishers | `/publishers`, `/publishers/:id` | [publishers.md](pages/publishers.md) | Agreed |
-| Awards | `/awards`, `/awards/:id` | [awards.md](pages/awards.md) | Agreed |
-| Tags | `/tags`, `/tags/:id` | [tags.md](pages/tags.md) | Agreed |
-| Latest additions, changes | `/latest`, `/changes` | [latest-changes.md](pages/latest-changes.md) | Agreed |
-| Statistics | `/stats` | [../stats-plan.md](../stats-plan.md) | Done 2026-10-13 |
-| Users, profile, admin | `/users`, `/users/:id`, `/admin` | [users-admin.md](pages/users-admin.md) | Agreed |
-| Login, password, FAQ | `/login`, `/register`, `/forgot-password`, `/faq` | [misc.md](pages/misc.md) | Agreed |
+| Page | Route | Plan | Status | Identity |
+|---|---|---|---|---|
+| Person | `/people/:id` | [person.md](pages/person.md) | Agreed; new page in admin-only trial (Shift+U), 2026-11-24 | Admin trial, 2026-11-24 |
+| Work | `/works/:id` | [work.md](pages/work.md) | Agreed (revised 2026-11-23) | Admin trial, 2026-11-24 |
+| Person: visual identity (alternative) | `/people/:id` | [person-identity.md](pages/person-identity.md) | Proposal; implemented for the admin trial | Style plan; see Person |
+| Work: visual identity (alternative) | `/works/:id` | [work-identity.md](pages/work-identity.md) | New page in admin-only trial (Shift+U), 2026-11-24 | Style plan; see Work |
+| Front page: visual identity (alternative) | `/` | [front-identity.md](pages/front-identity.md) | New page in admin-only trial (Shift+U), 2026-11-25 | Style plan; see Front page |
+| Edition link | `/editions/:id` | Part of [work.md](pages/work.md) (no separate page: it opens the work page with that edition highlighted) | Agreed | Admin trial, with the work page |
+| Short story | `/shorts/:id` | [short.md](pages/short.md) | Agreed; new page in admin-only trial (Shift+U) in the identity style, 2026-11-25 | Admin trial, 2026-11-25 |
+| Front page | `/` | [front-page.md](pages/front-page.md) | Agreed (revised 2026-11-23) | Admin trial, 2026-11-25 |
+| Search (menu dropdown and results page) | `/search` | [search.md](pages/search.md) | Agreed | Not started |
+| People list | `/people` | [people-list.md](pages/people-list.md) | Agreed | Not started |
+| Book index, works by type, non-fiction | `/bookindex`, `/nonfiction` | [book-index.md](pages/book-index.md) | Agreed; `/bookindex` in admin-only trial, 2026-11-26 | Admin trial, 2026-11-26 (`/bookindex`; `/nonfiction` not started) |
+| Short story index | `/shortstoryindex` | [short-index.md](pages/short-index.md) | Agreed | Not started |
+| Magazines, magazine, issue | `/magazines`, `/magazines/:id`, `/issues/:id` | [magazines.md](pages/magazines.md) | Agreed | Not started |
+| Book series | `/bookseries`, `/bookseries/:id` | [bookseries.md](pages/bookseries.md) | Agreed | Not started |
+| Publisher series | `/pubseries`, `/pubseries/:id` | [pubseries.md](pages/pubseries.md) | Agreed | Not started |
+| Publishers | `/publishers`, `/publishers/:id` | [publishers.md](pages/publishers.md) | Agreed | Not started |
+| Awards | `/awards`, `/awards/:id` | [awards.md](pages/awards.md) | Agreed | Not started |
+| Tags | `/tags`, `/tags/:id` | [tags.md](pages/tags.md) | Agreed | Not started |
+| Latest additions, changes | `/latest`, `/changes` | [latest-changes.md](pages/latest-changes.md) | Agreed | Not started |
+| Statistics | `/stats` | [../stats-plan.md](../stats-plan.md) | Done 2026-10-13 | Not started |
+| Users, profile, admin | `/users`, `/users/:id`, `/admin` | [users-admin.md](pages/users-admin.md) | Agreed | Not started |
+| Login, password, FAQ | `/login`, `/register`, `/forgot-password`, `/faq` | [misc.md](pages/misc.md) | Agreed | Not started |
 
 Status values: **Not started** → **Reviewed** (current page looked at, problems listed) → **Proposal** (layout and mockup) →
 **Agreed** (open questions answered) → **In progress** → **Done** (with the commit or PR).
+
+Identity values (how far the page is in the identity style): **Not started** → **Admin trial** (built in identity style behind the
+admin-only switch, with the date) → **Default** (everyone gets it and the old page is removed, with the date). The statistics page was
+finished in the older style and is still **Not started** here.
 
 ## Order of work
 

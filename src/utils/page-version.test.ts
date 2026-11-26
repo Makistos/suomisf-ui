@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
-    FRONT_PAGE_VERSION_KEY, isPageVersionHotkey, readPageVersion, writePageVersion, PERSON_PAGE_VERSION_KEY, SHORT_PAGE_VERSION_KEY, WORK_PAGE_VERSION_KEY,
+    FRONT_PAGE_VERSION_KEY, isPageVersionHotkey, readPageVersion, writePageVersion, PERSON_PAGE_VERSION_KEY, SHORT_PAGE_VERSION_KEY, WORK_PAGE_VERSION_KEY, BOOKINDEX_PAGE_VERSION_KEY,
 } from "./page-version";
 
 const key = (fields: Partial<KeyboardEvent>, target: EventTarget | null = document.body) =>
@@ -54,7 +54,8 @@ describe("readPageVersion / writePageVersion", () => {
         writePageVersion(storage, FRONT_PAGE_VERSION_KEY, "uusi");
         expect(FRONT_PAGE_VERSION_KEY).toBe("suomisf.frontPageVersion");
         expect(SHORT_PAGE_VERSION_KEY).toBe("suomisf.shortPageVersion");
-        expect(new Set([FRONT_PAGE_VERSION_KEY, WORK_PAGE_VERSION_KEY, PERSON_PAGE_VERSION_KEY, SHORT_PAGE_VERSION_KEY]).size).toBe(4);
+        expect(BOOKINDEX_PAGE_VERSION_KEY).toBe("suomisf.bookindexPageVersion");
+        expect(new Set([FRONT_PAGE_VERSION_KEY, WORK_PAGE_VERSION_KEY, PERSON_PAGE_VERSION_KEY, SHORT_PAGE_VERSION_KEY, BOOKINDEX_PAGE_VERSION_KEY]).size).toBe(5);
         expect(readPageVersion(storage, PERSON_PAGE_VERSION_KEY)).toBe("vanha");
     });
 

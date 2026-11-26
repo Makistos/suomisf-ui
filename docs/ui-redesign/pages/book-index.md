@@ -2,7 +2,7 @@
 
 **Routes:** `/bookindex` ("Kirjat" in the menu) and `/nonfiction` · **Code:** `src/features/work/routes/work-search.tsx`, `works-by-type.tsx`,
 `src/features/work/components/work-list.tsx`; backend `POST /api/searchworks`, `GET /api/worksbyinitial/<letter>`, `GET /api/firstlettervector/works`
-**Status:** Agreed · **Updated:** 2026-11-22
+**Status:** Agreed; `/bookindex` implemented as an admin-only trial in identity style (2026-11-26) · **Updated:** 2026-11-26
 **Sample:** https://www.sf-bibliografia.fi/bookindex, searched for author "Le Guin" (30 works).
 **Mockup:** [`../mockups/index.html?k=books`](../mockups/index.html) with [`index-data.js`](../mockups/index-data.js) (real results).
 The same mockup shows the [short story index](short-index.md) (`?k=shorts`): both indexes share one pattern.
@@ -66,6 +66,35 @@ The numbers 1–6 in the mockup screenshots match the sections below.
 
 **`/nonfiction` stays its own page** (decided), but gets the same results header, compact rows and paging, so it no longer loads every non-fiction book at once.
 The book index keeps "Tietokirja" as one of its type chips, as today's type dropdown has it.
+
+## Implementation (2026-11-26): `/bookindex` as an admin-only trial in identity style
+
+Built to the [build rules](../README.md#rules-for-every-redesigned-page-decided-2026-11-24): this plan's layout and behaviour in the identity
+style. Admins switch with *Uusi kirjasivu* or Shift+U (`suomisf.bookindexPageVersion`, apart from the other pages' choices); everyone
+else gets the current page.
+
+- **Backend:** a new route, `GET /api/bookindex` (`app/impl_bookindex.py`), with paging (50/100/200), totals, sorting with empty years last,
+  a light row payload, several types and genres at once, and the author initial as a filter. `POST /api/searchworks` and
+  `worksbyinitial` are unchanged, so the current page and the book suggestions keep working; they can be retired when the new page
+  becomes the default.
+- **Frontend:** `src/features/work/bookindex/` (page, styles, `bookindex-state.ts` for the URL with Vitest tests), the switch in
+  `src/features/work/routes/book-index-switch.tsx`. Everything is in the URL with readable values: `tekija`, `nimi`, `alkunimi`,
+  `alkuteos=1960-1969`, `painettu=2000-`, `kansallisuus`, `tyyppi=romaani,kokoelma`, `genre=SF,F`, `kirjain`, `jarjestys`,
+  `ryhmittely=ei`, `nakyma=kannet`, `sivu`, `riveja`. A filter change goes back to page 1.
+- **Differences from the plan, for now:**
+  - *Painettu* matches any Finnish printing in the range (the current page used the first printing only);
+  - "Tilastot tästä hausta" is left out: the statistics panel computed from the full result list, which a paged page no longer
+    loads; it needs a statistics endpoint for a search;
+  - **`/nonfiction` is not done yet** (step 4): it still uses the current list.
+- **Rows, revised after the owner's review (2026-11-26):** the author first (linked), then the title and subtitle; original title and year,
+  series (with its parent series); "Kirjoittanut …" for a pen name several writers share; translator, first publisher (linked), year and
+  publisher's series; every printing's year linking to it (shown when there are several, or to carry the reader's mark), with a star for a
+  printing the reader owns and a bookmark for one on their wishlist (computed for the logged-in user only); genres on the right. Grouped by
+  author, the rows leave out the author the heading names, as on the old list.
+- **Defaults changed by the owner (2026-11-26):** grouped by author (as on the old list) and 200 works a page, instead of the plan's
+  ungrouped list and 50 a page. Neither default is written in the URL; `ryhmittely=ei` and `riveja=50|100` are. Because the same first
+  author can come back later on a page, each author group's key carries its position (a repeated key had left stale rows on screen).
+- **Tests:** backend `tests/api/test_bookindex.py`; Playwright `tests/admin/bookindex-new.spec.ts`, `tests/anon|user/bookindex-version.spec.ts`.
 
 ## Shared principles used or added
 

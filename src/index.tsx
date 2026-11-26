@@ -37,7 +37,7 @@ const PublisherListPage = lazy(() => import('./features/publisher/routes/publish
 const BookseriesListPage = lazy(() => import('./features/bookseries/routes/bookseries-list-page').then(m => ({ default: m.BookseriesListPage })));
 const PubseriesListPage = lazy(() => import('./features/pubseries/routes/pubseries-list-page').then(m => ({ default: m.PubseriesListPage })));
 const ShortSearchPage = lazy(() => import('./features/short/routes/short-search-page').then(m => ({ default: m.ShortSearchPage })));
-const WorkSearchPage = lazy(() => import('./features/work/routes/work-search').then(m => ({ default: m.WorkSearchPage })));
+const BookIndexSwitch = lazy(() => import('./features/work/routes/book-index-switch').then(m => ({ default: m.BookIndexSwitch })));
 const SFTag = lazy(() => import('./features/tag/routes/sftag').then(m => ({ default: m.SFTag })));
 const SFTags = lazy(() => import('./features/tag/routes/sftags-page').then(m => ({ default: m.SFTags })));
 const Awards = lazy(() => import('./features/award/routes/awards-page').then(m => ({ default: m.Awards })));
@@ -75,7 +75,7 @@ root.render(
             <Route index element={<FrontPageSwitch />} />
             <Route path="awards" element={<Awards />} />
             <Route path="awards/:itemId" element={<AwardPage id={null} />} />
-            <Route path="bookindex" element={<WorkSearchPage />} />
+            <Route path="bookindex" element={<BookIndexSwitch />} />
             <Route path="faq" element={<FAQ />} />
             <Route path="shortstoryindex" element={<ShortSearchPage />} />
             <Route path="people" element={<PeoplePage />} />

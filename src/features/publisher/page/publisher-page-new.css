@@ -1,0 +1,103 @@
+/* Publisher page in the identity style (work-identity.md tokens and type, as the publisher list), layout from publishers.md.
+   Scoped under .pp so the rest of the site keeps its look; the site's own page background, as on every identity page.
+   The printings themselves are the shared EditionRows (src/features/edition/rows/). */
+@import "../../../components/identity-fonts/fonts.css";
+
+.pp {
+    --pp-paper: Canvas; --pp-sheet: #FFFFFF; --pp-ink: #1D1F2B; --pp-ink-2: #4F5262; --pp-ink-3: #66697A;
+    --pp-rule: #DADBD4; --pp-rule-2: #C4C6BE; --pp-blue: #2B44B8;
+    --pp-serif: 'PN Literata', Georgia, serif; --pp-sans: 'PN Schibsted Grotesk', system-ui, sans-serif;
+    background: var(--pp-paper); color: var(--pp-ink); font: 16px/1.55 var(--pp-sans); width: 100%; padding: 0 24px 72px;
+}
+@media (prefers-color-scheme: dark) {
+    .pp {
+        --pp-sheet: #1B1C23; --pp-ink: #E9E8E3; --pp-ink-2: #B4B4BE; --pp-ink-3: #8B8C97; --pp-rule: #2E3039; --pp-rule-2: #3D3F4A;
+        --pp-blue: #A3B3FF;
+    }
+}
+.pp a { color: var(--pp-blue); text-decoration: none; }
+.pp a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.pp :focus-visible { outline: 2px solid var(--pp-blue); outline-offset: 2px; border-radius: 2px; }
+.pp h1 { color: var(--pp-ink); }
+.pp button { font: inherit; color: inherit; }
+.pp button.pp-link { border: 0; background: none; padding: 0; color: var(--pp-blue); cursor: pointer; }
+.pp button.pp-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.pp input, .pp select { font: 15px var(--pp-sans); color: var(--pp-ink); background: var(--pp-sheet); border: 1px solid var(--pp-rule-2);
+    border-radius: 4px; padding: 7px 10px; min-width: 0; }
+.pp input::placeholder { color: var(--pp-ink-3); }
+
+/* 1 header */
+.pp-crumbs { padding: 18px 0 0; font-size: 14px; color: var(--pp-ink-3); }
+.pp-head { padding: 6px 0 18px; }
+.pp-head h1 { font: 650 46px/1.05 var(--pp-serif); letter-spacing: -.02em; margin: 0; overflow-wrap: anywhere; }
+.pp-full { margin: 4px 0 0; font: 18px/1.4 var(--pp-serif); color: var(--pp-ink-2); }
+.pp-facts { margin: 12px 0 0; font: 17px/1.55 var(--pp-serif); color: var(--pp-ink-2); max-width: 75ch; }
+.pp-desc { margin: 12px 0 0; font: 16px/1.6 var(--pp-serif); max-width: 70ch; }
+.pp-desc p { margin: 0 0 8px; }
+.pp-links { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 14.5px; }
+
+/* 2 tabs: text with counts, the chosen one underlined */
+.pp-tabs { display: flex; flex-wrap: wrap; gap: 0 28px; border-bottom: 1px solid var(--pp-rule-2); margin-top: 4px; }
+.pp-tabs button { border: 0; background: none; padding: 10px 0 8px; cursor: pointer; font: 600 16px var(--pp-sans); color: var(--pp-ink-2);
+    border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.pp-tabs button small { font-weight: 500; font-size: 13.5px; color: var(--pp-ink-3); margin-left: 7px; }
+.pp-tabs button[aria-selected="true"] { color: var(--pp-ink); border-bottom-color: var(--pp-ink); }
+
+/* 3 printings: filters, count and tools, the list, paging */
+.pp-panel { padding-top: 16px; }
+.pp-filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 20px; padding-bottom: 14px; border-bottom: 1px solid var(--pp-rule); }
+.pp-text, .pp-range { display: flex; flex-direction: column; gap: 5px; font-size: 13.5px; color: var(--pp-ink-3); }
+.pp-text { flex: 1 1 260px; max-width: 380px; }
+.pp-range-in { display: flex; align-items: center; gap: 6px; }
+.pp-range-in input { width: 92px; }
+.pp-go { border: 0; background: var(--pp-blue); color: var(--pp-paper) !important; border-radius: 5px; padding: 8px 22px; font-weight: 700 !important; cursor: pointer; }
+.pp-filters .pp-link { padding-bottom: 9px; }
+.pp-rhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 24px; padding: 12px 0 8px; }
+.pp-rhead p { margin: 0; font: 17px/1.4 var(--pp-serif); color: var(--pp-ink-2); }
+.pp-rhead p b { color: var(--pp-ink); }
+.pp-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; font-size: 14px; color: var(--pp-ink-2); }
+.pp-tools label { display: inline-flex; align-items: center; gap: 8px; }
+.pp-toggle { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--pp-rule-2); background: var(--pp-sheet); border-radius: 6px;
+    padding: 6px 12px; cursor: pointer; color: var(--pp-ink-2) !important; }
+.pp-toggle[aria-pressed="true"] { background: var(--pp-ink); border-color: var(--pp-ink); color: var(--pp-paper) !important; }
+.pp-list[aria-busy="true"] { opacity: .6; transition: opacity .2s; }
+.pp-paging { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 20px; margin-top: 18px; font-size: 14.5px; color: var(--pp-ink-2); }
+.pp-pages { display: inline-flex; align-items: center; gap: 14px; }
+.pp-pages button { border: 1px solid var(--pp-rule-2); background: var(--pp-sheet); border-radius: 5px; padding: 6px 12px; cursor: pointer; }
+.pp-pages button:disabled { opacity: .45; cursor: default; }
+.pp-paging label { display: inline-flex; align-items: center; gap: 8px; }
+.pp-empty, .pp-err { font: 16.5px/1.5 var(--pp-serif); padding: 18px 0; }
+.pp-err button { display: block; margin-top: 10px; border: 1px solid var(--pp-rule-2); background: var(--pp-sheet); border-radius: 6px; padding: 6px 14px; cursor: pointer; font-weight: 600; }
+
+/* 4 series and magazines tables */
+.pp-table { width: 100%; border-collapse: collapse; }
+.pp-table th { text-align: left; font: 500 13.5px var(--pp-sans); color: var(--pp-ink-3); border-bottom: 1px solid var(--pp-rule-2); padding: 6px 12px 6px 0; }
+.pp-table th button { border: 0; background: none; padding: 0; cursor: pointer; color: var(--pp-ink-2); display: inline-flex; align-items: center; gap: 6px; }
+.pp-table th[aria-sort="ascending"] button, .pp-table th[aria-sort="descending"] button { color: var(--pp-ink); font-weight: 650; }
+.pp-table th .pi { font-size: 11px; color: var(--pp-ink-3); }
+.pp-table td { border-bottom: 1px solid var(--pp-rule); padding: 6px 12px 6px 0; vertical-align: baseline; }
+.pp-table .pp-n { text-align: right; width: 120px; font-variant-numeric: tabular-nums; }
+.pp-table th.pp-n button { flex-direction: row-reverse; }
+.pp-table .pp-y { width: 120px; padding-left: 20px; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--pp-ink-2); }
+.pp-table .pp-name a { font: 600 16px/1.35 var(--pp-serif); color: var(--pp-ink); }
+.pp-table .pp-name a:hover { color: var(--pp-blue); }
+.pp-type { color: var(--pp-ink-2); font-size: 14.5px; }
+.pp-none { color: var(--pp-ink-3); font-style: italic; font-size: 14px; }
+.pp-unit { display: none; }
+
+/* the site places and sizes the admin SpeedDial only under the current pages' classes */
+.pp .fixed-dial { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; }
+
+@media (max-width: 639px) {
+    .pp { padding: 0 16px 56px; }
+    .pp-head h1 { font-size: 34px; }
+    .pp-text { max-width: none; }
+    .pp-table thead { display: none; }
+    .pp-table, .pp-table tbody, .pp-table tr, .pp-table td { display: block; width: auto; }
+    .pp-table tr { padding: 8px 0; border-bottom: 1px solid var(--pp-rule); }
+    .pp-table td { border: 0; padding: 0; text-align: left; }
+    .pp-table .pp-n, .pp-table .pp-y, .pp-table .pp-type { display: inline; width: auto; padding: 0; font-size: 14px; color: var(--pp-ink-2); }
+    .pp-table .pp-y:not(:empty)::before, .pp-table .pp-n + .pp-y:not(:empty)::before { content: " · "; }
+    .pp-table .pp-type:not(:empty)::after { content: " · "; }
+    .pp-unit { display: inline; }
+}

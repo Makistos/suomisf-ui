@@ -32,7 +32,7 @@ const ForgotPasswordView = lazy(() => import('./features/user/components/forgot-
 const ResetPasswordView = lazy(() => import('./features/user/components/reset-password-view').then(m => ({ default: m.ResetPasswordView })));
 const BookseriesPage = lazy(() => import('./features/bookseries/routes/bookseries-page').then(m => ({ default: m.BookseriesPage })));
 const PubseriesPage = lazy(() => import('./features/pubseries/routes/pubseries-page').then(m => ({ default: m.PubseriesPage })));
-const PublisherPage = lazy(() => import('./features/publisher/routes/publisher-page').then(m => ({ default: m.PublisherPage })));
+const PublisherPageSwitch = lazy(() => import('./features/publisher/routes/publisher-page-switch').then(m => ({ default: m.PublisherPageSwitch })));
 const PublisherListSwitch = lazy(() => import('./features/publisher/routes/publisher-list-switch').then(m => ({ default: m.PublisherListSwitch })));
 const BookseriesListPage = lazy(() => import('./features/bookseries/routes/bookseries-list-page').then(m => ({ default: m.BookseriesListPage })));
 const PubseriesListPage = lazy(() => import('./features/pubseries/routes/pubseries-list-page').then(m => ({ default: m.PubseriesListPage })));
@@ -89,7 +89,7 @@ root.render(
             <Route path="bookseries/:itemId" element={<BookseriesPage id={null} />} />
             <Route path="pubseries" element={<PubseriesListPage />} />
             <Route path="pubseries/:itemId" element={<PubseriesPage id={null} />} />
-            <Route path="publishers/:itemId" element={<PublisherPage id={null} />} />
+            <Route path="publishers/:itemId" element={<PublisherPageSwitch />} />
             <Route path="publishers" element={<PublisherListSwitch />} />
             <Route path="shorts/:itemId" element={<ShortPageSwitch />} />
             <Route path="tags" element={<SFTags />} />

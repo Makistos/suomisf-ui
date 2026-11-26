@@ -2,7 +2,7 @@
 
 **Routes:** `/publishers` (list) and `/publishers/:id` · **Code:** `src/features/publisher/routes/publisher-list-page.tsx`, `publisher-page.tsx`,
 `src/features/edition/components/edition-list.tsx`, `src/features/pubseries/components/pubseries-list.tsx`; backend `GET /api/publishers`, `/api/publishers/:id`
-**Status:** Agreed; the list (`/publishers`) implemented as an admin-only trial in identity style (2026-11-26) · **Updated:** 2026-11-26
+**Status:** Agreed; the list and the publisher page implemented as admin-only trials in identity style (2026-11-26) · **Updated:** 2026-11-26
 **Samples:** the list (507 publishers), WSOY (2,263 editions, 59 publisher series, https://www.sf-bibliografia.fi/publishers/387) and
 Helsingin Science Fiction Seura ry (publisher of Tähtivaeltaja, https://www.sf-bibliografia.fi/publishers/85).
 **Mockup:** [`../mockups/publishers.html`](../mockups/publishers.html) with [`publishers-data.js`](../mockups/publishers-data.js) (real data): `?v=pub` WSOY, `?v=series` its Sarjat tab,
@@ -59,7 +59,7 @@ phones: [list before](../images/publishers/before-list-mobile.png), [list after]
 
 Built to the [build rules](../README.md#rules-for-every-redesigned-page-decided-2026-11-24): the list page of this plan in the identity
 style (the book index's tokens and type). Admins switch with *Uusi kustantajasivu* or Shift+U (`suomisf.publishersPageVersion`, apart
-from the other pages' choices); everyone else gets the current page. The publisher page (`/publishers/:id`) is not started.
+from the other pages' choices); everyone else gets the current page. The publisher page: see the next section.
 
 - **Backend:** a new route, `GET /api/publisherindex` (`app/impl_publisherindex.py`): every publisher with its edition count, first and
   last year and magazines with issue counts, counted in the database (76 kB in about 30 ms on the dev data, against 400 kB and 340 ms for
@@ -89,11 +89,45 @@ from the other pages' choices); everyone else gets the current page. The publish
 | WSOY / Tammi / Otava / Karisto / Gummerus | 2 263 / 1 148 / 1 067 / 697 / 605 | 2 260 / 1 148 / 1 066 / 695 / 605 | the dev database is an older copy |
 | WSOY years | 1889–2026 | 1889–2026 | same |
 
+## Implementation (2026-11-26): `/publishers/:id` as an admin-only trial in identity style
+
+The owner changed two things in the plan before it was built: **a publisher publishes editions, so its list is of printings, not works**
+(one row a printing, no merged reprints), and **no "Painokset vuosittain" chart** (as the person page's was removed, 2026-11-25).
+Admins switch with *Uusi kustantajan sivu* or Shift+U (`suomisf.publisherPageVersion`); everyone else gets the current page.
+
+- **Backend:** `GET /api/publishers/:id/summary` (facts, links, series with printing counts and years, magazines with issue counts and
+  years: 6 kB in 25 ms for WSOY) and `GET /api/publishers/:id/editions` (paged 50/100/200, 100 by default; `q` from the start of a word of
+  the author's name or the printing's, work's or original title; `year_min`, `year_max`; `sort` oldest (default), newest, title, author;
+  the logged-in user's owned and wishlisted marks: 73 kB in 85 ms a page, against 2 MB for `GET /api/publishers/:id`, which the current page
+  keeps using). The optional login is `optional_user_id()` in `app/api_jwt.py`, shared with `/api/bookindex`: an expired token gets 401.
+- **Shared component:** `src/features/edition/rows/` (`EditionRows`, helpers with Vitest tests), one printing a row, its own identity
+  tokens so other edition lists (a publisher's series, a person's translations) can use it:
+  "Ursula K. Le Guin: **Pimeyden vasen käsi** (*The Left Hand of Darkness*, 1969). Suom. Kalevi Nyytäjä. Sci-fi -sarja." — author and
+  translators link to people, the title to the printing (`/editions/:id`), the series to it; "2. painos", "2. laitos", "2. laitos,
+  3. painos" when not a first printing; the reader's star or bookmark before the row; genres on the right. Sorted by year, the rows sit
+  under year headings ("1976 · 14 painosta"); by title or author, the year ends each row. *Kannet* shows the same page as covers
+  (cloth binding without one). A printing with an empty title shows its work's title.
+- **Page:** `src/features/publisher/page/`: crumbs, name, full name when it differs, the facts line "2 260 painosta (1 320 teosta) vuosina
+  1889–2026, 59 kustantajan sarjaa." (and "1 lehti" for a magazine publisher), description and links; tabs Painokset, Sarjat (when any),
+  Lehdet (when any) with counts; Painokset with "Tekijä tai nimi", "Vuodet" (Hae or Enter), Tyhjennä, Järjestys, Kannet, paging and rows
+  per page; Sarjat as a table sorted from its headers (name A–Ö, most printings, oldest first; empty last); Lehdet as a table (type,
+  issues, years). The admin SpeedDial (Muokkaa, Poista off while the publisher has printings, series or magazines) as on the current page.
+- **URL:** `valilehti=sarjat|lehdet`, `sivu`, `haku`, `vuodet=1970-1979`, `jarjestys=uusin|nimi|tekija`, `riveja=50|200`, `nakyma=kannet`,
+  `sarjat=painoksia|vuodet`, `suunta`; defaults are left out, and a filter, order or rows change goes back to page 1. An address with a
+  tab the publisher has no rows for shows the printings.
+- **Tests:** backend `tests/api/test_publisherpage.py`; Vitest `edition-rows-utils.test.ts`, `publisher-page-state.test.ts`; Playwright
+  `tests/admin/publisher-new.spec.ts`, `tests/anon|user/publisher-version.spec.ts`.
+
+**Compared with the live site (2026-11-26):** WSOY's series 59 on both; printings 2 263 live, 2 260 in the (older) dev data. The plan's
+"(1 389 kirjaa)" counted book-and-laitos rows; the page counts distinct works (1 320).
+
 ### Notes: possible data errors (to check later, not part of the redesign)
 
 1. Savukeidas, a publisher of this century, starts in 1869: its edition 7276, *Fantasmagoria ja muita runoja*, has the year 1869, the year
    Lewis Carroll's *Phantasmagoria* first appeared; probably the original's year entered as the printing year. It stretches Savukeidas's
    activity bar from 1869.
+2. Four printings have an empty title (e.g. edition 8833, WSOY, Murakami's *Ensimmäinen persoona*); the edition rows show the work's title
+   for them, and the Nimi order sorts them by it (before the fix 8833 came first).
 
 ## Shared principles used or added
 

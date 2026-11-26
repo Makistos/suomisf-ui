@@ -91,9 +91,16 @@ else gets the current page.
   publisher's series; every printing's year linking to it (shown when there are several, or to carry the reader's mark), with a star for a
   printing the reader owns and a bookmark for one on their wishlist (computed for the logged-in user only); genres on the right. Grouped by
   author, the rows leave out the author the heading names, as on the old list.
-- **Text-only list (owner, 2026-11-26):** no covers and no Lista/Kannet switch; the list stays concise and close to the old one. Each work
-  is two text lines: the title with subtitle and "(original title, year)" (ungrouped: "Author: Title"), then series · translator,
-  publisher and series · printings, parts separated by a middle dot; genres on the right (under the lines on a phone). The only
+- **Text-only list (owner, 2026-11-26):** no covers and no Lista/Kannet switch; the list stays concise and close to the old one. Each work:
+  the title with subtitle and "(original title, year)" (ungrouped: "Author: Title"); then the first printing: series, translator,
+  publisher, year, publisher's series ("Suom. Risto Kalliomaa. Nide 1952."); then **every other printing on its own line**, ordered by
+  laitos and printing, with its label as on the old list and its own title when it differs from the work's, its translators when they
+  differ from the line above, publisher, year and publisher's series ("2. laitos: Suom. Jarkko Laine. Otava 1977.",
+  "2. laitos, 4. painos: Dracula. Otava 2001. Loisto."). A printing that matches a line already shown in its laitos in everything but
+  its number and year is left out (owner: Dracula's 1992, 2014, 2024 and 2025 reprints; Hobitti's 4. laitos 2., 3., 4. and 6. painos),
+  unless the reader owns it or has it on the wishlist (`printingLines` in `bookindex-state.ts`). Translators compare as a set (their
+  order varies in the data), and a printing with no translator recorded counts as its laitos's translation. The reader's star or bookmark sits on that printing's line. Genres on the right
+  (under the lines on a phone). The only
   grouping is by author, with its checkbox; the old list's three detail levels are not carried over. `GET /api/bookindex`
   no longer sends a `cover` per row.
 - **Defaults changed by the owner (2026-11-26):** grouped by author (as on the old list) and 200 works a page, instead of the plan's

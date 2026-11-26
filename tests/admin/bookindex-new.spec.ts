@@ -66,14 +66,15 @@ test('text fields search on Enter, land in the URL and survive reload and back',
     // Text only, as on the old list (owner, 2026-11-26): no covers in the rows.
     await expect(page.locator('.bn-rows img')).toHaveCount(0);
     await expect(row.getByRole('link', { name: 'Hain-sarja' })).toBeVisible();
-    await expect(row.locator('.bn-pub')).toHaveText('Suom. Kalevi Nyytäjä. WSOY 1976, Sci-fi -sarja');
-    await expect(row.locator('.bn-pub').getByRole('link', { name: 'WSOY' })).toHaveAttribute('href', /\/publishers\/\d+$/);
-    await expect(row.locator('.bn-eds')).toHaveText('3 painosta 1976, 1986 (2. p.), 1992 (3. p.)');
-    await expect(row.locator('.bn-eds').getByRole('link', { name: '1986' })).toHaveAttribute('href', /\/editions\/\d+$/);
-    // A single printing would only repeat the publisher line.
+    // The first printing under the title, then every other printing on its own line, as on the old list.
+    await expect(row.locator('.bn-first .bn-pub')).toHaveText('Suom. Kalevi Nyytäjä. WSOY 1976. Sci-fi -sarja.');
+    await expect(row.locator('.bn-first').getByRole('link', { name: 'WSOY' })).toHaveAttribute('href', /\/publishers\/\d+$/);
+    await expect(row.locator('.bn-ed')).toHaveText(['2. painos: WSOY 1986. Best Seller.', '3. painos: WSOY 1992.']);
+    await expect(row.locator('.bn-ed').first().getByRole('link', { name: 'Best Seller' })).toHaveAttribute('href', /\/pubseries\/\d+$/);
+    // A single printing has only the first line.
     const single = rows(page).filter({ has: page.getByRole('link', { name: 'Haikaran silmä', exact: true }) });
-    await expect(single.locator('.bn-pub')).toContainText('Vaskikirjat 2015');
-    await expect(single.locator('.bn-eds')).toHaveCount(0);
+    await expect(single.locator('.bn-first .bn-pub')).toContainText('Vaskikirjat 2015.');
+    await expect(single.locator('.bn-ed')).toHaveCount(0);
     await page.reload();
     await expect(count(page)).toContainText('tekijä "Le Guin"', { timeout: 20000 });
     await expect(page.getByLabel('Tekijä', { exact: true })).toHaveValue('Le Guin');
@@ -117,10 +118,46 @@ test('the user\'s own printings are marked: a star for owned, a bookmark for the
         await route.fulfill({ response, json: body });
     });
     await openNew(page, '?tekija=Le+Guin&nimi=Pimeyden');
-    const eds = rows(page).filter({ has: page.getByRole('link', { name: 'Pimeyden vasen käsi', exact: true }) }).locator('.bn-eds');
-    await expect(eds.getByRole('img', { name: 'Omistat tämän painoksen' })).toHaveCount(1);
-    await expect(eds.getByRole('img', { name: 'Muistilistallasi' })).toHaveCount(1);
-    expect(await eds.getByRole('img', { name: 'Omistat tämän painoksen' }).evaluate(el => el.nextElementSibling?.textContent)).toBe('1976');
+    const row = rows(page).filter({ has: page.getByRole('link', { name: 'Pimeyden vasen käsi', exact: true }) });
+    // Each mark on its own printing's line: owned the first (1976), wishlisted the 2. painos (1986).
+    await expect(row.getByRole('img', { name: 'Omistat tämän painoksen' })).toHaveCount(1);
+    await expect(row.locator('.bn-first').getByRole('img', { name: 'Omistat tämän painoksen' })).toHaveCount(1);
+    await expect(row.getByRole('img', { name: 'Muistilistallasi' })).toHaveCount(1);
+    await expect(row.locator('.bn-ed').first().getByRole('img', { name: 'Muistilistallasi' })).toHaveCount(1);
+    await expect(row.locator('.bn-ed').first()).toContainText('2. painos: WSOY 1986.');
+});
+
+test('a new laitos shows its own title and translators; a reprint that differs only by number and year is left out (Stoker\'s Kammoittava kreivi)', async ({ adminPage: page }) => {
+    await openNew(page, '?tekija=Stoker&nimi=Kammoittava');
+    const row = rows(page).filter({ has: page.getByRole('link', { name: 'Kammoittava kreivi', exact: true }) });
+    await expect(row.locator('.bn-orig')).toHaveText(' (Dracula, 1897)');
+    await expect(row.locator('.bn-first')).toHaveText('Suom. Risto Kalliomaa. Nide 1952.');
+    // The owner's example (2026-11-26) on the test data, whose later printings keep the Finnish title: 1992 (2. and 3. painos),
+    // 2014 (as 2010) and 2024-2025 (as 2023) are left out; the 3. laitos comes last with its own translators.
+    await expect(row.locator('.bn-ed')).toHaveText([
+        '2. laitos: Dracula. Suom. Jarkko Laine. Otava 1977.',
+        '2. laitos, 4. painos: Otava 2001. Loisto.',
+        '2. laitos, 5. painos: Dracula. Otava 2007. Keskiyön kirjasto.',
+        '2. laitos, 6. painos: Otava 2010. Seven.',
+        '2. laitos, 7. painos: Otava 2023. Otavan klassikot.',
+        '3. laitos: Suom. Johan Werkmäster, Ari Sainio. Kehitysvammaliitto 2017.',
+    ]);
+});
+
+test('a left-out reprint the reader owns is shown with its mark', async ({ adminPage: page }) => {
+    await page.route('**/api/bookindex?*', async route => {
+        const response = await route.fetch();
+        const body = await response.json();
+        const w = body.works.find((x: { id: number }) => x.id === 1332);
+        const reprint = w?.editions.find((e: { pubyear: number; editionnum: number }) => e.pubyear === 1992 && e.editionnum === 2);
+        if (reprint) reprint.owned = true;
+        await route.fulfill({ response, json: body });
+    });
+    await openNew(page, '?tekija=Stoker&nimi=Kammoittava');
+    const row = rows(page).filter({ has: page.getByRole('link', { name: 'Kammoittava kreivi', exact: true }) });
+    const owned = row.locator('.bn-ed').filter({ has: page.getByRole('img', { name: 'Omistat tämän painoksen' }) });
+    await expect(owned).toHaveText('2. laitos, 2. painos: Dracula. Otava 1992.');
+    await expect(row.locator('.bn-ed')).toHaveCount(7);
 });
 
 test('grouped by author the rows leave out the author; ungrouped each row starts with it', async ({ adminPage: page }) => {

@@ -10,11 +10,15 @@ import type { Genre } from "@features/genre";
 import { getGenreColors } from "@features/genre/utils/genre-colors";
 import type { Country } from "../../../types/country";
 import {
-    apiQuery, groupByAuthor, hasFilters, IndexState, LETTERS, parseIndexState, ROWS, SORTS, TypeSlug, withIndexState, WORK_TYPES, YearRange,
+    apiQuery, groupByAuthor, hasFilters, IndexState, LETTERS, parseIndexState, printingLabel, printingLines, ROWS, SORTS, TypeSlug, withIndexState, WORK_TYPES, YearRange,
 } from "./bookindex-state";
 
 type PersonBrief = { id: number; name: string; alt_name: string | null };
-interface IndexEdition { id: number; pubyear: number | null; editionnum: number | null; version: number | null; owned: boolean; wishlisted: boolean }
+type Named = { id: number; name: string };
+interface IndexEdition {
+    id: number; title: string; pubyear: number | null; editionnum: number | null; version: number | null;
+    translators: PersonBrief[]; publisher: Named | null; pubseries: Named | null; owned: boolean; wishlisted: boolean;
+}
 interface IndexRow {
     id: number;
     title: string;
@@ -25,14 +29,9 @@ interface IndexRow {
     type: number;
     authors: PersonBrief[];
     real_authors: PersonBrief[];
-    translators: PersonBrief[];
     bookseries: { id: number; name: string; partof: { id: number; name: string } | null } | null;
     bookseriesnum: string | null;
     genres: { id: number; abbr: string; name: string }[];
-    printings: number;
-    first_edition: {
-        id: number; pubyear: number; publisher: { id: number; name: string } | null; pubseries: { id: number; name: string } | null;
-    } | null;
     editions: IndexEdition[];
 }
 interface IndexPage { total: number; page: number; rows: number; works: IndexRow[] }
@@ -75,24 +74,33 @@ const RangeFields = ({ label, name, value }: { label: string; name: string; valu
     </div>
 );
 
-const People = ({ people }: { people: PersonBrief[] }) => (
-    <>{people.map((p, i) => <Fragment key={p.id}>{i > 0 && " & "}<Link to={`/people/${p.id}`}>{personName(p)}</Link></Fragment>)}</>
+const People = ({ people, sep = " & " }: { people: PersonBrief[]; sep?: string }) => (
+    <>{people.map((p, i) => <Fragment key={p.id}>{i > 0 && sep}<Link to={`/people/${p.id}`}>{personName(p)}</Link></Fragment>)}</>
 );
-/** "1986 (2. p.)", "2007 (2. laitos)" */
-const printingNote = (e: IndexEdition) => {
-    const notes = [(e.version ?? 1) > 1 ? `${e.version}. laitos` : "", (e.editionnum ?? 1) > 1 ? `${e.editionnum}. p.` : ""].filter(Boolean);
-    return notes.length ? ` (${notes.join(", ")})` : "";
-};
+const Mark = ({ e }: { e: IndexEdition }) => (
+    e.owned ? <i className="pi pi-star-fill bn-mark" role="img" aria-label="Omistat tämän painoksen" title="Omistat tämän painoksen" />
+        : e.wishlisted ? <i className="pi pi-bookmark-fill bn-mark bn-wish" role="img" aria-label="Muistilistallasi" title="Muistilistallasi" />
+            : null
+);
+/** "Suom. Jarkko Laine. Otava 1977. Keskiyön kirjasto." */
+const Publication = ({ e, translators }: { e: IndexEdition; translators: boolean }) => (
+    <span className="bn-pub">
+        {translators && e.translators.length > 0 && <>Suom. <People people={e.translators} sep=", " />. </>}
+        {e.publisher && <><Link to={`/publishers/${e.publisher.id}`}>{e.publisher.name}</Link> </>}
+        {e.pubyear ?? "?"}.
+        {e.pubseries && <> <Link to={`/pubseries/${e.pubseries.id}`}>{e.pubseries.name}</Link>.</>}
+    </span>
+);
 
 /**
- * One work in two text lines, as on the old list (owner, 2026-11-26: no covers, concise):
- * the title with the original's name and year, then series, translator, publisher and every printing.
+ * One work as on the old list (owner, 2026-11-26): the title with the original's name and year; series and the first printing;
+ * then every other printing on its own line with its title when it differs from the work's, translators when they change,
+ * publisher, year and series. A reprint that differs only by number and year is left out (printingLines).
  */
 const Row = ({ w, showAuthor }: { w: IndexRow; showAuthor: boolean }) => {
-    const fe = w.first_edition;
+    const [firstLine, ...rest] = printingLines(w.editions);
+    const first = firstLine?.edition;
     const foreign = !!w.orig_title && w.orig_title !== w.title;
-    // one printing repeats the publisher line, so it shows only to carry the reader's own mark
-    const showEditions = w.editions.length > 1 || w.editions.some(e => e.owned || e.wishlisted);
     return (
         <li className="bn-row">
             <div className="bn-row-main">
@@ -106,36 +114,26 @@ const Row = ({ w, showAuthor }: { w: IndexRow; showAuthor: boolean }) => {
                         <span className="bn-orig"> ({foreign && <i>{w.orig_title}</i>}{foreign && w.pubyear && ", "}{w.pubyear && <span className="bn-y">{w.pubyear}</span>})</span>
                     )}
                 </p>
-                <p className="bn-s">
+                <p className="bn-s bn-first">
+                    {first && <Mark e={first} />}
                     {w.bookseries && (
                         <span className="bn-ser">
                             {w.bookseries.partof && <><Link to={`/bookseries/${w.bookseries.partof.id}`}>{w.bookseries.partof.name}</Link> › </>}
-                            <Link to={`/bookseries/${w.bookseries.id}`}>{w.bookseries.name}</Link>{w.bookseriesnum ? ` ${w.bookseriesnum}` : ""}
+                            <Link to={`/bookseries/${w.bookseries.id}`}>{w.bookseries.name}</Link>{w.bookseriesnum ? ` ${w.bookseriesnum}` : ""}.{" "}
                         </span>
                     )}
-                    {w.real_authors.length > 1 && <span>Kirjoittanut <People people={w.real_authors} /></span>}
-                    {(w.translators.length > 0 || fe) && (
-                        <span className="bn-pub">
-                            {w.translators.length > 0 && <>Suom. <People people={w.translators} />. </>}
-                            {fe?.publisher && <Link to={`/publishers/${fe.publisher.id}`}>{fe.publisher.name}</Link>}
-                            {fe && <> {fe.pubyear}</>}
-                            {fe?.pubseries && <>, <Link to={`/pubseries/${fe.pubseries.id}`}>{fe.pubseries.name}</Link></>}
-                        </span>
-                    )}
-                    {showEditions && (
-                        <span className="bn-eds">
-                            <span className="bn-eds-l">{w.editions.length === 1 ? "Painos" : `${w.editions.length} painosta`}</span>{" "}
-                            {w.editions.map((e, i) => (
-                                <Fragment key={e.id}>
-                                    {i > 0 && ", "}
-                                    {e.owned && <i className="pi pi-star-fill bn-mark" role="img" aria-label="Omistat tämän painoksen" title="Omistat tämän painoksen" />}
-                                    {!e.owned && e.wishlisted && <i className="pi pi-bookmark-fill bn-mark bn-wish" role="img" aria-label="Muistilistallasi" title="Muistilistallasi" />}
-                                    <Link to={`/editions/${e.id}`}>{e.pubyear ?? "?"}</Link>{printingNote(e)}
-                                </Fragment>
-                            ))}
-                        </span>
-                    )}
+                    {w.real_authors.length > 1 && <span>Kirjoittanut <People people={w.real_authors} />. </span>}
+                    {first && first.title !== w.title && <b className="bn-etitle">{first.title}. </b>}
+                    {first && <Publication e={first} translators />}
                 </p>
+                {rest.map(({ edition: e, showTranslators }) => (
+                    <p className="bn-s bn-ed" key={e.id}>
+                        <Mark e={e} />
+                        <span className="bn-ed-l">{printingLabel(e)}:</span>{" "}
+                        {e.title !== w.title && <b className="bn-etitle">{e.title}. </b>}
+                        <Publication e={e} translators={showTranslators} />
+                    </p>
+                ))}
             </div>
             <span className="bn-genres">{w.genres.map(g => (
                 <span className="bn-gdot" key={g.abbr}><i style={{ background: getGenreColors([g.abbr])[0] ?? "#6C757D" }} />{g.name}</span>

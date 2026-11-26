@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { apiQuery, groupByAuthor, hasFilters, parseIndexState, withIndexState, WORK_TYPES } from "./bookindex-state";
+import { apiQuery, groupByAuthor, hasFilters, parseIndexState, printingLabel, printingLines, withIndexState, WORK_TYPES } from "./bookindex-state";
 
 const parse = (q: string) => parseIndexState(new URLSearchParams(q));
 
@@ -90,5 +90,75 @@ describe("groupByAuthor", () => {
     it("names a work without a linked author by its author string", () => {
         expect(groupByAuthor([w(1, null, "Halme, Jukka (toim.)")])[0]).toMatchObject({ name: "Jukka Halme (toim.)", id: undefined });
         expect(groupByAuthor([w(1, null, "")])[0].name).toBe("Tekijä ei tiedossa");
+    });
+});
+
+describe("printingLabel", () => {
+    it("names a printing as the old list did", () => {
+        expect(printingLabel({ version: 1, editionnum: 2 })).toBe("2. painos");
+        expect(printingLabel({ version: null, editionnum: 3 })).toBe("3. painos");
+        expect(printingLabel({ version: 2, editionnum: 1 })).toBe("2. laitos");
+        expect(printingLabel({ version: 2, editionnum: 3 })).toBe("2. laitos, 3. painos");
+        expect(printingLabel({ version: 1, editionnum: null })).toBe("?. painos");
+    });
+});
+
+describe("printingLines", () => {
+    // Stoker's Kammoittava kreivi as in the dev data, by laitos and printing (owner's example, 2026-11-26).
+    const laine = [{ id: 2 }], otava = { id: 10 };
+    const p = (id: number, version: number, editionnum: number, title: string, translators: { id: number }[],
+        pubseries: number | null, publisher = otava) =>
+        ({ id, version, editionnum, title, translators, publisher, pubseries: pubseries === null ? null : { id: pubseries }, owned: false, wishlisted: false });
+    const dracula = [
+        p(1529, 1, 1, "Kammoittava kreivi", [{ id: 1 }], null, { id: 20 }),
+        p(1530, 2, 1, "Dracula", laine, null),
+        p(6892, 2, 2, "Dracula", laine, null),
+        p(6893, 2, 3, "Dracula", laine, null),
+        p(1531, 2, 4, "Dracula", laine, 31),
+        p(1532, 2, 5, "Dracula", laine, 32),
+        p(1533, 2, 6, "Dracula", laine, 33),
+        p(10178, 2, 7, "Dracula", laine, 33),
+        p(8004, 2, 7, "Dracula", laine, 34),
+        p(10177, 2, 8, "Dracula", laine, 34),
+        p(10179, 2, 9, "Dracula", laine, 34),
+        p(8005, 3, 1, "Dracula", [{ id: 3 }, { id: 4 }], null, { id: 30 }),
+    ];
+
+    it("leaves out a printing that differs from the one before only by number and year", () => {
+        expect(printingLines(dracula).map(l => l.edition.id)).toEqual([1529, 1530, 1531, 1532, 1533, 8004, 8005]);
+    });
+
+    it("names the translators only when they change from the line above", () => {
+        expect(printingLines(dracula).map(l => l.showTranslators)).toEqual([true, true, false, false, false, false, true]);
+    });
+
+    it("keeps a reprint the reader owns or has on the wishlist, so the mark shows", () => {
+        const marked = dracula.map(e => (e.id === 6892 ? { ...e, owned: true } : e.id === 10177 ? { ...e, wishlisted: true } : e));
+        expect(printingLines(marked).map(l => l.edition.id)).toEqual([1529, 1530, 6892, 1531, 1532, 1533, 8004, 10177, 8005]);
+    });
+
+    it("compares with every line shown in the laitos, ignores translator order and a printing with no translator recorded", () => {
+        // Tolkien's Hobitti, 4. laitos in the dev data (owner, 2026-11-26): the 3. painos has no translator recorded,
+        // the 5. painos is in the Bon series, and the 4. and 6. are the same as the first.
+        const juva = [{ id: 163 }], wsoy = { id: 387 };
+        const hobitti = [
+            p(1734, 4, 1, "Hobitti", juva, null, wsoy),
+            p(6747, 4, 2, "Hobitti", juva, null, wsoy),
+            p(6748, 4, 3, "Hobitti", [], null, wsoy),
+            p(1735, 4, 4, "Hobitti", juva, null, wsoy),
+            p(1736, 4, 5, "Hobitti", juva, 50, wsoy),
+            p(1737, 4, 6, "Hobitti", juva, null, wsoy),
+            p(6731, 5, 1, "Hobitti", [{ id: 163 }, { id: 7 }], null, wsoy),
+        ];
+        expect(printingLines(hobitti).map(l => l.edition.id)).toEqual([1734, 1736, 6731]);
+        expect(printingLines(hobitti).map(l => l.showTranslators)).toEqual([true, false, true]);
+        // Taru sormusten herrasta: the same three translators in another order are not a new translation.
+        const taru = [p(1, 1, 1, "Taru", [{ id: 1 }, { id: 2 }, { id: 3 }], null, wsoy), p(2, 1, 2, "Taru", [{ id: 3 }, { id: 1 }, { id: 2 }], null, wsoy)];
+        expect(printingLines(taru).map(l => l.edition.id)).toEqual([1]);
+    });
+
+    it("keeps a new laitos even when nothing else changes", () => {
+        const same = [p(1, 1, 1, "A", laine, null), p(2, 2, 1, "A", laine, null)];
+        expect(printingLines(same).map(l => l.edition.id)).toEqual([1, 2]);
     });
 });

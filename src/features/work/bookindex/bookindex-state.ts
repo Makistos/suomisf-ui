@@ -147,3 +147,45 @@ export const groupByAuthor = <W extends { id: number; authors: Named[]; author_s
         else acc.push({ key: `${acc.length}:${who}`, name: a ? personName(a) : naturalAuthors(w.author_str) || "Tekijä ei tiedossa", id: a?.id, rows: [w] });
         return acc;
     }, []);
+
+/** "2. painos", "2. laitos", "2. laitos, 3. painos", by the old list's rules (EditionString); an unknown printing number is "?". */
+export const printingLabel = (e: { version: number | null; editionnum: number | null }) => {
+    const version = (e.version ?? 1) > 1 ? `${e.version}. laitos` : "";
+    const printing = e.editionnum === null ? "?. painos" : !version || e.editionnum !== 1 ? `${e.editionnum}. painos` : "";
+    return [version, printing].filter(Boolean).join(", ");
+};
+
+type Ref = { id: number } | null;
+interface PrintingFacts {
+    id: number; version: number | null; title: string; translators: { id: number }[]; publisher: Ref; pubseries: Ref;
+    owned: boolean; wishlisted: boolean;
+}
+/** Translators as a set: the same people in another order are the same translation. */
+const ids = (people: { id: number }[]) => people.map(p => p.id).sort((x, y) => x - y).join(",");
+
+/**
+ * The printing lines a work shows (owner, 2026-11-26). A printing is left out when it says nothing new: it matches a line
+ * already shown in its laitos in everything but its number and year (title, translators, publisher, publisher's series),
+ * unless the reader owns it or has it on the wishlist, so their mark stays on the right printing. Translators compare as a
+ * set, and a printing with none recorded counts as its laitos's translation (missing data, not a new one). They are named on
+ * the first line and wherever they change from the line above. Expects the printings by laitos and printing.
+ */
+export const printingLines = <E extends PrintingFacts>(editions: E[]) => {
+    const lines: { edition: E; showTranslators: boolean }[] = [];
+    const shown = new Set<string>();
+    let laitos: number | null = null;
+    let laitosTranslators = "";
+    let above = "";
+    for (const e of editions) {
+        const version = e.version ?? 1;
+        if (version !== laitos) { laitos = version; laitosTranslators = ""; }
+        const own = ids(e.translators);
+        if (own) laitosTranslators = own;
+        const key = [version, e.title, laitosTranslators, e.publisher?.id ?? "", e.pubseries?.id ?? ""].join("|");
+        if (shown.has(key) && !e.owned && !e.wishlisted) continue;
+        shown.add(key);
+        lines.push({ edition: e, showTranslators: lines.length === 0 || (!!own && own !== above) });
+        if (own) above = own;
+    }
+    return lines;
+};

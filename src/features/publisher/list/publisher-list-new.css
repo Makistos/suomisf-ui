@@ -1,0 +1,97 @@
+/* Publisher list in the identity style (work-identity.md tokens and type, as the book index), layout from publishers.md.
+   Scoped under .pl so the rest of the site keeps its look; the site's own page background, as on every identity page. */
+@import "../../../components/identity-fonts/fonts.css";
+
+.pl {
+    --pl-paper: Canvas; --pl-sheet: #FFFFFF; --pl-ink: #1D1F2B; --pl-ink-2: #4F5262; --pl-ink-3: #66697A;
+    --pl-rule: #DADBD4; --pl-rule-2: #C4C6BE; --pl-blue: #2B44B8; --pl-bar: #7C86B8; --pl-track: #ECEEE8;
+    --pl-serif: 'PN Literata', Georgia, serif; --pl-sans: 'PN Schibsted Grotesk', system-ui, sans-serif;
+    background: var(--pl-paper); color: var(--pl-ink); font: 16px/1.55 var(--pl-sans); width: 100%; padding: 0 24px 72px;
+}
+@media (prefers-color-scheme: dark) {
+    .pl {
+        --pl-sheet: #1B1C23; --pl-ink: #E9E8E3; --pl-ink-2: #B4B4BE; --pl-ink-3: #8B8C97; --pl-rule: #2E3039; --pl-rule-2: #3D3F4A;
+        --pl-blue: #A3B3FF; --pl-bar: #7F8CCB; --pl-track: #262832;
+    }
+}
+.pl a { color: var(--pl-blue); text-decoration: none; }
+.pl a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.pl :focus-visible { outline: 2px solid var(--pl-blue); outline-offset: 2px; border-radius: 2px; }
+.pl h1 { color: var(--pl-ink); }
+.pl button { font: inherit; color: inherit; }
+.pl button.pl-link { border: 0; background: none; padding: 0; color: var(--pl-blue); cursor: pointer; }
+.pl button.pl-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.pl input { font: 15px var(--pl-sans); color: var(--pl-ink); background: var(--pl-sheet); border: 1px solid var(--pl-rule-2);
+    border-radius: 4px; padding: 7px 10px; min-width: 0; }
+.pl input::placeholder { color: var(--pl-ink-3); }
+
+/* 1 header: the total and the five biggest */
+.pl-head { padding: 28px 0 18px; }
+.pl-head h1 { font: 650 46px/1.05 var(--pl-serif); letter-spacing: -.02em; margin: 0 0 8px; }
+.pl-head p { font: 17px/1.55 var(--pl-serif); color: var(--pl-ink-2); margin: 0; max-width: 75ch; }
+
+/* 2 filters: rules instead of a box */
+.pl-filters { border-top: 2px solid var(--pl-ink); border-bottom: 1px solid var(--pl-rule); padding: 16px 0 14px;
+    display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 28px; }
+.pl-search, .pl-range { display: flex; flex-direction: column; gap: 5px; font-size: 13.5px; color: var(--pl-ink-3); }
+.pl-search { flex: 1 1 280px; max-width: 420px; }
+.pl-range-in { display: flex; align-items: center; gap: 6px; }
+.pl-range-in input { width: 92px; }
+.pl-go { border: 1px solid var(--pl-rule-2); background: var(--pl-sheet); border-radius: 5px; padding: 6px 14px; cursor: pointer; margin-left: 4px; }
+.pl-check { display: inline-flex; align-items: center; gap: 8px; font-size: 14.5px; color: var(--pl-ink-2); padding-bottom: 8px; }
+.pl-check input { width: 16px; height: 16px; padding: 0; }
+
+/* 3 results */
+.pl-results { margin-top: 14px; }
+.pl-rhead { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-bottom: 8px; }
+.pl-rhead p { margin: 0; font: 17px/1.4 var(--pl-serif); }
+.pl-table { width: 100%; border-collapse: collapse; }
+.pl-table th { text-align: left; font: 500 13.5px var(--pl-sans); color: var(--pl-ink-3); border-bottom: 1px solid var(--pl-rule-2); padding: 6px 12px 6px 0; }
+.pl-table th button { border: 0; background: none; padding: 0; cursor: pointer; color: var(--pl-ink-2); display: inline-flex; align-items: center; gap: 6px; }
+.pl-table th[aria-sort="ascending"] button, .pl-table th[aria-sort="descending"] button { color: var(--pl-ink); font-weight: 650; }
+.pl-table th .pi { font-size: 11px; color: var(--pl-ink-3); }
+.pl-table td { border-bottom: 1px solid var(--pl-rule); padding: 6px 12px 6px 0; vertical-align: baseline; }
+.pl-table .pl-n { text-align: right; width: 104px; font-variant-numeric: tabular-nums; }
+.pl-table th.pl-n button { flex-direction: row-reverse; }
+.pl-table .pl-y { width: 116px; padding-left: 20px; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--pl-ink-2); }
+.pl-name a { font: 600 16px/1.35 var(--pl-serif); color: var(--pl-ink); }
+.pl-name a:hover { color: var(--pl-blue); }
+.pl-name small { display: block; font-size: 13px; color: var(--pl-ink-3); }
+.pl-zero { font-size: 14px; color: var(--pl-ink-3); font-style: italic; }
+.pl-zero a { font-style: normal; }
+
+/* the activity bar: every publisher on one axis, so long-running houses and one-off publishers show apart (publishers.md) */
+.pl-table .pl-bar { width: 32%; padding-right: 0; vertical-align: middle; }
+.pl-table th.pl-bar > span { display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
+.pl-track { display: block; position: relative; height: 6px; background: var(--pl-track); border-radius: 3px; }
+.pl-track i { position: absolute; top: 0; bottom: 0; background: var(--pl-bar); border-radius: 3px; min-width: 3px; }
+
+.pl-unit, .pl-sort { display: none; }
+.pl-tools { display: inline-flex; align-items: center; gap: 16px; }
+.pl-sort { align-items: center; gap: 8px; font-size: 14px; color: var(--pl-ink-2); }
+.pl select { font: 15px var(--pl-sans); color: var(--pl-ink); background: var(--pl-sheet); border: 1px solid var(--pl-rule-2); border-radius: 4px; padding: 6px 8px; }
+.pl-empty, .pl-err { font: 16.5px/1.5 var(--pl-serif); padding: 18px 0; }
+.pl-err button { display: block; margin-top: 10px; border: 1px solid var(--pl-rule-2); background: var(--pl-sheet); border-radius: 6px; padding: 6px 14px; cursor: pointer; font-weight: 600; }
+
+/* the site places and sizes the admin SpeedDial only under the current pages' classes */
+.pl .fixed-dial { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; }
+
+@media (max-width: 899px) {
+    .pl-table .pl-bar { width: 24%; }
+}
+/* phone: cards, no activity bar (publishers.md) */
+@media (max-width: 639px) {
+    .pl { padding: 0 16px 56px; }
+    .pl-head h1 { font-size: 34px; }
+    .pl-search { max-width: none; }
+    .pl-table thead { display: none; }
+    .pl-table, .pl-table tbody, .pl-table tr, .pl-table td { display: block; width: auto; }
+    .pl-table tr { padding: 8px 0; border-bottom: 1px solid var(--pl-rule); }
+    .pl-table td { border: 0; padding: 0; text-align: left; }
+    .pl-table .pl-n, .pl-table .pl-y { display: inline; padding: 0; font-size: 14px; color: var(--pl-ink-2); }
+    .pl-unit { display: inline; }
+    .pl-sort { display: inline-flex; }
+    .pl-table .pl-y::before { content: " · "; }
+    .pl-rhead { flex-wrap: wrap; }
+    .pl-table .pl-bar { display: none; }
+}

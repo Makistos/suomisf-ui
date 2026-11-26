@@ -9,6 +9,7 @@ export const WORK_PAGE_VERSION_KEY = "suomisf.workPageVersion";
 export const FRONT_PAGE_VERSION_KEY = "suomisf.frontPageVersion";
 export const SHORT_PAGE_VERSION_KEY = "suomisf.shortPageVersion";
 export const BOOKINDEX_PAGE_VERSION_KEY = "suomisf.bookindexPageVersion";
+export const PUBLISHERS_PAGE_VERSION_KEY = "suomisf.publishersPageVersion";
 export const PAGE_VERSION_HOTKEY = "Shift+U";
 
 type Storage = { getItem(key: string): string | null; setItem(key: string, value: string): void };

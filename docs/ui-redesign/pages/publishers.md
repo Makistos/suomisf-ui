@@ -2,7 +2,7 @@
 
 **Routes:** `/publishers` (list) and `/publishers/:id` · **Code:** `src/features/publisher/routes/publisher-list-page.tsx`, `publisher-page.tsx`,
 `src/features/edition/components/edition-list.tsx`, `src/features/pubseries/components/pubseries-list.tsx`; backend `GET /api/publishers`, `/api/publishers/:id`
-**Status:** Agreed · **Updated:** 2026-11-22
+**Status:** Agreed; the list (`/publishers`) implemented as an admin-only trial in identity style (2026-11-26) · **Updated:** 2026-11-26
 **Samples:** the list (507 publishers), WSOY (2,263 editions, 59 publisher series, https://www.sf-bibliografia.fi/publishers/387) and
 Helsingin Science Fiction Seura ry (publisher of Tähtivaeltaja, https://www.sf-bibliografia.fi/publishers/85).
 **Mockup:** [`../mockups/publishers.html`](../mockups/publishers.html) with [`publishers-data.js`](../mockups/publishers-data.js) (real data): `?v=pub` WSOY, `?v=series` its Sarjat tab,
@@ -54,6 +54,46 @@ phones: [list before](../images/publishers/before-list-mobile.png), [list after]
    so long-running houses and one-off publishers are told apart at a glance. A publisher without books but with a magazine says
    "ei kirjoja; julkaisee lehteä Aikakone"; one with neither says "ei luetteloituja painoksia".
    Every column sorts; state in the URL; cards on a phone (the activity bar is hidden there).
+
+## Implementation (2026-11-26): `/publishers` as an admin-only trial in identity style
+
+Built to the [build rules](../README.md#rules-for-every-redesigned-page-decided-2026-11-24): the list page of this plan in the identity
+style (the book index's tokens and type). Admins switch with *Uusi kustantajasivu* or Shift+U (`suomisf.publishersPageVersion`, apart
+from the other pages' choices); everyone else gets the current page. The publisher page (`/publishers/:id`) is not started.
+
+- **Backend:** a new route, `GET /api/publisherindex` (`app/impl_publisherindex.py`): every publisher with its edition count, first and
+  last year and magazines with issue counts, counted in the database (76 kB in about 30 ms on the dev data, against 400 kB and 340 ms for
+  `GET /api/publishers`, which the current page keeps using unchanged).
+- **Frontend:** `src/features/publisher/list/` (page, styles, `publisher-list-state.ts` with Vitest tests), the switch in
+  `src/features/publisher/routes/publisher-list-switch.tsx`. 507 rows are light, so filtering and sorting happen in the page.
+- **Header:** "507 kustantajaa. Suurimmat: WSOY (2 260), Tammi (1 148), Otava (1 066), Karisto (695), Gummerus (605)."
+- **Filters:** name (as typed, from the start of any word of the name or the full name, so "söderström" finds WSOY through
+  "Werner Söderström Oy" and four other houses), "Toiminut" year range (active at any time in it; *Rajaa* or Enter), and
+  "Piilota ilman painoksia (22)". Count line "N / 507 kustantajaa" when filtered, *Tyhjennä*.
+- **Table:** name (full name under it when it differs beyond case), Painoksia, Vuodet, and the activity bar on one axis from the
+  earliest to the latest year in the data (1856–2026 today, not the plan's 1889: J. Simeliuksen perilliset, 1856). Each header sorts;
+  its first click is its natural direction (names A–Ö, most editions, oldest first), the second reverses; publishers without editions
+  stay last. A publisher without books says "ei kirjoja; julkaisee lehteä Aikakone (50 numeroa)" with the magazine linked.
+- **URL:** `nimi`, `toiminut=1950-1980`, `piilota=tyhjat`, `jarjestys=painoksia|vuodet`, `suunta` only when not the column's default;
+  the name is written without a history entry for every letter.
+- **Phone:** cards ("2 260 painosta · 1889–2026"), no activity bar, a *Järjestys* select instead of the column headers.
+- **Tests:** backend `tests/api/test_publisherindex.py`; Playwright `tests/admin/publishers-new.spec.ts`,
+  `tests/anon|user/publishers-version.spec.ts`.
+
+### Compared with the live site (2026-11-26)
+
+| | Live (`/publishers`) | Dev data, new page | Why |
+|---|---|---|---|
+| Publishers | 507 | 507 | same |
+| Without editions | 22 (shown as 0) | 22, all with a magazine | same |
+| WSOY / Tammi / Otava / Karisto / Gummerus | 2 263 / 1 148 / 1 067 / 697 / 605 | 2 260 / 1 148 / 1 066 / 695 / 605 | the dev database is an older copy |
+| WSOY years | 1889–2026 | 1889–2026 | same |
+
+### Notes: possible data errors (to check later, not part of the redesign)
+
+1. Savukeidas, a publisher of this century, starts in 1869: its edition 7276, *Fantasmagoria ja muita runoja*, has the year 1869, the year
+   Lewis Carroll's *Phantasmagoria* first appeared; probably the original's year entered as the printing year. It stretches Savukeidas's
+   activity bar from 1869.
 
 ## Shared principles used or added
 

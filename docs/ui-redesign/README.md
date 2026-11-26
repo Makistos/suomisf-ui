@@ -55,7 +55,7 @@ These apply to every page in this rewrite, not only the ones built so far:
 | Magazines, magazine, issue | `/magazines`, `/magazines/:id`, `/issues/:id` | [magazines.md](pages/magazines.md) | Agreed | Not started |
 | Book series | `/bookseries`, `/bookseries/:id` | [bookseries.md](pages/bookseries.md) | Agreed | Not started |
 | Publisher series | `/pubseries`, `/pubseries/:id` | [pubseries.md](pages/pubseries.md) | Agreed | Not started |
-| Publishers | `/publishers`, `/publishers/:id` | [publishers.md](pages/publishers.md) | Agreed | Not started |
+| Publishers | `/publishers`, `/publishers/:id` | [publishers.md](pages/publishers.md) | Agreed; `/publishers` in admin-only trial, 2026-11-26 | Admin trial, 2026-11-26 (`/publishers`; `/publishers/:id` not started) |
 | Awards | `/awards`, `/awards/:id` | [awards.md](pages/awards.md) | Agreed | Not started |
 | Tags | `/tags`, `/tags/:id` | [tags.md](pages/tags.md) | Agreed | Not started |
 | Latest additions, changes | `/latest`, `/changes` | [latest-changes.md](pages/latest-changes.md) | Agreed | Not started |

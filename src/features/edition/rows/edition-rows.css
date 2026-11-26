@@ -1,0 +1,56 @@
+/* Printings one a row, identity style (work-identity.md tokens and type). Self-contained under .er so any identity page can use it. */
+@import "../../../components/identity-fonts/fonts.css";
+
+.er {
+    --er-ink: #1D1F2B; --er-ink-2: #4F5262; --er-ink-3: #66697A; --er-rule: #DADBD4; --er-rule-2: #C4C6BE; --er-blue: #2B44B8;
+    --er-cloth: #5A5D6C; --er-outline: rgba(0, 0, 0, 0);
+    --er-serif: 'PN Literata', Georgia, serif; --er-sans: 'PN Schibsted Grotesk', system-ui, sans-serif;
+    font-family: var(--er-sans); color: var(--er-ink);
+}
+@media (prefers-color-scheme: dark) {
+    .er {
+        --er-ink: #E9E8E3; --er-ink-2: #B4B4BE; --er-ink-3: #8B8C97; --er-rule: #2E3039; --er-rule-2: #3D3F4A; --er-blue: #A3B3FF;
+        --er-cloth: #4A4C58; --er-outline: rgba(255, 255, 255, .3);
+    }
+    .er .er-mark:not(.er-wish) { color: #E2B84E; }
+}
+.er a { color: var(--er-blue); text-decoration: none; }
+.er a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.er-year { font: 600 19px/1.3 var(--er-serif); color: var(--er-ink); margin: 22px 0 2px; padding-bottom: 3px; border-bottom: 1px solid var(--er-rule-2);
+    font-variant-numeric: tabular-nums; }
+.er-year small { font: 500 13.5px var(--er-sans); color: var(--er-ink-3); margin-left: 10px; }
+.er-rows { list-style: none; margin: 0; padding: 0; }
+.er-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 20px; align-items: baseline; padding: 5px 0 6px; border-bottom: 1px solid var(--er-rule); }
+.er-row:last-child { border-bottom: 0; }
+.er-line { margin: 0; font-size: 14.5px; line-height: 1.45; color: var(--er-ink-2); overflow-wrap: anywhere; }
+.er-a { color: var(--er-ink); font-weight: 500; }
+.er-a a { color: var(--er-ink); }
+.er-a a:hover { color: var(--er-blue); }
+.er a.er-t { font: 600 16px/1.35 var(--er-serif); color: var(--er-ink); }
+.er a.er-t:hover { color: var(--er-blue); }
+.er-sub { font-family: var(--er-serif); }
+.er-orig i { font-family: var(--er-serif); }
+.er-note { color: var(--er-ink); font-weight: 500; }
+.er-mark { color: #9A6B00; font-size: 11px; margin-right: 5px; }
+.er-mark.er-wish { color: var(--er-blue); }
+.er-genres { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0 12px; font-size: 13px; }
+.er-gdot { display: inline-flex; align-items: center; gap: 6px; color: var(--er-ink-3); white-space: nowrap; }
+.er-gdot i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; box-shadow: inset 0 0 0 1px var(--er-outline); }
+
+/* Kannet: the same printings as covers */
+.er-covers { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 20px 16px; }
+.er-covers a { display: block; color: var(--er-ink); }
+.er-covers img, .er-cloth { display: block; width: 100%; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 1px 2px 2px 1px;
+    box-shadow: inset 3px 0 0 rgba(0, 0, 0, .18), 0 0 0 1px var(--er-outline); }
+.er-cloth { background: var(--er-cloth); box-shadow: inset 4px 0 0 rgba(0, 0, 0, .25); }
+.er-ct { display: block; font: 600 14px/1.3 var(--er-serif); margin-top: 7px; overflow-wrap: anywhere; }
+.er-ca { display: block; font-size: 12.5px; color: var(--er-ink-3); margin-top: 2px; }
+
+@media (max-width: 899px) {
+    .er-row { grid-template-columns: minmax(0, 1fr); }
+    .er-genres { justify-content: flex-start; }
+}
+@media (max-width: 639px) {
+    .er-covers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

@@ -240,7 +240,12 @@ table.wn-et { width: 100%; border-collapse: collapse; table-layout: fixed; font-
     table.wn-et thead { display: none; }
     table.wn-et tr { display: grid; grid-template-columns: 56px minmax(0, 1fr); padding: 10px 4px; border-bottom: 1px solid var(--wn-rule); }
     /* td.c-xx: the desktop column widths outrank a plain td rule */
-    table.wn-et td, table.wn-et td.c-ed, table.wn-et td.c-yr, table.wn-et td.c-tr { border: 0; padding: 1px 8px; width: auto; }
+    /* every desktop column width, or a cell keeps it in the card: "Kansipaperi" broke mid-word in the 84 px Sidonta width */
+    table.wn-et td, table.wn-et td.c-ed, table.wn-et td.c-yr, table.wn-et td.c-tr, table.wn-et td.c-bind, table.wn-et td.c-pages,
+    table.wn-et td.c-isbn { border: 0; padding: 1px 8px; width: auto; }
+    /* translators in the publisher cell, after publisher and series, as the owner ordered it (2026-11-26) */
+    table.wn-et td.c-tr { display: none; }
+    .wn-et .wn-tr-in { display: block; }
     table.wn-et td.c-th { grid-row: 1 / span 12; padding: 2px 0; }
     table.wn-et td:not(.c-th) { grid-column: 2; }
     table.wn-et td:empty { display: none; }

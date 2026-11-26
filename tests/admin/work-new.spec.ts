@@ -436,8 +436,39 @@ test('on a phone the page fits, the printings are cards and the view toggle is g
     const byline = (await page.locator('.wn-byline').boundingBox())!;
     const title = (await page.locator('h1.wn-title').boundingBox())!;
     expect(title.y - (byline.y + byline.height)).toBeLessThan(16);
-    const translator = page.locator('table.wn-et td.c-tr').first();
-    expect((await translator.boundingBox())!.width).toBeGreaterThan(200);
+    // In the cards the translators are in the publisher cell, right after publisher and series (owner, 2026-11-26).
+    await expect(page.locator('table.wn-et td.c-tr').first()).toBeHidden();
+    const inPub = page.locator('table.wn-et td.c-pub .wn-tr-in').first();
+    await expect(inPub).toBeVisible();
+    expect((await inPub.boundingBox())!.width).toBeGreaterThan(200);
+});
+
+test('on a phone the binding, Kansipaperi and Ylivetokannet are whole words on the card (Hobitti)', async ({ adminPage: page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await openNew(page, '/works/1505');
+    const v2 = page.locator('.wn-version').nth(1);
+    await v2.locator('button.wn-exp').click();
+    // Sidonta kept its 84 px desktop width in the cards, so "Kansipaperi" broke mid-word (owner, 2026-11-26).
+    for (const cell of [v2.locator('tbody tr:not(.wn-sub) td.c-bind'), v2.locator('tr.wn-sub').first().locator('td.c-bind')]) {
+        await expect(cell).toContainText('Kansipaperi');
+        expect((await cell.boundingBox())!.width).toBeGreaterThan(200);
+        // the list may wrap between words, but no word breaks: each one's text box is on one line
+        const broken = await cell.evaluate(el => {
+            const text = el.firstChild as Text;
+            return ['Sidottu', 'Nidottu', 'Kansipaperi', 'Ylivetokannet'].filter(w => {
+                const at = text.data.indexOf(w);
+                if (at < 0) return false;
+                const range = document.createRange();
+                range.setStart(text, at);
+                range.setEnd(text, at + w.length);
+                return range.getClientRects().length > 1;
+            });
+        });
+        expect(broken).toEqual([]);
+    }
+    await expect(v2.locator('tr.wn-sub').first().locator('td.c-isbn')).toBeVisible();
+    expect((await v2.locator('tr.wn-sub').first().locator('td.c-isbn').boundingBox())!.width).toBeGreaterThan(200);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(0);
 });
 
 test('the new work page has the site\'s own background and no accessibility violations', async ({ adminPage: page }) => {

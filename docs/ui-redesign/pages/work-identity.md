@@ -349,7 +349,8 @@ before; it now checks Le Guin too.
   go with the binding on a printing's row too, not in its notes.
 - **Printing rows' Kustantaja ja sarja (owner, 2026-11-26):** another title in bold as on the merged row, then publisher, printing
   place and series, then "Suom. …" (in the cell only when the Suomentaja column is hidden), then cover artist and illustrator, and
-  the printing's own notes last.
+  the printing's own notes last. On a phone (cards) too: the translators show in this cell and the Suomentaja cell is hidden; every
+  cell takes the card's width (Sidonta kept its 84 px desktop width and broke "Kansipaperi" mid-word, fixed 2026-11-26).
 - **The current page is unaffected:** it ignores `cover_image_id`. The migration must be applied to a database before the backend
   version that reads the column is deployed there.
 

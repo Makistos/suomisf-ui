@@ -16,8 +16,10 @@
         --bn-blue: #A3B3FF; --bn-blue-soft: #262C46; --bn-hover: #21232B; --bn-outline: rgba(255, 255, 255, .3);
     }
 }
-.bn a { color: var(--bn-blue); text-decoration: none; }
-.bn a:hover { text-decoration: underline; text-underline-offset: 3px; }
+/* The admin SpeedDial's links keep the theme's look (:where adds no specificity): a plain `a` rule turned its icons link-blue.
+   src/components/identity-css.test.ts checks this in every identity stylesheet. */
+.bn a:where(:not(.p-speeddial-action)) { color: var(--bn-blue); text-decoration: none; }
+.bn a:where(:not(.p-speeddial-action)):hover { text-decoration: underline; text-underline-offset: 3px; }
 .bn :focus-visible { outline: 2px solid var(--bn-blue); outline-offset: 2px; border-radius: 2px; }
 .bn h1, .bn h2 { color: var(--bn-ink); }
 .bn button { font: inherit; color: inherit; }
@@ -101,6 +103,7 @@
 
 /* the site places and sizes the admin SpeedDial only under the current pages' classes */
 .bn .fixed-dial { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; }
+.bn .fixed-dial .p-speeddial-button { width: 3rem; height: 3rem; }
 
 @media (max-width: 899px) {
     .bn-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }

@@ -34,7 +34,9 @@ _Which rules from [principles.md](../principles.md) this page uses, and any new 
 
 _Each step one small pull request. Name the files. Say whether the backend needs changes._
 _Build rules ([README](README.md#rules-for-every-redesigned-page-decided-2026-11-24)): the identity style; an admin-only trial behind
-`PageVersionSwitch` (button and Shift+U); the current page keeps working, and an API change that would break it gets a new route._
+`PageVersionSwitch` (button and Shift+U); the current page keeps working, and an API change that would break it gets a new route;
+the admin SpeedDial as on the current page (root link rule `.xx a:where(:not(.p-speeddial-action))`, the dial's size; the page added to
+`tests/admin/identity-dial.spec.ts`)._
 
 1.
 

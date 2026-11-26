@@ -23,7 +23,13 @@ These apply to every page in this rewrite, not only the ones built so far:
    that would break the current page, it gets a new route instead. Tests prove both: Playwright specs for the new page (`tests/admin/<page>-new.spec.ts`),
    and for visitors and users that they still get the current page (`tests/anon|user/<page>-version.spec.ts`); the full test suites
    (backend, Vitest, Playwright in Chromium and Firefox) pass before a trial is called done.
-4. **Making it the default** is a separate decision per page: render the new page for everyone in the switch, then remove the old page and the switch.
+4. **The admin tools look as on the current page.** If the current page has the admin SpeedDial, the new page keeps it with the same
+   colours, size and place. Its actions are links, so a page's link rule turns their white icons link-blue; this happened twice (person,
+   work and short story 2026-11-25, publisher page 2026-11-27). So every identity stylesheet writes its root link rule as
+   `.xx a:where(:not(.p-speeddial-action))`, and sizes `.xx .fixed-dial .p-speeddial-button` as the current page does (3rem on person
+   and work pages, PrimeReact's 4rem elsewhere). `src/components/identity-css.test.ts` checks every identity stylesheet for both, and a
+   page with a dial is added to `tests/admin/identity-dial.spec.ts`, which compares the dial with the current page's.
+5. **Making it the default** is a separate decision per page: render the new page for everyone in the switch, then remove the old page and the switch.
 
 ## How to read and comment
 

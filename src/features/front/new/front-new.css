@@ -14,8 +14,10 @@
         --fn-blue: #A3B3FF; --fn-board: #8B8C97; --fn-spine-blank: #4A4C58; --fn-admin: #191A20; --fn-outline: rgba(255, 255, 255, .3); --fn-hole: rgba(0, 0, 0, .6);
     }
 }
-.fn a { color: var(--fn-blue); text-decoration: none; }
-.fn a:hover { text-decoration: underline; text-underline-offset: 3px; }
+/* The admin SpeedDial's links keep the theme's look (:where adds no specificity): a plain `a` rule turned its icons link-blue.
+   src/components/identity-css.test.ts checks this in every identity stylesheet. */
+.fn a:where(:not(.p-speeddial-action)) { color: var(--fn-blue); text-decoration: none; }
+.fn a:where(:not(.p-speeddial-action)):hover { text-decoration: underline; text-underline-offset: 3px; }
 .fn :focus-visible { outline: 2px solid var(--fn-blue); outline-offset: 2px; border-radius: 2px; }
 .fn h1, .fn h2, .fn h3 { color: var(--fn-ink); }
 .fn button.fn-link { border: 0; background: none; padding: 0; color: var(--fn-blue); font: 600 14.5px var(--fn-sans); cursor: pointer; display: inline-flex; gap: 7px; align-items: center; white-space: nowrap; }

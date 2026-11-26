@@ -62,7 +62,9 @@ test('text fields search on Enter, land in the URL and survive reload and back',
     // Author first, then the title, as on the old list; and what the old list showed under it.
     // Grouped by default: the heading names the author.
     await expect(page.locator('.bn-group').first()).toContainText('Ursula K. Le Guin');
-    await expect(row).toContainText('The Left Hand of Darkness 1969');
+    await expect(row.locator('.bn-orig')).toHaveText(' (The Left Hand of Darkness, 1969)');
+    // Text only, as on the old list (owner, 2026-11-26): no covers in the rows.
+    await expect(page.locator('.bn-rows img')).toHaveCount(0);
     await expect(row.getByRole('link', { name: 'Hain-sarja' })).toBeVisible();
     await expect(row.locator('.bn-pub')).toHaveText('Suom. Kalevi Nyytäjä. WSOY 1976, Sci-fi -sarja');
     await expect(row.locator('.bn-pub').getByRole('link', { name: 'WSOY' })).toHaveAttribute('href', /\/publishers\/\d+$/);
@@ -128,7 +130,8 @@ test('grouped by author the rows leave out the author; ungrouped each row starts
     await openNew(page, '?tekija=Le+Guin&ryhmittely=ei');
     await expect(page.locator('.bn-group')).toHaveCount(0);
     const row = rows(page).filter({ has: page.getByRole('link', { name: 'Pimeyden vasen käsi', exact: true }) });
-    await expect(row.locator('.bn-row-main > p').first()).toHaveText('Ursula K. Le Guin');
+    // "Author: Title" on one line, as on the old list.
+    await expect(row.locator('.bn-tline')).toHaveText(/^Ursula K\. Le Guin: Pimeyden vasen käsi/);
     await expect(row.locator('.bn-a').getByRole('link', { name: 'Ursula K. Le Guin' })).toHaveAttribute('href', /\/people\/\d+$/);
 });
 
@@ -154,7 +157,7 @@ test('year ranges search for the original\'s year and for any printing', async (
     await expect(page).toHaveURL(/painettu=2020-/);
 });
 
-test('paging, rows per page, sorting, grouping and the covers view', async ({ adminPage: page }) => {
+test('paging, rows per page, sorting and grouping; no covers view', async ({ adminPage: page }) => {
     await openNew(page);
     const firstPage = await page.locator('.bn-t').allInnerTexts();
     await page.getByRole('button', { name: 'Seuraava ›' }).click();
@@ -179,10 +182,7 @@ test('paging, rows per page, sorting, grouping and the covers view', async ({ ad
     await expect(page).toHaveURL(/ryhmittely=ei/);
     await expect(page.getByLabel('Ryhmittele tekijöittäin')).not.toBeChecked();
     await expect(page.locator('.bn-group')).toHaveCount(0);
-    await page.getByRole('group', { name: 'Näkymä' }).getByRole('button', { name: 'Kannet' }).click();
-    await expect(page).toHaveURL(/nakyma=kannet/);
-    await expect(page.locator('.bn-covers li').first()).toBeVisible();
-    await expect(rows(page)).toHaveCount(0);
+    await expect(page.getByRole('group', { name: 'Näkymä' })).toHaveCount(0);
 });
 
 test('a search with no results says so and offers to clear', async ({ adminPage: page }) => {

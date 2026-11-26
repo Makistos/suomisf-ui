@@ -35,7 +35,6 @@ export interface IndexState {
     kirjain: string | null;
     jarjestys: Sort;
     ryhmittely: boolean;
-    nakyma: "lista" | "kannet";
     sivu: number;
     riveja: number;
 }
@@ -43,7 +42,7 @@ export interface IndexState {
 const DEFAULTS: IndexState = {
     tekija: "", nimi: "", alkunimi: "", alkuteos: null, painettu: null, kansallisuus: null, tyyppi: [], genre: [], kirjain: null,
     // Grouped by author and 200 a page (owner, 2026-11-26): the old list grouped by author too.
-    jarjestys: "tekija", ryhmittely: true, nakyma: "lista", sivu: 1, riveja: 200,
+    jarjestys: "tekija", ryhmittely: true, sivu: 1, riveja: 200,
 };
 /** Changing any of these is a new search, so it starts from the first page. */
 const FILTERS: (keyof IndexState)[] = ["tekija", "nimi", "alkunimi", "alkuteos", "painettu", "kansallisuus", "tyyppi", "genre", "kirjain"];
@@ -75,7 +74,6 @@ export const parseIndexState = (p: URLSearchParams): IndexState => {
         kirjain: LETTERS.includes(letter) ? letter : null,
         jarjestys: SORTS.some(s => s.value === sort) ? (sort as Sort) : "tekija",
         ryhmittely: p.get("ryhmittely") !== "ei",
-        nakyma: p.get("nakyma") === "kannet" ? "kannet" : "lista",
         sivu: positive(p.get("sivu")) ?? 1,
         riveja: (ROWS as readonly number[]).includes(rows) ? rows : DEFAULTS.riveja,
     };

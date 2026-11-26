@@ -80,7 +80,7 @@ else gets the current page.
 - **Frontend:** `src/features/work/bookindex/` (page, styles, `bookindex-state.ts` for the URL with Vitest tests), the switch in
   `src/features/work/routes/book-index-switch.tsx`. Everything is in the URL with readable values: `tekija`, `nimi`, `alkunimi`,
   `alkuteos=1960-1969`, `painettu=2000-`, `kansallisuus`, `tyyppi=romaani,kokoelma`, `genre=SF,F`, `kirjain`, `jarjestys`,
-  `ryhmittely=ei`, `nakyma=kannet`, `sivu`, `riveja`. A filter change goes back to page 1.
+  `ryhmittely=ei`, `sivu`, `riveja`. A filter change goes back to page 1.
 - **Differences from the plan, for now:**
   - *Painettu* matches any Finnish printing in the range (the current page used the first printing only);
   - "Tilastot tästä hausta" is left out: the statistics panel computed from the full result list, which a paged page no longer
@@ -91,6 +91,11 @@ else gets the current page.
   publisher's series; every printing's year linking to it (shown when there are several, or to carry the reader's mark), with a star for a
   printing the reader owns and a bookmark for one on their wishlist (computed for the logged-in user only); genres on the right. Grouped by
   author, the rows leave out the author the heading names, as on the old list.
+- **Text-only list (owner, 2026-11-26):** no covers and no Lista/Kannet switch; the list stays concise and close to the old one. Each work
+  is two text lines: the title with subtitle and "(original title, year)" (ungrouped: "Author: Title"), then series · translator,
+  publisher and series · printings, parts separated by a middle dot; genres on the right (under the lines on a phone). The only
+  grouping is by author, with its checkbox; the old list's three detail levels are not carried over. `GET /api/bookindex`
+  no longer sends a `cover` per row.
 - **Defaults changed by the owner (2026-11-26):** grouped by author (as on the old list) and 200 works a page, instead of the plan's
   ungrouped list and 50 a page. Neither default is written in the URL; `ryhmittely=ei` and `riveja=50|100` are. Because the same first
   author can come back later on a page, each author group's key carries its position (a repeated key had left stale rows on screen).

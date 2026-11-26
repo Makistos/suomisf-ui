@@ -7,20 +7,20 @@ const parse = (q: string) => parseIndexState(new URLSearchParams(q));
 describe("parseIndexState", () => {
     it("reads readable values from the URL", () => {
         const s = parse("tekija=le+guin&nimi=vasen&alkunimi=left&alkuteos=1960-1969&painettu=2000-&kansallisuus=3"
-            + "&tyyppi=romaani,kokoelma&genre=SF,F&kirjain=L&jarjestys=nimi&ryhmittely=ei&nakyma=kannet&sivu=3&riveja=100");
+            + "&tyyppi=romaani,kokoelma&genre=SF,F&kirjain=L&jarjestys=nimi&ryhmittely=ei&sivu=3&riveja=100");
         expect(s).toEqual({
             tekija: "le guin", nimi: "vasen", alkunimi: "left", alkuteos: { from: 1960, to: 1969 }, painettu: { from: 2000, to: null },
             kansallisuus: 3, tyyppi: ["romaani", "kokoelma"], genre: ["SF", "F"], kirjain: "L", jarjestys: "nimi",
-            ryhmittely: false, nakyma: "kannet", sivu: 3, riveja: 100,
+            ryhmittely: false, sivu: 3, riveja: 100,
         });
     });
 
     it("defaults to every work grouped by author, 200 a page, and drops what it can't use", () => {
         // Grouped and 200 a page are the defaults (owner, 2026-11-26), as the old list grouped by author.
         expect(parse("")).toMatchObject({ ryhmittely: true, riveja: 200 });
-        const s = parse("tyyppi=romaani,lehti&jarjestys=x&nakyma=y&sivu=0&riveja=7&kirjain=LL&alkuteos=abc&kansallisuus=x&ryhmittely=x");
+        const s = parse("tyyppi=romaani,lehti&jarjestys=x&sivu=0&riveja=7&kirjain=LL&alkuteos=abc&kansallisuus=x&ryhmittely=x");
         expect(s).toMatchObject({
-            tyyppi: ["romaani"], jarjestys: "tekija", nakyma: "lista", sivu: 1, riveja: 200, kirjain: null, alkuteos: null, kansallisuus: null,
+            tyyppi: ["romaani"], jarjestys: "tekija", sivu: 1, riveja: 200, kirjain: null, alkuteos: null, kansallisuus: null,
             ryhmittely: true,
         });
         expect(hasFilters(parse(""))).toBe(false);
@@ -42,10 +42,10 @@ describe("withIndexState", () => {
         expect(withIndexState(new URLSearchParams("ryhmittely=ei&riveja=50"), { ryhmittely: true, riveja: 200 }).toString()).toBe("");
     });
 
-    it("goes back to the first page when a filter changes, but not when only the page or view does", () => {
+    it("goes back to the first page when a filter changes, but not when only the page or sort does", () => {
         const p = new URLSearchParams("sivu=4&genre=SF");
         expect(withIndexState(p, { genre: ["SF", "K"] }).get("sivu")).toBeNull();
-        expect(withIndexState(p, { nakyma: "kannet" }).get("sivu")).toBe("4");
+        expect(withIndexState(p, { jarjestys: "uusin" }).get("sivu")).toBe("4");
         expect(withIndexState(p, { sivu: 5 }).get("sivu")).toBe("5");
         expect(withIndexState(p, { sivu: 1 }).get("sivu")).toBeNull();
     });

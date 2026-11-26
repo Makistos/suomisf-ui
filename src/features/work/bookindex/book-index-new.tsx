@@ -8,7 +8,6 @@ import { getApiContent } from "@services/user-service";
 import { getCurrenUser } from "@services/auth-service";
 import type { Genre } from "@features/genre";
 import { getGenreColors } from "@features/genre/utils/genre-colors";
-import { thumbUrl } from "@utils/cover-url";
 import type { Country } from "../../../types/country";
 import {
     apiQuery, groupByAuthor, hasFilters, IndexState, LETTERS, parseIndexState, ROWS, SORTS, TypeSlug, withIndexState, WORK_TYPES, YearRange,
@@ -35,7 +34,6 @@ interface IndexRow {
         id: number; pubyear: number; publisher: { id: number; name: string } | null; pubseries: { id: number; name: string } | null;
     } | null;
     editions: IndexEdition[];
-    cover: { image_src: string; thumb_src?: string } | null;
 }
 interface IndexPage { total: number; page: number; rows: number; works: IndexRow[] }
 
@@ -50,14 +48,6 @@ const naturalAuthors = (s: string | null) => {
     const editor = /\s*\(toim\.\)$/.test(s);
     return s.replace(/\s*\(toim\.\)$/, "").split(" & ").map(p => (p.includes(", ") ? p.split(", ").reverse().join(" ") : p)).join(" & ")
         + (editor ? " (toim.)" : "");
-};
-
-/** A cover, or a plain cloth binding when there is none or it fails to load (as on the other identity pages). */
-const Cover = ({ cover }: { cover: IndexRow["cover"] }) => {
-    const [failed, setFailed] = useState<string | null>(null);
-    const src = cover ? thumbUrl(cover) : null;
-    if (!src || failed === src) return <span className="bn-cloth" aria-hidden="true" />;
-    return <img src={src} alt="" loading="lazy" onError={() => setFailed(src)} />;
 };
 
 /** What was searched, in words: 'tekijä "Le Guin", romaani, 1960–1969'. */
@@ -94,62 +84,62 @@ const printingNote = (e: IndexEdition) => {
     return notes.length ? ` (${notes.join(", ")})` : "";
 };
 
-/** One work, author first, with what the old list showed: translator, publisher and series, every printing. */
+/**
+ * One work in two text lines, as on the old list (owner, 2026-11-26: no covers, concise):
+ * the title with the original's name and year, then series, translator, publisher and every printing.
+ */
 const Row = ({ w, showAuthor }: { w: IndexRow; showAuthor: boolean }) => {
     const fe = w.first_edition;
+    const foreign = !!w.orig_title && w.orig_title !== w.title;
+    // one printing repeats the publisher line, so it shows only to carry the reader's own mark
+    const showEditions = w.editions.length > 1 || w.editions.some(e => e.owned || e.wishlisted);
     return (
         <li className="bn-row">
-            <Cover cover={w.cover} />
             <div className="bn-row-main">
-                {showAuthor && (
-                    <p className="bn-a">{w.authors.length > 0 && !/\(toim\.\)/.test(w.author_str ?? "") ? <People people={w.authors} /> : naturalAuthors(w.author_str)}</p>
-                )}
                 <p className="bn-tline">
+                    {showAuthor && (
+                        <><span className="bn-a">{w.authors.length > 0 && !/\(toim\.\)/.test(w.author_str ?? "") ? <People people={w.authors} /> : naturalAuthors(w.author_str)}</span>: </>
+                    )}
                     <Link className="bn-t" to={`/works/${w.id}`}>{w.title}</Link>
                     {w.subtitle && <span className="bn-sub"> {w.subtitle}</span>}
+                    {(foreign || w.pubyear) && (
+                        <span className="bn-orig"> ({foreign && <i>{w.orig_title}</i>}{foreign && w.pubyear && ", "}{w.pubyear && <span className="bn-y">{w.pubyear}</span>})</span>
+                    )}
                 </p>
-                {(w.orig_title && w.orig_title !== w.title || w.pubyear || w.bookseries) && (
-                    <p className="bn-s">
-                        {w.orig_title && w.orig_title !== w.title && <><i>{w.orig_title}</i> </>}
-                        {w.pubyear && <span className="bn-y">{w.pubyear}</span>}
-                        {w.bookseries && (
-                            <>
-                                <span aria-hidden="true"> · </span>
-                                {w.bookseries.partof && <><Link to={`/bookseries/${w.bookseries.partof.id}`}>{w.bookseries.partof.name}</Link> › </>}
-                                <Link to={`/bookseries/${w.bookseries.id}`}>{w.bookseries.name}</Link>{w.bookseriesnum ? ` ${w.bookseriesnum}` : ""}
-                            </>
-                        )}
-                    </p>
-                )}
-                {w.real_authors.length > 1 && <p className="bn-s">Kirjoittanut <People people={w.real_authors} /></p>}
-                {(w.translators.length > 0 || fe) && (
-                    <p className="bn-s bn-pub">
-                        {w.translators.length > 0 && <>Suom. <People people={w.translators} />. </>}
-                        {fe?.publisher && <Link to={`/publishers/${fe.publisher.id}`}>{fe.publisher.name}</Link>}
-                        {fe && <> {fe.pubyear}</>}
-                        {fe?.pubseries && <>, <Link to={`/pubseries/${fe.pubseries.id}`}>{fe.pubseries.name}</Link></>}
-                    </p>
-                )}
-                {/* one printing repeats the publisher line, so it shows only to carry the reader's own mark */}
-                {(w.editions.length > 1 || w.editions.some(e => e.owned || e.wishlisted)) && (
-                    <p className="bn-s bn-eds">
-                        <span className="bn-eds-l">{w.editions.length === 1 ? "Painos" : `${w.editions.length} painosta`}</span>{" "}
-                        {w.editions.map((e, i) => (
-                            <Fragment key={e.id}>
-                                {i > 0 && ", "}
-                                {e.owned && <i className="pi pi-star-fill bn-mark" role="img" aria-label="Omistat tämän painoksen" title="Omistat tämän painoksen" />}
-                                {!e.owned && e.wishlisted && <i className="pi pi-bookmark-fill bn-mark bn-wish" role="img" aria-label="Muistilistallasi" title="Muistilistallasi" />}
-                                <Link to={`/editions/${e.id}`}>{e.pubyear ?? "?"}</Link>{printingNote(e)}
-                            </Fragment>
-                        ))}
-                    </p>
-                )}
+                <p className="bn-s">
+                    {w.bookseries && (
+                        <span className="bn-ser">
+                            {w.bookseries.partof && <><Link to={`/bookseries/${w.bookseries.partof.id}`}>{w.bookseries.partof.name}</Link> › </>}
+                            <Link to={`/bookseries/${w.bookseries.id}`}>{w.bookseries.name}</Link>{w.bookseriesnum ? ` ${w.bookseriesnum}` : ""}
+                        </span>
+                    )}
+                    {w.real_authors.length > 1 && <span>Kirjoittanut <People people={w.real_authors} /></span>}
+                    {(w.translators.length > 0 || fe) && (
+                        <span className="bn-pub">
+                            {w.translators.length > 0 && <>Suom. <People people={w.translators} />. </>}
+                            {fe?.publisher && <Link to={`/publishers/${fe.publisher.id}`}>{fe.publisher.name}</Link>}
+                            {fe && <> {fe.pubyear}</>}
+                            {fe?.pubseries && <>, <Link to={`/pubseries/${fe.pubseries.id}`}>{fe.pubseries.name}</Link></>}
+                        </span>
+                    )}
+                    {showEditions && (
+                        <span className="bn-eds">
+                            <span className="bn-eds-l">{w.editions.length === 1 ? "Painos" : `${w.editions.length} painosta`}</span>{" "}
+                            {w.editions.map((e, i) => (
+                                <Fragment key={e.id}>
+                                    {i > 0 && ", "}
+                                    {e.owned && <i className="pi pi-star-fill bn-mark" role="img" aria-label="Omistat tämän painoksen" title="Omistat tämän painoksen" />}
+                                    {!e.owned && e.wishlisted && <i className="pi pi-bookmark-fill bn-mark bn-wish" role="img" aria-label="Muistilistallasi" title="Muistilistallasi" />}
+                                    <Link to={`/editions/${e.id}`}>{e.pubyear ?? "?"}</Link>{printingNote(e)}
+                                </Fragment>
+                            ))}
+                        </span>
+                    )}
+                </p>
             </div>
-            <div className="bn-row-side">
-                <span className="bn-genres">{w.genres.map(g => (
-                    <span className="bn-gdot" key={g.abbr}><i style={{ background: getGenreColors([g.abbr])[0] ?? "#6C757D" }} />{g.name}</span>
-                ))}</span>
-            </div>
+            <span className="bn-genres">{w.genres.map(g => (
+                <span className="bn-gdot" key={g.abbr}><i style={{ background: getGenreColors([g.abbr])[0] ?? "#6C757D" }} />{g.name}</span>
+            ))}</span>
         </li>
     );
 };
@@ -280,10 +270,6 @@ export const BookIndexNew = () => {
                         <label className="bn-check">
                             <input type="checkbox" checked={state.ryhmittely} onChange={e => update({ ryhmittely: e.target.checked })} />Ryhmittele tekijöittäin
                         </label>
-                        <div className="bn-seg" role="group" aria-label="Näkymä">
-                            <button type="button" aria-pressed={state.nakyma === "lista"} onClick={() => update({ nakyma: "lista" })}>Lista</button>
-                            <button type="button" aria-pressed={state.nakyma === "kannet"} onClick={() => update({ nakyma: "kannet" })}>Kannet</button>
-                        </div>
                     </div>
                 </div>
 
@@ -297,18 +283,7 @@ export const BookIndexNew = () => {
                             {state.ryhmittely && (
                                 <h2 className="bn-group">{g.id ? <Link to={`/people/${g.id}`}>{g.name}</Link> : g.name}<small>{g.rows.length}</small></h2>
                             )}
-                            {state.nakyma === "kannet" ? (
-                                <ul className="bn-covers">
-                                    {g.rows.map(w => (
-                                        <li key={w.id}>
-                                            <Link to={`/works/${w.id}`}><Cover cover={w.cover} /><span className="bn-ct">{w.title}</span></Link>
-                                            <span className="bn-ca">{naturalAuthors(w.author_str)}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <ul className="bn-rows">{g.rows.map(w => <Row key={w.id} w={w} showAuthor={!state.ryhmittely} />)}</ul>
-                            )}
+                            <ul className="bn-rows">{g.rows.map(w => <Row key={w.id} w={w} showAuthor={!state.ryhmittely} />)}</ul>
                         </Fragment>
                     ))
                 )}

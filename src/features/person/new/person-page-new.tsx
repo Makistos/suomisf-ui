@@ -26,12 +26,14 @@ import { safeHtml } from "@utils/safe-html";
 import { getGenreColors } from "../../genre/utils/genre-colors";
 import {
     aboutItems, booksByRole, derivePersonRoles, FICTION_TYPES, ownEditions, hasRole, isNonSfStory, isNonSfWork, NONFICTION_TYPES,
-    OTHER_TYPES, ownIds, ownStories, outputSummary, personTabs, PRODUCTION_ROLES, storiesByRole, visibleLinks,
+    OTHER_TYPES, ownIds, ownStories, outputSummary, personTabs, personWorks, PRODUCTION_ROLES, storiesByRole, visibleLinks,
     type BookEntry, type PersonTab, type TabKey,
 } from "../utils/person-facts";
 import { parseListState, withListState, type ListState } from "../utils/list-state";
 import { AboutList, AwardRows, BookList, naturalName, StoryList, type Update } from "./person-lists";
 import { PersonAdminTools } from "./person-admin-tools";
+import { useAutoPortrait } from "./use-auto-portrait";
+import type { WikiImageInfo } from "../hooks/use-wikimedia-image";
 
 const fetchJson = async <T,>(url: string): Promise<T> => (await getApiContent(url, getCurrenUser())).data;
 
@@ -48,8 +50,10 @@ const names = (list: { id: number; name: string; alt_name?: string }[], one: str
 
 const lifespan = (p: Person) => p.dob ? `${p.dob}–${p.dod ?? ""}` : p.dod ? `?–${p.dod}` : "";
 
-const PersonRecord = ({ person, roles, output }: { person: Person; roles: string[]; output: string }) => {
-    const image = person.images?.find(i => i.src);
+const PersonRecord = ({ person, roles, output, found }: { person: Person; roles: string[]; output: string; found: WikiImageInfo | null }) => {
+    // The stored picture, or one the Wikimedia lookup just found for an admin (useAutoPortrait).
+    const stored = person.images?.find(i => i.src);
+    const image = stored ?? (found ? { src: found.url, attr: found.credit ?? "", license: found.license ?? "" } : undefined);
     const name = person.alt_name || person.name;
     const country = person.nationality?.name ? getCountryCode(person.nationality.name) : "UNKNOWN";
     const credit = image ? [image.attr?.replace(/<[^>]+>/g, "").trim(), image.license].filter(Boolean).join(", ") : "";
@@ -105,7 +109,7 @@ const SparseSummary = ({ entries }: { entries: BookEntry[] }) => {
 const Sidebar = ({ person, onHistory }: { person: Person; onHistory: () => void }) => {
     const [allTags, setAllTags] = useState(false);
     const ids = ownIds(person);
-    const own = (person.works ?? []).filter(w => hasRole(w.contributions, ids, PRODUCTION_ROLES));
+    const own = personWorks(person).filter(w => hasRole(w.contributions, ids, PRODUCTION_ROLES));
     const genres = new Map<string, { name: string; n: number }>();
     const tags = new Map<number, { name: string; n: number }>();
     for (const w of own) {
@@ -210,6 +214,8 @@ export const PersonPageNew = ({ id }: { id: string | null }) => {
         };
     }, [person, issues]);
 
+    const foundPortrait = useAutoPortrait(person, admin, user);
+
     if (error) return <LoadError error={error} notFoundTitle="Henkilöä ei löytynyt" onRetry={() => refetch()} />;
     if (!person || !derived) {
         return <div className="flex justify-content-center p-5"><ProgressSpinner /></div>;
@@ -220,12 +226,8 @@ export const PersonPageNew = ({ id }: { id: string | null }) => {
     const name = person.alt_name || person.name;
 
     const ids = ownIds(person);
-    const realIds = new Set((person.real_names ?? []).map(r => r.id));
     // The live Sarjat tab's rule: books the person wrote, not those another writer wrote under a shared name.
-    const seriesWorks = (person.works ?? []).filter(w => {
-        const credits = w.contributions.filter(c => c.role.id === 1 && ids.has(c.person.id));
-        return credits.length > 0 && credits.every(c => !c.real_person?.id || ids.has(c.real_person.id) || realIds.has(c.real_person.id));
-    });
+    const seriesWorks = personWorks(person).filter(w => w.contributions.some(c => c.role.id === 1 && ids.has(c.person.id)));
 
     const panel = (key: TabKey, listState: ListState) => {
         const onEditWork = admin ? setEditWorkId : undefined;
@@ -257,7 +259,7 @@ export const PersonPageNew = ({ id }: { id: string | null }) => {
             <nav className="pn-crumbs" aria-label="Murupolku"><Link to="/people">Henkilöt</Link> / {name}</nav>
             <div className="pn-page">
                 <div>
-                    <PersonRecord person={person} roles={derived.roles} output={outputSummary(person, awards)} />
+                    <PersonRecord person={person} roles={derived.roles} output={outputSummary(person, awards)} found={foundPortrait} />
                     {derived.printings < SUMMARY_BELOW && <SparseSummary entries={derived.allBooks} />}
                     {person.bio && (
                         <div className="pn-bio">

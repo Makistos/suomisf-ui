@@ -89,6 +89,14 @@ Unchanged: everything the person plan decided about the timeline, tabs, role tab
 - **The publication timeline is removed** (the bars of printings by year, with their year filter). An old link with `vuosi` in it still filters
   the list and shows the year chip, which clears it. The one-sentence summary for a person with a single book stays.
 - **The description (bio) is closed by default** behind *Näytä kuvaus* / *Piilota kuvaus*, with no clamped first lines.
+- **Bug fixed (owner's report, 2026-11-26): books under a shared pen name.** The new page listed and counted every book under a pen name
+  several writers share (Erin Hunter), also the other writers'. `personWorks` (person-facts.ts) now applies the old page's rule everywhere
+  the page reads the person's works (lists, Tuotanto, roles, printings, series, sidebar): a writer credit under one of the person's names
+  counts only when its real person is unset, the person or one of their real names. Cherith Baldry's Teokset no longer has Kate Cary's books.
+- **Bug fixed (owner's report, 2026-11-26): the Wikimedia picture lookup was missing.** As on the old page (`use-auto-portrait.ts`, the
+  old page's logic): when an admin opens a person with no image record at all, the page asks the backend for a free picture, shows it,
+  saves it with its Wikimedia Commons link and says "Kuva lisätty" or "Kuvia ei löytynyt". The "Ei kuvaa" choice (an image record
+  without a picture) stops the lookup; a pen name with one real person gets that person's record and choice.
 
 ## Decisions
 

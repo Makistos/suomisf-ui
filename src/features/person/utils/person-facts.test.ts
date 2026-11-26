@@ -5,7 +5,7 @@ import type { Person } from "../types";
 import type { Awarded } from "../../award";
 import {
     aboutItems, booksByRole, byCredit, creditFacets, derivePersonRoles, FICTION_TYPES, outputSummary, writerCredit,
-    personTabs, visibleLinks,
+    personTabs, personWorks, visibleLinks,
 } from "./person-facts";
 
 const ME = 10;
@@ -190,5 +190,33 @@ describe("writerCredit / creditFacets / byCredit", () => {
         const bachman = work({ id: 2, title: "Kirous", work_type: type(1, "Romaani"), contributions: writers(ALIAS), editions: [] });
         const entries = booksByRole({ ...king, works: [own, bachman] } as Person, FICTION_TYPES, () => true).kirjoittaja;
         expect(entries.map(e => [e.work.title, e.credit?.label, e.asName])).toEqual([["Hohto", "Stephen King", undefined], ["Kirous", "Richard Bachman", "Richard Bachman"]]);
+    });
+});
+
+describe("personWorks: a pen name several writers share", () => {
+    // The person and another writer both write as ALIAS; each work's credit names its real writer.
+    const credit = (realId: number | null) =>
+        ({ ...contribution(ALIAS, 1), real_person: realId ? { id: realId, name: "", alt_name: "" } : undefined }) as ReturnType<typeof contribution>;
+    const mine = work({ id: 21, title: "Minun", work_type: type(1, "Romaani"), genres: [genre("F")], contributions: [credit(ME)],
+        editions: [edition({ id: 2101 })] });
+    const theirs = work({ id: 22, title: "Toisen", work_type: type(1, "Romaani"), genres: [genre("F")], contributions: [credit(OTHER)],
+        editions: [edition({ id: 2201 })] });
+    const unknown = work({ id: 23, title: "Tuntematon", work_type: type(1, "Romaani"), genres: [genre("F")], contributions: [credit(null)],
+        editions: [edition({ id: 2301 })] });
+    const p = person({ aliases: [{ id: ALIAS, name: "Hunter, Erin", alt_name: "Erin Hunter" }] as never, works: [novel, mine, theirs, unknown] });
+
+    it("leaves out a work another writer wrote under the shared name (as the old page does)", () => {
+        expect(personWorks(p).map(w => w.id)).toEqual([1, 21, 23]);
+    });
+
+    it("keeps a work under the shared name when the real writer is one of the person's real names", () => {
+        const viaRealName = person({ ...p, real_names: [{ id: OTHER, name: "", alt_name: "" }] as never });
+        expect(personWorks(viaRealName).map(w => w.id)).toEqual([1, 21, 22, 23]);
+    });
+
+    it("keeps the other writer's book out of the lists and the counts", () => {
+        const teokset = booksByRole(p, FICTION_TYPES, () => true).kirjoittaja.map(e => e.work.id);
+        expect(teokset).toEqual([1, 21, 23]);
+        expect(outputSummary(p, [])).toMatch(/^3 kirjaa, 4 painosta/);
     });
 });

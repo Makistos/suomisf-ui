@@ -27,6 +27,19 @@ export const OTHER_TYPES = [1, 2, 3, 5, 6];
 export const ownIds = (person: Person): Set<number> =>
     new Set([person.id, ...(person.aliases ?? []).map(a => a.id)]);
 
+/**
+ * The person's works, without those another writer wrote under a pen name they share (Erin Hunter): a writer credit
+ * under one of the person's names counts only when its real person is unset, the person, or one of their real names.
+ * The old page's rule (contributor-book-control.tsx); the new page had listed every book under the shared name.
+ */
+export const personWorks = (person: Person): Work[] => {
+    const ids = ownIds(person);
+    const realNames = new Set((person.real_names ?? []).map(r => r.id));
+    return (person.works ?? []).filter(w => (w.contributions ?? [])
+        .filter(c => c.role.id === ContributionType.Kirjoittaja && ids.has(c.person.id))
+        .every(c => !c.real_person?.id || ids.has(c.real_person.id) || realNames.has(c.real_person.id)));
+};
+
 export const hasRole = (contribs: Contribution[] | undefined, ids: Set<number>, roles: number[]): boolean =>
     (contribs ?? []).some(c => ids.has(c.person.id) && roles.includes(c.role.id));
 
@@ -47,7 +60,7 @@ const ROLE_ORDER = ["Kirjailija", "Tietokirjailija", "Kirjoittaja", "K채채nt채j�
  */
 export const derivePersonRoles = (person: Person, issues: Issue[]): string[] => {
     const ids = ownIds(person);
-    const written = (person.works ?? []).filter(w => hasRole(w.contributions, ids, [ContributionType.Kirjoittaja]));
+    const written = personWorks(person).filter(w => hasRole(w.contributions, ids, [ContributionType.Kirjoittaja]));
     const writtenStories = (person.stories ?? []).filter(s => hasRole(s.contributors, ids, [ContributionType.Kirjoittaja]));
     const storyOfType = (types: number[]) => writtenStories.some(s => s.type && types.includes(s.type.id));
     const editions = person.editions ?? [];
@@ -90,7 +103,7 @@ export const aboutItems = (person: Person): { books: Work[]; articles: Short[] }
 export const ownEditions = (person: Person): Edition[] => {
     const ids = ownIds(person);
     const seen = new Map<number, Edition>();
-    for (const w of person.works ?? []) {
+    for (const w of personWorks(person)) {
         if (hasRole(w.contributions, ids, PRODUCTION_ROLES))
             for (const e of w.editions ?? []) seen.set(e.id, e);
     }
@@ -128,7 +141,7 @@ export const ownStories = (person: Person): Short[] => {
 /** The record's "Tuotanto" line: "30 kirjaa, 39 painosta, 80 novellia ja artikkelia, 35 palkintoa". */
 export const outputSummary = (person: Person, awards: Awarded[]): string => {
     const ids = ownIds(person);
-    const own = (person.works ?? []).filter(w => hasRole(w.contributions, ids, [ContributionType.Kirjoittaja])).length;
+    const own = personWorks(person).filter(w => hasRole(w.contributions, ids, [ContributionType.Kirjoittaja])).length;
     const translated = editionWorks(person, ContributionType.K채채nt채j채).length;
     const edited = editedWorks(person).length;
     const covers = editionWorks(person, ContributionType.Kansikuva).length;
@@ -248,7 +261,7 @@ export const booksByRole = (person: Person, types: number[], keep: (w: Work) => 
         .filter(e => hasRole(e.contributions, ids, [role]) && inGroup(e.work))
         .map(e => ({ work: e.work as Work, edition: e }));
 
-    const written = (person.works ?? [])
+    const written = personWorks(person)
         .filter(w => inGroup(w) && hasRole(w.contributions, ids, [ContributionType.Kirjoittaja]))
         .map(w => {
             const credited = w.contributions.filter(c => c.role.id === ContributionType.Kirjoittaja && ids.has(c.person.id));
@@ -294,7 +307,7 @@ export const personTabs = (person: Person, awards: Awarded[], issueCount: number
     const muut = booksByRole(person, OTHER_TYPES, w => isNonSfWork(w.genres));
     const stories = storiesByRole(person, s => !isNonSfStory(s.genres) && hasRole(s.contributors, ids, PRODUCTION_ROLES));
     const otherStories = ownStories(person).filter(s => isNonSfStory(s.genres));
-    const series = new Set((person.works ?? [])
+    const series = new Set(personWorks(person)
         .filter(w => hasRole(w.contributions, ids, [ContributionType.Kirjoittaja]) && w.bookseries)
         .map(w => w.bookseries!.id));
     const about = aboutItems(person);

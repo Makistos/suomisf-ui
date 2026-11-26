@@ -206,6 +206,51 @@ test('collaborations are grouped and named, as on the old page (Anne Leinonen)',
     await expect(page.locator('.pn-row')).toHaveCount(23);
 });
 
+test('a writer behind a shared pen name gets only their own books under it (Cherith Baldry, Erin Hunter)', async ({ adminPage: page }) => {
+    // The old page's rule: a book under the shared name counts when its credit's real person is unset or this person.
+    await openNew(page, 2054, '?tekija=' + HUNTER);
+    await expect(page.getByRole('link', { name: 'Auringon polku', exact: true })).toBeVisible({ timeout: 20000 });
+    await expect(page.getByRole('link', { name: 'Aamunkoi', exact: true })).toHaveCount(0); // Kate Cary's
+    // 36 of the 94 Erin Hunter works are hers; the tab no longer counts the others.
+    const teokset = Number((await tab(page, /^Teokset/).innerText()).replace(/\D/g, ''));
+    expect(teokset).toBeLessThan(94);
+});
+
+test('an admin\'s visit looks for a picture on Wikimedia when the person has none, shows it and saves it', async ({ adminPage: page }) => {
+    // As on the old page. The backend's lookup goes to Wikimedia, so the test answers for it and for the saves.
+    const NO_IMAGE = 874; // James W. Kunetka: no image record of their own or through an alias, no Wikidata id
+    const found = { url: 'https://upload.wikimedia.org/test/kunetka.jpg', description_url: 'https://commons.wikimedia.org/wiki/File:Kunetka.jpg',
+        credit: '<a href="x">Kuvaaja</a>', license: 'CC BY-SA 4.0', score: 1 };
+    const saved: { url: string; body: unknown }[] = [];
+    await page.route(`**/api/person/${NO_IMAGE}/images?limit=1`, route => route.fulfill({ json: [found] }));
+    await page.route(new RegExp(`/api/person/${NO_IMAGE}/(images|links)$`), route => {
+        if (route.request().method() !== 'POST') return route.fallback();
+        saved.push({ url: route.request().url(), body: route.request().postDataJSON() });
+        return route.fulfill({ json: { response: 'ok' } });
+    });
+    await openNew(page, NO_IMAGE);
+    await expect(page.locator('img.pn-portrait')).toHaveAttribute('src', found.url, { timeout: 20000 });
+    await expect(page.locator('.pn-credit')).toHaveText('Kuva: Kuvaaja, CC BY-SA 4.0');
+    await expect(page.getByText('Kuva lisätty')).toBeVisible();
+    await expect.poll(() => saved.length).toBe(2);
+    expect(saved.find(x => x.url.endsWith('/images'))!.body).toEqual({ src: found.url, attr: 'Kuvaaja', license: 'CC BY-SA 4.0' });
+    expect(saved.find(x => x.url.endsWith('/links'))!.body).toEqual({ link: found.description_url, description: 'Wikimedia Commons' });
+});
+
+test('no Wikimedia lookup when an admin chose "Ei kuvaa", and a lookup that finds nothing says so', async ({ adminPage: page }) => {
+    const lookups: string[] = [];
+    page.on('request', r => { if (/\/api\/person\/\d+\/images\?limit=/.test(r.url())) lookups.push(r.url()); });
+    await openNew(page, 1); // Barry Unsworth: "Ei kuvaa"
+    await page.waitForLoadState('networkidle');
+    expect(lookups).toEqual([]);
+    await expect(page.locator('img.pn-portrait')).toHaveCount(0);
+
+    await page.route('**/api/person/888/images?limit=1', route => route.fulfill({ json: [] }));
+    await openNew(page, 888); // Eugène Sue: no image record
+    await expect(page.getByText('Kuvia ei löytynyt')).toBeVisible({ timeout: 20000 });
+    await expect(page.locator('img.pn-portrait')).toHaveCount(0);
+});
+
 test('a book the user owns is marked before its title', async ({ adminPage: page }) => {
     const me = await page.evaluate(() => JSON.parse(localStorage.getItem('user') ?? '{}').id);
     await page.route(`**/api/people/${LE_GUIN}`, async route => {

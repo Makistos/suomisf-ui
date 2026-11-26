@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 import { getGenreColors } from "@features/genre/utils/genre-colors";
 import { thumbUrl } from "@utils/cover-url";
-import { EditionRow, isForeign, printingNote, yearGroups } from "./edition-rows-utils";
+import { coverTiles, EditionRow, isForeign, printingNote, yearGroups } from "./edition-rows-utils";
 
 type PersonBrief = EditionRow["translators"][number];
 const personName = (p: PersonBrief) =>
@@ -78,26 +78,40 @@ interface Props {
     covers?: boolean;
 }
 
-/** A list of printings, one a row, text first; or their covers. Identity style, tokens of its own so any page can use it. */
+/** "28 painosta, 1985–2012" under a cover several printings share; the year under a cover of its own. */
+const tileYears = (t: ReturnType<typeof coverTiles>[number]) => {
+    const years = t.first === null ? "" : t.first === t.last ? String(t.first) : `${t.first}–${t.last}`;
+    return t.count > 1 ? `${n(t.count)} painosta${years ? `, ${years}` : ""}` : years;
+};
+
+/**
+ * A list of printings, one a row, text first; or their covers, each cover file once (owner, 2026-11-26: many reprints share a
+ * scan). Identity style, tokens of its own so any page can use it.
+ */
 export const EditionRows = ({ editions, byYear, covers = false }: Props) => {
+    if (covers) {
+        // no year headings here: a shared cover spans years, which its caption gives instead
+        return (
+            <div className="er">
+                <ul className="er-covers">
+                    {coverTiles(editions).map(t => (
+                        <li key={t.edition.id}>
+                            <Link to={`/editions/${t.edition.id}`}><Cover e={t.edition} /><span className="er-ct">{t.edition.title?.trim() || t.edition.work?.title || "Nimetön"}</span></Link>
+                            <span className="er-ca">{naturalAuthors(t.edition.work?.author_str)}</span>
+                            {tileYears(t) && <span className="er-ca er-cy">{tileYears(t)}</span>}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        );
+    }
     const groups = byYear ? yearGroups(editions) : [{ key: "all", year: null, rows: editions }];
     return (
         <div className="er">
             {groups.map(g => (
                 <section key={g.key} aria-label={byYear ? String(g.year ?? "Vuosi ei tiedossa") : undefined}>
                     {byYear && <h3 className="er-year">{g.year ?? "Vuosi ei tiedossa"}<small>{n(g.rows.length)} {g.rows.length === 1 ? "painos" : "painosta"}</small></h3>}
-                    {covers ? (
-                        <ul className="er-covers">
-                            {g.rows.map(e => (
-                                <li key={e.id}>
-                                    <Link to={`/editions/${e.id}`}><Cover e={e} /><span className="er-ct">{e.title?.trim() || e.work?.title || "Nimetön"}</span></Link>
-                                    <span className="er-ca">{naturalAuthors(e.work?.author_str)}{e.pubyear && !byYear ? `, ${e.pubyear}` : ""}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <ul className="er-rows">{g.rows.map(e => <Row key={e.id} e={e} showYear={!byYear} />)}</ul>
-                    )}
+                    <ul className="er-rows">{g.rows.map(e => <Row key={e.id} e={e} showYear={!byYear} />)}</ul>
                 </section>
             ))}
         </div>

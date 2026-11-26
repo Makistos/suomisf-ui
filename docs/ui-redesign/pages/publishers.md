@@ -106,7 +106,9 @@ Admins switch with *Uusi kustantajan sivu* or Shift+U (`suomisf.publisherPageVer
   translators link to people, the title to the printing (`/editions/:id`), the series to it; "2. painos", "2. laitos", "2. laitos,
   3. painos" when not a first printing; the reader's star or bookmark before the row; genres on the right. Sorted by year, the rows sit
   under year headings ("1976 · 14 painosta"); by title or author, the year ends each row. *Kannet* shows the same page as covers
-  (cloth binding without one). A printing with an empty title shows its work's title.
+  (cloth binding without one), **each cover file once** (owner, 2026-11-26: of WSOY's 2 069 printings with a cover only 1 760 files
+  differ; Hobitti's 28 reprints share one): the tile sits at its first printing in the list, links to the earliest, and says
+  "28 painosta, 1985–2012"; no year headings in Kannet. A printing with an empty title shows its work's title.
 - **Page:** `src/features/publisher/page/`: crumbs, name, full name when it differs, the facts line "2 260 painosta (1 320 teosta) vuosina
   1889–2026, 59 kustantajan sarjaa." (and "1 lehti" for a magazine publisher), description and links; tabs Painokset, Sarjat (when any),
   Lehdet (when any) with counts; Painokset with "Tekijä tai nimi", "Vuodet" (Hae or Enter), Tyhjennä, Järjestys, Kannet, paging and rows

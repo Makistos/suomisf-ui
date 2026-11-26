@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { EditionRow, printingNote, yearGroups, isForeign } from "./edition-rows-utils";
+import { coverTiles, EditionRow, printingNote, yearGroups, isForeign } from "./edition-rows-utils";
 
 const row = (id: number, pubyear: number | null, version: number | null, editionnum: number | null, extra: Partial<EditionRow> = {}): EditionRow => ({
     id, title: "Säätiö", subtitle: null, pubyear, version, editionnum, pubseries: null, pubseriesnum: null, translators: [],
@@ -36,5 +36,22 @@ describe("isForeign", () => {
         expect(isForeign(row(1, 1976, 1, 1))).toBe(true);
         expect(isForeign(row(1, 1976, 1, 1, { work: { ...row(1, 1, 1, 1).work!, orig_title: "Säätiö" } }))).toBe(false);
         expect(isForeign(row(1, 1976, 1, 1, { work: { ...row(1, 1, 1, 1).work!, orig_title: null } }))).toBe(false);
+    });
+});
+
+describe("coverTiles", () => {
+    const cover = (src: string) => ({ image_src: src, thumb_src: null });
+    // Hobitti's 2. laitos reprints share one scan (owner, 2026-11-26: show each cover once).
+    const hobbit = (id: number, year: number) => row(id, year, 2, id, { cover: cover("/Tolkien_Hobitti_l2.jpg") });
+
+    it("shows each cover file once, at its first printing in the list, linking to the earliest", () => {
+        const tiles = coverTiles([hobbit(3, 1989), row(9, 1990, 1, 1, { cover: cover("/other.jpg") }), hobbit(1, 1985), hobbit(2, 1986)]);
+        expect(tiles.map(t => t.edition.id)).toEqual([1, 9]);
+        expect(tiles[0]).toMatchObject({ count: 3, first: 1985, last: 1989 });
+        expect(tiles[1]).toMatchObject({ count: 1, first: 1990, last: 1990 });
+    });
+
+    it("keeps every printing without a cover as its own tile", () => {
+        expect(coverTiles([row(1, 1976, 1, 1), row(2, 1976, 1, 1)]).map(t => t.edition.id)).toEqual([1, 2]);
     });
 });

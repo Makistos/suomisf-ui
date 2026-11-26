@@ -135,12 +135,40 @@ test('Kannet shows the same printings as covers, and back', async ({ adminPage: 
     await toggle.click();
     await expect(page).toHaveURL(/nakyma=kannet/);
     await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    // 1976's printings each have a cover of their own or none, so every one is a tile
     await expect(page.locator('.er-covers li')).toHaveCount(n);
     await expect(rows(page)).toHaveCount(0);
     await expect(page.locator('.er-covers').getByRole('link', { name: /Pimeyden vasen käsi/ })).toHaveAttribute('href', `/editions/${LE_GUIN_FIRST}`);
     await toggle.click();
     await expect(page).not.toHaveURL(/nakyma/);
     await expect(rows(page)).toHaveCount(n);
+});
+
+test('Kannet shows each cover file once, captioned with the printings that share it (Hobitti)', async ({ adminPage: page }) => {
+    await openNew(page, `/publishers/${WSOY}`);
+    await loaded(page);
+    const response = page.waitForResponse(r => r.url().includes('/api/publishers/387/editions') && r.url().includes('q=hobitti'));
+    await page.getByLabel('Tekijä tai nimi').fill('hobitti');
+    await page.getByLabel('Tekijä tai nimi').press('Enter');
+    type Ed = { id: number; pubyear: number; cover: { image_src: string } | null };
+    const editions: Ed[] = (await (await response).json()).editions;
+    await loaded(page);
+    // the expected tiles from the page's own response: one per cover file, one per printing without a cover
+    const bySrc = new Map<string, Ed[]>();
+    for (const e of editions) if (e.cover) bySrc.set(e.cover.image_src, [...(bySrc.get(e.cover.image_src) ?? []), e]);
+    const shared = [...bySrc.values()].sort((a, b) => b.length - a.length)[0];
+    expect(shared.length).toBeGreaterThan(1);
+    await page.getByRole('button', { name: 'Kannet' }).click();
+    await expect(page.locator('.er-covers li')).toHaveCount(bySrc.size + editions.filter(e => !e.cover).length);
+    // no year headings in Kannet: the shared cover's caption gives its printings and years
+    await expect(page.locator('.er-year')).toHaveCount(0);
+    const years = shared.map(e => e.pubyear);
+    const earliest = shared.reduce((a, b) => (b.pubyear < a.pubyear ? b : a));
+    const tile = page.locator('.er-covers li').filter({ hasText: `${shared.length} painosta, ${Math.min(...years)}–${Math.max(...years)}` });
+    await expect(tile).toHaveCount(1);
+    await expect(tile.getByRole('link')).toHaveAttribute('href', `/editions/${earliest.id}`);
+    expect(new Set(await page.locator('.er-covers img').evaluateAll(imgs => imgs.map(i => (i as HTMLImageElement).src))).size)
+        .toBe(await page.locator('.er-covers img').count());
 });
 
 test('the reader\'s own printing is marked on its row', async ({ adminPage: page }) => {

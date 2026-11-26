@@ -41,3 +41,27 @@ export const yearGroups = (rows: EditionRow[]) =>
         else groups.push({ key: `${groups.length}:${r.pubyear}`, year: r.pubyear, rows: [r] });
         return groups;
     }, []);
+
+/**
+ * The Kannet view's tiles: each cover file once, placed at its first printing in the list and linking to the earliest of the
+ * printings that share it (owner, 2026-11-26: Hobitti's 28 reprints share one scan). Printings without a cover stay one a tile.
+ */
+export const coverTiles = (rows: EditionRow[]) => {
+    const tiles: { edition: EditionRow; count: number; first: number | null; last: number | null }[] = [];
+    const bySrc = new Map<string, (typeof tiles)[number]>();
+    for (const r of rows) {
+        const tile = r.cover ? bySrc.get(r.cover.image_src) : undefined;
+        if (!tile) {
+            const t = { edition: r, count: 1, first: r.pubyear, last: r.pubyear };
+            tiles.push(t);
+            if (r.cover) bySrc.set(r.cover.image_src, t);
+            continue;
+        }
+        tile.count += 1;
+        if (r.pubyear !== null) {
+            if (tile.first === null || r.pubyear < tile.first) { tile.first = r.pubyear; tile.edition = r; }
+            if (tile.last === null || r.pubyear > tile.last) tile.last = r.pubyear;
+        }
+    }
+    return tiles;
+};

@@ -36,6 +36,18 @@
 .pp-desc p { margin: 0 0 8px; }
 .pp-links { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 14.5px; }
 
+/* the header and the genre breakdown side by side, as the person page's record and sidebar */
+.pp-top { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 0 48px; align-items: start; }
+.pp-genres { padding-top: 24px; }
+.pp-genres h2 { font: 700 14.5px var(--pp-sans); margin: 0; color: var(--pp-ink); }
+.pp-gnote { margin: 2px 0 10px; font-size: 12.5px; color: var(--pp-ink-3); }
+.pp-gbar { display: grid; grid-template-columns: 180px minmax(0, 1fr) 36px; gap: 10px; align-items: center; font-size: 14px; margin-bottom: 6px; }
+.pp-gbar > span:first-child { overflow-wrap: anywhere; }
+.pp-track { height: 8px; background: var(--pp-rule); }
+.pp-track i { display: block; height: 100%; min-width: 2px; }
+.pp-gmore { font-size: 14px; margin-top: 2px; }
+.pp-gbar b { font-weight: 400; color: var(--pp-ink-3); text-align: right; font-variant-numeric: tabular-nums; }
+
 /* 2 tabs: text with counts, the chosen one underlined */
 .pp-tabs { display: flex; flex-wrap: wrap; gap: 0 28px; border-bottom: 1px solid var(--pp-rule-2); margin-top: 4px; }
 .pp-tabs button { border: 0; background: none; padding: 10px 0 8px; cursor: pointer; font: 600 16px var(--pp-sans); color: var(--pp-ink-2);
@@ -88,6 +100,10 @@
 /* the site places and sizes the admin SpeedDial only under the current pages' classes */
 .pp .fixed-dial { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; }
 
+@media (max-width: 899px) {
+    .pp-top { grid-template-columns: minmax(0, 1fr); }
+    .pp-genres { padding: 0 0 18px; max-width: 480px; }
+}
 @media (max-width: 639px) {
     .pp { padding: 0 16px 56px; }
     .pp-head h1 { font-size: 34px; }

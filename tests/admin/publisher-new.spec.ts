@@ -7,6 +7,7 @@ import { expectAccessible } from '../fixtures/axe';
 // printings one a row (owner, 2026-11-26: a publisher publishes editions, not works), from GET /api/publishers/:id/editions,
 // with its facts, series and magazines from GET /api/publishers/:id/summary.
 type Summary = { name: string; fullname: string; editions: number; works: number; first_year: number; last_year: number;
+    genres: { abbr: string; name: string; works: number }[];
     series: { id: number; name: string; editions: number }[]; magazines: { id: number; name: string; issues: number }[] };
 const WSOY = 387;
 const HSFS = 85; // publishes Tähtivaeltaja
@@ -51,6 +52,31 @@ test('the header gives the name, full name, one line of facts and the links; tab
     await expect(page.getByRole('tab')).toHaveText([`Painokset${fi(s.editions)}`, `Sarjat${s.series.length}`]);
     await expect(page.getByRole('tab', { name: /Painokset/ })).toHaveAttribute('aria-selected', 'true');
     expect(new URL(page.url()).search).toBe('');
+});
+
+test('the genre breakdown counts works, most first; a one-genre publisher has none', async ({ adminPage: page }) => {
+    const s = await openNew(page, `/publishers/${WSOY}`);
+    const section = page.getByRole('complementary', { name: 'Genret' });
+    // the six biggest first, the rest from the button (WSOY has more)
+    expect(s.genres.length).toBeGreaterThan(6);
+    await expect(section.locator('.pp-gbar')).toHaveCount(6);
+    const more = section.getByRole('button', { name: `${s.genres.length} genreä kaikkiaan` });
+    await expect(more).toHaveAttribute('aria-expanded', 'false');
+    await more.click();
+    await expect(section.locator('.pp-gbar')).toHaveCount(s.genres.length);
+    await expect(section.getByRole('button', { name: 'Näytä vähemmän' })).toHaveAttribute('aria-expanded', 'true');
+    await expect(section.locator('.pp-gbar').first()).toHaveText(`${s.genres[0].name}${fi(s.genres[0].works)}`);
+    const counts = (await section.locator('.pp-gbar b').allInnerTexts()).map(t => Number(t.replace(/\s/g, '')));
+    expect(counts).toEqual(s.genres.map(g => g.works));
+    expect(counts).toEqual([...counts].sort((a, b) => b - a));
+    // works, not editions: no genre count can exceed the publisher's works
+    expect(Math.max(...counts)).toBeLessThanOrEqual(s.works);
+    await expect(section).toContainText('Teoksia; teoksella voi olla useampi genre.');
+    await section.getByRole('button', { name: 'Näytä vähemmän' }).click();
+    await expect(section.locator('.pp-gbar')).toHaveCount(6);
+    const hsfs = await openNew(page, `/publishers/${HSFS}`);
+    expect(hsfs.genres.length).toBeLessThanOrEqual(1);
+    await expect(page.getByRole('complementary', { name: 'Genret' })).toHaveCount(0);
 });
 
 test('printings come oldest first under year headings, 100 a page, with paging and rows per page', async ({ adminPage: page }) => {

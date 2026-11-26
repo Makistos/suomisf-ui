@@ -114,6 +114,9 @@ Admins switch with *Uusi kustantajan sivu* or Shift+U (`suomisf.publisherPageVer
   Lehdet (when any) with counts; Painokset with "Tekijä tai nimi", "Vuodet" (Hae or Enter), Tyhjennä, Järjestys, Kannet, paging and rows
   per page; Sarjat as a table sorted from its headers (name A–Ö, most printings, oldest first; empty last); Lehdet as a table (type,
   issues, years). The admin SpeedDial (Muokkaa, Poista off while the publisher has printings, series or magazines) as on the current page.
+- **Genret (owner, 2026-11-27):** beside the header, as on the person page: a bar for each genre in its colour with the number of
+  **works** (not printings: Hobitti's 28 reprints count once), most first, "Teoksia; teoksella voi olla useampi genre." The six biggest
+  show, the rest from "18 genreä kaikkiaan" (WSOY); none for a publisher with one genre. From the summary's `genres`.
 - **URL:** `valilehti=sarjat|lehdet`, `sivu`, `haku`, `vuodet=1970-1979`, `jarjestys=uusin|nimi|tekija`, `riveja=50|200`, `nakyma=kannet`,
   `sarjat=painoksia|vuodet`, `suunta`; defaults are left out, and a filter, order or rows change goes back to page 1. An address with a
   tab the publisher has no rows for shows the printings.

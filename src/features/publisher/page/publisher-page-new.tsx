@@ -15,6 +15,7 @@ import { isAdmin } from "@features/user";
 import { useGlobalToast } from "@components/global-toast";
 import { LoadError } from "@components/load-error";
 import { safeHtml } from "@utils/safe-html";
+import { getGenreColors } from "@features/genre/utils/genre-colors";
 import { EditionRows } from "@features/edition/rows/edition-rows";
 import type { EditionRow } from "@features/edition/rows/edition-rows-utils";
 import { PublisherForm } from "../components/publisher-form";
@@ -29,6 +30,8 @@ interface Summary {
     editions: number; works: number; first_year: number | null; last_year: number | null;
     series: SeriesRow[];
     magazines: { id: number; name: string; type: string | null; issues: number; first_year: number | null; last_year: number | null }[];
+    /** Distinct works in each genre, most first (owner, 2026-11-27: works, not editions). */
+    genres: { abbr: string; name: string; works: number }[];
 }
 interface EditionsPage { total: number; page: number; rows: number; editions: EditionRow[] }
 
@@ -47,6 +50,8 @@ const factsLine = (s: Summary) => {
     ].filter(Boolean);
     return `${parts.join(", ")}.`;
 };
+
+const GENRES_SHOWN = 6;
 
 const SERIES_COLUMNS: { sort: SeriesSort; label: string; className: string }[] = [
     { sort: "nimi", label: "Sarja", className: "pp-name" },
@@ -68,6 +73,8 @@ export const PublisherPageNew = () => {
     const showGlobalToast = useGlobalToast();
     const toast = useRef<Toast>(null);
     const [editing, setEditing] = useState(false);
+    // the six biggest genres by default, so the breakdown stays beside the header (WSOY has 18)
+    const [allGenres, setAllGenres] = useState(false);
 
     const summary = useQuery<Summary>({ queryKey: ["publisher-summary", id], queryFn: () => fetchJson(`publishers/${id}/summary`) });
     // The printings show on their own tab, and when the address names a tab the publisher has no rows for.
@@ -152,6 +159,7 @@ export const PublisherPageNew = () => {
             )}
 
             <nav className="pp-crumbs" aria-label="Murupolku"><Link to="/publishers">Kustantajat</Link> /</nav>
+            <div className="pp-top">
             <header className="pp-head">
                 <h1>{s?.name ?? "Kustantaja"}</h1>
                 {s && s.fullname && s.fullname.toLocaleLowerCase("fi") !== s.name.toLocaleLowerCase("fi") && <p className="pp-full">{s.fullname}</p>}
@@ -163,6 +171,28 @@ export const PublisherPageNew = () => {
                     </ul>
                 )}
             </header>
+            {s && s.genres.length > 1 && (
+                // as on the person page: a bar for each genre, counted in works
+                <aside className="pp-genres" aria-labelledby="pp-genres-h">
+                    <h2 id="pp-genres-h">Genret</h2>
+                    <p className="pp-gnote">Teoksia; teoksella voi olla useampi genre.</p>
+                    {(allGenres ? s.genres : s.genres.slice(0, GENRES_SHOWN)).map(g => (
+                        <div className="pp-gbar" key={g.abbr}>
+                            <span>{g.name}</span>
+                            <span className="pp-track" aria-hidden="true">
+                                <i style={{ width: `${(g.works / s.genres[0].works) * 100}%`, background: getGenreColors([g.abbr])[0] ?? "#6C757D" }} />
+                            </span>
+                            <b>{n(g.works)}</b>
+                        </div>
+                    ))}
+                    {s.genres.length > GENRES_SHOWN && (
+                        <button type="button" className="pp-link pp-gmore" aria-expanded={allGenres} onClick={() => setAllGenres(!allGenres)}>
+                            {allGenres ? "Näytä vähemmän" : `${s.genres.length} genreä kaikkiaan`}
+                        </button>
+                    )}
+                </aside>
+            )}
+            </div>
 
             {s && (
                 <div className="pp-tabs" role="tablist" aria-label="Kustantajan tiedot">

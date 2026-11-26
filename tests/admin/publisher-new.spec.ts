@@ -79,6 +79,22 @@ test('the genre breakdown counts works, most first; a one-genre publisher has no
     await expect(page.getByRole('complementary', { name: 'Genret' })).toHaveCount(0);
 });
 
+test('a reader sees how many of the publisher\'s printings they own; nothing when none', async ({ adminPage: page }) => {
+    let own: { editions: number; wishlisted: number } | null = { editions: 12, wishlisted: 2 };
+    await page.route('**/api/publishers/387/summary', async route => {
+        const response = await route.fetch();
+        await route.fulfill({ response, json: { ...(await response.json()), own } });
+    });
+    await openNew(page, `/publishers/${WSOY}`);
+    await expect(page.locator('.pp-own')).toHaveText('Omistat 12 tämän kustantajan painosta; muistilistallasi 2 painosta.');
+    own = { editions: 0, wishlisted: 1 };
+    await openNew(page, `/publishers/${WSOY}`);
+    await expect(page.locator('.pp-own')).toHaveText('Muistilistallasi 1 painos.');
+    own = { editions: 0, wishlisted: 0 };
+    await openNew(page, `/publishers/${WSOY}`);
+    await expect(page.locator('.pp-own')).toHaveCount(0);
+});
+
 test('printings come oldest first under year headings, 100 a page, with paging and rows per page', async ({ adminPage: page }) => {
     const s = await openNew(page, `/publishers/${WSOY}`);
     await loaded(page);
@@ -105,7 +121,11 @@ test('a printing row reads as the old line, linked: author, title, original, lab
     await expect(page.getByLabel('Vuodet, vuodesta')).toHaveValue('1976');
     const row = rows(page).filter({ has: page.getByRole('link', { name: 'Pimeyden vasen käsi', exact: true }) });
     await expect(row.locator('.er-line')).toHaveText(
-        'Ursula K. Le Guin: Pimeyden vasen käsi (The Left Hand of Darkness, 1969). Suom. Kalevi Nyytäjä. Sci-fi -sarja. ');
+        'Ursula K. Le Guin: Pimeyden vasen käsi (The Left Hand of Darkness, 1969). Hain-sarja. Suom. Kalevi Nyytäjä. Sci-fi -sarja. ');
+    // the work's book series, as in the book index (owner, 2026-11-27), linked and with its number
+    await expect(row.getByRole('link', { name: 'Hain-sarja' })).toHaveAttribute('href', /\/bookseries\/\d+$/);
+    const earthsea = rows(page).filter({ has: page.getByRole('link', { name: 'Maameren velho', exact: true }) });
+    await expect(earthsea.locator('.er-bser')).toHaveText('Maameren tarinat 1. ');
     await expect(row.getByRole('link', { name: 'Pimeyden vasen käsi' })).toHaveAttribute('href', `/editions/${LE_GUIN_FIRST}`);
     await expect(row.getByRole('link', { name: 'Ursula K. Le Guin' })).toHaveAttribute('href', /\/people\/\d+$/);
     await expect(row.getByRole('link', { name: 'Kalevi Nyytäjä' })).toHaveAttribute('href', /\/people\/\d+$/);

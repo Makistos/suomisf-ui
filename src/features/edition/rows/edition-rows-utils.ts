@@ -17,6 +17,9 @@ export interface EditionRow {
     work: {
         id: number; title: string; orig_title: string | null; pubyear: number | null; author_str: string | null; type: number;
         authors: PersonBrief[]; genres: { id: number; abbr: string; name: string }[];
+        /** The work's book series, "Maameren tarinat 1" (owner, 2026-11-27: the list lacked it). */
+        bookseries?: { id: number; name: string; partof: { id: number; name: string } | null } | null;
+        bookseriesnum?: string | null;
     } | null;
     cover: { image_src: string; thumb_src?: string | null } | null;
     owned: boolean;

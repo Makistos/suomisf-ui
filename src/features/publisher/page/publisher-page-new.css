@@ -15,8 +15,10 @@
         --pp-blue: #A3B3FF;
     }
 }
-.pp a { color: var(--pp-blue); text-decoration: none; }
-.pp a:hover { text-decoration: underline; text-underline-offset: 3px; }
+/* The admin SpeedDial's links keep the theme's look (:where adds no specificity): a plain `a` rule turned its icons link-blue.
+   src/components/identity-css.test.ts checks this in every identity stylesheet. */
+.pp a:where(:not(.p-speeddial-action)) { color: var(--pp-blue); text-decoration: none; }
+.pp a:where(:not(.p-speeddial-action)):hover { text-decoration: underline; text-underline-offset: 3px; }
 .pp :focus-visible { outline: 2px solid var(--pp-blue); outline-offset: 2px; border-radius: 2px; }
 .pp h1 { color: var(--pp-ink); }
 .pp button { font: inherit; color: inherit; }
@@ -32,6 +34,9 @@
 .pp-head h1 { font: 650 46px/1.05 var(--pp-serif); letter-spacing: -.02em; margin: 0; overflow-wrap: anywhere; }
 .pp-full { margin: 4px 0 0; font: 18px/1.4 var(--pp-serif); color: var(--pp-ink-2); }
 .pp-facts { margin: 12px 0 0; font: 17px/1.55 var(--pp-serif); color: var(--pp-ink-2); max-width: 75ch; }
+.pp-own { margin: 6px 0 0; font-size: 15px; color: var(--pp-ink); display: flex; align-items: baseline; gap: 8px; }
+.pp-own .pi { color: #9A6B00; font-size: 12px; }
+@media (prefers-color-scheme: dark) { .pp-own .pi { color: #E2B84E; } }
 .pp-desc { margin: 12px 0 0; font: 16px/1.6 var(--pp-serif); max-width: 70ch; }
 .pp-desc p { margin: 0 0 8px; }
 .pp-links { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 14.5px; }
@@ -99,6 +104,8 @@
 
 /* the site places and sizes the admin SpeedDial only under the current pages' classes */
 .pp .fixed-dial { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; }
+/* the current publisher page keeps PrimeReact's 4rem button (the site makes it 3rem only on person and work pages) */
+.pp .fixed-dial .p-speeddial-button { width: 4rem; height: 4rem; }
 
 @media (max-width: 899px) {
     .pp-top { grid-template-columns: minmax(0, 1fr); }

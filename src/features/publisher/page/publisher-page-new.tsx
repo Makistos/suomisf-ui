@@ -32,6 +32,8 @@ interface Summary {
     magazines: { id: number; name: string; type: string | null; issues: number; first_year: number | null; last_year: number | null }[];
     /** Distinct works in each genre, most first (owner, 2026-11-27: works, not editions). */
     genres: { abbr: string; name: string; works: number }[];
+    /** The logged-in reader's own printings of this publisher; null for a visitor. */
+    own: { editions: number; wishlisted: number } | null;
 }
 interface EditionsPage { total: number; page: number; rows: number; editions: EditionRow[] }
 
@@ -164,6 +166,15 @@ export const PublisherPageNew = () => {
                 <h1>{s?.name ?? "Kustantaja"}</h1>
                 {s && s.fullname && s.fullname.toLocaleLowerCase("fi") !== s.name.toLocaleLowerCase("fi") && <p className="pp-full">{s.fullname}</p>}
                 <p className="pp-facts">{s ? factsLine(s) : "Haetaan…"}</p>
+                {/* how many of them the reader owns (owner, 2026-11-27); nothing when none */}
+                {s?.own && (s.own.editions > 0 || s.own.wishlisted > 0) && (
+                    <p className="pp-own">
+                        <i className="pi pi-star-fill" aria-hidden="true" />
+                        {[s.own.editions > 0 && `Omistat ${plural(s.own.editions, "tämän kustantajan painoksen", "tämän kustantajan painosta")}`,
+                            s.own.wishlisted > 0 && `${s.own.editions > 0 ? "muistilistallasi" : "Muistilistallasi"} ${plural(s.own.wishlisted, "painos", "painosta")}`,
+                        ].filter(Boolean).join("; ")}.
+                    </p>
+                )}
                 {s?.description && <div className="pp-desc" dangerouslySetInnerHTML={safeHtml(s.description)} />}
                 {s && s.links.length > 0 && (
                     <ul className="pp-links" aria-label="Linkit">

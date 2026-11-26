@@ -14,8 +14,10 @@
     }
     .er .er-mark:not(.er-wish) { color: #E2B84E; }
 }
-.er a { color: var(--er-blue); text-decoration: none; }
-.er a:hover { text-decoration: underline; text-underline-offset: 3px; }
+/* The admin SpeedDial's links keep the theme's look (:where adds no specificity): a plain `a` rule turned its icons link-blue.
+   src/components/identity-css.test.ts checks this in every identity stylesheet. */
+.er a:where(:not(.p-speeddial-action)) { color: var(--er-blue); text-decoration: none; }
+.er a:where(:not(.p-speeddial-action)):hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .er-year { font: 600 19px/1.3 var(--er-serif); color: var(--er-ink); margin: 22px 0 2px; padding-bottom: 3px; border-bottom: 1px solid var(--er-rule-2);
     font-variant-numeric: tabular-nums; }

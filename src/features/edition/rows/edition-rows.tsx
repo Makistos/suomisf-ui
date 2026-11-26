@@ -30,8 +30,9 @@ const Mark = ({ e }: { e: EditionRow }) => (
 );
 
 /**
- * One printing, as the old edition lines read but linked (owner, 2026-11-26):
- * "Isaac Asimov: Säätiö (Foundation, 1951). 2. painos. Suom. Tuulikki Lahti. Sci-fi -sarja 12." and genres on the right.
+ * One printing, as the old edition lines read but linked (owner, 2026-11-26), with the work's book series as in the book index
+ * (2026-11-27): "Ursula K. Le Guin: Maameren velho (A Wizard of Earthsea, 1968). Maameren tarinat 1. Suom. Kristiina Rikman."
+ * and genres on the right.
  */
 const Row = ({ e, showYear }: { e: EditionRow; showYear: boolean }) => {
     const w = e.work;
@@ -51,6 +52,12 @@ const Row = ({ e, showYear }: { e: EditionRow; showYear: boolean }) => {
                 {w && isForeign(e) && <span className="er-orig"> (<i>{w.orig_title}</i>{w.pubyear ? `, ${w.pubyear}` : ""})</span>}
                 {". "}
                 {note && <span className="er-note">{note}. </span>}
+                {w?.bookseries && (
+                    <span className="er-bser">
+                        {w.bookseries.partof && <><Link to={`/bookseries/${w.bookseries.partof.id}`}>{w.bookseries.partof.name}</Link> › </>}
+                        <Link to={`/bookseries/${w.bookseries.id}`}>{w.bookseries.name}</Link>{w.bookseriesnum ? ` ${w.bookseriesnum}` : ""}.{" "}
+                    </span>
+                )}
                 {e.translators.length > 0 && <span className="er-tr">Suom. <People people={e.translators} sep=", " />. </span>}
                 {e.pubseries && <span className="er-ser"><Link to={`/pubseries/${e.pubseries.id}`}>{e.pubseries.name}</Link>{e.pubseriesnum ? ` ${e.pubseriesnum}` : ""}. </span>}
                 {showYear && <span className="er-y">{e.pubyear ?? "?"}.</span>}

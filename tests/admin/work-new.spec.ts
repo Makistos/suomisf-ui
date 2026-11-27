@@ -330,6 +330,109 @@ test('the header cover shows whole, in its own proportions (#92)', async ({ admi
     }
 });
 
+// #91: the old page's cover menu and a per-printing cover dialog. Uploads and deletes are intercepted: other specs read
+// the same test database's covers in parallel.
+type Img = { id: number; image_src: string };
+type Ed = { id: number; editionnum: number; version: number | null; images: Img[] };
+// a 1×1 PNG: prepareCoverUpload turns it into a JPEG like a real cover
+const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
+
+async function coverSetup(page: Page) {
+    await page.addInitScript(() => {
+        Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (t: string) => { (window as unknown as { copied: string }).copied = t; } } });
+    });
+    const calls: { method: string; url: string }[] = [];
+    await page.route(/\/api\/editions\/\d+\/images(\/\d+)?$/, async route => {
+        calls.push({ method: route.request().method(), url: new URL(route.request().url()).pathname });
+        await route.fulfill({ status: 200, json: { response: 'ok' } });
+    });
+    return calls;
+}
+const workData = (page: Page) => page.waitForResponse(r => /\/api\/works\/3984$/.test(new URL(r.url()).pathname) && r.status() === 200);
+
+test('right-clicking the header cover gives the old page\'s menu: Lisää kuva, Poista kuva, Kopioi osoite (#91)', async ({ adminPage: page }) => {
+    const calls = await coverSetup(page);
+    const response = workData(page);
+    await openNew(page, `/works/${LE_GUIN}`);
+    const editions: Ed[] = (await (await response).json()).editions;
+    const first = editions.find(e => e.editionnum === 1 && (e.version ?? 1) === 1)!;
+    const cover = page.locator('.wn-coverbox .wn-cover').first();
+    await cover.click({ button: 'right' });
+    const menu = page.locator('.wn-covermenu');
+    await expect(menu.getByRole('menuitem')).toHaveText(['Lisää kuva', 'Poista kuva', 'Kopioi osoite']);
+    await menu.getByRole('menuitem', { name: 'Kopioi osoite' }).click();
+    await expect.poll(() => page.evaluate(() => (window as unknown as { copied?: string }).copied)).toContain(first.images[0].image_src);
+    await cover.click({ button: 'right' });
+    await menu.getByRole('menuitem', { name: 'Poista kuva' }).click();
+    await page.locator('.p-confirm-dialog').getByRole('button', { name: 'Poista' }).click();
+    await expect.poll(() => calls.find(c => c.method === 'DELETE')?.url).toBe(`/api/editions/${first.id}/images/${first.images[0].id}`);
+    await cover.click({ button: 'right' });
+    const chooser = page.waitForEvent('filechooser');
+    await menu.getByRole('menuitem', { name: 'Lisää kuva' }).click();
+    await (await chooser).setFiles({ name: 'kansi.png', mimeType: 'image/png', buffer: PNG });
+    await expect.poll(() => calls.find(c => c.method === 'POST')?.url).toBe(`/api/editions/${first.id}/images`);
+    await expect(page.getByText('Kuva lisätty')).toBeVisible();
+});
+
+test('a merged row\'s thumbnail menu has no Lisää kuva; the gallery\'s cover has the menu above it (#91)', async ({ adminPage: page }) => {
+    await coverSetup(page);
+    await openNew(page, `/works/${TOLKIEN}`);
+    const merged = page.locator('.wn-version').first().locator('tbody tr:not(.wn-sub)').first();
+    await merged.locator('td.c-th button').click({ button: 'right' });
+    const menu = page.locator('.wn-covermenu');
+    await expect(menu.getByRole('menuitem')).toHaveText(['Poista kuva', 'Kopioi osoite']);
+    await page.keyboard.press('Escape');
+    await merged.locator('td.c-th button').click();
+    const shown = page.locator('.wn-gallery-img').first();
+    await expect(shown).toBeVisible();
+    await shown.click({ button: 'right' });
+    await expect(menu).toBeVisible();
+    // above the full-screen gallery, not behind it
+    const [menuZ, galleryZ] = await page.evaluate(() => [
+        Number(getComputedStyle(document.querySelector('.wn-covermenu')!).zIndex),
+        Number(getComputedStyle(document.querySelector('.p-galleria-mask')!).zIndex),
+    ]);
+    expect(menuZ).toBeGreaterThan(galleryZ);
+    await expect(menu.getByRole('menuitem', { name: 'Lisää kuva' })).toBeVisible();
+});
+
+test('Kansikuvat on a printing row adds a cover to a printing without one, and lists and deletes covers (#91)', async ({ adminPage: page }) => {
+    const calls = await coverSetup(page);
+    const response = workData(page);
+    // every printing on its own row ("Kaikki"): Le Guin's three are one laitos row by default
+    await openNew(page, `/works/${LE_GUIN}?ryhmittely=kaikki`);
+    const editions: Ed[] = (await (await response).json()).editions;
+    const bare = editions.find(e => e.images.length === 0)!;
+    const withCover = editions.find(e => e.images.length > 0)!;
+    const row = page.locator(`#painos-${bare.id}`);
+    // admin icons at full width, the ⋯ menu when narrow: either way an action with the printing's label
+    const action = row.getByRole('button', { name: /^Kansikuvat: / });
+    if (await action.isVisible()) await action.click();
+    else {
+        await row.locator('.wn-kebab').click();
+        await page.getByRole('menuitem', { name: 'Kansikuvat' }).click();
+    }
+    const dialog = page.getByRole('dialog', { name: /^Kansikuvat/ });
+    await expect(dialog).toContainText('Painoksella ei ole kansikuvaa.');
+    const chooser = page.waitForEvent('filechooser');
+    await dialog.getByRole('button', { name: 'Lisää kuva' }).click();
+    await (await chooser).setFiles([{ name: 'a.png', mimeType: 'image/png', buffer: PNG }, { name: 'b.png', mimeType: 'image/png', buffer: PNG }]);
+    // several at once
+    await expect.poll(() => calls.filter(c => c.method === 'POST' && c.url === `/api/editions/${bare.id}/images`).length).toBe(2);
+    await dialog.getByRole('button', { name: /close|sulje/i }).first().click();
+    const other = page.locator(`#painos-${withCover.id}`);
+    const otherAction = other.getByRole('button', { name: /^Kansikuvat: / });
+    if (await otherAction.isVisible()) await otherAction.click();
+    else {
+        await other.locator('.wn-kebab').click();
+        await page.getByRole('menuitem', { name: 'Kansikuvat' }).click();
+    }
+    await expect(dialog.locator('li')).toHaveCount(withCover.images.length);
+    await dialog.getByRole('button', { name: 'Poista' }).first().click();
+    await page.locator('.p-confirm-dialog').getByRole('button', { name: 'Poista' }).click();
+    await expect.poll(() => calls.find(c => c.method === 'DELETE')?.url).toBe(`/api/editions/${withCover.id}/images/${withCover.images[0].id}`);
+});
+
 test('a merged row says only what its printings share: other title in bold, publisher, translators, binding and jackets (Hobitti)', async ({ adminPage: page }) => {
     await openNew(page, '/works/1505');
     const merged = page.locator('.wn-version').nth(1).locator('tbody tr:not(.wn-sub)').first();

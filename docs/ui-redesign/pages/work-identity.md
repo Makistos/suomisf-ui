@@ -340,6 +340,12 @@ before; it now checks Le Guin too.
   covers, and a merged row holds several printings (Tolkien's first laitos row: 17 printings, 18 covers). The count is shown on the thumbnail.
   A row with one cover keeps the plain full-size view. When a merged row is opened, each printing's row shows its own cover (owner,
   2026-11-26), and the merged row keeps the gallery of them all.
+- **Cover tools (#91, owner 2026-11-28):** the old page's right-click menu on the header cover, the printing rows' thumbnails and the
+  gallery's cover: *Lisää kuva* and *Poista kuva* (with a confirmation) for admins, *Kopioi osoite* for everyone; on a merged row's
+  thumbnail no *Lisää kuva* (a new cover needs one printing). For touch screens and printings without a cover, admins get *Kansikuvat*
+  among each printing row's admin icons (and in ⋯): a dialog with the printing's covers, each with *Kopioi osoite* and *Poista*, and
+  *Lisää kuva* for one or more files. `src/features/work/new/cover-tools.tsx`; the old page's upload and delete calls.
+- **The header cover whole (#92, 2026-11-28):** in its own proportions; a 2:3 box with `object-fit: cover` cut other shapes.
 - **Linked names (owner, 2026-11-26):** translators, cover artists ("Kansi") and illustrators ("Kuvitus") in the edition rows link to
   their person pages, as on the old rows; the notes keep the old order (other title, cover, illustration, then the rest).
 - **Merged rows say only what their printings share (owner, 2026-11-26):** another title in bold (no "Nimellä"), publishers and

@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, MouseEvent, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "primereact/button";
@@ -19,6 +19,7 @@ import { EditionShortsPicker } from "@features/short/components/shorts-picker";
 import { User } from "@features/user";
 import { deleteApiContent, postApiContent } from "@services/user-service";
 import { Work } from "../types";
+import type { CoverTools } from "./cover-tools";
 import { CoverItem, editionLabel, Laitos, mergeGroupForRow, ownershipSummary, publisherLines, workCovers } from "../utils/work-facts";
 
 const imageUrl = (src: string) => (src.startsWith("http") ? src : `${import.meta.env.VITE_IMAGE_URL}${src}`);
@@ -27,7 +28,7 @@ const nlLink = (isbn: string) => "https://kansalliskirjasto.finna.fi/Search/Resu
     + encodeURIComponent(isbn) + "&type=AllFields";
 const QUALITY: Record<string, string> = { Perfect: "Täydellinen", Good: "Hyvä", Decent: "Kohtalainen", Poor: "Heikko" };
 
-type Action = "edit" | "copy" | "delete" | "prices" | "stories";
+type Action = "edit" | "copy" | "delete" | "prices" | "stories" | "covers";
 
 interface Props {
     work: Work;
@@ -42,6 +43,8 @@ interface Props {
     onToggle: (firstId: number) => void;
     /** Opens the page's gallery on a row's covers: a printing can have several, and a row can hold several printings. */
     onGallery: (covers: CoverItem[]) => void;
+    /** The cover menu (right-click) and the per-printing cover dialog (#91). */
+    coverTools?: CoverTools;
 }
 
 type Person = { id: number; name: string; alt_name: string };
@@ -70,7 +73,7 @@ const OtherOwners = ({ edition, user }: { edition: Edition; user: User }) => {
 };
 
 /** The editions in tables, one per laitos, with the agreed columns and width bands (work.md section 5). */
-export const EditionTable = ({ work, laitos, user, admin, ownership, prices, picked, open, onToggle, onGallery }: Props) => {
+export const EditionTable = ({ work, laitos, user, admin, ownership, prices, picked, open, onToggle, onGallery, coverTools }: Props) => {
     const queryClient = useQueryClient();
     const toast = useRef<Toast>(null);
     const menu = useRef<Menu>(null);
@@ -86,6 +89,7 @@ export const EditionTable = ({ work, laitos, user, admin, ownership, prices, pic
     const wished = new Set(editions.filter(e => user && e.wishlisted?.some(w => Number(w.id) === Number(user.id))).map(e => e.id));
 
     const run = (action: Action, edition: Edition, target?: HTMLElement) => {
+        if (action === "covers") { coverTools?.openDialog(edition); return; }
         if (action === "edit" || action === "prices" || action === "stories") { setDialog({ action, edition }); return; }
         if (action === "copy") {
             postApiContent(`editions/${edition.id}/copy`, {}, user).then(r => {
@@ -108,6 +112,8 @@ export const EditionTable = ({ work, laitos, user, admin, ownership, prices, pic
     const actions = (e: Edition): [Action, string, string][] => [
         ["edit", "pi pi-pencil", "Muokkaa"], ["copy", "pi pi-copy", "Kopioi painos"], ["delete", "pi pi-trash", "Poista"],
         ["prices", "pi pi-euro", "Hinnat"],
+        // add, delete and copy covers on touch screens and for a printing without one (#91)
+        ...(coverTools ? [["covers", "pi pi-image", "Kansikuvat"] as [Action, string, string]] : []),
         ...(collection ? [["stories", "fa fa-list-ul", "Novellit ja artikkelit"] as [Action, string, string]] : []),
     ].map(([a, icon, label]) => [a, icon, `${label}: ${editionLabel(e)}`] as [Action, string, string]);
 
@@ -168,16 +174,20 @@ export const EditionTable = ({ work, laitos, user, admin, ownership, prices, pic
                         {/* A row's own covers: a merged row's are all its printings', an opened printing's only its own. */}
                         {r.cover && (() => {
                             const covers = workCovers(group);
+                            // the old page's cover menu: a merged row's thumbnail belongs to one of its printings,
+                            // and a new cover needs one printing, so "Lisää kuva" only on a printing's own row
+                            const coverOf = group.find(e => e.images?.some(i => i.id === r.cover!.id));
+                            const onMenu = (ev: MouseEvent) => coverTools?.openMenu(ev, { image: r.cover!, imageEdition: coverOf?.id, addTo: many ? undefined : first.id });
                             const thumb = <img src={imageUrl(r.cover.thumb_src ?? r.cover.image_src)} alt={`Kansikuva: ${r.label}`} loading="lazy" />;
                             // Several covers in the row: a gallery of them all; one cover: the original at full size.
                             return covers.length > 1 ? (
                                 <button type="button" className="wn-th-btn" aria-label={`Näytä rivin kannet (${covers.length}): ${r.label}`}
-                                    onClick={() => onGallery(covers)}>
+                                    onClick={() => onGallery(covers)} onContextMenu={onMenu}>
                                     {thumb}<span className="wn-th-n" aria-hidden="true">{covers.length}</span>
                                 </button>
                             ) : (
                                 <Image src={imageUrl(r.cover.thumb_src ?? r.cover.image_src)} zoomSrc={imageUrl(r.cover.image_src)}
-                                    alt={`Kansikuva: ${r.label}`} preview loading="lazy" />
+                                    alt={`Kansikuva: ${r.label}`} preview loading="lazy" onContextMenu={onMenu} />
                             );
                         })()}
                     </td>

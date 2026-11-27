@@ -37,6 +37,7 @@ import { readViewState, rememberViewState, withViewState, WorkViewState } from "
 import { EditionTable } from "./edition-table";
 import { CoverGallery, type CoverGalleryHandle } from "./cover-gallery";
 import { CoverPicker } from "./cover-picker";
+import { useCoverTools } from "./cover-tools";
 import { WorkAdminTools } from "./work-admin-tools";
 
 const storage = () => {
@@ -164,6 +165,8 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
     });
 
     useEffect(() => { if (work) document.title = work.title; }, [work]);
+    // the old page's cover menu and a per-printing cover dialog (#91)
+    const coverTools = useCoverTools({ workId, admin, editions: work?.editions ?? [] });
 
     if (resolveError) return <LoadError error={resolveError} notFoundTitle="Painosta ei löytynyt" onRetry={() => refetchWorkId()} />;
     if (error) return <LoadError error={error} notFoundTitle="Teosta ei löytynyt" onRetry={() => refetch()} />;
@@ -248,11 +251,13 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
                             {covers.length > 1 ? (
                                 // Several covers: the cover opens the gallery at itself.
                                 <button type="button" className="wn-cover wn-cover-btn" onClick={() => gallery.current?.open(covers, main)}
+                                    onContextMenu={e => coverTools.openMenu(e, { image: cover, imageEdition: coverEdition?.id, addTo: coverEdition?.id })}
                                     aria-label={`Näytä kaikki kannet (${covers.length}), alkaen: ${covers[main].caption}`}>
                                     <img src={imageUrl(cover.image_src)} alt={`Kansikuva: ${work.title}`} />
                                 </button>
                             ) : (
-                                <Image className="wn-cover" src={imageUrl(cover.image_src)} alt={`Kansikuva: ${work.title}`} preview />
+                                <Image className="wn-cover" src={imageUrl(cover.image_src)} alt={`Kansikuva: ${work.title}`} preview
+                                    onContextMenu={e => coverTools.openMenu(e, { image: cover, imageEdition: coverEdition?.id, addTo: coverEdition?.id })} />
                             )}
                             <div className="wn-cover-note">
                                 {coverNote}
@@ -424,7 +429,7 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
                     ) : (
                         <EditionTable work={work} laitos={laitos} user={user} admin={admin} ownership={ownership} prices={prices}
                             picked={picked} open={open} onToggle={toggle}
-                            onGallery={covers => gallery.current?.open(covers, 0)} />
+                            onGallery={covers => gallery.current?.open(covers, 0)} coverTools={coverTools} />
                     )}
                 </section>
             )}
@@ -439,7 +444,8 @@ export const WorkPageNew = ({ id }: { id?: string | null }) => {
             <Dialog header="Palkinnot" visible={awardsVisible} onHide={() => setAwardsVisible(false)} className="w-full lg:w-6" blockScroll>
                 {awardsVisible && <AwardList awards={work.awards} />}
             </Dialog>
-            {covers.length > 0 && <CoverGallery ref={gallery} initial={covers} />}
+            {coverTools.element}
+            {covers.length > 0 && <CoverGallery ref={gallery} initial={covers} onCoverMenu={coverTools.openMenu} />}
             {admin && covers.length > 1 && (
                 <CoverPicker workId={work.id} covers={covers} chosen={work.cover_image_id ?? null} user={user}
                     visible={pickerVisible} onHide={() => setPickerVisible(false)}

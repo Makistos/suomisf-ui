@@ -278,3 +278,9 @@ table.wn-et { width: 100%; border-collapse: collapse; table-layout: fixed; font-
     .wn-pick button[aria-pressed="true"] { border-color: #A3B3FF; box-shadow: 0 0 0 2px #A3B3FF; }
     .wn-pick-error { color: #F2B8B5; }
 }
+
+/* the per-printing cover dialog (#91); outside .wn, like the gallery */
+.wn-covers-dlg ul { list-style: none; margin: 0 0 14px; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
+.wn-covers-dlg li { display: flex; flex-direction: column; gap: 4px; }
+.wn-covers-dlg img { width: 100%; aspect-ratio: 2 / 3; object-fit: contain; background: #0001; }
+.wn-covers-dlg li span { display: flex; flex-wrap: wrap; }

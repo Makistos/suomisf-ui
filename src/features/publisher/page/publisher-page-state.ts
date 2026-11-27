@@ -19,6 +19,8 @@ export interface PageState {
     suunta: Direction;
     /** Only first editions: laitos 1 and printing 1 (owner, #89). */
     ensipainokset: boolean;
+    /** One genre's abbreviation, picked in the Genret breakdown (owner, #90); "" for all. */
+    genre: string;
 }
 
 export const ORDERS: { value: Order; label: string; api: string }[] = [
@@ -57,11 +59,12 @@ export const parsePageState = (p: URLSearchParams): PageState => {
         sarjat,
         suunta: dir === "nouseva" || dir === "laskeva" ? dir : SERIES_DIRECTION[sarjat],
         ensipainokset: p.get("ensipainokset") === "1",
+        genre: p.get("genre")?.trim() ?? "",
     };
 };
 
 /** These change which printings are on page 1, so changing one goes back to it. */
-const RESETS: (keyof PageState)[] = ["haku", "vuodet", "jarjestys", "riveja", "ensipainokset"];
+const RESETS: (keyof PageState)[] = ["haku", "vuodet", "jarjestys", "riveja", "ensipainokset", "genre"];
 
 /** A copy of the params with the changes; defaults are left out. */
 export const withPageState = (params: URLSearchParams, changes: Partial<PageState>) => {
@@ -73,6 +76,7 @@ export const withPageState = (params: URLSearchParams, changes: Partial<PageStat
     set("valilehti", s.valilehti === "painokset" ? "" : s.valilehti);
     set("sivu", s.sivu > 1 ? String(s.sivu) : "");
     set("haku", s.haku);
+    set("genre", s.genre);
     set("ensipainokset", s.ensipainokset ? "1" : "");
     set("vuodet", s.vuodet && (s.vuodet.from !== null || s.vuodet.to !== null) ? `${s.vuodet.from ?? ""}-${s.vuodet.to ?? ""}` : "");
     set("jarjestys", s.jarjestys === "vanhin" ? "" : s.jarjestys);
@@ -87,6 +91,7 @@ export const withPageState = (params: URLSearchParams, changes: Partial<PageStat
 export const apiQuery = (s: PageState) => {
     const q = new URLSearchParams();
     if (s.haku) q.set("q", s.haku);
+    if (s.genre) q.set("genre", s.genre);
     if (s.ensipainokset) q.set("first", "1");
     if (s.vuodet?.from != null) q.set("year_min", String(s.vuodet.from));
     if (s.vuodet?.to != null) q.set("year_max", String(s.vuodet.to));

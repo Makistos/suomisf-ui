@@ -122,7 +122,8 @@ export const PublisherPageNew = () => {
     };
     const page = editions.data;
     const pages = page ? Math.max(1, Math.ceil(page.total / page.rows)) : 1;
-    const filtered = !!state.haku || !!state.vuodet || state.ensipainokset;
+    const filtered = !!state.haku || !!state.vuodet || state.ensipainokset || !!state.genre;
+    const pickedGenre = s?.genres.find(g => g.abbr === state.genre);
     const goTo = (sivu: number) => {
         update({ sivu });
         document.getElementById("pp-count")?.scrollIntoView({ block: "start" });
@@ -186,14 +187,17 @@ export const PublisherPageNew = () => {
                 <aside className="pp-genres" aria-labelledby="pp-genres-h">
                     <h2 id="pp-genres-h">Genret</h2>
                     <p className="pp-gnote">Teoksia; teoksella voi olla useampi genre.</p>
-                    {(allGenres ? s.genres : s.genres.slice(0, GENRES_SHOWN)).map(g => (
-                        <div className="pp-gbar" key={g.abbr}>
+                    {/* a click filters the printings to the genre, a second click clears it; one at a time (owner, #90) */}
+                    {(allGenres ? s.genres : s.genres.filter((g, i) => i < GENRES_SHOWN || g.abbr === state.genre)).map(g => (
+                        <button type="button" className="pp-gbar" key={g.abbr} aria-pressed={state.genre === g.abbr}
+                            title={state.genre === g.abbr ? "Poista genrerajaus" : `Näytä vain: ${g.name}`}
+                            onClick={() => update({ genre: state.genre === g.abbr ? "" : g.abbr, valilehti: "painokset" })}>
                             <span>{g.name}</span>
                             <span className="pp-track" aria-hidden="true">
                                 <i style={{ width: `${(g.works / s.genres[0].works) * 100}%`, background: getGenreColors([g.abbr])[0] ?? "#6C757D" }} />
                             </span>
                             <b>{n(g.works)}</b>
-                        </div>
+                        </button>
                     ))}
                     {s.genres.length > GENRES_SHOWN && (
                         <button type="button" className="pp-link pp-gmore" aria-expanded={allGenres} onClick={() => setAllGenres(!allGenres)}>
@@ -238,14 +242,14 @@ export const PublisherPageNew = () => {
                                         <input type="checkbox" checked={state.ensipainokset} onChange={e => update({ ensipainokset: e.target.checked })} />
                                         Vain ensipainokset
                                     </label>
-                                    {filtered && <button type="button" className="pp-link" onClick={() => update({ haku: "", vuodet: null, ensipainokset: false })}>Tyhjennä</button>}
+                                    {filtered && <button type="button" className="pp-link" onClick={() => update({ haku: "", vuodet: null, ensipainokset: false, genre: "" })}>Tyhjennä</button>}
                                 </form>
                             )}
                             <div className="pp-rhead">
                                 <p id="pp-count" role="status">
                                     {/* the previous page stays on screen while the next loads, but its count isn't this one's */}
                                     {page && !editions.isPlaceholderData
-                                        ? (filtered ? <><b>{plural(page.total, "painos", "painosta")}</b> / {n(s.editions)}</> : <b>{plural(page.total, "painos", "painosta")}</b>)
+                                        ? (filtered ? <><b>{plural(page.total, "painos", "painosta")}</b> / {n(s.editions)}{pickedGenre && <span className="pp-fgenre"> · {pickedGenre.name}</span>}</> : <b>{plural(page.total, "painos", "painosta")}</b>)
                                         : s.editions === 0 ? "" : "Haetaan…"}
                                 </p>
                                 {/* above the list and for what the filters select (owner, 2026-11-27); hidden while a new result loads */}
@@ -269,7 +273,7 @@ export const PublisherPageNew = () => {
                                 <div className="pp-err" role="alert">Painoksia ei saatu haettua.<button type="button" onClick={() => editions.refetch()}>Yritä uudelleen</button></div>
                             ) : page && page.total === 0 ? (
                                 <p className="pp-empty">
-                                    {filtered ? <>Rajauksilla ei löytynyt painoksia. <button type="button" className="pp-link" onClick={() => update({ haku: "", vuodet: null, ensipainokset: false })}>Tyhjennä rajaukset</button></>
+                                    {filtered ? <>Rajauksilla ei löytynyt painoksia. <button type="button" className="pp-link" onClick={() => update({ haku: "", vuodet: null, ensipainokset: false, genre: "" })}>Tyhjennä rajaukset</button></>
                                         : "Kustantajalta ei ole luetteloitu painoksia."}
                                 </p>
                             ) : page && (

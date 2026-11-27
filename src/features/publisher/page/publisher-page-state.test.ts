@@ -9,14 +9,14 @@ describe("parsePageState", () => {
         expect(parse("valilehti=sarjat&haku=le+guin&vuodet=1970-1979&jarjestys=uusin&sivu=3&riveja=200&nakyma=kannet&sarjat=painoksia&suunta=nouseva"))
             .toEqual({
                 valilehti: "sarjat", haku: "le guin", vuodet: { from: 1970, to: 1979 }, jarjestys: "uusin", sivu: 3, riveja: 200,
-                kannet: true, sarjat: "painoksia", suunta: "nouseva", ensipainokset: false,
+                kannet: true, sarjat: "painoksia", suunta: "nouseva", ensipainokset: false, genre: "",
             });
     });
 
     it("falls back to the defaults: printings, oldest first, 100 a page, list, series by name", () => {
         expect(parse("valilehti=x&jarjestys=y&sivu=0&riveja=7&vuodet=abc&sarjat=z")).toEqual({
             valilehti: "painokset", haku: "", vuodet: null, jarjestys: "vanhin", sivu: 1, riveja: 100, kannet: false, sarjat: "nimi", suunta: "nouseva",
-            ensipainokset: false,
+            ensipainokset: false, genre: "",
         });
         expect(parse("sarjat=painoksia").suunta).toBe("laskeva");
     });
@@ -42,6 +42,15 @@ describe("first editions only (#89)", () => {
         expect(withPageState(new URLSearchParams("sivu=3"), { ensipainokset: true }).toString()).toBe("ensipainokset=1");
         expect(withPageState(new URLSearchParams("ensipainokset=1"), { ensipainokset: false }).toString()).toBe("");
         expect(apiQuery(parse("ensipainokset=1"))).toBe("first=1&sort=oldest&page=1&rows=100");
+    });
+});
+
+describe("one genre (#90)", () => {
+    it("is genre=SF in the URL, goes back to page 1, and asks the API for it", () => {
+        expect(parse("genre=SF").genre).toBe("SF");
+        expect(withPageState(new URLSearchParams("sivu=3"), { genre: "SF" }).toString()).toBe("genre=SF");
+        expect(withPageState(new URLSearchParams("genre=SF"), { genre: "" }).toString()).toBe("");
+        expect(apiQuery(parse("genre=nF&ensipainokset=1"))).toBe("genre=nF&first=1&sort=oldest&page=1&rows=100");
     });
 });
 

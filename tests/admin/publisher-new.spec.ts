@@ -149,6 +149,37 @@ test('a printing row reads as the old line, linked: author, title, original, lab
     await expect(page.locator('.er-year')).toContainText('1976');
 });
 
+test('a genre in Genret filters the printings, one at a time; a second click or Tyhjennä clears it (#90)', async ({ adminPage: page }) => {
+    const s = await openNew(page, `/publishers/${WSOY}?valilehti=sarjat`);
+    const genres = page.getByRole('complementary', { name: 'Genret' });
+    const sf = genres.getByRole('button', { name: /^Science Fiction/ });
+    await expect(sf).toHaveAttribute('aria-pressed', 'false');
+    // from another tab too: picking a genre shows the printings
+    const response = page.waitForResponse(r => r.url().includes('/api/publishers/387/editions') && r.url().includes('genre=SF'));
+    await sf.click();
+    const data: { total: number } = await (await response).json();
+    await expect(page).toHaveURL(/genre=SF/);
+    await expect(page).not.toHaveURL(/valilehti/);
+    await expect(sf).toHaveAttribute('aria-pressed', 'true');
+    await expect(count(page)).toHaveText(`${fi(data.total)} painosta / ${fi(s.editions)} · Science Fiction`);
+    for (const g of await page.locator('.er-genres').allInnerTexts()) expect(g).toContain('Science Fiction');
+    // one at a time: another genre replaces it
+    await genres.getByRole('button', { name: /^Fantasia/ }).click();
+    await expect(page).toHaveURL(/genre=F(&|$)/);
+    await expect(sf).toHaveAttribute('aria-pressed', 'false');
+    await genres.getByRole('button', { name: /^Fantasia/ }).click();
+    await expect(page).not.toHaveURL(/genre=/);
+    // a genre beyond the six shown stays visible while picked
+    const last = s.genres[s.genres.length - 1];
+    await genres.getByRole('button', { name: `${s.genres.length} genreä kaikkiaan` }).click();
+    await genres.getByRole('button', { name: new RegExp(`^${last.name}`) }).click();
+    await genres.getByRole('button', { name: 'Näytä vähemmän' }).click();
+    await expect(genres.getByRole('button', { name: new RegExp(`^${last.name}`) })).toHaveAttribute('aria-pressed', 'true');
+    await page.getByRole('button', { name: 'Tyhjennä', exact: true }).click();
+    await expect(page).not.toHaveURL(/genre=/);
+    await expect(genres.locator('[aria-pressed="true"]')).toHaveCount(0);
+});
+
 test('"Vain ensipainokset" leaves only first editions, at once and in the URL (#89)', async ({ adminPage: page }) => {
     await openNew(page, `/publishers/${WSOY}?vuodet=1976-1976`);
     await loaded(page);

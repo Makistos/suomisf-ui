@@ -40,7 +40,8 @@
 /* several covers: the cover is a button that opens the gallery */
 .wn button.wn-cover-btn { border: 0; padding: 0; background: none; cursor: zoom-in; }
 .wn-pick-open { display: block; margin-top: 6px; font-size: 13.5px !important; }
-.wn-cover img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; display: block; border-radius: 2px; background: var(--wn-rule);
+/* the whole cover in its own proportions: a fixed 2:3 box with object-fit: cover cut other shapes at the top and bottom (#92) */
+.wn-cover img { width: 100%; height: auto; display: block; border-radius: 2px; background: var(--wn-rule);
     box-shadow: 0 1px 0 rgba(0, 0, 0, .06), 0 14px 26px -14px rgba(20, 22, 35, .55); }
 .wn-cover-note { font-size: 13px; color: var(--wn-ink-3); margin-top: 10px; line-height: 1.35; }
 .wn-byline { font: 500 19px/1.3 var(--wn-serif); margin: 0; }

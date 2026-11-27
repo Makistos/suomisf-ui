@@ -312,6 +312,24 @@ test('a merged row opens into its printings, each with its own controls and one 
     expect(perPrinting).toHaveLength(0);
 });
 
+test('the header cover shows whole, in its own proportions (#92)', async ({ adminPage: page }) => {
+    // it was forced into 2:3 with object-fit: cover, which cut covers of other proportions at the top and bottom
+    // 1498, Tolkien's Herra Bliss: a landscape cover (1.43:1), which the 2:3 box cut to a strip
+    for (const id of [LE_GUIN, TOLKIEN, TUULEN, 1498]) {
+        await openNew(page, `/works/${id}`);
+        const img = page.locator('.wn-cover img').first();
+        await expect(img).toBeVisible();
+        await expect.poll(() => img.evaluate(el => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+        const [shown, natural, fit] = await img.evaluate(el => {
+            const i = el as HTMLImageElement;
+            const r = i.getBoundingClientRect();
+            return [r.width / r.height, i.naturalWidth / i.naturalHeight, getComputedStyle(i).objectFit];
+        });
+        expect(Math.abs((shown as number) - (natural as number))).toBeLessThan(0.02);
+        expect(fit).not.toBe('cover');
+    }
+});
+
 test('a merged row says only what its printings share: other title in bold, publisher, translators, binding and jackets (Hobitti)', async ({ adminPage: page }) => {
     await openNew(page, '/works/1505');
     const merged = page.locator('.wn-version').nth(1).locator('tbody tr:not(.wn-sub)').first();

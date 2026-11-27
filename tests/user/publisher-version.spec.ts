@@ -10,11 +10,11 @@ test('a regular user sees the current publisher page without the switch', async 
     await expect(page.locator('[data-publisher-page="uusi"]')).toHaveCount(0);
 });
 
-// The count of the reader's own printings comes from the summary only for a logged-in user (GET /api/publishers/:id/summary).
-test('the publisher summary gives a logged-in user their own counts', async ({ userPage: page }) => {
+// The count of the reader's own printings comes with the edition list, for its filters, only for a logged-in user.
+test('the publisher\'s edition list gives a logged-in user their own counts', async ({ userPage: page }) => {
     const token = await page.evaluate(() => JSON.parse(localStorage.getItem('user') ?? '{}').access_token);
-    const mine = await page.request.get('http://localhost:5001/api/publishers/387/summary', { headers: { Authorization: `Bearer ${token}` } });
+    const url = 'http://localhost:5001/api/publishers/387/editions?year_min=1976&year_max=1976';
+    const mine = await page.request.get(url, { headers: { Authorization: `Bearer ${token}` } });
     expect((await mine.json()).own).toEqual({ editions: expect.any(Number), wishlisted: expect.any(Number) });
-    const visitor = await page.request.get('http://localhost:5001/api/publishers/387/summary');
-    expect((await visitor.json()).own).toBeNull();
+    expect((await (await page.request.get(url)).json()).own).toBeNull();
 });

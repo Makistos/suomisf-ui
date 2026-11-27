@@ -117,8 +117,9 @@ Admins switch with *Uusi kustantajan sivu* or Shift+U (`suomisf.publisherPageVer
 - **Genret (owner, 2026-11-27):** beside the header, as on the person page: a bar for each genre in its colour with the number of
   **works** (not printings: Hobitti's 28 reprints count once), most first, "Teoksia; teoksella voi olla useampi genre." The six biggest
   show, the rest from "18 genreä kaikkiaan" (WSOY); none for a publisher with one genre. From the summary's `genres`.
-- **The reader's own printings (owner, 2026-11-27):** under the facts line, "★ Omistat 12 tämän kustantajan painosta; muistilistallasi
-  2 painosta." for a logged-in reader who has any (the summary's `own`); nothing for a visitor or a reader with none.
+- **The reader's own printings (owner, 2026-11-27):** above the edition list, under the count, and for what the filters select (every
+  page): "★ Omistat 12 näistä painoksista; muistilistallasi 2." (the edition list's `own`), hidden while a new result loads; nothing for
+  a visitor or a reader with none among them. First placed under the facts line for the whole publisher; the owner moved it.
 - **Book series in the rows (owner, 2026-11-27):** the work's book series, linked, with its number, after the printing label and before
   the translators, as in the book index: "Ursula K. Le Guin: Maameren velho (A Wizard of Earthsea, 1968). Maameren tarinat 1. Suom. …".
 - **URL:** `valilehti=sarjat|lehdet`, `sivu`, `haku`, `vuodet=1970-1979`, `jarjestys=uusin|nimi|tekija`, `riveja=50|200`, `nakyma=kannet`,

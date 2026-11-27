@@ -79,20 +79,31 @@ test('the genre breakdown counts works, most first; a one-genre publisher has no
     await expect(page.getByRole('complementary', { name: 'Genret' })).toHaveCount(0);
 });
 
-test('a reader sees how many of the publisher\'s printings they own; nothing when none', async ({ adminPage: page }) => {
-    let own: { editions: number; wishlisted: number } | null = { editions: 12, wishlisted: 2 };
-    await page.route('**/api/publishers/387/summary', async route => {
+test('above the list, how many of the filtered printings the reader owns; it follows the filters', async ({ adminPage: page }) => {
+    // the counts as the API gives them for the logged-in reader, per filter (injected: the test admin owns none)
+    await page.route('**/api/publishers/387/editions?*', async route => {
+        const url = new URL(route.request().url());
+        // the search keeps the years, so the search is checked first
+        const own = url.searchParams.get('q') === 'zzzz' ? { editions: 0, wishlisted: 0 }
+            : url.searchParams.get('year_min') === '1976' ? { editions: 0, wishlisted: 1 } : { editions: 12, wishlisted: 2 };
         const response = await route.fetch();
         await route.fulfill({ response, json: { ...(await response.json()), own } });
     });
     await openNew(page, `/publishers/${WSOY}`);
-    await expect(page.locator('.pp-own')).toHaveText('Omistat 12 tämän kustantajan painosta; muistilistallasi 2 painosta.');
-    own = { editions: 0, wishlisted: 1 };
-    await openNew(page, `/publishers/${WSOY}`);
-    await expect(page.locator('.pp-own')).toHaveText('Muistilistallasi 1 painos.');
-    own = { editions: 0, wishlisted: 0 };
-    await openNew(page, `/publishers/${WSOY}`);
-    await expect(page.locator('.pp-own')).toHaveCount(0);
+    await loaded(page);
+    const own = page.locator('.pp-rhead .pp-own');
+    await expect(own).toHaveText('Omistat 12 näistä painoksista; muistilistallasi 2.');
+    // not in the header any more, and above the first row
+    await expect(page.locator('.pp-head .pp-own')).toHaveCount(0);
+    expect((await own.boundingBox())!.y).toBeLessThan((await rows(page).first().boundingBox())!.y);
+    await page.getByLabel('Vuodet, vuodesta').fill('1976');
+    await page.getByLabel('Vuodet, vuoteen').fill('1976');
+    await page.getByRole('button', { name: 'Hae' }).click();
+    await expect(own).toHaveText('Muistilistallasi 1 näistä painoksista.');
+    await page.getByLabel('Tekijä tai nimi').fill('zzzz');
+    await page.getByLabel('Tekijä tai nimi').press('Enter');
+    await expect(page.locator('.pp-empty')).toBeVisible();
+    await expect(own).toHaveCount(0);
 });
 
 test('printings come oldest first under year headings, 100 a page, with paging and rows per page', async ({ adminPage: page }) => {

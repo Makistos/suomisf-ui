@@ -34,7 +34,7 @@
 .pp-head h1 { font: 650 46px/1.05 var(--pp-serif); letter-spacing: -.02em; margin: 0; overflow-wrap: anywhere; }
 .pp-full { margin: 4px 0 0; font: 18px/1.4 var(--pp-serif); color: var(--pp-ink-2); }
 .pp-facts { margin: 12px 0 0; font: 17px/1.55 var(--pp-serif); color: var(--pp-ink-2); max-width: 75ch; }
-.pp-own { margin: 6px 0 0; font-size: 15px; color: var(--pp-ink); display: flex; align-items: baseline; gap: 8px; }
+.pp-own { margin: 0; font-size: 15px; color: var(--pp-ink); display: flex; align-items: baseline; gap: 8px; flex-basis: 100%; order: 3; }
 .pp-own .pi { color: #9A6B00; font-size: 12px; }
 @media (prefers-color-scheme: dark) { .pp-own .pi { color: #E2B84E; } }
 .pp-desc { margin: 12px 0 0; font: 16px/1.6 var(--pp-serif); max-width: 70ch; }

@@ -122,7 +122,7 @@ export const PublisherPageNew = () => {
     };
     const page = editions.data;
     const pages = page ? Math.max(1, Math.ceil(page.total / page.rows)) : 1;
-    const filtered = !!state.haku || !!state.vuodet;
+    const filtered = !!state.haku || !!state.vuodet || state.ensipainokset;
     const goTo = (sivu: number) => {
         update({ sivu });
         document.getElementById("pp-count")?.scrollIntoView({ block: "start" });
@@ -233,7 +233,12 @@ export const PublisherPageNew = () => {
                                         </span>
                                     </div>
                                     <button type="submit" className="pp-go">Hae</button>
-                                    {filtered && <button type="button" className="pp-link" onClick={() => update({ haku: "", vuodet: null })}>Tyhjennä</button>}
+                                    {/* applies at once, as a checkbox does (#89) */}
+                                    <label className="pp-check">
+                                        <input type="checkbox" checked={state.ensipainokset} onChange={e => update({ ensipainokset: e.target.checked })} />
+                                        Vain ensipainokset
+                                    </label>
+                                    {filtered && <button type="button" className="pp-link" onClick={() => update({ haku: "", vuodet: null, ensipainokset: false })}>Tyhjennä</button>}
                                 </form>
                             )}
                             <div className="pp-rhead">
@@ -264,7 +269,7 @@ export const PublisherPageNew = () => {
                                 <div className="pp-err" role="alert">Painoksia ei saatu haettua.<button type="button" onClick={() => editions.refetch()}>Yritä uudelleen</button></div>
                             ) : page && page.total === 0 ? (
                                 <p className="pp-empty">
-                                    {filtered ? <>Rajauksilla ei löytynyt painoksia. <button type="button" className="pp-link" onClick={() => update({ haku: "", vuodet: null })}>Tyhjennä rajaukset</button></>
+                                    {filtered ? <>Rajauksilla ei löytynyt painoksia. <button type="button" className="pp-link" onClick={() => update({ haku: "", vuodet: null, ensipainokset: false })}>Tyhjennä rajaukset</button></>
                                         : "Kustantajalta ei ole luetteloitu painoksia."}
                                 </p>
                             ) : page && (

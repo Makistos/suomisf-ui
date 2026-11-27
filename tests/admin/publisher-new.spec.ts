@@ -149,6 +149,29 @@ test('a printing row reads as the old line, linked: author, title, original, lab
     await expect(page.locator('.er-year')).toContainText('1976');
 });
 
+test('"Vain ensipainokset" leaves only first editions, at once and in the URL (#89)', async ({ adminPage: page }) => {
+    await openNew(page, `/publishers/${WSOY}?vuodet=1976-1976`);
+    await loaded(page);
+    const all = await rows(page).count();
+    const response = page.waitForResponse(r => r.url().includes('/api/publishers/387/editions') && r.url().includes('first=1'));
+    const box = page.getByLabel('Vain ensipainokset');
+    // the box follows the URL, which React Router updates a moment after the click
+    await box.click();
+    await expect(box).toBeChecked();
+    const first: { total: number } = await (await response).json();
+    await expect(page).toHaveURL(/ensipainokset=1/);
+    await expect(page).toHaveURL(/vuodet=1976-1976/);
+    await expect(rows(page)).toHaveCount(first.total);
+    expect(first.total).toBeLessThan(all);
+    // laitos 1, printing 1 only: no "2. painos" or "2. laitos" left
+    await expect(page.locator('.er-note')).toHaveCount(0);
+    await expect(rows(page).filter({ hasText: 'Pimeyden vasen käsi' })).toHaveCount(1);
+    await expect(rows(page).filter({ hasText: 'Keskiyön kansaa' })).toHaveCount(0);
+    await page.getByRole('button', { name: 'Tyhjennä', exact: true }).click();
+    await expect(box).not.toBeChecked();
+    await expect(page).not.toHaveURL(/ensipainokset/);
+});
+
 test('the text search finds an author or a title, in the URL; Tyhjennä clears', async ({ adminPage: page }) => {
     const s = await openNew(page, `/publishers/${WSOY}`);
     await loaded(page);

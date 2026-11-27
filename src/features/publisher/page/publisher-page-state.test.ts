@@ -9,13 +9,14 @@ describe("parsePageState", () => {
         expect(parse("valilehti=sarjat&haku=le+guin&vuodet=1970-1979&jarjestys=uusin&sivu=3&riveja=200&nakyma=kannet&sarjat=painoksia&suunta=nouseva"))
             .toEqual({
                 valilehti: "sarjat", haku: "le guin", vuodet: { from: 1970, to: 1979 }, jarjestys: "uusin", sivu: 3, riveja: 200,
-                kannet: true, sarjat: "painoksia", suunta: "nouseva",
+                kannet: true, sarjat: "painoksia", suunta: "nouseva", ensipainokset: false,
             });
     });
 
     it("falls back to the defaults: printings, oldest first, 100 a page, list, series by name", () => {
         expect(parse("valilehti=x&jarjestys=y&sivu=0&riveja=7&vuodet=abc&sarjat=z")).toEqual({
             valilehti: "painokset", haku: "", vuodet: null, jarjestys: "vanhin", sivu: 1, riveja: 100, kannet: false, sarjat: "nimi", suunta: "nouseva",
+            ensipainokset: false,
         });
         expect(parse("sarjat=painoksia").suunta).toBe("laskeva");
     });
@@ -31,6 +32,16 @@ describe("withPageState", () => {
         expect(withPageState(p, { riveja: 50 }).toString()).toBe("haku=asimov&riveja=50");
         expect(withPageState(new URLSearchParams(), { vuodet: { from: 1970, to: null } }).toString()).toBe("vuodet=1970-");
         expect(withPageState(new URLSearchParams(), { valilehti: "lehdet" }).toString()).toBe("valilehti=lehdet");
+    });
+});
+
+describe("first editions only (#89)", () => {
+    it("is ensipainokset=1 in the URL, goes back to page 1, and asks the API for first=1", () => {
+        expect(parse("ensipainokset=1").ensipainokset).toBe(true);
+        expect(parse("ensipainokset=x").ensipainokset).toBe(false);
+        expect(withPageState(new URLSearchParams("sivu=3"), { ensipainokset: true }).toString()).toBe("ensipainokset=1");
+        expect(withPageState(new URLSearchParams("ensipainokset=1"), { ensipainokset: false }).toString()).toBe("");
+        expect(apiQuery(parse("ensipainokset=1"))).toBe("first=1&sort=oldest&page=1&rows=100");
     });
 });
 

@@ -69,6 +69,8 @@
 .pp-range-in input { width: 92px; }
 .pp-go { border: 0; background: var(--pp-blue); color: var(--pp-paper) !important; border-radius: 5px; padding: 8px 22px; font-weight: 700 !important; cursor: pointer; }
 .pp-filters .pp-link { padding-bottom: 9px; }
+.pp-check { display: inline-flex; align-items: center; gap: 8px; font-size: 14.5px; color: var(--pp-ink-2); padding-bottom: 9px; }
+.pp-check input { width: 16px; height: 16px; padding: 0; }
 .pp-rhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 24px; padding: 12px 0 8px; }
 .pp-rhead p { margin: 0; font: 17px/1.4 var(--pp-serif); color: var(--pp-ink-2); }
 .pp-rhead p b { color: var(--pp-ink); }

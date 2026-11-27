@@ -17,6 +17,8 @@ export interface PageState {
     kannet: boolean;
     sarjat: SeriesSort;
     suunta: Direction;
+    /** Only first editions: laitos 1 and printing 1 (owner, #89). */
+    ensipainokset: boolean;
 }
 
 export const ORDERS: { value: Order; label: string; api: string }[] = [
@@ -54,11 +56,12 @@ export const parsePageState = (p: URLSearchParams): PageState => {
         kannet: p.get("nakyma") === "kannet",
         sarjat,
         suunta: dir === "nouseva" || dir === "laskeva" ? dir : SERIES_DIRECTION[sarjat],
+        ensipainokset: p.get("ensipainokset") === "1",
     };
 };
 
 /** These change which printings are on page 1, so changing one goes back to it. */
-const RESETS: (keyof PageState)[] = ["haku", "vuodet", "jarjestys", "riveja"];
+const RESETS: (keyof PageState)[] = ["haku", "vuodet", "jarjestys", "riveja", "ensipainokset"];
 
 /** A copy of the params with the changes; defaults are left out. */
 export const withPageState = (params: URLSearchParams, changes: Partial<PageState>) => {
@@ -70,6 +73,7 @@ export const withPageState = (params: URLSearchParams, changes: Partial<PageStat
     set("valilehti", s.valilehti === "painokset" ? "" : s.valilehti);
     set("sivu", s.sivu > 1 ? String(s.sivu) : "");
     set("haku", s.haku);
+    set("ensipainokset", s.ensipainokset ? "1" : "");
     set("vuodet", s.vuodet && (s.vuodet.from !== null || s.vuodet.to !== null) ? `${s.vuodet.from ?? ""}-${s.vuodet.to ?? ""}` : "");
     set("jarjestys", s.jarjestys === "vanhin" ? "" : s.jarjestys);
     set("riveja", s.riveja === 100 ? "" : String(s.riveja));
@@ -83,6 +87,7 @@ export const withPageState = (params: URLSearchParams, changes: Partial<PageStat
 export const apiQuery = (s: PageState) => {
     const q = new URLSearchParams();
     if (s.haku) q.set("q", s.haku);
+    if (s.ensipainokset) q.set("first", "1");
     if (s.vuodet?.from != null) q.set("year_min", String(s.vuodet.from));
     if (s.vuodet?.to != null) q.set("year_max", String(s.vuodet.to));
     q.set("sort", ORDERS.find(o => o.value === s.jarjestys)!.api);

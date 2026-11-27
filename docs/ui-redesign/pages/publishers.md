@@ -122,7 +122,9 @@ Admins switch with *Uusi kustantajan sivu* or Shift+U (`suomisf.publisherPageVer
   a visitor or a reader with none among them. First placed under the facts line for the whole publisher; the owner moved it.
 - **Book series in the rows (owner, 2026-11-27):** the work's book series, linked, with its number, after the printing label and before
   the translators, as in the book index: "Ursula K. Le Guin: Maameren velho (A Wizard of Earthsea, 1968). Maameren tarinat 1. Suom. …".
-- **URL:** `valilehti=sarjat|lehdet`, `sivu`, `haku`, `vuodet=1970-1979`, `jarjestys=uusin|nimi|tekija`, `riveja=50|200`, `nakyma=kannet`,
+- **Vain ensipainokset (#89, owner 2026-11-28):** a checkbox in the filter bar, applied at once: only the work's first Finnish edition,
+  laitos 1 (or none) and printing 1, so a 2. laitos goes too (`first=1`; WSOY 1 224 of 2 260 in the dev data). Tyhjennä clears it.
+- **URL:** `valilehti=sarjat|lehdet`, `sivu`, `ensipainokset=1`, `haku`, `vuodet=1970-1979`, `jarjestys=uusin|nimi|tekija`, `riveja=50|200`, `nakyma=kannet`,
   `sarjat=painoksia|vuodet`, `suunta`; defaults are left out, and a filter, order or rows change goes back to page 1. An address with a
   tab the publisher has no rows for shows the printings.
 - **Tests:** backend `tests/api/test_publisherpage.py`; Vitest `edition-rows-utils.test.ts`, `publisher-page-state.test.ts`; Playwright

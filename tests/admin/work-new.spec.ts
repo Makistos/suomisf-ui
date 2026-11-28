@@ -348,7 +348,7 @@ async function coverSetup(page: Page) {
     });
     return calls;
 }
-const workData = (page: Page) => page.waitForResponse(r => /\/api\/works\/3984$/.test(new URL(r.url()).pathname) && r.status() === 200);
+const workData = (page: Page) => page.waitForResponse(r => new URL(r.url()).pathname.endsWith('/api/works/3984') && r.status() === 200);
 
 test('right-clicking the header cover gives the old page\'s menu: Lisää kuva, Poista kuva, Kopioi osoite (#91)', async ({ adminPage: page }) => {
     const calls = await coverSetup(page);

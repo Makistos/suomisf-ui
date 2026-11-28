@@ -11,6 +11,7 @@ export const SHORT_PAGE_VERSION_KEY = "suomisf.shortPageVersion";
 export const BOOKINDEX_PAGE_VERSION_KEY = "suomisf.bookindexPageVersion";
 export const PUBLISHERS_PAGE_VERSION_KEY = "suomisf.publishersPageVersion";
 export const PUBLISHER_PAGE_VERSION_KEY = "suomisf.publisherPageVersion";
+export const NONFICTION_PAGE_VERSION_KEY = "suomisf.nonfictionPageVersion";
 export const PAGE_VERSION_HOTKEY = "Shift+U";
 
 type Storage = { getItem(key: string): string | null; setItem(key: string, value: string): void };

@@ -10,8 +10,10 @@ import type { Genre } from "@features/genre";
 import { getGenreColors } from "@features/genre/utils/genre-colors";
 import type { Country } from "../../../types/country";
 import {
-    apiQuery, groupByAuthor, hasFilters, IndexState, LETTERS, parseIndexState, printingLabel, printingLines, ROWS, SORTS, TypeSlug, withIndexState, WORK_TYPES, YearRange,
+    apiQuery, groupByAuthor, hasFilters, IndexKind, IndexState, LETTERS, parseIndexState, printingLabel, printingLines, ROWS, SORTS, statsQuery, TypeSlug,
+    withIndexState, WORK_TYPES, YearRange,
 } from "./bookindex-state";
+import { BookIndexStats } from "./book-index-stats";
 
 type PersonBrief = { id: number; name: string; alt_name: string | null };
 type Named = { id: number; name: string };
@@ -50,14 +52,14 @@ const naturalAuthors = (s: string | null) => {
 };
 
 /** What was searched, in words: 'tekijä "Le Guin", romaani, 1960–1969'. */
-const summary = (s: IndexState, genres: Genre[], countries: Country[]) => {
+const summary = (s: IndexState, genres: Genre[], countries: Country[], kind: IndexKind) => {
     const range = (r: YearRange | null, label: string) =>
         r ? `${label} ${r.from ?? ""}–${r.to ?? ""}` : null;
     return [
         s.tekija && `tekijä "${s.tekija}"`, s.nimi && `nimi "${s.nimi}"`, s.alkunimi && `alkuperäinen nimi "${s.alkunimi}"`,
         range(s.alkuteos, "alkuteos"), range(s.painettu, "painettu"),
         s.kansallisuus !== null && (countries.find(c => c.id === s.kansallisuus)?.name ?? null),
-        ...s.tyyppi.map(t => WORK_TYPES[t].label.toLowerCase()),
+        ...(kind === "tietokirjat" ? [] : s.tyyppi.map(t => WORK_TYPES[t].label.toLowerCase())),
         ...s.genre.map(a => genres.find(g => g.abbr === a)?.name ?? a),
         s.kirjain && `tekijä alkaa ${s.kirjain}`,
     ].filter(Boolean).join(", ");
@@ -142,10 +144,25 @@ const Row = ({ w, showAuthor }: { w: IndexRow; showAuthor: boolean }) => {
     );
 };
 
-/** The book index in the identity style, under trial for admins (book-index.md). */
-export const BookIndexNew = () => {
+const TEXTS: Record<IndexKind, { title: string; all: (total: string) => string; rest: string; search: string }> = {
+    kirjat: {
+        title: "Kirjat", all: t => `Kaikki bibliografian ${t} teosta.`, search: "Rajaa kirjoja",
+        rest: "Rajaa hakua alla; ilman rajauksia näet kaikki teokset tekijän mukaan.",
+    },
+    tietokirjat: {
+        title: "Tietokirjat", all: t => `Kaikki bibliografian ${t} tietokirjaa.`, search: "Rajaa tietokirjoja",
+        rest: "Rajaa hakua alla; ilman rajauksia näet kaikki tietokirjat tekijän mukaan.",
+    },
+};
+
+/**
+ * The book index in the identity style, under trial for admins (book-index.md). /nonfiction is the same page with the type
+ * fixed to Tietokirja (kind "tietokirjat"; decided: its own page, with the new rows and paging).
+ */
+export const BookIndexNew = ({ kind = "kirjat" }: { kind?: IndexKind }) => {
     const [params, setParams] = useSearchParams();
-    const state = parseIndexState(params);
+    const state = parseIndexState(params, kind);
+    const texts = TEXTS[kind];
     const [more, setMore] = useState(false);
     const update = (changes: Partial<IndexState>) => setParams(withIndexState(new URLSearchParams(window.location.search), changes));
 
@@ -158,14 +175,14 @@ export const BookIndexNew = () => {
         placeholderData: keepPreviousData,
     });
     // The whole bibliography's size for the header, from the unfiltered first page.
-    const allQuery = apiQuery(parseIndexState(new URLSearchParams()));
+    const allQuery = apiQuery(parseIndexState(new URLSearchParams(), kind));
     const { data: all } = useQuery<IndexPage>({
         queryKey: ["bookindex", allQuery],
         queryFn: () => fetchJson(`bookindex?${allQuery}`),
         staleTime: 10 * 60 * 1000,
     });
 
-    useEffect(() => { document.title = "Kirjat"; }, []);
+    useEffect(() => { document.title = texts.title; }, [texts.title]);
 
     // Text fields and years search on Enter or "Hae"; chips, selects and letters update at once (decided).
     const submit = (e: FormEvent<HTMLFormElement>) => {
@@ -184,7 +201,9 @@ export const BookIndexNew = () => {
         document.getElementById("bn-count")?.scrollIntoView({ block: "start" });
     };
     const toggle = <T,>(list: T[], v: T) => (list.includes(v) ? list.filter(x => x !== v) : [...list, v]);
-    const filtered = hasFilters(state);
+    const filtered = hasFilters(state, kind);
+    // Tyhjennä clears the filters; whether the statistics are open stays.
+    const clear = () => setParams(state.tilastot ? new URLSearchParams("tilastot=1") : new URLSearchParams());
     const works = data?.works ?? [];
     const first = data && data.total > 0 ? (data.page - 1) * data.rows + 1 : 0;
     const last = data ? Math.min(data.total, data.page * data.rows) : 0;
@@ -194,15 +213,15 @@ export const BookIndexNew = () => {
         : [{ key: "all", name: "", rows: works }];
 
     return (
-        <main className="bn" data-bookindex-page="uusi">
+        <main className="bn" data-bookindex-page="uusi" data-kind={kind}>
             <header className="bn-head">
-                <h1>Kirjat</h1>
-                <p>{all ? `Kaikki bibliografian ${n(all.total)} teosta.` : "Kaikki bibliografian teokset."} Rajaa hakua alla; ilman rajauksia näet kaikki teokset tekijän mukaan.</p>
+                <h1>{texts.title}</h1>
+                <p>{all ? texts.all(n(all.total)) : `Kaikki bibliografian ${texts.title.toLowerCase()}.`} {texts.rest}</p>
             </header>
 
             {/* key: when the text fields' values change in the URL (back, Tyhjennä) the uncontrolled fields follow;
                 chips and letters don't reset what is being typed */}
-            <form className={`bn-filters${more ? " bn-more" : ""}`} role="search" aria-label="Rajaa kirjoja" onSubmit={submit}
+            <form className={`bn-filters${more ? " bn-more" : ""}`} role="search" aria-label={texts.search} onSubmit={submit}
                 key={[state.tekija, state.nimi, state.alkunimi, JSON.stringify(state.alkuteos), JSON.stringify(state.painettu)].join("|")}>
                 <div className="bn-fields">
                     <label>Tekijä<input name="tekija" defaultValue={state.tekija} autoComplete="off" /></label>
@@ -220,13 +239,15 @@ export const BookIndexNew = () => {
                 <button type="button" className="bn-more-btn" aria-expanded={more} onClick={() => setMore(m => !m)}>
                     <i className={`pi pi-chevron-${more ? "up" : "down"}`} aria-hidden="true" />{more ? "Vähemmän rajauksia" : "Lisää rajauksia"}
                 </button>
-                <div className="bn-chiprow bn-extra" role="group" aria-label="Tyyppi">
-                    <span className="bn-chiplabel">Tyyppi</span>
-                    <span className="bn-chips">{(Object.keys(WORK_TYPES) as TypeSlug[]).map(t => (
-                        <button key={t} type="button" className="bn-chip" aria-pressed={state.tyyppi.includes(t)}
-                            onClick={() => update({ tyyppi: toggle(state.tyyppi, t) })}>{WORK_TYPES[t].label}</button>
-                    ))}</span>
-                </div>
+                {kind === "kirjat" && (
+                    <div className="bn-chiprow bn-extra" role="group" aria-label="Tyyppi">
+                        <span className="bn-chiplabel">Tyyppi</span>
+                        <span className="bn-chips">{(Object.keys(WORK_TYPES) as TypeSlug[]).map(t => (
+                            <button key={t} type="button" className="bn-chip" aria-pressed={state.tyyppi.includes(t)}
+                                onClick={() => update({ tyyppi: toggle(state.tyyppi, t) })}>{WORK_TYPES[t].label}</button>
+                        ))}</span>
+                    </div>
+                )}
                 <div className="bn-chiprow bn-extra" role="group" aria-label="Genre">
                     <span className="bn-chiplabel">Genre</span>
                     <span className="bn-chips">{genres.map(g => (
@@ -246,7 +267,7 @@ export const BookIndexNew = () => {
                     </span>
                 </div>
                 <div className="bn-actions">
-                    {filtered && <button type="button" className="bn-link" onClick={() => setParams(new URLSearchParams())}>Tyhjennä</button>}
+                    {filtered && <button type="button" className="bn-link" onClick={clear}>Tyhjennä</button>}
                     <button type="submit" className="bn-go">Hae</button>
                 </div>
             </form>
@@ -256,7 +277,7 @@ export const BookIndexNew = () => {
                     <p id="bn-count" role="status">
                         {/* the previous results stay on screen while a new search loads, but their count isn't this search's */}
                         {data && !isPlaceholderData
-                            ? <><b>{plural(data.total, "teos", "teosta")}</b>{filtered && <span> {summary(state, genres, countries)}</span>}</>
+                            ? <><b>{plural(data.total, "teos", "teosta")}</b>{filtered && <span> {summary(state, genres, countries, kind)}</span>}</>
                             : "Haetaan…"}
                     </p>
                     <div className="bn-tools">
@@ -268,13 +289,19 @@ export const BookIndexNew = () => {
                         <label className="bn-check">
                             <input type="checkbox" checked={state.ryhmittely} onChange={e => update({ ryhmittely: e.target.checked })} />Ryhmittele tekijöittäin
                         </label>
+                        <button type="button" className="bn-link" aria-expanded={state.tilastot} aria-controls="bn-stats"
+                            onClick={() => update({ tilastot: !state.tilastot })}>
+                            {state.tilastot ? "Piilota tilastot" : "Tilastot tästä hausta"}
+                        </button>
                     </div>
                 </div>
+
+                {state.tilastot && <BookIndexStats query={statsQuery(state)} />}
 
                 {isError ? (
                     <div className="bn-err" role="alert">Kirjoja ei saatu haettua.<button type="button" onClick={() => refetch()}>Yritä uudelleen</button></div>
                 ) : data && data.total === 0 ? (
-                    <p className="bn-empty">Haulla ei löytynyt kirjoja. {filtered && <button type="button" className="bn-link" onClick={() => setParams(new URLSearchParams())}>Tyhjennä rajaukset</button>}</p>
+                    <p className="bn-empty">Haulla ei löytynyt kirjoja. {filtered && <button type="button" className="bn-link" onClick={clear}>Tyhjennä rajaukset</button>}</p>
                 ) : (
                     groups.map(g => (
                         <Fragment key={g.key}>

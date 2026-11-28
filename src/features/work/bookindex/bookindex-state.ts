@@ -37,12 +37,17 @@ export interface IndexState {
     ryhmittely: boolean;
     sivu: number;
     riveja: number;
+    /** "Tilastot tästä hausta" open */
+    tilastot: boolean;
 }
+
+/** /bookindex lists every work; /nonfiction is the same page for non-fiction only (book-index.md, step 4). */
+export type IndexKind = "kirjat" | "tietokirjat";
 
 const DEFAULTS: IndexState = {
     tekija: "", nimi: "", alkunimi: "", alkuteos: null, painettu: null, kansallisuus: null, tyyppi: [], genre: [], kirjain: null,
     // Grouped by author and 200 a page (owner, 2026-11-26): the old list grouped by author too.
-    jarjestys: "tekija", ryhmittely: true, sivu: 1, riveja: 200,
+    jarjestys: "tekija", ryhmittely: true, sivu: 1, riveja: 200, tilastot: false,
 };
 /** Changing any of these is a new search, so it starts from the first page. */
 const FILTERS: (keyof IndexState)[] = ["tekija", "nimi", "alkunimi", "alkuteos", "painettu", "kansallisuus", "tyyppi", "genre", "kirjain"];
@@ -58,7 +63,7 @@ const parseRange = (v: string | null): YearRange | null => {
 };
 const writeRange = (r: YearRange | null) => (r && (r.from !== null || r.to !== null) ? `${r.from ?? ""}-${r.to ?? ""}` : "");
 
-export const parseIndexState = (p: URLSearchParams): IndexState => {
+export const parseIndexState = (p: URLSearchParams, kind: IndexKind = "kirjat"): IndexState => {
     const sort = p.get("jarjestys");
     const letter = p.get("kirjain")?.toUpperCase() ?? "";
     const rows = Number(p.get("riveja"));
@@ -69,23 +74,27 @@ export const parseIndexState = (p: URLSearchParams): IndexState => {
         alkuteos: parseRange(p.get("alkuteos")),
         painettu: parseRange(p.get("painettu")),
         kansallisuus: positive(p.get("kansallisuus")),
-        tyyppi: list(p.get("tyyppi")).filter((t): t is TypeSlug => t in WORK_TYPES),
+        tyyppi: kind === "tietokirjat" ? ["tietokirja"] : list(p.get("tyyppi")).filter((t): t is TypeSlug => t in WORK_TYPES),
         genre: list(p.get("genre")),
         kirjain: LETTERS.includes(letter) ? letter : null,
         jarjestys: SORTS.some(s => s.value === sort) ? (sort as Sort) : "tekija",
         ryhmittely: p.get("ryhmittely") !== "ei",
         sivu: positive(p.get("sivu")) ?? 1,
         riveja: (ROWS as readonly number[]).includes(rows) ? rows : DEFAULTS.riveja,
+        tilastot: p.get("tilastot") === "1",
     };
 };
 
-export const hasFilters = (s: IndexState) => FILTERS.some(k => JSON.stringify(s[k]) !== JSON.stringify(DEFAULTS[k]));
+/** On /nonfiction the type is the page itself, not a filter. */
+export const hasFilters = (s: IndexState, kind: IndexKind = "kirjat") =>
+    FILTERS.some(k => (kind !== "tietokirjat" || k !== "tyyppi") && JSON.stringify(s[k]) !== JSON.stringify(DEFAULTS[k]));
 
 const serial = (key: keyof IndexState, value: IndexState[keyof IndexState]): string => {
     switch (key) {
         case "alkuteos": case "painettu": return writeRange(value as YearRange | null);
         case "tyyppi": case "genre": return (value as string[]).join(",");
         case "ryhmittely": return value ? "" : "ei";
+        case "tilastot": return value ? "1" : "";
         case "kansallisuus": return value === null ? "" : String(value);
         default: return value === DEFAULTS[key] ? "" : String(value ?? "");
     }
@@ -104,6 +113,15 @@ export const withIndexState = (params: URLSearchParams, changes: Partial<IndexSt
 
 /** GET /api/bookindex parameters for the state. */
 export const apiQuery = (s: IndexState) => {
+    const q = new URLSearchParams(statsQuery(s));
+    q.set("sort", SORTS.find(x => x.value === s.jarjestys)!.api);
+    q.set("page", String(s.sivu));
+    q.set("rows", String(s.riveja));
+    return q.toString();
+};
+
+/** GET /api/bookindex/stats parameters: the whole search, so no page, rows or sort. */
+export const statsQuery = (s: IndexState) => {
     const q = new URLSearchParams();
     const add = (k: string, v: string | number | null | undefined) => { if (v !== null && v !== undefined && v !== "") q.set(k, String(v)); };
     add("author", s.tekija);
@@ -117,9 +135,6 @@ export const apiQuery = (s: IndexState) => {
     add("type", s.tyyppi.map(t => WORK_TYPES[t].id).join(","));
     add("genre", s.genre.join(","));
     add("initial", s.kirjain);
-    add("sort", SORTS.find(x => x.value === s.jarjestys)!.api);
-    add("page", s.sivu);
-    add("rows", s.riveja);
     return q.toString();
 };
 

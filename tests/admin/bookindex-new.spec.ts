@@ -222,6 +222,53 @@ test('paging, rows per page, sorting and grouping; no covers view', async ({ adm
     await expect(page.getByRole('group', { name: 'Näkymä' })).toHaveCount(0);
 });
 
+test('"Tilastot tästä hausta" counts genres and tags for the whole search, follows the filters and stays in the URL', async ({ adminPage: page }) => {
+    await openNew(page, '?tekija=Le+Guin');
+    const link = page.getByRole('button', { name: 'Tilastot tästä hausta' });
+    await expect(link).toHaveAttribute('aria-expanded', 'false');
+    let response = page.waitForResponse(r => r.url().includes('/api/bookindex/stats?'));
+    await link.click();
+    let stats = (await (await response).json());
+    // The whole search, not the page: no paging or sort sent.
+    const sent = new URL((await response).url()).searchParams;
+    expect(sent.get('author')).toBe('Le Guin');
+    expect(sent.has('page') || sent.has('rows') || sent.has('sort')).toBe(false);
+    expect(stats.total).toBe(await total(page));
+    await expect(page).toHaveURL(/tilastot=1/);
+    const hide = page.getByRole('button', { name: 'Piilota tilastot' });
+    await expect(hide).toHaveAttribute('aria-expanded', 'true');
+    const bars = page.locator('.bn-gbar');
+    await expect(bars).toHaveCount(stats.genres.length);
+    await expect(bars.first()).toContainText(stats.genres[0].name);
+    await expect(bars.first()).toContainText(String(stats.genres[0].works));
+    await expect(page.locator('.bn-tags li').first()).toContainText(stats.tags[0].name);
+    await expect(page.locator('.bn-tags a').first()).toHaveAttribute('href', `/tags/${stats.tags[0].id}`);
+    // A filter change recounts; the page number doesn't matter.
+    response = page.waitForResponse(r => r.url().includes('/api/bookindex/stats?') && r.url().includes('genre=SF'));
+    await page.getByRole('group', { name: 'Genre' }).getByRole('button', { name: 'Science Fiction', exact: true }).click();
+    stats = (await (await response).json());
+    await expect(bars.filter({ hasText: 'Science Fiction' })).toContainText(String(stats.total));
+    // Survives reload; Tyhjennä clears the filters but keeps the statistics open.
+    await page.reload();
+    await expect(page.locator('.bn-stats-genres')).toBeVisible({ timeout: 20000 });
+    await page.getByRole('button', { name: 'Tyhjennä' }).first().click();
+    await expect(page).toHaveURL(/\/bookindex\?tilastot=1$/);
+    await expect(page.locator('.bn-snote').filter({ hasText: /yleisintä [\d\s]+ asiasanasta/ })).toBeVisible({ timeout: 20000 });
+    await page.getByRole('button', { name: 'Piilota tilastot' }).click();
+    await expect(page.locator('.bn-stats')).toHaveCount(0);
+    await expect(page).toHaveURL(/\/bookindex$/);
+});
+
+test('statistics that fail to load show an error with retry', async ({ adminPage: page }) => {
+    let fail = true;
+    await page.route('**/api/bookindex/stats?*', route => (fail ? route.fulfill({ status: 500, body: '{}' }) : route.fallback()));
+    await openNew(page, '?tekija=Le+Guin&tilastot=1');
+    await expect(page.getByRole('alert')).toContainText('Tilastoja ei saatu haettua.', { timeout: 20000 });
+    fail = false;
+    await page.getByRole('alert').getByRole('button', { name: 'Yritä uudelleen' }).click();
+    await expect(page.locator('.bn-stats-genres')).toBeVisible({ timeout: 20000 });
+});
+
 test('a search with no results says so and offers to clear', async ({ adminPage: page }) => {
     await openNew(page, '?tekija=zzzzqqqq');
     await expect(page.locator('.bn-empty')).toContainText('Haulla ei löytynyt kirjoja.');

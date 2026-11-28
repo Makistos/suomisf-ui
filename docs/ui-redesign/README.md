@@ -56,7 +56,7 @@ These apply to every page in this rewrite, not only the ones built so far:
 | Front page | `/` | [front-page.md](pages/front-page.md) | Agreed (revised 2026-11-23) | Admin trial, 2026-11-25 |
 | Search (menu dropdown and results page) | `/search` | [search.md](pages/search.md) | Agreed | Not started |
 | People list | `/people` | [people-list.md](pages/people-list.md) | Agreed | Not started |
-| Book index, works by type, non-fiction | `/bookindex`, `/nonfiction` | [book-index.md](pages/book-index.md) | Agreed; `/bookindex` in admin-only trial, 2026-11-26 | Admin trial, 2026-11-26 (`/bookindex`; `/nonfiction` not started) |
+| Book index, works by type, non-fiction | `/bookindex`, `/nonfiction` | [book-index.md](pages/book-index.md) | Agreed; `/bookindex` in admin-only trial, 2026-11-26 | Admin trial: `/bookindex` 2026-11-26, `/nonfiction` 2026-11-28 |
 | Short story index | `/shortstoryindex` | [short-index.md](pages/short-index.md) | Agreed | Not started |
 | Magazines, magazine, issue | `/magazines`, `/magazines/:id`, `/issues/:id` | [magazines.md](pages/magazines.md) | Agreed | Not started |
 | Book series | `/bookseries`, `/bookseries/:id` | [bookseries.md](pages/bookseries.md) | Agreed | Not started |

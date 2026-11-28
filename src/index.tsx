@@ -48,7 +48,7 @@ const FAQ = lazy(() => import('./faq').then(m => ({ default: m.FAQ })));
 const ProfilePage = lazy(() => import('@features/user/routes/profile-page'));
 const UsersPage = lazy(() => import('@features/user/routes/users-page').then(m => ({ default: m.UsersPage })));
 const ShortPageSwitch = lazy(() => import('@features/short/routes/short-page-switch').then(m => ({ default: m.ShortPageSwitch })));
-const WorksByType = lazy(() => import('@features/work/routes/works-by-type').then(m => ({ default: m.WorksByType })));
+const NonfictionSwitch = lazy(() => import('@features/work/routes/nonfiction-switch').then(m => ({ default: m.NonfictionSwitch })));
 const StatsPage = lazy(() => import('@features/stats').then(m => ({ default: m.StatsPage })));
 const SearchResultsPage = lazy(() => import('@features/search/routes/search-results-page'));
 const AdminPage = lazy(() => import('@features/admin/routes/admin-page'));
@@ -100,7 +100,7 @@ root.render(
             <Route path="/changes" element={<Changes />} />
             <Route path="/latest" element={<LatestAdditions />} />
             <Route path="/faq" element={<FAQ />} />
-            <Route path="/nonfiction" element={<WorksByType worktype={"4"} />} />
+            <Route path="/nonfiction" element={<NonfictionSwitch />} />
             <Route path="/stats" element={<StatsPage />} />
             <Route path="/suggestions" element={<SuggestionPage />} />
             <Route path="/home-alt" element={<HomeAlt />} />

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { apiQuery, groupByAuthor, hasFilters, parseIndexState, printingLabel, printingLines, withIndexState, WORK_TYPES } from "./bookindex-state";
+import { apiQuery, groupByAuthor, hasFilters, parseIndexState, printingLabel, printingLines, statsQuery, withIndexState, WORK_TYPES } from "./bookindex-state";
 
 const parse = (q: string) => parseIndexState(new URLSearchParams(q));
 
@@ -11,7 +11,7 @@ describe("parseIndexState", () => {
         expect(s).toEqual({
             tekija: "le guin", nimi: "vasen", alkunimi: "left", alkuteos: { from: 1960, to: 1969 }, painettu: { from: 2000, to: null },
             kansallisuus: 3, tyyppi: ["romaani", "kokoelma"], genre: ["SF", "F"], kirjain: "L", jarjestys: "nimi",
-            ryhmittely: false, sivu: 3, riveja: 100,
+            ryhmittely: false, sivu: 3, riveja: 100, tilastot: false,
         });
     });
 
@@ -29,6 +29,34 @@ describe("parseIndexState", () => {
 
     it("reads Finnish letters", () => {
         expect(parse("kirjain=%C3%84").kirjain).toBe("Ä");
+    });
+});
+
+describe("statistics panel", () => {
+    it("is open when the URL says so, is not a filter, and changing it keeps the page", () => {
+        expect(parse("").tilastot).toBe(false);
+        expect(parse("tilastot=1").tilastot).toBe(true);
+        expect(hasFilters(parse("tilastot=1"))).toBe(false);
+        expect(withIndexState(new URLSearchParams("sivu=3"), { tilastot: true }).toString()).toBe("sivu=3&tilastot=1");
+        expect(withIndexState(new URLSearchParams("tilastot=1"), { tilastot: false }).toString()).toBe("");
+    });
+
+    it("asks for the whole search: the filters without page, rows or sort", () => {
+        const q = new URLSearchParams(statsQuery(parse("tekija=le+guin&genre=SF&sivu=3&riveja=50&jarjestys=nimi&tilastot=1")));
+        expect(Object.fromEntries(q)).toEqual({ author: "le guin", genre: "SF" });
+    });
+});
+
+describe("non-fiction (/nonfiction)", () => {
+    const nf = (q: string) => parseIndexState(new URLSearchParams(q), "tietokirjat");
+
+    it("is always Tietokirja whatever the URL says, and that alone is not a filter", () => {
+        expect(nf("").tyyppi).toEqual(["tietokirja"]);
+        expect(nf("tyyppi=romaani").tyyppi).toEqual(["tietokirja"]);
+        expect(hasFilters(nf(""), "tietokirjat")).toBe(false);
+        expect(hasFilters(nf("genre=F"), "tietokirjat")).toBe(true);
+        expect(new URLSearchParams(apiQuery(nf(""))).get("type")).toBe(String(WORK_TYPES.tietokirja.id));
+        expect(new URLSearchParams(statsQuery(nf(""))).get("type")).toBe(String(WORK_TYPES.tietokirja.id));
     });
 });
 

@@ -2,7 +2,7 @@
 
 **Routes:** `/bookindex` ("Kirjat" in the menu) and `/nonfiction` · **Code:** `src/features/work/routes/work-search.tsx`, `works-by-type.tsx`,
 `src/features/work/components/work-list.tsx`; backend `POST /api/searchworks`, `GET /api/worksbyinitial/<letter>`, `GET /api/firstlettervector/works`
-**Status:** Agreed; `/bookindex` implemented as an admin-only trial in identity style (2026-11-26) · **Updated:** 2026-11-26
+**Status:** Agreed; `/bookindex` (2026-11-26) and `/nonfiction` (2026-11-28) implemented as admin-only trials in identity style · **Updated:** 2026-11-28
 **Sample:** https://www.sf-bibliografia.fi/bookindex, searched for author "Le Guin" (30 works).
 **Mockup:** [`../mockups/index.html?k=books`](../mockups/index.html) with [`index-data.js`](../mockups/index-data.js) (real results).
 The same mockup shows the [short story index](short-index.md) (`?k=shorts`): both indexes share one pattern.
@@ -83,9 +83,8 @@ else gets the current page.
   `ryhmittely=ei`, `sivu`, `riveja`. A filter change goes back to page 1.
 - **Differences from the plan, for now:**
   - *Painettu* matches any Finnish printing in the range (the current page used the first printing only);
-  - "Tilastot tästä hausta" is left out: the statistics panel computed from the full result list, which a paged page no longer
-    loads; it needs a statistics endpoint for a search;
-  - **`/nonfiction` is not done yet** (step 4): it still uses the current list.
+  - "Tilastot tästä hausta" came later (2026-11-28, below);
+  - `/nonfiction` came later (step 4, 2026-11-28, below).
 - **Rows, revised after the owner's review (2026-11-26):** the author first (linked), then the title and subtitle; original title and year,
   series (with its parent series); "Kirjoittanut …" for a pen name several writers share; translator, first publisher (linked), year and
   publisher's series; every printing's year linking to it (shown when there are several, or to carry the reader's mark), with a star for a
@@ -107,6 +106,25 @@ else gets the current page.
   ungrouped list and 50 a page. Neither default is written in the URL; `ryhmittely=ei` and `riveja=50|100` are. Because the same first
   author can come back later on a page, each author group's key carries its position (a repeated key had left stale rows on screen).
 - **Tests:** backend `tests/api/test_bookindex.py`; Playwright `tests/admin/bookindex-new.spec.ts`, `tests/anon|user/bookindex-version.spec.ts`.
+
+## Implementation (2026-11-28): "Tilastot tästä hausta" and `/nonfiction`
+
+- **Statistics for a search:** `GET /api/bookindex/stats` takes the same filters as `/api/bookindex` (page, rows and sort ignored)
+  and returns the total, works per genre and the 50 most common tags with `tag_count`, how many tags there are in all. Unfiltered,
+  every tag (3,990) made the response 204 kB; capped, it is about 4 kB. This is what the old *Tilastoja* panel counted in the
+  browser from the full result list (total, top tags, a genre doughnut), now for the whole search.
+- **On the page:** "Tilastot tästä hausta" is a link in the results header (it reads "Piilota tilastot" when open) that opens a
+  panel above the list: genre bars as on the publisher page, each with its name and count so colour isn't the only cue, and the
+  tags as text links with counts. Open or not is in the URL (`tilastot=1`); it isn't a filter, so it keeps the page, and
+  *Tyhjennä* keeps it open. The panel is not shown until asked for, so the stats query only runs then.
+- **`/nonfiction`:** the same page component (`BookIndexNew kind="tietokirjat"`): heading "Tietokirjat", the type fixed to
+  Tietokirja whatever the URL says, no type chips, and the type isn't counted as a filter or named in the summary. Everything
+  else (filters, sorting, grouping, paging, statistics) is as on the book index. Its own admin switch,
+  `src/features/work/routes/nonfiction-switch.tsx` (*Uusi tietokirjasivu*, `suomisf.nonfictionPageVersion`); everyone else keeps
+  `works-by-type.tsx`, which still loads every non-fiction book (`GET /api/works/bytype/4`, 199 kB; the new first page is 111 kB).
+- **Tests:** backend `TestBookIndexStats` in `tests/api/test_bookindex.py`; Vitest `bookindex-state.test.ts` (statistics in the URL,
+  stats query, non-fiction); Playwright `tests/admin/bookindex-new.spec.ts` (statistics), `tests/admin/nonfiction-new.spec.ts`,
+  `tests/anon|user/nonfiction-version.spec.ts`.
 
 ## Shared principles used or added
 

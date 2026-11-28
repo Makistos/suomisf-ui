@@ -38,8 +38,8 @@ const BookseriesListPage = lazy(() => import('./features/bookseries/routes/books
 const PubseriesListPage = lazy(() => import('./features/pubseries/routes/pubseries-list-page').then(m => ({ default: m.PubseriesListPage })));
 const ShortSearchPage = lazy(() => import('./features/short/routes/short-search-page').then(m => ({ default: m.ShortSearchPage })));
 const BookIndexSwitch = lazy(() => import('./features/work/routes/book-index-switch').then(m => ({ default: m.BookIndexSwitch })));
-const SFTag = lazy(() => import('./features/tag/routes/sftag').then(m => ({ default: m.SFTag })));
-const SFTags = lazy(() => import('./features/tag/routes/sftags-page').then(m => ({ default: m.SFTags })));
+const TagsPageSwitch = lazy(() => import('./features/tag/routes/tags-page-switch').then(m => ({ default: m.TagsPageSwitch })));
+const TagPageSwitch = lazy(() => import('./features/tag/routes/tags-page-switch').then(m => ({ default: m.TagPageSwitch })));
 const Awards = lazy(() => import('./features/award/routes/awards-page').then(m => ({ default: m.Awards })));
 const AwardPage = lazy(() => import('./features/award/routes/award-page').then(m => ({ default: m.AwardPage })));
 const Changes = lazy(() => import('./features/changes/routes/changes-page').then(m => ({ default: m.Changes })));
@@ -92,8 +92,8 @@ root.render(
             <Route path="publishers/:itemId" element={<PublisherPageSwitch />} />
             <Route path="publishers" element={<PublisherListSwitch />} />
             <Route path="shorts/:itemId" element={<ShortPageSwitch />} />
-            <Route path="tags" element={<SFTags />} />
-            <Route path="tags/:tagid" element={<SFTag id={null} />} />
+            <Route path="tags" element={<TagsPageSwitch />} />
+            <Route path="tags/:tagid" element={<TagPageSwitch />} />
             <Route path="/login" element={<main className="all-content"><LoginView /></main>} />
             <Route path="/forgot-password" element={<ForgotPasswordView />} />
             <Route path="/reset-password" element={<ResetPasswordView />} />

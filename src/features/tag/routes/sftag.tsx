@@ -44,7 +44,7 @@ const ARTICLE_STORY_TYPES = [7, 8, 9];
 
 // Module-level: defined inside SFTag it was a new component type on every
 // render, so the merge form was reset whenever the page re-rendered.
-const MergeTagsDialog = ({ tagId, user, onDone }:
+export const MergeTagsDialog = ({ tagId, user, onDone }:
     { tagId: string | undefined, user: User | null, onDone: () => void }) => {
     type TagTypeInfo = {
         id: number,

@@ -63,7 +63,7 @@ These apply to every page in this rewrite, not only the ones built so far:
 | Publisher series | `/pubseries`, `/pubseries/:id` | [pubseries.md](pages/pubseries.md) | Agreed | Not started |
 | Publishers | `/publishers`, `/publishers/:id` | [publishers.md](pages/publishers.md) | Agreed; `/publishers` and `/publishers/:id` in admin-only trial, 2026-11-26 | Admin trial, 2026-11-26 |
 | Awards | `/awards`, `/awards/:id` | [awards.md](pages/awards.md) | Agreed | Not started |
-| Tags | `/tags`, `/tags/:id` | [tags.md](pages/tags.md) | Agreed | Not started |
+| Tags | `/tags`, `/tags/:id` | [tags.md](pages/tags.md) | Agreed; both in admin-only trial, 2026-11-28 | Admin trial, 2026-11-28 |
 | Latest additions, changes | `/latest`, `/changes` | [latest-changes.md](pages/latest-changes.md) | Agreed | Not started |
 | Statistics | `/stats` | [../stats-plan.md](../stats-plan.md) | Done 2026-10-13 | Not started |
 | Users, profile, admin | `/users`, `/users/:id`, `/admin` | [users-admin.md](pages/users-admin.md) | Agreed | Not started |

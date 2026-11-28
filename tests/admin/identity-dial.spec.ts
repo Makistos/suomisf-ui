@@ -8,6 +8,7 @@ const PAGES = [
     { name: 'work', key: 'suomisf.workPageVersion', url: '/works/3984' },
     { name: 'short story', key: 'suomisf.shortPageVersion', url: '/shorts/1028' },
     { name: 'publisher', key: 'suomisf.publisherPageVersion', url: '/publishers/387' },
+    { name: 'tag', key: 'suomisf.tagPageVersion', url: '/tags/303' },
 ];
 // Every new page with an admin SpeedDial goes here (2026-11-27: the publisher page's icons came out link-blue again).
 // src/components/identity-css.test.ts checks the stylesheets of all identity pages for the same mistake.

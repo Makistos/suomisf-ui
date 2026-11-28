@@ -1,8 +1,8 @@
 import "./book-index-new.css";
 
-import { FormEvent, Fragment, useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { FormEvent, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 import { getApiContent } from "@services/user-service";
 import { getCurrenUser } from "@services/auth-service";
@@ -10,47 +10,13 @@ import type { Genre } from "@features/genre";
 import { getGenreColors } from "@features/genre/utils/genre-colors";
 import type { Country } from "../../../types/country";
 import {
-    apiQuery, groupByAuthor, hasFilters, IndexKind, IndexState, LETTERS, parseIndexState, printingLabel, printingLines, ROWS, SORTS, statsQuery, TypeSlug,
-    withIndexState, WORK_TYPES, YearRange,
+    apiQuery, hasFilters, IndexKind, IndexState, LETTERS, parseIndexState, TypeSlug, withIndexState, WORK_TYPES, YearRange,
 } from "./bookindex-state";
-import { BookIndexStats } from "./book-index-stats";
-
-type PersonBrief = { id: number; name: string; alt_name: string | null };
-type Named = { id: number; name: string };
-interface IndexEdition {
-    id: number; title: string; pubyear: number | null; editionnum: number | null; version: number | null;
-    translators: PersonBrief[]; publisher: Named | null; pubseries: Named | null; owned: boolean; wishlisted: boolean;
-}
-interface IndexRow {
-    id: number;
-    title: string;
-    subtitle: string | null;
-    orig_title: string | null;
-    pubyear: number | null;
-    author_str: string | null;
-    type: number;
-    authors: PersonBrief[];
-    real_authors: PersonBrief[];
-    bookseries: { id: number; name: string; partof: { id: number; name: string } | null } | null;
-    bookseriesnum: string | null;
-    genres: { id: number; abbr: string; name: string }[];
-    editions: IndexEdition[];
-}
-interface IndexPage { total: number; page: number; rows: number; works: IndexRow[] }
+import { BookResults } from "./book-results";
+import type { IndexPage } from "./work-row";
 
 const fetchJson = async <T,>(url: string): Promise<T> => (await getApiContent(url, getCurrenUser())).data;
 const n = (v: number) => v.toLocaleString("fi-FI").replace(/\s/g, " ");
-const plural = (v: number, one: string, many: string) => `${n(v)} ${v === 1 ? one : many}`;
-const personName = (p: PersonBrief) =>
-    p.alt_name || (p.name.includes(", ") ? p.name.split(", ").reverse().join(" ") : p.name);
-/** "Le Guin, Ursula K. & Halme, Jukka (toim.)" → "Ursula K. Le Guin & Jukka Halme (toim.)" */
-const naturalAuthors = (s: string | null) => {
-    if (!s) return "";
-    const editor = /\s*\(toim\.\)$/.test(s);
-    return s.replace(/\s*\(toim\.\)$/, "").split(" & ").map(p => (p.includes(", ") ? p.split(", ").reverse().join(" ") : p)).join(" & ")
-        + (editor ? " (toim.)" : "");
-};
-
 /** What was searched, in words: 'tekijä "Le Guin", romaani, 1960–1969'. */
 const summary = (s: IndexState, genres: Genre[], countries: Country[], kind: IndexKind) => {
     const range = (r: YearRange | null, label: string) =>
@@ -76,74 +42,6 @@ const RangeFields = ({ label, name, value }: { label: string; name: string; valu
     </div>
 );
 
-const People = ({ people, sep = " & " }: { people: PersonBrief[]; sep?: string }) => (
-    <>{people.map((p, i) => <Fragment key={p.id}>{i > 0 && sep}<Link to={`/people/${p.id}`}>{personName(p)}</Link></Fragment>)}</>
-);
-const Mark = ({ e }: { e: IndexEdition }) => (
-    e.owned ? <i className="pi pi-star-fill bn-mark" role="img" aria-label="Omistat tämän painoksen" title="Omistat tämän painoksen" />
-        : e.wishlisted ? <i className="pi pi-bookmark-fill bn-mark bn-wish" role="img" aria-label="Muistilistallasi" title="Muistilistallasi" />
-            : null
-);
-/** "Suom. Jarkko Laine. Otava 1977. Keskiyön kirjasto." */
-const Publication = ({ e, translators }: { e: IndexEdition; translators: boolean }) => (
-    <span className="bn-pub">
-        {translators && e.translators.length > 0 && <>Suom. <People people={e.translators} sep=", " />. </>}
-        {e.publisher && <><Link to={`/publishers/${e.publisher.id}`}>{e.publisher.name}</Link> </>}
-        {e.pubyear ?? "?"}.
-        {e.pubseries && <> <Link to={`/pubseries/${e.pubseries.id}`}>{e.pubseries.name}</Link>.</>}
-    </span>
-);
-
-/**
- * One work as on the old list (owner, 2026-11-26): the title with the original's name and year; series and the first printing;
- * then every other printing on its own line with its title when it differs from the work's, translators when they change,
- * publisher, year and series. A reprint that differs only by number and year is left out (printingLines).
- */
-const Row = ({ w, showAuthor }: { w: IndexRow; showAuthor: boolean }) => {
-    const [firstLine, ...rest] = printingLines(w.editions);
-    const first = firstLine?.edition;
-    const foreign = !!w.orig_title && w.orig_title !== w.title;
-    return (
-        <li className="bn-row">
-            <div className="bn-row-main">
-                <p className="bn-tline">
-                    {showAuthor && (
-                        <><span className="bn-a">{w.authors.length > 0 && !/\(toim\.\)/.test(w.author_str ?? "") ? <People people={w.authors} /> : naturalAuthors(w.author_str)}</span>: </>
-                    )}
-                    <Link className="bn-t" to={`/works/${w.id}`}>{w.title}</Link>
-                    {w.subtitle && <span className="bn-sub"> {w.subtitle}</span>}
-                    {(foreign || w.pubyear) && (
-                        <span className="bn-orig"> ({foreign && <i>{w.orig_title}</i>}{foreign && w.pubyear && ", "}{w.pubyear && <span className="bn-y">{w.pubyear}</span>})</span>
-                    )}
-                </p>
-                <p className="bn-s bn-first">
-                    {first && <Mark e={first} />}
-                    {w.bookseries && (
-                        <span className="bn-ser">
-                            {w.bookseries.partof && <><Link to={`/bookseries/${w.bookseries.partof.id}`}>{w.bookseries.partof.name}</Link> › </>}
-                            <Link to={`/bookseries/${w.bookseries.id}`}>{w.bookseries.name}</Link>{w.bookseriesnum ? ` ${w.bookseriesnum}` : ""}.{" "}
-                        </span>
-                    )}
-                    {w.real_authors.length > 1 && <span>Kirjoittanut <People people={w.real_authors} />. </span>}
-                    {first && first.title !== w.title && <b className="bn-etitle">{first.title}. </b>}
-                    {first && <Publication e={first} translators />}
-                </p>
-                {rest.map(({ edition: e, showTranslators }) => (
-                    <p className="bn-s bn-ed" key={e.id}>
-                        <Mark e={e} />
-                        <span className="bn-ed-l">{printingLabel(e)}:</span>{" "}
-                        {e.title !== w.title && <b className="bn-etitle">{e.title}. </b>}
-                        <Publication e={e} translators={showTranslators} />
-                    </p>
-                ))}
-            </div>
-            <span className="bn-genres">{w.genres.map(g => (
-                <span className="bn-gdot" key={g.abbr}><i style={{ background: getGenreColors([g.abbr])[0] ?? "#6C757D" }} />{g.name}</span>
-            ))}</span>
-        </li>
-    );
-};
-
 const TEXTS: Record<IndexKind, { title: string; all: (total: string) => string; rest: string; search: string }> = {
     kirjat: {
         title: "Kirjat", all: t => `Kaikki bibliografian ${t} teosta.`, search: "Rajaa kirjoja",
@@ -168,12 +66,6 @@ export const BookIndexNew = ({ kind = "kirjat" }: { kind?: IndexKind }) => {
 
     const { data: genres = [] } = useQuery<Genre[]>({ queryKey: ["genres"], queryFn: () => fetchJson("genres"), staleTime: Infinity });
     const { data: countries = [] } = useQuery<Country[]>({ queryKey: ["nationalities"], queryFn: () => fetchJson("countries"), staleTime: Infinity });
-    const query = apiQuery(state);
-    const { data, isError, isFetching, isPlaceholderData, refetch } = useQuery<IndexPage>({
-        queryKey: ["bookindex", query],
-        queryFn: () => fetchJson(`bookindex?${query}`),
-        placeholderData: keepPreviousData,
-    });
     // The whole bibliography's size for the header, from the unfiltered first page.
     const allQuery = apiQuery(parseIndexState(new URLSearchParams(), kind));
     const { data: all } = useQuery<IndexPage>({
@@ -196,21 +88,10 @@ export const BookIndexNew = ({ kind = "kirjat" }: { kind?: IndexKind }) => {
         };
         update({ tekija: text("tekija"), nimi: text("nimi"), alkunimi: text("alkunimi"), alkuteos: range("alkuteos"), painettu: range("painettu") });
     };
-    const goTo = (sivu: number) => {
-        update({ sivu });
-        document.getElementById("bn-count")?.scrollIntoView({ block: "start" });
-    };
     const toggle = <T,>(list: T[], v: T) => (list.includes(v) ? list.filter(x => x !== v) : [...list, v]);
     const filtered = hasFilters(state, kind);
     // Tyhjennä clears the filters; whether the statistics are open stays.
     const clear = () => setParams(state.tilastot ? new URLSearchParams("tilastot=1") : new URLSearchParams());
-    const works = data?.works ?? [];
-    const first = data && data.total > 0 ? (data.page - 1) * data.rows + 1 : 0;
-    const last = data ? Math.min(data.total, data.page * data.rows) : 0;
-    const pages = data ? Math.max(1, Math.ceil(data.total / data.rows)) : 1;
-    const groups = state.ryhmittely
-        ? groupByAuthor(works)
-        : [{ key: "all", name: "", rows: works }];
 
     return (
         <main className="bn" data-bookindex-page="uusi" data-kind={kind}>
@@ -272,63 +153,8 @@ export const BookIndexNew = ({ kind = "kirjat" }: { kind?: IndexKind }) => {
                 </div>
             </form>
 
-            <section className="bn-results" aria-labelledby="bn-count" aria-busy={isFetching}>
-                <div className="bn-rhead">
-                    <p id="bn-count" role="status">
-                        {/* the previous results stay on screen while a new search loads, but their count isn't this search's */}
-                        {data && !isPlaceholderData
-                            ? <><b>{plural(data.total, "teos", "teosta")}</b>{filtered && <span> {summary(state, genres, countries, kind)}</span>}</>
-                            : "Haetaan…"}
-                    </p>
-                    <div className="bn-tools">
-                        <label>Järjestys
-                            <select value={state.jarjestys} onChange={e => update({ jarjestys: e.target.value as IndexState["jarjestys"] })}>
-                                {SORTS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
-                            </select>
-                        </label>
-                        <label className="bn-check">
-                            <input type="checkbox" checked={state.ryhmittely} onChange={e => update({ ryhmittely: e.target.checked })} />Ryhmittele tekijöittäin
-                        </label>
-                        <button type="button" className="bn-link" aria-expanded={state.tilastot} aria-controls="bn-stats"
-                            onClick={() => update({ tilastot: !state.tilastot })}>
-                            {state.tilastot ? "Piilota tilastot" : "Tilastot tästä hausta"}
-                        </button>
-                    </div>
-                </div>
-
-                {state.tilastot && <BookIndexStats query={statsQuery(state)} />}
-
-                {isError ? (
-                    <div className="bn-err" role="alert">Kirjoja ei saatu haettua.<button type="button" onClick={() => refetch()}>Yritä uudelleen</button></div>
-                ) : data && data.total === 0 ? (
-                    <p className="bn-empty">Haulla ei löytynyt kirjoja. {filtered && <button type="button" className="bn-link" onClick={clear}>Tyhjennä rajaukset</button>}</p>
-                ) : (
-                    groups.map(g => (
-                        <Fragment key={g.key}>
-                            {state.ryhmittely && (
-                                <h2 className="bn-group">{g.id ? <Link to={`/people/${g.id}`}>{g.name}</Link> : g.name}<small>{g.rows.length}</small></h2>
-                            )}
-                            <ul className="bn-rows">{g.rows.map(w => <Row key={w.id} w={w} showAuthor={!state.ryhmittely} />)}</ul>
-                        </Fragment>
-                    ))
-                )}
-
-                {data && data.total > 0 && (
-                    <nav className="bn-paging" aria-label="Sivut">
-                        <span>Näytetään {n(first)}–{n(last)} / {n(data.total)}</span>
-                        <span className="bn-pages">
-                            <button type="button" disabled={state.sivu <= 1} onClick={() => goTo(state.sivu - 1)}>‹ Edellinen</button>
-                            <span>Sivu {n(state.sivu)} / {n(pages)}</span>
-                            <button type="button" disabled={state.sivu >= pages} onClick={() => goTo(state.sivu + 1)}>Seuraava ›</button>
-                        </span>
-                        <label>Rivejä
-                            <select value={state.riveja} onChange={e => update({ riveja: Number(e.target.value), sivu: 1 })}>
-                                {ROWS.map(r => <option key={r} value={r}>{r}</option>)}
-                            </select>
-                        </label>
-                    </nav>
-                )}
-            </section>
+            <BookResults state={state} update={update} summary={filtered ? summary(state, genres, countries, kind) : ""}
+                clear={filtered ? clear : undefined} empty="Haulla ei löytynyt kirjoja." />
         </main>
     );
 };
